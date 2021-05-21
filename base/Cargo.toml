@@ -1,0 +1,8 @@
+[package]
+name = "mina-rs-base"
+version = "0.1.0"
+authors = ["ChainSafe Systems <info@chainsafe.io>"]
+edition = "2018"
+
+[dependencies]
+sha2 = "0.9.5"
