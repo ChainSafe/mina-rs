@@ -1,5 +1,7 @@
+// Copyright 2020 ChainSafe Systems
+// SPDX-License-Identifier: Apache-2.0
 
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, PartialEq, Debug, Hash)]
 pub struct Length(u32);
@@ -15,4 +17,3 @@ pub struct BlockTime(u64);
 
 #[derive(Serialize, Deserialize, PartialEq, Debug, Hash)]
 pub struct BlockTimeSpan(u64);
-

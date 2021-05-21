@@ -1,10 +1,12 @@
+// Copyright 2020 ChainSafe Systems
+// SPDX-License-Identifier: Apache-2.0
 
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 
 use crate::{
-	numbers::BlockTime,
-	token_id::TokenId,
-	hash::{SnarkedLedgerHash, StagedLedgerHash},
+    hash::{SnarkedLedgerHash, StagedLedgerHash},
+    numbers::BlockTime,
+    token_id::TokenId,
 };
 
 #[derive(Serialize, Deserialize)]

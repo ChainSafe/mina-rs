@@ -1,9 +1,11 @@
+// Copyright 2020 ChainSafe Systems
+// SPDX-License-Identifier: Apache-2.0
+
 //!
 //! Hash and Hasher types reused throughout
 //!
 
-use serde::{Serialize, Deserialize};
-
+use serde::{Deserialize, Serialize};
 
 pub use sha2::Sha256 as DefaultHasher;
 

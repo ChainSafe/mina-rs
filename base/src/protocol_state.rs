@@ -1,26 +1,28 @@
+// Copyright 2020 ChainSafe Systems
+// SPDX-License-Identifier: Apache-2.0
 
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 
 use crate::{
-	hash::StateHash,
-	consensus_state::ConsensusState,
-	numbers::{Length, BlockTime, BlockTimeSpan},
-	blockchain_state::BlockchainState,
+    blockchain_state::BlockchainState,
+    consensus_state::ConsensusState,
+    hash::StateHash,
+    numbers::{BlockTime, BlockTimeSpan, Length},
 };
 
 /// This structure can be thought of like the block header. It contains the most essential information of a block.
 #[derive(Serialize, Deserialize)]
 pub struct ProtocolState {
-	previous_state_hash: StateHash,
-	body: ProtocolStateBody,
+    previous_state_hash: StateHash,
+    body: ProtocolStateBody,
 }
 
 #[derive(Serialize, Deserialize)]
 pub struct ProtocolConstants {
-	/// Point of finality (number of confirmations)
-	k: Length,
-	/// Maximum permissable delay of packets (in slots after the current)
-	delta: Length,
+    /// Point of finality (number of confirmations)
+    k: Length,
+    /// Maximum permissable delay of packets (in slots after the current)
+    delta: Length,
     slots_per_sub_window: Length,
     slots_per_window: Length,
     sub_windows_per_window: Length,
@@ -42,8 +44,8 @@ pub struct ProtocolConstants {
 
 #[derive(Serialize, Deserialize)]
 pub struct ProtocolStateBody {
-	genesis_state_hash: StateHash,
-	blockchain_state: BlockchainState,
-	consensus_state: ConsensusState,
-	constants: ProtocolConstants,
+    genesis_state_hash: StateHash,
+    blockchain_state: BlockchainState,
+    consensus_state: ConsensusState,
+    constants: ProtocolConstants,
 }
