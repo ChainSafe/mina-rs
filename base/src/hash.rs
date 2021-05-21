@@ -18,3 +18,9 @@ pub struct LedgerHash(Hash);
 
 #[derive(Serialize, Deserialize, PartialEq, Debug, Clone, Hash)]
 pub struct EpochSeed(Hash);
+
+#[derive(Serialize, Deserialize, PartialEq, Debug, Clone, Hash)]
+pub struct SnarkedLedgerHash(Hash);
+
+#[derive(Serialize, Deserialize, PartialEq, Debug, Clone, Hash)]
+pub struct StagedLedgerHash(Hash);

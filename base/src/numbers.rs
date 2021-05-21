@@ -9,3 +9,10 @@ pub struct Amount(u64);
 
 #[derive(Serialize, Deserialize, PartialEq, Debug, Hash)]
 pub struct GlobalSlot(u32);
+
+#[derive(Serialize, Deserialize, PartialEq, Debug, Hash)]
+pub struct BlockTime(u64);
+
+#[derive(Serialize, Deserialize, PartialEq, Debug, Hash)]
+pub struct BlockTimeSpan(u64);
+
