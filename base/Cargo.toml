@@ -5,5 +5,8 @@ authors = ["ChainSafe Systems <info@chainsafe.io>"]
 edition = "2018"
 
 [dependencies]
+bs58 = { version = "0.4.0", features = ["check"] }
 serde = { version = "1.0.126", features = ["derive"] }
 sha2 = "0.9.5"
+
+mina-base58 = { path = "../mina_base58" }
