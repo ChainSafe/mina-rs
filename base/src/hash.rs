@@ -29,8 +29,28 @@ impl Default for BaseHash {
 	}
 }
 
+//////////////////////////////////////////////////////////////////////////
+
 #[derive(Serialize, Deserialize, PartialEq, Debug, Clone, Hash)]
 pub struct StateHash(BaseHash);
+
+impl AsRef<[u8]> for StateHash {
+	fn as_ref(&self) -> &[u8] {
+		&self.0.0
+	}
+}
+
+impl AsMut<[u8]> for StateHash {
+	fn as_mut(&mut self) -> &mut [u8] {
+		&mut self.0.0
+	}
+}
+
+impl MinaBase58 for StateHash {
+	fn version_byte() -> u8 { mina_base58::version_bytes::STATE_HASH }
+}
+
+//////////////////////////////////////////////////////////////////////////
 
 #[derive(Default, Serialize, Deserialize, PartialEq, Debug, Clone, Hash)]
 pub struct LedgerHash(BaseHash);
@@ -51,14 +71,71 @@ impl MinaBase58 for LedgerHash {
 	fn version_byte() -> u8 { mina_base58::version_bytes::LEDGER_HASH }
 }
 
+//////////////////////////////////////////////////////////////////////////
+
 #[derive(Serialize, Deserialize, PartialEq, Debug, Clone, Hash)]
 pub struct EpochSeed(BaseHash);
+
+impl AsRef<[u8]> for EpochSeed {
+	fn as_ref(&self) -> &[u8] {
+		&self.0.0
+	}
+}
+
+impl AsMut<[u8]> for EpochSeed {
+	fn as_mut(&mut self) -> &mut [u8] {
+		&mut self.0.0
+	}
+}
+
+impl MinaBase58 for EpochSeed {
+	fn version_byte() -> u8 { mina_base58::version_bytes::EPOCH_SEED }
+}
+
+//////////////////////////////////////////////////////////////////////////
 
 #[derive(Serialize, Deserialize, PartialEq, Debug, Clone, Hash)]
 pub struct SnarkedLedgerHash(BaseHash);
 
+impl AsRef<[u8]> for SnarkedLedgerHash {
+	fn as_ref(&self) -> &[u8] {
+		&self.0.0
+	}
+}
+
+impl AsMut<[u8]> for SnarkedLedgerHash {
+	fn as_mut(&mut self) -> &mut [u8] {
+		&mut self.0.0
+	}
+}
+
+impl MinaBase58 for SnarkedLedgerHash {
+	fn version_byte() -> u8 { mina_base58::version_bytes::LEDGER_HASH }
+}
+
+//////////////////////////////////////////////////////////////////////////
+
 #[derive(Serialize, Deserialize, PartialEq, Debug, Clone, Hash)]
 pub struct StagedLedgerHash(BaseHash);
+
+impl AsRef<[u8]> for StagedLedgerHash {
+	fn as_ref(&self) -> &[u8] {
+		&self.0.0
+	}
+}
+
+impl AsMut<[u8]> for StagedLedgerHash {
+	fn as_mut(&mut self) -> &mut [u8] {
+		&mut self.0.0
+	}
+}
+
+impl MinaBase58 for StagedLedgerHash {
+	fn version_byte() -> u8 { mina_base58::version_bytes::STAGED_LEDGER_HASH_AUX_HASH }
+}
+
+//////////////////////////////////////////////////////////////////////////
+
 
 // Need this to support serde serialization and deserialization of 
 // arrays > 32 elements. Will refactor this to its own crate in future
@@ -124,7 +201,6 @@ mod big_arrays {
 
 #[cfg(test)]
 pub mod test {
-
 	
 	use super::{BaseHash, LedgerHash};
 	use mina_base58::MinaBase58;
@@ -149,5 +225,4 @@ pub mod test {
 		let h = LedgerHash(BaseHash(bytes));
 		assert_eq!(h.clone(), LedgerHash::from_base58(h.to_base58().into_string()).unwrap())
 	}
-
 }
