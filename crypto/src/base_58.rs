@@ -1,8 +1,6 @@
 use std::io::Write;
 use bs58::encode::EncodeBuilder;
 
-pub mod version_bytes;
-
 pub use bs58::decode::Error;
 pub use bs58::{decode, encode};
 

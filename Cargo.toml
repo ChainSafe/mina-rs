@@ -1,5 +1,5 @@
 [workspace]
 members = [
 	"base",
-	"mina_base58",
+	"crypto",
 ]

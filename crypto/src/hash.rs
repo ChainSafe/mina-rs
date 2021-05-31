@@ -11,7 +11,8 @@
 //!
 
 use serde::{Deserialize, Serialize};
-use mina_base58::{MinaBase58};
+use crate::base_58::{MinaBase58};
+use crate::base58_version_bytes;
 
 pub use sha2::Sha256 as DefaultHasher;
 
@@ -47,7 +48,7 @@ impl AsMut<[u8]> for StateHash {
 }
 
 impl MinaBase58 for StateHash {
-	fn version_byte() -> u8 { mina_base58::version_bytes::STATE_HASH }
+	fn version_byte() -> u8 { base58_version_bytes::STATE_HASH }
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -68,7 +69,7 @@ impl AsMut<[u8]> for LedgerHash {
 }
 
 impl MinaBase58 for LedgerHash {
-	fn version_byte() -> u8 { mina_base58::version_bytes::LEDGER_HASH }
+	fn version_byte() -> u8 { base58_version_bytes::LEDGER_HASH }
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -89,7 +90,7 @@ impl AsMut<[u8]> for EpochSeed {
 }
 
 impl MinaBase58 for EpochSeed {
-	fn version_byte() -> u8 { mina_base58::version_bytes::EPOCH_SEED }
+	fn version_byte() -> u8 { base58_version_bytes::EPOCH_SEED }
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -110,7 +111,7 @@ impl AsMut<[u8]> for SnarkedLedgerHash {
 }
 
 impl MinaBase58 for SnarkedLedgerHash {
-	fn version_byte() -> u8 { mina_base58::version_bytes::LEDGER_HASH }
+	fn version_byte() -> u8 { base58_version_bytes::LEDGER_HASH }
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -131,7 +132,7 @@ impl AsMut<[u8]> for StagedLedgerHash {
 }
 
 impl MinaBase58 for StagedLedgerHash {
-	fn version_byte() -> u8 { mina_base58::version_bytes::STAGED_LEDGER_HASH_AUX_HASH }
+	fn version_byte() -> u8 { base58_version_bytes::STAGED_LEDGER_HASH_AUX_HASH }
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -203,7 +204,7 @@ mod big_arrays {
 pub mod test {
 	
 	use super::{BaseHash, LedgerHash};
-	use mina_base58::MinaBase58;
+	use crate::base_58::MinaBase58;
 
 	#[test]
 	fn convert_hash_to_base58() {

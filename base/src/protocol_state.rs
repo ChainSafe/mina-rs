@@ -6,9 +6,9 @@ use serde::{Deserialize, Serialize};
 use crate::{
     blockchain_state::BlockchainState,
     consensus_state::ConsensusState,
-    hash::StateHash,
     numbers::{BlockTime, BlockTimeSpan, Length},
 };
+use mina_crypto::hash::StateHash;
 
 /// This structure can be thought of like the block header. It contains the most essential information of a block.
 #[derive(Serialize, Deserialize)]
