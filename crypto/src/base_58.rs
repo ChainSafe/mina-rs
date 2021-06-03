@@ -6,7 +6,7 @@ pub use bs58::{decode, encode};
 
 pub trait MinaBase58: AsRef<[u8]> {
     /// This is the only method a custom implementation need provide.
-    /// Should be a constant from the version_bytes.rs file corresponding
+    /// Should be a constant from the base58_version_bytes.rs file corresponding
     /// to the type.
     fn version_byte() -> u8;
 
