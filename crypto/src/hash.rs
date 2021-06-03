@@ -3,31 +3,27 @@
 
 //!
 //! Hash and Hasher types reused throughout
-//! 
+//!
 //! When converted to human readable forms, hashes in Mina use the Bitcoin Base58Check encoding
 //! see https://github.com/MinaProtocol/mina/blob/f88edb440e321114e26f7691e599adab30ce16cd/src/lib/base58_check/README.md
 //!
 //! Depending on the type of hash a different byte prefix is used in the human readable form
 //!
 
-use serde::{Deserialize, Serialize};
-use crate::base_58::{MinaBase58};
 use crate::base58_version_bytes;
+use crate::base_58::MinaBase58;
+use serde::{Deserialize, Serialize};
 
 pub use sha2::Sha256 as DefaultHasher;
 
-
 #[derive(Serialize, Deserialize, PartialEq, Debug, Clone, Hash)]
-struct BaseHash(
-	#[serde(with = "big_arrays")]
-	[u8; 33]
-);
+struct BaseHash(#[serde(with = "big_arrays")] [u8; 33]);
 
 // cannot use derive Default for arrays > 32 elements
 impl Default for BaseHash {
-	fn default() -> Self { 
-		Self([0_u8; 33])
-	}
+    fn default() -> Self {
+        Self([0_u8; 33])
+    }
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -36,19 +32,21 @@ impl Default for BaseHash {
 pub struct StateHash(BaseHash);
 
 impl AsRef<[u8]> for StateHash {
-	fn as_ref(&self) -> &[u8] {
-		&self.0.0
-	}
+    fn as_ref(&self) -> &[u8] {
+        &self.0 .0
+    }
 }
 
 impl AsMut<[u8]> for StateHash {
-	fn as_mut(&mut self) -> &mut [u8] {
-		&mut self.0.0
-	}
+    fn as_mut(&mut self) -> &mut [u8] {
+        &mut self.0 .0
+    }
 }
 
 impl MinaBase58 for StateHash {
-	fn version_byte() -> u8 { base58_version_bytes::STATE_HASH }
+    fn version_byte() -> u8 {
+        base58_version_bytes::STATE_HASH
+    }
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -57,19 +55,21 @@ impl MinaBase58 for StateHash {
 pub struct LedgerHash(BaseHash);
 
 impl AsRef<[u8]> for LedgerHash {
-	fn as_ref(&self) -> &[u8] {
-		&self.0.0
-	}
+    fn as_ref(&self) -> &[u8] {
+        &self.0 .0
+    }
 }
 
 impl AsMut<[u8]> for LedgerHash {
-	fn as_mut(&mut self) -> &mut [u8] {
-		&mut self.0.0
-	}
+    fn as_mut(&mut self) -> &mut [u8] {
+        &mut self.0 .0
+    }
 }
 
 impl MinaBase58 for LedgerHash {
-	fn version_byte() -> u8 { base58_version_bytes::LEDGER_HASH }
+    fn version_byte() -> u8 {
+        base58_version_bytes::LEDGER_HASH
+    }
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -78,19 +78,21 @@ impl MinaBase58 for LedgerHash {
 pub struct EpochSeed(BaseHash);
 
 impl AsRef<[u8]> for EpochSeed {
-	fn as_ref(&self) -> &[u8] {
-		&self.0.0
-	}
+    fn as_ref(&self) -> &[u8] {
+        &self.0 .0
+    }
 }
 
 impl AsMut<[u8]> for EpochSeed {
-	fn as_mut(&mut self) -> &mut [u8] {
-		&mut self.0.0
-	}
+    fn as_mut(&mut self) -> &mut [u8] {
+        &mut self.0 .0
+    }
 }
 
 impl MinaBase58 for EpochSeed {
-	fn version_byte() -> u8 { base58_version_bytes::EPOCH_SEED }
+    fn version_byte() -> u8 {
+        base58_version_bytes::EPOCH_SEED
+    }
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -99,19 +101,21 @@ impl MinaBase58 for EpochSeed {
 pub struct SnarkedLedgerHash(BaseHash);
 
 impl AsRef<[u8]> for SnarkedLedgerHash {
-	fn as_ref(&self) -> &[u8] {
-		&self.0.0
-	}
+    fn as_ref(&self) -> &[u8] {
+        &self.0 .0
+    }
 }
 
 impl AsMut<[u8]> for SnarkedLedgerHash {
-	fn as_mut(&mut self) -> &mut [u8] {
-		&mut self.0.0
-	}
+    fn as_mut(&mut self) -> &mut [u8] {
+        &mut self.0 .0
+    }
 }
 
 impl MinaBase58 for SnarkedLedgerHash {
-	fn version_byte() -> u8 { base58_version_bytes::LEDGER_HASH }
+    fn version_byte() -> u8 {
+        base58_version_bytes::LEDGER_HASH
+    }
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -120,25 +124,26 @@ impl MinaBase58 for SnarkedLedgerHash {
 pub struct StagedLedgerHash(BaseHash);
 
 impl AsRef<[u8]> for StagedLedgerHash {
-	fn as_ref(&self) -> &[u8] {
-		&self.0.0
-	}
+    fn as_ref(&self) -> &[u8] {
+        &self.0 .0
+    }
 }
 
 impl AsMut<[u8]> for StagedLedgerHash {
-	fn as_mut(&mut self) -> &mut [u8] {
-		&mut self.0.0
-	}
+    fn as_mut(&mut self) -> &mut [u8] {
+        &mut self.0 .0
+    }
 }
 
 impl MinaBase58 for StagedLedgerHash {
-	fn version_byte() -> u8 { base58_version_bytes::STAGED_LEDGER_HASH_AUX_HASH }
+    fn version_byte() -> u8 {
+        base58_version_bytes::STAGED_LEDGER_HASH_AUX_HASH
+    }
 }
 
 //////////////////////////////////////////////////////////////////////////
 
-
-// Need this to support serde serialization and deserialization of 
+// Need this to support serde serialization and deserialization of
 // arrays > 32 elements. Will refactor this to its own crate in future
 mod big_arrays {
     use std::{convert::TryInto, marker::PhantomData};
@@ -199,31 +204,40 @@ mod big_arrays {
     }
 }
 
-
 #[cfg(test)]
 pub mod test {
-	
-	use super::{BaseHash, LedgerHash};
-	use crate::base_58::MinaBase58;
 
-	#[test]
-	fn convert_hash_to_base58() {
-		let bytes = [1_u8, 182, 175, 122, 248, 93, 142, 245, 54, 161, 170, 103, 111, 123, 128, 48, 218, 84, 208, 17, 245, 30, 111, 61, 210, 168, 20, 160, 79, 111, 37, 167, 2];
-		let h = LedgerHash(BaseHash(bytes));
-		println!("{}", h.to_base58().into_string())
-	}
+    use super::{BaseHash, LedgerHash};
+    use crate::base_58::MinaBase58;
 
-	#[test]
-	fn ledger_hash_from_base58() {
-		let s = "jxV4SS44wHUVrGEucCsfxLisZyUC5QddsiokGH3kz5xm2hJWZ25";
-		let h = LedgerHash::from_base58(s).unwrap();
-		assert_eq!(h.to_base58().into_string(), s);
-	}
+    #[test]
+    fn convert_hash_to_base58() {
+        let bytes = [
+            1_u8, 182, 175, 122, 248, 93, 142, 245, 54, 161, 170, 103, 111, 123, 128, 48, 218, 84,
+            208, 17, 245, 30, 111, 61, 210, 168, 20, 160, 79, 111, 37, 167, 2,
+        ];
+        let h = LedgerHash(BaseHash(bytes));
+        println!("{}", h.to_base58().into_string())
+    }
 
-	#[test]
-	fn roundtrip() {
-		let bytes = [0x00_u8, 0x01, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x00_u8, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07,0x00_u8, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07,0x00_u8, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07,];
-		let h = LedgerHash(BaseHash(bytes));
-		assert_eq!(h.clone(), LedgerHash::from_base58(h.to_base58().into_string()).unwrap())
-	}
+    #[test]
+    fn ledger_hash_from_base58() {
+        let s = "jxV4SS44wHUVrGEucCsfxLisZyUC5QddsiokGH3kz5xm2hJWZ25";
+        let h = LedgerHash::from_base58(s).unwrap();
+        assert_eq!(h.to_base58().into_string(), s);
+    }
+
+    #[test]
+    fn roundtrip() {
+        let bytes = [
+            0x00_u8, 0x01, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x00_u8, 0x01, 0x02, 0x03,
+            0x04, 0x05, 0x06, 0x07, 0x00_u8, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x00_u8,
+            0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07,
+        ];
+        let h = LedgerHash(BaseHash(bytes));
+        assert_eq!(
+            h.clone(),
+            LedgerHash::from_base58(h.to_base58().into_string()).unwrap()
+        )
+    }
 }

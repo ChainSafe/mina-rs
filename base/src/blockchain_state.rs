@@ -3,12 +3,8 @@
 
 use serde::{Deserialize, Serialize};
 
-use crate::{
-    numbers::BlockTime,
-    token_id::TokenId,
-};
+use crate::{numbers::BlockTime, token_id::TokenId};
 use mina_crypto::hash::{SnarkedLedgerHash, StagedLedgerHash};
-
 
 #[derive(Serialize, Deserialize)]
 pub struct BlockchainState {

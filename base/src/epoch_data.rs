@@ -3,11 +3,8 @@
 
 use serde::{Deserialize, Serialize};
 
-use crate::{
-    numbers::{Amount, Length},
-};
+use crate::numbers::{Amount, Length};
 use mina_crypto::hash::{EpochSeed, LedgerHash, StateHash};
-
 
 #[derive(Hash, Serialize, Deserialize)]
 pub struct EpochLedger {
