@@ -1,46 +1,51 @@
+// Copyright 2020 ChainSafe Systems
+// SPDX-License-Identifier: Apache-2.0
 
-use std::io::{Write, SeekFrom};
 use std::fs::File;
-use std::path::PathBuf;
 use std::io::Seek;
+use std::io::{SeekFrom, Write};
+use std::path::PathBuf;
 
+use serde::Serialize;
+use serde_bin_prot::{integers::integer, to_writer};
 use structopt::StructOpt;
-use serde::{Serialize};
-use serde_bin_prot::{to_writer, integers::integer};
 
 #[derive(StructOpt)]
 struct Opt {
     #[structopt(subcommand)]
     cmd: Subcommand,
     #[structopt(long, parse(from_os_str))]
-    path: PathBuf, 
+    path: PathBuf,
     #[structopt(long)]
     test: String,
 }
 
 #[derive(StructOpt)]
 enum Subcommand {
-    Deserialize ,
+    Deserialize,
     Serialize,
 }
 
 fn serialize_test<W: Write>(test: &str, writer: &mut W) -> Result<(), String> {
-
     #[derive(Serialize)]
-    enum E {A, B, C}
+    enum E {
+        A,
+        B,
+        C,
+    }
 
     #[derive(Serialize)]
     struct S {
         a: i32,
         b: bool,
-        c: E
+        c: E,
     }
 
     #[derive(Serialize)]
     enum V {
         A(i32),
         B(bool),
-        C(E)
+        C(E),
     }
 
     match test {
@@ -79,7 +84,7 @@ fn serialize_test<W: Write>(test: &str, writer: &mut W) -> Result<(), String> {
                 b: true,
                 c: E::C
             };
-            to_writer(writer, &v)            
+            to_writer(writer, &v)
         }
         "variant" => {
             let v = V::A(15);
@@ -104,9 +109,7 @@ fn main() {
                 let bytes_written = f.seek(SeekFrom::Current(0)).unwrap();
                 println!("Wrote {} bytes to file {:?}", bytes_written, opt.path)
             }
-        },
-        Subcommand::Deserialize => {
-
         }
+        Subcommand::Deserialize => {}
     }
 }
