@@ -8,3 +8,4 @@ edition = "2018"
 serde = { version = "1.0.126", features = ["derive"] }
 structopt = "0.3.21"
 serde-bin-prot = { git = "https://github.com/ChainSafe/serde-bin-prot", branch = "main" }
+erased-serde = "0.3.15"

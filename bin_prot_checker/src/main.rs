@@ -1,23 +1,19 @@
 // Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
-use std::fs::File;
-use std::io::Seek;
-use std::io::{SeekFrom, Write};
-use std::path::PathBuf;
+use std::io::{Read, stdin, stdout};
+use core::str::FromStr;
 
-use serde::Serialize;
-use serde_bin_prot::{integers::integer, to_writer};
+use serde::{Serialize, Deserialize};
+use serde_bin_prot::{integers::integer, to_writer, from_reader, error::Error};
 use structopt::StructOpt;
 
 #[derive(StructOpt)]
 struct Opt {
     #[structopt(subcommand)]
     cmd: Subcommand,
-    #[structopt(long, parse(from_os_str))]
-    path: PathBuf,
     #[structopt(long)]
-    test: String,
+    test: Test,
 }
 
 #[derive(StructOpt)]
@@ -26,75 +22,112 @@ enum Subcommand {
     Serialize,
 }
 
-fn serialize_test<W: Write>(test: &str, writer: &mut W) -> Result<(), String> {
-    #[derive(Serialize)]
-    enum E {
-        A,
-        B,
-        C,
-    }
+#[derive(Serialize, Deserialize, Debug)]
+enum E {
+    A,
+    B,
+    C,
+}
 
-    #[derive(Serialize)]
-    struct S {
-        a: i32,
-        b: bool,
-        c: E,
-    }
+#[derive(Serialize, Deserialize, Debug)]
+struct S {
+    a: i32,
+    b: bool,
+    c: E,
+}
 
-    #[derive(Serialize)]
-    enum V {
-        A(i32),
-        B(bool),
-        C(E),
-    }
+#[derive(Serialize, Deserialize, Debug)]
+enum V {
+    A(i32),
+    B(bool),
+    C(E),
+}
 
+#[derive(Serialize)]
+#[serde(untagged)] // ensures serializing a test enum just serializes the internal data
+enum Test {
+    Nat0(Vec<()>),
+    Bool(bool),
+    Int(i32),
+    Int32(#[serde(with = "integer")] i32),
+    Int64(#[serde(with = "integer")] i64),
+    Enum(E),
+    Record(S),
+    Variant(V),
+}
+
+// from str also provides the default type for each test variant
+impl FromStr for Test {
+    type Err = String;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "nat0" => {
+                Ok(Test::Nat0(vec![()]))
+            }
+            "bool" => {
+                Ok(Test::Bool(true))
+            }
+            "int" => {
+                Ok(Test::Int(12345))
+            }
+            "int32" => {
+                Ok(Test::Int32(12345))
+            }
+            "int64" => {
+                Ok(Test::Int64(12345))
+            }
+            "enum" => {
+                Ok(Test::Enum(E::A))
+            }
+            "record" => {            
+                let v = S{
+                    a: 15,
+                    b: true,
+                    c: E::C
+                };
+                Ok(Test::Record(v))
+            }
+            "variant" => {
+                let v = V::A(15);
+                Ok(Test::Variant(v))
+            }
+            "public-key" => {
+                unimplemented!()
+            }
+            "all" => {
+                unimplemented!()
+            }
+            _ => panic!("Invalid test, Must be one of nat0, bool, int, int32, int64, enum, record, variant, public-key")
+        }
+    }
+}
+
+impl ToString for Test {
+    fn to_string(&self) -> String {
+        match self {
+            Test::Nat0(v) => v.len().to_string(),
+            Test::Bool(v) => v.to_string(),
+            Test::Int(v) => v.to_string(),
+            Test::Int32(v) => v.to_string(),
+            Test::Int64(v) => v.to_string(),
+            Test::Enum(v) => format!("{:?}", v),
+            Test::Record(v) => format!("{:?}", v),
+            Test::Variant(v) => format!("{:?}", v),
+        }
+    }
+}
+
+fn deserialize_test<R: Read>(read: R, test: &Test) -> Result<Test, Error> {
     match test {
-        "nat0" => {
-            // Test nat0 by writing out vectors and ensuring the right length is written
-            let v = vec![()];
-            to_writer(writer, &v)
-        }
-        "bool" => {
-            let v = true;
-            to_writer(writer, &v)
-        }
-        "int" => {
-            let v = 12345;
-            to_writer(writer, &v)
-        }
-        "int32" => {
-            #[derive(Serialize)]
-            struct I(#[serde(with = "integer")]i32);
-            let v = I(12345);
-            to_writer(writer, &v)
-        }
-        "int64" => {
-            #[derive(Serialize)]
-            struct I(#[serde(with = "integer")]i64);
-            let v = I(12345);
-            to_writer(writer, &v)
-        }
-        "enum" => {
-            let v = E::A;
-            to_writer(writer, &v)
-        }
-        "record" => {            
-            let v = S{
-                a: 15,
-                b: true,
-                c: E::C
-            };
-            to_writer(writer, &v)
-        }
-        "variant" => {
-            let v = V::A(15);
-            to_writer(writer, &v)
-        }
-        "public-key" => {
-            unimplemented!()
-        }
-        _ => panic!("Invalid test, Must be one of nat0, bool, int, int32, int64, enum, record, variant, public-key")
-    }.map_err(|_| "Unable to write to file".to_string())
+        Test::Nat0(_) => Ok(Test::Nat0(from_reader(read)?)),
+        Test::Bool(_) =>Ok(Test::Bool(from_reader(read)?)),
+        Test::Int(_) => Ok(Test::Int(from_reader(read)?)),
+        Test::Int32(_) => Ok(Test::Int32(from_reader(read)?)),
+        Test::Int64(_) => Ok(Test::Int64(from_reader(read)?)),
+        Test::Enum(_) => Ok(Test::Enum(from_reader(read)?)),
+        Test::Record(_) => Ok(Test::Record(from_reader(read)?)),
+        Test::Variant(_) => Ok(Test::Variant(from_reader(read)?)),
+    }
 }
 
 fn main() {
@@ -102,14 +135,15 @@ fn main() {
 
     match opt.cmd {
         Subcommand::Serialize => {
-            let mut f = File::create(opt.path.clone()).expect("Unable to create file");
-            if let Err(e) = serialize_test(&opt.test, &mut f) {
+            if let Err(e) = to_writer(&mut stdout(), &opt.test) {
                 eprintln!("Failed with: {}", e)
-            } else {
-                let bytes_written = f.seek(SeekFrom::Current(0)).unwrap();
-                println!("Wrote {} bytes to file {:?}", bytes_written, opt.path)
             }
         }
-        Subcommand::Deserialize => {}
+        Subcommand::Deserialize => {
+            match deserialize_test(stdin(), &opt.test) {
+                Err(e) => eprintln!("Failed with: {}", e),
+                Ok(v) => println!("Deserialized value: {}", v.to_string()),
+            }                        
+        }
     }
 }
