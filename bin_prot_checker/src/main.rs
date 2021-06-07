@@ -1,14 +1,14 @@
 // Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
-use std::io::Seek;
-use std::fs::File;
-use std::io::{Read, stdin, stdout};
-use std::path::PathBuf;
 use core::str::FromStr;
+use std::fs::File;
+use std::io::Seek;
+use std::io::{stdin, stdout, Read};
+use std::path::PathBuf;
 
-use serde::{Serialize, Deserialize};
-use serde_bin_prot::{integers::integer, to_writer, from_reader, error::Error};
+use serde::{Deserialize, Serialize};
+use serde_bin_prot::{error::Error, from_reader, integers::integer, to_writer};
 use structopt::StructOpt;
 
 #[derive(StructOpt)]
@@ -19,7 +19,7 @@ struct Opt {
     test: Test,
     /// Output file, stdout if not present
     #[structopt(long, parse(from_os_str))]
-    path: Option<PathBuf>,    
+    path: Option<PathBuf>,
 }
 
 #[derive(StructOpt)]
@@ -126,7 +126,7 @@ impl ToString for Test {
 fn deserialize_test<R: Read>(read: R, test: &Test) -> Result<Test, Error> {
     match test {
         Test::Nat0(_) => Ok(Test::Nat0(from_reader(read)?)),
-        Test::Bool(_) =>Ok(Test::Bool(from_reader(read)?)),
+        Test::Bool(_) => Ok(Test::Bool(from_reader(read)?)),
         Test::Int(_) => Ok(Test::Int(from_reader(read)?)),
         Test::Int32(_) => Ok(Test::Int32(from_reader(read)?)),
         Test::Int64(_) => Ok(Test::Int64(from_reader(read)?)),
@@ -149,22 +149,20 @@ fn main() {
                 })
             } else {
                 to_writer(&mut stdout(), &opt.test)
-            }.expect("Failed to write to output")
+            }
+            .map_err(|e| eprintln!("Failed with: {}", e))
+            .unwrap();
         }
         Subcommand::Deserialize => {
             if let Some(path) = opt.path {
                 let file = File::open(path).unwrap();
-                match deserialize_test(file, &opt.test) {
-                    Err(e) => eprintln!("Failed with: {}", e),
-                    Ok(v) => println!("Deserialized value: {}", v.to_string()),
-                }                  
+                deserialize_test(file, &opt.test)
             } else {
-                match deserialize_test(stdin(), &opt.test) {
-                    Err(e) => eprintln!("Failed with: {}", e),
-                    Ok(v) => println!("Deserialized value: {}", v.to_string()),
-                }               
+                deserialize_test(stdin(), &opt.test)
             }
-
+            .map(|v| println!("Deserialized value: {}", v.to_string()))
+            .map_err(|e| eprintln!("Failed with: {}", e))
+            .unwrap();
         }
     }
 }
