@@ -1,7 +1,10 @@
 // Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
+use std::io::Seek;
+use std::fs::File;
 use std::io::{Read, stdin, stdout};
+use std::path::PathBuf;
 use core::str::FromStr;
 
 use serde::{Serialize, Deserialize};
@@ -14,6 +17,9 @@ struct Opt {
     cmd: Subcommand,
     #[structopt(long)]
     test: Test,
+    /// Output file, stdout if not present
+    #[structopt(long, parse(from_os_str))]
+    path: Option<PathBuf>,    
 }
 
 #[derive(StructOpt)]
@@ -132,18 +138,33 @@ fn deserialize_test<R: Read>(read: R, test: &Test) -> Result<Test, Error> {
 
 fn main() {
     let opt = Opt::from_args();
-
     match opt.cmd {
         Subcommand::Serialize => {
-            if let Err(e) = to_writer(&mut stdout(), &opt.test) {
-                eprintln!("Failed with: {}", e)
-            }
+            if let Some(path) = opt.path {
+                println!("Writing to file {:?}", path);
+                let mut file = File::create(path).unwrap();
+                to_writer(&mut file, &opt.test).map(|_| {
+                    let pos = file.stream_position().unwrap();
+                    println!("Wrote {} bytes", pos);
+                })
+            } else {
+                to_writer(&mut stdout(), &opt.test)
+            }.expect("Failed to write to output")
         }
         Subcommand::Deserialize => {
-            match deserialize_test(stdin(), &opt.test) {
-                Err(e) => eprintln!("Failed with: {}", e),
-                Ok(v) => println!("Deserialized value: {}", v.to_string()),
-            }                        
+            if let Some(path) = opt.path {
+                let file = File::open(path).unwrap();
+                match deserialize_test(file, &opt.test) {
+                    Err(e) => eprintln!("Failed with: {}", e),
+                    Ok(v) => println!("Deserialized value: {}", v.to_string()),
+                }                  
+            } else {
+                match deserialize_test(stdin(), &opt.test) {
+                    Err(e) => eprintln!("Failed with: {}", e),
+                    Ok(v) => println!("Deserialized value: {}", v.to_string()),
+                }               
+            }
+
         }
     }
 }
