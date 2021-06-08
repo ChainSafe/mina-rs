@@ -1,3 +1,6 @@
+// Copyright 2020 ChainSafe Systems
+// SPDX-License-Identifier: Apache-2.0
+
 use bs58::encode::EncodeBuilder;
 use serde::{Deserialize, Serialize};
 use serde_bin_prot::{from_reader, to_writer};

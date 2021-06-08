@@ -1,3 +1,6 @@
+// Copyright 2020 ChainSafe Systems
+// SPDX-License-Identifier: Apache-2.0
+
 ///
 /// All human readable values (e.g base58 encoded hashes and addresses)
 /// implement the Base58Checked encoding https://en.bitcoin.it/wiki/Base58Check_encoding
