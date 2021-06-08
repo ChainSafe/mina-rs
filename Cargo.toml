@@ -1,4 +1,5 @@
 [workspace]
 members = [
-	"base"
+	"base",
+	"bin_prot_checker"
 ]
