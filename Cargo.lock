@@ -324,7 +324,7 @@ dependencies = [
 [[package]]
 name = "serde-bin-prot"
 version = "0.1.0"
-source = "git+https://github.com/ChainSafe/serde-bin-prot?branch=main#0d70fdf17e98bd28f05f4611c6dd3cfe6b5a453b"
+source = "git+https://github.com/ChainSafe/serde-bin-prot?branch=main#dc81a74ff296bdc5c83ee5679a0b4e4ae9cafbaa"
 dependencies = [
  "byteorder",
  "num",
