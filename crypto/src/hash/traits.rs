@@ -1,5 +1,8 @@
 // Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
+
+// Copyright 2020 ChainSafe Systems
+// SPDX-License-Identifier: Apache-2.0
 //
 use super::prefixes::HashPrefix;
 use digest::Digest;
