@@ -4,15 +4,15 @@
 use serde::{Deserialize, Serialize};
 
 use crate::numbers::{Amount, Length};
-use mina_crypto::hash::{EpochSeed, LedgerHash, StateHash};
+use mina_crypto::hash_types::{EpochSeed, LedgerHash, StateHash};
 
-#[derive(Hash, Serialize, Deserialize)]
+#[derive(Clone, Hash, Serialize, Deserialize)]
 pub struct EpochLedger {
     hash: LedgerHash,
     total_currency: Amount,
 }
 
-#[derive(Hash, Serialize, Deserialize)]
+#[derive(Clone, Hash, Serialize, Deserialize)]
 pub struct EpochData {
     ledger: EpochLedger,
     seed: EpochSeed,
