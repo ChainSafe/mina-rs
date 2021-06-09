@@ -1,7 +1,7 @@
 // Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
-use crate::base_58::MinaBase58;
+use crate::base58::MinaBase58;
 use serde::{Deserialize, Serialize};
 use serde_versions_derive::version;
 
@@ -20,7 +20,7 @@ pub struct PublicKey {
 
 impl MinaBase58 for PublicKey {
     fn version_byte() -> u8 {
-        crate::base58_version_bytes::NON_ZERO_CURVE_POINT_COMPRESSED
+        crate::base58::version_bytes::NON_ZERO_CURVE_POINT_COMPRESSED
     }
 }
 
@@ -28,7 +28,7 @@ impl MinaBase58 for PublicKey {
 pub mod tests {
 
     use super::PublicKey;
-    use crate::base_58::MinaBase58;
+    use crate::base58::MinaBase58;
     use serde_bin_prot::to_writer;
 
     #[test]

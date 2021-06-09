@@ -10,15 +10,30 @@
 //! Depending on the type of hash a different byte prefix is used in the human readable form
 //!
 
-use crate::base58_version_bytes;
-use crate::base_58::MinaBase58;
+use crate::base58::{MinaBase58, version_bytes};
+use crate::hash::MinaHash;
+use super::prefixes::{HashPrefix, PROTOCOL_STATE};
+use digest::Digest;
+use generic_array::GenericArray;
 use serde::{Deserialize, Serialize};
 use serde_versions_derive::version;
+use sha2::Sha256;
 
 pub use sha2::Sha256 as DefaultHasher;
 
+type HashBytes = GenericArray<u8, <Sha256 as Digest>::OutputSize>;
+
 #[derive(Default, Serialize, Deserialize, PartialEq, Debug, Clone)]
 struct BaseHash([u8; 32]);
+
+impl From<HashBytes> for BaseHash {
+    // TODO: Figure out how to do this without a copy and still have BaseHash serializable
+    fn from(b: HashBytes) -> Self {
+        let mut o = BaseHash::default();
+        o.0.copy_from_slice(b.as_ref());
+        o
+    }
+}
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -28,7 +43,19 @@ pub struct StateHash(BaseHash);
 
 impl MinaBase58 for StateHash {
     fn version_byte() -> u8 {
-        base58_version_bytes::STATE_HASH
+        version_bytes::STATE_HASH
+    }
+}
+
+impl From<HashBytes> for StateHash {
+    fn from(b: HashBytes) -> Self {
+        Self(BaseHash::from(b))
+    }
+}
+
+impl MinaHash for StateHash {
+    fn prefix() -> &'static HashPrefix {
+        PROTOCOL_STATE
     }
 }
 
@@ -40,7 +67,13 @@ pub struct LedgerHash(BaseHash);
 
 impl MinaBase58 for LedgerHash {
     fn version_byte() -> u8 {
-        base58_version_bytes::LEDGER_HASH
+        version_bytes::LEDGER_HASH
+    }
+}
+
+impl From<HashBytes> for LedgerHash {
+    fn from(b: HashBytes) -> Self {
+        Self(BaseHash::from(b))
     }
 }
 
@@ -52,7 +85,13 @@ pub struct EpochSeed(BaseHash);
 
 impl MinaBase58 for EpochSeed {
     fn version_byte() -> u8 {
-        base58_version_bytes::EPOCH_SEED
+        version_bytes::EPOCH_SEED
+    }
+}
+
+impl From<HashBytes> for EpochSeed {
+    fn from(b: HashBytes) -> Self {
+        Self(BaseHash::from(b))
     }
 }
 
@@ -64,7 +103,13 @@ pub struct SnarkedLedgerHash(BaseHash);
 
 impl MinaBase58 for SnarkedLedgerHash {
     fn version_byte() -> u8 {
-        base58_version_bytes::LEDGER_HASH
+        version_bytes::LEDGER_HASH
+    }
+}
+
+impl From<HashBytes> for SnarkedLedgerHash {
+    fn from(b: HashBytes) -> Self {
+        Self(BaseHash::from(b))
     }
 }
 
@@ -76,7 +121,13 @@ pub struct StagedLedgerHash(BaseHash);
 
 impl MinaBase58 for StagedLedgerHash {
     fn version_byte() -> u8 {
-        base58_version_bytes::STAGED_LEDGER_HASH_AUX_HASH
+        version_bytes::STAGED_LEDGER_HASH_AUX_HASH
+    }
+}
+
+impl From<HashBytes> for StagedLedgerHash {
+    fn from(b: HashBytes) -> Self {
+        Self(BaseHash::from(b))
     }
 }
 
@@ -86,7 +137,7 @@ impl MinaBase58 for StagedLedgerHash {
 pub mod test {
 
     use super::{BaseHash, LedgerHash};
-    use crate::base_58::MinaBase58;
+    use crate::base58::MinaBase58;
 
     #[test]
     fn convert_hash_to_base58() {
