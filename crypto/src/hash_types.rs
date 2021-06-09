@@ -13,6 +13,7 @@
 use crate::base58_version_bytes;
 use crate::base_58::MinaBase58;
 use serde::{Deserialize, Serialize};
+use serde_versions_derive::version;
 
 pub use sha2::Sha256 as DefaultHasher;
 
@@ -21,6 +22,7 @@ struct BaseHash([u8; 32]);
 
 //////////////////////////////////////////////////////////////////////////
 
+#[version(1)]
 #[derive(Serialize, Deserialize, PartialEq, Debug, Clone)]
 pub struct StateHash(BaseHash);
 
@@ -32,6 +34,7 @@ impl MinaBase58 for StateHash {
 
 //////////////////////////////////////////////////////////////////////////
 
+#[version(1)]
 #[derive(Default, Serialize, Deserialize, PartialEq, Debug, Clone)]
 pub struct LedgerHash(BaseHash);
 
@@ -43,6 +46,7 @@ impl MinaBase58 for LedgerHash {
 
 //////////////////////////////////////////////////////////////////////////
 
+#[version(1)]
 #[derive(Serialize, Deserialize, PartialEq, Debug, Clone)]
 pub struct EpochSeed(BaseHash);
 
@@ -54,6 +58,7 @@ impl MinaBase58 for EpochSeed {
 
 //////////////////////////////////////////////////////////////////////////
 
+#[version(1)]
 #[derive(Serialize, Deserialize, PartialEq, Debug, Clone)]
 pub struct SnarkedLedgerHash(BaseHash);
 
@@ -65,6 +70,7 @@ impl MinaBase58 for SnarkedLedgerHash {
 
 //////////////////////////////////////////////////////////////////////////
 
+#[version(1)]
 #[derive(Serialize, Deserialize, PartialEq, Debug, Clone)]
 pub struct StagedLedgerHash(BaseHash);
 
@@ -94,7 +100,7 @@ pub mod test {
 
     #[test]
     fn ledger_hash_from_base58() {
-        let s = "AjUewFHZA8MjLKQYQPB81ktdNyJ34GKitNFfoWTuZREYMog84Q";
+        let s = "jxV4SS44wHUVrGEucCsfxLisZyUC5QddsiokGH3kz5xm2hJWZ25";
         let h = LedgerHash::from_base58(s).unwrap();
         assert_eq!(h.to_base58().into_string(), s);
     }

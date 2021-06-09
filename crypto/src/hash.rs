@@ -8,8 +8,7 @@
 pub trait MinaHash {
 	type HashType;
 
-	fn prefix() -> &str {
-		
-	}
+	/// Must return the conventional hash prefix 
+	fn prefix() -> &str;
 }
 
