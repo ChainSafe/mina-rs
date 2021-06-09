@@ -10,9 +10,9 @@
 //! Depending on the type of hash a different byte prefix is used in the human readable form
 //!
 
-use crate::base58::{MinaBase58, version_bytes};
-use crate::hash::MinaHash;
 use super::prefixes::*;
+use crate::base58::{version_bytes, MinaBase58};
+use crate::hash::MinaHash;
 use digest::Digest;
 use generic_array::GenericArray;
 use serde::{Deserialize, Serialize};

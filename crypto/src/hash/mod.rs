@@ -1,7 +1,6 @@
-
 pub mod prefixes;
-mod types;
 mod traits;
+mod types;
 
-pub use types::*;
 pub use traits::*;
+pub use types::*;

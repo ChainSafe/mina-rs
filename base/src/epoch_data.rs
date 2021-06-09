@@ -4,7 +4,7 @@
 use serde::{Deserialize, Serialize};
 
 use crate::numbers::{Amount, Length};
-use mina_crypto::hash_types::{EpochSeed, LedgerHash, StateHash};
+use mina_crypto::hash::{EpochSeed, LedgerHash, StateHash};
 
 #[derive(Clone, Serialize, Deserialize)]
 pub struct EpochLedger {

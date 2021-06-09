@@ -1,14 +1,14 @@
 // Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
-use serde::{Deserialize, Serialize};
-use serde_versions_derive::version;
 use crate::{
     epoch_data::EpochData,
     global_slot::GlobalSlot,
     numbers::{self, Amount, Length},
 };
 use mina_crypto::keys::PublicKey;
+use serde::{Deserialize, Serialize};
+use serde_versions_derive::version;
 
 #[derive(Clone, Serialize, Deserialize)]
 struct VrfOutputTruncated;

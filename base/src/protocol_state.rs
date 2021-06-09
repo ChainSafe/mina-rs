@@ -45,8 +45,8 @@ pub struct ProtocolState {
     body: ProtocolStateBody,
 }
 
-// Protocol state hashes into a StateHash type 
-impl MinaHashable<StateHash> for ProtocolState { }
+// Protocol state hashes into a StateHash type
+impl MinaHashable<StateHash> for ProtocolState {}
 
 #[version(1)]
 #[derive(Clone, Serialize, Deserialize)]

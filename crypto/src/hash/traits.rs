@@ -73,13 +73,16 @@ mod tests {
 
     #[derive(Serialize)]
     struct TestType(i32);
-    impl MinaHashable<TestHash> for TestType { }
+    impl MinaHashable<TestHash> for TestType {}
 
     #[test]
     fn can_hash_new_type() {
         let t = TestType(123);
         let h = t.hash();
-        assert_eq!(h.to_base58().into_string(), "YHWQQZSuu7LGyXydNDKcT47vkbotjcHMeWeHHZj8K6z7EkVphQ")
+        assert_eq!(
+            h.to_base58().into_string(),
+            "YHWQQZSuu7LGyXydNDKcT47vkbotjcHMeWeHHZj8K6z7EkVphQ"
+        )
     }
 
     #[test]
@@ -88,5 +91,4 @@ mod tests {
         let t2 = TestType(234);
         assert!(t1.hash() != t2.hash())
     }
-
 }
