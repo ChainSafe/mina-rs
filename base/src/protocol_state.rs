@@ -1,6 +1,7 @@
 // Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
+use mina_crypto::hash::MinaHashable;
 use serde::{Deserialize, Serialize};
 use serde_versions_derive::version;
 
@@ -9,7 +10,7 @@ use crate::{
     consensus_state::ConsensusState,
     numbers::{BlockTime, BlockTimeSpan, Length},
 };
-use mina_crypto::hash_types::StateHash;
+use mina_crypto::hash::StateHash;
 
 #[derive(Clone, Serialize, Deserialize)]
 pub struct ProtocolConstants {
@@ -43,6 +44,9 @@ pub struct ProtocolState {
     previous_state_hash: StateHash,
     body: ProtocolStateBody,
 }
+
+// Protocol state hashes into a StateHash type 
+impl MinaHashable<StateHash> for ProtocolState { }
 
 #[version(1)]
 #[derive(Clone, Serialize, Deserialize)]

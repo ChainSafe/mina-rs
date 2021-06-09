@@ -195,6 +195,8 @@ version = "0.1.0"
 dependencies = [
  "bs58",
  "const_format",
+ "digest",
+ "generic-array",
  "serde",
  "serde-bin-prot",
  "serde-versions-derive",

@@ -12,7 +12,7 @@
 
 use crate::base58::{MinaBase58, version_bytes};
 use crate::hash::MinaHash;
-use super::prefixes::{HashPrefix, PROTOCOL_STATE};
+use super::prefixes::*;
 use digest::Digest;
 use generic_array::GenericArray;
 use serde::{Deserialize, Serialize};
@@ -21,10 +21,10 @@ use sha2::Sha256;
 
 pub use sha2::Sha256 as DefaultHasher;
 
-type HashBytes = GenericArray<u8, <Sha256 as Digest>::OutputSize>;
+pub(crate) type HashBytes = GenericArray<u8, <Sha256 as Digest>::OutputSize>;
 
 #[derive(Default, Serialize, Deserialize, PartialEq, Debug, Clone)]
-struct BaseHash([u8; 32]);
+pub(crate) struct BaseHash([u8; 32]);
 
 impl From<HashBytes> for BaseHash {
     // TODO: Figure out how to do this without a copy and still have BaseHash serializable
@@ -92,6 +92,12 @@ impl MinaBase58 for EpochSeed {
 impl From<HashBytes> for EpochSeed {
     fn from(b: HashBytes) -> Self {
         Self(BaseHash::from(b))
+    }
+}
+
+impl MinaHash for EpochSeed {
+    fn prefix() -> &'static HashPrefix {
+        EPOCH_SEED
     }
 }
 

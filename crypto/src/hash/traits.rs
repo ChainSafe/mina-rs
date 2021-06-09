@@ -42,3 +42,51 @@ where
         OutputType::from(hash_bytes)
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::base58::{version_bytes, MinaBase58};
+    use crate::hash::prefixes::PROTOCOL_STATE;
+    use crate::hash::types::{BaseHash, HashBytes};
+
+    #[derive(Serialize, PartialEq, Debug)]
+    struct TestHash(BaseHash);
+
+    impl From<HashBytes> for TestHash {
+        fn from(b: HashBytes) -> Self {
+            Self(BaseHash::from(b))
+        }
+    }
+
+    impl MinaBase58 for TestHash {
+        fn version_byte() -> u8 {
+            version_bytes::STATE_HASH
+        }
+    }
+
+    impl MinaHash for TestHash {
+        fn prefix() -> &'static HashPrefix {
+            PROTOCOL_STATE
+        }
+    }
+
+    #[derive(Serialize)]
+    struct TestType(i32);
+    impl MinaHashable<TestHash> for TestType { }
+
+    #[test]
+    fn can_hash_new_type() {
+        let t = TestType(123);
+        let h = t.hash();
+        assert_eq!(h.to_base58().into_string(), "YHWQQZSuu7LGyXydNDKcT47vkbotjcHMeWeHHZj8K6z7EkVphQ")
+    }
+
+    #[test]
+    fn hash_changes_with_data() {
+        let t1 = TestType(123);
+        let t2 = TestType(234);
+        assert!(t1.hash() != t2.hash())
+    }
+
+}
