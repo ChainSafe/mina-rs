@@ -13,15 +13,11 @@
 use super::prefixes::*;
 use crate::base58::{version_bytes, MinaBase58};
 use crate::hash::MinaHash;
-use digest::Digest;
-use generic_array::GenericArray;
+
 use serde::{Deserialize, Serialize};
 use serde_versions_derive::version;
-use sha2::Sha256;
 
-pub use sha2::Sha256 as DefaultHasher;
-
-pub(crate) type HashBytes = GenericArray<u8, <Sha256 as Digest>::OutputSize>;
+pub(crate) type HashBytes = Box<[u8]>;
 
 #[derive(Default, Serialize, Deserialize, PartialEq, Debug, Clone)]
 pub(crate) struct BaseHash([u8; 32]);
@@ -30,7 +26,7 @@ impl From<HashBytes> for BaseHash {
     // TODO: Figure out how to do this without a copy and still have BaseHash serializable
     fn from(b: HashBytes) -> Self {
         let mut o = BaseHash::default();
-        o.0.copy_from_slice(b.as_ref());
+        o.0.copy_from_slice(&b);
         o
     }
 }

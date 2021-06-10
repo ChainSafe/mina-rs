@@ -1,23 +1,19 @@
 // Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
-// Copyright 2020 ChainSafe Systems
-// SPDX-License-Identifier: Apache-2.0
-//
 use super::prefixes::HashPrefix;
-use digest::Digest;
-use generic_array::GenericArray;
+use blake2::digest::VariableOutput;
+use blake2::VarBlake2b;
 use serde::Serialize;
 use serde_bin_prot::to_writer;
-use sha2::Sha256;
-use std::io::Write;
+
+const BLAKE_HASH_SIZE: usize = 32;
 
 /// Trait that any internal hash wrapper type must implement
 /// This defines the prefix that is added to the data prior to it being hashed
-pub trait MinaHash<Hasher = Sha256>
+pub trait MinaHash
 where
-    Self: From<GenericArray<u8, Hasher::OutputSize>>,
-    Hasher: Digest,
+    Self: From<Box<[u8]>>,
 {
     fn prefix() -> &'static HashPrefix;
 }
@@ -27,22 +23,16 @@ where
 ///
 /// Typically the implementation need not specify any of the functions as all can be derived from Serialize
 ///
-/// Implementation can also specify a different hash algorithm (default: Sha256)
-/// Is generic over output size as long as OutputType supports conversion from a GenericArray of that size
-pub trait MinaHashable<OutputType, Hasher = Sha256>: Sized + Serialize
+pub trait MinaHashable<OutputType>: Sized + Serialize
 where
-    OutputType: MinaHash<Hasher>,
-    Hasher: Digest,
+    OutputType: MinaHash,
 {
     fn hash(&self) -> OutputType {
-        let mut buf = Vec::<u8>::new();
-        // write the prefix bytes (can unwrap as writing to a vec should always be safe)
-        buf.write_all(OutputType::prefix()).unwrap();
-        // write the data bytes (can unwrap as writing to a vec should always be safe)
-        to_writer(&mut buf, self).unwrap();
-        // compute the hash
-        let hash_bytes = Hasher::digest(&buf);
-        OutputType::from(hash_bytes)
+        // can unwrap as this is known to be a valid hash size
+        let mut hasher = VarBlake2b::new(BLAKE_HASH_SIZE).unwrap();
+        // can unwrap as writing to a hasher can't fail
+        to_writer(&mut hasher, self).unwrap();
+        OutputType::from(hasher.finalize_boxed())
     }
 }
 
@@ -84,7 +74,7 @@ mod tests {
         let h = t.hash();
         assert_eq!(
             h.to_base58().into_string(),
-            "YHWQQZSuu7LGyXydNDKcT47vkbotjcHMeWeHHZj8K6z7EkVphQ"
+            "Zbx5bAfiyj8yPh8nhXEW3et2TEbnZvEPrShQxTaJaLX3cvPPZV"
         )
     }
 
