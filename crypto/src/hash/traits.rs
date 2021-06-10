@@ -28,9 +28,9 @@ where
     OutputType: MinaHash,
 {
     fn hash(&self) -> OutputType {
-        // can unwrap as this is known to be a valid hash size
+        // this is known to be a valid hash size
         let mut hasher = VarBlake2b::new(BLAKE_HASH_SIZE).unwrap();
-        // can unwrap as writing to a hasher can't fail
+        // writing to a hasher can't fail
         to_writer(&mut hasher, self).unwrap();
         OutputType::from(hasher.finalize_boxed())
     }
