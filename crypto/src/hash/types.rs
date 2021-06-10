@@ -22,12 +22,6 @@ pub(crate) type HashBytes = Box<[u8]>;
 #[derive(Default, Serialize, Deserialize, PartialEq, Debug, Clone)]
 pub(crate) struct BaseHash(HashBytes);
 
-impl BaseHash {
-    pub fn new_from_bytes<const N: usize>(bytes: [u8; N]) -> Self {
-        BaseHash(Box::new(bytes))
-    }
-}
-
 impl From<HashBytes> for BaseHash {
     fn from(b: HashBytes) -> Self {
         BaseHash(b)
@@ -143,6 +137,12 @@ pub mod test {
 
     use super::{BaseHash, LedgerHash};
     use crate::base58::MinaBase58;
+
+    impl BaseHash {
+        pub fn new_from_bytes<const N: usize>(bytes: [u8; N]) -> Self {
+            BaseHash(Box::new(bytes))
+        }
+    }
 
     #[test]
     fn convert_hash_to_base58() {
