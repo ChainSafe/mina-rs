@@ -30,7 +30,7 @@ checksum = "cdb031dd78e28731d87d56cc8ffef4a8f36ca26c38fe2de700543e627f8a464a"
 name = "bin_prot_checker"
 version = "0.1.0"
 dependencies = [
- "erased-serde",
+ "mina-crypto",
  "serde",
  "serde-bin-prot",
  "structopt",
@@ -151,15 +151,6 @@ name = "either"
 version = "1.6.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "e78d4f1cc4ae33bbfc157ed5d5a5ef3bc29227303d595861deb238fcec4e9457"
-
-[[package]]
-name = "erased-serde"
-version = "0.3.15"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e5b36e6f2295f393f44894c6031f67df4d185b984cd54d08f768ce678007efcd"
-dependencies = [
- "serde",
-]
 
 [[package]]
 name = "generic-array"

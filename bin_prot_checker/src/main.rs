@@ -1,6 +1,9 @@
 // Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
+use mina_crypto::base58::MinaBase58;
+use mina_crypto::keys::PublicKey;
+
 use core::str::FromStr;
 use std::fs::File;
 use std::io::Seek;
@@ -60,6 +63,7 @@ enum Test {
     Enum(E),
     Record(S),
     Variant(V),
+    PublicKey(PublicKey),
 }
 
 // from str also provides the default type for each test variant
@@ -98,7 +102,7 @@ impl FromStr for Test {
                 Ok(Test::Variant(v))
             }
             "public-key" => {
-                unimplemented!()
+                Ok(Test::PublicKey(PublicKey::default()))
             }
             "all" => {
                 unimplemented!()
@@ -119,6 +123,7 @@ impl ToString for Test {
             Test::Enum(v) => format!("{:?}", v),
             Test::Record(v) => format!("{:?}", v),
             Test::Variant(v) => format!("{:?}", v),
+            Test::PublicKey(v) => v.to_base58().into_string(),
         }
     }
 }
@@ -133,6 +138,7 @@ fn deserialize_test<R: Read>(read: R, test: &Test) -> Result<Test, Error> {
         Test::Enum(_) => Ok(Test::Enum(from_reader(read)?)),
         Test::Record(_) => Ok(Test::Record(from_reader(read)?)),
         Test::Variant(_) => Ok(Test::Variant(from_reader(read)?)),
+        Test::PublicKey(_) => Ok(Test::PublicKey(from_reader(read)?)),
     }
 }
 
@@ -140,6 +146,7 @@ fn main() {
     let opt = Opt::from_args();
     match opt.cmd {
         Subcommand::Serialize => {
+            println!("Serializing: {}", opt.test.to_string());
             if let Some(path) = opt.path {
                 println!("Writing to file {:?}", path);
                 let mut file = File::create(path).unwrap();
