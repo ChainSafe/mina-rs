@@ -20,11 +20,14 @@ use serde_versions_derive::version;
 pub(crate) type HashBytes = Box<[u8]>;
 
 #[derive(Default, Serialize, Deserialize, PartialEq, Debug, Clone)]
-pub(crate) struct BaseHash(HashBytes);
+pub(crate) struct BaseHash([u8; 32]);
 
 impl From<HashBytes> for BaseHash {
+    // TODO: Figure out how to do this without a copy and still have BaseHash serializable
     fn from(b: HashBytes) -> Self {
-        BaseHash(b)
+        let mut o = BaseHash::default();
+        o.0.copy_from_slice(&b);
+        o
     }
 }
 
@@ -138,19 +141,13 @@ pub mod test {
     use super::{BaseHash, LedgerHash};
     use crate::base58::MinaBase58;
 
-    impl BaseHash {
-        pub fn new_from_bytes<const N: usize>(bytes: [u8; N]) -> Self {
-            BaseHash(Box::new(bytes))
-        }
-    }
-
     #[test]
     fn convert_hash_to_base58() {
         let bytes = [
             182, 175, 122, 248, 93, 142, 245, 54, 161, 170, 103, 111, 123, 128, 48, 218, 84, 208,
             17, 245, 30, 111, 61, 210, 168, 20, 160, 79, 111, 37, 167, 2,
         ];
-        let h = LedgerHash(BaseHash::new_from_bytes(bytes));
+        let h = LedgerHash(BaseHash(bytes));
         println!("{}", h.to_base58().into_string())
     }
 
@@ -168,7 +165,7 @@ pub mod test {
             0x06, 0x07, 0x00_u8, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x00_u8, 0x01, 0x02,
             0x03, 0x04, 0x05, 0x06, 0x07,
         ];
-        let h = LedgerHash(BaseHash::new_from_bytes(bytes));
+        let h = LedgerHash(BaseHash(bytes));
         assert_eq!(
             h.clone(),
             LedgerHash::from_base58(h.to_base58().into_string()).unwrap()
