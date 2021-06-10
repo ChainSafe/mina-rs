@@ -7,7 +7,7 @@ use serde_versions_derive::version;
 
 #[version(1)]
 #[derive(Default, Clone, Serialize, Deserialize)]
-pub struct CompressedPoly {
+pub struct CompressedCurvePoint {
     x: [u8; 32],
     is_odd: bool,
 }
@@ -15,7 +15,7 @@ pub struct CompressedPoly {
 #[version(1)]
 #[derive(Default, Clone, Serialize, Deserialize)]
 pub struct PublicKey {
-    poly: CompressedPoly,
+    poly: CompressedCurvePoint,
 }
 
 impl MinaBase58 for PublicKey {
