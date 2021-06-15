@@ -6,7 +6,7 @@ use crate::{
     global_slot::GlobalSlot,
     numbers::{self, Amount, Length},
 };
-use mina_crypto::keys::PublicKey;
+use mina_crypto::signature::PublicKey;
 use serde::{Deserialize, Serialize};
 use serde_versions_derive::version;
 

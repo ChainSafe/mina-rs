@@ -1,6 +1,12 @@
 // Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
+//!
+//! This crate implements a number of the base types required to define the Mina protocol.
+//! This includes various types of state, blocks, slots, keypairs, numbers etc.
+//! All types are versioned where required.
+//!
+
 // Need to supress this warning for the moment so we can use the #[verson(x)]
 // attribute macro. It seems we are in an awkward inbetween phase where it can't be
 // defined above a derive macro (or the following warning) and it can't be defined
