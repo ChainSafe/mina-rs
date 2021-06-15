@@ -10,3 +10,4 @@ bs58 = { version = "0.4.0", features = ["check"] }
 serde = { version = "1.0.126", features = ["derive"] }
 serde-versions-derive = "0.0.3"
 serde-bin-prot = { git = "https://github.com/ChainSafe/serde-bin-prot", branch = "main" }
+thiserror = "1.0.25"

@@ -178,6 +178,7 @@ dependencies = [
  "serde-bin-prot",
  "serde-versions-derive",
  "sha2",
+ "thiserror",
 ]
 
 [[package]]

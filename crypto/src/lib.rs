@@ -1,6 +1,11 @@
 // Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
+//!
+//! Contains definitions of common simple crypto primitives used in the Mina protocol
+//! This currently includes keys and hashes along with their encodings
+//!
+
 // Need to supress this warning for the moment so we can use the #[verson(x)]
 // attribute macro. It seems we are in an awkward inbetween phase where it can't be
 // defined above a derive macro (or the following warning) and it can't be defined
@@ -11,4 +16,4 @@
 pub mod base58_version_bytes;
 pub mod base_58;
 pub mod hash;
-pub mod keys;
+pub mod signature;

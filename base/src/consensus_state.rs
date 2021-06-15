@@ -8,7 +8,7 @@ use crate::{
     global_slot::GlobalSlot,
     numbers::{self, Amount, Length},
 };
-use mina_crypto::keys::PublicKey;
+use mina_crypto::signature::PublicKey;
 
 #[derive(Serialize, Deserialize)]
 struct VrfOutputTruncated;

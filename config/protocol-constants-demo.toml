@@ -1,0 +1,8 @@
+# Demo config file to test deserializing 
+delta = 0
+k = 290
+
+slots_per_epoch = 7140
+slots_per_window = 7
+
+genesis_state_timestamp = 1615939200000
