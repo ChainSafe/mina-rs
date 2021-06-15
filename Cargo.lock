@@ -52,6 +52,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "bs58"
+version = "0.4.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "771fe0050b883fcc3ea2359b1a96bcfbc090b7116eae7c3c512c7a083fdf23d3"
+dependencies = [
+ "sha2",
+]
+
+[[package]]
 name = "byteorder"
 version = "1.4.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -161,11 +170,23 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "789da6d93f1b866ffe175afc5322a4d76c038605a1c3319bb57b06967ca98a36"
 
 [[package]]
+name = "mina-crypto"
+version = "0.1.0"
+dependencies = [
+ "bs58",
+ "serde",
+ "serde-bin-prot",
+ "serde-versions-derive",
+ "sha2",
+ "thiserror",
+]
+
+[[package]]
 name = "mina-rs-base"
 version = "0.1.0"
 dependencies = [
+ "mina-crypto",
  "serde",
- "sha2",
 ]
 
 [[package]]
@@ -304,13 +325,23 @@ dependencies = [
 [[package]]
 name = "serde-bin-prot"
 version = "0.1.0"
-source = "git+https://github.com/ChainSafe/serde-bin-prot?branch=main#0d70fdf17e98bd28f05f4611c6dd3cfe6b5a453b"
+source = "git+https://github.com/ChainSafe/serde-bin-prot?branch=main#dc81a74ff296bdc5c83ee5679a0b4e4ae9cafbaa"
 dependencies = [
  "byteorder",
  "num",
  "serde",
  "shrinkwraprs",
  "thiserror",
+]
+
+[[package]]
+name = "serde-versions-derive"
+version = "0.0.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "6085c6c563eac61ac662264d5d910c723b8d1b0464652d2e74d0bae6d99801bc"
+dependencies = [
+ "quote",
+ "syn",
 ]
 
 [[package]]

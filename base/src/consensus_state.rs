@@ -6,9 +6,9 @@ use serde::{Deserialize, Serialize};
 use crate::{
     epoch_data::EpochData,
     global_slot::GlobalSlot,
-    keypairs::PublicKey,
     numbers::{self, Amount, Length},
 };
+use mina_crypto::signature::PublicKey;
 
 #[derive(Serialize, Deserialize)]
 struct VrfOutputTruncated;

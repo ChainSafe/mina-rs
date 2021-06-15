@@ -2,9 +2,8 @@
 // SPDX-License-Identifier: Apache-2.0
 
 //!
-//! This crate implements a number of the base types required to define the Mina protocol.
-//! This includes various types of state, blocks, slots, keypairs, numbers etc.
-//! All types are versioned where required.
+//! Contains definitions of common simple crypto primitives used in the Mina protocol
+//! This currently includes keys and hashes along with their encodings
 //!
 
 // Need to supress this warning for the moment so we can use the #[verson(x)]
@@ -14,10 +13,7 @@
 // attribute macro and an order of operations well defined
 #![allow(legacy_derive_helpers)]
 
-pub mod blockchain_state;
-pub mod consensus_state;
-pub mod epoch_data;
-pub mod global_slot;
-pub mod numbers;
-pub mod protocol_state;
-pub mod token_id;
+pub mod base58_version_bytes;
+pub mod base_58;
+pub mod hash;
+pub mod signature;
