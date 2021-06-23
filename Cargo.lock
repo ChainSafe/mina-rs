@@ -43,6 +43,17 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "cf1de2fe8c75bc145a2f577add951f8134889b4795d47466a54a5c846d691693"
 
 [[package]]
+name = "blake2"
+version = "0.9.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "10a5720225ef5daecf08657f23791354e1685a8c91a4c60c7f3d3b2892f978f4"
+dependencies = [
+ "crypto-mac",
+ "digest",
+ "opaque-debug",
+]
+
+[[package]]
 name = "block-buffer"
 version = "0.9.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -94,6 +105,16 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "ed00c67cb5d0a7d64a44f6ad2668db7e7530311dd53ea79bcd4fb022c64911c8"
 dependencies = [
  "libc",
+]
+
+[[package]]
+name = "crypto-mac"
+version = "0.8.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b584a330336237c1eecd3e94266efb216c56ed91225d634cb2991c5f3fd1aeab"
+dependencies = [
+ "generic-array",
+ "subtle",
 ]
 
 [[package]]
@@ -165,19 +186,19 @@ checksum = "e2abad23fbc42b3700f2f279844dc832adb2b2eb069b2df918f455c4e18cc646"
 
 [[package]]
 name = "libc"
-version = "0.2.95"
+version = "0.2.97"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "789da6d93f1b866ffe175afc5322a4d76c038605a1c3319bb57b06967ca98a36"
+checksum = "12b8adadd720df158f4d70dfe7ccc6adb0472d7c55ca83445f6a5ab3e36f8fb6"
 
 [[package]]
 name = "mina-crypto"
 version = "0.1.0"
 dependencies = [
+ "blake2",
  "bs58",
  "serde",
  "serde-bin-prot",
  "serde-versions-derive",
- "sha2",
  "thiserror",
 ]
 
@@ -187,6 +208,7 @@ version = "0.1.0"
 dependencies = [
  "mina-crypto",
  "serde",
+ "serde-versions-derive",
 ]
 
 [[package]]
@@ -336,9 +358,9 @@ dependencies = [
 
 [[package]]
 name = "serde-versions-derive"
-version = "0.0.3"
+version = "0.0.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6085c6c563eac61ac662264d5d910c723b8d1b0464652d2e74d0bae6d99801bc"
+checksum = "785340b2a092f11ac613a5e3672d7587168a7d1e86c36906512eafb44b7c9842"
 dependencies = [
  "quote",
  "syn",
@@ -412,10 +434,16 @@ dependencies = [
 ]
 
 [[package]]
-name = "syn"
-version = "1.0.72"
+name = "subtle"
+version = "2.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a1e8cdbefb79a9a5a65e0db8b47b723ee907b7c7f8496c76a1770b5c310bab82"
+checksum = "1e81da0851ada1f3e9d4312c704aa4f8806f0f9d69faaf8df2f3464b4a9437c2"
+
+[[package]]
+name = "syn"
+version = "1.0.73"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f71489ff30030d2ae598524f61326b902466f72a0fb1a8564c001cc63425bcc7"
 dependencies = [
  "proc-macro2",
  "quote",

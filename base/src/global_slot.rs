@@ -5,7 +5,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::numbers::{self, Length};
 
-#[derive(Serialize, Deserialize)]
+#[derive(Clone, Serialize, Deserialize)]
 pub struct GlobalSlot {
     slot_number: numbers::GlobalSlot,
     slots_per_epoch: Length,

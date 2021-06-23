@@ -1,16 +1,16 @@
 // Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
-use serde::{Deserialize, Serialize};
-
 use crate::{
     epoch_data::EpochData,
     global_slot::GlobalSlot,
     numbers::{self, Amount, Length},
 };
 use mina_crypto::signature::PublicKey;
+use serde::{Deserialize, Serialize};
+use serde_versions_derive::version;
 
-#[derive(Serialize, Deserialize)]
+#[derive(Clone, Serialize, Deserialize)]
 struct VrfOutputTruncated;
 
 /// This structure encapsulates the succinct state of the consensus protocol.
@@ -22,7 +22,8 @@ struct VrfOutputTruncated;
 /// approach where the future stake distribution snapshot is prepared by the current consensus epoch.
 ///
 /// Samasika prepares the past for the future! This future state is stored in the next_epoch_data field.
-#[derive(Serialize, Deserialize)]
+#[version(1)]
+#[derive(Clone, Serialize, Deserialize)]
 pub struct ConsensusState {
     /// Height of block
     blockchain_length: Length,

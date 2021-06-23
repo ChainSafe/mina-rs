@@ -6,7 +6,7 @@ use serde::{Deserialize, Serialize};
 use crate::{numbers::BlockTime, token_id::TokenId};
 use mina_crypto::hash::{SnarkedLedgerHash, StagedLedgerHash};
 
-#[derive(Serialize, Deserialize)]
+#[derive(Clone, Serialize, Deserialize)]
 pub struct BlockchainState {
     staged_ledger_hash: StagedLedgerHash,
     snarked_ledger_hash: SnarkedLedgerHash,

@@ -13,7 +13,6 @@
 // attribute macro and an order of operations well defined
 #![allow(legacy_derive_helpers)]
 
-pub mod base58_version_bytes;
-pub mod base_58;
+pub mod base58;
 pub mod hash;
 pub mod signature;
