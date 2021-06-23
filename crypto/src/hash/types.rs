@@ -11,7 +11,7 @@
 //!
 
 use super::prefixes::*;
-use crate::base58::{version_bytes, MinaBase58};
+use crate::base58::{version_bytes, Base58Encodable};
 use crate::hash::MinaHash;
 
 use serde::{Deserialize, Serialize};
@@ -37,7 +37,7 @@ impl From<HashBytes> for BaseHash {
 #[derive(Serialize, Deserialize, PartialEq, Debug, Clone)]
 pub struct StateHash(BaseHash);
 
-impl MinaBase58 for StateHash {
+impl Base58Encodable for StateHash {
     const VERSION_BYTE: u8 = version_bytes::STATE_HASH;
 }
 
@@ -59,7 +59,7 @@ impl MinaHash for StateHash {
 #[derive(Default, Serialize, Deserialize, PartialEq, Debug, Clone)]
 pub struct LedgerHash(BaseHash);
 
-impl MinaBase58 for LedgerHash {
+impl Base58Encodable for LedgerHash {
     const VERSION_BYTE: u8 = version_bytes::LEDGER_HASH;
 }
 
@@ -75,7 +75,7 @@ impl From<HashBytes> for LedgerHash {
 #[derive(Serialize, Deserialize, PartialEq, Debug, Clone)]
 pub struct EpochSeed(BaseHash);
 
-impl MinaBase58 for EpochSeed {
+impl Base58Encodable for EpochSeed {
     const VERSION_BYTE: u8 = version_bytes::EPOCH_SEED;
 }
 
@@ -97,7 +97,7 @@ impl MinaHash for EpochSeed {
 #[derive(Serialize, Deserialize, PartialEq, Debug, Clone)]
 pub struct SnarkedLedgerHash(BaseHash);
 
-impl MinaBase58 for SnarkedLedgerHash {
+impl Base58Encodable for SnarkedLedgerHash {
     const VERSION_BYTE: u8 = version_bytes::LEDGER_HASH;
 }
 
@@ -113,7 +113,7 @@ impl From<HashBytes> for SnarkedLedgerHash {
 #[derive(Serialize, Deserialize, PartialEq, Debug, Clone)]
 pub struct StagedLedgerHash(BaseHash);
 
-impl MinaBase58 for StagedLedgerHash {
+impl Base58Encodable for StagedLedgerHash {
     const VERSION_BYTE: u8 = version_bytes::STAGED_LEDGER_HASH_AUX_HASH;
 }
 
@@ -129,7 +129,7 @@ impl From<HashBytes> for StagedLedgerHash {
 pub mod test {
 
     use super::{BaseHash, LedgerHash};
-    use crate::base58::MinaBase58;
+    use crate::base58::Base58Encodable;
 
     #[test]
     fn convert_hash_to_base58() {

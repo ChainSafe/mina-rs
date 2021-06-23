@@ -39,7 +39,7 @@ where
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::base58::{version_bytes, MinaBase58};
+    use crate::base58::{version_bytes, Base58Encodable};
     use crate::hash::prefixes::PROTOCOL_STATE;
     use crate::hash::types::{BaseHash, HashBytes};
 
@@ -52,7 +52,7 @@ mod tests {
         }
     }
 
-    impl MinaBase58 for TestHash {
+    impl Base58Encodable for TestHash {
         const VERSION_BYTE: u8 = version_bytes::STATE_HASH;
     }
 

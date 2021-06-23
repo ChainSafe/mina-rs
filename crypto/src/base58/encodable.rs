@@ -8,7 +8,7 @@ use serde_bin_prot::{from_reader, to_writer};
 pub use bs58::decode::Error;
 pub use bs58::{decode, encode};
 
-pub trait MinaBase58 {
+pub trait Base58Encodable {
     /// This is the only part a custom implementation need provide.
     /// Should be a constant from the base58_version_bytes.rs file corresponding
     /// to the type.
@@ -28,9 +28,7 @@ pub trait MinaBase58 {
         I: AsRef<[u8]>,
         Self: Sized + Deserialize<'a>,
     {
-        let bytes: Vec<u8> = decode(i)
-            .with_check(Some(Self::VERSION_BYTE))
-            .into_vec()?;
+        let bytes: Vec<u8> = decode(i).with_check(Some(Self::VERSION_BYTE)).into_vec()?;
 
         // skip the first byte as this still contains the version byte
         Ok(from_reader(&bytes[1..]).unwrap())
