@@ -53,9 +53,7 @@ mod tests {
     }
 
     impl MinaBase58 for TestHash {
-        fn version_byte() -> u8 {
-            version_bytes::STATE_HASH
-        }
+        const VERSION_BYTE: u8 = version_bytes::STATE_HASH;
     }
 
     impl MinaHash for TestHash {

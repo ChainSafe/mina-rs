@@ -19,9 +19,7 @@ pub struct PublicKey {
 }
 
 impl MinaBase58 for PublicKey {
-    fn version_byte() -> u8 {
-        crate::base58::version_bytes::NON_ZERO_CURVE_POINT_COMPRESSED
-    }
+    const VERSION_BYTE: u8 = crate::base58::version_bytes::NON_ZERO_CURVE_POINT_COMPRESSED;
 }
 
 #[cfg(test)]

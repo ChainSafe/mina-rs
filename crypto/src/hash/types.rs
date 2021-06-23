@@ -38,9 +38,7 @@ impl From<HashBytes> for BaseHash {
 pub struct StateHash(BaseHash);
 
 impl MinaBase58 for StateHash {
-    fn version_byte() -> u8 {
-        version_bytes::STATE_HASH
-    }
+    const VERSION_BYTE: u8 = version_bytes::STATE_HASH;
 }
 
 impl From<HashBytes> for StateHash {
@@ -62,9 +60,7 @@ impl MinaHash for StateHash {
 pub struct LedgerHash(BaseHash);
 
 impl MinaBase58 for LedgerHash {
-    fn version_byte() -> u8 {
-        version_bytes::LEDGER_HASH
-    }
+    const VERSION_BYTE: u8 = version_bytes::LEDGER_HASH;
 }
 
 impl From<HashBytes> for LedgerHash {
@@ -80,9 +76,7 @@ impl From<HashBytes> for LedgerHash {
 pub struct EpochSeed(BaseHash);
 
 impl MinaBase58 for EpochSeed {
-    fn version_byte() -> u8 {
-        version_bytes::EPOCH_SEED
-    }
+    const VERSION_BYTE: u8 = version_bytes::EPOCH_SEED;
 }
 
 impl From<HashBytes> for EpochSeed {
@@ -104,9 +98,7 @@ impl MinaHash for EpochSeed {
 pub struct SnarkedLedgerHash(BaseHash);
 
 impl MinaBase58 for SnarkedLedgerHash {
-    fn version_byte() -> u8 {
-        version_bytes::LEDGER_HASH
-    }
+    const VERSION_BYTE: u8 = version_bytes::LEDGER_HASH;
 }
 
 impl From<HashBytes> for SnarkedLedgerHash {
@@ -122,9 +114,7 @@ impl From<HashBytes> for SnarkedLedgerHash {
 pub struct StagedLedgerHash(BaseHash);
 
 impl MinaBase58 for StagedLedgerHash {
-    fn version_byte() -> u8 {
-        version_bytes::STAGED_LEDGER_HASH_AUX_HASH
-    }
+    const VERSION_BYTE: u8 = version_bytes::STAGED_LEDGER_HASH_AUX_HASH;
 }
 
 impl From<HashBytes> for StagedLedgerHash {

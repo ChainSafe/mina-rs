@@ -9,10 +9,10 @@ pub use bs58::decode::Error;
 pub use bs58::{decode, encode};
 
 pub trait MinaBase58 {
-    /// This is the only method a custom implementation need provide.
+    /// This is the only part a custom implementation need provide.
     /// Should be a constant from the base58_version_bytes.rs file corresponding
     /// to the type.
-    fn version_byte() -> u8;
+    const VERSION_BYTE: u8;
 
     fn to_base58(&self) -> EncodeBuilder<'static, Vec<u8>>
     where
@@ -20,7 +20,7 @@ pub trait MinaBase58 {
     {
         let mut buf = Vec::<u8>::new();
         to_writer(&mut buf, self).unwrap();
-        encode(buf).with_check_version(Self::version_byte())
+        encode(buf).with_check_version(Self::VERSION_BYTE)
     }
 
     fn from_base58<'a, I>(i: I) -> Result<Self, Error>
@@ -29,7 +29,7 @@ pub trait MinaBase58 {
         Self: Sized + Deserialize<'a>,
     {
         let bytes: Vec<u8> = decode(i)
-            .with_check(Some(Self::version_byte()))
+            .with_check(Some(Self::VERSION_BYTE))
             .into_vec()?;
 
         // skip the first byte as this still contains the version byte
