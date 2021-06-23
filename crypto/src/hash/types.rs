@@ -48,9 +48,7 @@ impl From<HashBytes> for StateHash {
 }
 
 impl MinaHash for StateHash {
-    fn prefix() -> &'static HashPrefix {
-        PROTOCOL_STATE
-    }
+    const PREFIX: &'static HashPrefix = PROTOCOL_STATE;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -86,9 +84,7 @@ impl From<HashBytes> for EpochSeed {
 }
 
 impl MinaHash for EpochSeed {
-    fn prefix() -> &'static HashPrefix {
-        EPOCH_SEED
-    }
+    const PREFIX: &'static HashPrefix = EPOCH_SEED;
 }
 
 //////////////////////////////////////////////////////////////////////////

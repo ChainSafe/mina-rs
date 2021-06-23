@@ -15,7 +15,7 @@ pub trait MinaHash
 where
     Self: From<Box<[u8]>>,
 {
-    fn prefix() -> &'static HashPrefix;
+    const PREFIX: &'static HashPrefix;
 }
 
 /// Any internal type that needs to be hashed must implement this trait
@@ -57,9 +57,7 @@ mod tests {
     }
 
     impl MinaHash for TestHash {
-        fn prefix() -> &'static HashPrefix {
-            PROTOCOL_STATE
-        }
+        const PREFIX: &'static HashPrefix = PROTOCOL_STATE;
     }
 
     #[derive(Serialize)]
