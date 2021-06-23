@@ -31,6 +31,7 @@ name = "bin_prot_checker"
 version = "0.1.0"
 dependencies = [
  "erased-serde",
+ "mina-rs-base",
  "serde",
  "serde-bin-prot",
  "structopt",
@@ -176,7 +177,7 @@ dependencies = [
  "bs58",
  "serde",
  "serde-bin-prot",
- "serde-versions-derive",
+ "serde-versions-derive 0.0.3",
  "sha2",
  "thiserror",
 ]
@@ -187,6 +188,7 @@ version = "0.1.0"
 dependencies = [
  "mina-crypto",
  "serde",
+ "serde-versions-derive 0.0.5",
 ]
 
 [[package]]
@@ -339,6 +341,16 @@ name = "serde-versions-derive"
 version = "0.0.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "6085c6c563eac61ac662264d5d910c723b8d1b0464652d2e74d0bae6d99801bc"
+dependencies = [
+ "quote",
+ "syn",
+]
+
+[[package]]
+name = "serde-versions-derive"
+version = "0.0.5"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "3bd8a4b3b62f4de302983a06bfb82792355cf68c79274dc73a6843b7294fce75"
 dependencies = [
  "quote",
  "syn",

@@ -10,7 +10,7 @@ use crate::{
 };
 use mina_crypto::signature::PublicKey;
 
-#[derive(Serialize, Deserialize)]
+#[derive(Clone, Serialize, Deserialize)]
 struct VrfOutputTruncated;
 
 /// This structure encapsulates the succinct state of the consensus protocol.
@@ -22,7 +22,7 @@ struct VrfOutputTruncated;
 /// approach where the future stake distribution snapshot is prepared by the current consensus epoch.
 ///
 /// Samasika prepares the past for the future! This future state is stored in the next_epoch_data field.
-#[derive(Serialize, Deserialize)]
+#[derive(Clone, Serialize, Deserialize)]
 pub struct ConsensusState {
     /// Height of block
     blockchain_length: Length,

@@ -60,6 +60,7 @@ enum Test {
     Enum(E),
     Record(S),
     Variant(V),
+    Block()
 }
 
 // from str also provides the default type for each test variant

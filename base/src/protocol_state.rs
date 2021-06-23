@@ -11,13 +11,13 @@ use crate::{
 use mina_crypto::hash::StateHash;
 
 /// This structure can be thought of like the block header. It contains the most essential information of a block.
-#[derive(Serialize, Deserialize)]
+#[derive(Clone, Serialize, Deserialize)]
 pub struct ProtocolState {
     previous_state_hash: StateHash,
     body: ProtocolStateBody,
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Clone, Serialize, Deserialize)]
 pub struct ProtocolConstants {
     /// Point of finality (number of confirmations)
     k: Length,
@@ -42,7 +42,7 @@ pub struct ProtocolConstants {
     genesis_state_timestamp: BlockTime,
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Clone, Serialize, Deserialize)]
 pub struct ProtocolStateBody {
     genesis_state_hash: StateHash,
     blockchain_state: BlockchainState,
