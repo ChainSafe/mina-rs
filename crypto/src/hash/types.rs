@@ -12,7 +12,7 @@
 
 use super::prefixes::*;
 use crate::base58::{version_bytes, Base58Encodable};
-use crate::hash::MinaHash;
+use crate::hash::Hash;
 
 use serde::{Deserialize, Serialize};
 use serde_versions_derive::version;
@@ -47,7 +47,7 @@ impl From<HashBytes> for StateHash {
     }
 }
 
-impl MinaHash for StateHash {
+impl Hash for StateHash {
     const PREFIX: &'static HashPrefix = PROTOCOL_STATE;
 }
 
@@ -83,7 +83,7 @@ impl From<HashBytes> for EpochSeed {
     }
 }
 
-impl MinaHash for EpochSeed {
+impl Hash for EpochSeed {
     const PREFIX: &'static HashPrefix = EPOCH_SEED;
 }
 

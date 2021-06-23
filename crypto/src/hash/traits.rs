@@ -11,7 +11,7 @@ const BLAKE_HASH_SIZE: usize = 32;
 
 /// Trait that any internal hash wrapper type must implement
 /// This defines the prefix that is added to the data prior to it being hashed
-pub trait MinaHash
+pub trait Hash
 where
     Self: From<Box<[u8]>>,
 {
@@ -23,9 +23,9 @@ where
 ///
 /// Typically the implementation need not specify any of the functions as all can be derived from Serialize
 ///
-pub trait MinaHashable<OutputType>: Sized + Serialize
+pub trait Hashable<OutputType>: Sized + Serialize
 where
-    OutputType: MinaHash,
+    OutputType: Hash,
 {
     fn hash(&self) -> OutputType {
         // this is known to be a valid hash size
@@ -56,13 +56,13 @@ mod tests {
         const VERSION_BYTE: u8 = version_bytes::STATE_HASH;
     }
 
-    impl MinaHash for TestHash {
+    impl Hash for TestHash {
         const PREFIX: &'static HashPrefix = PROTOCOL_STATE;
     }
 
     #[derive(Serialize)]
     struct TestType(i32);
-    impl MinaHashable<TestHash> for TestType {}
+    impl Hashable<TestHash> for TestType {}
 
     #[test]
     fn can_hash_new_type() {
