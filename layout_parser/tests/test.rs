@@ -1,3 +1,6 @@
+use layout_parser::Layout;
+
+const TEST_LAYOUT: &str = r#"
 {
   "layout_loc":
     "File \"src/lib/mina_networking/mina_networking.ml\", line 321, characters 8-143:",
@@ -108,4 +111,14 @@
       ]
     ]
   ]
+}
+"#;
+
+#[test]
+fn deserialize_test_layout() {
+    let layout: Layout = serde_json::from_str(TEST_LAYOUT).unwrap();
+    assert_eq!(
+        layout.type_decl,
+        "type response = (State_hash.Stable.V1.t * State_body_hash.Stable.V1.t list) option"
+    )
 }

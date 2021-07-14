@@ -1,17 +1,24 @@
 use core::convert::TryFrom;
 
 use serde::Deserialize;
-use serde_json::{Value, from_value};
+use serde_json::from_value;
 
+mod list_tagged_enum;
+
+use list_tagged_enum::ListTaggedEnum;
+
+/// The main top level type for a layout file.
+/// Parse into this from json
 #[derive(Deserialize, Debug)]
 pub struct Layout {
-    layout_loc: String,
-    version_opt: Option<i32>,
-    type_decl: String,
-    bin_io_derived: bool,
-    bin_prot_rule: BinProtRule,
+    pub layout_loc: String,
+    pub version_opt: Option<i32>,
+    pub type_decl: String,
+    pub bin_io_derived: bool,
+    pub bin_prot_rule: BinProtRule,
 }
 
+/// Recursively defined BinProtRule is how the type tree is constructed
 #[derive(Deserialize, Debug)]
 #[serde(try_from = "ListTaggedEnum")]
 pub enum BinProtRule {
@@ -23,59 +30,88 @@ pub enum BinProtRule {
     Int,
     Int32,
     Int64,
-    Native_int,
+    NativeInt,
     Float,
     Option(Box<BinProtRule>),
-    Record(Vec<RecordField>),
+    Record(Vec<RecordField>), // records/structs
     Tuple(Vec<BinProtRule>),
-    // Sum(Vec<Summand>),
-    // Polyvar(Vec<Polyvar>),
+    Sum(Vec<Summand>), // sum types/enums
+    Polyvar(Vec<Polyvar>),
     List(Box<BinProtRule>),
-    // Hashtable(HashTblEntry),
-    // Vec,
-    // Bigstring,
+    Hashtable(HashTblEntry),
+    Vec,
+    Bigstring,
     // //  track indirections for debugging *),
     Reference(RuleRef),
-    // Type_var(String),
+    TypeVar(String),
     // //  inside a recursive type, list of type parameters *),
-    // Self_reference(Vec<BinProtRule>),
+    SelfReference(Vec<BinProtRule>),
     // //  parameterized type: 'a t = ... *),
-    // Type_abstraction(Vec<String>, Box<BinProtRule>),
+    TypeAbstraction(Vec<String>, Box<BinProtRule>),
     // //  recursive parameterized type with bindings *),
-    // Type_closure(Vec<(String, BinProtRule)>, Box<BinProtRule>),
+    TypeClosure(Vec<(String, BinProtRule)>, Box<BinProtRule>),
 }
 
-
-#[derive(Deserialize)]
-#[serde(untagged)]
-pub enum ListTaggedEnum {
-    None((String, )),
-    One((String, Value)),
-    Two((String, Value, Value)),
-}
-
-
+// required due to the strange enum encoding used by yojson (see list_tagged_enum.rs)
 impl TryFrom<ListTaggedEnum> for BinProtRule {
     type Error = String;
     fn try_from(v: ListTaggedEnum) -> Result<Self, Self::Error> {
         match v {
-            ListTaggedEnum::None((t, )) => match t.as_str() {
-                "Int" => Ok(BinProtRule::Int),
+            ListTaggedEnum::None((t,)) => match t.as_str() {
+                "Nat0" => Ok(BinProtRule::Nat0),
+                "Unit" => Ok(BinProtRule::Unit),
+                "Bool" => Ok(BinProtRule::Bool),
                 "String" => Ok(BinProtRule::String),
-                _ => Err(format!("{} not defined yet", t)),
+                "Char" => Ok(BinProtRule::Char),
+                "Int" => Ok(BinProtRule::Int),
+                "Int32" => Ok(BinProtRule::Int32),
+                "Int64" => Ok(BinProtRule::Int64),
+                "Native_int" => Ok(BinProtRule::NativeInt),
+                "Float" => Ok(BinProtRule::Float),
+                "Vec" => Ok(BinProtRule::Vec),
+                "Bigstring" => Ok(BinProtRule::Bigstring),
+                _ => Err(format!("Unexpected enum tag: {}", t)),
             },
             ListTaggedEnum::One((t, v)) => match t.as_str() {
-                "Option" => Ok(BinProtRule::Option(from_value(v).unwrap())),
-                "Record" => Ok(BinProtRule::Record(from_value(v).unwrap())),
-                "Tuple" => Ok(BinProtRule::Tuple(from_value(v).unwrap())),
-                "List" => Ok(BinProtRule::List(from_value(v).unwrap())),
-                "Reference" => Ok(BinProtRule::Reference(from_value(v).unwrap())),
-                _ => Err(format!("{} not defined yet", t)),
+                "Option" => Ok(BinProtRule::Option(
+                    from_value(v).map_err(|e| e.to_string())?,
+                )),
+                "Record" => Ok(BinProtRule::Record(
+                    from_value(v).map_err(|e| e.to_string())?,
+                )),
+                "Tuple" => Ok(BinProtRule::Tuple(
+                    from_value(v).map_err(|e| e.to_string())?,
+                )),
+                "Sum" => Ok(BinProtRule::Sum(from_value(v).map_err(|e| e.to_string())?)),
+                "Polyvar" => Ok(BinProtRule::Polyvar(
+                    from_value(v).map_err(|e| e.to_string())?,
+                )),
+                "List" => Ok(BinProtRule::List(from_value(v).map_err(|e| e.to_string())?)),
+                "Hashtable" => Ok(BinProtRule::Hashtable(
+                    from_value(v).map_err(|e| e.to_string())?,
+                )),
+                "Reference" => Ok(BinProtRule::Reference(
+                    from_value(v).map_err(|e| e.to_string())?,
+                )),
+                "Type_var" => Ok(BinProtRule::TypeVar(
+                    from_value(v).map_err(|e| e.to_string())?,
+                )),
+                "Self_reference" => Ok(BinProtRule::SelfReference(
+                    from_value(v).map_err(|e| e.to_string())?,
+                )),
+                _ => Err(format!("Unexpected enum tag: {}", t)),
             },
-            ListTaggedEnum::Two((s, _, _)) => match s.as_str() {
-                "Type_closure" => Err("yay".to_string()),
-                _ => Err("Unrecognized tag with two payloads".to_string())
-            }
+            ListTaggedEnum::Two((t, v1, v2)) => match t.as_str() {
+                "Type_abstraction" => Ok(BinProtRule::TypeAbstraction(
+                    from_value(v1).map_err(|e| e.to_string())?,
+                    from_value(v2).map_err(|e| e.to_string())?,
+                )),
+                "Type_closure" => Ok(BinProtRule::TypeClosure(
+                    from_value(v1).map_err(|e| e.to_string())?,
+                    from_value(v2).map_err(|e| e.to_string())?,
+                )),
+                _ => Err(format!("Unexpected enum tag: {}", t)),
+            },
         }
     }
 }
@@ -100,19 +136,39 @@ pub struct HashTblEntry {
 }
 
 #[derive(Deserialize, Debug)]
+#[serde(try_from = "ListTaggedEnum")]
 pub enum Polyvar {
-    Tagged {
-        polyvar_name: String,
-        hash: i32,
-        polyvar_args: Vec<BinProtRule>,
-    },
+    Tagged(TaggedPolyvar),
     Inherited(BinProtRule),
+}
+
+#[derive(Deserialize, Debug)]
+pub struct TaggedPolyvar {
+    polyvar_name: String,
+    hash: i32,
+    polyvar_args: Vec<BinProtRule>,
+}
+
+impl TryFrom<ListTaggedEnum> for Polyvar {
+    type Error = String;
+    fn try_from(v: ListTaggedEnum) -> Result<Self, Self::Error> {
+        match v {
+            ListTaggedEnum::One((t, v)) => match t.as_str() {
+                "Tagged" => Ok(Polyvar::Tagged(from_value(v).map_err(|e| e.to_string())?)),
+                "Inherited" => Ok(Polyvar::Inherited(
+                    from_value(v).map_err(|e| e.to_string())?,
+                )),
+                _ => Err(format!("Unexpected enum tag: {}", t)),
+            },
+            _ => Err("Unexpected number of items in enum body".to_string()),
+        }
+    }
 }
 
 #[derive(Deserialize, Debug)]
 #[serde(try_from = "ListTaggedEnum")]
 pub enum RuleRef {
-    Unresolved(UnresolvedPayload), 
+    Unresolved(UnresolvedPayload),
     Resolved(ResolvedPayload),
 }
 
@@ -135,9 +191,11 @@ impl TryFrom<ListTaggedEnum> for RuleRef {
     fn try_from(v: ListTaggedEnum) -> Result<Self, Self::Error> {
         match v {
             ListTaggedEnum::One((t, v)) => match t.as_str() {
-                "Unresolved" => Ok(RuleRef::Unresolved(from_value(v).unwrap())),
-                "Resolved" => Ok(RuleRef::Resolved(from_value(v).unwrap())),
-                _ => Err("Unexpected tag for this type".to_string())
+                "Unresolved" => Ok(RuleRef::Unresolved(
+                    from_value(v).map_err(|e| e.to_string())?,
+                )),
+                "Resolved" => Ok(RuleRef::Resolved(from_value(v).map_err(|e| e.to_string())?)),
+                _ => Err("Unexpected tag for this type".to_string()),
             },
             _ => Err("Unexpected number of items in enum body".to_string()),
         }
