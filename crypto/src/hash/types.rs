@@ -20,7 +20,7 @@ use serde_versions_derive::version;
 pub(crate) type HashBytes = Box<[u8]>;
 
 #[derive(Default, Serialize, Deserialize, PartialEq, Debug, Clone)]
-pub(crate) struct BaseHash([u8; 32]);
+pub struct BaseHash([u8; 32]);
 
 impl From<HashBytes> for BaseHash {
     // TODO: Figure out how to do this without a copy and still have BaseHash serializable

@@ -1,0 +1,11 @@
+[package]
+name = "mina-types"
+version = "0.1.0"
+authors = ["ChainSafe Systems <info@chainsafe.io>"]
+edition = "2018"
+
+[dependencies]
+mina-crypto = { version = "0.1.0", path = "../crypto" }
+serde = { version = "1.0.126", features = ["derive"] }
+serde-versions-derive = "0.0.4"
+serde-bin-prot = { git = "https://github.com/ChainSafe/serde-bin-prot", branch = "main" }
