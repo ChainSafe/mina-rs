@@ -10,7 +10,7 @@ use mina_crypto::signature::PublicKey;
 use serde::{Deserialize, Serialize};
 use serde_versions_derive::version;
 
-#[derive(Clone, Serialize, Deserialize)]
+#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug)]
 struct VrfOutputTruncated;
 
 /// This structure encapsulates the succinct state of the consensus protocol.
@@ -23,7 +23,7 @@ struct VrfOutputTruncated;
 ///
 /// Samasika prepares the past for the future! This future state is stored in the next_epoch_data field.
 #[version(1)]
-#[derive(Clone, Serialize, Deserialize)]
+#[derive(Clone, Serialize, Deserialize, Default, Debug, PartialEq)]
 pub struct ConsensusState {
     /// Height of block
     pub blockchain_length: Length,

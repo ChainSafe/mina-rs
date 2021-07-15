@@ -12,7 +12,7 @@ use crate::{
 };
 use mina_crypto::hash::StateHash;
 
-#[derive(Clone, Serialize, Deserialize)]
+#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug)]
 pub struct ProtocolConstants {
     /// Point of finality (number of confirmations)
     k: Length,
@@ -39,7 +39,7 @@ pub struct ProtocolConstants {
 
 /// This structure can be thought of like the block header. It contains the most essential information of a block.
 #[version(1)]
-#[derive(Clone, Serialize, Deserialize)]
+#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug)]
 pub struct ProtocolState {
     previous_state_hash: StateHash,
     pub body: ProtocolStateBody,
@@ -49,7 +49,7 @@ pub struct ProtocolState {
 impl Hashable<StateHash> for ProtocolState {}
 
 #[version(1)]
-#[derive(Clone, Serialize, Deserialize)]
+#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug)]
 pub struct ProtocolStateBody {
     genesis_state_hash: StateHash,
     blockchain_state: BlockchainState,

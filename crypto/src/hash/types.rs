@@ -42,7 +42,7 @@ impl<'a> From<&'a [u8]> for BaseHash {
 //////////////////////////////////////////////////////////////////////////
 
 #[version(1)]
-#[derive(Serialize, Deserialize, PartialEq, Debug, Clone)]
+#[derive(Serialize, Deserialize, PartialEq, Debug, Clone, Default)]
 pub struct StateHash(BaseHash);
 
 impl Base58Encodable for StateHash {
@@ -78,7 +78,7 @@ impl From<HashBytes> for LedgerHash {
 //////////////////////////////////////////////////////////////////////////
 
 #[version(1)]
-#[derive(Serialize, Deserialize, PartialEq, Debug, Clone)]
+#[derive(Serialize, Deserialize, PartialEq, Debug, Clone, Default)]
 pub struct EpochSeed(BaseHash);
 
 impl Base58Encodable for EpochSeed {
@@ -98,7 +98,7 @@ impl Hash for EpochSeed {
 //////////////////////////////////////////////////////////////////////////
 
 #[version(1)]
-#[derive(Serialize, Deserialize, PartialEq, Debug, Clone)]
+#[derive(Serialize, Deserialize, PartialEq, Debug, Clone, Default)]
 pub struct SnarkedLedgerHash(BaseHash);
 
 impl Base58Encodable for SnarkedLedgerHash {
@@ -114,7 +114,7 @@ impl From<HashBytes> for SnarkedLedgerHash {
 //////////////////////////////////////////////////////////////////////////
 
 #[version(1)]
-#[derive(Serialize, Deserialize, PartialEq, Debug, Clone)]
+#[derive(Serialize, Deserialize, PartialEq, Debug, Clone, Default)]
 pub struct StagedLedgerHash(BaseHash);
 
 impl Base58Encodable for StagedLedgerHash {
