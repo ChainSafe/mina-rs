@@ -1,6 +1,7 @@
-use blake2::Blake2b;
+use blake2::{Blake2b, Digest};
 use mina_crypto::hash::BaseHash;
 use mina_types::protocol_state::{ConsensusState, GlobalSlot, Header, ProtocolState};
+use serde_bin_prot::to_writer;
 use std::convert::TryInto;
 
 pub type ProtocolStateChain = Vec<ProtocolState>;
@@ -67,8 +68,21 @@ impl Chain<ProtocolState> for ProtocolStateChain {
     }
 
     fn state_hash(&self) -> Option<BaseHash> {
-        // let mut hasher = Blake2b::new();
-        // hasher.update()
-        None // TODO
+        let s = match self.top() {
+            Some(s) => s,
+            None => return None,
+        };
+
+        let mut output = Vec::<u8>::new();
+        to_writer(&mut output, &s).unwrap();
+
+        let mut hasher = Blake2b::new();
+        hasher.update(output);
+
+        // TODO: is there a prettier way to do this?
+        let hash = &hasher.finalize()[..];
+        let mut x: Vec<u8> = vec![0; 32];
+        x[..].clone_from_slice(hash);
+        Some(BaseHash::from(x.into_boxed_slice()))
     }
 }

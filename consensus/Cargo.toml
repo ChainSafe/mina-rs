@@ -8,3 +8,4 @@ edition = "2018"
 blake2 = { version = "0.9.1" }
 mina-crypto = { version = "0.1.0", path = "../crypto" }
 mina-types = { version = "0.1.0", path = "../types" }
+serde-bin-prot = { git = "https://github.com/ChainSafe/serde-bin-prot", branch = "main" }

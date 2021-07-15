@@ -197,6 +197,7 @@ dependencies = [
  "blake2",
  "mina-crypto",
  "mina-types",
+ "serde-bin-prot",
 ]
 
 [[package]]
