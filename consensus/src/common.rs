@@ -53,10 +53,7 @@ impl Chain<ProtocolState> for ProtocolStateChain {
     }
 
     fn epoch_slot(&self) -> Option<u32> {
-        match self.global_slot() {
-            Some(s) => Some((s.0 % s.1).try_into().unwrap()),
-            None => None,
-        }
+        self.global_slot().map(|s| (s.0 % s.1).try_into().unwrap())
     }
 
     fn length(&self) -> u64 {
