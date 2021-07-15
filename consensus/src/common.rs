@@ -1,3 +1,6 @@
+// Copyright 2020 ChainSafe Systems
+// SPDX-License-Identifier: Apache-2.0
+
 use blake2::{Blake2b, Digest};
 use mina_crypto::hash::BaseHash;
 use mina_types::protocol_state::{ConsensusState, GlobalSlot, Header, ProtocolState};

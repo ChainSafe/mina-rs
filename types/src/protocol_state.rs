@@ -1,5 +1,8 @@
+// Copyright 2020 ChainSafe Systems
+// SPDX-License-Identifier: Apache-2.0
+
 use mina_crypto::hash::BaseHash;
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 
 // TODO: confirm below types
 pub type Length = u64;
@@ -21,13 +24,13 @@ pub struct ProtocolState {
 }
 
 pub trait Header {
-	fn get_height(&self) -> Length;
+    fn get_height(&self) -> Length;
 }
 
 impl Header for ProtocolState {
-	fn get_height(&self) -> Length {
-		self.body.consensus_state.blockchain_length
-	}
+    fn get_height(&self) -> Length {
+        self.body.consensus_state.blockchain_length
+    }
 }
 
 #[derive(Debug, Serialize, Deserialize)]
