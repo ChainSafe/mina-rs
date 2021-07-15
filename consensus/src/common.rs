@@ -82,10 +82,8 @@ impl Chain<ProtocolState> for ProtocolStateChain {
         let mut hasher = Blake2b::new();
         hasher.update(output);
 
-        // TODO: is there a prettier way to do this?
-        let hash = &hasher.finalize()[..];
-        let mut x: Vec<u8> = vec![0; 32];
-        x[..].clone_from_slice(hash);
-        Some(BaseHash::from(x.into_boxed_slice()))
+        let hash = hasher.finalize();
+        let hash = hash.as_slice();
+        Some(BaseHash::from(hash))
     }
 }

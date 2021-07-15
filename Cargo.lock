@@ -222,16 +222,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "mina-types"
-version = "0.1.0"
-dependencies = [
- "mina-crypto",
- "serde",
- "serde-bin-prot",
- "serde-versions-derive",
-]
-
-[[package]]
 name = "num"
 version = "0.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"

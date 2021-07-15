@@ -31,6 +31,14 @@ impl From<HashBytes> for BaseHash {
     }
 }
 
+impl<'a> From<&'a [u8]> for BaseHash {
+    fn from(b: &'a [u8]) -> Self {
+        let mut o = BaseHash::default();
+        o.0.copy_from_slice(&b);
+        o
+    }
+}
+
 //////////////////////////////////////////////////////////////////////////
 
 #[version(1)]
