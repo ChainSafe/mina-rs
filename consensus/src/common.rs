@@ -1,4 +1,7 @@
-use mina_types::protocol_state::{Header, ProtocolState};
+use blake2::Blake2b;
+use mina_crypto::hash::BaseHash;
+use mina_types::protocol_state::{ConsensusState, GlobalSlot, Header, ProtocolState};
+use std::convert::TryInto;
 
 pub type ProtocolStateChain = Vec<ProtocolState>;
 
@@ -7,6 +10,13 @@ where
     T: Header,
 {
     fn push(&self, new: T) -> Result<(), &'static str>;
+    fn top(&self) -> Option<&T>;
+    fn consensus_state(&self) -> Option<&ConsensusState>;
+    fn global_slot(&self) -> Option<&GlobalSlot>;
+    fn epoch_slot(&self) -> Option<u32>;
+    fn length(&self) -> u64;
+    fn last_vrf(&self) -> String;
+    fn state_hash(&self) -> Option<BaseHash>;
 }
 
 impl Chain<ProtocolState> for ProtocolStateChain {
@@ -21,5 +31,44 @@ impl Chain<ProtocolState> for ProtocolStateChain {
                 self.push(new)
             }
         }
+    }
+
+    fn top(&self) -> Option<&ProtocolState> {
+        self.last()
+    }
+
+    fn consensus_state(&self) -> Option<&ConsensusState> {
+        match self.top() {
+            Some(s) => Some(&s.body.consensus_state),
+            None => None,
+        }
+    }
+
+    fn global_slot(&self) -> Option<&GlobalSlot> {
+        match self.top() {
+            Some(s) => Some(&s.body.consensus_state.curr_global_slot),
+            None => None,
+        }
+    }
+
+    fn epoch_slot(&self) -> Option<u32> {
+        match self.global_slot() {
+            Some(s) => Some((s.0 % s.1).try_into().unwrap()),
+            None => None,
+        }
+    }
+
+    fn length(&self) -> u64 {
+        self.len().try_into().unwrap()
+    }
+
+    fn last_vrf(&self) -> String {
+        String::new() // TODO
+    }
+
+    fn state_hash(&self) -> Option<BaseHash> {
+        // let mut hasher = Blake2b::new();
+        // hasher.update()
+        None // TODO
     }
 }

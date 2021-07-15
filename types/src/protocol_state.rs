@@ -5,6 +5,8 @@ use serde::{Serialize, Deserialize};
 pub type Length = u64;
 pub type VrfOutput = [u8; 32];
 pub type Amount = u64;
+
+/// GlobalSlot contains (slot_number, slots_per_epoch)
 pub type GlobalSlot = (u64, u64);
 
 // TODO: public key type
@@ -14,8 +16,8 @@ pub type Timestamp = u64;
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct ProtocolState {
-    previous_state_hash: BaseHash,
-    body: ProtocolStateBody,
+    pub previous_state_hash: BaseHash,
+    pub body: ProtocolStateBody,
 }
 
 pub trait Header {
@@ -30,10 +32,10 @@ impl Header for ProtocolState {
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct ProtocolStateBody {
-    genesis_state_hash: BaseHash,
-    blockchain_state: BlockchainState,
-    consensus_state: ConsensusState,
-    constants: Constants,
+    pub genesis_state_hash: BaseHash,
+    pub blockchain_state: BlockchainState,
+    pub consensus_state: ConsensusState,
+    pub constants: Constants,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -47,30 +49,30 @@ pub struct BlockchainState {
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct ConsensusState {
-    blockchain_length: Length,
-    epoch_count: Length,
-    min_window_density: Length,
-    sub_window_densities: Vec<Length>,
-    last_vrf_output: VrfOutput,
-    total_currency: Amount,
-    curr_global_slot: GlobalSlot,
-    global_slot_since_genesis: u64,
-    staking_epoch_data: EpochData,
-    next_epoch_data: EpochData,
-    has_ancestor_in_same_checkpoint_window: bool,
-    block_stake_winner: PublicKey,
-    block_creator: PublicKey,
-    coinbase_receiver: PublicKey,
-    supercharge_coinbase: bool,
+    pub blockchain_length: Length,
+    pub epoch_count: Length,
+    pub min_window_density: Length,
+    pub sub_window_densities: Vec<Length>,
+    pub last_vrf_output: VrfOutput,
+    pub total_currency: Amount,
+    pub curr_global_slot: GlobalSlot,
+    pub global_slot_since_genesis: u64,
+    pub staking_epoch_data: EpochData,
+    pub next_epoch_data: EpochData,
+    pub has_ancestor_in_same_checkpoint_window: bool,
+    pub block_stake_winner: PublicKey,
+    pub block_creator: PublicKey,
+    pub coinbase_receiver: PublicKey,
+    pub supercharge_coinbase: bool,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Constants {
-    k: Length,
-    slots_per_epoch: Length,
-    slots_per_sub_window: Length,
-    delta: Length,
-    genesis_state_timestamp: Timestamp,
+    pub k: Length,
+    pub slots_per_epoch: Length,
+    pub slots_per_sub_window: Length,
+    pub delta: Length,
+    pub genesis_state_timestamp: Timestamp,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
