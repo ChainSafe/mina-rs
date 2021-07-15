@@ -3,7 +3,9 @@
 
 use blake2::{Blake2b, Digest};
 use mina_crypto::hash::BaseHash;
-use mina_types::protocol_state::{ConsensusState, GlobalSlot, Header, ProtocolState};
+use mina_rs_base::consensus_state::ConsensusState;
+use mina_rs_base::global_slot::GlobalSlot;
+use mina_rs_base::protocol_state::{Header, ProtocolState};
 use serde_bin_prot::to_writer;
 use std::convert::TryInto;
 
@@ -56,7 +58,8 @@ impl Chain<ProtocolState> for ProtocolStateChain {
     }
 
     fn epoch_slot(&self) -> Option<u32> {
-        self.global_slot().map(|s| (s.0 % s.1).try_into().unwrap())
+        self.global_slot()
+            .map(|s| (s.slot_number.0 % s.slots_per_epoch.0).try_into().unwrap())
     }
 
     fn length(&self) -> u64 {

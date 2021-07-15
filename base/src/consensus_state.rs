@@ -26,7 +26,7 @@ struct VrfOutputTruncated;
 #[derive(Clone, Serialize, Deserialize)]
 pub struct ConsensusState {
     /// Height of block
-    blockchain_length: Length,
+    pub blockchain_length: Length,
     /// Epoch number
     epoch_count: Length,
     /// Minimum odnws density oberved on the chain
@@ -38,7 +38,7 @@ pub struct ConsensusState {
     /// Total supply of currency
     total_currency: Amount,
     /// Current global slot number relative to the current hard fork
-    curr_slobal_slot: GlobalSlot,
+    pub curr_global_slot: GlobalSlot,
     /// Absolute global slot number since genesis
     global_slot_since_genesis: numbers::GlobalSlot,
     /// Epoch data for previous epoch

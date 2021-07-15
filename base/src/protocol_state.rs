@@ -42,7 +42,7 @@ pub struct ProtocolConstants {
 #[derive(Clone, Serialize, Deserialize)]
 pub struct ProtocolState {
     previous_state_hash: StateHash,
-    body: ProtocolStateBody,
+    pub body: ProtocolStateBody,
 }
 
 // Protocol state hashes into a StateHash type
@@ -53,6 +53,16 @@ impl Hashable<StateHash> for ProtocolState {}
 pub struct ProtocolStateBody {
     genesis_state_hash: StateHash,
     blockchain_state: BlockchainState,
-    consensus_state: ConsensusState,
+    pub consensus_state: ConsensusState,
     constants: ProtocolConstants,
+}
+
+pub trait Header {
+    fn get_height(&self) -> Length;
+}
+
+impl Header for ProtocolState {
+    fn get_height(&self) -> Length {
+        self.body.consensus_state.blockchain_length
+    }
 }

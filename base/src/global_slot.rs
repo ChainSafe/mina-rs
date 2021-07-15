@@ -7,6 +7,6 @@ use crate::numbers::{self, Length};
 
 #[derive(Clone, Serialize, Deserialize)]
 pub struct GlobalSlot {
-    slot_number: numbers::GlobalSlot,
-    slots_per_epoch: Length,
+    pub slot_number: numbers::GlobalSlot,
+    pub slots_per_epoch: Length,
 }

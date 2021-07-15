@@ -7,5 +7,5 @@ edition = "2018"
 [dependencies]
 blake2 = { version = "0.9.1" }
 mina-crypto = { version = "0.1.0", path = "../crypto" }
-mina-types = { version = "0.1.0", path = "../types" }
+mina-rs-base = { version = "0.1.0", path = "../base" }
 serde-bin-prot = { git = "https://github.com/ChainSafe/serde-bin-prot", branch = "main" }

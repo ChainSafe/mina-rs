@@ -4,5 +4,4 @@ members = [
 	"bin_prot_checker",
 	"consensus",
 	"crypto",
-	"types",
 ]

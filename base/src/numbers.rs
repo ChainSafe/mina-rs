@@ -3,14 +3,14 @@
 
 use serde::{Deserialize, Serialize};
 
-#[derive(Clone, Serialize, Deserialize, PartialEq, Debug, Hash)]
-pub struct Length(u32);
+#[derive(Clone, Serialize, Deserialize, PartialEq, PartialOrd, Debug, Hash, Copy)]
+pub struct Length(pub u32);
 
 #[derive(Clone, Serialize, Deserialize, PartialEq, Debug, Hash)]
 pub struct Amount(u64);
 
 #[derive(Clone, Serialize, Deserialize, PartialEq, Debug, Hash)]
-pub struct GlobalSlot(u32);
+pub struct GlobalSlot(pub u32);
 
 #[derive(Clone, Serialize, Deserialize, PartialEq, Debug, Hash)]
 pub struct BlockTime(u64);
