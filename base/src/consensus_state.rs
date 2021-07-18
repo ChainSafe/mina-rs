@@ -11,7 +11,7 @@ use serde::{Deserialize, Serialize};
 use serde_versions_derive::version;
 
 #[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug)]
-pub struct VrfOutputTruncated(pub [u8; 32]);
+pub struct VrfOutputTruncated(pub String);
 
 /// This structure encapsulates the succinct state of the consensus protocol.
 ///

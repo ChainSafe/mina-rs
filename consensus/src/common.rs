@@ -72,7 +72,11 @@ impl Chain<ProtocolState> for ProtocolStateChain {
             None => return "0x".to_string(),
         };
 
-        let hash = blake2b(32, &[], &s.body.consensus_state.last_vrf_output.0[..]);
+        let hash = blake2b(
+            32,
+            &[],
+            &s.body.consensus_state.last_vrf_output.0.as_bytes(),
+        );
         BaseHash::from(hash.as_bytes()).to_hex()
     }
 
@@ -199,8 +203,7 @@ mod tests {
         b0.body.consensus_state.blockchain_length = Length(0);
         c.push(b0).unwrap();
 
-        let empty: Vec<u8> = vec![0; 32];
-        let hash = blake2b(32, &[], &empty);
+        let hash = blake2b(32, &[], String::new().as_bytes());
         let expected = BaseHash::from(hash.as_bytes()).to_hex();
         assert_eq!(expected, c.last_vrf());
     }
