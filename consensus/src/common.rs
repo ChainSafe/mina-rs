@@ -28,15 +28,16 @@ where
 impl Chain<ProtocolState> for ProtocolStateChain {
     fn push(&mut self, new: ProtocolState) -> Result<(), &'static str> {
         match self.0.len() {
-            0 => Ok(self.0.push(new)),
+            0 => (),
             n => {
                 if new.get_height().0 != self.0[n - 1].get_height().0 + 1 {
                     return Err("header must have height 1 greater than top");
                 }
-
-                Ok(self.0.push(new))
             }
         }
+
+        self.0.push(new);
+        Ok(())
     }
 
     fn top(&self) -> Option<&ProtocolState> {
@@ -59,7 +60,7 @@ impl Chain<ProtocolState> for ProtocolStateChain {
 
     fn epoch_slot(&self) -> Option<u32> {
         self.global_slot()
-            .map(|s| (s.slot_number.0 % s.slots_per_epoch.0).try_into().unwrap())
+            .map(|s| (s.slot_number.0 % s.slots_per_epoch.0))
     }
 
     fn length(&self) -> u64 {
