@@ -11,7 +11,7 @@ use serde::{Deserialize, Serialize};
 use serde_versions_derive::version;
 
 #[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug)]
-struct VrfOutputTruncated;
+pub struct VrfOutputTruncated(pub [u8; 32]);
 
 /// This structure encapsulates the succinct state of the consensus protocol.
 ///
@@ -34,7 +34,7 @@ pub struct ConsensusState {
     /// Current sliding window of densities
     sub_window_densities: Vec<Length>,
     /// Additional VRS output from leader (for seeding Random Oracle)
-    last_vrf_output: VrfOutputTruncated,
+    pub last_vrf_output: VrfOutputTruncated,
     /// Total supply of currency
     total_currency: Amount,
     /// Current global slot number relative to the current hard fork

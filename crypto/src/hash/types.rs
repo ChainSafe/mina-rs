@@ -13,6 +13,7 @@
 use super::prefixes::*;
 use crate::base58::{version_bytes, Base58Encodable};
 use crate::hash::Hash;
+use std::fmt::Write;
 
 use serde::{Deserialize, Serialize};
 use serde_versions_derive::version;
@@ -36,6 +37,16 @@ impl<'a> From<&'a [u8]> for BaseHash {
         let mut o = BaseHash::default();
         o.0.copy_from_slice(&b);
         o
+    }
+}
+
+impl BaseHash {
+    pub fn to_hex(&self) -> String {
+        let mut s = String::from("0x");
+        for b in &self.0 {
+            write!(&mut s, "{:02x}", b).expect("failed to write hex byte")
+        }
+        s
     }
 }
 

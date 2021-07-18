@@ -1,14 +1,13 @@
 // Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
+use blake2_rfc::blake2b::blake2b;
 use mina_crypto::hash::BaseHash;
 use mina_rs_base::consensus_state::ConsensusState;
 use mina_rs_base::global_slot::GlobalSlot;
-use mina_rs_base::numbers::{Length, GlobalSlot as GlobalSlotNumber};
-use mina_rs_base::protocol_state::{Header, ProtocolState, ProtocolStateBody};
+use mina_rs_base::protocol_state::{Header, ProtocolState};
 use serde_bin_prot::to_writer;
 use std::convert::TryInto;
-use blake2_rfc::blake2b::{Blake2b, blake2b};
 
 pub struct ProtocolStateChain(Vec<ProtocolState>);
 
@@ -68,14 +67,13 @@ impl Chain<ProtocolState> for ProtocolStateChain {
     }
 
     fn last_vrf(&self) -> String {
-        // let s = match self.top() {
-        //     Some(s) => s,
-        //     None => return "0x",
-        // };
+        let s = match self.top() {
+            Some(s) => s,
+            None => return "0x".to_string(),
+        };
 
-        // let hash = blake2b(32, &[], s.consensus_state.last_vrf_output);
-        // BaseHash::from(hash.as_bytes())
-        String::new()
+        let hash = blake2b(32, &[], &s.body.consensus_state.last_vrf_output.0[..]);
+        BaseHash::from(hash.as_bytes()).to_hex()
     }
 
     fn state_hash(&self) -> Option<BaseHash> {
@@ -91,100 +89,119 @@ impl Chain<ProtocolState> for ProtocolStateChain {
     }
 }
 
-#[test]
-fn test_protocol_state_chain_push() {
-    let mut c: ProtocolStateChain = ProtocolStateChain(vec![]);
-    assert_eq!(c.length(), 0);
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use mina_rs_base::numbers::{GlobalSlot as GlobalSlotNumber, Length};
 
-    let mut b0: ProtocolState = Default::default();
-    b0.body.consensus_state.blockchain_length = Length(0);
-    let res = c.push(b0);
-    assert_eq!(res, Ok(()));
-    assert_eq!(c.length(), 1);
+    #[test]
+    fn test_protocol_state_chain_push() {
+        let mut c: ProtocolStateChain = ProtocolStateChain(vec![]);
+        assert_eq!(c.length(), 0);
 
-    let mut b1: ProtocolState = Default::default();
-    b1.body.consensus_state.blockchain_length = Length(1);
-    let res = c.push(b1);
-    assert_eq!(res, Ok(()));
-    assert_eq!(c.length(), 2);
+        let mut b0: ProtocolState = Default::default();
+        b0.body.consensus_state.blockchain_length = Length(0);
+        c.push(b0).unwrap();
+        assert_eq!(c.length(), 1);
 
-    let mut b2: ProtocolState = Default::default();
-    b2.body.consensus_state.blockchain_length = Length(2);
-    let res = c.push(b2);
-    assert_eq!(res, Ok(()));
-    assert_eq!(c.length(), 3);
+        let mut b1: ProtocolState = Default::default();
+        b1.body.consensus_state.blockchain_length = Length(1);
+        c.push(b1).unwrap();
+        assert_eq!(c.length(), 2);
 
-    let mut b1: ProtocolState = Default::default();
-    b1.body.consensus_state.blockchain_length = Length(1);
-    let res = c.push(b1);
-    assert_eq!(res, Err("header must have height 1 greater than top"));
-}
+        let mut b2: ProtocolState = Default::default();
+        b2.body.consensus_state.blockchain_length = Length(2);
+        c.push(b2).unwrap();
+        assert_eq!(c.length(), 3);
 
-#[test]
-fn test_protocol_state_chain_top() {
-    let mut c: ProtocolStateChain = ProtocolStateChain(vec![]);
-    assert_eq!(c.length(), 0);
-    assert_eq!(c.top(), None);
+        let mut b1: ProtocolState = Default::default();
+        b1.body.consensus_state.blockchain_length = Length(1);
+        assert_eq!(
+            c.push(b1),
+            Err("header must have height 1 greater than top")
+        );
+    }
 
-    let mut b0: ProtocolState = Default::default();
-    b0.body.consensus_state.blockchain_length = Length(0);
-    c.push(b0);
-    assert_eq!(c.length(), 1);
-    let expected: ProtocolState = Default::default();
-    assert_eq!(c.top(), Some(&expected));
+    #[test]
+    fn test_protocol_state_chain_top() {
+        let mut c: ProtocolStateChain = ProtocolStateChain(vec![]);
+        assert_eq!(c.length(), 0);
+        assert_eq!(c.top(), None);
 
-    let mut b1: ProtocolState = Default::default();
-    b1.body.consensus_state.blockchain_length = Length(1);
-    let res = c.push(b1);
-    assert_eq!(res, Ok(()));  
-    let mut expected: ProtocolState = Default::default();
-    expected.body.consensus_state.blockchain_length = Length(1);
-    assert_eq!(c.top(), Some(&expected)); 
-}
+        let mut b0: ProtocolState = Default::default();
+        b0.body.consensus_state.blockchain_length = Length(0);
+        c.push(b0).unwrap();
+        assert_eq!(c.length(), 1);
+        let expected: ProtocolState = Default::default();
+        assert_eq!(c.top(), Some(&expected));
 
-#[test]
-fn test_protocol_state_chain_epoch_slot() {
-    let mut c: ProtocolStateChain = ProtocolStateChain(vec![]);
+        let mut b1: ProtocolState = Default::default();
+        b1.body.consensus_state.blockchain_length = Length(1);
+        c.push(b1).unwrap();
+        let mut expected: ProtocolState = Default::default();
+        expected.body.consensus_state.blockchain_length = Length(1);
+        assert_eq!(c.top(), Some(&expected));
+    }
 
-    let mut b0: ProtocolState = Default::default();
-    b0.body.consensus_state.blockchain_length = Length(0);
-    b0.body.consensus_state.curr_global_slot = GlobalSlot {
-        slot_number: GlobalSlotNumber(0),
-        slots_per_epoch: Length(1000),
-    };
-    c.push(b0);
-    let epoch_slot = c.epoch_slot();
-    assert_eq!(epoch_slot, Some(0));
+    #[test]
+    fn test_protocol_state_chain_epoch_slot() {
+        let mut c: ProtocolStateChain = ProtocolStateChain(vec![]);
 
-    let mut b1: ProtocolState = Default::default();
-    b1.body.consensus_state.blockchain_length = Length(1);
-    b1.body.consensus_state.curr_global_slot = GlobalSlot {
-        slot_number: GlobalSlotNumber(1),
-        slots_per_epoch: Length(1000),
-    };
-    c.push(b1);
-    let epoch_slot = c.epoch_slot();
-    assert_eq!(epoch_slot, Some(1));
+        let mut b0: ProtocolState = Default::default();
+        b0.body.consensus_state.blockchain_length = Length(0);
+        b0.body.consensus_state.curr_global_slot = GlobalSlot {
+            slot_number: GlobalSlotNumber(0),
+            slots_per_epoch: Length(1000),
+        };
+        c.push(b0).unwrap();
+        let epoch_slot = c.epoch_slot();
+        assert_eq!(epoch_slot, Some(0));
 
-    let mut b2: ProtocolState = Default::default();
-    b2.body.consensus_state.blockchain_length = Length(2);
-    b2.body.consensus_state.curr_global_slot = GlobalSlot {
-        slot_number: GlobalSlotNumber(1002),
-        slots_per_epoch: Length(1000),
-    };
-    c.push(b2);
-    let epoch_slot = c.epoch_slot();
-    assert_eq!(epoch_slot, Some(2));
-}
+        let mut b1: ProtocolState = Default::default();
+        b1.body.consensus_state.blockchain_length = Length(1);
+        b1.body.consensus_state.curr_global_slot = GlobalSlot {
+            slot_number: GlobalSlotNumber(1),
+            slots_per_epoch: Length(1000),
+        };
+        c.push(b1).unwrap();
+        let epoch_slot = c.epoch_slot();
+        assert_eq!(epoch_slot, Some(1));
 
-#[test] 
-fn test_protocol_state_chain_state_hash() {
-    let mut c: ProtocolStateChain = ProtocolStateChain(vec![]);
+        let mut b2: ProtocolState = Default::default();
+        b2.body.consensus_state.blockchain_length = Length(2);
+        b2.body.consensus_state.curr_global_slot = GlobalSlot {
+            slot_number: GlobalSlotNumber(1002),
+            slots_per_epoch: Length(1000),
+        };
+        c.push(b2).unwrap();
+        let epoch_slot = c.epoch_slot();
+        assert_eq!(epoch_slot, Some(2));
+    }
 
-    let mut b0: ProtocolState = Default::default();
-    b0.body.consensus_state.blockchain_length = Length(0);
-    c.push(b0);  
+    #[test]
+    fn test_protocol_state_chain_state_hash() {
+        let mut c: ProtocolStateChain = ProtocolStateChain(vec![]);
 
-    let hash = c.state_hash();
-    hash.unwrap();
+        let mut b0: ProtocolState = Default::default();
+        b0.body.consensus_state.blockchain_length = Length(0);
+        c.push(b0).unwrap();
+
+        let hash = c.state_hash();
+        hash.unwrap();
+    }
+
+    #[test]
+    fn test_protocol_state_chain_last_vrf() {
+        let mut c: ProtocolStateChain = ProtocolStateChain(vec![]);
+        assert_eq!(String::from("0x"), c.last_vrf());
+
+        let mut b0: ProtocolState = Default::default();
+        b0.body.consensus_state.blockchain_length = Length(0);
+        c.push(b0).unwrap();
+
+        let empty: Vec<u8> = vec![0; 32];
+        let hash = blake2b(32, &[], &empty);
+        let expected = BaseHash::from(hash.as_bytes()).to_hex();
+        assert_eq!(expected, c.last_vrf());
+    }
 }
