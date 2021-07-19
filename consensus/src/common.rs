@@ -1,13 +1,11 @@
 // Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
-use blake2_rfc::blake2b::blake2b;
-use mina_crypto::hash::BaseHash;
+use hex::ToHex;
+use mina_crypto::hash::{Hashable, StateHash};
 use mina_rs_base::consensus_state::ConsensusState;
 use mina_rs_base::global_slot::GlobalSlot;
 use mina_rs_base::protocol_state::{Header, ProtocolState};
-use serde_bin_prot::to_writer;
-use std::convert::TryInto;
 
 pub struct ProtocolStateChain(Vec<ProtocolState>);
 
@@ -21,8 +19,8 @@ where
     fn global_slot(&self) -> Option<&GlobalSlot>;
     fn epoch_slot(&self) -> Option<u32>;
     fn length(&self) -> u64;
-    fn last_vrf(&self) -> String;
-    fn state_hash(&self) -> Option<BaseHash>;
+    fn last_vrf(&self) -> Option<String>;
+    fn state_hash(&self) -> Option<StateHash>;
 }
 
 impl Chain<ProtocolState> for ProtocolStateChain {
@@ -64,33 +62,21 @@ impl Chain<ProtocolState> for ProtocolStateChain {
     }
 
     fn length(&self) -> u64 {
-        self.0.len().try_into().unwrap()
+        self.0.len() as u64
     }
 
-    fn last_vrf(&self) -> String {
-        let s = match self.top() {
-            Some(s) => s,
-            None => return "0x".to_string(),
-        };
-
-        let hash = blake2b(
-            32,
-            &[],
-            &s.body.consensus_state.last_vrf_output.0.as_bytes(),
-        );
-        BaseHash::from(hash.as_bytes()).to_hex()
+    fn last_vrf(&self) -> Option<String> {
+        self.top().map(|s| {
+            s.body
+                .consensus_state
+                .last_vrf_output
+                .hash()
+                .encode_hex::<String>()
+        })
     }
 
-    fn state_hash(&self) -> Option<BaseHash> {
-        let s = match self.top() {
-            Some(s) => s,
-            None => return None,
-        };
-
-        let mut output = Vec::<u8>::new();
-        to_writer(&mut output, &s).unwrap();
-        let hash = blake2b(32, &[], &output);
-        Some(BaseHash::from(hash.as_bytes()))
+    fn state_hash(&self) -> Option<StateHash> {
+        self.top().map(|s| s.hash())
     }
 }
 
@@ -198,14 +184,15 @@ mod tests {
     #[test]
     fn test_protocol_state_chain_last_vrf() {
         let mut c: ProtocolStateChain = ProtocolStateChain(vec![]);
-        assert_eq!(String::from("0x"), c.last_vrf());
+        assert_eq!(None, c.last_vrf());
 
         let mut b0: ProtocolState = Default::default();
         b0.body.consensus_state.blockchain_length = Length(0);
-        c.push(b0).unwrap();
+        c.push(b0.clone()).unwrap();
 
-        let hash = blake2b(32, &[], String::new().as_bytes());
-        let expected = BaseHash::from(hash.as_bytes()).to_hex();
+
+        // let hash = blake2b(32, &[], String::new().as_bytes());
+        let expected = Some(b0.body.consensus_state.last_vrf_output.hash().encode_hex());
         assert_eq!(expected, c.last_vrf());
     }
 }

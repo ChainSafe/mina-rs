@@ -6,12 +6,15 @@ use crate::{
     global_slot::GlobalSlot,
     numbers::{self, Amount, Length},
 };
+use mina_crypto::hash::{Hashable, VrfOutputHash};
 use mina_crypto::signature::PublicKey;
 use serde::{Deserialize, Serialize};
 use serde_versions_derive::version;
 
 #[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug)]
 pub struct VrfOutputTruncated(pub String);
+
+impl Hashable<VrfOutputHash> for VrfOutputTruncated {}
 
 /// This structure encapsulates the succinct state of the consensus protocol.
 ///

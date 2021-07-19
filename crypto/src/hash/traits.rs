@@ -13,7 +13,7 @@ const BLAKE_HASH_SIZE: usize = 32;
 /// This defines the prefix that is added to the data prior to it being hashed
 pub trait Hash
 where
-    Self: From<Box<[u8]>>,
+    Self: From<Box<[u8]>> + AsRef<[u8]>,
 {
     const PREFIX: &'static HashPrefix;
 }
@@ -58,6 +58,12 @@ mod tests {
 
     impl Hash for TestHash {
         const PREFIX: &'static HashPrefix = PROTOCOL_STATE;
+    }
+
+    impl AsRef<[u8]> for TestHash {
+        fn as_ref(&self) -> &[u8] {
+            &self.0.as_ref()
+        }
     }
 
     #[derive(Serialize)]
