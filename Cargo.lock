@@ -223,6 +223,7 @@ dependencies = [
  "mina-crypto",
  "mina-rs-base",
  "serde-bin-prot",
+ "thiserror",
 ]
 
 [[package]]

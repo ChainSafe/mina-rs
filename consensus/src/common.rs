@@ -8,30 +8,37 @@ use mina_rs_base::global_slot::GlobalSlot;
 use mina_rs_base::protocol_state::{Header, ProtocolState};
 use serde_bin_prot::to_writer;
 use std::convert::TryInto;
+use thiserror::Error;
 
 pub struct ProtocolStateChain(Vec<ProtocolState>);
+
+#[derive(Error, Debug, PartialEq)]
+pub enum ChainError {
+    #[error("header must have height 1 greater than top")]
+    InvalidHeight,
+}
 
 pub trait Chain<T>
 where
     T: Header,
 {
-    fn push(&mut self, new: T) -> Result<(), &'static str>;
+    fn push(&mut self, new: T) -> Result<(), ChainError>;
     fn top(&self) -> Option<&T>;
     fn consensus_state(&self) -> Option<&ConsensusState>;
     fn global_slot(&self) -> Option<&GlobalSlot>;
     fn epoch_slot(&self) -> Option<u32>;
-    fn length(&self) -> u64;
-    fn last_vrf(&self) -> String;
+    fn length(&self) -> usize;
+    fn last_vrf(&self) -> Option<String>;
     fn state_hash(&self) -> Option<BaseHash>;
 }
 
 impl Chain<ProtocolState> for ProtocolStateChain {
-    fn push(&mut self, new: ProtocolState) -> Result<(), &'static str> {
+    fn push(&mut self, new: ProtocolState) -> Result<(), ChainError> {
         match self.0.len() {
             0 => (),
             n => {
                 if new.get_height().0 != self.0[n - 1].get_height().0 + 1 {
-                    return Err("header must have height 1 greater than top");
+                    return Err(ChainError::InvalidHeight);
                 }
             }
         }
@@ -45,17 +52,11 @@ impl Chain<ProtocolState> for ProtocolStateChain {
     }
 
     fn consensus_state(&self) -> Option<&ConsensusState> {
-        match self.top() {
-            Some(s) => Some(&s.body.consensus_state),
-            None => None,
-        }
+        self.top().map(|s| &s.body.consensus_state)
     }
 
     fn global_slot(&self) -> Option<&GlobalSlot> {
-        match self.top() {
-            Some(s) => Some(&s.body.consensus_state.curr_global_slot),
-            None => None,
-        }
+        self.top().map(|s| &s.body.consensus_state.curr_global_slot)
     }
 
     fn epoch_slot(&self) -> Option<u32> {
@@ -63,34 +64,32 @@ impl Chain<ProtocolState> for ProtocolStateChain {
             .map(|s| (s.slot_number.0 % s.slots_per_epoch.0))
     }
 
-    fn length(&self) -> u64 {
+    fn length(&self) -> usize {
         self.0.len().try_into().unwrap()
     }
 
-    fn last_vrf(&self) -> String {
-        let s = match self.top() {
-            Some(s) => s,
-            None => return "0x".to_string(),
-        };
-
-        let hash = blake2b(
-            32,
-            &[],
-            &s.body.consensus_state.last_vrf_output.0.as_bytes(),
-        );
-        BaseHash::from(hash.as_bytes()).to_hex()
+    fn last_vrf(&self) -> Option<String> {
+        if let Some(s) = self.top() {
+            let hash = blake2b(
+                32,
+                &[],
+                &s.body.consensus_state.last_vrf_output.0.as_bytes(),
+            );
+            Some(BaseHash::from(hash.as_bytes()).to_hex())
+        } else {
+            None
+        }
     }
 
     fn state_hash(&self) -> Option<BaseHash> {
-        let s = match self.top() {
-            Some(s) => s,
-            None => return None,
-        };
-
-        let mut output = Vec::<u8>::new();
-        to_writer(&mut output, &s).unwrap();
-        let hash = blake2b(32, &[], &output);
-        Some(BaseHash::from(hash.as_bytes()))
+        if let Some(s) = self.top() {
+            let mut output = Vec::<u8>::new();
+            to_writer(&mut output, &s).unwrap();
+            let hash = blake2b(32, &[], &output);
+            Some(BaseHash::from(hash.as_bytes()))
+        } else {
+            None
+        }
     }
 }
 
@@ -121,10 +120,7 @@ mod tests {
 
         let mut b1: ProtocolState = Default::default();
         b1.body.consensus_state.blockchain_length = Length(1);
-        assert_eq!(
-            c.push(b1),
-            Err("header must have height 1 greater than top")
-        );
+        assert_eq!(c.push(b1).unwrap_err(), ChainError::InvalidHeight,);
     }
 
     #[test]
@@ -198,7 +194,7 @@ mod tests {
     #[test]
     fn test_protocol_state_chain_last_vrf() {
         let mut c: ProtocolStateChain = ProtocolStateChain(vec![]);
-        assert_eq!(String::from("0x"), c.last_vrf());
+        assert_eq!(None, c.last_vrf());
 
         let mut b0: ProtocolState = Default::default();
         b0.body.consensus_state.blockchain_length = Length(0);
@@ -206,6 +202,6 @@ mod tests {
 
         let hash = blake2b(32, &[], String::new().as_bytes());
         let expected = BaseHash::from(hash.as_bytes()).to_hex();
-        assert_eq!(expected, c.last_vrf());
+        assert_eq!(expected, c.last_vrf().unwrap());
     }
 }
