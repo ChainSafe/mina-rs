@@ -5,7 +5,7 @@ authors = ["ChainSafe Systems <info@chainsafe.io>"]
 edition = "2018"
 
 [dependencies]
-blake2-rfc = { version = "0.2.18" }
+hex = "0.4.3"
 mina-crypto = { version = "0.1.0", path = "../crypto" }
 mina-rs-base = { version = "0.1.0", path = "../base" }
 serde-bin-prot = { git = "https://github.com/ChainSafe/serde-bin-prot", branch = "main" }

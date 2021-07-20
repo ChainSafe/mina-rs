@@ -13,15 +13,13 @@
 use super::prefixes::*;
 use crate::base58::{version_bytes, Base58Encodable};
 use crate::hash::Hash;
-use std::fmt::Write;
-
 use serde::{Deserialize, Serialize};
 use serde_versions_derive::version;
 
 pub(crate) type HashBytes = Box<[u8]>;
 
 #[derive(Default, Serialize, Deserialize, PartialEq, Debug, Clone)]
-pub struct BaseHash([u8; 32]);
+pub(crate) struct BaseHash([u8; 32]);
 
 impl From<HashBytes> for BaseHash {
     // TODO: Figure out how to do this without a copy and still have BaseHash serializable
@@ -40,13 +38,9 @@ impl<'a> From<&'a [u8]> for BaseHash {
     }
 }
 
-impl BaseHash {
-    pub fn to_hex(&self) -> String {
-        let mut s = String::from("0x");
-        for b in &self.0 {
-            write!(&mut s, "{:02x}", b).expect("failed to write hex byte")
-        }
-        s
+impl AsRef<[u8]> for BaseHash {
+    fn as_ref(&self) -> &[u8] {
+        &self.0
     }
 }
 
@@ -63,6 +57,12 @@ impl Base58Encodable for StateHash {
 impl From<HashBytes> for StateHash {
     fn from(b: HashBytes) -> Self {
         Self(BaseHash::from(b))
+    }
+}
+
+impl AsRef<[u8]> for StateHash {
+    fn as_ref(&self) -> &[u8] {
+        &self.0.as_ref()
     }
 }
 
@@ -102,6 +102,12 @@ impl From<HashBytes> for EpochSeed {
     }
 }
 
+impl AsRef<[u8]> for EpochSeed {
+    fn as_ref(&self) -> &[u8] {
+        &self.0.as_ref()
+    }
+}
+
 impl Hash for EpochSeed {
     const PREFIX: &'static HashPrefix = EPOCH_SEED;
 }
@@ -133,6 +139,32 @@ impl Base58Encodable for StagedLedgerHash {
 }
 
 impl From<HashBytes> for StagedLedgerHash {
+    fn from(b: HashBytes) -> Self {
+        Self(BaseHash::from(b))
+    }
+}
+
+//////////////////////////////////////////////////////////////////////////
+
+#[version(1)]
+#[derive(Serialize, Deserialize, PartialEq, Debug, Clone, Default)]
+pub struct VrfOutputHash(BaseHash);
+
+impl Base58Encodable for VrfOutputHash {
+    const VERSION_BYTE: u8 = version_bytes::VRF_TRUNCATED_OUTPUT;
+}
+
+impl Hash for VrfOutputHash {
+    const PREFIX: &'static HashPrefix = VRF_OUTPUT;
+}
+
+impl AsRef<[u8]> for VrfOutputHash {
+    fn as_ref(&self) -> &[u8] {
+        &self.0.as_ref()
+    }
+}
+
+impl From<HashBytes> for VrfOutputHash {
     fn from(b: HashBytes) -> Self {
         Self(BaseHash::from(b))
     }
