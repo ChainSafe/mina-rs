@@ -13,7 +13,7 @@ const BLAKE_HASH_SIZE: usize = 32;
 /// This defines the prefix that is added to the data prior to it being hashed
 pub trait Hash
 where
-    Self: From<Box<[u8]>> + AsRef<[u8]>,
+    Self: From<Box<[u8]>>,
 {
     const PREFIX: &'static HashPrefix;
 }
