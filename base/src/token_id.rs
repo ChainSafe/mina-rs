@@ -3,5 +3,5 @@
 
 use serde::{Deserialize, Serialize};
 
-#[derive(Clone, Serialize, Deserialize, PartialEq, Debug, Hash)]
+#[derive(Clone, Serialize, Deserialize, PartialEq, Debug, Hash, Default)]
 pub struct TokenId(u64);

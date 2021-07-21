@@ -6,14 +6,14 @@ use serde::{Deserialize, Serialize};
 use serde_versions_derive::version;
 
 #[version(1)]
-#[derive(Default, Clone, Serialize, Deserialize)]
+#[derive(Default, Clone, Serialize, Deserialize, PartialEq, Debug)]
 pub struct CompressedCurvePoint {
     x: [u8; 32],
     is_odd: bool,
 }
 
 #[version(1)]
-#[derive(Default, Clone, Serialize, Deserialize)]
+#[derive(Default, Clone, Serialize, Deserialize, PartialEq, Debug)]
 pub struct PublicKey {
     poly: CompressedCurvePoint,
 }

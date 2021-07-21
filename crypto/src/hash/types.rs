@@ -13,7 +13,6 @@
 use super::prefixes::*;
 use crate::base58::{version_bytes, Base58Encodable};
 use crate::hash::Hash;
-
 use serde::{Deserialize, Serialize};
 use serde_versions_derive::version;
 
@@ -31,10 +30,24 @@ impl From<HashBytes> for BaseHash {
     }
 }
 
+impl<'a> From<&'a [u8]> for BaseHash {
+    fn from(b: &'a [u8]) -> Self {
+        let mut o = BaseHash::default();
+        o.0.copy_from_slice(&b);
+        o
+    }
+}
+
+impl AsRef<[u8]> for BaseHash {
+    fn as_ref(&self) -> &[u8] {
+        &self.0
+    }
+}
+
 //////////////////////////////////////////////////////////////////////////
 
 #[version(1)]
-#[derive(Serialize, Deserialize, PartialEq, Debug, Clone)]
+#[derive(Serialize, Deserialize, PartialEq, Debug, Clone, Default)]
 pub struct StateHash(BaseHash);
 
 impl Base58Encodable for StateHash {
@@ -44,6 +57,12 @@ impl Base58Encodable for StateHash {
 impl From<HashBytes> for StateHash {
     fn from(b: HashBytes) -> Self {
         Self(BaseHash::from(b))
+    }
+}
+
+impl AsRef<[u8]> for StateHash {
+    fn as_ref(&self) -> &[u8] {
+        &self.0.as_ref()
     }
 }
 
@@ -70,7 +89,7 @@ impl From<HashBytes> for LedgerHash {
 //////////////////////////////////////////////////////////////////////////
 
 #[version(1)]
-#[derive(Serialize, Deserialize, PartialEq, Debug, Clone)]
+#[derive(Serialize, Deserialize, PartialEq, Debug, Clone, Default)]
 pub struct EpochSeed(BaseHash);
 
 impl Base58Encodable for EpochSeed {
@@ -83,6 +102,12 @@ impl From<HashBytes> for EpochSeed {
     }
 }
 
+impl AsRef<[u8]> for EpochSeed {
+    fn as_ref(&self) -> &[u8] {
+        &self.0.as_ref()
+    }
+}
+
 impl Hash for EpochSeed {
     const PREFIX: &'static HashPrefix = EPOCH_SEED;
 }
@@ -90,7 +115,7 @@ impl Hash for EpochSeed {
 //////////////////////////////////////////////////////////////////////////
 
 #[version(1)]
-#[derive(Serialize, Deserialize, PartialEq, Debug, Clone)]
+#[derive(Serialize, Deserialize, PartialEq, Debug, Clone, Default)]
 pub struct SnarkedLedgerHash(BaseHash);
 
 impl Base58Encodable for SnarkedLedgerHash {
@@ -106,7 +131,7 @@ impl From<HashBytes> for SnarkedLedgerHash {
 //////////////////////////////////////////////////////////////////////////
 
 #[version(1)]
-#[derive(Serialize, Deserialize, PartialEq, Debug, Clone)]
+#[derive(Serialize, Deserialize, PartialEq, Debug, Clone, Default)]
 pub struct StagedLedgerHash(BaseHash);
 
 impl Base58Encodable for StagedLedgerHash {
@@ -114,6 +139,32 @@ impl Base58Encodable for StagedLedgerHash {
 }
 
 impl From<HashBytes> for StagedLedgerHash {
+    fn from(b: HashBytes) -> Self {
+        Self(BaseHash::from(b))
+    }
+}
+
+//////////////////////////////////////////////////////////////////////////
+
+#[version(1)]
+#[derive(Serialize, Deserialize, PartialEq, Debug, Clone, Default)]
+pub struct VrfOutputHash(BaseHash);
+
+impl Base58Encodable for VrfOutputHash {
+    const VERSION_BYTE: u8 = version_bytes::VRF_TRUNCATED_OUTPUT;
+}
+
+impl Hash for VrfOutputHash {
+    const PREFIX: &'static HashPrefix = VRF_OUTPUT;
+}
+
+impl AsRef<[u8]> for VrfOutputHash {
+    fn as_ref(&self) -> &[u8] {
+        &self.0.as_ref()
+    }
+}
+
+impl From<HashBytes> for VrfOutputHash {
     fn from(b: HashBytes) -> Self {
         Self(BaseHash::from(b))
     }

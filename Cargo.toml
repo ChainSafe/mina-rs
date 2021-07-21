@@ -1,6 +1,7 @@
 [workspace]
 members = [
 	"base",
+	"bin_prot_checker",
+	"consensus",
 	"crypto",
-	"bin_prot_checker"
 ]

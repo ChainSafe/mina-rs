@@ -6,12 +6,15 @@ use crate::{
     global_slot::GlobalSlot,
     numbers::{self, Amount, Length},
 };
+use mina_crypto::hash::{Hashable, VrfOutputHash};
 use mina_crypto::signature::PublicKey;
 use serde::{Deserialize, Serialize};
 use serde_versions_derive::version;
 
-#[derive(Clone, Serialize, Deserialize)]
-struct VrfOutputTruncated;
+#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug)]
+pub struct VrfOutputTruncated(pub String);
+
+impl Hashable<VrfOutputHash> for VrfOutputTruncated {}
 
 /// This structure encapsulates the succinct state of the consensus protocol.
 ///
@@ -23,10 +26,10 @@ struct VrfOutputTruncated;
 ///
 /// Samasika prepares the past for the future! This future state is stored in the next_epoch_data field.
 #[version(1)]
-#[derive(Clone, Serialize, Deserialize)]
+#[derive(Clone, Serialize, Deserialize, Default, Debug, PartialEq)]
 pub struct ConsensusState {
     /// Height of block
-    blockchain_length: Length,
+    pub blockchain_length: Length,
     /// Epoch number
     epoch_count: Length,
     /// Minimum odnws density oberved on the chain
@@ -34,11 +37,11 @@ pub struct ConsensusState {
     /// Current sliding window of densities
     sub_window_densities: Vec<Length>,
     /// Additional VRS output from leader (for seeding Random Oracle)
-    last_vrf_output: VrfOutputTruncated,
+    pub last_vrf_output: VrfOutputTruncated,
     /// Total supply of currency
     total_currency: Amount,
     /// Current global slot number relative to the current hard fork
-    curr_slobal_slot: GlobalSlot,
+    pub curr_global_slot: GlobalSlot,
     /// Absolute global slot number since genesis
     global_slot_since_genesis: numbers::GlobalSlot,
     /// Epoch data for previous epoch

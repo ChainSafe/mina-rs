@@ -60,6 +60,12 @@ mod tests {
         const PREFIX: &'static HashPrefix = PROTOCOL_STATE;
     }
 
+    impl AsRef<[u8]> for TestHash {
+        fn as_ref(&self) -> &[u8] {
+            &self.0.as_ref()
+        }
+    }
+
     #[derive(Serialize)]
     struct TestType(i32);
     impl Hashable<TestHash> for TestType {}
