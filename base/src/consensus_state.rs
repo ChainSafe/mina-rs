@@ -45,7 +45,7 @@ pub struct ConsensusState {
     /// Absolute global slot number since genesis
     global_slot_since_genesis: numbers::GlobalSlot,
     /// Epoch data for previous epoch
-    staking_epoch_data: EpochData,
+    pub staking_epoch_data: EpochData,
     /// Epoch data for current epoch
     next_epoch_data: EpochData,
     has_ancestor_in_same_checkpoint_window: bool,

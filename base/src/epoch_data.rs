@@ -19,6 +19,6 @@ pub struct EpochData {
     /// State hash of first block of epoch
     start_checkpoint: StateHash,
     /// State hash of last known block in the first 2/3 of epoch
-    lock_checkpoint: StateHash,
+    pub lock_checkpoint: StateHash,
     epoch_length: Length,
 }
