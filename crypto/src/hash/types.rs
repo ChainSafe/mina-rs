@@ -50,8 +50,6 @@ impl AsRef<[u8]> for BaseHash {
 #[derive(Serialize, Deserialize, PartialEq, Debug, Clone, Default, Copy)]
 pub struct StateHash(BaseHash);
 
-pub const EMPTY_STATE_HASH: StateHash = StateHash(BaseHash([0; 32]));
-
 impl Base58Encodable for StateHash {
     const VERSION_BYTE: u8 = version_bytes::STATE_HASH;
 }

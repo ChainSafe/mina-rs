@@ -16,8 +16,7 @@ pub enum ChainError {
     InvalidHeight,
 }
 
-/// TODO: rename this
-pub trait Chain<T>
+pub trait Common<T>
 where
     T: Header,
 {
@@ -31,7 +30,7 @@ where
     fn state_hash(&self) -> Option<StateHash>;
 }
 
-impl Chain<ProtocolState> for ProtocolState {
+impl Common<ProtocolState> for ProtocolState {
     fn push(&mut self, _: ProtocolState) -> Result<(), ChainError> {
         Ok(())
     }
@@ -72,7 +71,7 @@ impl Chain<ProtocolState> for ProtocolState {
     }
 }
 
-impl Chain<ProtocolState> for ProtocolStateChain {
+impl Common<ProtocolState> for ProtocolStateChain {
     fn push(&mut self, new: ProtocolState) -> Result<(), ChainError> {
         match self.0.len() {
             0 => (),
