@@ -18,7 +18,7 @@ use serde_versions_derive::version;
 
 pub(crate) type HashBytes = Box<[u8]>;
 
-#[derive(Default, Serialize, Deserialize, PartialEq, Debug, Clone)]
+#[derive(Default, Serialize, Deserialize, PartialEq, Debug, Clone, Copy)]
 pub(crate) struct BaseHash([u8; 32]);
 
 impl From<HashBytes> for BaseHash {
@@ -47,8 +47,10 @@ impl AsRef<[u8]> for BaseHash {
 //////////////////////////////////////////////////////////////////////////
 
 #[version(1)]
-#[derive(Serialize, Deserialize, PartialEq, Debug, Clone, Default)]
+#[derive(Serialize, Deserialize, PartialEq, Debug, Clone, Default, Copy)]
 pub struct StateHash(BaseHash);
+
+pub const EMPTY_STATE_HASH: StateHash = StateHash(BaseHash([0; 32]));
 
 impl Base58Encodable for StateHash {
     const VERSION_BYTE: u8 = version_bytes::STATE_HASH;

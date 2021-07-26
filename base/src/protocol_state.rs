@@ -22,7 +22,7 @@ pub struct ProtocolConstants {
     slots_per_window: Length,
     sub_windows_per_window: Length,
     /// Number of slots per epoch
-    slots_per_epoch: Length,
+    pub slots_per_epoch: Length,
     grace_period_end: Length,
     epoch_size: Length,
     checkpoint_window_slots_per_year: Length,
@@ -54,7 +54,7 @@ pub struct ProtocolStateBody {
     genesis_state_hash: StateHash,
     blockchain_state: BlockchainState,
     pub consensus_state: ConsensusState,
-    constants: ProtocolConstants,
+    pub constants: ProtocolConstants,
 }
 
 pub trait Header {

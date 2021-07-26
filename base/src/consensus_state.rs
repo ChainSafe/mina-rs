@@ -47,7 +47,7 @@ pub struct ConsensusState {
     /// Epoch data for previous epoch
     pub staking_epoch_data: EpochData,
     /// Epoch data for current epoch
-    next_epoch_data: EpochData,
+    pub next_epoch_data: EpochData,
     has_ancestor_in_same_checkpoint_window: bool,
     /// Compressed public key of winning account
     block_stake_winner: PublicKey,

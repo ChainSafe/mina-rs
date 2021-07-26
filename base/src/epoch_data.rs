@@ -17,7 +17,7 @@ pub struct EpochData {
     ledger: EpochLedger,
     seed: EpochSeed,
     /// State hash of first block of epoch
-    start_checkpoint: StateHash,
+    pub start_checkpoint: StateHash,
     /// State hash of last known block in the first 2/3 of epoch
     pub lock_checkpoint: StateHash,
     epoch_length: Length,
