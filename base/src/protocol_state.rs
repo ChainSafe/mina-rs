@@ -10,7 +10,8 @@ use wire_type::WireType;
 use crate::{
     blockchain_state::BlockchainState,
     consensus_state::ConsensusState,
-    numbers::{BlockTime, Delta, Length},
+    global_slot::GlobalSlot,
+    numbers::{BlockTime, Length},
 };
 
 #[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, WireType)]
@@ -23,10 +24,10 @@ pub struct ProtocolConstants {
     pub k: Length,
     /// Number of slots per epoch
     pub slots_per_epoch: Length,
-    /// Slots per sub window
+    /// No of slots in a sub-window = 7
     pub slots_per_sub_window: Length,
     /// Maximum permissable delay of packets (in slots after the current)
-    pub delta: Delta,
+    pub delta: Length,
     /// Timestamp of genesis block in unixtime
     pub genesis_state_timestamp: BlockTime,
 }
@@ -41,6 +42,13 @@ pub struct ProtocolState {
     pub previous_state_hash: StateHash,
     /// The body of the protocol state
     pub body: ProtocolStateBody,
+}
+
+impl ProtocolState {
+    /// Gets the current global slot the current epoch
+    pub fn curr_global_slot(&self) -> &GlobalSlot {
+        &self.body.consensus_state.curr_global_slot
+    }
 }
 
 // Protocol state hashes into a StateHash type
@@ -66,10 +74,22 @@ pub struct ProtocolStateBody {
 pub trait Header {
     /// Get the height for the implementing type
     fn get_height(&self) -> Length;
+    /// The minimum window density at the current epoch.
+    fn min_window_density(&self) -> Length;
+    /// A list of density values of the sub windows.
+    fn sub_window_densities(&self) -> &Vec<Length>;
 }
 
 impl Header for ProtocolState {
     fn get_height(&self) -> Length {
         self.body.consensus_state.blockchain_length
+    }
+
+    fn sub_window_densities(&self) -> &Vec<Length> {
+        &self.body.consensus_state.sub_window_densities
+    }
+
+    fn min_window_density(&self) -> Length {
+        self.body.consensus_state.min_window_density
     }
 }

@@ -4,7 +4,7 @@
 #[cfg(test)]
 mod tests {
     use hex::ToHex;
-    use mina_consensus::common::*;
+    use mina_consensus::{common::*, error::ConsensusError};
     use mina_crypto::hash::*;
     use mina_rs_base::types::*;
     use wasm_bindgen_test::*;
@@ -32,7 +32,7 @@ mod tests {
 
         let mut b1: ProtocolState = Default::default();
         b1.body.consensus_state.blockchain_length = Length(1);
-        assert_eq!(c.push(b1).unwrap_err(), ChainError::InvalidHeight,);
+        assert_eq!(c.push(b1).unwrap_err(), ConsensusError::InvalidHeight,);
     }
 
     #[test]
@@ -110,7 +110,7 @@ mod tests {
     #[wasm_bindgen_test]
     fn test_protocol_state_chain_last_vrf() {
         let mut c: ProtocolStateChain = ProtocolStateChain(vec![]);
-        assert_eq!(None, c.last_vrf());
+        assert_eq!(None, c.last_vrf_hash());
 
         let mut b0: ProtocolState = Default::default();
         b0.body.consensus_state.blockchain_length = Length(0);
@@ -124,6 +124,6 @@ mod tests {
                 .as_ref()
                 .encode_hex(),
         );
-        assert_eq!(expected, c.last_vrf());
+        assert_eq!(expected, c.last_vrf_hash());
     }
 }
