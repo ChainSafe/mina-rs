@@ -8,4 +8,5 @@ members = [
 	"wire-type",
 	"wire-type-derive",
 	"test-serialization",
+	"blocktree"
 ]

@@ -42,7 +42,7 @@ pub struct ProtocolConstants {
 #[serde(from = "<Self as WireType>::WireType")]
 #[serde(into = "<Self as WireType>::WireType")]
 pub struct ProtocolState {
-    previous_state_hash: StateHash,
+    pub previous_state_hash: StateHash,
     pub body: ProtocolStateBody,
 }
 
@@ -53,7 +53,7 @@ impl Hashable<StateHash> for ProtocolState {}
 #[serde(from = "<Self as WireType>::WireType")]
 #[serde(into = "<Self as WireType>::WireType")]
 pub struct ProtocolStateBody {
-    genesis_state_hash: StateHash,
+    pub genesis_state_hash: StateHash,
     blockchain_state: BlockchainState,
     pub consensus_state: ConsensusState,
     constants: ProtocolConstants,

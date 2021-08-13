@@ -18,8 +18,8 @@ use wire_type::WireType;
 
 pub(crate) type HashBytes = Box<[u8]>;
 
-#[derive(Default, Serialize, Deserialize, PartialEq, Debug, Clone)]
-pub(crate) struct BaseHash([u8; 32]);
+#[derive(Default, Serialize, Deserialize, PartialEq, Debug, Clone, Eq, Copy, std::hash::Hash)]
+pub struct BaseHash([u8; 32]);
 
 impl From<HashBytes> for BaseHash {
     // TODO: Figure out how to do this without a copy and still have BaseHash serializable
@@ -46,10 +46,22 @@ impl AsRef<[u8]> for BaseHash {
 
 //////////////////////////////////////////////////////////////////////////
 
-#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize, WireType)]
+#[derive(Clone, Default, PartialEq, Serialize, Deserialize, WireType, Hash, Eq, Copy)]
 #[serde(from = "<Self as WireType>::WireType")]
 #[serde(into = "<Self as WireType>::WireType")]
 pub struct StateHash(BaseHash);
+
+impl std::fmt::Debug for StateHash {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(&self.to_base58().into_string())
+    }
+}
+
+impl StateHash {
+    pub fn from_bytes(bytes: [u8; 32]) -> Self {
+        StateHash(BaseHash(bytes))
+    }
+}
 
 impl Base58Encodable for StateHash {
     const VERSION_BYTE: u8 = version_bytes::STATE_HASH;
