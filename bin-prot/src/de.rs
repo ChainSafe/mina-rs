@@ -88,7 +88,7 @@ impl<'de, 'a, R: Read> de::Deserializer<'de> for &'a mut Deserializer<R> {
     where
         V: Visitor<'de>,
     {
-        visitor.visit_u8(self.rdr.bin_read_integer()?)
+        visitor.visit_u8(self.rdr.read_u8()?)
     }
 
     fn deserialize_u16<V>(self, visitor: V) -> Result<V::Value>
