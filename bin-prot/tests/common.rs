@@ -1,8 +1,8 @@
 // Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
-use serde::{Deserialize, Serialize};
 use bin_prot::{from_reader, to_writer};
+use serde::{Deserialize, Serialize};
 use std::fmt::Debug;
 use std::fmt::Write;
 

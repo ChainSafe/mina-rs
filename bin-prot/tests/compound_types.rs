@@ -1,8 +1,8 @@
 // Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
-use serde::{Deserialize, Serialize};
 use bin_prot::integers::{integer, nat0};
+use serde::{Deserialize, Serialize};
 mod common;
 
 #[derive(Serialize, Deserialize, PartialEq, Debug)]

@@ -1,8 +1,8 @@
 // Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
-use difference::Changeset;
 use bin_prot::to_writer;
+use difference::Changeset;
 use std::fmt::Write;
 
 mod common;

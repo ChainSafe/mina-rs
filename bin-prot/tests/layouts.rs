@@ -1,11 +1,11 @@
 // Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
-use serde::de::Deserialize;
 use bin_prot::error::Result;
 use bin_prot::value::layout::{BinProtRule, Layout};
 use bin_prot::value::Value;
 use bin_prot::Deserializer;
+use serde::de::Deserialize;
 
 const SIMPLE_RULE: &str = r#"
 [
@@ -57,13 +57,21 @@ fn test_record_rule() {
     println!("{:?}", result);
     assert_eq!(
         result,
-        Value::Record(vec![
-            ("first".to_string(), Value::Int(0)),
-            (
-                "second".to_string(),
-                Value::Record(vec![("inner".to_string(), Value::Bool(true))].into_iter().collect())
-            )
-        ].into_iter().collect())
+        Value::Record(
+            vec![
+                ("first".to_string(), Value::Int(0)),
+                (
+                    "second".to_string(),
+                    Value::Record(
+                        vec![("inner".to_string(), Value::Bool(true))]
+                            .into_iter()
+                            .collect()
+                    )
+                )
+            ]
+            .into_iter()
+            .collect()
+        )
     )
 }
 
@@ -133,7 +141,11 @@ fn test_nested_sum_rule() {
         Value::Sum {
             name: "one".to_string(),
             index: 0,
-            value: Box::new(Value::Record(vec![("first".to_string(), Value::Int(5))].into_iter().collect()))
+            value: Box::new(Value::Record(
+                vec![("first".to_string(), Value::Int(5))]
+                    .into_iter()
+                    .collect()
+            ))
         }
     )
 }
