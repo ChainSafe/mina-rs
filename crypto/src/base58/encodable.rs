@@ -3,7 +3,7 @@
 
 use bs58::encode::EncodeBuilder;
 use serde::{Deserialize, Serialize};
-use serde_bin_prot::{from_reader, to_writer};
+use bin_prot::{from_reader, to_writer};
 
 pub use bs58::decode::Error;
 pub use bs58::{decode, encode};

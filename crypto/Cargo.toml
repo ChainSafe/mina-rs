@@ -8,6 +8,6 @@ edition = "2018"
 bs58 = { version = "0.4.0", features = ["check"] }
 serde = { version = "1.0.126", features = ["derive"] }
 serde-versions-derive = "0.0.4"
-serde-bin-prot = { git = "https://github.com/ChainSafe/serde-bin-prot", branch = "main" }
+bin-prot = { path = "../bin-prot" }
 thiserror = "1.0.25"
 blake2 = "0.9.1"
