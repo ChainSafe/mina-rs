@@ -1,3 +1,6 @@
+// Copyright 2020 ChainSafe Systems
+// SPDX-License-Identifier: Apache-2.0
+
 use crate::loose_deserializer::EnumData;
 use crate::value::Value;
 use serde::de::MapAccess;

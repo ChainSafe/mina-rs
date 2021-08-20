@@ -1,3 +1,6 @@
+// Copyright 2020 ChainSafe Systems
+// SPDX-License-Identifier: Apache-2.0
+
 ///
 /// These tests aim to follow the Jane Street OCaml tests as closely as possible
 /// The tests contain a lookup table for auto-generated integer encoding test cases

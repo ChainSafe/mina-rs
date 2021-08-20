@@ -1,3 +1,6 @@
+// Copyright 2020 ChainSafe Systems
+// SPDX-License-Identifier: Apache-2.0
+
 mod common;
 
 use crate::common::{BInner, BInner2, BInner3, BInner4, CInner, CInner2, A, B, B2, B3, C};
