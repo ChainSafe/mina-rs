@@ -5,4 +5,5 @@ members = [
 	"consensus",
 	"crypto",
 	"bin-prot",
+	"merkle-ledger",
 ]
