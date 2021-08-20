@@ -2,10 +2,10 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use super::prefixes::HashPrefix;
+use bin_prot::to_writer;
 use blake2::digest::VariableOutput;
 use blake2::VarBlake2b;
 use serde::Serialize;
-use serde_bin_prot::to_writer;
 
 const BLAKE_HASH_SIZE: usize = 32;
 
