@@ -33,7 +33,7 @@ impl From<HashBytes> for BaseHash {
 impl<'a> From<&'a [u8]> for BaseHash {
     fn from(b: &'a [u8]) -> Self {
         let mut o = BaseHash::default();
-        o.0.copy_from_slice(&b);
+        o.0.copy_from_slice(b);
         o
     }
 }
@@ -62,7 +62,7 @@ impl From<HashBytes> for StateHash {
 
 impl AsRef<[u8]> for StateHash {
     fn as_ref(&self) -> &[u8] {
-        &self.0.as_ref()
+        self.0.as_ref()
     }
 }
 
@@ -104,7 +104,7 @@ impl From<HashBytes> for EpochSeed {
 
 impl AsRef<[u8]> for EpochSeed {
     fn as_ref(&self) -> &[u8] {
-        &self.0.as_ref()
+        self.0.as_ref()
     }
 }
 
@@ -160,7 +160,7 @@ impl Hash for VrfOutputHash {
 
 impl AsRef<[u8]> for VrfOutputHash {
     fn as_ref(&self) -> &[u8] {
-        &self.0.as_ref()
+        self.0.as_ref()
     }
 }
 
