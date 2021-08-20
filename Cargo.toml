@@ -5,4 +5,5 @@ members = [
 	"consensus",
 	"crypto",
 	"serde-versions-derive",
+	"bin-prot",
 ]

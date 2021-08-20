@@ -1,0 +1,109 @@
+{
+  "layout_loc": "<unknown>",
+  "version_opt": null,
+  "type_decl": "<unknown>",
+  "bin_io_derived": true,
+  "bin_prot_rule":
+  [
+    "Sum",
+    [
+      {
+        "ctor_name": "Sca1lar_challenge",
+        "index": 0,
+        "ctor_args": [
+          [
+            "Reference",
+            [
+              "Resolved",
+              {
+                "source_type_decl": "type 'a t = { version: int ; t: 'a typ }",
+                "bin_io_derived": false,
+                "ref_rule": [
+                  "Record",
+                  [
+                    {
+                      "field_name": "version",
+                      "field_rule": [
+                        "Int"
+                      ]
+                    },
+                    {
+                      "field_name": "t",
+                      "field_rule": [
+                        "Reference",
+                        [
+                          "Resolved",
+                          {
+                            "source_type_decl": "type 'a typ = 'a t",
+                            "bin_io_derived": false,
+                            "ref_rule": [
+                              "Reference",
+                              [
+                                "Resolved",
+                                {
+                                  "source_type_decl": "'a t = ('a, Nat.N2.n) vec",
+                                  "bin_io_derived": false,
+                                  "ref_rule": [
+                                    "Reference",
+                                    [
+                                      "Resolved",
+                                      {
+                                        "source_type_decl": "type t = { version: int ; t: typ }",
+                                        "bin_io_derived": false,
+                                        "ref_rule": [
+                                          "Record",
+                                          [
+                                            {
+                                              "field_name": "version",
+                                              "field_rule": [
+                                                "Int"
+                                              ]
+                                            },
+                                            {
+                                              "field_name": "t",
+                                              "field_rule": [
+                                                "Reference",
+                                                [
+                                                  "Resolved",
+                                                  {
+                                                    "source_type_decl": "type typ = t",
+                                                    "bin_io_derived": false,
+                                                    "ref_rule": [
+                                                      "Reference",
+                                                      [
+                                                        "Resolved",
+                                                        {
+                                                          "source_type_decl": "Core_kernel.Int64.t",
+                                                          "bin_io_derived": true,
+                                                          "ref_rule": [
+                                                            "Int64"
+                                                          ]
+                                                        }
+                                                      ]
+                                                    ]
+                                                  }
+                                                ]
+                                              ]
+                                            }
+                                          ]
+                                        ]
+                                      }
+                                    ]
+                                  ]
+                                }
+                              ]
+                            ]
+                          }
+                        ]
+                      ]
+                    }
+                  ]
+                ]
+              }
+            ]
+          ]
+        ]
+      }
+    ]
+  ]
+}

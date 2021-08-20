@@ -26,7 +26,7 @@ impl Base58Encodable for PublicKey {
 pub mod tests {
 
     use super::*;
-    use serde_bin_prot::to_writer;
+    use bin_prot::to_writer;
 
     #[test]
     fn serialize_empty_keypair() {

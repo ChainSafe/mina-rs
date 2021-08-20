@@ -7,8 +7,8 @@ use std::io::Seek;
 use std::io::{stdin, stdout, Read};
 use std::path::PathBuf;
 
+use bin_prot::{error::Error, from_reader, integers::integer, to_writer};
 use serde::{Deserialize, Serialize};
-use serde_bin_prot::{error::Error, from_reader, integers::integer, to_writer};
 use structopt::StructOpt;
 
 #[derive(StructOpt)]
