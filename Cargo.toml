@@ -4,5 +4,6 @@ members = [
 	"bin_prot_checker",
 	"consensus",
 	"crypto",
+	"serde-versions-derive",
 	"bin-prot",
 ]
