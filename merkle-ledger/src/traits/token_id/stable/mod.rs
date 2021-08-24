@@ -1,4 +1,8 @@
 // Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
-pub mod stable;
+pub mod latest {
+    pub trait K {
+        type T;
+    }
+}

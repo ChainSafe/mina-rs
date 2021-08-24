@@ -1,3 +1,6 @@
+// Copyright 2020 ChainSafe Systems
+// SPDX-License-Identifier: Apache-2.0
+
 pub trait S {
     type RootHash;
     type Hash;
@@ -5,7 +8,7 @@ pub trait S {
     type Addr;
     type T;
     type Path;
-  
+
     fn depth(this: &Self::T) -> usize;
     // fn num_accounts
     // fn merkle_path_at_addr_exn

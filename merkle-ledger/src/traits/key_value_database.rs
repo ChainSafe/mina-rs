@@ -1,3 +1,6 @@
+// Copyright 2020 ChainSafe Systems
+// SPDX-License-Identifier: Apache-2.0
+
 use uuid::Uuid;
 
 pub trait KeyValueDatabase {
@@ -5,7 +8,7 @@ pub trait KeyValueDatabase {
     type Config;
 
     // include
-    // Key_value_database.Intf.Ident    
+    // Key_value_database.Intf.Ident
 
     fn create_checkpoint(other: &Self::T, s: &str) -> Self::T;
     fn get_uuid(other: &Self::T) -> Uuid;

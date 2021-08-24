@@ -1,10 +1,13 @@
+// Copyright 2020 ChainSafe Systems
+// SPDX-License-Identifier: Apache-2.0
+
 use direction::Direction;
 
 pub trait Address {
     type T: PartialEq + Eq + std::hash::Hash;
 
     fn of_byte_string(&self, str: &str) -> Self::T;
-    fn of_directions(&self, directions: &[Direction]) -> Self::T;    
+    fn of_directions(&self, directions: &[Direction]) -> Self::T;
     fn root(&self) -> Self::T;
     fn slice(&self, start: usize, end: usize) -> Self::T;
     fn get(&self, pos: usize) -> Self::T;
@@ -34,4 +37,4 @@ pub trait Range {
     // fn height(&self, ledger_depth:usize) -> usize;
     // fn to_int(&self) -> usize;
     // fn of_int_exn(&self, ledger_depth: usize, other: usize) -> Self::T;
-} 
+}

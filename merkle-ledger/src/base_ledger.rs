@@ -1,13 +1,16 @@
+// Copyright 2020 ChainSafe Systems
+// SPDX-License-Identifier: Apache-2.0
+
 use crate::sincable;
 
-pub trait S : sincable::S {
+pub trait S: sincable::S {
     type Key;
     type TokenId;
     type TokenIdSet;
     type AccountId;
     type AccountIdSet;
     type Index;
-  
+
     // fn to_list;
     // fn foldi_with_ignored_accounts;
     // fn iteri;

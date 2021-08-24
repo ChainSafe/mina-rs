@@ -1,6 +1,10 @@
+// Copyright 2020 ChainSafe Systems
+// SPDX-License-Identifier: Apache-2.0
+
+pub mod traits;
 pub use crate::address as Addr;
 
-pub mod Prefix {
+pub mod prefix {
     const GENERIC: u8 = 0xff;
     const ACCOUNT: u8 = 0xfe;
     pub fn hash(ledger_depth: u8, depth: u8) -> u8 {

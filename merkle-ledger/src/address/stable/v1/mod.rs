@@ -1,3 +1,6 @@
+// Copyright 2020 ChainSafe Systems
+// SPDX-License-Identifier: Apache-2.0
+
 use bitvec::prelude::*;
 
 use self::traits::Address;
@@ -37,7 +40,11 @@ impl Address for MerkleAddress {
         todo!()
     }
 
-    fn child(&self, ledger_depth: usize, direction: direction::Direction) -> anyhow::Result<Self::T> {
+    fn child(
+        &self,
+        ledger_depth: usize,
+        direction: direction::Direction,
+    ) -> anyhow::Result<Self::T> {
         todo!()
     }
 
@@ -81,4 +88,3 @@ impl Address for MerkleAddress {
         todo!()
     }
 }
-

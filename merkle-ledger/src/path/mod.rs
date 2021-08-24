@@ -1,3 +1,6 @@
+// Copyright 2020 ChainSafe Systems
+// SPDX-License-Identifier: Apache-2.0
+
 use std::marker::PhantomData;
 
 use self::traits::S;
@@ -17,12 +20,13 @@ pub trait Hash<H>: HKT<H> {
 }
 
 pub struct Make<U: Hash<H>, H> {
-    _a : PhantomData<U>,
-    _b : PhantomData<H>
+    _a: PhantomData<U>,
+    _b: PhantomData<H>,
 }
 
-impl<U: Hash<H>, H> S for Make<U, H> 
-    where H : std::hash::Hash + Eq
+impl<U: Hash<H>, H> S for Make<U, H>
+where
+    H: std::hash::Hash + Eq,
 {
     type Hash = H;
 

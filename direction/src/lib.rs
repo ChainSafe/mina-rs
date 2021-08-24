@@ -1,14 +1,22 @@
-use std::convert::TryFrom;
+// Copyright 2020 ChainSafe Systems
+// SPDX-License-Identifier: Apache-2.0
+
 use anyhow::anyhow;
+use std::convert::TryFrom;
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum Direction {
-    Left, Right
+    Left,
+    Right,
 }
 
 impl From<bool> for Direction {
     fn from(i: bool) -> Self {
-        if i { Self::Left } else { Self::Right }
+        if i {
+            Self::Left
+        } else {
+            Self::Right
+        }
     }
 }
 
@@ -40,14 +48,14 @@ impl TryFrom<u8> for Direction {
 }
 
 impl Direction {
-    pub fn map<T> (&self, left: T, right: T) -> T {
+    pub fn map<T>(&self, left: T, right: T) -> T {
         match self {
             Self::Left => left,
             Self::Right => right,
         }
     }
 
-    pub fn flip (&self) -> Self {
+    pub fn flip(&self) -> Self {
         self.map(Self::Right, Self::Left)
     }
 
@@ -57,8 +65,8 @@ impl Direction {
 
     pub fn to_bool(&self) -> bool {
         (*self).into()
-    }  
-    
+    }
+
     pub fn to_int(&self) -> u8 {
         (*self).into()
     }
