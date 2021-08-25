@@ -43,7 +43,7 @@ impl<'de, 'a, R: Read> DS<R> {
                                 // We need this to select which variant layout to use
                                 // when deserializing the variants data
                                 let index = self.rdr.bin_read_variant_index()?;
-                                iter.branch(index.into()).expect("invalid branch index");
+                                iter.branch(index.into())?;
                                 return visitor.visit_enum(ValueEnum::new(
                                     self,
                                     summands[index as usize].clone(),
@@ -53,28 +53,18 @@ impl<'de, 'a, R: Read> DS<R> {
                                 return self.deserialize_bool(visitor);
                             }
                             BinProtRule::Option(_) => {
-                                println!("read option.");
-
                                 let index = self.rdr.bin_read_variant_index()?; // 0 or 1
                                 match index {
                                     0 => {
-                                        iter.branch(0).expect("invalid branch index");
-                                        println!("Reading None");
+                                        iter.branch(0)?;
                                         return visitor.visit_none()
                                     }
                                     1 => {
-                                        iter.branch(1).expect("invalid branch index");
-                                        println!("Reading Some");
+                                        iter.branch(1)?;
                                         return visitor.visit_some(self)
                                     },
                                     _ => {
-                                        // dump a bunch of bytes for debug
-                                        for _ in 0..20 {
-                                            print!("{:02x} ", self.rdr.read_u8()?);
-                                        }
-                                        return Err(Error::Custom {
-                                            message: format!("Invalid variant index for Option, expected 1 or 0 got {}", index),
-                                        })
+                                        return Err(Error::InvalidOptionByte{ got: index })
                                     }
                                 }
 
@@ -111,16 +101,11 @@ impl<'de, 'a, R: Read> DS<R> {
                             | BinProtRule::SelfReference(_)
                             | BinProtRule::TypeClosure(_, _)
                             | BinProtRule::TypeAbstraction(_, _) => {
-                                return Err(Error::Custom {
-                                    message: format!("No strategy to deserialize {:?}", rule),
-                                })
+                                return Err(Error::UnimplementedRule);
                             } // Don't know how to implement these yet
                             BinProtRule::Custom(_) => {
                                 // the traverse function should never produce this
-                                return Err(Error::Custom {
-                                    message: "Cannot deserialize custom without providing context"
-                                        .to_string(),
-                                });
+                                return Err(Error::LayoutIteratorError);
                             }
                             BinProtRule::CustomForPath(path, rules) => {
                                 // here is where custom deser methods can be looked up by path
@@ -141,10 +126,7 @@ impl<'de, 'a, R: Read> DS<R> {
 	                                        "Pickles_types.Vector.Vector17" => 17,
 	                                        "Pickles_types.Vector.Vector18" => 18,
 	                                        _ => {
-	                                            return Err(Error::Custom {
-	                                                message: "Unknown custom vector type"
-	                                                    .to_string(),
-	                                            })
+	                                            return Err(Error::UnknownCustomType{ typ: path })
 	                                        }
 	                                    };
 
@@ -170,14 +152,10 @@ impl<'de, 'a, R: Read> DS<R> {
                         }
                     }
                     Err(_e) => {
-                        return Err(Error::Custom {
-                            message: "Iterator errored...".to_string(),
-                        })
+                        return Err(Error::LayoutIteratorError)
                     }
                     Ok(None) => {
-                        return Err(Error::Custom {
-                            message: "Unxepected end of layout".to_string(),
-                        })
+                        return Err(Error::UnexpectedEndOfLayout)
                     }
                 }
             }

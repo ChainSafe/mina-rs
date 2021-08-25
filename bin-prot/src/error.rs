@@ -45,6 +45,9 @@ pub enum Error {
     #[error("Invalid byte sequence when attempting to deserialize utf-8 char: {bytes:?}")]
     InvalidUtf8 { bytes: Vec<u8> },
 
+    #[error("Invalid byte when deserializing option. First byte must be 0 or 1, got {got}")]
+    InvalidOptionByte { got: u8 },
+
     /// Invalid integer prefix byte
     #[error("Invalid byte when deserializing an integer. First byte must be a size flag or a value < 0x80")]
     InvalidIntegerByte { byte: u8 },
@@ -66,6 +69,28 @@ pub enum Error {
         "Functionality will not be implemented. Probably it does not make sense for this format"
     )]
     WontImplement,
+
+
+    /////// Loose deserialization specific errors
+
+    /// Error traversing the layout for loose deserialization
+    #[error("Layout traversal error")]
+    LayoutTraversalError(#[from] crate::value::layout::traverse::Error),    
+
+    #[error("Unexpected end of layout")]
+    UnexpectedEndOfLayout,
+
+    #[error("Layout iterator error")]
+    LayoutIteratorError,
+
+    #[error("Unknown custom type {typ}")]
+    UnknownCustomType { typ: String },
+
+    /// There is no logic implemented to deserialize this rule yet
+    #[error("Unimplemented rule")]
+    UnimplementedRule,
+
+    //////////////////////////////////
 
     /// Some user-defined error occurred.
     #[error("{message}")]
