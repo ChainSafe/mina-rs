@@ -117,6 +117,7 @@ impl BranchingIterator for BinProtRuleIterator {
                         RuleRef::Resolved(payload) => {
                             self.stack.push(*payload.ref_rule);
                             self.current_module_path = Some(payload.source_module_path);
+                            return self.next();
                         }
                     },
                     BinProtRule::String
