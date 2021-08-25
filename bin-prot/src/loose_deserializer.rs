@@ -110,6 +110,7 @@ impl<'de, 'a, R: Read> DS<R> {
                             BinProtRule::CustomForPath(path, rules) => {
                                 // here is where custom deser methods can be looked up by path
                                 match path.as_str() {
+                                    // These vector types will be handled like any other sequence
 	                                "Pickles_type.Vector.Vector2" // the missing 's' on 'types' here is intention due to a big in layout producing code
                                     |"Pickles_types.Vector.Vector2" // in case it gets fixed :P
 	                                | "Pickles_types.Vector.Vector4"
@@ -117,7 +118,6 @@ impl<'de, 'a, R: Read> DS<R> {
 	                                | "Pickles_types.Vector.Vector17"
 	                                | "Pickles_types.Vector.Vector18" => {
 	                                    let element_rule = rules.first().unwrap();
-
 	                                    let len = match path.as_str() {
 	                                        "Pickles_type.Vector.Vector2"
                                             | "Pickles_types.Vector.Vector2" => 2,
@@ -125,11 +125,8 @@ impl<'de, 'a, R: Read> DS<R> {
 	                                        "Pickles_types.Vector.Vector8" => 8,
 	                                        "Pickles_types.Vector.Vector17" => 17,
 	                                        "Pickles_types.Vector.Vector18" => 18,
-	                                        _ => {
-	                                            return Err(Error::UnknownCustomType{ typ: path })
-	                                        }
+	                                        _ => unreachable!()
 	                                    };
-
 	                                    iter.push(element_rule.clone());
 	                                    iter.repeat(len);
 	                                    let result = visitor.visit_seq(SeqAccess::new(self, len));
@@ -138,15 +135,23 @@ impl<'de, 'a, R: Read> DS<R> {
 
 	                                    return result;
 	                                }
-
-	                                _ => {
-	                                    // all the others are just BigInt probably so burn 32 bytes
-	                                    for _ in 0..(8 * 4) {
-	                                        // TODO: Read these and wrap as a proper Value variant
-	                                        self.rdr.read_u8()?;
+                                    "Ledger_hash0" // these are all BigInt (32 bytes)
+                                    | "State_hash"
+                                    | "Pending_coinbase.Stack_hash"
+                                    | "State_body_hash"
+                                    | "Pending_coinbase.Hash_builder"
+                                    | "Snark_params.Make_inner_curve_scalar"
+                                    | "Snark_params.Tick"
+                                    | "Epoch_seed"
+                                    | "Zexe_backend.Zexe_backend_common.Stable.Field"
+                                    | "Pending_coinbase.Coinbase_stack" => {                         
+	                                   let mut buf: [u8; 32] = [0x00; 32];
+                                        for i in 0..32 {
+	                                        buf[i] = self.rdr.read_u8()?;
 	                                    }
-                                        return visitor.visit_unit();
+                                        return visitor.visit_bytes(&buf);
 	                                }
+                                    _ => return Err(Error::UnknownCustomType{ typ: path })
 	                            }
                             }
                         }
