@@ -1,7 +1,6 @@
 // Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
-use bin_prot::error::Result;
 use bin_prot::value::layout::{BinProtRule, Layout};
 use bin_prot::value::Value;
 use bin_prot::Deserializer;
@@ -160,30 +159,23 @@ const OPTION_RULE: &str = r#"
 #[test]
 fn test_option_rule() {
     let rule: BinProtRule = serde_json::from_str(OPTION_RULE).unwrap();
-    
+
     let example_none = vec![0x00]; // None
 
     let mut de = Deserializer::from_reader_with_layout(example_none.as_slice(), rule.clone());
     let result: Value = Deserialize::deserialize(&mut de).expect("Failed to deserialize");
     println!("{:?}", result);
-    assert_eq!(
-        result,
-        Value::Option(None)
-    );
+    assert_eq!(result, Value::Option(None));
 
     let example_some = vec![0x01, 0x07]; // Some(7)
 
     let mut de = Deserializer::from_reader_with_layout(example_some.as_slice(), rule);
     let result: Value = Deserialize::deserialize(&mut de).expect("Failed to deserialize");
     println!("{:?}", result);
-    assert_eq!(
-        result,
-        Value::Option(Some(Box::new(Value::Int(0x07))))
-    )
+    assert_eq!(result, Value::Option(Some(Box::new(Value::Int(0x07)))))
 }
 
-const BLOCK_LAYOUT: &str =
-    std::include_str!("../../layouts/external_transition.json");
+const BLOCK_LAYOUT: &str = std::include_str!("../../layouts/external_transition.json");
 const BLOCK_BYTES: &[u8] = std::include_bytes!("fixtures/block");
 
 #[test]
@@ -194,5 +186,13 @@ fn smoke_test_deserialize_block() {
     let rule = Layout::deserialize(deserializer).unwrap().bin_prot_rule;
 
     let mut de = Deserializer::from_reader_with_layout(BLOCK_BYTES, rule);
-    let _result: Value = Deserialize::deserialize(&mut de).expect("Failed to deserialize block");
+    let block: Value = Deserialize::deserialize(&mut de).expect("Failed to deserialize block");
+
+    assert_eq!(
+        block["t"]["protocol_state"]["t"]["t"]["previous_state_hash"]["t"],
+        Value::String(vec![
+            30, 76, 197, 215, 115, 43, 42, 245, 198, 30, 253, 134, 49, 117, 82, 71, 182, 181, 180,
+            95, 18, 250, 46, 1, 25, 3, 78, 193, 57, 152, 116, 49,
+        ])
+    );
 }
