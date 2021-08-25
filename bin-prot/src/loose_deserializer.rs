@@ -53,7 +53,31 @@ impl<'de, 'a, R: Read> DS<R> {
                                 return self.deserialize_bool(visitor);
                             }
                             BinProtRule::Option(_) => {
-                                return self.deserialize_option(visitor);
+                                println!("read option.");
+
+                                let index = self.rdr.bin_read_variant_index()?; // 0 or 1
+                                match index {
+                                    0 => {
+                                        iter.branch(0).expect("invalid branch index");
+                                        println!("Reading None");
+                                        return visitor.visit_none()
+                                    }
+                                    1 => {
+                                        iter.branch(1).expect("invalid branch index");
+                                        println!("Reading Some");
+                                        return visitor.visit_some(self)
+                                    },
+                                    _ => {
+                                        // dump a bunch of bytes for debug
+                                        for _ in 0..20 {
+                                            print!("{:02x} ", self.rdr.read_u8()?);
+                                        }
+                                        return Err(Error::Custom {
+                                            message: format!("Invalid variant index for Option, expected 1 or 0 got {}", index),
+                                        })
+                                    }
+                                }
+
                             }
                             BinProtRule::Reference(_) => {} // continue iterator
                             BinProtRule::String => {
@@ -102,6 +126,7 @@ impl<'de, 'a, R: Read> DS<R> {
                                 // here is where custom deser methods can be looked up by path
                                 match path.as_str() {
 	                                "Pickles_type.Vector.Vector2" // the missing 's' on 'types' here is intention due to a big in layout producing code
+                                    |"Pickles_types.Vector.Vector2" // in case it gets fixed :P
 	                                | "Pickles_types.Vector.Vector4"
 	                                | "Pickles_types.Vector.Vector8"
 	                                | "Pickles_types.Vector.Vector17"
@@ -109,7 +134,8 @@ impl<'de, 'a, R: Read> DS<R> {
 	                                    let element_rule = rules.first().unwrap();
 
 	                                    let len = match path.as_str() {
-	                                        "Pickles_type.Vector.Vector2" => 2,
+	                                        "Pickles_type.Vector.Vector2"
+                                            | "Pickles_types.Vector.Vector2" => 2,
 	                                        "Pickles_types.Vector.Vector4" => 4,
 	                                        "Pickles_types.Vector.Vector8" => 8,
 	                                        "Pickles_types.Vector.Vector17" => 17,
@@ -137,6 +163,7 @@ impl<'de, 'a, R: Read> DS<R> {
 	                                        // TODO: Read these and wrap as a proper Value variant
 	                                        self.rdr.read_u8()?;
 	                                    }
+                                        return visitor.visit_unit();
 	                                }
 	                            }
                             }

@@ -59,7 +59,7 @@ impl BranchingIterator for BinProtRuleIterator {
         match top {
             Some(rule) => {
                 match rule {
-                    BinProtRule::Option(r) | BinProtRule::List(r) => {
+                    BinProtRule::List(r) => {
                         // the code driving the iterator should call `repeat` if it encounters a list
                         self.stack.push(*r);
                     }
@@ -74,6 +74,10 @@ impl BranchingIterator for BinProtRuleIterator {
                         // don't add to the stack. Add to the branch field instead
                         // this must be resolved by calling `branch` before the iterator can continue
                         self.branch = Some(summands.into_iter().map(|s| s.ctor_args).collect());
+                    }
+                    BinProtRule::Option(r) => {
+                        // Option is a special case of a Sum where the None variant contain nothing
+                        self.branch = Some(vec![vec![], vec![*r]]);
                     }
                     BinProtRule::Polyvar(polyvars) => {
                         // these are pretty much anonymous enum/sum types and should be handled the same way
