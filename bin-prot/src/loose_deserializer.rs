@@ -145,8 +145,8 @@ impl<'de, 'a, R: Read> DS<R> {
                                 | "Zexe_backend.Zexe_backend_common.Stable.Field"
                                 | "Pending_coinbase.Coinbase_stack" => {                         
                                    let mut buf: [u8; 32] = [0x00; 32];
-                                    for i in 0..32 {
-                                        buf[i] = self.rdr.read_u8()?;
+                                    for elem in &mut buf {
+                                        *elem = self.rdr.read_u8()?;
                                     }
                                     visitor.visit_bytes(&buf)
                                 }
