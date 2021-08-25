@@ -26,7 +26,7 @@ fn test_simple_rule() {
 
     let mut de = Deserializer::from_reader_with_layout(example.as_slice(), rule);
     let result: Value = Deserialize::deserialize(&mut de).expect("Failed to deserialize");
-    println!("{:?}", result);
+
     assert_eq!(
         result,
         Value::Option(Some(Box::new(Value::Tuple(vec![
@@ -53,7 +53,7 @@ fn test_record_rule() {
 
     let mut de = Deserializer::from_reader_with_layout(example.as_slice(), rule);
     let result: Value = Deserialize::deserialize(&mut de).expect("Failed to deserialize");
-    println!("{:?}", result);
+
     assert_eq!(
         result,
         Value::Record(
@@ -71,6 +71,12 @@ fn test_record_rule() {
             .into_iter()
             .collect()
         )
+    );
+
+    // also test using the indexing
+    assert_eq!(
+        result["second"]["inner"],
+        Value::Bool(true)
     )
 }
 
@@ -171,7 +177,7 @@ fn test_option_rule() {
 
     let mut de = Deserializer::from_reader_with_layout(example_some.as_slice(), rule);
     let result: Value = Deserialize::deserialize(&mut de).expect("Failed to deserialize");
-    println!("{:?}", result);
+
     assert_eq!(result, Value::Option(Some(Box::new(Value::Int(0x07)))))
 }
 

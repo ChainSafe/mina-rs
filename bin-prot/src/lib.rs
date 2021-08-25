@@ -17,3 +17,5 @@ pub use de::{from_reader, Deserializer};
 pub use read_ext::ReadBinProtExt;
 pub use ser::{to_writer, Serializer};
 pub use write_ext::WriteBinProtExt;
+pub use value::Value;
+pub use value::layout::BinProtRule;
