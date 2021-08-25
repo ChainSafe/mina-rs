@@ -24,9 +24,7 @@ impl<'de, 'a, R: Read> DS<R> {
             match iter.next() {
                 Ok(Some(rule)) => {
                     match rule {
-                        BinProtRule::Unit => {
-                            self.deserialize_unit(visitor)
-                        }
+                        BinProtRule::Unit => self.deserialize_unit(visitor),
                         BinProtRule::Record(fields) => {
                             // Grab the field names from the rule to pass to the map access
                             visitor.visit_map(MapAccess::new(
@@ -43,14 +41,10 @@ impl<'de, 'a, R: Read> DS<R> {
                             // when deserializing the variants data
                             let index = self.rdr.bin_read_variant_index()?;
                             iter.branch(index.into())?;
-                            visitor.visit_enum(ValueEnum::new(
-                                self,
-                                summands[index as usize].clone(),
-                            ))
+                            visitor
+                                .visit_enum(ValueEnum::new(self, summands[index as usize].clone()))
                         }
-                        BinProtRule::Bool => {
-                            self.deserialize_bool(visitor)
-                        }
+                        BinProtRule::Bool => self.deserialize_bool(visitor),
                         BinProtRule::Option(_) => {
                             let index = self.rdr.bin_read_variant_index()?; // 0 or 1
                             match index {
@@ -61,16 +55,11 @@ impl<'de, 'a, R: Read> DS<R> {
                                 1 => {
                                     iter.branch(1)?;
                                     visitor.visit_some(self)
-                                },
-                                _ => {
-                                    Err(Error::InvalidOptionByte{ got: index })
                                 }
+                                _ => Err(Error::InvalidOptionByte { got: index }),
                             }
-
                         }
-                        BinProtRule::String => {
-                            visitor.visit_bytes(&self.rdr.bin_read_bytes()?)
-                        }
+                        BinProtRule::String => visitor.visit_bytes(&self.rdr.bin_read_bytes()?),
                         BinProtRule::Float => self.deserialize_f64(visitor),
                         BinProtRule::Char => {
                             let c = self.rdr.read_u8()?;
@@ -87,9 +76,7 @@ impl<'de, 'a, R: Read> DS<R> {
                         BinProtRule::Int
                         | BinProtRule::Int32
                         | BinProtRule::Int64
-                        | BinProtRule::NativeInt => {
-                            visitor.visit_i64(self.rdr.bin_read_integer()?)
-                        }
+                        | BinProtRule::NativeInt => visitor.visit_i64(self.rdr.bin_read_integer()?),
                         BinProtRule::Polyvar(_)
                         | BinProtRule::Vec(_, _)
                         | BinProtRule::Nat0
@@ -99,9 +86,7 @@ impl<'de, 'a, R: Read> DS<R> {
                         | BinProtRule::SelfReference(_)
                         | BinProtRule::TypeClosure(_, _)
                         | BinProtRule::TypeAbstraction(_, _)
-                        | BinProtRule::Reference(_) => {
-                            Err(Error::UnimplementedRule)
-                        } // Don't know how to implement these yet
+                        | BinProtRule::Reference(_) => Err(Error::UnimplementedRule), // Don't know how to implement these yet
                         BinProtRule::Custom(_) => {
                             // the traverse function should never produce this
                             Err(Error::LayoutIteratorError)
@@ -155,12 +140,8 @@ impl<'de, 'a, R: Read> DS<R> {
                         }
                     }
                 }
-                Err(_e) => {
-                    Err(Error::LayoutIteratorError)
-                }
-                Ok(None) => {
-                    Err(Error::UnexpectedEndOfLayout)
-                }
+                Err(_e) => Err(Error::LayoutIteratorError),
+                Ok(None) => Err(Error::UnexpectedEndOfLayout),
             }
         } else {
             Err(Error::WontImplement)

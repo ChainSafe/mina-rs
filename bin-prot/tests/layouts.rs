@@ -74,10 +74,7 @@ fn test_record_rule() {
     );
 
     // also test using the indexing
-    assert_eq!(
-        result["second"]["inner"],
-        Value::Bool(true)
-    )
+    assert_eq!(result["second"]["inner"], Value::Bool(true))
 }
 
 const SUM_RULE: &str = r#"

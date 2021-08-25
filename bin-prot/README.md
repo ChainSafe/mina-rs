@@ -36,7 +36,7 @@ fn main() {
 ### Loosely Typed
 
 Despite bin_prot being a non-self-describing format it is possible to deserialize into a loosely typed value if a layout descriptor file is provided. The layout files are typically written in JSON and describe the nested data structure that 
-is to be deserialized.
+is to be deserialized. For the specification of the BinProtRule type see src/value/layout/mod.rs.
 
 These are created using the `Deserializer::from_reader_with_layout` constructor.
 
