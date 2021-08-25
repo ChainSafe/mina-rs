@@ -21,147 +21,145 @@ impl<'de, 'a, R: Read> DS<R> {
         V: Visitor<'de>,
     {
         if let Some(iter) = &mut self.layout_iter {
-            loop {
-                match iter.next() {
-                    Ok(Some(rule)) => {
-                        match rule {
-                            BinProtRule::Unit => {
-                                return self.deserialize_unit(visitor);
-                            }
-                            BinProtRule::Record(fields) => {
-                                // Grab the field names from the rule to pass to the map access
-                                return visitor.visit_map(MapAccess::new(
-                                    self,
-                                    fields.into_iter().map(|f| f.field_name).rev().collect(),
-                                ));
-                            }
-                            BinProtRule::Tuple(items) => {
-                                return visitor.visit_seq(SeqAccess::new(self, items.len()));
-                            }
-                            BinProtRule::Sum(summands) => {
-                                // read the enum variant index.
-                                // We need this to select which variant layout to use
-                                // when deserializing the variants data
-                                let index = self.rdr.bin_read_variant_index()?;
-                                iter.branch(index.into())?;
-                                return visitor.visit_enum(ValueEnum::new(
-                                    self,
-                                    summands[index as usize].clone(),
-                                ));
-                            }
-                            BinProtRule::Bool => {
-                                return self.deserialize_bool(visitor);
-                            }
-                            BinProtRule::Option(_) => {
-                                let index = self.rdr.bin_read_variant_index()?; // 0 or 1
-                                match index {
-                                    0 => {
-                                        iter.branch(0)?;
-                                        return visitor.visit_none()
-                                    }
-                                    1 => {
-                                        iter.branch(1)?;
-                                        return visitor.visit_some(self)
-                                    },
-                                    _ => {
-                                        return Err(Error::InvalidOptionByte{ got: index })
-                                    }
+            match iter.next() {
+                Ok(Some(rule)) => {
+                    match rule {
+                        BinProtRule::Unit => {
+                            self.deserialize_unit(visitor)
+                        }
+                        BinProtRule::Record(fields) => {
+                            // Grab the field names from the rule to pass to the map access
+                            visitor.visit_map(MapAccess::new(
+                                self,
+                                fields.into_iter().map(|f| f.field_name).rev().collect(),
+                            ))
+                        }
+                        BinProtRule::Tuple(items) => {
+                            visitor.visit_seq(SeqAccess::new(self, items.len()))
+                        }
+                        BinProtRule::Sum(summands) => {
+                            // read the enum variant index.
+                            // We need this to select which variant layout to use
+                            // when deserializing the variants data
+                            let index = self.rdr.bin_read_variant_index()?;
+                            iter.branch(index.into())?;
+                            visitor.visit_enum(ValueEnum::new(
+                                self,
+                                summands[index as usize].clone(),
+                            ))
+                        }
+                        BinProtRule::Bool => {
+                            self.deserialize_bool(visitor)
+                        }
+                        BinProtRule::Option(_) => {
+                            let index = self.rdr.bin_read_variant_index()?; // 0 or 1
+                            match index {
+                                0 => {
+                                    iter.branch(0)?;
+                                    visitor.visit_none()
                                 }
+                                1 => {
+                                    iter.branch(1)?;
+                                    visitor.visit_some(self)
+                                },
+                                _ => {
+                                    Err(Error::InvalidOptionByte{ got: index })
+                                }
+                            }
 
-                            }
-                            BinProtRule::Reference(_) => {} // continue iterator
-                            BinProtRule::String => {
-                                return visitor.visit_bytes(&self.rdr.bin_read_bytes()?);
-                            }
-                            BinProtRule::Float => return self.deserialize_f64(visitor),
-                            BinProtRule::Char => {
-                                let c = self.rdr.read_u8()?;
-                                return visitor.visit_char(c as char);
-                            }
-                            BinProtRule::List(_) => {
-                                // read the length
-                                let len = self.rdr.bin_read_nat0()?;
-                                // request the iterator repeats the list elements the current number of times
-                                iter.repeat(len);
-                                // read the elements
-                                return visitor.visit_seq(SeqAccess::new(self, len));
-                            }
-                            BinProtRule::Int
-                            | BinProtRule::Int32
-                            | BinProtRule::Int64
-                            | BinProtRule::NativeInt => {
-                                return visitor.visit_i64(self.rdr.bin_read_integer()?);
-                            }
-                            BinProtRule::Polyvar(_)
-                            | BinProtRule::Vec(_, _)
-                            | BinProtRule::Nat0
-                            | BinProtRule::Hashtable(_)
-                            | BinProtRule::TypeVar(_)
-                            | BinProtRule::Bigstring
-                            | BinProtRule::SelfReference(_)
-                            | BinProtRule::TypeClosure(_, _)
-                            | BinProtRule::TypeAbstraction(_, _) => {
-                                return Err(Error::UnimplementedRule);
-                            } // Don't know how to implement these yet
-                            BinProtRule::Custom(_) => {
-                                // the traverse function should never produce this
-                                return Err(Error::LayoutIteratorError);
-                            }
-                            BinProtRule::CustomForPath(path, rules) => {
-                                // here is where custom deser methods can be looked up by path
-                                match path.as_str() {
-                                    // These vector types will be handled like any other sequence
-	                                "Pickles_type.Vector.Vector2" // the missing 's' on 'types' here is intention due to a big in layout producing code
-                                    |"Pickles_types.Vector.Vector2" // in case it gets fixed :P
-	                                | "Pickles_types.Vector.Vector4"
-	                                | "Pickles_types.Vector.Vector8"
-	                                | "Pickles_types.Vector.Vector17"
-	                                | "Pickles_types.Vector.Vector18" => {
-	                                    let element_rule = rules.first().unwrap();
-	                                    let len = match path.as_str() {
-	                                        "Pickles_type.Vector.Vector2"
-                                            | "Pickles_types.Vector.Vector2" => 2,
-	                                        "Pickles_types.Vector.Vector4" => 4,
-	                                        "Pickles_types.Vector.Vector8" => 8,
-	                                        "Pickles_types.Vector.Vector17" => 17,
-	                                        "Pickles_types.Vector.Vector18" => 18,
-	                                        _ => unreachable!()
-	                                    };
-	                                    iter.push(element_rule.clone());
-	                                    iter.repeat(len);
-	                                    let result = visitor.visit_seq(SeqAccess::new(self, len));
-	                                    // burn the zero byte terminator
-	                                    assert!(self.rdr.read_u8()? == 0x00);
+                        }
+                        BinProtRule::String => {
+                            visitor.visit_bytes(&self.rdr.bin_read_bytes()?)
+                        }
+                        BinProtRule::Float => self.deserialize_f64(visitor),
+                        BinProtRule::Char => {
+                            let c = self.rdr.read_u8()?;
+                            visitor.visit_char(c as char)
+                        }
+                        BinProtRule::List(_) => {
+                            // read the length
+                            let len = self.rdr.bin_read_nat0()?;
+                            // request the iterator repeats the list elements the current number of times
+                            iter.repeat(len);
+                            // read the elements
+                            visitor.visit_seq(SeqAccess::new(self, len))
+                        }
+                        BinProtRule::Int
+                        | BinProtRule::Int32
+                        | BinProtRule::Int64
+                        | BinProtRule::NativeInt => {
+                            visitor.visit_i64(self.rdr.bin_read_integer()?)
+                        }
+                        BinProtRule::Polyvar(_)
+                        | BinProtRule::Vec(_, _)
+                        | BinProtRule::Nat0
+                        | BinProtRule::Hashtable(_)
+                        | BinProtRule::TypeVar(_)
+                        | BinProtRule::Bigstring
+                        | BinProtRule::SelfReference(_)
+                        | BinProtRule::TypeClosure(_, _)
+                        | BinProtRule::TypeAbstraction(_, _)
+                        | BinProtRule::Reference(_) => {
+                            Err(Error::UnimplementedRule)
+                        } // Don't know how to implement these yet
+                        BinProtRule::Custom(_) => {
+                            // the traverse function should never produce this
+                            Err(Error::LayoutIteratorError)
+                        }
+                        BinProtRule::CustomForPath(path, rules) => {
+                            // here is where custom deser methods can be looked up by path
+                            match path.as_str() {
+                                // These vector types will be handled like any other sequence
+                                "Pickles_type.Vector.Vector2" // the missing 's' on 'types' here is intention due to a big in layout producing code
+                                |"Pickles_types.Vector.Vector2" // in case it gets fixed :P
+                                | "Pickles_types.Vector.Vector4"
+                                | "Pickles_types.Vector.Vector8"
+                                | "Pickles_types.Vector.Vector17"
+                                | "Pickles_types.Vector.Vector18" => {
+                                    let element_rule = rules.first().unwrap();
+                                    let len = match path.as_str() {
+                                        "Pickles_type.Vector.Vector2"
+                                        | "Pickles_types.Vector.Vector2" => 2,
+                                        "Pickles_types.Vector.Vector4" => 4,
+                                        "Pickles_types.Vector.Vector8" => 8,
+                                        "Pickles_types.Vector.Vector17" => 17,
+                                        "Pickles_types.Vector.Vector18" => 18,
+                                        _ => unreachable!()
+                                    };
+                                    iter.push(element_rule.clone());
+                                    iter.repeat(len);
+                                    let result = visitor.visit_seq(SeqAccess::new(self, len));
+                                    // burn the zero byte terminator
+                                    assert!(self.rdr.read_u8()? == 0x00);
 
-	                                    return result;
-	                                }
-                                    "Ledger_hash0" // these are all BigInt (32 bytes)
-                                    | "State_hash"
-                                    | "Pending_coinbase.Stack_hash"
-                                    | "State_body_hash"
-                                    | "Pending_coinbase.Hash_builder"
-                                    | "Snark_params.Make_inner_curve_scalar"
-                                    | "Snark_params.Tick"
-                                    | "Epoch_seed"
-                                    | "Zexe_backend.Zexe_backend_common.Stable.Field"
-                                    | "Pending_coinbase.Coinbase_stack" => {                         
-	                                   let mut buf: [u8; 32] = [0x00; 32];
-                                        for i in 0..32 {
-	                                        buf[i] = self.rdr.read_u8()?;
-	                                    }
-                                        return visitor.visit_bytes(&buf);
-	                                }
-                                    _ => return Err(Error::UnknownCustomType{ typ: path })
-	                            }
+                                    result
+                                }
+                                "Ledger_hash0" // these are all BigInt (32 bytes)
+                                | "State_hash"
+                                | "Pending_coinbase.Stack_hash"
+                                | "State_body_hash"
+                                | "Pending_coinbase.Hash_builder"
+                                | "Snark_params.Make_inner_curve_scalar"
+                                | "Snark_params.Tick"
+                                | "Epoch_seed"
+                                | "Zexe_backend.Zexe_backend_common.Stable.Field"
+                                | "Pending_coinbase.Coinbase_stack" => {                         
+                                   let mut buf: [u8; 32] = [0x00; 32];
+                                    for i in 0..32 {
+                                        buf[i] = self.rdr.read_u8()?;
+                                    }
+                                    visitor.visit_bytes(&buf)
+                                }
+                                _ => Err(Error::UnknownCustomType{ typ: path })
                             }
                         }
                     }
-                    Err(_e) => {
-                        return Err(Error::LayoutIteratorError)
-                    }
-                    Ok(None) => {
-                        return Err(Error::UnexpectedEndOfLayout)
-                    }
+                }
+                Err(_e) => {
+                    Err(Error::LayoutIteratorError)
+                }
+                Ok(None) => {
+                    Err(Error::UnexpectedEndOfLayout)
                 }
             }
         } else {
