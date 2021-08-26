@@ -20,6 +20,7 @@ impl From<bool> for Direction {
     }
 }
 
+#[allow(clippy::from_over_into)]
 impl Into<bool> for Direction {
     fn into(self) -> bool {
         match self {
@@ -29,6 +30,7 @@ impl Into<bool> for Direction {
     }
 }
 
+#[allow(clippy::from_over_into)]
 impl Into<u8> for Direction {
     fn into(self) -> u8 {
         self.map(0, 1)
