@@ -157,7 +157,7 @@ impl BranchingIterator for BinProtRuleIterator {
             let s = branches
                 .get_mut(branch)
                 .ok_or(Error::CannotBranchAtLocation)?;
-            self.stack.extend(s.drain(0..));
+            self.stack.extend(s.drain(0..).rev());
             Ok(())
         } else {
             Err(Error::CannotBranchAtLocation)
