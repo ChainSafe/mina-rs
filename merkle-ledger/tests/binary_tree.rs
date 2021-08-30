@@ -1,3 +1,6 @@
+// Copyright 2020 ChainSafe Systems
+// SPDX-License-Identifier: Apache-2.0
+
 use std::marker::PhantomData;
 
 use merkle_ledger::traits;
@@ -41,9 +44,9 @@ where
                 panic!("Expected to recurse on a non-empty list");
             }
         } else {
-            let (left_tree, right_list, left_height) = Make::<A, H>::go(list, (num_nodes / 2));
+            let (left_tree, right_list, left_height) = Make::<A, H>::go(list, num_nodes / 2);
             let (right_tree, remaining_nodes, right_height) =
-                Make::<A, H>::go(right_list, (num_nodes / 2));
+                Make::<A, H>::go(right_list, num_nodes / 2);
             assert_eq!(left_height, right_height);
             let hash = H::merge(
                 left_height,

@@ -3,7 +3,7 @@
 
 use uuid::Uuid;
 
-pub trait KeyValueDatabase {
+pub trait Database {
     type T;
     type Config;
 
