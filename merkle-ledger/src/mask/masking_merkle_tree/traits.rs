@@ -5,11 +5,10 @@ use uuid::Uuid;
 
 pub use crate::location::traits::{self, Addr};
 
-trait Inner: S + Sized {}
 pub trait S {
     type T;
     type Unattached;
-    // type Attached : Attached<dyn Inner>;
+    type Attached;
     type Parent;
     type Account;
     type Location;
@@ -22,7 +21,7 @@ pub trait S {
 
     fn create(depth: usize) -> Self::T;
     fn get_uuid(&self) -> Uuid;
-    // fn set_parent(other: Self::Unattached, parent: Self::Parent) -> Self::Attached;
+    fn set_parent(other: Self::Unattached, parent: Self::Parent) -> Self::Attached;
 }
 
 pub trait Attached<K: S>: crate::mask::BaseMerkleTree {

@@ -4,9 +4,9 @@
 pub mod account;
 pub mod account_id;
 pub mod balance;
+pub mod database;
 pub mod hash;
 pub mod key;
-pub mod database;
 pub mod token_id;
 
 pub mod depth {
