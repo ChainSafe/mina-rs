@@ -15,7 +15,9 @@ pub enum T {
     Hash(Addr::stable::v1::MerkleAddress),
 }
 
-pub trait S {
+pub trait S where
+    Self: Sized,
+{
     fn is_generic(&self) -> bool;
     fn is_account(&self) -> bool;
     fn is_hash(&self) -> bool;

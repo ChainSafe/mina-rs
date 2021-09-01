@@ -1,13 +1,15 @@
 // Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
+use crate::path::Hash as PHash;
 pub trait S {
     type RootHash;
-    type Hash;
+    type Hash: PHash<Self::H>;
     type Account;
     type Addr;
     type T;
     type Path;
+    type H: std::hash::Hash + Eq;
 
     fn depth(this: &Self::T) -> usize;
     fn num_accounts(this: &Self::T) -> usize;

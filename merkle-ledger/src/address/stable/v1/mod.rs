@@ -87,4 +87,20 @@ impl Address for MerkleAddress {
     fn to_string(&self) -> String {
         todo!()
     }
+
+    fn depth(this: &Self::T) -> usize {
+        todo!()
+    }
+
+    fn height(ledger_depth: usize, this: &Self::T) -> usize {
+        todo!()
+    }
+
+    fn to_int(this: &Self::T) -> usize {
+        todo!()
+    }
+
+    fn of_int_exn(ledger_depth: usize, other: usize) -> Self::T {
+        todo!()
+    }
 }

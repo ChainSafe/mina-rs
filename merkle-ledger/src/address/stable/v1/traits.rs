@@ -25,16 +25,16 @@ pub trait Address {
     fn serialize(&self, ledger_depth: usize) -> Vec<u8>;
     fn to_string(&self) -> String;
     // fn pp(&self, format: Formater);
+    fn depth(this: &Self::T) -> usize;
+    fn height(ledger_depth: usize, this: &Self::T) -> usize;
+    fn to_int(this: &Self::T) -> usize;
+    fn of_int_exn(ledger_depth: usize, other: usize) -> Self::T;
 }
 
 pub trait Range {
-    type T0: PartialEq + Eq + std::hash::Hash;
-    type T1: PartialEq + Eq + std::hash::Hash;
+    type T: PartialEq + Eq + std::hash::Hash;
+    type A: Address;
     // fn fold;
-    // fn subtree_range(&self, ledger_depth: usize);
-    // fn subtree_range_seq(&self, ledger_depth: usize) -> Self::T;
-    // fn depth(&self) -> Self::T;
-    // fn height(&self, ledger_depth:usize) -> usize;
-    // fn to_int(&self) -> usize;
-    // fn of_int_exn(&self, ledger_depth: usize, other: usize) -> Self::T;
+    fn subtree_range(ledger_depth: usize, addr: &<<Self as Range>::A as Address>::T) -> Self::T;
+    fn subtree_range_seq(&self, ledger_depth: usize) -> Self::T;
 }
