@@ -12,11 +12,11 @@ pub struct MerkleAddress {}
 impl Address for MerkleAddress {
     type T = BitVec;
 
-    fn of_byte_string(&self, str: &str) -> Self::T {
+    fn of_byte_string(&self, _str: &str) -> Self::T {
         todo!()
     }
 
-    fn of_directions(&self, directions: &[direction::Direction]) -> Self::T {
+    fn of_directions(&self, _directions: &[direction::Direction]) -> Self::T {
         todo!()
     }
 
@@ -24,15 +24,15 @@ impl Address for MerkleAddress {
         todo!()
     }
 
-    fn slice(&self, start: usize, end: usize) -> Self::T {
+    fn slice(&self, _start: usize, _end: usize) -> Self::T {
         todo!()
     }
 
-    fn get(&self, pos: usize) -> Self::T {
+    fn get(&self, _pos: usize) -> Self::T {
         todo!()
     }
 
-    fn copy(other: &Self::T) -> Self::T {
+    fn copy(_other: &Self::T) -> Self::T {
         todo!()
     }
 
@@ -42,13 +42,13 @@ impl Address for MerkleAddress {
 
     fn child(
         &self,
-        ledger_depth: usize,
-        direction: direction::Direction,
+        _ledger_depth: usize,
+        _direction: direction::Direction,
     ) -> anyhow::Result<Self::T> {
         todo!()
     }
 
-    fn child_exn(&self, ledger_depth: usize, direction: direction::Direction) -> Self::T {
+    fn child_exn(&self, _ledger_depth: usize, _direction: direction::Direction) -> Self::T {
         todo!()
     }
 
@@ -56,11 +56,11 @@ impl Address for MerkleAddress {
         todo!()
     }
 
-    fn dirs_from_root(&self, other: Self::T) -> Vec<direction::Direction> {
+    fn dirs_from_root(&self, _other: Self::T) -> Vec<direction::Direction> {
         todo!()
     }
 
-    fn sibling(&self, other: Self::T) -> Self::T {
+    fn sibling(&self, _other: Self::T) -> Self::T {
         todo!()
     }
 
@@ -72,15 +72,15 @@ impl Address for MerkleAddress {
         todo!()
     }
 
-    fn is_leaf(&self, ledger_depth: usize, other: Self::T) -> bool {
+    fn is_leaf(&self, _ledger_depth: usize, _other: Self::T) -> bool {
         todo!()
     }
 
-    fn is_parent_of(&self, maybe_child: Self::T) -> bool {
+    fn is_parent_of(&self, _maybe_child: Self::T) -> bool {
         todo!()
     }
 
-    fn serialize(&self, ledger_depth: usize) -> Vec<u8> {
+    fn serialize(&self, _ledger_depth: usize) -> Vec<u8> {
         todo!()
     }
 
@@ -88,19 +88,11 @@ impl Address for MerkleAddress {
         todo!()
     }
 
-    fn depth(this: &Self::T) -> usize {
+    fn depth(_this: &Self::T) -> usize {
         todo!()
     }
 
-    fn height(ledger_depth: usize, this: &Self::T) -> usize {
-        todo!()
-    }
-
-    fn to_int(this: &Self::T) -> usize {
-        todo!()
-    }
-
-    fn of_int_exn(ledger_depth: usize, other: usize) -> Self::T {
+    fn height(_ledger_depth: usize, _this: &Self::T) -> usize {
         todo!()
     }
 }

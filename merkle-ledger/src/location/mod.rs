@@ -5,8 +5,8 @@ pub mod traits;
 pub use crate::address as Addr;
 use traits::S;
 pub mod prefix {
-    const GENERIC: u8 = 0xff;
-    const ACCOUNT: u8 = 0xfe;
+    // const GENERIC: u8 = 0xff;
+    // const ACCOUNT: u8 = 0xfe;
     pub fn hash(ledger_depth: u8, depth: u8) -> u8 {
         ledger_depth - depth
     }
@@ -21,27 +21,18 @@ pub enum T {
 
 impl S for T {
     fn is_generic(&self) -> bool {
-        match *self {
-            Self::Generic => true,
-            _ => false,
-        }
+        matches!(*self, Self::Generic)
     }
 
     fn is_account(&self) -> bool {
-        match *self {
-            Self::Account => true,
-            _ => false,
-        }
+        matches!(*self, Self::Account)
     }
 
     fn is_hash(&self) -> bool {
-        match *self {
-            Self::Hash => true,
-            _ => false,
-        }
+        matches!(*self, Self::Hash)
     }
 
-    fn height(ledger_depth: usize, other: traits::T) -> usize {
+    fn height(_ledger_depth: usize, _other: traits::T) -> usize {
         todo!()
     }
 
@@ -49,7 +40,7 @@ impl S for T {
         todo!()
     }
 
-    fn last_direction(addr: &Addr::stable::v1::MerkleAddress) -> direction::Direction {
+    fn last_direction(_addr: &Addr::stable::v1::MerkleAddress) -> direction::Direction {
         todo!()
     }
 
@@ -57,19 +48,19 @@ impl S for T {
         todo!()
     }
 
-    fn parent(other: traits::T) -> traits::T {
+    fn parent(_other: traits::T) -> traits::T {
         todo!()
     }
 
-    fn next(other: traits::T) -> traits::T {
+    fn next(_other: traits::T) -> traits::T {
         todo!()
     }
 
-    fn prev(other: traits::T) -> traits::T {
+    fn prev(_other: traits::T) -> traits::T {
         todo!()
     }
 
-    fn sibling(other: traits::T) -> traits::T {
+    fn sibling(_other: traits::T) -> traits::T {
         todo!()
     }
 }

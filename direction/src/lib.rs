@@ -65,12 +65,12 @@ impl Direction {
         Self::from(other)
     }
 
-    pub fn to_bool(&self) -> bool {
-        (*self).into()
+    pub fn to_bool(self) -> bool {
+        self.into()
     }
 
-    pub fn to_int(&self) -> u8 {
-        (*self).into()
+    pub fn to_int(self) -> u8 {
+        self.into()
     }
 
     pub fn of_int(other: u8) -> Option<Direction> {

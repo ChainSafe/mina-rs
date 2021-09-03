@@ -27,8 +27,6 @@ pub trait Address {
     // fn pp(&self, format: Formater);
     fn depth(this: &Self::T) -> usize;
     fn height(ledger_depth: usize, this: &Self::T) -> usize;
-    fn to_int(this: &Self::T) -> usize;
-    fn of_int_exn(ledger_depth: usize, other: usize) -> Self::T;
 }
 
 pub trait Range {

@@ -39,7 +39,7 @@ where
         }
     }
 
-    fn implied_root(t: &[Self::Elem], leaf_hash: Self::Hash) -> Self::Hash {
+    fn implied_root(_t: &[Self::Elem], _leaf_hash: Self::Hash) -> Self::Hash {
         todo!()
     }
 
