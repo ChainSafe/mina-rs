@@ -23,6 +23,8 @@
 
 use crate::value::layout::{BinProtRule, Polyvar, RuleRef};
 
+use thiserror::Error;
+
 /// Implements a depth first search of the type tree
 /// defined by a BinProtRule
 pub struct BinProtRuleIterator {
@@ -45,13 +47,28 @@ pub trait BranchingIterator {
     fn branch(&mut self, branch: usize) -> Result<(), Self::Error>;
 }
 
+#[derive(Debug, Error)]
+pub enum Error {
+    /// The iterator is at a point where it needs a call to branch() to know which path to take
+    #[error("Must call branch to proceed")]
+    MustCallBranchToProceed,
+
+    /// The driving code called branch at a time when the iterator is not expecting
+    #[error("Cannot branch at this location in the tree")]
+    CannotBranchAtLocation,
+
+    /// Call to branch() received an index that is larger than that allowable by the sum type
+    #[error("Invalid branch index. Given {got}, Branch must be < {max}")]
+    InvalidBranchIndex { max: usize, got: usize },
+}
+
 impl BranchingIterator for BinProtRuleIterator {
     type Item = BinProtRule;
-    type Error = String;
+    type Error = Error;
 
     fn next(&mut self) -> Result<Option<Self::Item>, Self::Error> {
         if self.branch.is_some() {
-            return Err("Must call branch to proceed".to_string());
+            return Err(Error::MustCallBranchToProceed);
         }
 
         let top = self.stack.pop();
@@ -59,7 +76,7 @@ impl BranchingIterator for BinProtRuleIterator {
         match top {
             Some(rule) => {
                 match rule {
-                    BinProtRule::Option(r) | BinProtRule::List(r) => {
+                    BinProtRule::List(r) => {
                         // the code driving the iterator should call `repeat` if it encounters a list
                         self.stack.push(*r);
                     }
@@ -74,6 +91,10 @@ impl BranchingIterator for BinProtRuleIterator {
                         // don't add to the stack. Add to the branch field instead
                         // this must be resolved by calling `branch` before the iterator can continue
                         self.branch = Some(summands.into_iter().map(|s| s.ctor_args).collect());
+                    }
+                    BinProtRule::Option(r) => {
+                        // Option is a special case of a Sum where the None variant contain nothing
+                        self.branch = Some(vec![vec![], vec![*r]]);
                     }
                     BinProtRule::Polyvar(polyvars) => {
                         // these are pretty much anonymous enum/sum types and should be handled the same way
@@ -96,6 +117,7 @@ impl BranchingIterator for BinProtRuleIterator {
                         RuleRef::Resolved(payload) => {
                             self.stack.push(*payload.ref_rule);
                             self.current_module_path = Some(payload.source_module_path);
+                            return self.next();
                         }
                     },
                     BinProtRule::String
@@ -113,7 +135,7 @@ impl BranchingIterator for BinProtRuleIterator {
                             return Ok(Some(BinProtRule::CustomForPath(path.to_string(), rules)));
                         }
                     }
-                    r => panic!("unimplemented: {:?}", r),
+                    _ => unimplemented!(),
                 };
                 Ok(r)
             }
@@ -124,22 +146,21 @@ impl BranchingIterator for BinProtRuleIterator {
     fn branch(&mut self, branch: usize) -> Result<(), Self::Error> {
         if let Some(summands) = &self.branch {
             if branch >= summands.len() {
-                return Err(format!(
-                    "Invalid branch index. Given {}, Branch must be < {}",
-                    branch,
-                    summands.len()
-                ));
+                return Err(Error::InvalidBranchIndex {
+                    max: summands.len(),
+                    got: branch,
+                });
             }
         }
 
         if let Some(mut branches) = self.branch.take() {
             let s = branches
                 .get_mut(branch)
-                .ok_or_else(|| "Invalid branch".to_string())?;
-            self.stack.extend(s.drain(0..));
+                .ok_or(Error::CannotBranchAtLocation)?;
+            self.stack.extend(s.drain(0..).rev());
             Ok(())
         } else {
-            Err("Cannot branch at this location in the tree".to_string())
+            Err(Error::CannotBranchAtLocation)
         }
     }
 }

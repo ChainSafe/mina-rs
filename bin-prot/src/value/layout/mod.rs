@@ -7,7 +7,7 @@ use serde::Deserialize;
 use serde_json::from_value;
 
 mod list_tagged_enum;
-mod traverse;
+pub(crate) mod traverse;
 
 pub use traverse::{BinProtRuleIterator, BranchingIterator};
 
