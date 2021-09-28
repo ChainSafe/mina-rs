@@ -89,8 +89,8 @@ mod tests {
     #[test]
     fn compatible_with_serde_from_and_into_named_struct() {
         #[derive(Clone, Debug, PartialEq, Serialize, Deserialize, WireType)]
-        #[serde(from = "<Self as WireType>::WireType")]
-        #[serde(into = "<Self as WireType>::WireType")]
+        #[serde(from = "<Self as WireType>::WireType")] // can be deserialized from its wire type
+        #[serde(into = "<Self as WireType>::WireType")] // will be serialized to its wire type
         struct X {
             a: u32,
             b: u32,
@@ -108,8 +108,8 @@ mod tests {
     #[test]
     fn compatible_with_serde_from_and_into_unnamed_struct() {
         #[derive(Clone, Debug, PartialEq, Serialize, Deserialize, WireType)]
-        #[serde(from = "<Self as WireType>::WireType")]
-        #[serde(into = "<Self as WireType>::WireType")]
+        #[serde(from = "<Self as WireType>::WireType")] // can be deserialized from its wire type
+        #[serde(into = "<Self as WireType>::WireType")] // will be serialized to its wire type
         struct X(u32, u32);
 
         let x = X (123, 321);
@@ -124,8 +124,8 @@ mod tests {
     #[test]
     fn compatible_with_serde_from_and_into_unit_struct() {
         #[derive(Clone, Debug, PartialEq, Serialize, Deserialize, WireType)]
-        #[serde(from = "<Self as WireType>::WireType")]
-        #[serde(into = "<Self as WireType>::WireType")]
+        #[serde(from = "<Self as WireType>::WireType")] // can be deserialized from its wire type
+        #[serde(into = "<Self as WireType>::WireType")] // will be serialized to its wire type
         struct X;
 
         let x = X;
@@ -140,8 +140,8 @@ mod tests {
     #[test]
     fn compatible_with_serde_from_and_into_enum() {
         #[derive(Clone, Debug, PartialEq, Serialize, Deserialize, WireType)]
-        #[serde(from = "<Self as WireType>::WireType")]
-        #[serde(into = "<Self as WireType>::WireType")]
+        #[serde(from = "<Self as WireType>::WireType")] // can be deserialized from its wire type
+        #[serde(into = "<Self as WireType>::WireType")] // will be serialized to its wire type
         enum X {
             X1(u32),
         }

@@ -42,8 +42,10 @@ mod tests {
     use crate::base58::{version_bytes, Base58Encodable};
     use crate::hash::prefixes::PROTOCOL_STATE;
     use crate::hash::types::{BaseHash, HashBytes};
+    use serde::Deserialize;
+    use wire_type::WireType;
 
-    #[derive(Serialize, PartialEq, Debug)]
+    #[derive(Clone, Serialize, Deserialize, PartialEq, Debug, WireType)]
     struct TestHash(BaseHash);
 
     impl From<HashBytes> for TestHash {
