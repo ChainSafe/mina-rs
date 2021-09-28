@@ -21,7 +21,7 @@
 //!  // will match the serialization used in Mina OCaml
 //!  ```
 //!  
-//!  It is also possible to have types that implement WireType automatically convert to and from their 
+//!  It is also possible to have types that implement WireType automatically convert to and from their
 //!  versioned form when they are serialized or deserialized using serde
 //!  ```ignore
 //!  #[derive(Clone, Debug, PartialEq, Serialize, Deserialize, WireType)]
@@ -59,8 +59,8 @@ pub trait WireType<'a>:
 #[cfg(test)]
 mod tests {
     use crate as wire_type;
-    use wire_type::{WireType, Version};
     use serde::{Deserialize, Serialize};
+    use wire_type::{Version, WireType};
 
     #[test]
     fn smoke() {
@@ -127,7 +127,7 @@ mod tests {
     #[test]
     fn compatible_with_serde_from_and_into_named_struct() {
         #[derive(Clone, Debug, PartialEq, Serialize, Deserialize, WireType)]
-        #[wire_type( version = 2)]
+        #[wire_type(version = 2)]
         #[serde(from = "<Self as WireType>::WireType")] // can be deserialized from its wire type
         #[serde(into = "<Self as WireType>::WireType")] // will be serialized to its wire type
         struct X {
@@ -135,7 +135,7 @@ mod tests {
             b: u32,
         }
 
-        let x = X {a: 123, b: 321};
+        let x = X { a: 123, b: 321 };
 
         let serialized = serde_json::to_string(&x).unwrap();
         println!("serialized = {}", serialized);
@@ -151,7 +151,7 @@ mod tests {
         #[serde(into = "<Self as WireType>::WireType")] // will be serialized to its wire type
         struct X(u32, u32);
 
-        let x = X (123, 321);
+        let x = X(123, 321);
 
         let serialized = serde_json::to_string(&x).unwrap();
         println!("serialized = {}", serialized);
