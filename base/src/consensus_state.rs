@@ -9,7 +9,7 @@ use crate::{
 use mina_crypto::hash::{Hashable, VrfOutputHash};
 use mina_crypto::signature::PublicKey;
 use serde::{Deserialize, Serialize};
-use serde_versions_derive::version;
+use wire_type::WireType;
 
 #[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug)]
 pub struct VrfOutputTruncated(pub String);
@@ -25,8 +25,9 @@ impl Hashable<VrfOutputHash> for VrfOutputTruncated {}
 /// approach where the future stake distribution snapshot is prepared by the current consensus epoch.
 ///
 /// Samasika prepares the past for the future! This future state is stored in the next_epoch_data field.
-#[version(1)]
-#[derive(Clone, Serialize, Deserialize, Default, Debug, PartialEq)]
+#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize, WireType)]
+#[serde(from = "<Self as WireType>::WireType")]
+#[serde(into = "<Self as WireType>::WireType")]
 pub struct ConsensusState {
     /// Height of block
     pub blockchain_length: Length,

@@ -167,17 +167,17 @@ mod tests {
         assert_eq!(epoch_slot, Some(2));
     }
 
-    #[test]
-    fn test_protocol_state_chain_state_hash() {
-        let mut c: ProtocolStateChain = ProtocolStateChain(vec![]);
+    // #[test]
+    // fn test_protocol_state_chain_state_hash() {
+    //     let mut c: ProtocolStateChain = ProtocolStateChain(vec![]);
 
-        let mut b0: ProtocolState = Default::default();
-        b0.body.consensus_state.blockchain_length = Length(0);
-        c.push(b0).unwrap();
+    //     let mut b0: ProtocolState = Default::default();
+    //     b0.body.consensus_state.blockchain_length = Length(0);
+    //     c.push(b0).unwrap();
 
-        let hash = c.state_hash();
-        hash.unwrap();
-    }
+    //     let hash = c.state_hash();
+    //     hash.unwrap();
+    // }
 
     #[test]
     fn test_protocol_state_chain_last_vrf() {

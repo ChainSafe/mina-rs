@@ -3,7 +3,7 @@
 
 use mina_crypto::hash::Hashable;
 use serde::{Deserialize, Serialize};
-use serde_versions_derive::version;
+use wire_type::WireType;
 
 use crate::{
     blockchain_state::BlockchainState,
@@ -38,8 +38,9 @@ pub struct ProtocolConstants {
 }
 
 /// This structure can be thought of like the block header. It contains the most essential information of a block.
-#[version(1)]
-#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug)]
+#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize, WireType)]
+#[serde(from = "<Self as WireType>::WireType")]
+#[serde(into = "<Self as WireType>::WireType")]
 pub struct ProtocolState {
     previous_state_hash: StateHash,
     pub body: ProtocolStateBody,
@@ -48,8 +49,9 @@ pub struct ProtocolState {
 // Protocol state hashes into a StateHash type
 impl Hashable<StateHash> for ProtocolState {}
 
-#[version(1)]
-#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug)]
+#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize, WireType)]
+#[serde(from = "<Self as WireType>::WireType")]
+#[serde(into = "<Self as WireType>::WireType")]
 pub struct ProtocolStateBody {
     genesis_state_hash: StateHash,
     blockchain_state: BlockchainState,

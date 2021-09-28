@@ -3,17 +3,19 @@
 
 use crate::base58::Base58Encodable;
 use serde::{Deserialize, Serialize};
-use serde_versions_derive::version;
+use wire_type::WireType;
 
-#[version(1)]
-#[derive(Default, Clone, Serialize, Deserialize, PartialEq, Debug)]
+#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize, WireType)]
+#[serde(from = "<Self as WireType>::WireType")]
+#[serde(into = "<Self as WireType>::WireType")]
 pub struct CompressedCurvePoint {
     x: [u8; 32],
     is_odd: bool,
 }
 
-#[version(1)]
-#[derive(Default, Clone, Serialize, Deserialize, PartialEq, Debug)]
+#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize, WireType)]
+#[serde(from = "<Self as WireType>::WireType")]
+#[serde(into = "<Self as WireType>::WireType")]
 pub struct PublicKey {
     poly: CompressedCurvePoint,
 }

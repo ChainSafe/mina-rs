@@ -1,10 +1,12 @@
 [package]
-name = "mina-rs-base"
-version = "0.1.0"
+name = "wire-type"
 authors = ["ChainSafe Systems <info@chainsafe.io>"]
+version = "0.1.0"
 edition = "2018"
 
 [dependencies]
+serde = { version = "1.0.126" }
+wire-type-derive = { path = "../wire-type-derive" }
+
+[dev-dependencies]
 serde = { version = "1.0.126", features = ["derive"] }
-wire-type = {path = "../wire-type" }
-mina-crypto = { path = "../crypto" }
