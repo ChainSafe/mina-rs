@@ -7,11 +7,11 @@
 //! a supplimentary file that describes the layout of the binary (see layout/)
 
 use serde::Deserialize;
-use std::collections::HashMap;
 
 mod enum_data;
 mod index;
 pub mod layout;
+pub mod ser;
 mod visitor;
 
 pub use self::index::Index;
@@ -26,11 +26,11 @@ pub enum Value {
     Nat0(u32),
     Bool(bool),
     String(Vec<u8>),
-    Char(char),
+    Char(u8),
     Int(i64),
     Float(f64),
     Option(Option<Box<Value>>),
-    Record(HashMap<String, Value>), // records/structs
+    Record(Vec<(String, Value)>), // records/structs
     Tuple(Vec<Value>),
     Sum {
         name: String,

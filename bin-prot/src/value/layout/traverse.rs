@@ -28,7 +28,7 @@ use thiserror::Error;
 /// Implements a depth first search of the type tree
 /// defined by a BinProtRule
 pub struct BinProtRuleIterator {
-    stack: Vec<BinProtRule>, // regular stack to implement the DFS
+    pub stack: Vec<BinProtRule>, // regular stack to implement the DFS
     // Tree nodes can branch (only one child should be followed) rather than require traversal of all children
     // If that is the case the parent should add the children to the branch field and the next path will be taken from here rather than the stack
     branch: Option<Vec<Vec<BinProtRule>>>,
@@ -76,9 +76,9 @@ impl BranchingIterator for BinProtRuleIterator {
         match top {
             Some(rule) => {
                 match rule {
-                    BinProtRule::List(r) => {
-                        // the code driving the iterator should call `repeat` if it encounters a list
-                        self.stack.push(*r);
+                    BinProtRule::List(_) => {
+                        // the code driving the iterator should take the list rule, push it
+                        // then call repeat the required number of times
                     }
                     BinProtRule::Record(mut rules) => {
                         self.stack
