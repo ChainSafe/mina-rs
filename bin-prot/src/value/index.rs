@@ -28,9 +28,9 @@ impl Index for usize {
 impl Index for str {
     fn index_into<'v>(&self, v: &'v Value) -> Option<&'v Value> {
         match *v {
-            Value::Record(ref map) => map.get(self),
+            Value::Record(ref map) => map.iter().find(|(k, _v)| k == self).map(|(_k, v)| v),
             Value::Sum { ref value, .. } => match **value {
-                Value::Record(ref map) => map.get(self),
+                Value::Record(ref map) => map.iter().find(|(k, _v)| k == self).map(|(_k, v)| v),
                 _ => None,
             },
             _ => None,
@@ -90,9 +90,10 @@ mod tests {
 
     #[test]
     fn index_into_record() {
-        let mut inner = HashMap::new();
-        inner.insert("one".to_string(), Value::Int(1));
-        inner.insert("two".to_string(), Value::Int(2));
+        let inner = vec![
+            ("one".to_string(), Value::Int(1)),
+            ("two".to_string(), Value::Int(2)),
+        ];
         let val = Value::Record(inner);
         assert_eq!(val["one"], Value::Int(1));
         assert_eq!(val["two"], Value::Int(2));
@@ -101,9 +102,10 @@ mod tests {
     #[test]
     #[should_panic(expected = "No value for index: missing")]
     fn no_value_for_key_panics() {
-        let mut inner = HashMap::new();
-        inner.insert("one".to_string(), Value::Int(1));
-        inner.insert("two".to_string(), Value::Int(2));
+        let inner = vec![
+            ("one".to_string(), Value::Int(1)),
+            ("two".to_string(), Value::Int(2)),
+        ];
         let val = Value::Record(inner);
         let _ = val["missing"];
     }
@@ -126,9 +128,10 @@ mod tests {
 
     #[test]
     fn index_into_record_variants() {
-        let mut inner = HashMap::new();
-        inner.insert("one".to_string(), Value::Int(1));
-        inner.insert("two".to_string(), Value::Int(2));
+        let inner = vec![
+            ("one".to_string(), Value::Int(1)),
+            ("two".to_string(), Value::Int(2)),
+        ];
 
         let val = Value::Sum {
             name: "variant A".to_string(),
@@ -141,8 +144,7 @@ mod tests {
 
     #[test]
     fn nested_indexing() {
-        let mut inner = HashMap::new();
-        inner.insert("B".to_string(), Value::Int(1));
+        let inner = vec![("B".to_string(), Value::Int(1))];
         let val = Value::Record(inner);
 
         let mut outer = HashMap::new();

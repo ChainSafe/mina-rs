@@ -81,6 +81,9 @@ pub enum Error {
     #[error("Layout iterator error")]
     LayoutIteratorError,
 
+    #[error("Attempting to deserialize into a loose type without a layout")]
+    DeserializingLooseTypeWithoutLayout,
+
     #[error("Unknown custom type {typ}")]
     UnknownCustomType { typ: String },
 

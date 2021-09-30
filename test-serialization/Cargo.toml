@@ -1,0 +1,13 @@
+[package]
+name = "test-serialization"
+authors = ["ChainSafe Systems <info@chainsafe.io>"]
+version = "0.1.0"
+edition = "2018"
+
+[dev-dependencies]
+serde = { version = "1.0.126", features = ["derive"] }
+bin-prot = { path = "../bin-prot" }
+serde_json = { version = "1.0.64", features = ["unbounded_depth"] }
+serde_stacker = "0.1.4"
+
+mina-rs-base = { path = "../base"}
