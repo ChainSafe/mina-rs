@@ -108,10 +108,12 @@ impl<'de> Visitor<'de> for ValueVisitor {
         // payload must encode the index and name in a deserializer
         // the variant access can be used to retrieve the correct content based on this
 
+        let body = variant_access.tuple_variant(payload.len, self)?;
+
         Ok(Value::Sum {
             name: payload.name,
             index: payload.index,
-            value: Box::new(variant_access.newtype_variant()?),
+            value: Box::new(body),
         })
     }
 }
