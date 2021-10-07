@@ -131,7 +131,7 @@ fn test_sum_rule() {
         Value::Sum {
             name: "two".to_string(),
             index: 1,
-            value: Box::new(Value::Bool(false))
+            value: Box::new(Value::Tuple(vec![Value::Bool(false)]))
         }
     );
     test_roundtrip(&result, &example);
@@ -168,7 +168,7 @@ fn test_nested_sum_rule() {
         Value::Sum {
             name: "one".to_string(),
             index: 0,
-            value: Box::new(Value::Record(vec![("first".to_string(), Value::Int(5))]))
+            value: Box::new(Value::Tuple(vec![Value::Record(vec![("first".to_string(), Value::Int(5))])]))
         }
     );
     test_roundtrip(&result, &example);
@@ -267,8 +267,6 @@ fn smoke_test_roundtrip_block() {
     let mut de = Deserializer::from_reader_with_layout(BLOCK_BYTES, rule);
     let block: Value = Deserialize::deserialize(&mut de).expect("Failed to deserialize block");
 
-    println!("{:#?}", block["t"]["current_protocol_version"]);
-
     assert_eq!(
         block["t"]["protocol_state"]["t"]["t"]["previous_state_hash"]["t"],
         Value::Tuple(
@@ -283,20 +281,8 @@ fn smoke_test_roundtrip_block() {
     );
 
     // check roundtrip
-    // test_roundtrip(&block, BLOCK_BYTES);
+    test_roundtrip(&block, BLOCK_BYTES);
 }
-
-// #[test]
-// fn can_roundtrip_layout_json() {
-//     let mut deserializer = serde_json::Deserializer::from_str(BLOCK_LAYOUT);
-//     deserializer.disable_recursion_limit();
-//     let deserializer = serde_stacker::Deserializer::new(&mut deserializer);
-
-//     let rule = Layout::deserialize(deserializer).unwrap();
-
-//     serde_json::to_writer(&std::fs::File::create("rule-rewrite.json").unwrap(), &rule).unwrap();
-
-// }
 
 fn test_roundtrip<T>(val: &T, bytes: &[u8])
 where
@@ -304,5 +290,5 @@ where
 {
     let mut output = vec![];
     bin_prot::to_writer(&mut output, val).expect("Failed writing bin-prot encoded data");
-    assert_eq!(output, bytes)
+    assert_eq!(bytes, output)
 }
