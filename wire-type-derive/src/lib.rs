@@ -71,7 +71,7 @@ pub fn derive(input: TokenStream) -> TokenStream {
 
 // Creates the token stream for a shadow struct/enum for the input
 // The shadow struct has an identical structure but its own serialize/deserialize
-// implementations. This is to prevent the infite recursion if using serde from and into
+// implementations. This is to prevent the infinite recursion if using serde from and into
 fn shadow_from_input(input: DeriveInput) -> TokenStream2 {
     let ident_str = input.ident.to_string();
     let shadow_ident = format_ident!("__Shadow{}", input.ident);
