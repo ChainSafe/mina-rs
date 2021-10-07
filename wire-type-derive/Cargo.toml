@@ -1,0 +1,18 @@
+[package]
+name = "wire-type-derive"
+authors = ["ChainSafe Systems <info@chainsafe.io>"]
+version = "0.1.0"
+edition = "2018"
+
+[lib]
+proc-macro = true
+
+[dependencies]
+syn = "1.0"
+quote = "1.0"
+
+darling = "0.13.0"
+
+[dev-dependencies]
+serde = { version = "1.0.126", features = ["derive"] }
+wire-type = { path = "../wire-type" }

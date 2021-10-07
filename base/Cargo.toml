@@ -6,7 +6,5 @@ edition = "2018"
 
 [dependencies]
 serde = { version = "1.0.126", features = ["derive"] }
-serde-versions-derive = {path = "../serde-versions-derive" }
-
-
+wire-type = {path = "../wire-type" }
 mina-crypto = { path = "../crypto" }
