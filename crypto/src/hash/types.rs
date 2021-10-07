@@ -14,7 +14,7 @@ use super::prefixes::*;
 use crate::base58::{version_bytes, Base58Encodable};
 use crate::hash::Hash;
 use serde::{Deserialize, Serialize};
-use serde_versions_derive::version;
+use wire_type::WireType;
 
 pub(crate) type HashBytes = Box<[u8]>;
 
@@ -46,8 +46,9 @@ impl AsRef<[u8]> for BaseHash {
 
 //////////////////////////////////////////////////////////////////////////
 
-#[version(1)]
-#[derive(Serialize, Deserialize, PartialEq, Debug, Clone, Default)]
+#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize, WireType)]
+#[serde(from = "<Self as WireType>::WireType")]
+#[serde(into = "<Self as WireType>::WireType")]
 pub struct StateHash(BaseHash);
 
 impl Base58Encodable for StateHash {
@@ -72,8 +73,9 @@ impl Hash for StateHash {
 
 //////////////////////////////////////////////////////////////////////////
 
-#[version(1)]
-#[derive(Default, Serialize, Deserialize, PartialEq, Debug, Clone)]
+#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize, WireType)]
+#[serde(from = "<Self as WireType>::WireType")]
+#[serde(into = "<Self as WireType>::WireType")]
 pub struct LedgerHash(BaseHash);
 
 impl Base58Encodable for LedgerHash {
@@ -88,8 +90,9 @@ impl From<HashBytes> for LedgerHash {
 
 //////////////////////////////////////////////////////////////////////////
 
-#[version(1)]
-#[derive(Serialize, Deserialize, PartialEq, Debug, Clone, Default)]
+#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize, WireType)]
+#[serde(from = "<Self as WireType>::WireType")]
+#[serde(into = "<Self as WireType>::WireType")]
 pub struct EpochSeed(BaseHash);
 
 impl Base58Encodable for EpochSeed {
@@ -114,8 +117,9 @@ impl Hash for EpochSeed {
 
 //////////////////////////////////////////////////////////////////////////
 
-#[version(1)]
-#[derive(Serialize, Deserialize, PartialEq, Debug, Clone, Default)]
+#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize, WireType)]
+#[serde(from = "<Self as WireType>::WireType")]
+#[serde(into = "<Self as WireType>::WireType")]
 pub struct SnarkedLedgerHash(BaseHash);
 
 impl Base58Encodable for SnarkedLedgerHash {
@@ -130,8 +134,9 @@ impl From<HashBytes> for SnarkedLedgerHash {
 
 //////////////////////////////////////////////////////////////////////////
 
-#[version(1)]
-#[derive(Serialize, Deserialize, PartialEq, Debug, Clone, Default)]
+#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize, WireType)]
+#[serde(from = "<Self as WireType>::WireType")]
+#[serde(into = "<Self as WireType>::WireType")]
 pub struct StagedLedgerHash(BaseHash);
 
 impl Base58Encodable for StagedLedgerHash {
@@ -146,8 +151,9 @@ impl From<HashBytes> for StagedLedgerHash {
 
 //////////////////////////////////////////////////////////////////////////
 
-#[version(1)]
-#[derive(Serialize, Deserialize, PartialEq, Debug, Clone, Default)]
+#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize, WireType)]
+#[serde(from = "<Self as WireType>::WireType")]
+#[serde(into = "<Self as WireType>::WireType")]
 pub struct VrfOutputHash(BaseHash);
 
 impl Base58Encodable for VrfOutputHash {
