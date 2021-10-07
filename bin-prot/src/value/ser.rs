@@ -3,7 +3,7 @@
 
 use crate::Value;
 
-use serde::ser::{SerializeStruct, SerializeTuple, SerializeTupleVariant};
+use serde::ser::{SerializeStruct, SerializeTuple};
 use serde::Serialize;
 
 impl Serialize for Value {
@@ -47,9 +47,7 @@ impl Serialize for Value {
                 ref index,
                 ref value,
             } => {
-                let mut sum = serializer.serialize_tuple_variant(&"", *index as u32, &"", 1)?;
-                sum.serialize_field(value)?;
-                sum.end()
+                serializer.serialize_newtype_variant(&"", *index as u32, &"", value)
             } // sum types/enums
             Value::List(ref v) => v.serialize(serializer),
         }
