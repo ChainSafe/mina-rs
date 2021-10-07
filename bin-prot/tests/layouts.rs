@@ -216,6 +216,8 @@ fn smoke_test_roundtrip_block() {
     let mut de = Deserializer::from_reader_with_layout(BLOCK_BYTES, rule);
     let block: Value = Deserialize::deserialize(&mut de).expect("Failed to deserialize block");
 
+    println!("{:#?}", block);
+
     assert_eq!(
         block["t"]["protocol_state"]["t"]["t"]["previous_state_hash"]["t"],
         Value::Tuple(
@@ -232,6 +234,25 @@ fn smoke_test_roundtrip_block() {
     // check roundtrip
     test_roundtrip(&block, BLOCK_BYTES);
 }
+
+// uses too much memory
+// #[test]
+// fn can_roundtrip_layout_json() {
+//     let mut deserializer = serde_json::Deserializer::from_str(BLOCK_LAYOUT);
+//     deserializer.disable_recursion_limit();
+//     let deserializer = serde_stacker::Deserializer::new(&mut deserializer);
+
+//     let mut _deserializer = serde_json::Deserializer::from_str(BLOCK_LAYOUT);
+//     _deserializer.disable_recursion_limit();
+//     let _deserializer = serde_stacker::Deserializer::new(&mut _deserializer);
+
+//     let rule = Layout::deserialize(deserializer).unwrap();
+//     let rule_json = serde_json::Value::deserialize(_deserializer).unwrap();
+
+//     let dest_json = serde_json::to_value(&rule).unwrap();
+//     assert_eq!(rule_json, dest_json);
+
+// }
 
 fn test_roundtrip<T>(val: &T, bytes: &[u8])
 where
