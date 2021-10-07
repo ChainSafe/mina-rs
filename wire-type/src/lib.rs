@@ -136,12 +136,9 @@ mod tests {
         }
 
         let x = X { a: 123, b: 321 };
-
         let serialized = serde_json::to_string(&x).unwrap();
-        println!("serialized = {}", serialized);
-
         let deserialized: X = serde_json::from_str(&serialized).unwrap();
-        println!("deserialized = {:?}", deserialized);
+        assert_eq!(x, deserialized);
     }
 
     #[test]
@@ -152,12 +149,9 @@ mod tests {
         struct X(u32, u32);
 
         let x = X(123, 321);
-
         let serialized = serde_json::to_string(&x).unwrap();
-        println!("serialized = {}", serialized);
-
         let deserialized: X = serde_json::from_str(&serialized).unwrap();
-        println!("deserialized = {:?}", deserialized);
+        assert_eq!(x, deserialized);
     }
 
     #[test]
@@ -168,12 +162,9 @@ mod tests {
         struct X;
 
         let x = X;
-
         let serialized = serde_json::to_string(&x).unwrap();
-        println!("serialized = {}", serialized);
-
         let deserialized: X = serde_json::from_str(&serialized).unwrap();
-        println!("deserialized = {:?}", deserialized);
+        assert_eq!(x, deserialized);
     }
 
     #[test]
@@ -184,13 +175,9 @@ mod tests {
         enum X {
             X1(u32),
         }
-
         let x = X::X1(123);
-
         let serialized = serde_json::to_string(&x).unwrap();
-        println!("serialized = {}", serialized);
-
         let deserialized: X = serde_json::from_str(&serialized).unwrap();
-        println!("deserialized = {:?}", deserialized);
+        assert_eq!(x, deserialized);
     }
 }
