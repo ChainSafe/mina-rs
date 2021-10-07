@@ -140,6 +140,7 @@ where
     // First the length of the string is written as a Nat0 (in characters?)
     // Then the bytes of the string verbatim
     fn serialize_str(self, v: &str) -> Result<()> {
+        println!("serializing str {}", v);
         self.writer.bin_write_nat0(v.len() as u64)?;
         self.write(v.as_bytes())
     }
@@ -148,6 +149,7 @@ where
     // The custom implementations for different integer types
     // depends on this
     fn serialize_bytes(self, v: &[u8]) -> Result<()> {
+        println!("seriailze_bytes is being called");
         self.write(v)
     }
 
@@ -196,6 +198,7 @@ where
     fn serialize_seq(self, len: Option<usize>) -> Result<Self::SerializeSeq> {
         if let Some(len) = len {
             // write the output length first
+            println!("serializing seq of length {}", len);
             self.writer.bin_write_nat0(len as u64)?;
             Ok(self) // pass self as the handler for writing the elements
         } else {
