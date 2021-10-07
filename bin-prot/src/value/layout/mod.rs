@@ -9,7 +9,7 @@ use serde_json::from_value;
 mod list_tagged_enum;
 pub(crate) mod traverse;
 
-pub use traverse::{BinProtRuleIterator, BranchingIterator};
+pub use traverse::{BinProtRuleIterator};
 
 use list_tagged_enum::ListTaggedEnum;
 
@@ -141,6 +141,24 @@ pub struct Summand {
     pub ctor_name: String,
     pub index: i32,
     pub ctor_args: Vec<BinProtRule>,
+}
+
+impl Summand {
+    pub fn new(name: &str, index: i32, args: Vec<BinProtRule>) -> Self {
+        Self {
+            ctor_name: name.to_string(),
+            index,
+            ctor_args: args,
+        }
+    }
+
+    pub fn new_none() -> Self {
+        Self::new("none", 0, vec![])
+    }
+
+    pub fn new_some(rule: BinProtRule) -> Self {
+        Self::new("some", 1, vec![rule])
+    }
 }
 
 #[derive(Clone, Serialize, Deserialize, Debug)]

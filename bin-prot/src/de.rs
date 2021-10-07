@@ -26,7 +26,7 @@ impl<R: Read> Deserializer<R> {
     pub fn from_reader_with_layout(rdr: R, layout: BinProtRule) -> Self {
         Self {
             rdr: BufReader::new(rdr),
-            layout_iter: Some(layout.into_branching_iter()),
+            layout_iter: Some(layout.into_iter()),
         }
     }
 }

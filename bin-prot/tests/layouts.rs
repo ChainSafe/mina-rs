@@ -203,6 +203,57 @@ fn test_option_rule() {
     test_roundtrip(&result, &example_some);
 }
 
+const MULTIPLE_CTOR_ARG_SUM_RULE: &str = r#"
+[
+  "Sum",
+  [
+    {
+      "ctor_name": "one",
+      "index": 0,
+      "ctor_args": [
+        [
+          "Record",
+          [
+            { "field_name": "first", "field_rule": ["Int"] }
+          ]
+        ],
+        [
+          "Record",
+          [
+            { "field_name": "second", "field_rule": ["Int"] }
+          ]
+        ]
+      ]
+    }
+  ]
+]
+"#;
+
+#[test]
+fn test_multiple_ctor_arg_sum_rule() {
+    let rule: BinProtRule = serde_json::from_str(MULTIPLE_CTOR_ARG_SUM_RULE).unwrap();
+    let example = vec![0x00, 0x05, 0x06]; // One({ first: 5 }, { second: 6})
+
+    let mut de = Deserializer::from_reader_with_layout(example.as_slice(), rule);
+    let result: Value = Deserialize::deserialize(&mut de).expect("Failed to deserialize");
+    assert_eq!(
+        result,
+        Value::Sum {
+            name: "one".to_string(),
+            index: 0,
+            value: Box::new(Value::Tuple(
+                vec![
+                    Value::Record(vec![("first".to_string(), Value::Int(5))]),
+                    Value::Record(vec![("second".to_string(), Value::Int(6))])
+                ]
+            ))
+                
+        }
+    );
+    test_roundtrip(&result, &example);
+}
+
+
 const BLOCK_LAYOUT: &str = std::include_str!("../../layouts/external_transition.json");
 const BLOCK_BYTES: &[u8] = std::include_bytes!("../../test-fixtures/block");
 
@@ -216,7 +267,7 @@ fn smoke_test_roundtrip_block() {
     let mut de = Deserializer::from_reader_with_layout(BLOCK_BYTES, rule);
     let block: Value = Deserialize::deserialize(&mut de).expect("Failed to deserialize block");
 
-    println!("{:#?}", block);
+    println!("{:#?}", block["t"]["current_protocol_version"]);
 
     assert_eq!(
         block["t"]["protocol_state"]["t"]["t"]["previous_state_hash"]["t"],
@@ -232,25 +283,18 @@ fn smoke_test_roundtrip_block() {
     );
 
     // check roundtrip
-    test_roundtrip(&block, BLOCK_BYTES);
+    // test_roundtrip(&block, BLOCK_BYTES);
 }
 
-// uses too much memory
 // #[test]
 // fn can_roundtrip_layout_json() {
 //     let mut deserializer = serde_json::Deserializer::from_str(BLOCK_LAYOUT);
 //     deserializer.disable_recursion_limit();
 //     let deserializer = serde_stacker::Deserializer::new(&mut deserializer);
 
-//     let mut _deserializer = serde_json::Deserializer::from_str(BLOCK_LAYOUT);
-//     _deserializer.disable_recursion_limit();
-//     let _deserializer = serde_stacker::Deserializer::new(&mut _deserializer);
-
 //     let rule = Layout::deserialize(deserializer).unwrap();
-//     let rule_json = serde_json::Value::deserialize(_deserializer).unwrap();
 
-//     let dest_json = serde_json::to_value(&rule).unwrap();
-//     assert_eq!(rule_json, dest_json);
+//     serde_json::to_writer(&std::fs::File::create("rule-rewrite.json").unwrap(), &rule).unwrap();
 
 // }
 

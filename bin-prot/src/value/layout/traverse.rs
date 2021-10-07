@@ -21,7 +21,7 @@
 //! Combined this allows parsing of types defined by the layout into loosely typed representations.
 //!
 
-use crate::value::layout::{BinProtRule, Polyvar, RuleRef};
+use crate::value::layout::{BinProtRule, RuleRef};
 
 use thiserror::Error;
 
@@ -29,22 +29,7 @@ use thiserror::Error;
 /// defined by a BinProtRule
 pub struct BinProtRuleIterator {
     pub stack: Vec<BinProtRule>, // regular stack to implement the DFS
-    // Tree nodes can branch (only one child should be followed) rather than require traversal of all children
-    // If that is the case the parent should add the children to the branch field and the next path will be taken from here rather than the stack
-    branch: Option<Vec<Vec<BinProtRule>>>,
     current_module_path: Option<String>, // holds on to most recent path encountered in traverse
-}
-
-/// An iterator where the next item may require specifying a branch to take
-/// At some points in its iteration the iterator will require a call to branch to select which
-/// path to take before continuing.
-/// Also supports repeating a node in the tree for a given number of reps
-pub trait BranchingIterator {
-    type Item;
-    type Error;
-
-    fn next(&mut self) -> Result<Option<Self::Item>, Self::Error>;
-    fn branch(&mut self, branch: usize) -> Result<(), Self::Error>;
 }
 
 #[derive(Debug, Error)]
@@ -62,58 +47,55 @@ pub enum Error {
     InvalidBranchIndex { max: usize, got: usize },
 }
 
-impl BranchingIterator for BinProtRuleIterator {
+impl Iterator for BinProtRuleIterator {
     type Item = BinProtRule;
-    type Error = Error;
 
-    fn next(&mut self) -> Result<Option<Self::Item>, Self::Error> {
-        if self.branch.is_some() {
-            return Err(Error::MustCallBranchToProceed);
-        }
-
+    fn next(&mut self) -> Option<Self::Item> {
         let top = self.stack.pop();
         let r = top.clone();
         match top {
             Some(rule) => {
                 match rule {
-                    BinProtRule::List(_) => {
+                    BinProtRule::List(_rule) => {
                         // the code driving the iterator should take the list rule, push it
                         // then call repeat the required number of times
+                        // return Some(Self::Item::List(*rule))
                     }
                     BinProtRule::Record(mut rules) => {
                         self.stack
                             .extend(rules.drain(0..).map(|field| {
-                                if field.field_name == "current_protocol_version" {
-                                    println!("{:#?}", field.field_rule);
-                                }
                                 field.field_rule
                             }).rev());
                     }
                     BinProtRule::Tuple(mut rules) => {
                         self.stack.extend(rules.drain(0..).rev());
                     }
-                    BinProtRule::Sum(summands) => {
+                    BinProtRule::Sum(_summands) => {
                         // don't add to the stack. Add to the branch field instead
                         // this must be resolved by calling `branch` before the iterator can continue
-                        self.branch = Some(summands.into_iter().map(|s| s.ctor_args).collect());
+                        //self.branch = Some(summands.into_iter().map(|s| s.ctor_args).collect());
+                        // return Some(Self::Item::Branch(rule, summands))
                     }
-                    BinProtRule::Option(r) => {
+                    BinProtRule::Option(_r) => {
                         // Option is a special case of a Sum where the None variant contain nothing
-                        self.branch = Some(vec![vec![], vec![*r]]);
+                        // return Some(Self::Item::Branch(rule, vec![
+                        //     Summand::new_none(),
+                        //     Summand::new_some(*r),
+                        // ]))
+
                     }
-                    BinProtRule::Polyvar(polyvars) => {
+                    BinProtRule::Polyvar(_polyvars) => {
                         // these are pretty much anonymous enum/sum types and should be handled the same way
-                        self.branch = Some(
-                            polyvars
-                                .into_iter()
-                                .map(|s| match s {
-                                    Polyvar::Tagged(pv) => pv.polyvar_args,
-                                    Polyvar::Inherited(rule) => {
-                                        vec![rule]
-                                    }
-                                })
-                                .collect(),
-                        );
+                        unimplemented!();
+                            // polyvars
+                            //     .into_iter()
+                            //     .map(|s| match s {
+                            //         Polyvar::Tagged(pv) => pv.polyvar_args,
+                            //         Polyvar::Inherited(rule) => {
+                            //             vec![rule]
+                            //         }
+                            //     })
+                            //     .collect()
                     }
                     BinProtRule::Reference(rule_ref) => match rule_ref {
                         RuleRef::Unresolved(_payload) => {
@@ -137,60 +119,38 @@ impl BranchingIterator for BinProtRuleIterator {
                     | BinProtRule::Float => {} // These are leaves so nothing required
                     BinProtRule::Custom(rules) => {
                         if let Some(path) = &self.current_module_path {
-                            return Ok(Some(BinProtRule::CustomForPath(path.to_string(), rules)));
+                            return Some(BinProtRule::CustomForPath(path.to_string(), rules));
                         }
                     }
                     _ => unimplemented!(),
                 };
-                Ok(r)
+                r
             }
-            None => Ok(None), // end of traversal
-        }
-    }
-
-    fn branch(&mut self, branch: usize) -> Result<(), Self::Error> {
-        if let Some(summands) = &self.branch {
-            if branch >= summands.len() {
-                return Err(Error::InvalidBranchIndex {
-                    max: summands.len(),
-                    got: branch,
-                });
-            }
-        }
-
-        if let Some(mut branches) = self.branch.take() {
-            let s = branches
-                .get_mut(branch)
-                .ok_or(Error::CannotBranchAtLocation)?;
-            self.stack.extend(s.drain(0..).rev());
-            Ok(())
-        } else {
-            Err(Error::CannotBranchAtLocation)
+            None => None, // end of traversal
         }
     }
 }
 
 impl BinProtRuleIterator {
-    // takes whatever is next on the stack and repeats it to it appears `reps` times
-    pub fn repeat(&mut self, reps: usize) {
-        if let Some(top) = self.stack.pop() {
-            self.stack.extend(std::iter::repeat(top).take(reps));
-        }
-    }
 
     // Drop a custom rule onto the stack
-    pub fn push(&mut self, rule: BinProtRule) {
-        self.stack.push(rule);
+    pub fn push(&mut self, rules: Vec<BinProtRule>) {
+        self.stack.extend(rules);
+    }
+
+    // Drop a custom rule onto the stack n times
+    pub fn push_n(&mut self, rule: BinProtRule, n: usize) {
+        self.stack.extend(std::iter::repeat(rule).take(n));
     }
 }
 
-// Consumes the rule and produces a branching iterator
-impl BinProtRule {
-    #[allow(dead_code)] // allow this for now since
-    pub fn into_branching_iter(self) -> BinProtRuleIterator {
+impl IntoIterator for BinProtRule {
+    type Item = BinProtRule;
+    type IntoIter = BinProtRuleIterator;
+
+    fn into_iter(self) -> <Self as IntoIterator>::IntoIter {
         BinProtRuleIterator {
             stack: vec![self],
-            branch: None,
             current_module_path: None,
         }
     }
@@ -205,8 +165,8 @@ mod tests {
     #[test]
     fn test_layout() {
         let layout: Layout = serde_json::from_str(TEST_LAYOUT).unwrap();
-        let mut iter = layout.bin_prot_rule.into_branching_iter();
-        while let Ok(Some(v)) = iter.next() {
+        let mut iter = layout.bin_prot_rule.into_iter();
+        while let Some(v) = iter.next() {
             println!("{:?}\n", v);
         }
     }
@@ -216,22 +176,18 @@ mod tests {
     #[test]
     fn test_layout_sum() {
         let layout: Layout = serde_json::from_str(TEST_LAYOUT_SUM).unwrap();
-        let mut iter = layout.bin_prot_rule.into_branching_iter();
+        let mut iter = layout.bin_prot_rule.into_iter();
         // Test by taking the 0th branch at each branch node. Test is considered as pass
         // if no error
         loop {
             match iter.next() {
-                Ok(Some(v)) => {
-                    if let BinProtRule::Sum(_) = v {
+                Some(v) => {
+                    if let BinProtRule::Sum(summands) = v {
                         // if its a sum type take the first variant in each case
-                        iter.branch(0).expect("Invalid branch index");
+                        iter.push(summands[0].ctor_args.clone())
                     }
-                    println!("{:?}\n", v);
                 }
-                Err(e) => {
-                    panic!("{}", e);
-                }
-                Ok(None) => {
+                None => {
                     println!("END!!!!");
                     break;
                 }
