@@ -627,6 +627,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "test-serialization"
+version = "0.1.0"
+dependencies = [
+ "bin-prot",
+ "mina-rs-base",
+ "serde",
+ "serde_json",
+ "serde_stacker",
+]
+
+[[package]]
 name = "textwrap"
 version = "0.11.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
