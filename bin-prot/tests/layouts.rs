@@ -169,7 +169,10 @@ fn test_nested_sum_rule() {
         Value::Sum {
             name: "one".to_string(),
             index: 0,
-            value: Box::new(Value::Tuple(vec![Value::Record(vec![("first".to_string(), Value::Int(5))])]))
+            value: Box::new(Value::Tuple(vec![Value::Record(vec![(
+                "first".to_string(),
+                Value::Int(5)
+            )])]))
         }
     );
     test_roundtrip(&result, &example);
@@ -188,7 +191,8 @@ fn test_option_rule() {
 
     let example_none = vec![0x00]; // None
 
-    let mut de = Deserializer::from_reader_with_layout(Cursor::new(example_none.as_slice()), rule.clone());
+    let mut de =
+        Deserializer::from_reader_with_layout(Cursor::new(example_none.as_slice()), rule.clone());
     let result: Value = Deserialize::deserialize(&mut de).expect("Failed to deserialize");
     println!("{:?}", result);
     assert_eq!(result, Value::Option(None));
@@ -242,18 +246,14 @@ fn test_multiple_ctor_arg_sum_rule() {
         Value::Sum {
             name: "one".to_string(),
             index: 0,
-            value: Box::new(Value::Tuple(
-                vec![
-                    Value::Record(vec![("first".to_string(), Value::Int(5))]),
-                    Value::Record(vec![("second".to_string(), Value::Int(6))])
-                ]
-            ))
-                
+            value: Box::new(Value::Tuple(vec![
+                Value::Record(vec![("first".to_string(), Value::Int(5))]),
+                Value::Record(vec![("second".to_string(), Value::Int(6))])
+            ]))
         }
     );
     test_roundtrip(&result, &example);
 }
-
 
 const BLOCK_LAYOUT: &str = std::include_str!("../../layouts/external_transition.json");
 const BLOCK_BYTES: &[u8] = std::include_bytes!("../../test-fixtures/block");
@@ -296,8 +296,10 @@ fn smoke_test_roundtrip_protocol_state() {
 
     let protocol_state_bytes = &BLOCK_BYTES[1..845];
 
-    let mut de = Deserializer::from_reader_with_layout(Cursor::new(protocol_state_bytes), rule.clone());
-    let protocol_state: Value = Deserialize::deserialize(&mut de).expect("Failed to deserialize protocol_state");
+    let mut de =
+        Deserializer::from_reader_with_layout(Cursor::new(protocol_state_bytes), rule.clone());
+    let protocol_state: Value =
+        Deserialize::deserialize(&mut de).expect("Failed to deserialize protocol_state");
 
     // check roundtrip
     test_roundtrip(&protocol_state, protocol_state_bytes);

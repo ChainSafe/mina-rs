@@ -7,8 +7,8 @@ use std::io::{Read, Seek};
 
 use crate::de::{Enum, MapAccess, SeqAccess};
 use crate::error::{Error, Result};
+use crate::value::layout::BinProtRule;
 use crate::value::layout::Summand;
-use crate::value::layout::{BinProtRule};
 use crate::Deserializer as DS;
 use crate::ReadBinProtExt;
 use serde::de::Visitor;
@@ -22,10 +22,7 @@ impl<'de, 'a, R: Read> DS<R> {
         V: Visitor<'de>,
     {
         if let Some(iter) = &mut self.layout_iter {
-
             match iter.next() {
-
-
                 Some(rule) => {
                     // println!("At {}\n{:#?}\n\n", self.rdr.stream_position().unwrap(), rule);
                     match rule {
@@ -58,9 +55,7 @@ impl<'de, 'a, R: Read> DS<R> {
                         BinProtRule::Option(some_rule) => {
                             let index = self.rdr.bin_read_variant_index()?; // 0 or 1
                             match index {
-                                0 => {
-                                    visitor.visit_none()
-                                }
+                                0 => visitor.visit_none(),
                                 1 => {
                                     iter.push(vec![*some_rule]);
                                     visitor.visit_some(self)
@@ -145,7 +140,7 @@ impl<'de, 'a, R: Read> DS<R> {
                             }
                         }
                     }
-                },
+                }
                 None => Err(Error::UnexpectedEndOfLayout),
             }
         } else {

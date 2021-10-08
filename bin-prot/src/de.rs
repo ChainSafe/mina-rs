@@ -377,11 +377,21 @@ pub(crate) struct SeqAccess<'a, R: Read + 'a> {
 
 impl<'a, R: Read + 'a> SeqAccess<'a, R> {
     pub fn new(de: &'a mut Deserializer<R>, len: usize) -> Self {
-        Self { de, len, total_len: len, is_list: false }
+        Self {
+            de,
+            len,
+            total_len: len,
+            is_list: false,
+        }
     }
 
     pub fn new_list(de: &'a mut Deserializer<R>, len: usize) -> Self {
-        Self { de, len, total_len: len, is_list: true }
+        Self {
+            de,
+            len,
+            total_len: len,
+            is_list: true,
+        }
     }
 }
 

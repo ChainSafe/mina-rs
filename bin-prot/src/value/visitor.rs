@@ -91,7 +91,6 @@ impl<'de> Visitor<'de> for ValueVisitor {
         } else {
             Ok(Value::Tuple(vec))
         }
-
     }
 
     fn visit_map<V>(self, mut visitor: V) -> Result<Value, V::Error>
