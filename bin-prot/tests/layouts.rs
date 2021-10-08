@@ -281,7 +281,26 @@ fn smoke_test_roundtrip_block() {
     );
 
     // check roundtrip
-    test_roundtrip(&block, BLOCK_BYTES);
+    test_roundtrip(&block["t"]["protocol_state"], &BLOCK_BYTES[1..845]);
+}
+
+const PROTOCOL_STATE_LAYOUT: &str = std::include_str!("../../layouts/protocol_state.json");
+
+
+#[test]
+fn smoke_test_roundtrip_protocol_state() {
+    let mut deserializer = serde_json::Deserializer::from_str(PROTOCOL_STATE_LAYOUT);
+    deserializer.disable_recursion_limit();
+    let deserializer = serde_stacker::Deserializer::new(&mut deserializer);
+    let rule = Layout::deserialize(deserializer).unwrap().bin_prot_rule;
+
+    let PROTOCOL_STATE_BYTES = &BLOCK_BYTES[1..845];
+
+    let mut de = Deserializer::from_reader_with_layout(PROTOCOL_STATE_BYTES, rule);
+    let protocol_state: Value = Deserialize::deserialize(&mut de).expect("Failed to deserialize protocol_state");
+
+    // check roundtrip
+    test_roundtrip(&protocol_state, PROTOCOL_STATE_BYTES);
 }
 
 fn test_roundtrip<T>(val: &T, bytes: &[u8])
