@@ -28,7 +28,7 @@ use thiserror::Error;
 /// Implements a depth first search of the type tree
 /// defined by a BinProtRule
 pub struct BinProtRuleIterator {
-    pub stack: Vec<BinProtRule>, // regular stack to implement the DFS
+    pub stack: Vec<BinProtRule>,         // regular stack to implement the DFS
     current_module_path: Option<String>, // holds on to most recent path encountered in traverse
 }
 
@@ -63,9 +63,7 @@ impl Iterator for BinProtRuleIterator {
                     }
                     BinProtRule::Record(mut rules) => {
                         self.stack
-                            .extend(rules.drain(0..).map(|field| {
-                                field.field_rule
-                            }).rev());
+                            .extend(rules.drain(0..).map(|field| field.field_rule).rev());
                     }
                     BinProtRule::Tuple(mut rules) => {
                         self.stack.extend(rules.drain(0..).rev());
@@ -82,20 +80,19 @@ impl Iterator for BinProtRuleIterator {
                         //     Summand::new_none(),
                         //     Summand::new_some(*r),
                         // ]))
-
                     }
                     BinProtRule::Polyvar(_polyvars) => {
                         // these are pretty much anonymous enum/sum types and should be handled the same way
                         unimplemented!();
-                            // polyvars
-                            //     .into_iter()
-                            //     .map(|s| match s {
-                            //         Polyvar::Tagged(pv) => pv.polyvar_args,
-                            //         Polyvar::Inherited(rule) => {
-                            //             vec![rule]
-                            //         }
-                            //     })
-                            //     .collect()
+                        // polyvars
+                        //     .into_iter()
+                        //     .map(|s| match s {
+                        //         Polyvar::Tagged(pv) => pv.polyvar_args,
+                        //         Polyvar::Inherited(rule) => {
+                        //             vec![rule]
+                        //         }
+                        //     })
+                        //     .collect()
                     }
                     BinProtRule::Reference(rule_ref) => match rule_ref {
                         RuleRef::Unresolved(_payload) => {
@@ -132,7 +129,6 @@ impl Iterator for BinProtRuleIterator {
 }
 
 impl BinProtRuleIterator {
-
     // Drop a custom rule onto the stack
     pub fn push(&mut self, rules: Vec<BinProtRule>) {
         self.stack.extend(rules);

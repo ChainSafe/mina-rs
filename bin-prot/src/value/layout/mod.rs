@@ -3,13 +3,13 @@
 
 use core::convert::TryFrom;
 
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 use serde_json::from_value;
 
 mod list_tagged_enum;
 pub(crate) mod traverse;
 
-pub use traverse::{BinProtRuleIterator};
+pub use traverse::BinProtRuleIterator;
 
 use list_tagged_enum::ListTaggedEnum;
 
