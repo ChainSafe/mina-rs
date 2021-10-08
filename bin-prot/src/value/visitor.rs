@@ -85,7 +85,13 @@ impl<'de> Visitor<'de> for ValueVisitor {
         while let Some(elem) = visitor.next_element()? {
             vec.push(elem);
         }
-        Ok(Value::Tuple(vec))
+
+        if visitor.size_hint().is_some() {
+            Ok(Value::List(vec))
+        } else {
+            Ok(Value::Tuple(vec))
+        }
+
     }
 
     fn visit_map<V>(self, mut visitor: V) -> Result<Value, V::Error>

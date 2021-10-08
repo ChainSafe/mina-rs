@@ -3,7 +3,7 @@
 
 use byteorder::LittleEndian;
 use std::convert::TryInto;
-use std::io::Read;
+use std::io::{Read, Seek};
 
 use crate::de::{Enum, MapAccess, SeqAccess};
 use crate::error::{Error, Result};
@@ -24,7 +24,10 @@ impl<'de, 'a, R: Read> DS<R> {
         if let Some(iter) = &mut self.layout_iter {
 
             match iter.next() {
+
+
                 Some(rule) => {
+                    // println!("At {}\n{:#?}\n\n", self.rdr.stream_position().unwrap(), rule);
                     match rule {
                         BinProtRule::Unit => {
                             self.rdr.bin_read_unit()?;
@@ -79,7 +82,7 @@ impl<'de, 'a, R: Read> DS<R> {
                             // request the iterator repeats the list elements the current number of times
                             iter.push_n(*element_rule, len);
                             // read the elements
-                            visitor.visit_seq(SeqAccess::new(self, len))
+                            visitor.visit_seq(SeqAccess::new_list(self, len))
                         }
                         BinProtRule::Int
                         | BinProtRule::Int32

@@ -106,6 +106,6 @@ pub fn print_byte_array<W: Write>(w: &mut W, bytes: &[u8], max_len: usize) {
 pub fn roundtrip_test<'a, T: Serialize + Deserialize<'a> + PartialEq + Debug>(val: T) {
     let mut output = Vec::<u8>::new();
     to_writer(&mut output, &val).unwrap();
-    let re_val: T = from_reader(output.as_slice()).unwrap();
+    let re_val: T = from_reader(std::io::Cursor::new(output.as_slice())).unwrap();
     assert_eq!(val, re_val)
 }

@@ -1,7 +1,7 @@
 // Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
-use std::io::{BufReader, Read};
+use std::io::{BufReader, Read, Seek};
 
 use crate::error::{Error, Result};
 use crate::value::layout::{BinProtRule, BinProtRuleIterator};
@@ -370,12 +370,18 @@ impl<'de, 'a, R: Read> de::Deserializer<'de> for &'a mut Deserializer<R> {
 
 pub(crate) struct SeqAccess<'a, R: Read + 'a> {
     de: &'a mut Deserializer<R>,
+    total_len: usize,
     len: usize,
+    is_list: bool,
 }
 
 impl<'a, R: Read + 'a> SeqAccess<'a, R> {
     pub fn new(de: &'a mut Deserializer<R>, len: usize) -> Self {
-        Self { de, len }
+        Self { de, len, total_len: len, is_list: false }
+    }
+
+    pub fn new_list(de: &'a mut Deserializer<R>, len: usize) -> Self {
+        Self { de, len, total_len: len, is_list: true }
     }
 }
 
@@ -395,7 +401,11 @@ impl<'de: 'a, 'a, R: Read> de::SeqAccess<'de> for SeqAccess<'a, R> {
     }
 
     fn size_hint(&self) -> Option<usize> {
-        Some(self.len)
+        if self.is_list {
+            Some(self.total_len)
+        } else {
+            None
+        }
     }
 }
 
