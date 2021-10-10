@@ -1,7 +1,7 @@
 // Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
-use bin_prot::value::layout::{BinProtRule};
+use bin_prot::value::layout::BinProtRule;
 use bin_prot::value::Value;
 use bin_prot::Deserializer;
 use serde::{Deserialize, Serialize};
@@ -190,8 +190,7 @@ fn test_option_rule() {
 
     let example_none = vec![0x00]; // None
 
-    let mut de =
-        Deserializer::from_reader_with_layout(Cursor::new(example_none.as_slice()), &rule);
+    let mut de = Deserializer::from_reader_with_layout(Cursor::new(example_none.as_slice()), &rule);
     let result: Value = Deserialize::deserialize(&mut de).expect("Failed to deserialize");
     println!("{:?}", result);
     assert_eq!(result, Value::Option(None));
