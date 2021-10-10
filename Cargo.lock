@@ -631,10 +631,13 @@ name = "test-serialization"
 version = "0.1.0"
 dependencies = [
  "bin-prot",
+ "lazy_static",
  "mina-rs-base",
+ "pretty_assertions",
  "serde",
  "serde_json",
  "serde_stacker",
+ "wire-type",
 ]
 
 [[package]]
