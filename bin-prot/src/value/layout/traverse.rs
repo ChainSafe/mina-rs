@@ -59,7 +59,6 @@ impl Iterator for BinProtRuleIterator {
                     BinProtRule::List(_rule) => {
                         // the code driving the iterator should take the list rule, push it
                         // then call repeat the required number of times
-                        // return Some(Self::Item::List(*rule))
                     }
                     BinProtRule::Record(mut rules) => {
                         self.stack
@@ -71,28 +70,13 @@ impl Iterator for BinProtRuleIterator {
                     BinProtRule::Sum(_summands) => {
                         // don't add to the stack. Add to the branch field instead
                         // this must be resolved by calling `branch` before the iterator can continue
-                        //self.branch = Some(summands.into_iter().map(|s| s.ctor_args).collect());
-                        // return Some(Self::Item::Branch(rule, summands))
                     }
                     BinProtRule::Option(_r) => {
                         // Option is a special case of a Sum where the None variant contain nothing
-                        // return Some(Self::Item::Branch(rule, vec![
-                        //     Summand::new_none(),
-                        //     Summand::new_some(*r),
-                        // ]))
                     }
                     BinProtRule::Polyvar(_polyvars) => {
                         // these are pretty much anonymous enum/sum types and should be handled the same way
                         unimplemented!();
-                        // polyvars
-                        //     .into_iter()
-                        //     .map(|s| match s {
-                        //         Polyvar::Tagged(pv) => pv.polyvar_args,
-                        //         Polyvar::Inherited(rule) => {
-                        //             vec![rule]
-                        //         }
-                        //     })
-                        //     .collect()
                     }
                     BinProtRule::Reference(rule_ref) => match rule_ref {
                         RuleRef::Unresolved(_payload) => {
