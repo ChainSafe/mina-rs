@@ -44,24 +44,24 @@ pub fn derive(input: TokenStream) -> TokenStream {
         pub struct #wire_ident {
             version: u16,
             #[serde(with = #shadow_ident_str)]
-            inner: #ident
+            t: #ident
         }
 
         #[automatically_derived]
         impl From<#wire_ident> for #ident {
-            fn from(t: #wire_ident) -> Self { t.inner }
+            fn from(t: #wire_ident) -> Self { t.t }
         }
 
         #[automatically_derived]
         impl From<#ident> for #wire_ident {
-            fn from(t: #ident) -> #wire_ident { Self { version: #version, inner: t } }
+            fn from(t: #ident) -> #wire_ident { Self { version: #version, t: t } }
         }
 
         #[automatically_derived]
         impl<'a> wire_type::WireType<'_> for #ident {
             type WireType = #wire_ident;
             const VERSION: u16 =  #version;
-            fn to_wire_type(self) -> Self::WireType { Self::WireType { version: Self::VERSION, inner: self } }
+            fn to_wire_type(self) -> Self::WireType { Self::WireType { version: Self::VERSION, t: self } }
             fn from_wire_type(t: Self::WireType) -> Self { Self::from(t) }
         }
 
