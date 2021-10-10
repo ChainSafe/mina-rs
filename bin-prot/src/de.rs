@@ -1,7 +1,7 @@
 // Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
-use std::io::{BufReader, Read, Seek};
+use std::io::{BufReader, Read};
 
 use crate::error::{Error, Result};
 use crate::value::layout::{BinProtRule, BinProtRuleIterator};

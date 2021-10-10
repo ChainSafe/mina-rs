@@ -29,9 +29,9 @@ impl Serialize for Value {
             }
             Value::Record(ref m) => {
                 // name of struct and field are lost when serializing
-                let mut map = serializer.serialize_struct(&"", m.len())?;
+                let mut map = serializer.serialize_struct("", m.len())?;
                 for (_k, v) in m {
-                    map.serialize_field(&"", v)?;
+                    map.serialize_field("", v)?;
                 }
                 map.end()
             }
@@ -46,7 +46,7 @@ impl Serialize for Value {
                 name: _,
                 ref index,
                 ref value,
-            } => serializer.serialize_newtype_variant(&"", *index as u32, &"", value), // sum types/enums
+            } => serializer.serialize_newtype_variant("", *index as u32, "", value), // sum types/enums
             Value::List(ref v) => v.serialize(serializer),
         }
     }
