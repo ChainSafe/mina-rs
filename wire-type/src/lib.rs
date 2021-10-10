@@ -72,7 +72,7 @@ mod tests {
         #[derive(Serialize, Deserialize)]
         struct WireX {
             version: Version,
-           t: X,
+            t: X,
         }
 
         impl From<WireX> for X {
@@ -87,7 +87,7 @@ mod tests {
             fn to_wire_type(self) -> Self::WireType {
                 Self::WireType {
                     version: Self::VERSION,
-                   t: self,
+                    t: self,
                 }
             }
             fn from_wire_type(t: Self::WireType) -> Self {
@@ -112,13 +112,13 @@ mod tests {
             x.clone().to_wire_type(),
             WireX {
                 version: 1,
-               t: x.clone()
+                t: x.clone()
             }
         );
         assert_eq!(
             X::from_wire_type(WireX {
                 version: 1,
-               t: x.clone()
+                t: x.clone()
             }),
             x
         )
