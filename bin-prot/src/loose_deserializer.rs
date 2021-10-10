@@ -3,7 +3,7 @@
 
 use byteorder::LittleEndian;
 use std::convert::TryInto;
-use std::io::{Read, Seek};
+use std::io::Read;
 
 use crate::de::{Enum, MapAccess, SeqAccess};
 use crate::error::{Error, Result};
