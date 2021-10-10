@@ -4,7 +4,6 @@
 use bin_prot::value::layout::{BinProtRule};
 use bin_prot::value::Value;
 use bin_prot::Deserializer;
-use pretty_assertions::assert_eq;
 use serde::{Deserialize, Serialize};
 use std::io::Cursor;
 
@@ -36,7 +35,7 @@ fn test_simple_rule() {
             Value::Bool(false)
         ]))))
     );
-    test_roundtrip(&result, &example);
+    test_reserialize(&result, &example);
 }
 
 const RECORD_RULE: &str = r#"
@@ -72,7 +71,7 @@ fn test_record_rule() {
 
     // also test using the indexing
     assert_eq!(result["second"]["inner"], Value::Bool(false));
-    test_roundtrip(&result, &example);
+    test_reserialize(&result, &example);
 }
 
 #[test]
@@ -99,7 +98,7 @@ fn test_record_rule_partial() {
         }
     );
 
-    test_roundtrip(&result, &example);
+    test_reserialize(&result, &example);
 }
 
 const SUM_RULE: &str = r#"
@@ -135,7 +134,7 @@ fn test_sum_rule() {
             value: Box::new(Value::Tuple(vec![Value::Bool(false)]))
         }
     );
-    test_roundtrip(&result, &example);
+    test_reserialize(&result, &example);
 }
 
 const NESTED_SUM_RULE: &str = r#"
@@ -175,7 +174,7 @@ fn test_nested_sum_rule() {
             )])]))
         }
     );
-    test_roundtrip(&result, &example);
+    test_reserialize(&result, &example);
 }
 
 const OPTION_RULE: &str = r#"
@@ -197,7 +196,7 @@ fn test_option_rule() {
     println!("{:?}", result);
     assert_eq!(result, Value::Option(None));
 
-    test_roundtrip(&result, &example_none);
+    test_reserialize(&result, &example_none);
 
     let example_some = vec![0x01, 0x07]; // Some(7)
 
@@ -205,7 +204,7 @@ fn test_option_rule() {
     let result: Value = Deserialize::deserialize(&mut de).expect("Failed to deserialize");
 
     assert_eq!(result, Value::Option(Some(Box::new(Value::Int(0x07)))));
-    test_roundtrip(&result, &example_some);
+    test_reserialize(&result, &example_some);
 }
 
 const MULTIPLE_CTOR_ARG_SUM_RULE: &str = r#"
@@ -252,10 +251,10 @@ fn test_multiple_ctor_arg_sum_rule() {
             ]))
         }
     );
-    test_roundtrip(&result, &example);
+    test_reserialize(&result, &example);
 }
 
-fn test_roundtrip<T>(val: &T, bytes: &[u8])
+pub fn test_reserialize<T>(val: &T, bytes: &[u8])
 where
     T: Serialize,
 {

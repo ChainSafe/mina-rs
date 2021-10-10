@@ -11,6 +11,8 @@ mod tests {
     use bin_prot::BinProtRule;
     use pretty_assertions::assert_eq;
 
+    use mina_rs_base::protocol_version::ProtocolVersion;
+
     const BLOCK_LAYOUT: &str = std::include_str!("../../layouts/external_transition.json");
     const BLOCK_BYTES: &[u8] = std::include_bytes!("../../test-fixtures/block");
 
@@ -38,11 +40,11 @@ mod tests {
         ////////////////////////////////////////////////////////////////
 
         // protocol_version
-        test_in_block::<mina_rs_base::protocol_version::ProtocolVersion>(
+        test_in_block::<ProtocolVersion>(
             &block,
             &["t/current_protocol_version"],
         );
-        test_in_block::<Option<mina_rs_base::protocol_version::ProtocolVersion>>(
+        test_in_block::<Option<ProtocolVersion>>(
             &block,
             &["t/proposed_protocol_version_opt"],
         );
@@ -75,6 +77,7 @@ mod tests {
         let mut de = Deserializer::from_reader_with_layout(BLOCK_BYTES, &BLOCK_RULE);
         let block: Value = Deserialize::deserialize(&mut de).expect("Failed to deserialize block");
 
+        // test we can correctly index a known field
         assert_eq!(
             block["t"]["protocol_state"]["t"]["t"]["previous_state_hash"]["t"],
             Value::Tuple(
@@ -105,8 +108,9 @@ mod tests {
             delta_transition_chain_proof: Value,
 
             // implemented types
-            current_protocol_version: Value,
-            proposed_protocol_version: Value,
+            current_protocol_version: ProtocolVersion,
+            proposed_protocol_version_opt: Option<ProtocolVersion>,
+            validation_callback: (),
         }
 
         // check we can deserialize into this type without error
