@@ -282,7 +282,7 @@ fn smoke_test_roundtrip_block() {
     );
 
     // check roundtrip
-    test_roundtrip(&block["t"]["protocol_state"], &BLOCK_BYTES[1..845]);
+    test_roundtrip(&block, &BLOCK_BYTES);
 }
 
 const PROTOCOL_STATE_LAYOUT: &str = std::include_str!("../../layouts/protocol_state.json");
