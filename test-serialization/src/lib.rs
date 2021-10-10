@@ -4,12 +4,12 @@
 #[cfg(test)]
 mod tests {
 
+    use bin_prot::BinProtRule;
     use bin_prot::{from_reader, to_writer, Deserializer, Value};
+    use lazy_static::lazy_static;
+    use pretty_assertions::assert_eq;
     use serde::{Deserialize, Serialize};
     use wire_type::WireType;
-    use lazy_static::lazy_static;
-    use bin_prot::BinProtRule;
-    use pretty_assertions::assert_eq;
 
     use mina_rs_base::protocol_version::ProtocolVersion;
 
@@ -40,14 +40,8 @@ mod tests {
         ////////////////////////////////////////////////////////////////
 
         // protocol_version
-        test_in_block::<ProtocolVersion>(
-            &block,
-            &["t/current_protocol_version"],
-        );
-        test_in_block::<Option<ProtocolVersion>>(
-            &block,
-            &["t/proposed_protocol_version_opt"],
-        );
+        test_in_block::<ProtocolVersion>(&block, &["t/current_protocol_version"]);
+        test_in_block::<Option<ProtocolVersion>>(&block, &["t/proposed_protocol_version_opt"]);
     }
 
     fn test_in_block<'a, T: Serialize + Deserialize<'a>>(block: &bin_prot::Value, paths: &[&str]) {
@@ -82,8 +76,8 @@ mod tests {
             block["t"]["protocol_state"]["t"]["t"]["previous_state_hash"]["t"],
             Value::Tuple(
                 vec![
-                    30, 76, 197, 215, 115, 43, 42, 245, 198, 30, 253, 134, 49, 117, 82, 71, 182, 181,
-                    180, 95, 18, 250, 46, 1, 25, 3, 78, 193, 57, 152, 116, 49,
+                    30, 76, 197, 215, 115, 43, 42, 245, 198, 30, 253, 134, 49, 117, 82, 71, 182,
+                    181, 180, 95, 18, 250, 46, 1, 25, 3, 78, 193, 57, 152, 116, 49,
                 ]
                 .iter()
                 .map(|c| Value::Char(*c))
