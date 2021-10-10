@@ -13,4 +13,5 @@ serde_json = { version = "1.0.64" }
 thiserror = "1.0.24"
 
 [dev-dependencies]
+difference = "2.0.0"
 serde = { version = "1.0.125", features = ["derive"] }
