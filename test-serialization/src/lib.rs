@@ -10,10 +10,10 @@ mod tests {
     use pretty_assertions::assert_eq;
     use serde::{Deserialize, Serialize};
 
+    use mina_crypto::hash::StateHash;
     use mina_rs_base::{
         external_transition::ExternalTransition, protocol_version::ProtocolVersion,
     };
-    use mina_crypto::hash::StateHash;
 
     const BLOCK_LAYOUT: &str = std::include_str!("../../layouts/external_transition.json");
     const BLOCK_BYTES: &[u8] = std::include_bytes!("../../test-fixtures/block");
@@ -44,7 +44,7 @@ mod tests {
         // protocol_version
         test_in_block::<ProtocolVersion>(&block, &["t/current_protocol_version"]);
         test_in_block::<Option<ProtocolVersion>>(&block, &["t/proposed_protocol_version_opt"]);
-    
+
         // state hash
         test_in_block::<StateHash>(&block, &["t/protocol_state/t/t/previous_state_hash"]);
     }
