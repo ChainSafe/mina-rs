@@ -17,6 +17,7 @@
 pub mod blockchain_state;
 pub mod consensus_state;
 pub mod epoch_data;
+pub mod external_transition;
 pub mod global_slot;
 pub mod numbers;
 pub mod protocol_state;
