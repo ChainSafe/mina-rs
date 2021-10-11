@@ -645,6 +645,7 @@ version = "0.1.0"
 dependencies = [
  "bin-prot",
  "lazy_static",
+ "mina-crypto",
  "mina-rs-base",
  "pretty_assertions",
  "serde",

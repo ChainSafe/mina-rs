@@ -41,7 +41,7 @@ pub mod wire {
 
     use super::*;
 
-    /// This structure can be thought of like the block header. It contains the most essential information of a block.
+    /// To be returned to the base module once types are fully completed
     #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize, WireType)]
     #[serde(from = "<Self as WireType>::WireType")]
     #[serde(into = "<Self as WireType>::WireType")]
