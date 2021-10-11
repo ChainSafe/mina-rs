@@ -18,7 +18,7 @@ use wire_type::WireType;
 
 pub(crate) type HashBytes = Box<[u8]>;
 
-#[derive(Default, Serialize, Deserialize, PartialEq, Debug, Clone)]
+#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub(crate) struct BaseHash([u8; 32]);
 
 impl From<HashBytes> for BaseHash {
