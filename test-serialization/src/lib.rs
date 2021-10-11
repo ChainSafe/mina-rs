@@ -9,9 +9,10 @@ mod tests {
     use lazy_static::lazy_static;
     use pretty_assertions::assert_eq;
     use serde::{Deserialize, Serialize};
-    use wire_type::WireType;
 
-    use mina_rs_base::protocol_version::ProtocolVersion;
+    use mina_rs_base::{
+        external_transition::ExternalTransition, protocol_version::ProtocolVersion,
+    };
 
     const BLOCK_LAYOUT: &str = std::include_str!("../../layouts/external_transition.json");
     const BLOCK_BYTES: &[u8] = std::include_bytes!("../../test-fixtures/block");
@@ -91,25 +92,9 @@ mod tests {
 
     #[test]
     fn smoke_test_partial_block() {
-        #[derive(Clone, Debug, PartialEq, Serialize, Deserialize, WireType)]
-        #[serde(from = "<Self as WireType>::WireType")]
-        #[serde(into = "<Self as WireType>::WireType")]
-        struct PartialBlock {
-            // unimplemented types
-            protocol_state: Value,
-            protocol_state_proof: Value,
-            staged_ledger_diff: Value,
-            delta_transition_chain_proof: Value,
-
-            // implemented types
-            current_protocol_version: ProtocolVersion,
-            proposed_protocol_version_opt: Option<ProtocolVersion>,
-            validation_callback: (),
-        }
-
         // check we can deserialize into this type without error
         let mut de = Deserializer::from_reader_with_layout(BLOCK_BYTES, &BLOCK_RULE);
-        let block: PartialBlock =
+        let block: ExternalTransition =
             Deserialize::deserialize(&mut de).expect("Failed to deserialize block");
 
         // check roundtrip

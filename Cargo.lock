@@ -42,6 +42,7 @@ name = "bin-prot"
 version = "0.1.0"
 dependencies = [
  "byteorder",
+ "difference",
  "num",
  "serde",
  "serde_json",
@@ -197,6 +198,12 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "0e25ea47919b1560c4e3b7fe0aaab9becf5b84a10325ddf7db0f0ba5e1026499"
 
 [[package]]
+name = "difference"
+version = "2.0.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "524cbf6897b527295dff137cec09ecf3a05f4fddffd7dfcd1585403449e74198"
+
+[[package]]
 name = "digest"
 version = "0.9.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -320,6 +327,7 @@ dependencies = [
 name = "mina-rs-base"
 version = "0.1.0"
 dependencies = [
+ "bin-prot",
  "mina-crypto",
  "serde",
  "wire-type",
@@ -642,7 +650,6 @@ dependencies = [
  "serde",
  "serde_json",
  "serde_stacker",
- "wire-type",
 ]
 
 [[package]]
