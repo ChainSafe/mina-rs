@@ -11,18 +11,22 @@ use syn::{parse_macro_input, Data, DataEnum, DataStruct, DeriveInput, Fields};
 #[darling(default, attributes(wire_type))]
 struct Opts {
     version: u16,
+    recurse: usize,
 }
 
 impl std::default::Default for Opts {
     fn default() -> Self {
-        Opts { version: 1 }
+        Opts {
+            version: 1,
+            recurse: 1,
+        }
     }
 }
 
 #[proc_macro_derive(WireType, attributes(wire_type))]
 pub fn derive(input: TokenStream) -> TokenStream {
     let input = parse_macro_input!(input);
-    let Opts { version } = Opts::from_derive_input(&input)
+    let Opts { version, recurse } = Opts::from_derive_input(&input)
         .expect("Invalid options for wire_type. Must provide a version number (e.g. #[wire_type(version = 1)]");
     let shadow = shadow_from_input(input.clone());
     let DeriveInput {
@@ -36,11 +40,29 @@ pub fn derive(input: TokenStream) -> TokenStream {
     let shadow_ident = format_ident!("__Shadow{}", ident);
     let shadow_ident_str = shadow_ident.to_string();
 
+    // this is a recursive way to allow nested versioning
+    // e.g. `{"version":1,"t":{"version":1,"t":{"a":123,"b":321}}}`
+    // which occurs sometimes in the Mina codebase
+    // This may need to be rewritten if it doen't work in all cases
+    let recurse_attr = if recurse > 1 {
+        let recurse_less_1 = recurse - 1;
+        Some(quote! {
+            #[derive(Clone, WireType)]
+            #[wire_type( recurse = #recurse_less_1 )]
+            #[serde(from = "<Self as WireType>::WireType")]
+            #[serde(into = "<Self as WireType>::WireType")]
+        })
+    } else {
+        None
+    };
+
     let output = quote! {
 
         #shadow
 
+        #[allow(non_camel_case_types)]
         #[derive(Debug, PartialEq, serde::Serialize, serde::Deserialize)]
+        #recurse_attr
         pub struct #wire_ident {
             version: u16,
             #[serde(with = #shadow_ident_str)]
@@ -79,6 +101,7 @@ fn shadow_from_input(input: DeriveInput) -> TokenStream2 {
     let attrs = quote! {
         #[derive(Debug, PartialEq, serde::Serialize, serde::Deserialize)]
         #[serde(remote = #ident_str)]
+        #[allow(non_camel_case_types)]
     };
 
     match input.data {
