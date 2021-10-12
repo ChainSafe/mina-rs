@@ -24,7 +24,6 @@ impl<'de, 'a, R: Read> DS<R> {
         if let Some(iter) = &mut self.layout_iter {
             match iter.next() {
                 Some(rule) => {
-                    // println!("At {}\n{:#?}\n\n", self.rdr.stream_position().unwrap(), rule);
                     match rule {
                         BinProtRule::Unit => {
                             self.rdr.bin_read_unit()?;
@@ -47,7 +46,6 @@ impl<'de, 'a, R: Read> DS<R> {
                             // when deserializing the variants data
                             let index = self.rdr.bin_read_variant_index()?;
                             let variant_rules = summands[index as usize].ctor_args.clone();
-                            // variant_rules.reverse();
                             iter.push(vec![BinProtRule::Tuple(variant_rules)]);
                             visitor
                                 .visit_enum(ValueEnum::new(self, summands[index as usize].clone()))
