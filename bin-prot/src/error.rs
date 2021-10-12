@@ -70,16 +70,14 @@ pub enum Error {
     )]
     WontImplement,
 
-    /////// Loose deserialization specific errors
-    /// Error traversing the layout for loose deserialization
-    #[error("Layout traversal error")]
-    LayoutTraversalError(#[from] crate::value::layout::traverse::Error),
-
     #[error("Unexpected end of layout")]
     UnexpectedEndOfLayout,
 
     #[error("Layout iterator error")]
     LayoutIteratorError,
+
+    #[error("Attempting to deserialize into a loose type without a layout")]
+    DeserializingLooseTypeWithoutLayout,
 
     #[error("Unknown custom type {typ}")]
     UnknownCustomType { typ: String },

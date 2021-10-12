@@ -8,7 +8,6 @@ use serde::de::SeqAccess;
 use serde::de::Visitor;
 use serde::de::{EnumAccess, VariantAccess};
 use serde::Deserialize;
-use std::collections::HashMap;
 
 pub struct ValueVisitor;
 
@@ -26,7 +25,7 @@ impl<'de> Visitor<'de> for ValueVisitor {
 
     #[inline]
     fn visit_char<E>(self, value: char) -> Result<Value, E> {
-        Ok(Value::Char(value))
+        Ok(Value::Char(value as u8))
     }
 
     #[inline]
@@ -86,16 +85,21 @@ impl<'de> Visitor<'de> for ValueVisitor {
         while let Some(elem) = visitor.next_element()? {
             vec.push(elem);
         }
-        Ok(Value::Tuple(vec))
+
+        if visitor.size_hint().is_some() {
+            Ok(Value::List(vec))
+        } else {
+            Ok(Value::Tuple(vec))
+        }
     }
 
     fn visit_map<V>(self, mut visitor: V) -> Result<Value, V::Error>
     where
         V: MapAccess<'de>,
     {
-        let mut values = HashMap::new();
+        let mut values = Vec::new();
         while let Some((k, v)) = visitor.next_entry()? {
-            let _ = values.insert(k, v); // returns old value of replacing a key. This cannot happen here so can unwrap
+            let _ = values.push((k, v)); // returns old value of replacing a key. This cannot happen here so can unwrap
         }
         Ok(Value::Record(values))
     }
@@ -109,10 +113,12 @@ impl<'de> Visitor<'de> for ValueVisitor {
         // payload must encode the index and name in a deserializer
         // the variant access can be used to retrieve the correct content based on this
 
+        let body = variant_access.tuple_variant(payload.len, self)?;
+
         Ok(Value::Sum {
             name: payload.name,
             index: payload.index,
-            value: Box::new(variant_access.newtype_variant()?),
+            value: Box::new(body),
         })
     }
 }

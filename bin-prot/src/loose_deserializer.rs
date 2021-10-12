@@ -1,16 +1,17 @@
 // Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
+use byteorder::LittleEndian;
 use std::convert::TryInto;
 use std::io::Read;
 
 use crate::de::{Enum, MapAccess, SeqAccess};
 use crate::error::{Error, Result};
+use crate::value::layout::BinProtRule;
 use crate::value::layout::Summand;
-use crate::value::layout::{BinProtRule, BranchingIterator};
 use crate::Deserializer as DS;
 use crate::ReadBinProtExt;
-use serde::de::{Deserializer, Visitor};
+use serde::de::Visitor;
 use serde::{Deserialize, Serialize};
 
 use byteorder::ReadBytesExt;
@@ -22,9 +23,12 @@ impl<'de, 'a, R: Read> DS<R> {
     {
         if let Some(iter) = &mut self.layout_iter {
             match iter.next() {
-                Ok(Some(rule)) => {
+                Some(rule) => {
                     match rule {
-                        BinProtRule::Unit => self.deserialize_unit(visitor),
+                        BinProtRule::Unit => {
+                            self.rdr.bin_read_unit()?;
+                            visitor.visit_unit()
+                        }
                         BinProtRule::Record(fields) => {
                             // Grab the field names from the rule to pass to the map access
                             visitor.visit_map(MapAccess::new(
@@ -35,43 +39,43 @@ impl<'de, 'a, R: Read> DS<R> {
                         BinProtRule::Tuple(items) => {
                             visitor.visit_seq(SeqAccess::new(self, items.len()))
                         }
+                        BinProtRule::Bool => visitor.visit_bool(self.rdr.bin_read_bool()?),
                         BinProtRule::Sum(summands) => {
                             // read the enum variant index.
                             // We need this to select which variant layout to use
                             // when deserializing the variants data
                             let index = self.rdr.bin_read_variant_index()?;
-                            iter.branch(index.into())?;
+                            let variant_rules = summands[index as usize].ctor_args.clone();
+                            iter.push(vec![BinProtRule::Tuple(variant_rules)]);
                             visitor
                                 .visit_enum(ValueEnum::new(self, summands[index as usize].clone()))
                         }
-                        BinProtRule::Bool => self.deserialize_bool(visitor),
-                        BinProtRule::Option(_) => {
+                        BinProtRule::Option(some_rule) => {
                             let index = self.rdr.bin_read_variant_index()?; // 0 or 1
                             match index {
-                                0 => {
-                                    iter.branch(0)?;
-                                    visitor.visit_none()
-                                }
+                                0 => visitor.visit_none(),
                                 1 => {
-                                    iter.branch(1)?;
+                                    iter.push(vec![*some_rule]);
                                     visitor.visit_some(self)
                                 }
                                 _ => Err(Error::InvalidOptionByte { got: index }),
                             }
                         }
                         BinProtRule::String => visitor.visit_bytes(&self.rdr.bin_read_bytes()?),
-                        BinProtRule::Float => self.deserialize_f64(visitor),
+                        BinProtRule::Float => {
+                            visitor.visit_f64(self.rdr.read_f64::<LittleEndian>()?)
+                        }
                         BinProtRule::Char => {
                             let c = self.rdr.read_u8()?;
                             visitor.visit_char(c as char)
                         }
-                        BinProtRule::List(_) => {
+                        BinProtRule::List(element_rule) => {
                             // read the length
                             let len = self.rdr.bin_read_nat0()?;
                             // request the iterator repeats the list elements the current number of times
-                            iter.repeat(len);
+                            iter.push_n(*element_rule, len);
                             // read the elements
-                            visitor.visit_seq(SeqAccess::new(self, len))
+                            visitor.visit_seq(SeqAccess::new_list(self, len))
                         }
                         BinProtRule::Int
                         | BinProtRule::Int32
@@ -111,13 +115,9 @@ impl<'de, 'a, R: Read> DS<R> {
                                         "Pickles_types.Vector.Vector18" => 18,
                                         _ => unreachable!()
                                     };
-                                    iter.push(element_rule.clone());
-                                    iter.repeat(len);
-                                    let result = visitor.visit_seq(SeqAccess::new(self, len));
-                                    // burn the zero byte terminator
-                                    assert!(self.rdr.read_u8()? == 0x00);
-
-                                    result
+                                    iter.push(vec![BinProtRule::Unit]); // zero byte terminator, will be read last
+                                    iter.push_n(element_rule.clone(), len);
+                                    visitor.visit_seq(SeqAccess::new(self, len+1))
                                 }
                                 "Ledger_hash0" // these are all BigInt (32 bytes)
                                 | "State_hash"
@@ -128,23 +128,21 @@ impl<'de, 'a, R: Read> DS<R> {
                                 | "Snark_params.Tick"
                                 | "Epoch_seed"
                                 | "Zexe_backend.Zexe_backend_common.Stable.Field"
-                                | "Pending_coinbase.Coinbase_stack" => {                         
-                                   let mut buf: [u8; 32] = [0x00; 32];
-                                    for elem in &mut buf {
-                                        *elem = self.rdr.read_u8()?;
-                                    }
-                                    visitor.visit_bytes(&buf)
+                                | "Pending_coinbase.Coinbase_stack" => {
+                                    // force it to read a 32 element long tuple of u8/chars
+                                    let len = 32;
+                                    iter.push_n(BinProtRule::Char, len);
+                                    visitor.visit_seq(SeqAccess::new(self, len))
                                 }
                                 _ => Err(Error::UnknownCustomType{ typ: path })
                             }
                         }
                     }
                 }
-                Err(_e) => Err(Error::LayoutIteratorError),
-                Ok(None) => Err(Error::UnexpectedEndOfLayout),
+                None => Err(Error::UnexpectedEndOfLayout),
             }
         } else {
-            Err(Error::WontImplement)
+            Err(Error::DeserializingLooseTypeWithoutLayout)
         }
     }
 }
@@ -156,10 +154,11 @@ pub struct ValueEnum<'a, R: Read> {
     variant: Summand,
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct EnumData {
     pub index: u8,
     pub name: String,
+    pub len: usize,
 }
 
 impl<'a, 'de, R: Read> ValueEnum<'a, R> {
@@ -186,7 +185,9 @@ impl<'de, 'a, R: Read> serde::de::EnumAccess<'de> for ValueEnum<'a, R> {
         let enum_data = EnumData {
             index: index.try_into().unwrap(),
             name: self.variant.ctor_name,
+            len: self.variant.ctor_args.len(),
         };
+
         let mut buf = Vec::<u8>::new();
         crate::to_writer(&mut buf, &enum_data).unwrap();
         let mut de = DS::from_reader(buf.as_slice());

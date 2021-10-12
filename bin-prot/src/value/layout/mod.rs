@@ -3,19 +3,19 @@
 
 use core::convert::TryFrom;
 
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 use serde_json::from_value;
 
 mod list_tagged_enum;
 pub(crate) mod traverse;
 
-pub use traverse::{BinProtRuleIterator, BranchingIterator};
+pub use traverse::BinProtRuleIterator;
 
 use list_tagged_enum::ListTaggedEnum;
 
 /// The main top level type for a layout file.
 /// Parse into this from json
-#[derive(Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug)]
 pub struct Layout {
     pub layout_loc: String,
     pub version_opt: Option<i32>,
@@ -25,7 +25,7 @@ pub struct Layout {
 }
 
 /// Recursively defined BinProtRule is how the type tree is constructed
-#[derive(Clone, Deserialize, Debug)]
+#[derive(Clone, Serialize, Deserialize, Debug)]
 #[serde(try_from = "ListTaggedEnum")]
 pub enum BinProtRule {
     Nat0,
@@ -130,33 +130,51 @@ impl TryFrom<ListTaggedEnum> for BinProtRule {
     }
 }
 
-#[derive(Clone, Deserialize, Debug)]
+#[derive(Clone, Serialize, Deserialize, Debug)]
 pub struct RecordField {
     pub field_name: String,
     pub field_rule: BinProtRule,
 }
 
-#[derive(Clone, Deserialize, Debug)]
+#[derive(Clone, Serialize, Deserialize, Debug)]
 pub struct Summand {
     pub ctor_name: String,
     pub index: i32,
     pub ctor_args: Vec<BinProtRule>,
 }
 
-#[derive(Clone, Deserialize, Debug)]
+impl Summand {
+    pub fn new(name: &str, index: i32, args: Vec<BinProtRule>) -> Self {
+        Self {
+            ctor_name: name.to_string(),
+            index,
+            ctor_args: args,
+        }
+    }
+
+    pub fn new_none() -> Self {
+        Self::new("none", 0, vec![])
+    }
+
+    pub fn new_some(rule: BinProtRule) -> Self {
+        Self::new("some", 1, vec![rule])
+    }
+}
+
+#[derive(Clone, Serialize, Deserialize, Debug)]
 pub struct HashTblEntry {
     key_rule: Box<BinProtRule>,
     value_rule: Box<BinProtRule>,
 }
 
-#[derive(Clone, Deserialize, Debug)]
+#[derive(Clone, Serialize, Deserialize, Debug)]
 #[serde(try_from = "ListTaggedEnum")]
 pub enum Polyvar {
     Tagged(TaggedPolyvar),
     Inherited(BinProtRule),
 }
 
-#[derive(Clone, Deserialize, Debug)]
+#[derive(Clone, Serialize, Deserialize, Debug)]
 pub struct TaggedPolyvar {
     polyvar_name: String,
     hash: i32,
@@ -179,20 +197,20 @@ impl TryFrom<ListTaggedEnum> for Polyvar {
     }
 }
 
-#[derive(Clone, Deserialize, Debug)]
+#[derive(Clone, Serialize, Deserialize, Debug)]
 #[serde(try_from = "ListTaggedEnum")]
 pub enum RuleRef {
     Unresolved(UnresolvedPayload),
     Resolved(ResolvedPayload),
 }
 
-#[derive(Clone, Deserialize, Debug)]
+#[derive(Clone, Serialize, Deserialize, Debug)]
 pub struct UnresolvedPayload {
     params: Vec<BinProtRule>,
     layout_id: String, // what is longident?
 }
 
-#[derive(Clone, Deserialize, Debug)]
+#[derive(Clone, Serialize, Deserialize, Debug)]
 pub struct ResolvedPayload {
     source_type_decl: String,
     #[serde(default)]

@@ -15,7 +15,7 @@ thiserror = "1.0.24"
 
 [dev-dependencies]
 difference = "2.0.0"
+pretty_assertions = "0.7.2"
 regex = { version = "1" }
 serde = { version = "1.0.125", features = ["derive"] }
 serde_stacker = "0.1.4"
-
