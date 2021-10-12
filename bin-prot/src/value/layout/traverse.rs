@@ -8,13 +8,10 @@
 //!
 //! The layout tree includes the concept of Sum(ocaml)/Enum(rust) types. These are nodes in the tree where only one branch should be taken
 //! depending on which variant of the enum we are deserializing. When reading an enum from binary the first byte specifies which variant to deserialize.
-//! Therefore out DFS iterator requires a way to accept input and branch at particular nodes in the tree.
-//!
-//! This is where the BranchingIterator trait comes in. A branching iterator is similar to a regular iterator but at some points in its iteration it requires
-//! the calling code call a `branch` function to tell it which path to take.
-//!
-//! The other difference relates to deserializing variable length vector types. When deserializing a vector the length can be read from the binary and then
-//! the `repeat(n)` method called on the iterator spefifying the length. It will then repeat the current node `n` times to allow it to be deserialized.
+//! It is the responsibility of the driving code to handle when Sum/Option rules are encountered and push the correct next rule to the stack.
+//! 
+//! The other interesting case is deserializing variable length vector types. When deserializing a vector the length can be read from the binary and then
+//! the element rule pushed back to the stack using the `push_n` method. It will then repeat the given node `n` times to allow it to be deserialized.
 //!
 //! The traversal of a layout should be done in parallel with reading a bin_prot encoded binary such that the type tree informs the deserializer how to read the
 //! data and the data informs the traversal how it should handle enum types.
@@ -23,28 +20,11 @@
 
 use crate::value::layout::{BinProtRule, RuleRef};
 
-use thiserror::Error;
-
 /// Implements a depth first search of the type tree
 /// defined by a BinProtRule
 pub struct BinProtRuleIterator {
     pub stack: Vec<BinProtRule>,         // regular stack to implement the DFS
     current_module_path: Option<String>, // holds on to most recent path encountered in traverse
-}
-
-#[derive(Debug, Error)]
-pub enum Error {
-    /// The iterator is at a point where it needs a call to branch() to know which path to take
-    #[error("Must call branch to proceed")]
-    MustCallBranchToProceed,
-
-    /// The driving code called branch at a time when the iterator is not expecting
-    #[error("Cannot branch at this location in the tree")]
-    CannotBranchAtLocation,
-
-    /// Call to branch() received an index that is larger than that allowable by the sum type
-    #[error("Invalid branch index. Given {got}, Branch must be < {max}")]
-    InvalidBranchIndex { max: usize, got: usize },
 }
 
 impl Iterator for BinProtRuleIterator {
