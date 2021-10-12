@@ -20,6 +20,5 @@ pub mod epoch_data;
 pub mod global_slot;
 pub mod numbers;
 pub mod protocol_state;
-pub mod protocol_version;
 pub mod token_id;
 pub mod protocol_version;
