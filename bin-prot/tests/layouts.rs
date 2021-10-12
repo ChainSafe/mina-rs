@@ -4,10 +4,6 @@
 use bin_prot::value::layout::BinProtRule;
 use bin_prot::value::Value;
 use bin_prot::Deserializer;
-<<<<<<< HEAD
-=======
-use pretty_assertions::assert_eq;
->>>>>>> origin/main
 use serde::{Deserialize, Serialize};
 use std::io::Cursor;
 
