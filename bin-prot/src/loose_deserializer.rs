@@ -24,7 +24,6 @@ impl<'de, 'a, R: Read> DS<R> {
         if let Some(iter) = &mut self.layout_iter {
             match iter.next() {
                 Some(rule) => {
-                    // println!("At {}\n{:#?}\n\n", self.rdr.stream_position().unwrap(), rule);
                     match rule {
                         BinProtRule::Unit => {
                             self.rdr.bin_read_unit()?;
