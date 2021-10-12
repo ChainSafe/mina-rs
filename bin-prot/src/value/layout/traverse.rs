@@ -9,7 +9,7 @@
 //! The layout tree includes the concept of Sum(ocaml)/Enum(rust) types. These are nodes in the tree where only one branch should be taken
 //! depending on which variant of the enum we are deserializing. When reading an enum from binary the first byte specifies which variant to deserialize.
 //! It is the responsibility of the driving code to handle when Sum/Option rules are encountered and push the correct next rule to the stack.
-//! 
+//!
 //! The other interesting case is deserializing variable length vector types. When deserializing a vector the length can be read from the binary and then
 //! the element rule pushed back to the stack using the `push_n` method. It will then repeat the given node `n` times to allow it to be deserialized.
 //!
