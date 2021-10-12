@@ -70,11 +70,6 @@ pub enum Error {
     )]
     WontImplement,
 
-    /////// Loose deserialization specific errors
-    /// Error traversing the layout for loose deserialization
-    #[error("Layout traversal error")]
-    LayoutTraversalError(#[from] crate::value::layout::traverse::Error),
-
     #[error("Unexpected end of layout")]
     UnexpectedEndOfLayout,
 
