@@ -11,3 +11,7 @@ serde_json = { version = "1.0.64", features = ["unbounded_depth"] }
 serde_stacker = "0.1.4"
 
 mina-rs-base = { path = "../base"}
+wire-type = {path = "../wire-type" }
+
+lazy_static = "1.4.0"
+pretty_assertions = "0.7.2"

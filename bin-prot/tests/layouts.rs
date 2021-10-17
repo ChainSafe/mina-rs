@@ -1,10 +1,9 @@
 // Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
-use bin_prot::value::layout::{BinProtRule, Layout};
+use bin_prot::value::layout::BinProtRule;
 use bin_prot::value::Value;
 use bin_prot::Deserializer;
-use pretty_assertions::assert_eq;
 use serde::{Deserialize, Serialize};
 use std::io::Cursor;
 
@@ -26,7 +25,7 @@ fn test_simple_rule() {
     let rule: BinProtRule = serde_json::from_str(SIMPLE_RULE).unwrap();
     let example = vec![0x01, 0x00, 0x00]; // Some((0, false))
 
-    let mut de = Deserializer::from_reader_with_layout(Cursor::new(example.as_slice()), rule);
+    let mut de = Deserializer::from_reader_with_layout(Cursor::new(example.as_slice()), &rule);
     let result: Value = Deserialize::deserialize(&mut de).expect("Failed to deserialize");
 
     assert_eq!(
@@ -36,7 +35,7 @@ fn test_simple_rule() {
             Value::Bool(false)
         ]))))
     );
-    test_roundtrip(&result, &example);
+    test_reserialize(&result, &example);
 }
 
 const RECORD_RULE: &str = r#"
@@ -55,7 +54,7 @@ fn test_record_rule() {
     let rule: BinProtRule = serde_json::from_str(RECORD_RULE).unwrap();
     let example = vec![0x05, 0x00, 0x01];
 
-    let mut de = Deserializer::from_reader_with_layout(Cursor::new(example.as_slice()), rule);
+    let mut de = Deserializer::from_reader_with_layout(Cursor::new(example.as_slice()), &rule);
     let result: Value = Deserialize::deserialize(&mut de).expect("Failed to deserialize");
 
     assert_eq!(
@@ -72,7 +71,7 @@ fn test_record_rule() {
 
     // also test using the indexing
     assert_eq!(result["second"]["inner"], Value::Bool(false));
-    test_roundtrip(&result, &example);
+    test_reserialize(&result, &example);
 }
 
 #[test]
@@ -84,10 +83,10 @@ fn test_record_rule_partial() {
     struct PartialType {
         first: u8,
         second: Value,
-        third: Value,
+        third: bool,
     }
 
-    let mut de = Deserializer::from_reader_with_layout(Cursor::new(example.as_slice()), rule);
+    let mut de = Deserializer::from_reader_with_layout(Cursor::new(example.as_slice()), &rule);
     let result: PartialType = Deserialize::deserialize(&mut de).expect("Failed to deserialize");
 
     assert_eq!(
@@ -95,11 +94,11 @@ fn test_record_rule_partial() {
         PartialType {
             first: 5,
             second: Value::Record(vec![("inner".to_string(), Value::Bool(false))]),
-            third: Value::Bool(true)
+            third: true
         }
     );
 
-    test_roundtrip(&result, &example);
+    test_reserialize(&result, &example);
 }
 
 const SUM_RULE: &str = r#"
@@ -125,7 +124,7 @@ fn test_sum_rule() {
     let rule: BinProtRule = serde_json::from_str(SUM_RULE).unwrap();
     let example = vec![0x01, 0x00]; // Two((false))
 
-    let mut de = Deserializer::from_reader_with_layout(Cursor::new(example.as_slice()), rule);
+    let mut de = Deserializer::from_reader_with_layout(Cursor::new(example.as_slice()), &rule);
     let result: Value = Deserialize::deserialize(&mut de).expect("Failed to deserialize");
     assert_eq!(
         result,
@@ -135,7 +134,7 @@ fn test_sum_rule() {
             value: Box::new(Value::Tuple(vec![Value::Bool(false)]))
         }
     );
-    test_roundtrip(&result, &example);
+    test_reserialize(&result, &example);
 }
 
 const NESTED_SUM_RULE: &str = r#"
@@ -162,7 +161,7 @@ fn test_nested_sum_rule() {
     let rule: BinProtRule = serde_json::from_str(NESTED_SUM_RULE).unwrap();
     let example = vec![0x00, 0x05]; // One({ first: 5 })
 
-    let mut de = Deserializer::from_reader_with_layout(Cursor::new(example.as_slice()), rule);
+    let mut de = Deserializer::from_reader_with_layout(Cursor::new(example.as_slice()), &rule);
     let result: Value = Deserialize::deserialize(&mut de).expect("Failed to deserialize");
     assert_eq!(
         result,
@@ -175,7 +174,7 @@ fn test_nested_sum_rule() {
             )])]))
         }
     );
-    test_roundtrip(&result, &example);
+    test_reserialize(&result, &example);
 }
 
 const OPTION_RULE: &str = r#"
@@ -191,21 +190,20 @@ fn test_option_rule() {
 
     let example_none = vec![0x00]; // None
 
-    let mut de =
-        Deserializer::from_reader_with_layout(Cursor::new(example_none.as_slice()), rule.clone());
+    let mut de = Deserializer::from_reader_with_layout(Cursor::new(example_none.as_slice()), &rule);
     let result: Value = Deserialize::deserialize(&mut de).expect("Failed to deserialize");
     println!("{:?}", result);
     assert_eq!(result, Value::Option(None));
 
-    test_roundtrip(&result, &example_none);
+    test_reserialize(&result, &example_none);
 
     let example_some = vec![0x01, 0x07]; // Some(7)
 
-    let mut de = Deserializer::from_reader_with_layout(Cursor::new(example_some.as_slice()), rule);
+    let mut de = Deserializer::from_reader_with_layout(Cursor::new(example_some.as_slice()), &rule);
     let result: Value = Deserialize::deserialize(&mut de).expect("Failed to deserialize");
 
     assert_eq!(result, Value::Option(Some(Box::new(Value::Int(0x07)))));
-    test_roundtrip(&result, &example_some);
+    test_reserialize(&result, &example_some);
 }
 
 const MULTIPLE_CTOR_ARG_SUM_RULE: &str = r#"
@@ -239,7 +237,7 @@ fn test_multiple_ctor_arg_sum_rule() {
     let rule: BinProtRule = serde_json::from_str(MULTIPLE_CTOR_ARG_SUM_RULE).unwrap();
     let example = vec![0x00, 0x05, 0x06]; // One({ first: 5 }, { second: 6})
 
-    let mut de = Deserializer::from_reader_with_layout(Cursor::new(example.as_slice()), rule);
+    let mut de = Deserializer::from_reader_with_layout(Cursor::new(example.as_slice()), &rule);
     let result: Value = Deserialize::deserialize(&mut de).expect("Failed to deserialize");
     assert_eq!(
         result,
@@ -252,60 +250,10 @@ fn test_multiple_ctor_arg_sum_rule() {
             ]))
         }
     );
-    test_roundtrip(&result, &example);
+    test_reserialize(&result, &example);
 }
 
-const BLOCK_LAYOUT: &str = std::include_str!("../../layouts/external_transition.json");
-const BLOCK_BYTES: &[u8] = std::include_bytes!("../../test-fixtures/block");
-
-#[test]
-fn smoke_test_roundtrip_block() {
-    let mut deserializer = serde_json::Deserializer::from_str(BLOCK_LAYOUT);
-    deserializer.disable_recursion_limit();
-    let deserializer = serde_stacker::Deserializer::new(&mut deserializer);
-    let rule = Layout::deserialize(deserializer).unwrap().bin_prot_rule;
-
-    let mut de = Deserializer::from_reader_with_layout(Cursor::new(BLOCK_BYTES), rule);
-    let block: Value = Deserialize::deserialize(&mut de).expect("Failed to deserialize block");
-
-    assert_eq!(
-        block["t"]["protocol_state"]["t"]["t"]["previous_state_hash"]["t"],
-        Value::Tuple(
-            vec![
-                30, 76, 197, 215, 115, 43, 42, 245, 198, 30, 253, 134, 49, 117, 82, 71, 182, 181,
-                180, 95, 18, 250, 46, 1, 25, 3, 78, 193, 57, 152, 116, 49,
-            ]
-            .iter()
-            .map(|c| Value::Char(*c))
-            .collect()
-        )
-    );
-
-    // check roundtrip
-    test_roundtrip(&block, &BLOCK_BYTES);
-}
-
-const PROTOCOL_STATE_LAYOUT: &str = std::include_str!("../../layouts/protocol_state.json");
-
-#[test]
-fn smoke_test_roundtrip_protocol_state() {
-    let mut deserializer = serde_json::Deserializer::from_str(PROTOCOL_STATE_LAYOUT);
-    deserializer.disable_recursion_limit();
-    let deserializer = serde_stacker::Deserializer::new(&mut deserializer);
-    let rule = Layout::deserialize(deserializer).unwrap().bin_prot_rule;
-
-    let protocol_state_bytes = &BLOCK_BYTES[1..845];
-
-    let mut de =
-        Deserializer::from_reader_with_layout(Cursor::new(protocol_state_bytes), rule.clone());
-    let protocol_state: Value =
-        Deserialize::deserialize(&mut de).expect("Failed to deserialize protocol_state");
-
-    // check roundtrip
-    test_roundtrip(&protocol_state, protocol_state_bytes);
-}
-
-fn test_roundtrip<T>(val: &T, bytes: &[u8])
+pub fn test_reserialize<T>(val: &T, bytes: &[u8])
 where
     T: Serialize,
 {
