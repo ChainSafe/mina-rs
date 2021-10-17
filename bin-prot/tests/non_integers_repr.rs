@@ -48,16 +48,16 @@ fn test_float() {
         0xbf 0xf0 00 00 00 00 00 00 -> -1f64,
         0xff 0xf0 00 00 00 00 00 00 -> f64::NEG_INFINITY,
         0x3f 0xf0 00 00 00 00 00 00 -> 1f64,
-        0x3e 0x7a 0xd7 0xf2 0x9a 0xbc 0xaf 0x48 -> 1E-07
-        // 00 00 00 00 00 00 00 00 -> 0 // FIXME
+        0x3e 0x7a 0xd7 0xf2 0x9a 0xbc 0xaf 0x48 -> 1E-07,
+        00 00 00 00 00 00 00 00 -> 0f64
     }
 }
 
 #[test]
 fn test_vec() {
     bin_prot_test! {
-        .. .. .. .. .. .. .. .. 0x00 -> Vec::<i32>::new()
-        // 0x3f 0xf0 0x00 0x00 0x00 0x00 0x00 0x00 0x01 -> vec![1i32] // FIXME: see: https://github.com/janestreet/bin_prot/blob/5915cde59105f398b53f682c5f4dad29e272f696/test/non_integers_repr.ml#L625
+        .. .. .. .. .. .. .. .. 0x00 -> Vec::<f64>::new(),
+        0x3f 0xf0 0x00 0x00 0x00 0x00 0x00 0x00 0x01 -> vec![1f64]
     }
 }
 
