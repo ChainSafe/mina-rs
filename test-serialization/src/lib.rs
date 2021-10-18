@@ -7,6 +7,8 @@ mod tests {
     use bin_prot::BinProtRule;
     use bin_prot::{from_reader, to_writer, Deserializer, Value};
     use lazy_static::lazy_static;
+    use mina_rs_base::numbers::{BlockTime, Delta, Length};
+    use mina_rs_base::protocol_state::ProtocolConstants;
     use pretty_assertions::assert_eq;
     use serde::{Deserialize, Serialize};
 
@@ -44,6 +46,28 @@ mod tests {
         // protocol_version
         test_in_block::<ProtocolVersion>(&block, &["t/current_protocol_version"]);
         test_in_block::<Option<ProtocolVersion>>(&block, &["t/proposed_protocol_version_opt"]);
+
+        // protocol_state
+        // protocol_state.body
+        // protocol_state.body.constants
+        test_in_block::<Length>(&block, &["t/protocol_state/t/t/body/t/t/constants/t/t/k"]);
+        test_in_block::<Length>(
+            &block,
+            &["t/protocol_state/t/t/body/t/t/constants/t/t/slots_per_epoch"],
+        );
+        test_in_block::<Length>(
+            &block,
+            &["t/protocol_state/t/t/body/t/t/constants/t/t/slots_per_sub_window"],
+        );
+        test_in_block::<Delta>(
+            &block,
+            &["t/protocol_state/t/t/body/t/t/constants/t/t/delta"],
+        );
+        test_in_block::<BlockTime>(
+            &block,
+            &["t/protocol_state/t/t/body/t/t/constants/t/t/genesis_state_timestamp"],
+        );
+        test_in_block::<ProtocolConstants>(&block, &["t/protocol_state/t/t/body/t/t/constants"]);
 
         // state hash
         test_in_block::<StateHash>(&block, &["t/protocol_state/t/t/previous_state_hash"]);
