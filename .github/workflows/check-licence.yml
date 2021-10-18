@@ -1,4 +1,8 @@
-on: [push, pull_request]
+on:
+  push:
+    branches: [main, types-working-bee-base]
+  pull_request:
+    branches: [main, types-working-bee-base]
 
 name: Check Licence
 
