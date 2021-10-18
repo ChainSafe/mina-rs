@@ -45,7 +45,7 @@ jobs:
           profile: minimal
           toolchain: stable
           override: true
-      - run: rustup component add rustfmt
+          components: rustfmt
       - uses: actions-rs/cargo@v1
         with:
           command: fmt
@@ -61,7 +61,7 @@ jobs:
           profile: minimal
           toolchain: stable
           override: true
-      - run: rustup component add clippy
+          components: clippy
       - uses: actions-rs/cargo@v1
         with:
           command: clippy
@@ -77,8 +77,38 @@ jobs:
           profile: minimal
           toolchain: stable
           override: true
-      - run: rustup target add wasm32-unknown-unknown
+          target: wasm32-unknown-unknown
       - uses: actions-rs/cargo@v1
         with:
           command: check
           args: --target wasm32-unknown-unknown
+
+  codecov:
+    name: Code Coverage
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: nightly
+          override: true
+          components: llvm-tools-preview
+      - run: curl -L https://github.com/mozilla/grcov/releases/latest/download/grcov-linux-x86_64.tar.bz2 | tar jxf -
+      - name: Run code coverage
+        env:
+          RUSTFLAGS: -Zinstrument-coverage
+          LLVM_PROFILE_FILE: coverage-%p-%m.profraw
+        run: |
+          cargo test --all-features
+          ./grcov . --binary-path ./target/debug/ -s . -t lcov --branch --ignore-not-existing --ignore "/*" -o lcov.info
+      - uses: actions/upload-artifact@v2
+        with:
+          name: lcov.info
+          path: lcov.info
+          if-no-files-found: error
+      - name: Upload to codecov
+        run: |
+          curl -Os https://uploader.codecov.io/latest/linux/codecov
+          chmod +x codecov
+          ./codecov -f lcov.info -Z
