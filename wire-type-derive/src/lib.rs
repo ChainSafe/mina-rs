@@ -43,7 +43,7 @@ pub fn derive(input: TokenStream) -> TokenStream {
     // this is a recursive way to allow nested versioning
     // e.g. `{"version":1,"t":{"version":1,"t":{"a":123,"b":321}}}`
     // which occurs sometimes in the Mina codebase
-    // This may need to be rewritten if it doen't work in all cases
+    // This may need to be rewritten if it doesn't work in all cases
     let recurse_attr = if recurse > 1 {
         let recurse_less_1 = recurse - 1;
         Some(quote! {

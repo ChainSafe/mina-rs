@@ -7,6 +7,8 @@ mod tests {
     use bin_prot::BinProtRule;
     use bin_prot::{from_reader, to_writer, Deserializer, Value};
     use lazy_static::lazy_static;
+    use mina_rs_base::numbers::{BlockTime, Delta, Length};
+    use mina_rs_base::protocol_state::ProtocolConstants;
     use pretty_assertions::assert_eq;
     use serde::{Deserialize, Serialize};
 
@@ -28,25 +30,48 @@ mod tests {
                 .unwrap()
                 .bin_prot_rule
         };
+        static ref TEST_BLOCK_1: bin_prot::Value = load_test_block();
+    }
+
+    #[test]
+    fn test_protocol_state_body_constants() {
+        for block in [&TEST_BLOCK_1] {
+            test_in_block::<Length>(block, &["t/protocol_state/t/t/body/t/t/constants/t/t/k"]);
+            test_in_block::<Length>(
+                block,
+                &["t/protocol_state/t/t/body/t/t/constants/t/t/slots_per_epoch"],
+            );
+            test_in_block::<Length>(
+                block,
+                &["t/protocol_state/t/t/body/t/t/constants/t/t/slots_per_sub_window"],
+            );
+            test_in_block::<Delta>(
+                block,
+                &["t/protocol_state/t/t/body/t/t/constants/t/t/delta"],
+            );
+            test_in_block::<BlockTime>(
+                block,
+                &["t/protocol_state/t/t/body/t/t/constants/t/t/genesis_state_timestamp"],
+            );
+            test_in_block::<ProtocolConstants>(block, &["t/protocol_state/t/t/body/t/t/constants"]);
+        }
     }
 
     #[test]
     fn test_all_block_subtypes() {
-        let mut de = Deserializer::from_reader_with_layout(BLOCK_BYTES, &BLOCK_RULE);
-        let block: bin_prot::Value =
-            Deserialize::deserialize(&mut de).expect("Failed to deserialize block");
-
         ////////////////////////////////////////////////////////////////
         // Here is where to add calls to test_in_block for every type
         // that has a strongly typed implementation to test
         ////////////////////////////////////////////////////////////////
 
-        // protocol_version
-        test_in_block::<ProtocolVersion>(&block, &["t/current_protocol_version"]);
-        test_in_block::<Option<ProtocolVersion>>(&block, &["t/proposed_protocol_version_opt"]);
+        for block in [&TEST_BLOCK_1] {
+            // protocol_version
+            test_in_block::<ProtocolVersion>(block, &["t/current_protocol_version"]);
+            test_in_block::<Option<ProtocolVersion>>(block, &["t/proposed_protocol_version_opt"]);
 
-        // state hash
-        test_in_block::<StateHash>(&block, &["t/protocol_state/t/t/previous_state_hash"]);
+            // state hash
+            test_in_block::<StateHash>(block, &["t/protocol_state/t/t/previous_state_hash"]);
+        }
     }
 
     fn test_in_block<'a, T: Serialize + Deserialize<'a>>(block: &bin_prot::Value, paths: &[&str]) {
@@ -73,8 +98,7 @@ mod tests {
 
     #[test]
     fn smoke_test_roundtrip_block() {
-        let mut de = Deserializer::from_reader_with_layout(BLOCK_BYTES, &BLOCK_RULE);
-        let block: Value = Deserialize::deserialize(&mut de).expect("Failed to deserialize block");
+        let block: &Value = &TEST_BLOCK_1;
 
         // test we can correctly index a known field
         assert_eq!(
@@ -112,5 +136,10 @@ mod tests {
         let mut output = vec![];
         bin_prot::to_writer(&mut output, val).expect("Failed writing bin-prot encoded data");
         assert_eq!(bytes, output)
+    }
+
+    fn load_test_block() -> bin_prot::Value {
+        let mut de = Deserializer::from_reader_with_layout(BLOCK_BYTES, &BLOCK_RULE);
+        Deserialize::deserialize(&mut de).expect("Failed to deserialize test block")
     }
 }
