@@ -25,7 +25,7 @@ fn test_simple_rule() {
     let rule: BinProtRule = serde_json::from_str(SIMPLE_RULE).unwrap();
     let example = vec![0x01, 0x00, 0x00]; // Some((0, false))
 
-    let mut de = Deserializer::from_reader_with_layout(Cursor::new(example.as_slice()), &rule);
+    let mut de = Deserializer::from_reader(Cursor::new(example.as_slice())).with_layout(&rule);
     let result: Value = Deserialize::deserialize(&mut de).expect("Failed to deserialize");
 
     assert_eq!(
@@ -54,7 +54,7 @@ fn test_record_rule() {
     let rule: BinProtRule = serde_json::from_str(RECORD_RULE).unwrap();
     let example = vec![0x05, 0x00, 0x01];
 
-    let mut de = Deserializer::from_reader_with_layout(Cursor::new(example.as_slice()), &rule);
+    let mut de = Deserializer::from_reader(Cursor::new(example.as_slice())).with_layout(&rule);
     let result: Value = Deserialize::deserialize(&mut de).expect("Failed to deserialize");
 
     assert_eq!(
@@ -86,7 +86,7 @@ fn test_record_rule_partial() {
         third: bool,
     }
 
-    let mut de = Deserializer::from_reader_with_layout(Cursor::new(example.as_slice()), &rule);
+    let mut de = Deserializer::from_reader(Cursor::new(example.as_slice())).with_layout(&rule);
     let result: PartialType = Deserialize::deserialize(&mut de).expect("Failed to deserialize");
 
     assert_eq!(
@@ -124,7 +124,7 @@ fn test_sum_rule() {
     let rule: BinProtRule = serde_json::from_str(SUM_RULE).unwrap();
     let example = vec![0x01, 0x00]; // Two((false))
 
-    let mut de = Deserializer::from_reader_with_layout(Cursor::new(example.as_slice()), &rule);
+    let mut de = Deserializer::from_reader(Cursor::new(example.as_slice())).with_layout(&rule);
     let result: Value = Deserialize::deserialize(&mut de).expect("Failed to deserialize");
     assert_eq!(
         result,
@@ -161,7 +161,7 @@ fn test_nested_sum_rule() {
     let rule: BinProtRule = serde_json::from_str(NESTED_SUM_RULE).unwrap();
     let example = vec![0x00, 0x05]; // One({ first: 5 })
 
-    let mut de = Deserializer::from_reader_with_layout(Cursor::new(example.as_slice()), &rule);
+    let mut de = Deserializer::from_reader(Cursor::new(example.as_slice())).with_layout(&rule);
     let result: Value = Deserialize::deserialize(&mut de).expect("Failed to deserialize");
     assert_eq!(
         result,
@@ -190,7 +190,7 @@ fn test_option_rule() {
 
     let example_none = vec![0x00]; // None
 
-    let mut de = Deserializer::from_reader_with_layout(Cursor::new(example_none.as_slice()), &rule);
+    let mut de = Deserializer::from_reader(Cursor::new(example_none.as_slice())).with_layout(&rule);
     let result: Value = Deserialize::deserialize(&mut de).expect("Failed to deserialize");
     println!("{:?}", result);
     assert_eq!(result, Value::Option(None));
@@ -199,7 +199,7 @@ fn test_option_rule() {
 
     let example_some = vec![0x01, 0x07]; // Some(7)
 
-    let mut de = Deserializer::from_reader_with_layout(Cursor::new(example_some.as_slice()), &rule);
+    let mut de = Deserializer::from_reader(Cursor::new(example_some.as_slice())).with_layout(&rule);
     let result: Value = Deserialize::deserialize(&mut de).expect("Failed to deserialize");
 
     assert_eq!(result, Value::Option(Some(Box::new(Value::Int(0x07)))));
@@ -237,7 +237,7 @@ fn test_multiple_ctor_arg_sum_rule() {
     let rule: BinProtRule = serde_json::from_str(MULTIPLE_CTOR_ARG_SUM_RULE).unwrap();
     let example = vec![0x00, 0x05, 0x06]; // One({ first: 5 }, { second: 6})
 
-    let mut de = Deserializer::from_reader_with_layout(Cursor::new(example.as_slice()), &rule);
+    let mut de = Deserializer::from_reader(Cursor::new(example.as_slice())).with_layout(&rule);
     let result: Value = Deserialize::deserialize(&mut de).expect("Failed to deserialize");
     assert_eq!(
         result,

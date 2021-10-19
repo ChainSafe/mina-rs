@@ -10,23 +10,33 @@ use byteorder::{LittleEndian, ReadBytesExt};
 use serde::de::{self, value::U8Deserializer, EnumAccess, IntoDeserializer, Visitor};
 use serde::Deserialize;
 
-pub struct Deserializer<R: Read> {
-    pub rdr: BufReader<R>,
-    pub layout_iter: Option<BinProtRuleIterator>,
+pub struct StronglyTyped;
+
+pub struct LooselyTyped {
+    pub layout_iter: BinProtRuleIterator
 }
 
-impl<R: Read> Deserializer<R> {
+pub struct Deserializer<R: Read, Mode> {
+    pub rdr: BufReader<R>,
+    pub(crate) mode: Mode,
+}
+
+impl<R: Read> Deserializer<R, StronglyTyped> {
     pub fn from_reader(rdr: R) -> Self {
         Self {
             rdr: BufReader::new(rdr),
-            layout_iter: None,
+            mode: StronglyTyped,
         }
     }
+}
 
-    pub fn from_reader_with_layout(rdr: R, layout: &BinProtRule) -> Self {
-        Self {
-            rdr: BufReader::new(rdr),
-            layout_iter: Some(layout.clone().into_iter()),
+impl<R: Read> Deserializer<R, StronglyTyped> {
+    pub fn with_layout(self, layout: &BinProtRule) -> Deserializer<R, LooselyTyped> {
+        Deserializer {
+            rdr: self.rdr,
+            mode: LooselyTyped {
+                layout_iter: layout.clone().into_iter()
+            }
         }
     }
 }
@@ -37,7 +47,8 @@ pub fn from_reader<'de, R: Read, T: Deserialize<'de>>(rdr: R) -> Result<T> {
     Ok(value)
 }
 
-impl<'de, 'a, R: Read> de::Deserializer<'de> for &'a mut Deserializer<R> {
+
+impl<'de, 'a, R: Read> de::Deserializer<'de> for &'a mut Deserializer<R, LooselyTyped> {
     type Error = Error;
     fn deserialize_any<V>(self, visitor: V) -> Result<V::Value>
     where
@@ -46,13 +57,26 @@ impl<'de, 'a, R: Read> de::Deserializer<'de> for &'a mut Deserializer<R> {
         self.deserialize_loose(visitor)
     }
 
+    serde::forward_to_deserialize_any! {
+        bool i8 i16 i32 i64 i128 u8 u16 u32 u64 u128 f32 f64 char str string
+        bytes byte_buf option unit unit_struct newtype_struct seq tuple
+        tuple_struct map struct enum identifier ignored_any
+    }
+}
+
+impl<'de, 'a, R: Read> de::Deserializer<'de> for &'a mut Deserializer<R, StronglyTyped> {
+    type Error = Error;
+    fn deserialize_any<V>(self, _visitor: V) -> Result<V::Value>
+    where
+        V: Visitor<'de>,
+    {
+        unimplemented!()
+    }
+
     fn deserialize_bool<V>(self, visitor: V) -> Result<V::Value>
     where
         V: Visitor<'de>,
     {
-        if self.layout_iter.is_some() {
-            return self.deserialize_any(visitor);
-        }
         visitor.visit_bool(self.rdr.bin_read_bool()?)
     }
 
@@ -63,9 +87,6 @@ impl<'de, 'a, R: Read> de::Deserializer<'de> for &'a mut Deserializer<R> {
     where
         V: Visitor<'de>,
     {
-        if self.layout_iter.is_some() {
-            return self.deserialize_any(visitor);
-        }
         visitor.visit_i8(self.rdr.bin_read_integer()?)
     }
 
@@ -73,9 +94,6 @@ impl<'de, 'a, R: Read> de::Deserializer<'de> for &'a mut Deserializer<R> {
     where
         V: Visitor<'de>,
     {
-        if self.layout_iter.is_some() {
-            return self.deserialize_any(visitor);
-        }
         visitor.visit_i16(self.rdr.bin_read_integer()?)
     }
 
@@ -83,9 +101,6 @@ impl<'de, 'a, R: Read> de::Deserializer<'de> for &'a mut Deserializer<R> {
     where
         V: Visitor<'de>,
     {
-        if self.layout_iter.is_some() {
-            return self.deserialize_any(visitor);
-        }
         visitor.visit_i32(self.rdr.bin_read_integer()?)
     }
 
@@ -93,9 +108,6 @@ impl<'de, 'a, R: Read> de::Deserializer<'de> for &'a mut Deserializer<R> {
     where
         V: Visitor<'de>,
     {
-        if self.layout_iter.is_some() {
-            return self.deserialize_any(visitor);
-        }
         visitor.visit_i64(self.rdr.bin_read_integer()?)
     }
 
@@ -103,9 +115,6 @@ impl<'de, 'a, R: Read> de::Deserializer<'de> for &'a mut Deserializer<R> {
     where
         V: Visitor<'de>,
     {
-        if self.layout_iter.is_some() {
-            return self.deserialize_any(visitor);
-        }
         visitor.visit_u8(self.rdr.read_u8()?)
     }
 
@@ -113,9 +122,6 @@ impl<'de, 'a, R: Read> de::Deserializer<'de> for &'a mut Deserializer<R> {
     where
         V: Visitor<'de>,
     {
-        if self.layout_iter.is_some() {
-            return self.deserialize_any(visitor);
-        }
         visitor.visit_u16(self.rdr.bin_read_integer()?)
     }
 
@@ -123,9 +129,6 @@ impl<'de, 'a, R: Read> de::Deserializer<'de> for &'a mut Deserializer<R> {
     where
         V: Visitor<'de>,
     {
-        if self.layout_iter.is_some() {
-            return self.deserialize_any(visitor);
-        }
         visitor.visit_u32(self.rdr.bin_read_integer()?)
     }
 
@@ -133,9 +136,6 @@ impl<'de, 'a, R: Read> de::Deserializer<'de> for &'a mut Deserializer<R> {
     where
         V: Visitor<'de>,
     {
-        if self.layout_iter.is_some() {
-            return self.deserialize_any(visitor);
-        }
         visitor.visit_u64(self.rdr.bin_read_integer()?)
     }
 
@@ -143,9 +143,6 @@ impl<'de, 'a, R: Read> de::Deserializer<'de> for &'a mut Deserializer<R> {
     where
         V: Visitor<'de>,
     {
-        if self.layout_iter.is_some() {
-            return self.deserialize_any(visitor);
-        }
         visitor.visit_f32(self.rdr.read_f32::<LittleEndian>()?)
     }
 
@@ -153,9 +150,6 @@ impl<'de, 'a, R: Read> de::Deserializer<'de> for &'a mut Deserializer<R> {
     where
         V: Visitor<'de>,
     {
-        if self.layout_iter.is_some() {
-            return self.deserialize_any(visitor);
-        }
         visitor.visit_f64(self.rdr.read_f64::<LittleEndian>()?)
     }
 
@@ -163,9 +157,6 @@ impl<'de, 'a, R: Read> de::Deserializer<'de> for &'a mut Deserializer<R> {
     where
         V: Visitor<'de>,
     {
-        if self.layout_iter.is_some() {
-            return self.deserialize_any(visitor);
-        }
         visitor.visit_char(self.rdr.bin_read_char()?)
     }
 
@@ -180,9 +171,6 @@ impl<'de, 'a, R: Read> de::Deserializer<'de> for &'a mut Deserializer<R> {
     where
         V: Visitor<'de>,
     {
-        if self.layout_iter.is_some() {
-            return self.deserialize_any(visitor);
-        }
         visitor.visit_string(self.rdr.bin_read_string()?)
     }
 
@@ -206,9 +194,6 @@ impl<'de, 'a, R: Read> de::Deserializer<'de> for &'a mut Deserializer<R> {
     where
         V: Visitor<'de>,
     {
-        if self.layout_iter.is_some() {
-            return self.deserialize_any(visitor);
-        }
         match self.rdr.bin_read_bool()? {
             false => visitor.visit_none(),
             true => visitor.visit_some(self),
@@ -220,9 +205,6 @@ impl<'de, 'a, R: Read> de::Deserializer<'de> for &'a mut Deserializer<R> {
     where
         V: Visitor<'de>,
     {
-        if self.layout_iter.is_some() {
-            return self.deserialize_any(visitor);
-        }
         self.rdr.bin_read_unit()?;
         visitor.visit_unit()
     }
@@ -232,9 +214,6 @@ impl<'de, 'a, R: Read> de::Deserializer<'de> for &'a mut Deserializer<R> {
     where
         V: Visitor<'de>,
     {
-        if self.layout_iter.is_some() {
-            return self.deserialize_any(visitor);
-        }
         self.deserialize_unit(visitor)
     }
 
@@ -245,9 +224,6 @@ impl<'de, 'a, R: Read> de::Deserializer<'de> for &'a mut Deserializer<R> {
     where
         V: Visitor<'de>,
     {
-        if self.layout_iter.is_some() {
-            return self.deserialize_any(visitor);
-        }
         visitor.visit_newtype_struct(self)
     }
 
@@ -257,9 +233,6 @@ impl<'de, 'a, R: Read> de::Deserializer<'de> for &'a mut Deserializer<R> {
     where
         V: Visitor<'de>,
     {
-        if self.layout_iter.is_some() {
-            return self.deserialize_any(visitor);
-        }
         let len = self.rdr.bin_read_nat0()?;
         visitor.visit_seq(SeqAccess::new(self, len))
     }
@@ -269,9 +242,6 @@ impl<'de, 'a, R: Read> de::Deserializer<'de> for &'a mut Deserializer<R> {
     where
         V: Visitor<'de>,
     {
-        if self.layout_iter.is_some() {
-            return self.deserialize_any(visitor);
-        }
         visitor.visit_seq(SeqAccess::new(self, len))
     }
 
@@ -285,9 +255,6 @@ impl<'de, 'a, R: Read> de::Deserializer<'de> for &'a mut Deserializer<R> {
     where
         V: Visitor<'de>,
     {
-        if self.layout_iter.is_some() {
-            return self.deserialize_any(visitor);
-        }
         visitor.visit_seq(SeqAccess::new(self, len))
     }
 
@@ -299,9 +266,6 @@ impl<'de, 'a, R: Read> de::Deserializer<'de> for &'a mut Deserializer<R> {
     where
         V: Visitor<'de>,
     {
-        if self.layout_iter.is_some() {
-            return self.deserialize_any(visitor);
-        }
         // we can't know the field names (and don't need to) if we are deserializing in
         // stronly typed mode. To make everything work just add some dummy field names
         let len: usize = self.rdr.bin_read_nat0()?;
@@ -319,9 +283,6 @@ impl<'de, 'a, R: Read> de::Deserializer<'de> for &'a mut Deserializer<R> {
     where
         V: Visitor<'de>,
     {
-        if self.layout_iter.is_some() {
-            return self.deserialize_any(visitor);
-        }
         visitor.visit_seq(SeqAccess::new(self, fields.len()))
     }
 
@@ -334,9 +295,6 @@ impl<'de, 'a, R: Read> de::Deserializer<'de> for &'a mut Deserializer<R> {
     where
         V: Visitor<'de>,
     {
-        if self.layout_iter.is_some() {
-            return self.deserialize_any(visitor);
-        }
         let index = self.rdr.bin_read_variant_index()?;
         visitor.visit_enum(Enum::new(self, index))
     }
@@ -368,15 +326,15 @@ impl<'de, 'a, R: Read> de::Deserializer<'de> for &'a mut Deserializer<R> {
     }
 }
 
-pub(crate) struct SeqAccess<'a, R: Read + 'a> {
-    de: &'a mut Deserializer<R>,
+pub(crate) struct SeqAccess<'a, R: Read + 'a, Mode> {
+    de: &'a mut Deserializer<R, Mode>,
     total_len: usize,
     len: usize,
     is_list: bool,
 }
 
-impl<'a, R: Read + 'a> SeqAccess<'a, R> {
-    pub fn new(de: &'a mut Deserializer<R>, len: usize) -> Self {
+impl<'a, R: Read + 'a, Mode> SeqAccess<'a, R, Mode> {
+    pub fn new(de: &'a mut Deserializer<R, Mode>, len: usize) -> Self {
         Self {
             de,
             len,
@@ -385,7 +343,7 @@ impl<'a, R: Read + 'a> SeqAccess<'a, R> {
         }
     }
 
-    pub fn new_list(de: &'a mut Deserializer<R>, len: usize) -> Self {
+    pub fn new_list(de: &'a mut Deserializer<R, Mode>, len: usize) -> Self {
         Self {
             de,
             len,
@@ -395,7 +353,68 @@ impl<'a, R: Read + 'a> SeqAccess<'a, R> {
     }
 }
 
-impl<'de: 'a, 'a, R: Read> de::SeqAccess<'de> for SeqAccess<'a, R> {
+pub(crate) struct MapAccess<'a, R: Read + 'a, Mode> {
+    de: &'a mut Deserializer<R, Mode>,
+    field_names: Vec<String>, // field names should be stored as a stack (first element last)
+}
+
+impl<'a, R: Read + 'a, Mode> MapAccess<'a, R, Mode> {
+    pub fn new(de: &'a mut Deserializer<R, Mode>, field_names: Vec<String>) -> Self {
+        Self { de, field_names }
+    }
+}
+
+
+pub struct Enum<'a, R: Read, Mode> {
+    de: &'a mut Deserializer<R, Mode>,
+    index: u8,
+}
+
+impl<'a, 'de, R: Read, Mode> Enum<'a, R, Mode> {
+    pub fn new(de: &'a mut Deserializer<R, Mode>, index: u8) -> Self {
+        Enum { de, index }
+    }
+}
+
+// `EnumAccess` is provided to the `Visitor` to give it the ability to determine
+// which variant of the enum is supposed to be deserialized.
+impl<'de, 'a, R: Read> EnumAccess<'de> for Enum<'a, R, StronglyTyped> {
+    type Error = Error;
+    type Variant = Self;
+
+    fn variant_seed<V>(self, seed: V) -> Result<(V::Value, Self::Variant)>
+    where
+        V: de::DeserializeSeed<'de>,
+    {
+        let de: U8Deserializer<Self::Error> = (self.index as u8).into_deserializer();
+        let v = seed.deserialize(de)?;
+        Ok((v, self))
+    }
+}
+
+impl<'de: 'a, 'a, R: Read> de::MapAccess<'de> for MapAccess<'a, R, StronglyTyped> {
+    type Error = Error;
+
+    fn next_key_seed<T: de::DeserializeSeed<'de>>(&mut self, seed: T) -> Result<Option<T::Value>> {
+        if let Some(name) = self.field_names.pop() {
+            // create a new deserializer to read the name from memory
+            // as it isn't present in the serialized output
+            seed.deserialize(name.into_deserializer()).map(Some)
+        } else {
+            Ok(None)
+        }
+    }
+
+    fn next_value_seed<T: de::DeserializeSeed<'de>>(&mut self, seed: T) -> Result<T::Value> {
+        seed.deserialize(&mut *self.de)
+    }
+
+    fn size_hint(&self) -> Option<usize> {
+        Some(self.field_names.len())
+    }
+}
+
+impl<'de: 'a, 'a, R: Read> de::SeqAccess<'de> for SeqAccess<'a, R, StronglyTyped> {
     type Error = Error;
 
     fn next_element_seed<T: de::DeserializeSeed<'de>>(
@@ -419,18 +438,54 @@ impl<'de: 'a, 'a, R: Read> de::SeqAccess<'de> for SeqAccess<'a, R> {
     }
 }
 
-pub(crate) struct MapAccess<'a, R: Read + 'a> {
-    de: &'a mut Deserializer<R>,
-    field_names: Vec<String>, // field names should be stored as a stack (first element last)
-}
+// `VariantAccess` is provided to the `Visitor` to give it the ability to see
+// the content of the single variant that it decided to deserialize.
+impl<'de, 'a, R: Read> de::VariantAccess<'de> for Enum<'a, R, StronglyTyped> {
+    type Error = Error;
 
-impl<'a, R: Read + 'a> MapAccess<'a, R> {
-    pub fn new(de: &'a mut Deserializer<R>, field_names: Vec<String>) -> Self {
-        Self { de, field_names }
+    fn unit_variant(self) -> Result<()> {
+        Ok(())
+    }
+
+    fn newtype_variant_seed<T>(self, seed: T) -> Result<T::Value>
+    where
+        T: de::DeserializeSeed<'de>,
+    {
+        seed.deserialize(self.de)
+    }
+
+    fn tuple_variant<V>(self, len: usize, visitor: V) -> Result<V::Value>
+    where
+        V: Visitor<'de>,
+    {
+        de::Deserializer::deserialize_tuple(self.de, len, visitor)
+    }
+
+    fn struct_variant<V>(self, fields: &'static [&'static str], visitor: V) -> Result<V::Value>
+    where
+        V: Visitor<'de>,
+    {
+        de::Deserializer::deserialize_struct(self.de, "", fields, visitor)
     }
 }
 
-impl<'de: 'a, 'a, R: Read> de::MapAccess<'de> for MapAccess<'a, R> {
+// `EnumAccess` is provided to the `Visitor` to give it the ability to determine
+// which variant of the enum is supposed to be deserialized.
+impl<'de, 'a, R: Read> EnumAccess<'de> for Enum<'a, R, LooselyTyped> {
+    type Error = Error;
+    type Variant = Self;
+
+    fn variant_seed<V>(self, seed: V) -> Result<(V::Value, Self::Variant)>
+    where
+        V: de::DeserializeSeed<'de>,
+    {
+        let de: U8Deserializer<Self::Error> = (self.index as u8).into_deserializer();
+        let v = seed.deserialize(de)?;
+        Ok((v, self))
+    }
+}
+
+impl<'de: 'a, 'a, R: Read> de::MapAccess<'de> for MapAccess<'a, R, LooselyTyped> {
     type Error = Error;
 
     fn next_key_seed<T: de::DeserializeSeed<'de>>(&mut self, seed: T) -> Result<Option<T::Value>> {
@@ -452,36 +507,33 @@ impl<'de: 'a, 'a, R: Read> de::MapAccess<'de> for MapAccess<'a, R> {
     }
 }
 
-pub struct Enum<'a, R: Read> {
-    de: &'a mut Deserializer<R>,
-    index: u8,
-}
-
-impl<'a, 'de, R: Read> Enum<'a, R> {
-    pub fn new(de: &'a mut Deserializer<R>, index: u8) -> Self {
-        Enum { de, index }
-    }
-}
-
-// `EnumAccess` is provided to the `Visitor` to give it the ability to determine
-// which variant of the enum is supposed to be deserialized.
-impl<'de, 'a, R: Read> EnumAccess<'de> for Enum<'a, R> {
+impl<'de: 'a, 'a, R: Read> de::SeqAccess<'de> for SeqAccess<'a, R, LooselyTyped> {
     type Error = Error;
-    type Variant = Self;
 
-    fn variant_seed<V>(self, seed: V) -> Result<(V::Value, Self::Variant)>
-    where
-        V: de::DeserializeSeed<'de>,
-    {
-        let de: U8Deserializer<Self::Error> = (self.index as u8).into_deserializer();
-        let v = seed.deserialize(de)?;
-        Ok((v, self))
+    fn next_element_seed<T: de::DeserializeSeed<'de>>(
+        &mut self,
+        seed: T,
+    ) -> Result<Option<T::Value>> {
+        if self.len > 0 {
+            self.len -= 1;
+            seed.deserialize(&mut *self.de).map(Some)
+        } else {
+            Ok(None)
+        }
+    }
+
+    fn size_hint(&self) -> Option<usize> {
+        if self.is_list {
+            Some(self.total_len)
+        } else {
+            None
+        }
     }
 }
 
 // `VariantAccess` is provided to the `Visitor` to give it the ability to see
 // the content of the single variant that it decided to deserialize.
-impl<'de, 'a, R: Read> de::VariantAccess<'de> for Enum<'a, R> {
+impl<'de, 'a, R: Read> de::VariantAccess<'de> for Enum<'a, R, LooselyTyped> {
     type Error = Error;
 
     fn unit_variant(self) -> Result<()> {

@@ -30,7 +30,7 @@ mod tests {
 
     #[test]
     fn test_all_block_subtypes() {
-        let mut de = Deserializer::from_reader_with_layout(BLOCK_BYTES, &BLOCK_RULE);
+        let mut de = Deserializer::from_reader(BLOCK_BYTES).with_layout(&BLOCK_RULE);
         let block: bin_prot::Value =
             Deserialize::deserialize(&mut de).expect("Failed to deserialize block");
 
@@ -68,7 +68,7 @@ mod tests {
 
     #[test]
     fn smoke_test_roundtrip_block() {
-        let mut de = Deserializer::from_reader_with_layout(BLOCK_BYTES, &BLOCK_RULE);
+        let mut de = Deserializer::from_reader(BLOCK_BYTES).with_layout(&BLOCK_RULE);
         let block: Value = Deserialize::deserialize(&mut de).expect("Failed to deserialize block");
 
         // test we can correctly index a known field
@@ -108,7 +108,7 @@ mod tests {
         }
 
         // check we can deserialize into this type without error
-        let mut de = Deserializer::from_reader_with_layout(BLOCK_BYTES, &BLOCK_RULE);
+        let mut de = Deserializer::from_reader(BLOCK_BYTES).with_layout(&BLOCK_RULE);
         let block: PartialBlock =
             Deserialize::deserialize(&mut de).expect("Failed to deserialize block");
 
