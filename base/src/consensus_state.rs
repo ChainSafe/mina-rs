@@ -44,7 +44,7 @@ pub struct ConsensusState {
     /// Current global slot number relative to the current hard fork
     pub curr_global_slot: GlobalSlot,
     /// Absolute global slot number since genesis
-    global_slot_since_genesis: numbers::GlobalSlot,
+    global_slot_since_genesis: numbers::GlobalSlotNumber,
     /// Epoch data for previous epoch
     staking_epoch_data: EpochData,
     /// Epoch data for current epoch

@@ -23,3 +23,15 @@ pub mod numbers;
 pub mod protocol_state;
 pub mod protocol_version;
 pub mod token_id;
+
+pub mod types {
+    pub use super::blockchain_state::*;
+    pub use super::consensus_state::*;
+    pub use super::epoch_data::*;
+    pub use super::external_transition::*;
+    pub use super::global_slot::*;
+    pub use super::numbers::*;
+    pub use super::protocol_state::*;
+    pub use super::protocol_version::*;
+    pub use super::token_id::*;
+}

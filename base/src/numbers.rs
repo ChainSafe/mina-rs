@@ -24,7 +24,7 @@ pub struct Delta(pub u32);
 pub struct Amount(u64);
 
 #[derive(Clone, Serialize, Deserialize, PartialEq, Debug, Hash, Default)]
-pub struct GlobalSlot(pub u32);
+pub struct GlobalSlotNumber(pub u32);
 
 #[derive(Clone, Serialize, Deserialize, PartialEq, Debug, Hash, Default, WireType)]
 #[serde(from = "<Self as WireType>::WireType")]
