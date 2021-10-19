@@ -11,9 +11,9 @@ use wire_type::WireType;
 #[serde(into = "<Self as WireType>::WireType")]
 #[wire_type(recurse = 2)]
 pub struct BlockchainState {
-    staged_ledger_hash: StagedLedgerHash,
-    snarked_ledger_hash: SnarkedLedgerHash,
-    genesis_ledger_hash: SnarkedLedgerHash,
-    snarked_next_available_token: TokenId,
-    timestamp: BlockTime,
+    pub staged_ledger_hash: StagedLedgerHash,
+    pub snarked_ledger_hash: SnarkedLedgerHash,
+    pub genesis_ledger_hash: SnarkedLedgerHash,
+    pub snarked_next_available_token: TokenId,
+    pub timestamp: BlockTime,
 }

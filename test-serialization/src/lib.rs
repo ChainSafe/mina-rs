@@ -7,6 +7,7 @@ mod tests {
     use bin_prot::BinProtRule;
     use bin_prot::{from_reader, to_writer, Deserializer, Value};
     use lazy_static::lazy_static;
+    use mina_crypto::signature::PublicKey;
     use pretty_assertions::assert_eq;
     use serde::{Deserialize, Serialize};
 
@@ -29,7 +30,6 @@ mod tests {
         static ref TEST_BLOCK_1: bin_prot::Value = load_test_block();
     }
 
-    #[ignore = "not implemented"]
     #[test]
     fn test_protocol_state_body() {
         block_path_test_batch! {
@@ -65,6 +65,34 @@ mod tests {
             CoinBaseHash => "t/protocol_state/t/t/body/t/t/blockchain_state/t/t/staged_ledger_hash/t/t/pending_coinbase_hash"
             StagedLedgerHash => "t/protocol_state/t/t/body/t/t/blockchain_state/t/t/staged_ledger_hash"
         };
+    }
+
+    #[test]
+    fn test_protocol_state_body_consensus_state() {
+        block_path_test_batch! {
+            Length => "t/protocol_state/t/t/body/t/t/consensus_state/t/t/blockchain_length"
+            Length => "t/protocol_state/t/t/body/t/t/consensus_state/t/t/epoch_count"
+            Length => "t/protocol_state/t/t/body/t/t/consensus_state/t/t/min_window_density"
+            Vec<Length> => "t/protocol_state/t/t/body/t/t/consensus_state/t/t/sub_window_densities"
+            VrfOutputTruncated => "t/protocol_state/t/t/body/t/t/consensus_state/t/t/last_vrf_output"
+            Amount => "t/protocol_state/t/t/body/t/t/consensus_state/t/t/total_currency"
+            GlobalSlot => "t/protocol_state/t/t/body/t/t/consensus_state/t/t/curr_global_slot"
+            GlobalSlotNumber => "t/protocol_state/t/t/body/t/t/consensus_state/t/t/global_slot_since_genesis"
+            EpochData => "t/protocol_state/t/t/body/t/t/consensus_state/t/t/staking_epoch_data"
+            EpochData => "t/protocol_state/t/t/body/t/t/consensus_state/t/t/next_epoch_data"
+            bool => "t/protocol_state/t/t/body/t/t/consensus_state/t/t/has_ancestor_in_same_checkpoint_window"
+            PublicKey => "t/protocol_state/t/t/body/t/t/consensus_state/t/t/block_stake_winner"
+            ConsensusState => "t/protocol_state/t/t/body/t/t/consensus_state"
+        }
+    }
+
+    #[test]
+    fn test_protocol_state_body_consensus_state_staking_epoch_data() {
+        block_path_test_batch! {
+            EpochLedger => "t/protocol_state/t/t/body/t/t/consensus_state/t/t/staking_epoch_data/t/t/ledger"
+            EpochSeed => "t/protocol_state/t/t/body/t/t/consensus_state/t/t/staking_epoch_data/t/t/seed"
+            EpochData => "t/protocol_state/t/t/body/t/t/consensus_state/t/t/staking_epoch_data"
+        }
     }
 
     #[test]

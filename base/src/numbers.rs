@@ -20,10 +20,16 @@ pub struct Length(pub u32);
 #[wire_type(recurse = 2)]
 pub struct Delta(pub u32);
 
-#[derive(Clone, Serialize, Deserialize, PartialEq, Debug, Hash, Default)]
+#[derive(Clone, Serialize, Deserialize, PartialEq, Debug, Hash, Default, WireType)]
+#[serde(from = "<Self as WireType>::WireType")]
+#[serde(into = "<Self as WireType>::WireType")]
+#[wire_type(recurse = 2)]
 pub struct Amount(u64);
 
-#[derive(Clone, Serialize, Deserialize, PartialEq, Debug, Hash, Default)]
+#[derive(Clone, Serialize, Deserialize, PartialEq, Debug, Hash, Default, WireType)]
+#[serde(from = "<Self as WireType>::WireType")]
+#[serde(into = "<Self as WireType>::WireType")]
+#[wire_type(recurse = 2)]
 pub struct GlobalSlotNumber(pub u32);
 
 #[derive(Clone, Serialize, Deserialize, PartialEq, Debug, Hash, Default, WireType)]

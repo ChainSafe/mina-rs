@@ -4,15 +4,18 @@
 use crate::{
     epoch_data::EpochData,
     global_slot::GlobalSlot,
-    numbers::{self, Amount, Length},
+    numbers::{Amount, GlobalSlotNumber, Length},
 };
 use mina_crypto::hash::{Hashable, VrfOutputHash};
 use mina_crypto::signature::PublicKey;
 use serde::{Deserialize, Serialize};
 use wire_type::WireType;
 
-#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug)]
-pub struct VrfOutputTruncated(pub String);
+#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, WireType)]
+#[serde(from = "<Self as WireType>::WireType")]
+#[serde(into = "<Self as WireType>::WireType")]
+#[wire_type(recurse = 1)]
+pub struct VrfOutputTruncated(Vec<u8>);
 
 impl Hashable<VrfOutputHash> for VrfOutputTruncated {}
 
@@ -28,34 +31,35 @@ impl Hashable<VrfOutputHash> for VrfOutputTruncated {}
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize, WireType)]
 #[serde(from = "<Self as WireType>::WireType")]
 #[serde(into = "<Self as WireType>::WireType")]
+#[wire_type(recurse = 2)]
 pub struct ConsensusState {
     /// Height of block
     pub blockchain_length: Length,
     /// Epoch number
-    epoch_count: Length,
+    pub epoch_count: Length,
     /// Minimum odnws density oberved on the chain
-    min_window_density: Length,
+    pub min_window_density: Length,
     /// Current sliding window of densities
-    sub_window_densities: Vec<Length>,
+    pub sub_window_densities: Vec<Length>,
     /// Additional VRS output from leader (for seeding Random Oracle)
     pub last_vrf_output: VrfOutputTruncated,
     /// Total supply of currency
-    total_currency: Amount,
+    pub total_currency: Amount,
     /// Current global slot number relative to the current hard fork
     pub curr_global_slot: GlobalSlot,
     /// Absolute global slot number since genesis
-    global_slot_since_genesis: numbers::GlobalSlotNumber,
+    pub global_slot_since_genesis: GlobalSlotNumber,
     /// Epoch data for previous epoch
-    staking_epoch_data: EpochData,
+    pub staking_epoch_data: EpochData,
     /// Epoch data for current epoch
-    next_epoch_data: EpochData,
-    has_ancestor_in_same_checkpoint_window: bool,
+    pub next_epoch_data: EpochData,
+    pub has_ancestor_in_same_checkpoint_window: bool,
     /// Compressed public key of winning account
-    block_stake_winner: PublicKey,
+    pub block_stake_winner: PublicKey,
     /// Compressed public key of the block producer
-    block_creator: PublicKey,
+    pub block_creator: PublicKey,
     /// Compresed public key of account receiving the block reward
-    coinbase_receiver: PublicKey,
+    pub coinbase_receiver: PublicKey,
     /// true if block_stake_winner has no locked tokens, false otherwise
-    supercharge_coinbase: bool,
+    pub supercharge_coinbase: bool,
 }
