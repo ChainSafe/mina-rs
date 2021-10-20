@@ -9,6 +9,7 @@ mod tests {
     use lazy_static::lazy_static;
     use mina_crypto::signature::PublicKey;
     use pretty_assertions::assert_eq;
+    use regex::Regex;
     use serde::{Deserialize, Serialize};
 
     use mina_crypto::hash::*;
@@ -28,6 +29,22 @@ mod tests {
                 .bin_prot_rule
         };
         static ref TEST_BLOCK_1: bin_prot::Value = load_test_block();
+        static ref PATTERN_TUPLE_INDEX: Regex = Regex::new(r"^\((?P<index>\d+)\)$").unwrap();
+        static ref PATTERN_LIST_INDEX: Regex = Regex::new(r"^\[(?P<index>\d+)\]$").unwrap();
+    }
+
+    #[test]
+    fn test_protocol_state() {
+        block_path_test_batch! {
+            ProtocolState => "t/protocol_state"
+        }
+    }
+
+    #[test]
+    fn test_protocol_state_previous_state_hash() {
+        block_path_test_batch! {
+            StateHash => "t/protocol_state/t/t/previous_state_hash"
+        }
     }
 
     #[test]
@@ -108,6 +125,106 @@ mod tests {
     }
 
     #[test]
+    fn test_staged_ledger_diff() {
+        block_path_test_batch! {
+            Vec<TransactionSnarkWork> => "t/staged_ledger_diff/t/diff/t/(0)/t/t/completed_works"
+        }
+    }
+
+    #[test]
+    fn test_staged_ledger_diff_diff_completed_works() {
+        block_path_test_batch! {
+            Vec<TransactionSnarkWork> => "t/staged_ledger_diff/t/diff/t/(0)/t/t/completed_works"
+        }
+    }
+
+    #[test]
+    fn test_staged_ledger_diff_diff_commands() {
+        block_path_test_batch! {
+            UserCommandWithStatus => "t/staged_ledger_diff/t/diff/t/(0)/t/t/commands/[0]"
+            Vec<UserCommandWithStatus> => "t/staged_ledger_diff/t/diff/t/(0)/t/t/commands"
+        }
+    }
+
+    #[test]
+    fn test_staged_ledger_diff_diff_commands_data() {
+        block_path_test_batch! {
+            SignedCommand => "t/staged_ledger_diff/t/diff/t/(0)/t/t/commands/[0]/t/data/t/t/[sum]"
+            UserCommand => "t/staged_ledger_diff/t/diff/t/(0)/t/t/commands/[0]/t/data"
+        }
+    }
+
+    #[test]
+    fn test_staged_ledger_diff_diff_commands_data_payload_common() {
+        block_path_test_batch! {
+            Amount => "t/staged_ledger_diff/t/diff/t/(0)/t/t/commands/[0]/t/data/t/t/[sum]/(0)/t/t/payload/t/t/common/t/t/t/fee"
+            SignedCommandFeeToken => "t/staged_ledger_diff/t/diff/t/(0)/t/t/commands/[0]/t/data/t/t/[sum]/(0)/t/t/payload/t/t/common/t/t/t/fee_token"
+            SignedCommandFeePayerPk => "t/staged_ledger_diff/t/diff/t/(0)/t/t/commands/[0]/t/data/t/t/[sum]/(0)/t/t/payload/t/t/common/t/t/t/fee_payer_pk"
+            ExtendedU32 => "t/staged_ledger_diff/t/diff/t/(0)/t/t/commands/[0]/t/data/t/t/[sum]/(0)/t/t/payload/t/t/common/t/t/t/nonce"
+            i32 => "t/staged_ledger_diff/t/diff/t/(0)/t/t/commands/[0]/t/data/t/t/[sum]/(0)/t/t/payload/t/t/common/t/t/t/valid_until/t/t"
+            ExtendedU32 => "t/staged_ledger_diff/t/diff/t/(0)/t/t/commands/[0]/t/data/t/t/[sum]/(0)/t/t/payload/t/t/common/t/t/t/valid_until"
+            SignedCommandMemo => "t/staged_ledger_diff/t/diff/t/(0)/t/t/commands/[0]/t/data/t/t/[sum]/(0)/t/t/payload/t/t/common/t/t/t/memo"
+            SignedCommandPayloadCommon => "t/staged_ledger_diff/t/diff/t/(0)/t/t/commands/[0]/t/data/t/t/[sum]/(0)/t/t/payload/t/t/common"
+        }
+    }
+
+    #[test]
+    fn test_staged_ledger_diff_diff_commands_data_payload_body() {
+        block_path_test_batch! {
+           SignedCommandFeePayerPk => "t/staged_ledger_diff/t/diff/t/(0)/t/t/commands/[0]/t/data/t/t/[sum]/(0)/t/t/payload/t/t/body/t/t/[sum]/(0)/t/t/source_pk"
+           SignedCommandFeePayerPk => "t/staged_ledger_diff/t/diff/t/(0)/t/t/commands/[0]/t/data/t/t/[sum]/(0)/t/t/payload/t/t/body/t/t/[sum]/(0)/t/t/receiver_pk"
+           u64 => "t/staged_ledger_diff/t/diff/t/(0)/t/t/commands/[0]/t/data/t/t/[sum]/(0)/t/t/payload/t/t/body/t/t/[sum]/(0)/t/t/token_id/t/t/t"
+           ExtendedU64 => "t/staged_ledger_diff/t/diff/t/(0)/t/t/commands/[0]/t/data/t/t/[sum]/(0)/t/t/payload/t/t/body/t/t/[sum]/(0)/t/t/token_id"
+           Amount => "t/staged_ledger_diff/t/diff/t/(0)/t/t/commands/[0]/t/data/t/t/[sum]/(0)/t/t/payload/t/t/body/t/t/[sum]/(0)/t/t/amount"
+           PaymentPayload => "t/staged_ledger_diff/t/diff/t/(0)/t/t/commands/[0]/t/data/t/t/[sum]/(0)/t/t/payload/t/t/body/t/t/[sum]/(0)"
+           SignedCommandPayloadBody => "t/staged_ledger_diff/t/diff/t/(0)/t/t/commands/[0]/t/data/t/t/[sum]/(0)/t/t/payload/t/t/body"
+        }
+    }
+
+    #[test]
+    fn test_staged_ledger_diff_diff_commands_data_signer() {
+        block_path_test_batch! {
+            Signer => "t/staged_ledger_diff/t/diff/t/(0)/t/t/commands/[0]/t/data/t/t/[sum]/(0)/t/t/signer"
+        }
+    }
+
+    #[test]
+    fn test_staged_ledger_diff_diff_commands_data_signature() {
+        block_path_test_batch! {
+            BaseHash => "t/staged_ledger_diff/t/diff/t/(0)/t/t/commands/[0]/t/data/t/t/[sum]/(0)/t/t/signature/t/t/(0)"
+            BaseHash => "t/staged_ledger_diff/t/diff/t/(0)/t/t/commands/[0]/t/data/t/t/[sum]/(0)/t/t/signature/t/t/(1)"
+        }
+
+        block_path_test_batch! {
+            (BaseHash, BaseHash) => "t/staged_ledger_diff/t/diff/t/(0)/t/t/commands/[0]/t/data/t/t/[sum]/(0)/t/t/signature/t/t"
+            Signature => "t/staged_ledger_diff/t/diff/t/(0)/t/t/commands/[0]/t/data/t/t/[sum]/(0)/t/t/signature"
+        }
+    }
+
+    #[test]
+    fn test_staged_ledger_diff_diff_commands_status() {
+        block_path_test_batch! {
+            TransactionStatusAuxiliaryData => "t/staged_ledger_diff/t/diff/t/(0)/t/t/commands/[0]/t/status/t/[sum]/(0)"
+            TransactionStatusBalanceData => "t/staged_ledger_diff/t/diff/t/(0)/t/t/commands/[0]/t/status/t/[sum]/(1)"
+            TransactionStatusApplied => "t/staged_ledger_diff/t/diff/t/(0)/t/t/commands/[0]/t/status/t/[sum]"
+            TransactionStatus => "t/staged_ledger_diff/t/diff/t/(0)/t/t/commands/[0]/t/status"
+        }
+    }
+
+    #[test]
+    fn test_delta_transition_chain_proof() {
+        block_path_test_batch! {
+            StateHash => "t/delta_transition_chain_proof/(0)"
+            Vec<StateHash> => "t/delta_transition_chain_proof/(1)"
+            // FIXME: empty list in current test block
+            // StateHash => "t/delta_transition_chain_proof/(1)/[0]"
+        }
+        block_path_test_batch! {
+            (StateHash, Vec<StateHash>) => "t/delta_transition_chain_proof"
+        }
+    }
+
+    #[test]
     fn test_all_block_subtypes() {
         ////////////////////////////////////////////////////////////////
         // Here is where to add calls to test_in_block for every type
@@ -120,14 +237,58 @@ mod tests {
         }
     }
 
-    fn test_in_block<'a, T: Serialize + Deserialize<'a>>(block: &bin_prot::Value, paths: &[&str]) {
-        for path in paths {
-            // pull out the bin_prot::Value corresponding to the path
-            // will panic if the path is invalid
-            let mut val = block;
-            for p in path.split('/') {
+    fn select_path<'a>(block: &'a bin_prot::Value, path: impl AsRef<str>) -> &'a bin_prot::Value {
+        // pull out the bin_prot::Value corresponding to the path
+        // will panic if the path is invalid
+        let path_ref = path.as_ref();
+        if path_ref.len() == 0 {
+            return block;
+        }
+        let mut val = block;
+        for p in path_ref.split('/') {
+            if p == "[sum]" {
+                match val {
+                    Value::Sum { ref value, .. } => {
+                        val = value;
+                    }
+                    _ => assert!(false, "Sum expected"),
+                }
+            } else if let Some(captured_tuple_index) = PATTERN_TUPLE_INDEX.captures(p) {
+                match val {
+                    Value::Tuple(t) => {
+                        let index: usize = captured_tuple_index
+                            .name("index")
+                            .unwrap()
+                            .as_str()
+                            .parse()
+                            .unwrap();
+                        val = &t[index];
+                    }
+                    _ => assert!(false, "Tuple expected"),
+                }
+            } else if let Some(captured_list_index) = PATTERN_LIST_INDEX.captures(p) {
+                match val {
+                    Value::List(l) => {
+                        let index: usize = captured_list_index
+                            .name("index")
+                            .unwrap()
+                            .as_str()
+                            .parse()
+                            .unwrap();
+                        val = &l[index];
+                    }
+                    _ => assert!(false, "List expected"),
+                }
+            } else {
                 val = &val[p];
             }
+        }
+        val
+    }
+
+    fn test_in_block<'a, T: Serialize + Deserialize<'a>>(block: &bin_prot::Value, paths: &[&str]) {
+        for path in paths {
+            let val = select_path(block, path);
 
             // write to binary then deserialize into T
             let mut bytes = vec![];

@@ -15,3 +15,4 @@ mina-crypto = { path = "../crypto"}
 
 lazy_static = "1.4.0"
 pretty_assertions = "0.7.2"
+regex = "1.5"

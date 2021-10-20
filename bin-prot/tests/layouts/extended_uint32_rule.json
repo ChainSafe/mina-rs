@@ -1,0 +1,64 @@
+[
+    "Reference",
+    [
+        "Resolved",
+        {
+            "source_type_decl": "type t = { version: int ; t: typ }",
+            "source_module_path": "Nat.Make32",
+            "bin_io_derived": true,
+            "ref_rule": [
+                "Record",
+                [
+                    {
+                        "field_name": "version",
+                        "field_rule": [
+                            "Int"
+                        ]
+                    },
+                    {
+                        "field_name": "t",
+                        "field_rule": [
+                            "Reference",
+                            [
+                                "Resolved",
+                                {
+                                    "source_type_decl": "type t = { version: int ; t: typ }",
+                                    "source_module_path": "Unsigned_extended.UInt32",
+                                    "bin_io_derived": false,
+                                    "ref_rule": [
+                                        "Record",
+                                        [
+                                            {
+                                                "field_name": "version",
+                                                "field_rule": [
+                                                    "Int"
+                                                ]
+                                            },
+                                            {
+                                                "field_name": "t",
+                                                "field_rule": [
+                                                    "Reference",
+                                                    [
+                                                        "Resolved",
+                                                        {
+                                                            "source_type_decl": "Unsigned.UInt32.t",
+                                                            "source_module_path": "Unsigned_extended.UInt32",
+                                                            "bin_io_derived": false,
+                                                            "ref_rule": [
+                                                                "Int32"
+                                                            ]
+                                                        }
+                                                    ]
+                                                ]
+                                            }
+                                        ]
+                                    ]
+                                }
+                            ]
+                        ]
+                    }
+                ]
+            ]
+        }
+    ]
+]

@@ -43,8 +43,9 @@ pub mod wire {
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize, WireType)]
 #[serde(from = "<Self as WireType>::WireType")]
 #[serde(into = "<Self as WireType>::WireType")]
+#[wire_type(recurse = 2)]
 pub struct ProtocolState {
-    previous_state_hash: StateHash,
+    pub previous_state_hash: StateHash,
     pub body: ProtocolStateBody,
 }
 

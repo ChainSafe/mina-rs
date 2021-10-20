@@ -19,7 +19,7 @@ use wire_type::WireType;
 pub(crate) type HashBytes = Box<[u8]>;
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
-pub(crate) struct BaseHash([u8; 32]);
+pub struct BaseHash([u8; 32]);
 
 impl From<HashBytes> for BaseHash {
     // TODO: Figure out how to do this without a copy and still have BaseHash serializable

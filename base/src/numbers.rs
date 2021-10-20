@@ -20,6 +20,25 @@ pub struct Length(pub u32);
 #[wire_type(recurse = 2)]
 pub struct Delta(pub u32);
 
+#[derive(
+    Clone, Serialize, Deserialize, PartialEq, PartialOrd, Debug, Hash, Copy, Default, WireType,
+)]
+#[serde(from = "<Self as WireType>::WireType")]
+#[serde(into = "<Self as WireType>::WireType")]
+#[wire_type(recurse = 2)]
+// FIXME: 255 255 cannot be deserialized to u32, use i32 for now
+// Note: Extended_Uint32 is not defined in bin_prot, but comes from mina
+// Block path: t/staged_ledger_diff/t/diff/t/(0)/t/t/commands/[0]/t/data/t/t/[sum]/t/t/payload/t/t/common/t/t/t/valid_until
+pub struct ExtendedU32(pub i32);
+
+#[derive(
+    Clone, Serialize, Deserialize, PartialEq, PartialOrd, Debug, Hash, Copy, Default, WireType,
+)]
+#[serde(from = "<Self as WireType>::WireType")]
+#[serde(into = "<Self as WireType>::WireType")]
+#[wire_type(recurse = 3)]
+pub struct ExtendedU64(pub u64);
+
 #[derive(Clone, Serialize, Deserialize, PartialEq, Debug, Hash, Default, WireType)]
 #[serde(from = "<Self as WireType>::WireType")]
 #[serde(into = "<Self as WireType>::WireType")]

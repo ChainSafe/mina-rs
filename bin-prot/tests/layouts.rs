@@ -253,6 +253,28 @@ fn test_multiple_ctor_arg_sum_rule() {
     test_reserialize(&result, &example);
 }
 
+#[test]
+fn test_extended_u32_rule() {
+    let rule: BinProtRule =
+        serde_json::from_str(include_str!("layouts/extended_uint32_rule.json")).unwrap();
+    let example = vec![0x01, 0x01, 0xff, 0xff];
+    let mut de = Deserializer::from_reader_with_layout(Cursor::new(example.as_slice()), &rule);
+    let result: Value = Deserialize::deserialize(&mut de).expect("Failed to deserialize");
+    test_reserialize(&result, &example);
+    let mut output = vec![];
+    let value = &result["t"]["t"];
+    bin_prot::to_writer(&mut output, value).expect("Failed writing bin-prot encoded data");
+    assert_eq!(output, [0xff, 0xff]);
+    match value {
+        Value::Int(v) => {
+            assert_eq!(*v, -1);
+        }
+        _ => {
+            assert!(false, "Integer expected, but found {:#?}", value);
+        }
+    }
+}
+
 pub fn test_reserialize<T>(val: &T, bytes: &[u8])
 where
     T: Serialize,
