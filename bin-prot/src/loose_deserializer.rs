@@ -5,7 +5,7 @@ use byteorder::LittleEndian;
 use std::convert::TryInto;
 use std::io::Read;
 
-use crate::de::{Enum, MapAccess, SeqAccess, LooselyTyped};
+use crate::de::{Enum, LooselyTyped, MapAccess, SeqAccess};
 use crate::error::{Error, Result};
 use crate::value::layout::BinProtRule;
 use crate::value::layout::Summand;
@@ -45,9 +45,10 @@ impl<'de, 'a, R: Read> DS<R, LooselyTyped> {
                         // when deserializing the variants data
                         let index = self.rdr.bin_read_variant_index()?;
                         let variant_rules = summands[index as usize].ctor_args.clone();
-                        self.mode.layout_iter.push(vec![BinProtRule::Tuple(variant_rules)]);
-                        visitor
-                            .visit_enum(ValueEnum::new(self, summands[index as usize].clone()))
+                        self.mode
+                            .layout_iter
+                            .push(vec![BinProtRule::Tuple(variant_rules)]);
+                        visitor.visit_enum(ValueEnum::new(self, summands[index as usize].clone()))
                     }
                     BinProtRule::Option(some_rule) => {
                         let index = self.rdr.bin_read_variant_index()?; // 0 or 1
@@ -61,9 +62,7 @@ impl<'de, 'a, R: Read> DS<R, LooselyTyped> {
                         }
                     }
                     BinProtRule::String => visitor.visit_bytes(&self.rdr.bin_read_bytes()?),
-                    BinProtRule::Float => {
-                        visitor.visit_f64(self.rdr.read_f64::<LittleEndian>()?)
-                    }
+                    BinProtRule::Float => visitor.visit_f64(self.rdr.read_f64::<LittleEndian>()?),
                     BinProtRule::Char => {
                         let c = self.rdr.read_u8()?;
                         visitor.visit_char(c as char)

@@ -7,14 +7,14 @@ use crate::error::{Error, Result};
 use crate::value::layout::{BinProtRule, BinProtRuleIterator};
 use crate::ReadBinProtExt;
 use byteorder::{LittleEndian, ReadBytesExt};
+use duplicate::duplicate;
 use serde::de::{self, value::U8Deserializer, EnumAccess, IntoDeserializer, Visitor};
 use serde::Deserialize;
-use duplicate::duplicate;
 
 // the modes of operation for the deserializer
 pub struct StronglyTyped;
 pub struct LooselyTyped {
-    pub layout_iter: BinProtRuleIterator
+    pub layout_iter: BinProtRuleIterator,
 }
 
 pub struct Deserializer<R: Read, Mode> {
@@ -36,8 +36,8 @@ impl<R: Read> Deserializer<R, StronglyTyped> {
         Deserializer {
             rdr: self.rdr,
             mode: LooselyTyped {
-                layout_iter: layout.clone().into_iter()
-            }
+                layout_iter: layout.clone().into_iter(),
+            },
         }
     }
 }
@@ -330,8 +330,6 @@ impl<'de, 'a, R: Read> de::Deserializer<'de> for &'a mut Deserializer<R, Strongl
     }
 }
 
-
-
 pub struct Enum<'a, R: Read, Mode> {
     de: &'a mut Deserializer<R, Mode>,
     index: u8,
@@ -391,7 +389,6 @@ impl<'de, 'a, R: Read> de::VariantAccess<'de> for Enum<'a, R, Mode> {
         de::Deserializer::deserialize_struct(self.de, "", fields, visitor)
     }
 }
-
 
 pub(crate) struct MapAccess<'a, R: Read + 'a, Mode> {
     de: &'a mut Deserializer<R, Mode>,
