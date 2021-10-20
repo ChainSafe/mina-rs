@@ -84,7 +84,7 @@ impl Chain<ProtocolState> for ProtocolStateChain {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use mina_rs_base::numbers::{GlobalSlot as GlobalSlotNumber, Length};
+    use mina_rs_base::numbers::{GlobalSlotNumber, Length};
 
     #[test]
     fn test_protocol_state_chain_push() {

@@ -3,19 +3,16 @@
 
 #[cfg(test)]
 mod tests {
-
+    use super::{block_path_test, block_path_test_batch};
     use bin_prot::BinProtRule;
     use bin_prot::{from_reader, to_writer, Deserializer, Value};
     use lazy_static::lazy_static;
-    use mina_rs_base::numbers::{BlockTime, Delta, Length};
-    use mina_rs_base::protocol_state::ProtocolConstants;
+    use mina_crypto::signature::PublicKey;
     use pretty_assertions::assert_eq;
     use serde::{Deserialize, Serialize};
 
-    use mina_crypto::hash::StateHash;
-    use mina_rs_base::{
-        external_transition::ExternalTransition, protocol_version::ProtocolVersion,
-    };
+    use mina_crypto::hash::*;
+    use mina_rs_base::types::*;
 
     const BLOCK_LAYOUT: &str = std::include_str!("../../layouts/external_transition.json");
     const BLOCK_BYTES: &[u8] = std::include_bytes!("../../test-fixtures/block");
@@ -34,26 +31,79 @@ mod tests {
     }
 
     #[test]
+    fn test_protocol_state_body() {
+        block_path_test_batch! {
+            ProtocolStateBody => "t/protocol_state/t/t/body"
+        }
+    }
+
+    #[test]
+    fn test_protocol_state_body_genesis_state_hash() {
+        block_path_test_batch! {
+            StateHash => "t/protocol_state/t/t/body/t/t/genesis_state_hash"
+        }
+    }
+
+    #[test]
+    fn test_protocol_state_body_blockchain_state() {
+        block_path_test_batch! {
+            SnarkedLedgerHash => "t/protocol_state/t/t/body/t/t/blockchain_state/t/t/snarked_ledger_hash"
+            SnarkedLedgerHash => "t/protocol_state/t/t/body/t/t/blockchain_state/t/t/genesis_ledger_hash"
+            TokenId => "t/protocol_state/t/t/body/t/t/blockchain_state/t/t/snarked_next_available_token"
+            BlockTime => "t/protocol_state/t/t/body/t/t/blockchain_state/t/t/timestamp"
+            BlockchainState => "t/protocol_state/t/t/body/t/t/blockchain_state"
+        };
+    }
+
+    #[test]
+    fn test_protocol_state_body_blockchain_state_staged_ledger_hash() {
+        block_path_test_batch! {
+            LedgerHash => "t/protocol_state/t/t/body/t/t/blockchain_state/t/t/staged_ledger_hash/t/t/non_snark/t/ledger_hash"
+            AuxHash => "t/protocol_state/t/t/body/t/t/blockchain_state/t/t/staged_ledger_hash/t/t/non_snark/t/aux_hash"
+            AuxHash => "t/protocol_state/t/t/body/t/t/blockchain_state/t/t/staged_ledger_hash/t/t/non_snark/t/pending_coinbase_aux"
+            NonSnarkStagedLedgerHash => "t/protocol_state/t/t/body/t/t/blockchain_state/t/t/staged_ledger_hash/t/t/non_snark"
+            CoinBaseHash => "t/protocol_state/t/t/body/t/t/blockchain_state/t/t/staged_ledger_hash/t/t/pending_coinbase_hash"
+            StagedLedgerHash => "t/protocol_state/t/t/body/t/t/blockchain_state/t/t/staged_ledger_hash"
+        };
+    }
+
+    #[test]
+    fn test_protocol_state_body_consensus_state() {
+        block_path_test_batch! {
+            Length => "t/protocol_state/t/t/body/t/t/consensus_state/t/t/blockchain_length"
+            Length => "t/protocol_state/t/t/body/t/t/consensus_state/t/t/epoch_count"
+            Length => "t/protocol_state/t/t/body/t/t/consensus_state/t/t/min_window_density"
+            Vec<Length> => "t/protocol_state/t/t/body/t/t/consensus_state/t/t/sub_window_densities"
+            VrfOutputTruncated => "t/protocol_state/t/t/body/t/t/consensus_state/t/t/last_vrf_output"
+            Amount => "t/protocol_state/t/t/body/t/t/consensus_state/t/t/total_currency"
+            GlobalSlot => "t/protocol_state/t/t/body/t/t/consensus_state/t/t/curr_global_slot"
+            GlobalSlotNumber => "t/protocol_state/t/t/body/t/t/consensus_state/t/t/global_slot_since_genesis"
+            EpochData => "t/protocol_state/t/t/body/t/t/consensus_state/t/t/staking_epoch_data"
+            EpochData => "t/protocol_state/t/t/body/t/t/consensus_state/t/t/next_epoch_data"
+            bool => "t/protocol_state/t/t/body/t/t/consensus_state/t/t/has_ancestor_in_same_checkpoint_window"
+            PublicKey => "t/protocol_state/t/t/body/t/t/consensus_state/t/t/block_stake_winner"
+            ConsensusState => "t/protocol_state/t/t/body/t/t/consensus_state"
+        }
+    }
+
+    #[test]
+    fn test_protocol_state_body_consensus_state_staking_epoch_data() {
+        block_path_test_batch! {
+            EpochLedger => "t/protocol_state/t/t/body/t/t/consensus_state/t/t/staking_epoch_data/t/t/ledger"
+            EpochSeed => "t/protocol_state/t/t/body/t/t/consensus_state/t/t/staking_epoch_data/t/t/seed"
+            EpochData => "t/protocol_state/t/t/body/t/t/consensus_state/t/t/staking_epoch_data"
+        }
+    }
+
+    #[test]
     fn test_protocol_state_body_constants() {
-        for block in [&TEST_BLOCK_1] {
-            test_in_block::<Length>(block, &["t/protocol_state/t/t/body/t/t/constants/t/t/k"]);
-            test_in_block::<Length>(
-                block,
-                &["t/protocol_state/t/t/body/t/t/constants/t/t/slots_per_epoch"],
-            );
-            test_in_block::<Length>(
-                block,
-                &["t/protocol_state/t/t/body/t/t/constants/t/t/slots_per_sub_window"],
-            );
-            test_in_block::<Delta>(
-                block,
-                &["t/protocol_state/t/t/body/t/t/constants/t/t/delta"],
-            );
-            test_in_block::<BlockTime>(
-                block,
-                &["t/protocol_state/t/t/body/t/t/constants/t/t/genesis_state_timestamp"],
-            );
-            test_in_block::<ProtocolConstants>(block, &["t/protocol_state/t/t/body/t/t/constants"]);
+        block_path_test_batch! {
+            Length => "t/protocol_state/t/t/body/t/t/constants/t/t/k"
+            Length => "t/protocol_state/t/t/body/t/t/constants/t/t/slots_per_epoch"
+            Length => "t/protocol_state/t/t/body/t/t/constants/t/t/slots_per_sub_window"
+            Delta => "t/protocol_state/t/t/body/t/t/constants/t/t/delta"
+            BlockTime => "t/protocol_state/t/t/body/t/t/constants/t/t/genesis_state_timestamp"
+            ProtocolConstants => "t/protocol_state/t/t/body/t/t/constants"
         }
     }
 
@@ -63,14 +113,10 @@ mod tests {
         // Here is where to add calls to test_in_block for every type
         // that has a strongly typed implementation to test
         ////////////////////////////////////////////////////////////////
-
-        for block in [&TEST_BLOCK_1] {
-            // protocol_version
-            test_in_block::<ProtocolVersion>(block, &["t/current_protocol_version"]);
-            test_in_block::<Option<ProtocolVersion>>(block, &["t/proposed_protocol_version_opt"]);
-
-            // state hash
-            test_in_block::<StateHash>(block, &["t/protocol_state/t/t/previous_state_hash"]);
+        block_path_test_batch! {
+            ProtocolVersion => "t/current_protocol_version"
+            Option<ProtocolVersion> => "t/proposed_protocol_version_opt"
+            StateHash => "t/protocol_state/t/t/previous_state_hash"
         }
     }
 
@@ -85,14 +131,25 @@ mod tests {
 
             // write to binary then deserialize into T
             let mut bytes = vec![];
-            bin_prot::to_writer(&mut bytes, val).expect("Failed writing bin-prot encoded data");
-            let re_val: T = from_reader(bytes.as_slice()).expect("Could not deserialize type");
+            bin_prot::to_writer(&mut bytes, val).expect(&format!(
+                "Failed writing bin-prot encoded data\npath: {}",
+                path
+            ));
+            let re_val: T = from_reader(bytes.as_slice()).expect(&format!(
+                "Could not deserialize type\npath: {}\nbytes({}): {:?}",
+                path,
+                bytes.len(),
+                bytes
+            ));
 
             // serialize back to binary and ensure it matches
             let mut re_bytes = vec![];
-            to_writer(&mut re_bytes, &re_val).expect("Failed writing bin-prot encoded data");
+            to_writer(&mut re_bytes, &re_val).expect(&format!(
+                "Failed writing bin-prot encoded data\npath: {}",
+                path
+            ));
 
-            assert_eq!(bytes, re_bytes);
+            assert_eq!(bytes, re_bytes, "path: {}", path);
         }
     }
 
@@ -141,5 +198,23 @@ mod tests {
     fn load_test_block() -> bin_prot::Value {
         let mut de = Deserializer::from_reader_with_layout(BLOCK_BYTES, &BLOCK_RULE);
         Deserialize::deserialize(&mut de).expect("Failed to deserialize test block")
+    }
+
+    #[macro_export]
+    macro_rules! block_path_test {
+        ($typ:ty, $path:expr) => {
+            for block in [&TEST_BLOCK_1] {
+                test_in_block::<$typ>(block, &[$path]);
+            }
+        };
+    }
+
+    #[macro_export]
+    macro_rules! block_path_test_batch {
+        ($($typ:ty => $path:expr) *)  => {
+            $(
+                block_path_test!($typ, $path);
+            )*
+        };
     }
 }

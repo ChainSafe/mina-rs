@@ -54,11 +54,12 @@ impl Hashable<StateHash> for ProtocolState {}
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize, WireType)]
 #[serde(from = "<Self as WireType>::WireType")]
 #[serde(into = "<Self as WireType>::WireType")]
+#[wire_type(recurse = 2)]
 pub struct ProtocolStateBody {
-    genesis_state_hash: StateHash,
-    blockchain_state: BlockchainState,
+    pub genesis_state_hash: StateHash,
+    pub blockchain_state: BlockchainState,
     pub consensus_state: ConsensusState,
-    constants: ProtocolConstants,
+    pub constants: ProtocolConstants,
 }
 
 pub trait Header {
