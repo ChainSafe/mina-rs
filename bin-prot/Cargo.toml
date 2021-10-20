@@ -7,6 +7,7 @@ edition = "2018"
 
 [dependencies]
 byteorder = "1.4.3"
+duplicate = "0.3.0"
 num = "0.4.0"
 serde = { version = "1.0.125" }
 serde_json = { version = "1.0.64" }
