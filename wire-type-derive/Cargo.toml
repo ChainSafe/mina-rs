@@ -2,7 +2,7 @@
 name = "wire-type-derive"
 authors = ["ChainSafe Systems <info@chainsafe.io>"]
 version = "0.1.0"
-edition = "2018"
+edition = "2021"
 
 [lib]
 proc-macro = true
