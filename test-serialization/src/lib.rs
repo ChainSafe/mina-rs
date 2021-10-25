@@ -32,6 +32,13 @@ mod tests {
     }
 
     #[test]
+    fn test_external_transition() {
+        block_path_test_batch! {
+            ExternalTransition => ""
+        }
+    }
+
+    #[test]
     fn test_protocol_state() {
         block_path_test_batch! {
             ProtocolState => "t/protocol_state"
@@ -514,7 +521,7 @@ mod tests {
     #[test]
     fn smoke_test_partial_block() {
         // check we can deserialize into this type without error
-        let mut de = Deserializer::from_reader_with_layout(BLOCK_BYTES, &BLOCK_RULE);
+        let mut de = Deserializer::from_reader(BLOCK_BYTES);
         let block: ExternalTransition =
             Deserialize::deserialize(&mut de).expect("Failed to deserialize block");
 
