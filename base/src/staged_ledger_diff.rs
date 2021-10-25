@@ -1,7 +1,7 @@
 // Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
-use mina_crypto::hash::BaseHash;
+use mina_crypto::signature::Signature;
 use serde::{Deserialize, Serialize};
 use wire_type::WireType;
 
@@ -22,12 +22,7 @@ pub struct StagedLedgerDiff {
 // FIXME: No test coverage yet
 pub struct StagedLedgerDiffTuple((StagedLedgerPreDiffTwo, Option<StagedLedgerPreDiffOne>));
 
-#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, WireType)]
-#[serde(from = "<Self as WireType>::WireType")]
-#[serde(into = "<Self as WireType>::WireType")]
-#[wire_type(recurse = 2)]
-// FIXME: No test coverage yet
-pub struct StagedLedgerPreDiffOne;
+pub type StagedLedgerPreDiffOne = bin_prot::Value;
 
 #[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, WireType)]
 #[serde(from = "<Self as WireType>::WireType")]
@@ -41,12 +36,7 @@ pub struct StagedLedgerPreDiffTwo {
     pub internal_command_balances: Vec<bin_prot::Value>,
 }
 
-#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, WireType)]
-#[serde(from = "<Self as WireType>::WireType")]
-#[serde(into = "<Self as WireType>::WireType")]
-#[wire_type(recurse = 2)]
-// FIXME: No test coverage yet
-pub struct TransactionSnarkWork;
+pub type TransactionSnarkWork = bin_prot::Value;
 
 #[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, WireType)]
 #[serde(from = "<Self as WireType>::WireType")]
@@ -60,6 +50,7 @@ pub struct UserCommandWithStatus {
 #[serde(from = "<Self as WireType>::WireType")]
 #[serde(into = "<Self as WireType>::WireType")]
 #[wire_type(recurse = 2)]
+#[non_exhaustive]
 pub enum UserCommand {
     SignedCommand(SignedCommand),
     // FIXME: other variants are not covered by current test block
@@ -90,12 +81,6 @@ pub struct Signer(SignedCommandFeePayerPk);
 #[serde(from = "<Self as WireType>::WireType")]
 #[serde(into = "<Self as WireType>::WireType")]
 #[wire_type(recurse = 2)]
-pub struct Signature((BaseHash, BaseHash));
-
-#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, WireType)]
-#[serde(from = "<Self as WireType>::WireType")]
-#[serde(into = "<Self as WireType>::WireType")]
-#[wire_type(recurse = 2)]
 pub struct SignedCommandPayload {
     pub common: SignedCommandPayloadCommon,
     pub body: SignedCommandPayloadBody,
@@ -118,6 +103,7 @@ pub struct SignedCommandPayloadCommon {
 #[serde(from = "<Self as WireType>::WireType")]
 #[serde(into = "<Self as WireType>::WireType")]
 #[wire_type(recurse = 2)]
+#[non_exhaustive]
 pub enum SignedCommandPayloadBody {
     PaymentPayload(PaymentPayload),
     // FIXME: other variants are not covered by current test block
@@ -158,7 +144,6 @@ pub struct SignedCommandFeeToken(u64);
 #[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, WireType)]
 #[serde(from = "<Self as WireType>::WireType")]
 #[serde(into = "<Self as WireType>::WireType")]
-#[wire_type(recurse = 1)]
 pub struct SignedCommandMemo(Vec<u8>);
 
 #[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, WireType)]
@@ -170,6 +155,7 @@ pub struct SnappCommand {}
 #[derive(Clone, Serialize, Deserialize, PartialEq, Debug, WireType)]
 #[serde(from = "<Self as WireType>::WireType")]
 #[serde(into = "<Self as WireType>::WireType")]
+#[non_exhaustive]
 pub enum TransactionStatus {
     Applied(TransactionStatusApplied),
     // FIXME: other variants are not covered by current test block

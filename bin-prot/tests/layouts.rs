@@ -265,14 +265,12 @@ fn test_extended_u32_rule() {
     let value = &result["t"]["t"];
     bin_prot::to_writer(&mut output, value).expect("Failed writing bin-prot encoded data");
     assert_eq!(output, [0xff, 0xff]);
-    match value {
-        Value::Int(v) => {
-            assert_eq!(*v, -1);
-        }
-        _ => {
-            assert!(false, "Integer expected, but found {:#?}", value);
-        }
-    }
+    assert_eq!(
+        value,
+        &Value::Int(-1),
+        "Integer expected, but found {:#?}",
+        value
+    );
 }
 
 pub fn test_reserialize<T>(val: &T, bytes: &[u8])
