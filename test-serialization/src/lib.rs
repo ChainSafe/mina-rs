@@ -125,7 +125,28 @@ mod tests {
     #[test]
     fn test_staged_ledger_diff() {
         block_path_test_batch! {
-            Vec<TransactionSnarkWork> => "t/staged_ledger_diff/t/diff/t/0/t/t/completed_works"
+            StagedLedgerDiff => "t/staged_ledger_diff"
+        }
+    }
+
+    #[test]
+    fn test_staged_ledger_diff_diff() {
+        block_path_test_batch! {
+            StagedLedgerDiffTuple => "t/staged_ledger_diff/t/diff"
+        }
+    }
+
+    #[test]
+    fn test_staged_ledger_diff_one() {
+        block_path_test_batch! {
+            Option<StagedLedgerPreDiffOne> => "t/staged_ledger_diff/t/diff/t/1"
+        }
+    }
+
+    #[test]
+    fn test_staged_ledger_diff_diff_two() {
+        block_path_test_batch! {
+            StagedLedgerPreDiffTwo => "t/staged_ledger_diff/t/diff/t/0"
         }
     }
 
@@ -172,7 +193,7 @@ mod tests {
            SignedCommandFeePayerPk => "t/staged_ledger_diff/t/diff/t/0/t/t/commands/0/t/data/t/t/0/t/t/payload/t/t/body/t/t/0/t/t/source_pk"
            SignedCommandFeePayerPk => "t/staged_ledger_diff/t/diff/t/0/t/t/commands/0/t/data/t/t/0/t/t/payload/t/t/body/t/t/0/t/t/receiver_pk"
            u64 => "t/staged_ledger_diff/t/diff/t/0/t/t/commands/0/t/data/t/t/0/t/t/payload/t/t/body/t/t/0/t/t/token_id/t/t/t"
-           ExtendedU64 => "t/staged_ledger_diff/t/diff/t/0/t/t/commands/0/t/data/t/t/0/t/t/payload/t/t/body/t/t/0/t/t/token_id"
+           ExtendedU64_3 => "t/staged_ledger_diff/t/diff/t/0/t/t/commands/0/t/data/t/t/0/t/t/payload/t/t/body/t/t/0/t/t/token_id"
            Amount => "t/staged_ledger_diff/t/diff/t/0/t/t/commands/0/t/data/t/t/0/t/t/payload/t/t/body/t/t/0/t/t/amount"
            PaymentPayload => "t/staged_ledger_diff/t/diff/t/0/t/t/commands/0/t/data/t/t/0/t/t/payload/t/t/body/t/t/0"
            SignedCommandPayloadBody => "t/staged_ledger_diff/t/diff/t/0/t/t/commands/0/t/data/t/t/0/t/t/payload/t/t/body"
@@ -210,6 +231,25 @@ mod tests {
     }
 
     #[test]
+    fn test_staged_ledger_diff_diff_coinbase() {
+        block_path_test_batch! {
+            Option<CoinBaseFeeTransfer> => "t/staged_ledger_diff/t/diff/t/0/t/t/coinbase/t/[sum]"
+            CoinBase => "t/staged_ledger_diff/t/diff/t/0/t/t/coinbase"
+        }
+    }
+
+    #[test]
+    fn test_staged_ledger_diff_diff_internal_command_balances() {
+        block_path_test_batch! {
+            CoinBaseBalanceData => "t/staged_ledger_diff/t/diff/t/0/t/t/internal_command_balances/0/t/[sum]"
+            FeeTransferBalanceData => "t/staged_ledger_diff/t/diff/t/0/t/t/internal_command_balances/1/t/[sum]"
+            InternalCommandBalanceData => "t/staged_ledger_diff/t/diff/t/0/t/t/internal_command_balances/0"
+            InternalCommandBalanceData => "t/staged_ledger_diff/t/diff/t/0/t/t/internal_command_balances/1"
+            Vec<InternalCommandBalanceData> => "t/staged_ledger_diff/t/diff/t/0/t/t/internal_command_balances"
+        }
+    }
+
+    #[test]
     fn test_delta_transition_chain_proof() {
         block_path_test_batch! {
             StateHash => "t/delta_transition_chain_proof/0"
@@ -218,7 +258,7 @@ mod tests {
             // StateHash => "t/delta_transition_chain_proof/1/0"
         }
         block_path_test_batch! {
-            (StateHash, Vec<StateHash>) => "t/delta_transition_chain_proof"
+            DeltaTransitionChainProof => "t/delta_transition_chain_proof"
         }
     }
 
@@ -268,24 +308,25 @@ mod tests {
             // write to binary then deserialize into T
             let mut bytes = vec![];
             bin_prot::to_writer(&mut bytes, val).expect(&format!(
-                "Failed writing bin-prot encoded data\npath: {}",
-                path
+                "Failed writing bin-prot encoded data\npath: {}\ndata: {:#?}",
+                path, val
             ));
             let re_val: T = from_reader(bytes.as_slice()).expect(&format!(
-                "Could not deserialize type\npath: {}\nbytes({}): {:?}",
+                "Could not deserialize type\npath: {}\nbytes({}): {:?}\ndata: {:#?}",
                 path,
                 bytes.len(),
-                bytes
+                bytes,
+                val
             ));
 
             // serialize back to binary and ensure it matches
             let mut re_bytes = vec![];
             to_writer(&mut re_bytes, &re_val).expect(&format!(
-                "Failed writing bin-prot encoded data\npath: {}",
-                path
+                "Failed writing bin-prot encoded data\npath: {}\ndata: {:#?}",
+                path, val
             ));
 
-            assert_eq!(bytes, re_bytes, "path: {}", path);
+            assert_eq!(bytes, re_bytes, "path: {}\ndata: {:#?}", path, val);
         }
     }
 

@@ -24,21 +24,6 @@ pub struct ProtocolConstants {
     genesis_state_timestamp: BlockTime,
 }
 
-pub mod wire {
-
-    use super::*;
-
-    /// To be returned to the base module once types are fully completed
-    #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize, WireType)]
-    #[serde(from = "<Self as WireType>::WireType")]
-    #[serde(into = "<Self as WireType>::WireType")]
-    #[wire_type(recurse = 2)]
-    pub struct ProtocolState {
-        previous_state_hash: bin_prot::Value,
-        body: bin_prot::Value,
-    }
-}
-
 /// This structure can be thought of like the block header. It contains the most essential information of a block.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize, WireType)]
 #[serde(from = "<Self as WireType>::WireType")]

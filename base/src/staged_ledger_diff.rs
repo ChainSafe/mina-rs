@@ -5,13 +5,11 @@ use mina_crypto::signature::Signature;
 use serde::{Deserialize, Serialize};
 use wire_type::WireType;
 
-use crate::numbers::{Amount, ExtendedU32, ExtendedU64};
+use crate::numbers::{Amount, ExtendedU32, ExtendedU64_2, ExtendedU64_3};
 
 #[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, WireType)]
 #[serde(from = "<Self as WireType>::WireType")]
 #[serde(into = "<Self as WireType>::WireType")]
-#[wire_type(recurse = 2)]
-// FIXME: No test coverage yet
 pub struct StagedLedgerDiff {
     pub diff: StagedLedgerDiffTuple,
 }
@@ -19,21 +17,20 @@ pub struct StagedLedgerDiff {
 #[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, WireType)]
 #[serde(from = "<Self as WireType>::WireType")]
 #[serde(into = "<Self as WireType>::WireType")]
-// FIXME: No test coverage yet
 pub struct StagedLedgerDiffTuple((StagedLedgerPreDiffTwo, Option<StagedLedgerPreDiffOne>));
 
+// FIXME: No test coverage yet
 pub type StagedLedgerPreDiffOne = bin_prot::Value;
 
 #[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, WireType)]
 #[serde(from = "<Self as WireType>::WireType")]
 #[serde(into = "<Self as WireType>::WireType")]
 #[wire_type(recurse = 2)]
-// FIXME: No test coverage yet
 pub struct StagedLedgerPreDiffTwo {
     pub completed_works: Vec<TransactionSnarkWork>,
     pub commands: Vec<UserCommandWithStatus>,
-    pub coinbase: bin_prot::Value,
-    pub internal_command_balances: Vec<bin_prot::Value>,
+    pub coinbase: CoinBase,
+    pub internal_command_balances: Vec<InternalCommandBalanceData>,
 }
 
 pub type TransactionSnarkWork = bin_prot::Value;
@@ -122,7 +119,7 @@ impl Default for SignedCommandPayloadBody {
 pub struct PaymentPayload {
     pub source_pk: SignedCommandFeePayerPk,
     pub receiver_pk: SignedCommandFeePayerPk,
-    pub token_id: ExtendedU64,
+    pub token_id: ExtendedU64_3,
     pub amount: Amount,
 }
 
@@ -150,7 +147,8 @@ pub struct SignedCommandMemo(Vec<u8>);
 #[serde(from = "<Self as WireType>::WireType")]
 #[serde(into = "<Self as WireType>::WireType")]
 #[wire_type(recurse = 2)]
-pub struct SnappCommand {}
+// FIXME: No test coverage yet
+pub struct SnappCommand;
 
 #[derive(Clone, Serialize, Deserialize, PartialEq, Debug, WireType)]
 #[serde(from = "<Self as WireType>::WireType")]
@@ -175,14 +173,68 @@ pub type TransactionStatusApplied = (TransactionStatusAuxiliaryData, Transaction
 pub struct TransactionStatusAuxiliaryData {
     pub fee_payer_account_creation_fee_paid: Option<Amount>,
     pub receiver_account_creation_fee_paid: Option<Amount>,
-    pub created_token: Option<ExtendedU64>,
+    pub created_token: Option<ExtendedU64_3>,
 }
 
 #[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, WireType)]
 #[serde(from = "<Self as WireType>::WireType")]
 #[serde(into = "<Self as WireType>::WireType")]
 pub struct TransactionStatusBalanceData {
-    pub fee_payer_balance: Option<ExtendedU64>,
-    pub source_balance: Option<ExtendedU64>,
-    pub receiver_balance: Option<ExtendedU64>,
+    pub fee_payer_balance: Option<ExtendedU64_3>,
+    pub source_balance: Option<ExtendedU64_3>,
+    pub receiver_balance: Option<ExtendedU64_3>,
+}
+
+#[derive(Clone, Serialize, Deserialize, PartialEq, Debug, WireType)]
+#[serde(from = "<Self as WireType>::WireType")]
+#[serde(into = "<Self as WireType>::WireType")]
+#[non_exhaustive]
+pub enum CoinBase {
+    Zero,
+    // FIXME: other variants are not covered by current test block
+    One(Option<CoinBaseFeeTransfer>),
+    Two(bin_prot::Value),
+}
+
+impl Default for CoinBase {
+    fn default() -> Self {
+        Self::Zero
+    }
+}
+
+#[derive(Clone, Serialize, Deserialize, PartialEq, Debug, WireType)]
+#[serde(from = "<Self as WireType>::WireType")]
+#[serde(into = "<Self as WireType>::WireType")]
+#[wire_type(recurse = 2)]
+// FIXME: No test coverage yet
+pub struct CoinBaseFeeTransfer {
+    pub receiver_pk: SignedCommandFeePayerPk,
+    pub fee: ExtendedU64_2,
+}
+
+#[derive(Clone, Serialize, Deserialize, PartialEq, Debug, WireType)]
+#[serde(from = "<Self as WireType>::WireType")]
+#[serde(into = "<Self as WireType>::WireType")]
+#[non_exhaustive]
+pub enum InternalCommandBalanceData {
+    CoinBase(CoinBaseBalanceData),
+    FeeTransfer(FeeTransferBalanceData),
+}
+
+#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, WireType)]
+#[serde(from = "<Self as WireType>::WireType")]
+#[serde(into = "<Self as WireType>::WireType")]
+pub struct CoinBaseBalanceData {
+    pub coinbase_receiver_balance: ExtendedU64_3,
+    // FIXME: No test coverage yet
+    pub fee_transfer_receiver_balance: Option<ExtendedU64_3>,
+}
+
+#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, WireType)]
+#[serde(from = "<Self as WireType>::WireType")]
+#[serde(into = "<Self as WireType>::WireType")]
+pub struct FeeTransferBalanceData {
+    pub receiver1_balance: ExtendedU64_3,
+    // FIXME: No test coverage yet
+    pub receiver2_balance: Option<ExtendedU64_3>,
 }

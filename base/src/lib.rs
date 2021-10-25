@@ -16,6 +16,7 @@
 
 pub mod blockchain_state;
 pub mod consensus_state;
+pub mod delta_transition_chain_proof;
 pub mod epoch_data;
 pub mod external_transition;
 pub mod global_slot;
@@ -28,6 +29,7 @@ pub mod token_id;
 pub mod types {
     pub use super::blockchain_state::*;
     pub use super::consensus_state::*;
+    pub use super::delta_transition_chain_proof::*;
     pub use super::epoch_data::*;
     pub use super::external_transition::*;
     pub use super::global_slot::*;
