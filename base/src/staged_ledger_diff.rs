@@ -20,7 +20,7 @@ pub struct StagedLedgerDiff {
 pub struct StagedLedgerDiffTuple((StagedLedgerPreDiffTwo, Option<StagedLedgerPreDiffOne>));
 
 // FIXME: No test coverage yet
-pub type StagedLedgerPreDiffOne = bin_prot::Value;
+pub type StagedLedgerPreDiffOne = ();
 
 #[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, WireType)]
 #[serde(from = "<Self as WireType>::WireType")]
@@ -33,7 +33,7 @@ pub struct StagedLedgerPreDiffTwo {
     pub internal_command_balances: Vec<InternalCommandBalanceData>,
 }
 
-pub type TransactionSnarkWork = bin_prot::Value;
+pub type TransactionSnarkWork = ();
 
 #[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, WireType)]
 #[serde(from = "<Self as WireType>::WireType")]
@@ -193,7 +193,7 @@ pub enum CoinBase {
     Zero,
     // FIXME: other variants are not covered by current test block
     One(Option<CoinBaseFeeTransfer>),
-    Two(bin_prot::Value),
+    Two,
 }
 
 impl Default for CoinBase {
