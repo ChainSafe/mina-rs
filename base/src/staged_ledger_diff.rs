@@ -1,7 +1,7 @@
 // Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
-use mina_crypto::signature::Signature;
+use mina_crypto::{hash::BackendCommonHash, signature::Signature};
 use serde::{Deserialize, Serialize};
 use wire_type::WireType;
 
@@ -128,7 +128,7 @@ pub struct PaymentPayload {
 #[serde(into = "<Self as WireType>::WireType")]
 #[wire_type(recurse = 2)]
 pub struct SignedCommandFeePayerPk {
-    pub x: [u8; 32],
+    pub x: BackendCommonHash,
     pub is_odd: bool,
 }
 

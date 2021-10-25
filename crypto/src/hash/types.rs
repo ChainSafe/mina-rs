@@ -45,6 +45,8 @@ impl AsRef<[u8]> for BaseHash {
 }
 
 //////////////////////////////////////////////////////////////////////////
+#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug)]
+pub struct BackendCommonHash([u8; 32]);
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize, WireType)]
 #[serde(from = "<Self as WireType>::WireType")]

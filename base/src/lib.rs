@@ -22,6 +22,7 @@ pub mod external_transition;
 pub mod global_slot;
 pub mod numbers;
 pub mod protocol_state;
+pub mod protocol_state_proof;
 pub mod protocol_version;
 pub mod staged_ledger_diff;
 pub mod token_id;
@@ -35,6 +36,7 @@ pub mod types {
     pub use super::global_slot::*;
     pub use super::numbers::*;
     pub use super::protocol_state::*;
+    pub use super::protocol_state_proof::*;
     pub use super::protocol_version::*;
     pub use super::staged_ledger_diff::*;
     pub use super::token_id::*;

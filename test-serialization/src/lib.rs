@@ -123,6 +123,65 @@ mod tests {
     }
 
     #[test]
+    fn test_staged_ledger_state_proof_proof() {
+        block_path_test_batch! {
+            Proof => "t/protocol_state_proof/t/t/t/t/proof"
+        }
+    }
+
+    #[test]
+    fn test_staged_ledger_state_proof_proof_messages() {
+        block_path_test_batch! {
+            ProofMessageWithoutDegreeBoundList => "t/protocol_state_proof/t/t/t/t/proof/t/t/messages/t/l_comm"
+            ProofMessageWithoutDegreeBoundList => "t/protocol_state_proof/t/t/t/t/proof/t/t/messages/t/r_comm"
+            ProofMessageWithoutDegreeBoundList => "t/protocol_state_proof/t/t/t/t/proof/t/t/messages/t/o_comm"
+            ProofMessageWithoutDegreeBoundList => "t/protocol_state_proof/t/t/t/t/proof/t/t/messages/t/z_comm"
+            ProofMessageWithDegreeBoundFiniteOrInfiniteList => "t/protocol_state_proof/t/t/t/t/proof/t/t/messages/t/t_comm/t/unshifted"
+            ProofMessageWithDegreeBoundFiniteOrInfinite => "t/protocol_state_proof/t/t/t/t/proof/t/t/messages/t/t_comm/t/shifted"
+            ProofMessageWithDegreeBound => "t/protocol_state_proof/t/t/t/t/proof/t/t/messages/t/t_comm"
+            ProofMessages => "t/protocol_state_proof/t/t/t/t/proof/t/t/messages"
+        }
+    }
+
+    #[test]
+    fn test_staged_ledger_state_proof_proof_openings() {
+        block_path_test_batch! {
+            ProofOpenings => "t/protocol_state_proof/t/t/t/t/proof/t/t/openings"
+        }
+    }
+
+    #[test]
+    fn test_staged_ledger_state_proof_proof_openings_proof() {
+        block_path_test_batch! {
+            BackendCommonHashTuple => "t/protocol_state_proof/t/t/t/t/proof/t/t/openings/t/proof/t/lr/t/0/0"
+            BackendCommonHashTuple => "t/protocol_state_proof/t/t/t/t/proof/t/t/openings/t/proof/t/lr/t/0/1"
+            BackendCommonHashTupleList => "t/protocol_state_proof/t/t/t/t/proof/t/t/openings/t/proof/t/lr"
+            BackendCommonHash => "t/protocol_state_proof/t/t/t/t/proof/t/t/openings/t/proof/t/z_1"
+            BackendCommonHash => "t/protocol_state_proof/t/t/t/t/proof/t/t/openings/t/proof/t/z_2"
+            BackendCommonHashTuple => "t/protocol_state_proof/t/t/t/t/proof/t/t/openings/t/proof/t/delta"
+            BackendCommonHashTuple => "t/protocol_state_proof/t/t/t/t/proof/t/t/openings/t/proof/t/sg"
+            ProofOpeningsProof => "t/protocol_state_proof/t/t/t/t/proof/t/t/openings/t/proof"
+        }
+    }
+
+    #[test]
+    fn test_staged_ledger_state_proof_proof_openings_evals() {
+        block_path_test_batch! {
+            ProofOpeningsEvalMessageList => "t/protocol_state_proof/t/t/t/t/proof/t/t/openings/t/evals/0/t/l"
+            ProofOpeningsEvalMessageList => "t/protocol_state_proof/t/t/t/t/proof/t/t/openings/t/evals/0/t/r"
+            ProofOpeningsEvalMessageList => "t/protocol_state_proof/t/t/t/t/proof/t/t/openings/t/evals/0/t/o"
+            ProofOpeningsEvalMessageList => "t/protocol_state_proof/t/t/t/t/proof/t/t/openings/t/evals/0/t/z"
+            ProofOpeningsEvalMessageList => "t/protocol_state_proof/t/t/t/t/proof/t/t/openings/t/evals/0/t/t"
+            ProofOpeningsEvalMessageList => "t/protocol_state_proof/t/t/t/t/proof/t/t/openings/t/evals/0/t/f"
+            ProofOpeningsEvalMessageList => "t/protocol_state_proof/t/t/t/t/proof/t/t/openings/t/evals/0/t/sigma1"
+            ProofOpeningsEvalMessageList => "t/protocol_state_proof/t/t/t/t/proof/t/t/openings/t/evals/0/t/sigma2"
+            ProofOpeningsEval => "t/protocol_state_proof/t/t/t/t/proof/t/t/openings/t/evals/0"
+            ProofOpeningsEval => "t/protocol_state_proof/t/t/t/t/proof/t/t/openings/t/evals/1"
+            ProofOpeningsEvalTuple => "t/protocol_state_proof/t/t/t/t/proof/t/t/openings/t/evals"
+        }
+    }
+
+    #[test]
     fn test_staged_ledger_diff() {
         block_path_test_batch! {
             StagedLedgerDiff => "t/staged_ledger_diff"
