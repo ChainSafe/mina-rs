@@ -36,6 +36,24 @@ fn test_char() {
 }
 
 #[test]
+fn test_str() {
+    bin_prot_test! {
+        0 -> "",
+        97 1 -> "a",
+        99 66 97 3 -> "aBc"
+    }
+}
+
+#[test]
+fn test_string() {
+    bin_prot_test! {
+        0 -> "".to_owned(),
+        97 1 -> "a".to_owned(),
+        99 66 97 3 -> "aBc".to_owned()
+    }
+}
+
+#[test]
 fn test_float() {
     bin_prot_test! {
         0x3c 0xb0 00 00 00 00 00 00 -> 2.2204460492503131E-16,

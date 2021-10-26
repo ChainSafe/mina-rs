@@ -8,4 +8,3 @@ edition = "2018"
 serde = { version = "1.0.126", features = ["derive"] }
 wire-type = {path = "../wire-type" }
 mina-crypto = { path = "../crypto" }
-bin-prot = {path = "../bin-prot" } # remove this once working bee is complete

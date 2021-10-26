@@ -45,7 +45,6 @@ impl AsRef<[u8]> for BaseHash {
 }
 
 //////////////////////////////////////////////////////////////////////////
-
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize, WireType)]
 #[serde(from = "<Self as WireType>::WireType")]
 #[serde(into = "<Self as WireType>::WireType")]
@@ -152,7 +151,6 @@ pub struct StagedLedgerHash {
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize, WireType)]
 #[serde(from = "<Self as WireType>::WireType")]
 #[serde(into = "<Self as WireType>::WireType")]
-#[wire_type(recurse = 1)]
 pub struct NonSnarkStagedLedgerHash {
     pub ledger_hash: LedgerHash,
     pub aux_hash: AuxHash,
@@ -162,7 +160,6 @@ pub struct NonSnarkStagedLedgerHash {
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize, WireType)]
 #[serde(from = "<Self as WireType>::WireType")]
 #[serde(into = "<Self as WireType>::WireType")]
-#[wire_type(recurse = 1)]
 pub struct AuxHash(Vec<u8>);
 
 //////////////////////////////////////////////////////////////////////////

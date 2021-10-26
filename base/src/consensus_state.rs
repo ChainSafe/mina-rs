@@ -14,7 +14,6 @@ use wire_type::WireType;
 #[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, WireType)]
 #[serde(from = "<Self as WireType>::WireType")]
 #[serde(into = "<Self as WireType>::WireType")]
-#[wire_type(recurse = 1)]
 pub struct VrfOutputTruncated(Vec<u8>);
 
 impl Hashable<VrfOutputHash> for VrfOutputTruncated {}
