@@ -1,10 +1,7 @@
 // Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
-use crate::{
-    base58::Base58Encodable,
-    hash::{BackendCommonHash, BaseHash},
-};
+use crate::{base58::Base58Encodable, hash::BaseHash};
 use serde::{Deserialize, Serialize};
 use wire_type::WireType;
 
@@ -12,7 +9,7 @@ use wire_type::WireType;
 #[serde(from = "<Self as WireType>::WireType")]
 #[serde(into = "<Self as WireType>::WireType")]
 pub struct CompressedCurvePoint {
-    x: BackendCommonHash,
+    x: [u8; 32],
     is_odd: bool,
 }
 

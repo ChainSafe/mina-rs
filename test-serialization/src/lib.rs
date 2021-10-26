@@ -263,8 +263,8 @@ mod tests {
             BackendCommonHashTuple => "t/protocol_state_proof/t/t/t/t/proof/t/t/openings/t/proof/t/lr/t/0/0"
             BackendCommonHashTuple => "t/protocol_state_proof/t/t/t/t/proof/t/t/openings/t/proof/t/lr/t/0/1"
             BackendCommonHashTupleTupleList => "t/protocol_state_proof/t/t/t/t/proof/t/t/openings/t/proof/t/lr"
-            BackendCommonHash => "t/protocol_state_proof/t/t/t/t/proof/t/t/openings/t/proof/t/z_1"
-            BackendCommonHash => "t/protocol_state_proof/t/t/t/t/proof/t/t/openings/t/proof/t/z_2"
+            BigInt256 => "t/protocol_state_proof/t/t/t/t/proof/t/t/openings/t/proof/t/z_1"
+            BigInt256 => "t/protocol_state_proof/t/t/t/t/proof/t/t/openings/t/proof/t/z_2"
             BackendCommonHashTuple => "t/protocol_state_proof/t/t/t/t/proof/t/t/openings/t/proof/t/delta"
             BackendCommonHashTuple => "t/protocol_state_proof/t/t/t/t/proof/t/t/openings/t/proof/t/sg"
             ProofOpeningsProof => "t/protocol_state_proof/t/t/t/t/proof/t/t/openings/t/proof"
@@ -519,7 +519,7 @@ mod tests {
     }
 
     #[test]
-    fn smoke_test_partial_block() {
+    fn smoke_test_deserialize_block() {
         // check we can deserialize into this type without error
         let mut de = Deserializer::from_reader(BLOCK_BYTES);
         let block: ExternalTransition =

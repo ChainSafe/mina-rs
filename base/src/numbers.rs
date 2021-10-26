@@ -77,3 +77,7 @@ pub struct BlockTime(u64);
 
 #[derive(Clone, Serialize, Deserialize, PartialEq, Debug, Hash, Default)]
 pub struct BlockTimeSpan(u64);
+
+// Consider switch to [ark-ff](https://docs.rs/ark-ff/0.3.0/ark_ff/biginteger/struct.BigInteger256.html)
+#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug)]
+pub struct BigInt256([u8; 32]);

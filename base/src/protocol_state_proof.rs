@@ -1,11 +1,10 @@
 // Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
-use mina_crypto::hash::BackendCommonHash;
 use serde::{Deserialize, Serialize};
 use wire_type::WireType;
 
-use crate::numbers::{Char, Hex64};
+use crate::numbers::{BigInt256, Char, Hex64};
 
 #[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, WireType)]
 #[serde(from = "<Self as WireType>::WireType")]
@@ -61,13 +60,14 @@ pub struct Plonk {
 #[derive(Clone, Serialize, Deserialize, PartialEq, Debug, WireType)]
 #[serde(from = "<Self as WireType>::WireType")]
 #[serde(into = "<Self as WireType>::WireType")]
+#[non_exhaustive]
 pub enum ShiftedValue {
-    ShiftedValue(BackendCommonHash),
+    ShiftedValue(BigInt256),
 }
 
 impl Default for ShiftedValue {
     fn default() -> Self {
-        Self::ShiftedValue(BackendCommonHash::default())
+        Self::ShiftedValue(BigInt256::default())
     }
 }
 
@@ -167,6 +167,7 @@ pub struct BulletproofChallenge {
 #[derive(Clone, Serialize, Deserialize, PartialEq, Debug, WireType)]
 #[serde(from = "<Self as WireType>::WireType")]
 #[serde(into = "<Self as WireType>::WireType")]
+#[non_exhaustive]
 pub enum BulletproofPreChallenge {
     ScalarChallenge(ScalarChallengeVector2),
 }
@@ -219,7 +220,7 @@ pub struct ProofMessages {
 pub struct ProofMessageWithoutDegreeBoundList(Vec<ProofMessageWithoutDegreeBound>);
 
 #[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug)]
-pub struct ProofMessageWithoutDegreeBound((BackendCommonHash, BackendCommonHash));
+pub struct ProofMessageWithoutDegreeBound((BigInt256, BigInt256));
 
 #[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, WireType)]
 #[serde(from = "<Self as WireType>::WireType")]
@@ -239,6 +240,7 @@ pub struct ProofMessageWithDegreeBoundFiniteOrInfiniteList(
 #[derive(Clone, Serialize, Deserialize, PartialEq, Debug, WireType)]
 #[serde(from = "<Self as WireType>::WireType")]
 #[serde(into = "<Self as WireType>::WireType")]
+#[non_exhaustive]
 pub enum ProofMessageWithDegreeBoundFiniteOrInfinite {
     Infinite,
     Finite(ProofMessageWithoutDegreeBound),
@@ -263,8 +265,8 @@ pub struct ProofOpenings {
 #[serde(into = "<Self as WireType>::WireType")]
 pub struct ProofOpeningsProof {
     pub lr: BackendCommonHashTupleTupleList,
-    pub z_1: BackendCommonHash,
-    pub z_2: BackendCommonHash,
+    pub z_1: BigInt256,
+    pub z_2: BigInt256,
     pub delta: BackendCommonHashTuple,
     pub sg: BackendCommonHashTuple,
 }
@@ -288,9 +290,9 @@ pub type ProofOpeningsEvalTuple = (ProofOpeningsEval, ProofOpeningsEval);
 #[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, WireType)]
 #[serde(from = "<Self as WireType>::WireType")]
 #[serde(into = "<Self as WireType>::WireType")]
-pub struct BackendCommonHashList(Vec<BackendCommonHash>);
+pub struct BackendCommonHashList(Vec<BigInt256>);
 
-pub type BackendCommonHashTuple = (BackendCommonHash, BackendCommonHash);
+pub type BackendCommonHashTuple = (BigInt256, BigInt256);
 
 #[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, WireType)]
 #[serde(from = "<Self as WireType>::WireType")]
