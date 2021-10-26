@@ -20,7 +20,7 @@ Also inspect any open PRs with the `type-working-bee` tag to make sure you don't
 
 #### Example
 
-In `external_transition.rs` we have indentified that the `protocol_state` field has an unimplemented type.
+In `external_transition.rs` we have identified that the `protocol_state` field has an unimplemented type.
 
 ```rust
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize, WireType)]
@@ -120,7 +120,7 @@ Take careful note of the `#[wire_type( recurse = 2 )]` attribute. This isn't nee
 
 All testing takes place in the `test_serialization` crate.
 
-Just be adding the new type to `ExternalTransition` it will already be tested in `smoke_test_partial_block`. ExternalTransition is the highest level wire type and will eventually contain all other wire types.
+Just by adding the new type to `ExternalTransition` it will already be tested in `smoke_test_partial_block`. ExternalTransition is the highest level wire type and will eventually contain all other wire types.
 
 ---
 
