@@ -41,13 +41,17 @@ impl Iterator for BinProtRuleIterator {
                         // then call repeat the required number of times
                     }
                     BinProtRule::Record(mut rules) => {
-                        self.stack
-                            .extend(rules.drain(0..).map(|field| {
-                                if field.field_name == "current_protocol_version" {
-                                    println!("{:#?}", field.field_rule);
-                                }
-                                field.field_rule
-                            }).rev());
+                        self.stack.extend(
+                            rules
+                                .drain(0..)
+                                .map(|field| {
+                                    if field.field_name == "current_protocol_version" {
+                                        println!("{:#?}", field.field_rule);
+                                    }
+                                    field.field_rule
+                                })
+                                .rev(),
+                        );
                     }
                     BinProtRule::Tuple(mut rules) => {
                         self.stack.extend(rules.drain(0..).rev());
