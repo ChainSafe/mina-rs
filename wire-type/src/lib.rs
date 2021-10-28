@@ -180,4 +180,29 @@ mod tests {
         let deserialized: X = serde_json::from_str(&serialized).unwrap();
         assert_eq!(x, deserialized);
     }
+
+    #[test]
+    fn recursive_depth_named_struct() {
+        #[derive(Clone, Debug, PartialEq, Serialize, Deserialize, WireType)]
+        #[wire_type(recurse = 2)]
+        #[serde(from = "<Self as WireType>::WireType")] // can be deserialized from its wire type
+        #[serde(into = "<Self as WireType>::WireType")] // will be serialized to its wire type
+        struct X {
+            a: u32,
+            b: u32,
+        }
+
+        let x = X { a: 123, b: 321 };
+        let serialized = serde_json::to_string(&x).unwrap();
+        println!("{}", serialized);
+        let deserialized: X = serde_json::from_str(&serialized).unwrap();
+        assert_eq!(
+            x.clone().to_wire_type(),
+            __WireX {
+                version: 1,
+                t: x.clone()
+            }
+        );
+        assert_eq!(x, deserialized);
+    }
 }

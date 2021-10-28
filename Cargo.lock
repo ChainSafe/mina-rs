@@ -327,6 +327,7 @@ dependencies = [
 name = "mina-rs-base"
 version = "0.1.0"
 dependencies = [
+ "bin-prot",
  "mina-crypto",
  "serde",
  "wire-type",
@@ -644,12 +645,12 @@ version = "0.1.0"
 dependencies = [
  "bin-prot",
  "lazy_static",
+ "mina-crypto",
  "mina-rs-base",
  "pretty_assertions",
  "serde",
  "serde_json",
  "serde_stacker",
- "wire-type",
 ]
 
 [[package]]

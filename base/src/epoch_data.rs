@@ -5,20 +5,27 @@ use serde::{Deserialize, Serialize};
 
 use crate::numbers::{Amount, Length};
 use mina_crypto::hash::{EpochSeed, LedgerHash, StateHash};
+use wire_type::WireType;
 
-#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug)]
+#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, WireType)]
+#[serde(from = "<Self as WireType>::WireType")]
+#[serde(into = "<Self as WireType>::WireType")]
+#[wire_type(recurse = 2)]
 pub struct EpochLedger {
-    hash: LedgerHash,
-    total_currency: Amount,
+    pub hash: LedgerHash,
+    pub total_currency: Amount,
 }
 
-#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug)]
+#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, WireType)]
+#[serde(from = "<Self as WireType>::WireType")]
+#[serde(into = "<Self as WireType>::WireType")]
+#[wire_type(recurse = 2)]
 pub struct EpochData {
-    ledger: EpochLedger,
-    seed: EpochSeed,
+    pub ledger: EpochLedger,
+    pub seed: EpochSeed,
     /// State hash of first block of epoch
-    start_checkpoint: StateHash,
+    pub start_checkpoint: StateHash,
     /// State hash of last known block in the first 2/3 of epoch
-    lock_checkpoint: StateHash,
-    epoch_length: Length,
+    pub lock_checkpoint: StateHash,
+    pub epoch_length: Length,
 }
