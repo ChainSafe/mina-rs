@@ -18,7 +18,7 @@ use wire_type::WireType;
 
 pub(crate) type HashBytes = Box<[u8]>;
 
-#[derive(Default, Serialize, Deserialize, PartialEq, Debug, Clone)]
+#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub(crate) struct BaseHash([u8; 32]);
 
 impl From<HashBytes> for BaseHash {
@@ -45,7 +45,6 @@ impl AsRef<[u8]> for BaseHash {
 }
 
 //////////////////////////////////////////////////////////////////////////
-
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize, WireType)]
 #[serde(from = "<Self as WireType>::WireType")]
 #[serde(into = "<Self as WireType>::WireType")]
@@ -87,6 +86,12 @@ impl From<HashBytes> for LedgerHash {
         Self(BaseHash::from(b))
     }
 }
+
+#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize, WireType)]
+#[serde(from = "<Self as WireType>::WireType")]
+#[serde(into = "<Self as WireType>::WireType")]
+#[wire_type(recurse = 2)]
+pub struct CoinBaseHash(BaseHash);
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -137,17 +142,25 @@ impl From<HashBytes> for SnarkedLedgerHash {
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize, WireType)]
 #[serde(from = "<Self as WireType>::WireType")]
 #[serde(into = "<Self as WireType>::WireType")]
-pub struct StagedLedgerHash(BaseHash);
-
-impl Base58Encodable for StagedLedgerHash {
-    const VERSION_BYTE: u8 = version_bytes::STAGED_LEDGER_HASH_AUX_HASH;
+#[wire_type(recurse = 2)]
+pub struct StagedLedgerHash {
+    pub non_snark: NonSnarkStagedLedgerHash,
+    pub pending_coinbase_hash: CoinBaseHash,
 }
 
-impl From<HashBytes> for StagedLedgerHash {
-    fn from(b: HashBytes) -> Self {
-        Self(BaseHash::from(b))
-    }
+#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize, WireType)]
+#[serde(from = "<Self as WireType>::WireType")]
+#[serde(into = "<Self as WireType>::WireType")]
+pub struct NonSnarkStagedLedgerHash {
+    pub ledger_hash: LedgerHash,
+    pub aux_hash: AuxHash,
+    pub pending_coinbase_aux: AuxHash,
 }
+
+#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize, WireType)]
+#[serde(from = "<Self as WireType>::WireType")]
+#[serde(into = "<Self as WireType>::WireType")]
+pub struct AuxHash(Vec<u8>);
 
 //////////////////////////////////////////////////////////////////////////
 
