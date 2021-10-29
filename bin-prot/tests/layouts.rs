@@ -258,7 +258,7 @@ fn test_extended_u32_rule() {
     let rule: BinProtRule =
         serde_json::from_str(include_str!("layouts/extended_uint32_rule.json")).unwrap();
     let example = vec![0x01, 0x01, 0xff, 0xff];
-    let mut de = Deserializer::from_reader_with_layout(Cursor::new(example.as_slice()), &rule);
+    let mut de = Deserializer::from_reader(Cursor::new(example.as_slice())).with_layout(&rule);
     let result: Value = Deserialize::deserialize(&mut de).expect("Failed to deserialize");
     test_reserialize(&result, &example);
     let mut output = vec![];
