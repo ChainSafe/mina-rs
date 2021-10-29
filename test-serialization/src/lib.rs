@@ -539,7 +539,7 @@ mod tests {
     }
 
     fn load_test_block() -> bin_prot::Value {
-        let mut de = Deserializer::from_reader_with_layout(BLOCK_BYTES, &BLOCK_RULE);
+        let mut de = Deserializer::from_reader(BLOCK_BYTES).with_layout(&BLOCK_RULE);
         Deserialize::deserialize(&mut de).expect("Failed to deserialize test block")
     }
 

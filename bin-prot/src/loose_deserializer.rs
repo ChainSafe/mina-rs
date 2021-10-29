@@ -5,7 +5,7 @@ use byteorder::LittleEndian;
 use std::convert::TryInto;
 use std::io::Read;
 
-use crate::de::{Enum, MapAccess, SeqAccess};
+use crate::de::{Enum, LooselyTyped, MapAccess, SeqAccess};
 use crate::error::{Error, Result};
 use crate::value::layout::BinProtRule;
 use crate::value::layout::Summand;
@@ -16,141 +16,136 @@ use serde::{Deserialize, Serialize};
 
 use byteorder::ReadBytesExt;
 
-impl<'de, 'a, R: Read> DS<R> {
+impl<'de, 'a, R: Read> DS<R, LooselyTyped> {
     pub fn deserialize_loose<V>(&mut self, visitor: V) -> Result<V::Value>
     where
         V: Visitor<'de>,
     {
-        if let Some(iter) = &mut self.layout_iter {
-            match iter.next() {
-                Some(rule) => {
-                    match rule {
-                        BinProtRule::Unit => {
-                            self.rdr.bin_read_unit()?;
-                            visitor.visit_unit()
-                        }
-                        BinProtRule::Record(fields) => {
-                            // Grab the field names from the rule to pass to the map access
-                            visitor.visit_map(MapAccess::new(
-                                self,
-                                fields.into_iter().map(|f| f.field_name).rev().collect(),
-                            ))
-                        }
-                        BinProtRule::Tuple(items) => {
-                            visitor.visit_seq(SeqAccess::new(self, items.len()))
-                        }
-                        BinProtRule::Bool => visitor.visit_bool(self.rdr.bin_read_bool()?),
-                        BinProtRule::Sum(summands) => {
-                            // read the enum variant index.
-                            // We need this to select which variant layout to use
-                            // when deserializing the variants data
-                            let index = self.rdr.bin_read_variant_index()?;
-                            let variant_rules = summands[index as usize].ctor_args.clone();
-                            iter.push(vec![BinProtRule::Tuple(variant_rules)]);
-                            visitor
-                                .visit_enum(ValueEnum::new(self, summands[index as usize].clone()))
-                        }
-                        BinProtRule::Option(some_rule) => {
-                            let index = self.rdr.bin_read_variant_index()?; // 0 or 1
-                            match index {
-                                0 => visitor.visit_none(),
-                                1 => {
-                                    iter.push(vec![*some_rule]);
-                                    visitor.visit_some(self)
-                                }
-                                _ => Err(Error::InvalidOptionByte { got: index }),
+        match self.mode.layout_iter.next() {
+            Some(rule) => {
+                match rule {
+                    BinProtRule::Unit => {
+                        self.rdr.bin_read_unit()?;
+                        visitor.visit_unit()
+                    }
+                    BinProtRule::Record(fields) => {
+                        // Grab the field names from the rule to pass to the map access
+                        visitor.visit_map(MapAccess::new(
+                            self,
+                            fields.into_iter().map(|f| f.field_name).rev().collect(),
+                        ))
+                    }
+                    BinProtRule::Tuple(items) => {
+                        visitor.visit_seq(SeqAccess::new(self, items.len()))
+                    }
+                    BinProtRule::Bool => visitor.visit_bool(self.rdr.bin_read_bool()?),
+                    BinProtRule::Sum(summands) => {
+                        // read the enum variant index.
+                        // We need this to select which variant layout to use
+                        // when deserializing the variants data
+                        let index = self.rdr.bin_read_variant_index()?;
+                        let variant_rules = summands[index as usize].ctor_args.clone();
+                        self.mode
+                            .layout_iter
+                            .push(vec![BinProtRule::Tuple(variant_rules)]);
+                        visitor.visit_enum(ValueEnum::new(self, summands[index as usize].clone()))
+                    }
+                    BinProtRule::Option(some_rule) => {
+                        let index = self.rdr.bin_read_variant_index()?; // 0 or 1
+                        match index {
+                            0 => visitor.visit_none(),
+                            1 => {
+                                self.mode.layout_iter.push(vec![*some_rule]);
+                                visitor.visit_some(self)
                             }
+                            _ => Err(Error::InvalidOptionByte { got: index }),
                         }
-                        BinProtRule::String => visitor.visit_bytes(&self.rdr.bin_read_bytes()?),
-                        BinProtRule::Float => {
-                            visitor.visit_f64(self.rdr.read_f64::<LittleEndian>()?)
-                        }
-                        BinProtRule::Char => {
-                            let c = self.rdr.read_u8()?;
-                            visitor.visit_char(c as char)
-                        }
-                        BinProtRule::List(element_rule) => {
-                            // read the length
-                            let len = self.rdr.bin_read_nat0()?;
-                            // request the iterator repeats the list elements the current number of times
-                            iter.push_n(*element_rule, len);
-                            // read the elements
-                            visitor.visit_seq(SeqAccess::new_list(self, len))
-                        }
-                        BinProtRule::Int
-                        | BinProtRule::Int32
-                        | BinProtRule::Int64
-                        | BinProtRule::NativeInt => visitor.visit_i64(self.rdr.bin_read_integer()?),
-                        BinProtRule::Polyvar(_)
-                        | BinProtRule::Vec(_, _)
-                        | BinProtRule::Nat0
-                        | BinProtRule::Hashtable(_)
-                        | BinProtRule::TypeVar(_)
-                        | BinProtRule::Bigstring
-                        | BinProtRule::SelfReference(_)
-                        | BinProtRule::TypeClosure(_, _)
-                        | BinProtRule::TypeAbstraction(_, _)
-                        | BinProtRule::Reference(_) => Err(Error::UnimplementedRule), // Don't know how to implement these yet
-                        BinProtRule::Custom(_) => {
-                            // the traverse function should never produce this
-                            Err(Error::LayoutIteratorError)
-                        }
-                        BinProtRule::CustomForPath(path, rules) => {
-                            // here is where custom deser methods can be looked up by path
-                            match path.as_str() {
-                                // These vector types will be handled like any other sequence
-                                "Pickles_type.Vector.Vector2" // the missing 's' on 'types' here is intention due to a big in layout producing code
-                                |"Pickles_types.Vector.Vector2" // in case it gets fixed :P
-                                | "Pickles_types.Vector.Vector4"
-                                | "Pickles_types.Vector.Vector8"
-                                | "Pickles_types.Vector.Vector17"
-                                | "Pickles_types.Vector.Vector18" => {
-                                    let element_rule = rules.first().unwrap();
-                                    let len = match path.as_str() {
-                                        "Pickles_type.Vector.Vector2"
-                                        | "Pickles_types.Vector.Vector2" => 2,
-                                        "Pickles_types.Vector.Vector4" => 4,
-                                        "Pickles_types.Vector.Vector8" => 8,
-                                        "Pickles_types.Vector.Vector17" => 17,
-                                        "Pickles_types.Vector.Vector18" => 18,
-                                        _ => unreachable!()
-                                    };
-                                    iter.push(vec![BinProtRule::Unit]); // zero byte terminator, will be read last
-                                    iter.push_n(element_rule.clone(), len);
-                                    visitor.visit_seq(SeqAccess::new(self, len+1))
-                                }
-                                "Ledger_hash0" // these are all BigInt (32 bytes)
-                                | "State_hash"
-                                | "Pending_coinbase.Stack_hash"
-                                | "State_body_hash"
-                                | "Pending_coinbase.Hash_builder"
-                                | "Snark_params.Make_inner_curve_scalar"
-                                | "Snark_params.Tick"
-                                | "Epoch_seed"
-                                | "Zexe_backend.Zexe_backend_common.Stable.Field"
-                                | "Pending_coinbase.Coinbase_stack" => {
-                                    // force it to read a 32 element long tuple of u8/chars
-                                    let len = 32;
-                                    iter.push_n(BinProtRule::Char, len);
-                                    visitor.visit_seq(SeqAccess::new(self, len))
-                                }
-                                _ => Err(Error::UnknownCustomType{ typ: path })
+                    }
+                    BinProtRule::String => visitor.visit_bytes(&self.rdr.bin_read_bytes()?),
+                    BinProtRule::Float => visitor.visit_f64(self.rdr.read_f64::<LittleEndian>()?),
+                    BinProtRule::Char => {
+                        let c = self.rdr.read_u8()?;
+                        visitor.visit_char(c as char)
+                    }
+                    BinProtRule::List(element_rule) => {
+                        // read the length
+                        let len = self.rdr.bin_read_nat0()?;
+                        // request the iterator repeats the list elements the current number of times
+                        self.mode.layout_iter.push_n(*element_rule, len);
+                        // read the elements
+                        visitor.visit_seq(SeqAccess::new_list(self, len))
+                    }
+                    BinProtRule::Int
+                    | BinProtRule::Int32
+                    | BinProtRule::Int64
+                    | BinProtRule::NativeInt => visitor.visit_i64(self.rdr.bin_read_integer()?),
+                    BinProtRule::Polyvar(_)
+                    | BinProtRule::Vec(_, _)
+                    | BinProtRule::Nat0
+                    | BinProtRule::Hashtable(_)
+                    | BinProtRule::TypeVar(_)
+                    | BinProtRule::Bigstring
+                    | BinProtRule::SelfReference(_)
+                    | BinProtRule::TypeClosure(_, _)
+                    | BinProtRule::TypeAbstraction(_, _)
+                    | BinProtRule::Reference(_) => Err(Error::UnimplementedRule), // Don't know how to implement these yet
+                    BinProtRule::Custom(_) => {
+                        // the traverse function should never produce this
+                        Err(Error::LayoutIteratorError)
+                    }
+                    BinProtRule::CustomForPath(path, rules) => {
+                        // here is where custom deser methods can be looked up by path
+                        match path.as_str() {
+                            // These vector types will be handled like any other sequence
+                            "Pickles_type.Vector.Vector2" // the missing 's' on 'types' here is intention due to a big in layout producing code
+                            |"Pickles_types.Vector.Vector2" // in case it gets fixed :P
+                            | "Pickles_types.Vector.Vector4"
+                            | "Pickles_types.Vector.Vector8"
+                            | "Pickles_types.Vector.Vector17"
+                            | "Pickles_types.Vector.Vector18" => {
+                                let element_rule = rules.first().unwrap();
+                                let len = match path.as_str() {
+                                    "Pickles_type.Vector.Vector2"
+                                    | "Pickles_types.Vector.Vector2" => 2,
+                                    "Pickles_types.Vector.Vector4" => 4,
+                                    "Pickles_types.Vector.Vector8" => 8,
+                                    "Pickles_types.Vector.Vector17" => 17,
+                                    "Pickles_types.Vector.Vector18" => 18,
+                                    _ => unreachable!()
+                                };
+                                self.mode.layout_iter.push(vec![BinProtRule::Unit]); // zero byte terminator, will be read last
+                                self.mode.layout_iter.push_n(element_rule.clone(), len);
+                                visitor.visit_seq(SeqAccess::new(self, len+1))
                             }
+                            "Ledger_hash0" // these are all BigInt (32 bytes)
+                            | "State_hash"
+                            | "Pending_coinbase.Stack_hash"
+                            | "State_body_hash"
+                            | "Pending_coinbase.Hash_builder"
+                            | "Snark_params.Make_inner_curve_scalar"
+                            | "Snark_params.Tick"
+                            | "Epoch_seed"
+                            | "Zexe_backend.Zexe_backend_common.Stable.Field"
+                            | "Pending_coinbase.Coinbase_stack" => {
+                                // force it to read a 32 element long tuple of u8/chars
+                                let len = 32;
+                                self.mode.layout_iter.push_n(BinProtRule::Char, len);
+                                visitor.visit_seq(SeqAccess::new(self, len))
+                            }
+                            _ => Err(Error::UnknownCustomType{ typ: path })
                         }
                     }
                 }
-                None => Err(Error::UnexpectedEndOfLayout),
             }
-        } else {
-            Err(Error::DeserializingLooseTypeWithoutLayout)
+            None => Err(Error::UnexpectedEndOfLayout),
         }
     }
 }
 
 // for accessing enums when using the loosely typed method
 // to deserialize into a Value
-pub struct ValueEnum<'a, R: Read> {
-    de: &'a mut DS<R>,
+pub struct ValueEnum<'a, R: Read, Mode> {
+    de: &'a mut DS<R, Mode>,
     variant: Summand,
 }
 
@@ -161,15 +156,15 @@ pub struct EnumData {
     pub len: usize,
 }
 
-impl<'a, 'de, R: Read> ValueEnum<'a, R> {
-    fn new(de: &'a mut DS<R>, variant: Summand) -> Self {
+impl<'a, 'de, R: Read, Mode> ValueEnum<'a, R, Mode> {
+    fn new(de: &'a mut DS<R, Mode>, variant: Summand) -> Self {
         Self { de, variant }
     }
 }
 
-impl<'de, 'a, R: Read> serde::de::EnumAccess<'de> for ValueEnum<'a, R> {
+impl<'de, 'a, R: Read> serde::de::EnumAccess<'de> for ValueEnum<'a, R, LooselyTyped> {
     type Error = Error;
-    type Variant = Enum<'a, R>;
+    type Variant = Enum<'a, R, LooselyTyped>;
 
     fn variant_seed<V>(self, seed: V) -> Result<(V::Value, Self::Variant)>
     where
