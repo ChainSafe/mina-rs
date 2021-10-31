@@ -1,0 +1,20 @@
+[package]
+name = "test-fixtures"
+authors = ["ChainSafe Systems <info@chainsafe.io>"]
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[dependencies]
+bin-prot = { path = "../bin-prot" }
+
+serde = { version = "1", features = ["derive"] }
+serde_json = { version = "1", features = ["unbounded_depth"] }
+serde_stacker = "0.1"
+
+lazy_static = "1"
+
+[lib]
+# data files might grow very large, 
+# use dynamic linking to save build time during development
+crate-type=["dylib"]

@@ -7,5 +7,6 @@ members = [
 	"bin-prot",
 	"wire-type",
 	"wire-type-derive",
+	"test-fixtures",
 	"test-serialization",
 ]

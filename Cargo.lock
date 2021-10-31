@@ -650,17 +650,26 @@ dependencies = [
 ]
 
 [[package]]
-name = "test-serialization"
+name = "test-fixtures"
 version = "0.1.0"
 dependencies = [
  "bin-prot",
  "lazy_static",
+ "serde",
+ "serde_json",
+ "serde_stacker",
+]
+
+[[package]]
+name = "test-serialization"
+version = "0.1.0"
+dependencies = [
+ "bin-prot",
  "mina-crypto",
  "mina-rs-base",
  "pretty_assertions",
  "serde",
- "serde_json",
- "serde_stacker",
+ "test-fixtures",
 ]
 
 [[package]]

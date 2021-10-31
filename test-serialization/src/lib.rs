@@ -4,32 +4,14 @@
 #[cfg(test)]
 mod tests {
     use super::{block_path_test, block_path_test_batch};
-    use bin_prot::BinProtRule;
     use bin_prot::{from_reader, to_writer, Deserializer, Value};
-    use lazy_static::lazy_static;
+    use mina_crypto::hash::*;
     use mina_crypto::signature::{FieldPoint, InnerCurveScalar, PublicKey, Signature};
+    use mina_rs_base::types::*;
     use pretty_assertions::assert_eq;
     use serde::{Deserialize, Serialize};
     use std::str::FromStr;
-
-    use mina_crypto::hash::*;
-    use mina_rs_base::types::*;
-
-    const BLOCK_LAYOUT: &str = std::include_str!("../../layouts/external_transition.json");
-    const BLOCK_BYTES: &[u8] = std::include_bytes!("../../test-fixtures/block");
-
-    // this allows the expensive block rule deserialization and parsing to be done only once for all tests
-    lazy_static! {
-        static ref BLOCK_RULE: BinProtRule = {
-            let mut deserializer = serde_json::Deserializer::from_str(BLOCK_LAYOUT);
-            deserializer.disable_recursion_limit();
-            let deserializer = serde_stacker::Deserializer::new(&mut deserializer);
-            bin_prot::Layout::deserialize(deserializer)
-                .unwrap()
-                .bin_prot_rule
-        };
-        static ref TEST_BLOCK_1: bin_prot::Value = load_test_block();
-    }
+    use test_fixtures::*;
 
     #[test]
     fn test_external_transition() {
@@ -498,11 +480,11 @@ mod tests {
 
     #[test]
     fn smoke_test_roundtrip_block() {
-        let block: &Value = &TEST_BLOCK_1;
+        let block = TEST_BLOCKS.get("block1").expect("Failed to load block1");
 
         // test we can correctly index a known field
         assert_eq!(
-            block["t"]["protocol_state"]["t"]["t"]["previous_state_hash"]["t"],
+            block.value["t"]["protocol_state"]["t"]["t"]["previous_state_hash"]["t"],
             Value::Tuple(
                 vec![
                     30, 76, 197, 215, 115, 43, 42, 245, 198, 30, 253, 134, 49, 117, 82, 71, 182,
@@ -515,18 +497,19 @@ mod tests {
         );
 
         // check roundtrip
-        test_roundtrip(&block, &BLOCK_BYTES);
+        test_roundtrip(&block.value, block.bytes);
     }
 
     #[test]
     fn smoke_test_deserialize_block() {
         // check we can deserialize into this type without error
-        let mut de = Deserializer::from_reader(BLOCK_BYTES);
-        let block: ExternalTransition =
-            Deserialize::deserialize(&mut de).expect("Failed to deserialize block");
-
-        // check roundtrip
-        test_roundtrip(&block, &BLOCK_BYTES);
+        for block in TEST_BLOCKS.values() {
+            let mut de = Deserializer::from_reader(block.bytes);
+            let et: ExternalTransition =
+                Deserialize::deserialize(&mut de).expect("Failed to deserialize block");
+            // check roundtrip
+            test_roundtrip(&et, block.bytes);
+        }
     }
 
     fn test_roundtrip<T>(val: &T, bytes: &[u8])
@@ -538,16 +521,11 @@ mod tests {
         assert_eq!(bytes, output)
     }
 
-    fn load_test_block() -> bin_prot::Value {
-        let mut de = Deserializer::from_reader(BLOCK_BYTES).with_layout(&BLOCK_RULE);
-        Deserialize::deserialize(&mut de).expect("Failed to deserialize test block")
-    }
-
     #[macro_export]
     macro_rules! block_path_test {
         ($typ:ty, $path:expr) => {
-            for block in [&TEST_BLOCK_1] {
-                test_in_block::<$typ>(block, &[$path]);
+            for block in TEST_BLOCKS.values() {
+                test_in_block::<$typ>(&block.value, &[$path]);
             }
         };
     }
