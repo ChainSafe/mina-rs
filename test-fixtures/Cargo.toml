@@ -15,6 +15,8 @@ serde_stacker = "0.1"
 lazy_static = "1"
 
 [lib]
-# data files might grow very large, 
-# use dynamic linking to save build time during development
-crate-type=["dylib"]
+# Data files might grow very large, 
+# Allow dynamic linking to save build time during development
+# by setting RUSTFLAGS="-C prefer-dynamic".
+# Keeping only dylib here will cause errors when running `cargo test` from root, see https://github.com/rust-lang/cargo/issues/7226
+crate-type=["dylib", "lib"]
