@@ -3,15 +3,13 @@ name = "test-serialization"
 authors = ["ChainSafe Systems <info@chainsafe.io>"]
 version = "0.1.0"
 edition = "2021"
+publish = false
 
 [dev-dependencies]
-serde = { version = "1.0.126", features = ["derive"] }
 bin-prot = { path = "../bin-prot" }
-serde_json = { version = "1.0.64", features = ["unbounded_depth"] }
-serde_stacker = "0.1.4"
-
 mina-rs-base = { path = "../base"}
 mina-crypto = { path = "../crypto"}
+test-fixtures = { path = "../test-fixtures"}
 
-lazy_static = "1.4.0"
-pretty_assertions = "1.0.0"
+serde = { version = "1", features = ["derive"] }
+pretty_assertions = "1"
