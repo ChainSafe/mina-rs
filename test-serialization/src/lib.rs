@@ -479,7 +479,7 @@ mod tests {
     }
 
     #[test]
-    fn smoke_test_roundtrip_block() {
+    fn smoke_test_roundtrip_block1() {
         let block = TEST_BLOCKS.get("block1").expect("Failed to load block1");
 
         // test we can correctly index a known field
@@ -497,18 +497,22 @@ mod tests {
         );
 
         // check roundtrip
-        test_roundtrip(&block.value, block.bytes);
+        test_roundtrip(&block.value, block.bytes.as_slice());
     }
 
     #[test]
     fn smoke_test_deserialize_block() {
         // check we can deserialize into this type without error
-        for block in TEST_BLOCKS.values() {
-            let mut de = Deserializer::from_reader(block.bytes);
+        for (name, block) in TEST_BLOCKS.iter() {
+            let mut de = Deserializer::from_reader(block.bytes.as_slice());
             let et: ExternalTransition =
                 Deserialize::deserialize(&mut de).expect("Failed to deserialize block");
+
+            // TODO: Validate state hash
+            if name.ends_with(".hex") {}
+
             // check roundtrip
-            test_roundtrip(&et, block.bytes);
+            test_roundtrip(&et, block.bytes.as_slice());
         }
     }
 

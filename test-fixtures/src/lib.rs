@@ -4,7 +4,7 @@
 use bin_prot::{BinProtRule, Deserializer};
 use lazy_static::lazy_static;
 use serde::Deserialize;
-use std::collections::HashMap;
+use std::{borrow::Borrow, collections::HashMap};
 
 // FIXME: Move layouts into this crate?
 pub const BLOCK_LAYOUT: &str = include_str!("../../layouts/external_transition.json");
@@ -23,16 +23,37 @@ lazy_static! {
     pub static ref TEST_BLOCKS: HashMap<String, BlockFixture> = load_test_blocks!(
         // "data/genesis_block"
         "data/block1"
+        "data/3NK3P5bJHhqR7xkZBquGGfq3sERUeXNYNma5YXRMjgCNsTJRZpgL.hex"
+        "data/3NK6nkk9t23KNHTZ92M77ebpv1nzvFwQLow1DHS4eDNa2bRhtsPd.hex"
+        "data/3NKaBJsN1SehD6iJwRwJSFmVzJg5DXSUQVgnMxtH4eer4aF5BrDK.hex"
+        // FIXME: Enable failing blocks
+        // "data/3NLvrNK6rmWnxEkGZo1y4KYjsSTcgVx7gwen2aR2kTWmRDTNoSu8.hex"
     );
 }
 
 pub struct BlockFixture {
-    pub bytes: &'static [u8],
+    pub bytes: Vec<u8>,
     pub value: bin_prot::Value,
 }
 
 fn load_test_block(bytes: &'static [u8]) -> BlockFixture {
     let mut de = Deserializer::from_reader(bytes).with_layout(&BLOCK_RULE);
+    match Deserialize::deserialize(&mut de) {
+        Ok(value) => BlockFixture {
+            bytes: bytes.into(),
+            value,
+        },
+        Err(_) => load_test_block_hex(
+            String::from_utf8(bytes.into())
+                .expect("Failed to decode hex encoded block")
+                .borrow(),
+        ),
+    }
+}
+
+fn load_test_block_hex(hex_str: &str) -> BlockFixture {
+    let bytes = hex::decode(hex_str).expect("Failed to decode hex encoded block");
+    let mut de = Deserializer::from_reader(bytes.as_slice()).with_layout(&BLOCK_RULE);
     let value = Deserialize::deserialize(&mut de).expect("Failed to deserialize test block");
     BlockFixture { bytes, value }
 }
