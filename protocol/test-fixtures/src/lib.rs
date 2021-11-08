@@ -7,7 +7,7 @@ use serde::Deserialize;
 use std::collections::HashMap;
 
 // FIXME: Move layouts into this crate?
-pub const BLOCK_LAYOUT: &str = include_str!("../../layouts/external_transition.json");
+pub const BLOCK_LAYOUT: &str = include_str!("../../../layouts/external_transition.json");
 
 lazy_static! {
     pub static ref BLOCK_RULE: BinProtRule = {

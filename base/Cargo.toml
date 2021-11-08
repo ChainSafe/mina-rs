@@ -6,5 +6,5 @@ edition = "2021"
 
 [dependencies]
 serde = { version = "1.0.126", features = ["derive"] }
-wire-type = {path = "../wire-type" }
+wire-type = {path = "../protocol/wire-type" }
 mina-crypto = { path = "../crypto" }
