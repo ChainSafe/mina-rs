@@ -8,6 +8,10 @@ edition = "2021"
 wire-type = {path = "../wire-type" }
 mina-crypto = { path = "../crypto" }
 
+anyhow = "1"
+blake2 = "0.9"
 chrono = "0.4"
 derive_deref = "1.1"
+num = "0.4"
 serde = { version = "1", features = ["derive"] }
+thiserror = "1"

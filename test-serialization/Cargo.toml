@@ -12,6 +12,7 @@ mina-crypto = { path = "../crypto"}
 test-fixtures = { path = "../test-fixtures"}
 
 anyhow = "1"
+bs58 = { version = "0.4", features = ["check"] }
 chrono = "0.4"
 serde = { version = "1", features = ["derive"] }
 pretty_assertions = "1"

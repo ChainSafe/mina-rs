@@ -9,7 +9,9 @@ mod tests {
     use super::{block_path_test, block_path_test_batch};
     use bin_prot::{from_reader, to_writer, Value};
     use mina_crypto::hash::*;
-    use mina_crypto::signature::{FieldPoint, InnerCurveScalar, PublicKey, Signature};
+    use mina_crypto::signature::{
+        FieldPoint, InnerCurveScalar, PublicKey, PublicKey2, PublicKey3, Signature,
+    };
     use mina_rs_base::types::*;
     use pretty_assertions::assert_eq;
     use serde::{Deserialize, Serialize};
@@ -329,7 +331,7 @@ mod tests {
         block_path_test_batch! {
             Amount => "t/staged_ledger_diff/t/diff/t/0/t/t/commands/0/t/data/t/t/0/t/t/payload/t/t/common/t/t/t/fee"
             SignedCommandFeeToken => "t/staged_ledger_diff/t/diff/t/0/t/t/commands/0/t/data/t/t/0/t/t/payload/t/t/common/t/t/t/fee_token"
-            SignedCommandFeePayerPk => "t/staged_ledger_diff/t/diff/t/0/t/t/commands/0/t/data/t/t/0/t/t/payload/t/t/common/t/t/t/fee_payer_pk"
+            PublicKey2 => "t/staged_ledger_diff/t/diff/t/0/t/t/commands/0/t/data/t/t/0/t/t/payload/t/t/common/t/t/t/fee_payer_pk"
             ExtendedU32 => "t/staged_ledger_diff/t/diff/t/0/t/t/commands/0/t/data/t/t/0/t/t/payload/t/t/common/t/t/t/nonce"
             i32 => "t/staged_ledger_diff/t/diff/t/0/t/t/commands/0/t/data/t/t/0/t/t/payload/t/t/common/t/t/t/valid_until/t/t"
             ExtendedU32 => "t/staged_ledger_diff/t/diff/t/0/t/t/commands/0/t/data/t/t/0/t/t/payload/t/t/common/t/t/t/valid_until"
@@ -341,8 +343,8 @@ mod tests {
     #[test]
     fn test_staged_ledger_diff_diff_commands_data_payload_body() {
         block_path_test_batch! {
-           SignedCommandFeePayerPk => "t/staged_ledger_diff/t/diff/t/0/t/t/commands/0/t/data/t/t/0/t/t/payload/t/t/body/t/t/0/t/t/source_pk"
-           SignedCommandFeePayerPk => "t/staged_ledger_diff/t/diff/t/0/t/t/commands/0/t/data/t/t/0/t/t/payload/t/t/body/t/t/0/t/t/receiver_pk"
+           PublicKey2 => "t/staged_ledger_diff/t/diff/t/0/t/t/commands/0/t/data/t/t/0/t/t/payload/t/t/body/t/t/0/t/t/source_pk"
+           PublicKey2 => "t/staged_ledger_diff/t/diff/t/0/t/t/commands/0/t/data/t/t/0/t/t/payload/t/t/body/t/t/0/t/t/receiver_pk"
            u64 => "t/staged_ledger_diff/t/diff/t/0/t/t/commands/0/t/data/t/t/0/t/t/payload/t/t/body/t/t/0/t/t/token_id/t/t/t"
            ExtendedU64_3 => "t/staged_ledger_diff/t/diff/t/0/t/t/commands/0/t/data/t/t/0/t/t/payload/t/t/body/t/t/0/t/t/token_id"
            Amount => "t/staged_ledger_diff/t/diff/t/0/t/t/commands/0/t/data/t/t/0/t/t/payload/t/t/body/t/t/0/t/t/amount"
@@ -354,7 +356,7 @@ mod tests {
     #[test]
     fn test_staged_ledger_diff_diff_commands_data_signer() {
         block_path_test_batch! {
-            Signer => "t/staged_ledger_diff/t/diff/t/0/t/t/commands/0/t/data/t/t/0/t/t/signer"
+            PublicKey3 => "t/staged_ledger_diff/t/diff/t/0/t/t/commands/0/t/data/t/t/0/t/t/signer"
         }
     }
 

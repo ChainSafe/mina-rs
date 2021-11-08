@@ -359,6 +359,7 @@ dependencies = [
  "bin-prot",
  "blake2",
  "bs58",
+ "derive_deref",
  "serde",
  "thiserror",
  "wire-type",
@@ -368,10 +369,14 @@ dependencies = [
 name = "mina-rs-base"
 version = "0.1.0"
 dependencies = [
+ "anyhow",
+ "blake2",
  "chrono",
  "derive_deref",
  "mina-crypto",
+ "num",
  "serde",
+ "thiserror",
  "wire-type",
 ]
 
@@ -701,6 +706,7 @@ version = "0.1.0"
 dependencies = [
  "anyhow",
  "bin-prot",
+ "bs58",
  "chrono",
  "mina-crypto",
  "mina-rs-base",

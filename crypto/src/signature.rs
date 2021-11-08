@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::{base58::Base58Encodable, hash::BaseHash};
+use derive_deref::Deref;
 use serde::{Deserialize, Serialize};
 use wire_type::WireType;
 
@@ -9,20 +10,31 @@ use wire_type::WireType;
 #[serde(from = "<Self as WireType>::WireType")]
 #[serde(into = "<Self as WireType>::WireType")]
 pub struct CompressedCurvePoint {
-    x: [u8; 32],
-    is_odd: bool,
+    pub x: [u8; 32],
+    pub is_odd: bool,
 }
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize, WireType)]
 #[serde(from = "<Self as WireType>::WireType")]
 #[serde(into = "<Self as WireType>::WireType")]
 pub struct PublicKey {
-    poly: CompressedCurvePoint,
+    pub poly: CompressedCurvePoint,
 }
 
 impl Base58Encodable for PublicKey {
     const VERSION_BYTE: u8 = crate::base58::version_bytes::NON_ZERO_CURVE_POINT_COMPRESSED;
 }
+
+#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize, Deref, WireType)]
+#[serde(from = "<Self as WireType>::WireType")]
+#[serde(into = "<Self as WireType>::WireType")]
+pub struct PublicKey2(pub CompressedCurvePoint);
+
+#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize, Deref, WireType)]
+#[serde(from = "<Self as WireType>::WireType")]
+#[serde(into = "<Self as WireType>::WireType")]
+#[wire_type(recurse = 2)]
+pub struct PublicKey3(pub CompressedCurvePoint);
 
 #[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, WireType)]
 #[serde(from = "<Self as WireType>::WireType")]
