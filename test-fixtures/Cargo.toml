@@ -7,12 +7,14 @@ publish = false
 
 [dependencies]
 bin-prot = { path = "../bin-prot" }
+mina-rs-base = { path = "../base" }
 
+anyhow = "1"
 serde = { version = "1", features = ["derive"] }
 serde_json = { version = "1", features = ["unbounded_depth"] }
 serde_stacker = "0.1"
-
 lazy_static = "1"
+hex="0.4"
 
 [lib]
 # Data files might grow very large, 

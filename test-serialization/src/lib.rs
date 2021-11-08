@@ -1,12 +1,17 @@
 // Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
+#[allow(non_snake_case)]
+mod test_3NKaBJsN1SehD6iJwRwJSFmVzJg5DXSUQVgnMxtH4eer4aF5BrDK;
+
 #[cfg(test)]
 mod tests {
     use super::{block_path_test, block_path_test_batch};
-    use bin_prot::{from_reader, to_writer, Deserializer, Value};
+    use bin_prot::{from_reader, to_writer, Value};
     use mina_crypto::hash::*;
-    use mina_crypto::signature::{FieldPoint, InnerCurveScalar, PublicKey, Signature};
+    use mina_crypto::signature::{
+        FieldPoint, InnerCurveScalar, PublicKey, PublicKey2, PublicKey3, Signature,
+    };
     use mina_rs_base::types::*;
     use pretty_assertions::assert_eq;
     use serde::{Deserialize, Serialize};
@@ -326,7 +331,7 @@ mod tests {
         block_path_test_batch! {
             Amount => "t/staged_ledger_diff/t/diff/t/0/t/t/commands/0/t/data/t/t/0/t/t/payload/t/t/common/t/t/t/fee"
             SignedCommandFeeToken => "t/staged_ledger_diff/t/diff/t/0/t/t/commands/0/t/data/t/t/0/t/t/payload/t/t/common/t/t/t/fee_token"
-            SignedCommandFeePayerPk => "t/staged_ledger_diff/t/diff/t/0/t/t/commands/0/t/data/t/t/0/t/t/payload/t/t/common/t/t/t/fee_payer_pk"
+            PublicKey2 => "t/staged_ledger_diff/t/diff/t/0/t/t/commands/0/t/data/t/t/0/t/t/payload/t/t/common/t/t/t/fee_payer_pk"
             ExtendedU32 => "t/staged_ledger_diff/t/diff/t/0/t/t/commands/0/t/data/t/t/0/t/t/payload/t/t/common/t/t/t/nonce"
             i32 => "t/staged_ledger_diff/t/diff/t/0/t/t/commands/0/t/data/t/t/0/t/t/payload/t/t/common/t/t/t/valid_until/t/t"
             ExtendedU32 => "t/staged_ledger_diff/t/diff/t/0/t/t/commands/0/t/data/t/t/0/t/t/payload/t/t/common/t/t/t/valid_until"
@@ -338,8 +343,8 @@ mod tests {
     #[test]
     fn test_staged_ledger_diff_diff_commands_data_payload_body() {
         block_path_test_batch! {
-           SignedCommandFeePayerPk => "t/staged_ledger_diff/t/diff/t/0/t/t/commands/0/t/data/t/t/0/t/t/payload/t/t/body/t/t/0/t/t/source_pk"
-           SignedCommandFeePayerPk => "t/staged_ledger_diff/t/diff/t/0/t/t/commands/0/t/data/t/t/0/t/t/payload/t/t/body/t/t/0/t/t/receiver_pk"
+           PublicKey2 => "t/staged_ledger_diff/t/diff/t/0/t/t/commands/0/t/data/t/t/0/t/t/payload/t/t/body/t/t/0/t/t/source_pk"
+           PublicKey2 => "t/staged_ledger_diff/t/diff/t/0/t/t/commands/0/t/data/t/t/0/t/t/payload/t/t/body/t/t/0/t/t/receiver_pk"
            u64 => "t/staged_ledger_diff/t/diff/t/0/t/t/commands/0/t/data/t/t/0/t/t/payload/t/t/body/t/t/0/t/t/token_id/t/t/t"
            ExtendedU64_3 => "t/staged_ledger_diff/t/diff/t/0/t/t/commands/0/t/data/t/t/0/t/t/payload/t/t/body/t/t/0/t/t/token_id"
            Amount => "t/staged_ledger_diff/t/diff/t/0/t/t/commands/0/t/data/t/t/0/t/t/payload/t/t/body/t/t/0/t/t/amount"
@@ -351,7 +356,7 @@ mod tests {
     #[test]
     fn test_staged_ledger_diff_diff_commands_data_signer() {
         block_path_test_batch! {
-            Signer => "t/staged_ledger_diff/t/diff/t/0/t/t/commands/0/t/data/t/t/0/t/t/signer"
+            PublicKey3 => "t/staged_ledger_diff/t/diff/t/0/t/t/commands/0/t/data/t/t/0/t/t/signer"
         }
     }
 
@@ -479,7 +484,7 @@ mod tests {
     }
 
     #[test]
-    fn smoke_test_roundtrip_block() {
+    fn smoke_test_roundtrip_block1() {
         let block = TEST_BLOCKS.get("block1").expect("Failed to load block1");
 
         // test we can correctly index a known field
@@ -497,18 +502,22 @@ mod tests {
         );
 
         // check roundtrip
-        test_roundtrip(&block.value, block.bytes);
+        test_roundtrip(&block.value, block.bytes.as_slice());
     }
 
     #[test]
     fn smoke_test_deserialize_block() {
         // check we can deserialize into this type without error
-        for block in TEST_BLOCKS.values() {
-            let mut de = Deserializer::from_reader(block.bytes);
-            let et: ExternalTransition =
-                Deserialize::deserialize(&mut de).expect("Failed to deserialize block");
+        for (name, block) in TEST_BLOCKS.iter() {
+            let et: ExternalTransition = block
+                .external_transition()
+                .expect("Failed to deserialize block");
+
+            // TODO: Validate state hash
+            if name.ends_with(".hex") {}
+
             // check roundtrip
-            test_roundtrip(&et, block.bytes);
+            test_roundtrip(&et, block.bytes.as_slice());
         }
     }
 

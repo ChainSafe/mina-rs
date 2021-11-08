@@ -10,11 +10,11 @@ use crate::types::*;
 #[serde(from = "<Self as WireType>::WireType")]
 #[serde(into = "<Self as WireType>::WireType")]
 pub struct ExternalTransition {
-    protocol_state: ProtocolState,
-    protocol_state_proof: ProtocolStateProof,
-    staged_ledger_diff: StagedLedgerDiff,
-    delta_transition_chain_proof: DeltaTransitionChainProof,
-    current_protocol_version: ProtocolVersion,
-    proposed_protocol_version_opt: Option<ProtocolVersion>,
-    validation_callback: (),
+    pub protocol_state: ProtocolState,
+    pub protocol_state_proof: ProtocolStateProof,
+    pub staged_ledger_diff: StagedLedgerDiff,
+    pub delta_transition_chain_proof: DeltaTransitionChainProof,
+    pub current_protocol_version: ProtocolVersion,
+    pub proposed_protocol_version_opt: Option<ProtocolVersion>,
+    pub validation_callback: (),
 }
