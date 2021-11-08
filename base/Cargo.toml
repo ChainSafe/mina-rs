@@ -8,3 +8,6 @@ edition = "2021"
 serde = { version = "1.0.126", features = ["derive"] }
 wire-type = {path = "../wire-type" }
 mina-crypto = { path = "../crypto" }
+
+plonk_protocol_dlog = { git = "https://github.com/o1-labs/proof-systems" }
+mina-curves = { git = "https://github.com/o1-labs/proof-systems" }
