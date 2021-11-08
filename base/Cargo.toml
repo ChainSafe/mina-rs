@@ -16,3 +16,6 @@ derive_deref = "1.1"
 num = "0.4"
 serde = { version = "1", features = ["derive"] }
 thiserror = "1"
+
+plonk_protocol_dlog = { git = "https://github.com/o1-labs/proof-systems" }
+mina-curves = { git = "https://github.com/o1-labs/proof-systems" }
