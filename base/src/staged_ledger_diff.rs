@@ -3,7 +3,6 @@
 
 use mina_crypto::signature::{PublicKey2, PublicKey3, Signature};
 use serde::{Deserialize, Serialize};
-use std::fmt::Display;
 use thiserror::Error;
 use wire_type::WireType;
 
@@ -175,13 +174,8 @@ impl TryFrom<String> for SignedCommandMemo {
 
 #[derive(Debug, Error)]
 pub enum SignedCommandMemoError {
+    #[error("Input string is too long")]
     StringTooLong,
-}
-
-impl Display for SignedCommandMemoError {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{:#?}", self)
-    }
 }
 
 #[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, WireType)]

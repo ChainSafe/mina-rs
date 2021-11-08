@@ -43,6 +43,7 @@ mod tests {
             "867667132.840039233"
         );
 
+        assert!(&et.staged_ledger_diff.diff.diff_one().is_none());
         let commands = &et.staged_ledger_diff.diff.diff_two().commands;
         assert_eq!(commands.len(), 3);
 
