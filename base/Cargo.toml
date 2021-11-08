@@ -5,6 +5,9 @@ authors = ["ChainSafe Systems <info@chainsafe.io>"]
 edition = "2021"
 
 [dependencies]
-serde = { version = "1.0.126", features = ["derive"] }
 wire-type = {path = "../wire-type" }
 mina-crypto = { path = "../crypto" }
+
+chrono = "0.4"
+derive_deref = "1.1"
+serde = { version = "1", features = ["derive"] }

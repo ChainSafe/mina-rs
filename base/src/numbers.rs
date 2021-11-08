@@ -1,11 +1,22 @@
 // Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
+use derive_deref::Deref;
 use serde::{Deserialize, Serialize};
 use wire_type::WireType;
 
 #[derive(
-    Clone, Serialize, Deserialize, PartialEq, PartialOrd, Debug, Hash, Copy, Default, WireType,
+    Clone,
+    Serialize,
+    Deserialize,
+    PartialEq,
+    PartialOrd,
+    Debug,
+    Hash,
+    Copy,
+    Default,
+    Deref,
+    WireType,
 )]
 #[serde(from = "<Self as WireType>::WireType")]
 #[serde(into = "<Self as WireType>::WireType")]
@@ -63,7 +74,7 @@ pub struct Hex64(i64);
 #[serde(into = "<Self as WireType>::WireType")]
 pub struct Char(u8);
 
-#[derive(Clone, Serialize, Deserialize, PartialEq, Debug, Hash, Default, WireType)]
+#[derive(Clone, Serialize, Deserialize, PartialEq, Debug, Hash, Default, Deref, WireType)]
 #[serde(from = "<Self as WireType>::WireType")]
 #[serde(into = "<Self as WireType>::WireType")]
 #[wire_type(recurse = 2)]
@@ -75,8 +86,19 @@ pub struct GlobalSlotNumber(pub u32);
 #[wire_type(recurse = 2)]
 pub struct BlockTime(u64);
 
+impl BlockTime {
+    pub fn epoch_millis(&self) -> u64 {
+        self.0
+    }
+
+    pub fn datetime(&self) -> chrono::DateTime<chrono::Utc> {
+        use chrono::prelude::*;
+        Utc.timestamp_millis(self.0 as i64)
+    }
+}
+
 #[derive(Clone, Serialize, Deserialize, PartialEq, Debug, Hash, Default)]
-pub struct BlockTimeSpan(u64);
+pub struct BlockTimeSpan(pub u64);
 
 // Consider switch to [ark-ff](https://docs.rs/ark-ff/0.3.0/ark_ff/biginteger/struct.BigInteger256.html)
 #[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug)]

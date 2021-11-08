@@ -1,10 +1,13 @@
 // Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
+#[allow(non_snake_case)]
+mod test_3NKaBJsN1SehD6iJwRwJSFmVzJg5DXSUQVgnMxtH4eer4aF5BrDK;
+
 #[cfg(test)]
 mod tests {
     use super::{block_path_test, block_path_test_batch};
-    use bin_prot::{from_reader, to_writer, Deserializer, Value};
+    use bin_prot::{from_reader, to_writer, Value};
     use mina_crypto::hash::*;
     use mina_crypto::signature::{FieldPoint, InnerCurveScalar, PublicKey, Signature};
     use mina_rs_base::types::*;
@@ -504,9 +507,9 @@ mod tests {
     fn smoke_test_deserialize_block() {
         // check we can deserialize into this type without error
         for (name, block) in TEST_BLOCKS.iter() {
-            let mut de = Deserializer::from_reader(block.bytes.as_slice());
-            let et: ExternalTransition =
-                Deserialize::deserialize(&mut de).expect("Failed to deserialize block");
+            let et: ExternalTransition = block
+                .external_transition()
+                .expect("Failed to deserialize block");
 
             // TODO: Validate state hash
             if name.ends_with(".hex") {}

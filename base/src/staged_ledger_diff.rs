@@ -19,6 +19,16 @@ pub struct StagedLedgerDiff {
 #[serde(into = "<Self as WireType>::WireType")]
 pub struct StagedLedgerDiffTuple((StagedLedgerPreDiffTwo, Option<StagedLedgerPreDiffOne>));
 
+impl StagedLedgerDiffTuple {
+    pub fn diff_two(&self) -> &StagedLedgerPreDiffTwo {
+        &self.0 .0
+    }
+
+    pub fn diff_one(&self) -> &Option<StagedLedgerPreDiffOne> {
+        &self.0 .1
+    }
+}
+
 // FIXME: No test coverage yet
 pub type StagedLedgerPreDiffOne = ();
 

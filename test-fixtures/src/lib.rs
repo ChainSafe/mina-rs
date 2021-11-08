@@ -3,6 +3,7 @@
 
 use bin_prot::{BinProtRule, Deserializer};
 use lazy_static::lazy_static;
+use mina_rs_base::external_transition::ExternalTransition;
 use serde::Deserialize;
 use std::{borrow::Borrow, collections::HashMap};
 
@@ -34,6 +35,13 @@ lazy_static! {
 pub struct BlockFixture {
     pub bytes: Vec<u8>,
     pub value: bin_prot::Value,
+}
+
+impl BlockFixture {
+    pub fn external_transition(&self) -> anyhow::Result<ExternalTransition> {
+        let mut de = Deserializer::from_reader(self.bytes.as_slice());
+        Ok(Deserialize::deserialize(&mut de)?)
+    }
 }
 
 fn load_test_block(bytes: &'static [u8]) -> BlockFixture {
