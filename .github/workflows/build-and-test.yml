@@ -21,6 +21,13 @@ jobs:
         with:
           command: check
 
+      - name: Install
+        run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
+
+      - run: cargo test
+      - run: wasm-pack test --headless --chrome protocol/test-serialization/
+      - run: wasm-pack test --headless --firefox protocol/test-serialization/
+
   test:
     name: Test Suite
     runs-on: ubuntu-latest

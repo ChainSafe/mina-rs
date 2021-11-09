@@ -5,11 +5,14 @@
 mod test_3NKaBJsN1SehD6iJwRwJSFmVzJg5DXSUQVgnMxtH4eer4aF5BrDK;
 
 #[cfg(test)]
-mod tests {
+pub mod tests {
     use super::{block_path_test, block_path_test_batch};
     use bin_prot::{from_reader, to_writer, Value};
     use mina_crypto::hash::*;
-    use wasm_bindgen_test::*;
+    use wasm_bindgen_test::*;  
+    // commenting the following 2 line to run in local 
+    use wasm_bindgen_test::wasm_bindgen_test_configure;
+    wasm_bindgen_test_configure!(run_in_browser);
     use mina_crypto::signature::{
         FieldPoint, InnerCurveScalar, PublicKey, PublicKey2, PublicKey3, Signature,
     };
