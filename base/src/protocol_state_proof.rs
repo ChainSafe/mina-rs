@@ -38,7 +38,6 @@ pub mod ark {
     }
 }
 
-use ark_ec::AffineCurve;
 use serde::{Deserialize, Serialize};
 use wire_type::WireType;
 
@@ -58,6 +57,23 @@ pub struct ProtocolStateProof {
 
     // batched commitment opening proof
     pub proof: Proof,
+}
+
+impl<P> From<ProtocolStateProof> for plonk_protocol_dlog::prover::ProverProof<GroupAffine<P>>
+where
+    P: ark_ec::SWModelParameters,
+    <P as ModelParameters>::BaseField: From<ark_ff::BigInteger256>,
+{
+    fn from(t: ProtocolStateProof) -> Self {
+        todo!()
+        // Self {
+        //     commitments: t.proof.messages.into(),
+        //     proof: t.proof.openings.proof.into(),
+        //     evals: t.proof.openings.evals.into(),
+        //     // public:,
+        //     // prev_challenges:,
+        // }
+    }
 }
 
 #[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, WireType)]
@@ -256,6 +272,22 @@ pub struct ProofMessages {
     pub t_comm: ProofMessageWithDegreeBound,
 }
 
+impl<P> From<ProofMessages> for plonk_protocol_dlog::prover::ProverCommitments<GroupAffine<P>>
+where
+    P: ark_ec::SWModelParameters,
+    <P as ModelParameters>::BaseField: From<ark_ff::BigInteger256>,
+{
+    fn from(t: ProofMessages) -> Self {
+        Self {
+            l_comm: t.l_comm.into(),
+            r_comm: t.r_comm.into(),
+            o_comm: t.o_comm.into(),
+            z_comm: t.z_comm.into(),
+            t_comm: t.t_comm.into(),
+        }
+    }
+}
+
 #[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, WireType)]
 #[serde(from = "<Self as WireType>::WireType")]
 #[serde(into = "<Self as WireType>::WireType")]
@@ -273,7 +305,7 @@ pub struct ProofMessageWithDegreeBound {
 impl<P> From<ProofMessageWithDegreeBound> for commitment_dlog::commitment::PolyComm<GroupAffine<P>>
 where
     P: ark_ec::SWModelParameters,
-    <P as ModelParameters>::BaseField: From<ark_ff::BigInteger256>
+    <P as ModelParameters>::BaseField: From<ark_ff::BigInteger256>,
 {
     fn from(t: ProofMessageWithDegreeBound) -> Self {
         Self {
@@ -283,10 +315,11 @@ where
     }
 }
 
-impl<P> From<ProofMessageWithoutDegreeBoundList> for commitment_dlog::commitment::PolyComm<GroupAffine<P>>
+impl<P> From<ProofMessageWithoutDegreeBoundList>
+    for commitment_dlog::commitment::PolyComm<GroupAffine<P>>
 where
     P: ark_ec::SWModelParameters,
-    <P as ModelParameters>::BaseField: From<ark_ff::BigInteger256>
+    <P as ModelParameters>::BaseField: From<ark_ff::BigInteger256>,
 {
     fn from(t: ProofMessageWithoutDegreeBoundList) -> Self {
         Self {
@@ -313,6 +346,28 @@ pub struct OpeningProof {
     pub z_2: FieldElement,
     pub delta: FiniteECPoint,
     pub sg: FiniteECPoint,
+}
+
+impl<P> From<OpeningProof> for commitment_dlog::commitment::OpeningProof<GroupAffine<P>>
+where
+    P: ark_ec::SWModelParameters,
+    <P as ModelParameters>::BaseField: From<ark_ff::BigInteger256>,
+    <P as ModelParameters>::ScalarField: From<ark_ff::BigInteger256>,
+{
+    fn from(t: OpeningProof) -> Self {
+        Self {
+            lr: t
+                .lr
+                .0
+                .into_iter()
+                .map(|(x, y)| (x.into(), y.into()))
+                .collect(),
+            delta: t.delta.into(),
+            z1: ark_ff::BigInteger256::from(t.z_1).into(),
+            z2: ark_ff::BigInteger256::from(t.z_2).into(),
+            sg: t.sg.into(),
+        }
+    }
 }
 
 #[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, WireType)]
