@@ -3,6 +3,9 @@
 [<img alt="Apache License" src="https://img.shields.io/badge/License-Apache%202.0-blue.svg?style=for-the-badge" height="20">](https://opensource.org/licenses/Apache-2.0)
 [<img alt="Discord" src="https://img.shields.io/discord/593655374469660673.svg?style=for-the-badge&label=Discord&logo=discord" height="20">](https://discord.gg/Vx4uHpNM)
 
+[![Continuous integration](https://github.com/ChainSafe/mina-rs/actions/workflows/build-and-test.yml/badge.svg?branch=main)](https://github.com/ChainSafe/mina-rs/actions/workflows/build-and-test.yml)
+[![codecov](https://codecov.io/gh/ChainSafe/mina-rs/branch/main/graph/badge.svg?token=7YXISNRW48)](https://codecov.io/gh/ChainSafe/mina-rs)
+
 An implementation of Mina protocol in Rust, with focus on web and Wasm compatibility
 
 ** As you can probably tell this is a WIP! Don't use for anything yet **
