@@ -7,13 +7,13 @@ wasm_bindgen_test::wasm_bindgen_test_configure!(run_in_browser);
 #[cfg(test)]
 mod tests {
     use anyhow::bail;
-    use chrono::prelude::*;
     use mina_crypto::base58::Base58Encodable;
     use mina_rs_base::staged_ledger_diff::{
         SignedCommandMemo, SignedCommandPayloadBody, UserCommand,
     };
     use pretty_assertions::assert_eq;
     use test_fixtures::*;
+    use time::macros::*;
     use wasm_bindgen_test::*;
 
     #[wasm_bindgen_test]
@@ -41,7 +41,7 @@ mod tests {
         assert_eq!(blockchain_state.timestamp.epoch_millis(), 1636092900000);
         assert_eq!(
             blockchain_state.timestamp.datetime(),
-            Utc.ymd(2021, 11, 5).and_hms_nano(6, 15, 0, 0)
+            datetime!(2021-11-05 06:15:00 UTC)
         );
 
         let consensus_state = &body.consensus_state;
