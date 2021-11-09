@@ -18,8 +18,7 @@ jobs:
           override: true
       - run: cargo fmt --all -- --check
       - name: Check license
-        run: |
-          sh ./scripts/add_license.sh
+        run: ./scripts/add_license.sh
   x86_64:
     runs-on: ubuntu-latest
     steps:
