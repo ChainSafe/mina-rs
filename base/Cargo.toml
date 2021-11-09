@@ -4,13 +4,13 @@ name = "mina-rs-base"
 version = "0.1.0"
 
 edition = "2021"
+license = "Apache-2.0"
 
 [dependencies]
 mina-crypto = {path = "../crypto"}
 wire-type = {path = "../protocol/wire-type"}
 
 anyhow = "1"
-blake2 = "0.9"
 derive_deref = "1.1"
 num = "0.4"
 serde = {version = "1", features = ["derive"]}

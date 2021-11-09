@@ -1,12 +1,15 @@
 [package]
+authors = ["ChainSafe Systems <info@chainsafe.io>"]
 name = "mina-consensus"
 version = "0.1.0"
-authors = ["ChainSafe Systems <info@chainsafe.io>"]
+
 edition = "2021"
+license = "Apache-2.0"
 
 [dependencies]
+mina-crypto = {version = "0.1.0", path = "../crypto"}
+mina-rs-base = {version = "0.1.0", path = "../base"}
+
 hex = "0.4.3"
-mina-crypto = { version = "0.1.0", path = "../crypto" }
-mina-rs-base = { version = "0.1.0", path = "../base" }
-serde-bin-prot = { git = "https://github.com/ChainSafe/serde-bin-prot", branch = "main" }
+serde-bin-prot = {git = "https://github.com/ChainSafe/serde-bin-prot", branch = "main"}
 thiserror = "1.0.24"

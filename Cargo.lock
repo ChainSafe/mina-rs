@@ -384,7 +384,6 @@ name = "mina-rs-base"
 version = "0.1.0"
 dependencies = [
  "anyhow",
- "blake2",
  "derive_deref",
  "mina-crypto",
  "num",

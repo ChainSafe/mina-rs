@@ -3,7 +3,7 @@ on:
     branches: [main]
   pull_request:
 
-name: Continuous integration
+name: CI
 
 jobs:
   checks:
@@ -19,6 +19,11 @@ jobs:
       - run: cargo fmt --all -- --check
       - name: Check license
         run: ./scripts/add_license.sh
+      - run: cargo install cargo-deny
+      - run: cargo deny check Ban -s
+      - run: cargo deny check License -s
+      - run: cargo deny check Sources -s
+      - run: cargo deny check Advisories -s
   x86_64:
     runs-on: ubuntu-latest
     steps:
