@@ -636,6 +636,7 @@ dependencies = [
  "commitment_dlog",
  "mina-crypto",
  "mina-curves",
+ "plonk_circuits",
  "plonk_protocol_dlog",
  "serde",
  "wire-type",

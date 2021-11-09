@@ -38,8 +38,13 @@ pub mod ark {
     }
 }
 
+use commitment_dlog::CommitmentField;
+use ark_ff::PrimeField;
 use serde::{Deserialize, Serialize};
 use wire_type::WireType;
+
+use ark_ec::models::short_weierstrass_jacobian::GroupAffine;
+use ark_ec::models::ModelParameters;
 
 use crate::numbers::{BigInt256, Char, Hex64};
 
@@ -62,7 +67,8 @@ pub struct ProtocolStateProof {
 impl<P> From<ProtocolStateProof> for plonk_protocol_dlog::prover::ProverProof<GroupAffine<P>>
 where
     P: ark_ec::SWModelParameters,
-    <P as ModelParameters>::BaseField: From<ark_ff::BigInteger256>,
+    <P as ModelParameters>::BaseField: From<ark_ff::BigInteger256> + PrimeField,
+    <P as ModelParameters>::ScalarField: CommitmentField,
 {
     fn from(t: ProtocolStateProof) -> Self {
         todo!()
@@ -384,10 +390,34 @@ pub struct ProofEvaluations {
     pub sigma2: FieldElementVec,
 }
 
+impl<Fs> From<ProofEvaluations> for plonk_circuits::scalars::ProofEvaluations<Vec<Fs>>
+where
+    Fs: From<ark_ff::BigInteger256>,
+{
+    fn from(t: ProofEvaluations) -> Self {
+        Self {
+            l: t.l.into(),
+            r: t.r.into(),
+            o: t.o.into(),
+            z: t.z.into(),
+            t: t.t.into(),
+            f: t.f.into(),
+            sigma1: t.sigma1.into(),
+            sigma2: t.sigma2.into(),
+        }
+    }
+}
+
 #[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, WireType)]
 #[serde(from = "<Self as WireType>::WireType")]
 #[serde(into = "<Self as WireType>::WireType")]
 pub struct FieldElementVec(Vec<FieldElement>);
+
+impl<Fs> Into<Vec<Fs>> for FieldElementVec where Fs: From<ark_ff::BigInteger256> {
+    fn into(self) -> Vec<Fs> {
+        self.0.into_iter().map(|i| ark_ff::BigInteger256::from(i).into() ).collect()
+    }
+}
 
 #[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, WireType)]
 #[serde(from = "<Self as WireType>::WireType")]
@@ -423,9 +453,6 @@ impl Default for ECPoint {
         Self::Infinite
     }
 }
-
-use ark_ec::models::short_weierstrass_jacobian::GroupAffine;
-use ark_ec::models::ModelParameters;
 
 impl<P> From<ECPoint> for GroupAffine<P>
 where
