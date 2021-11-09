@@ -10,4 +10,7 @@ wire-type = {path = "../wire-type" }
 mina-crypto = { path = "../crypto" }
 
 plonk_protocol_dlog = { git = "https://github.com/o1-labs/proof-systems" }
+commitment_dlog = { git = "https://github.com/o1-labs/proof-systems" }
 mina-curves = { git = "https://github.com/o1-labs/proof-systems" }
+ark-ec = "0.3.0"
+ark-ff = "0.3.0"

@@ -631,6 +631,9 @@ dependencies = [
 name = "mina-rs-base"
 version = "0.1.0"
 dependencies = [
+ "ark-ec",
+ "ark-ff",
+ "commitment_dlog",
  "mina-crypto",
  "mina-curves",
  "plonk_protocol_dlog",

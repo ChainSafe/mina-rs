@@ -5,8 +5,8 @@ pub mod ark {
 
     use serde::{Deserialize, Serialize};
 
-    use plonk_protocol_dlog::prover::ProverProof;
     use mina_curves::pasta::vesta::Affine as Vesta;
+    use plonk_protocol_dlog::prover::ProverProof;
 
     #[derive(Clone, Serialize, Deserialize)]
     #[serde(from = "super::ProtocolStateProof")]
@@ -14,23 +14,31 @@ pub mod ark {
     pub struct ProtocolStateProof(ProverProof<Vesta>);
 
     impl From<super::ProtocolStateProof> for ProtocolStateProof {
-        fn from(_: super::ProtocolStateProof) -> Self { todo!() }
+        fn from(_: super::ProtocolStateProof) -> Self {
+            todo!()
+        }
     }
 
     impl From<ProtocolStateProof> for super::ProtocolStateProof {
-        fn from(_: ProtocolStateProof) -> Self { todo!() }
+        fn from(_: ProtocolStateProof) -> Self {
+            todo!()
+        }
     }
 
     impl std::fmt::Debug for ProtocolStateProof {
-        fn fmt(&self, _: &mut std::fmt::Formatter<'_>) -> Result<(), std::fmt::Error> { todo!() }
+        fn fmt(&self, _: &mut std::fmt::Formatter<'_>) -> Result<(), std::fmt::Error> {
+            todo!()
+        }
     }
 
     impl PartialEq for ProtocolStateProof {
-        fn eq(&self, _: &Self) -> bool { todo!() }
+        fn eq(&self, _: &Self) -> bool {
+            todo!()
+        }
     }
-
 }
 
+use ark_ec::AffineCurve;
 use serde::{Deserialize, Serialize};
 use wire_type::WireType;
 
@@ -116,7 +124,7 @@ pub struct SpongeDigestBeforeEvaluations((Hex64, Hex64, Hex64, Hex64, ()));
 #[serde(from = "<Self as WireType>::WireType")]
 #[serde(into = "<Self as WireType>::WireType")]
 pub struct ProofStatePairingBased {
-    pub sg: (BigInt256, BigInt256),
+    pub sg: FiniteECPoint,
     pub old_bulletproof_challenges: ProofStateBulletproofChallenges,
 }
 
@@ -132,7 +140,7 @@ pub struct ProofStateBulletproofChallenges(
 #[serde(into = "<Self as WireType>::WireType")]
 pub struct PairingBased {
     pub app_state: (),
-    pub sg: ECPointVec,
+    pub sg: FiniteECPointVec,
     pub old_bulletproof_challenges: BulletproofChallenges,
 }
 
@@ -226,7 +234,7 @@ pub struct PrevEvals((ProofEvaluations, ProofEvaluations));
 #[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, WireType)]
 #[serde(from = "<Self as WireType>::WireType")]
 #[serde(into = "<Self as WireType>::WireType")]
-pub struct PrevXHat((BigInt256, BigInt256));
+pub struct PrevXHat(FiniteECPoint);
 
 #[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, WireType)]
 #[serde(from = "<Self as WireType>::WireType")]
@@ -240,7 +248,7 @@ pub struct Proof {
 #[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, WireType)]
 #[serde(from = "<Self as WireType>::WireType")]
 #[serde(into = "<Self as WireType>::WireType")]
-pub struct ProofMessages { // ProverCommitments in proof-systems
+pub struct ProofMessages {
     pub l_comm: ProofMessageWithoutDegreeBoundList,
     pub r_comm: ProofMessageWithoutDegreeBoundList,
     pub o_comm: ProofMessageWithoutDegreeBoundList,
@@ -252,38 +260,22 @@ pub struct ProofMessages { // ProverCommitments in proof-systems
 #[serde(from = "<Self as WireType>::WireType")]
 #[serde(into = "<Self as WireType>::WireType")]
 #[wire_type(recurse = 2)]
-pub struct ProofMessageWithoutDegreeBoundList(Vec<ProofMessageWithoutDegreeBound>);
-
-#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug)]
-pub struct ProofMessageWithoutDegreeBound((BigInt256, BigInt256));
+pub struct ProofMessageWithoutDegreeBoundList(Vec<FiniteECPoint>);
 
 #[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, WireType)]
 #[serde(from = "<Self as WireType>::WireType")]
 #[serde(into = "<Self as WireType>::WireType")]
 pub struct ProofMessageWithDegreeBound {
-    pub unshifted: ProofMessageWithDegreeBoundFiniteOrInfiniteList,
-    pub shifted: ProofMessageWithDegreeBoundFiniteOrInfinite,
+    pub unshifted: ECPointVec,
+    pub shifted: ECPoint,
 }
 
-#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, WireType)]
-#[serde(from = "<Self as WireType>::WireType")]
-#[serde(into = "<Self as WireType>::WireType")]
-pub struct ProofMessageWithDegreeBoundFiniteOrInfiniteList(
-    Vec<ProofMessageWithDegreeBoundFiniteOrInfinite>,
-);
-
-#[derive(Clone, Serialize, Deserialize, PartialEq, Debug, WireType)]
-#[serde(from = "<Self as WireType>::WireType")]
-#[serde(into = "<Self as WireType>::WireType")]
-#[non_exhaustive]
-pub enum ProofMessageWithDegreeBoundFiniteOrInfinite {
-    Infinite,
-    Finite(ProofMessageWithoutDegreeBound),
-}
-
-impl Default for ProofMessageWithDegreeBoundFiniteOrInfinite {
-    fn default() -> Self {
-        Self::Infinite
+impl<C> From<ProofMessageWithDegreeBound> for commitment_dlog::commitment::PolyComm<C>
+where
+    C: AffineCurve + std::convert::From<(BigInt256, BigInt256)>,
+{
+    fn from(t: ProofMessageWithDegreeBound) -> Self {
+        todo!()
     }
 }
 
@@ -299,11 +291,11 @@ pub struct ProofOpenings {
 #[serde(from = "<Self as WireType>::WireType")]
 #[serde(into = "<Self as WireType>::WireType")]
 pub struct OpeningProof {
-    pub lr: ECPointPairVec,
+    pub lr: FiniteECPointPairVec,
     pub z_1: FieldElement,
     pub z_2: FieldElement,
-    pub delta: ECPoint,
-    pub sg: ECPoint,
+    pub delta: FiniteECPoint,
+    pub sg: FiniteECPoint,
 }
 
 #[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, WireType)]
@@ -328,12 +320,52 @@ pub struct FieldElementVec(Vec<FieldElement>);
 #[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, WireType)]
 #[serde(from = "<Self as WireType>::WireType")]
 #[serde(into = "<Self as WireType>::WireType")]
-pub struct ECPointVec(Vec<ECPoint>);
+pub struct FiniteECPointVec(Vec<FiniteECPoint>);
 
 #[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, WireType)]
 #[serde(from = "<Self as WireType>::WireType")]
 #[serde(into = "<Self as WireType>::WireType")]
-pub struct ECPointPairVec(Vec<(ECPoint, ECPoint)>);
+pub struct FiniteECPointPairVec(Vec<(FiniteECPoint, FiniteECPoint)>);
 
-pub type ECPoint = (BigInt256, BigInt256);
+pub type FiniteECPoint = (BigInt256, BigInt256); // point on elliptic curve, cannot encode the point at infinity
 pub type FieldElement = BigInt256;
+
+#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, WireType)]
+#[serde(from = "<Self as WireType>::WireType")]
+#[serde(into = "<Self as WireType>::WireType")]
+pub struct ECPointVec(Vec<ECPoint>);
+
+#[derive(Clone, Serialize, Deserialize, PartialEq, Debug, WireType)]
+#[serde(from = "<Self as WireType>::WireType")]
+#[serde(into = "<Self as WireType>::WireType")]
+pub enum ECPoint {
+    // elliptic curve point, can be the point at infinity
+    Infinite,
+    Finite(FiniteECPoint),
+}
+
+impl Default for ECPoint {
+    fn default() -> Self {
+        Self::Infinite
+    }
+}
+
+use ark_ec::models::short_weierstrass_jacobian::GroupAffine;
+use ark_ec::models::ModelParameters;
+
+impl<P> From<ECPoint> for GroupAffine<P>
+where
+    P: ark_ec::SWModelParameters,
+    <P as ModelParameters>::BaseField: From<ark_ff::BigInteger256>,
+{
+    fn from(p: ECPoint) -> Self {
+        match p {
+            ECPoint::Infinite => Self::new(Default::default(), Default::default(), true),
+            ECPoint::Finite((x, y)) => Self::new(
+                ark_ff::BigInteger256::from(x).into(),
+                ark_ff::BigInteger256::from(y).into(),
+                false,
+            ),
+        }
+    }
+}
