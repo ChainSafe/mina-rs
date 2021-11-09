@@ -270,12 +270,29 @@ pub struct ProofMessageWithDegreeBound {
     pub shifted: ECPoint,
 }
 
-impl<C> From<ProofMessageWithDegreeBound> for commitment_dlog::commitment::PolyComm<C>
+impl<P> From<ProofMessageWithDegreeBound> for commitment_dlog::commitment::PolyComm<GroupAffine<P>>
 where
-    C: AffineCurve + std::convert::From<(BigInt256, BigInt256)>,
+    P: ark_ec::SWModelParameters,
+    <P as ModelParameters>::BaseField: From<ark_ff::BigInteger256>
 {
     fn from(t: ProofMessageWithDegreeBound) -> Self {
-        todo!()
+        Self {
+            unshifted: t.unshifted.0.into_iter().map(Into::into).collect(),
+            shifted: Some(t.shifted.into()),
+        }
+    }
+}
+
+impl<P> From<ProofMessageWithoutDegreeBoundList> for commitment_dlog::commitment::PolyComm<GroupAffine<P>>
+where
+    P: ark_ec::SWModelParameters,
+    <P as ModelParameters>::BaseField: From<ark_ff::BigInteger256>
+{
+    fn from(t: ProofMessageWithoutDegreeBoundList) -> Self {
+        Self {
+            unshifted: t.0.into_iter().map(Into::into).collect(),
+            shifted: None,
+        }
     }
 }
 
