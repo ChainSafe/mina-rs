@@ -327,7 +327,9 @@ pub struct FiniteECPointVec(Vec<FiniteECPoint>);
 #[serde(into = "<Self as WireType>::WireType")]
 pub struct FiniteECPointPairVec(Vec<(FiniteECPoint, FiniteECPoint)>);
 
-pub type FiniteECPoint = (BigInt256, BigInt256); // point on elliptic curve, cannot encode the point at infinity
+#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug)]
+pub struct FiniteECPoint(FieldElement, FieldElement); // point on elliptic curve, cannot encode the point at infinity
+
 pub type FieldElement = BigInt256;
 
 #[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, WireType)]
@@ -361,11 +363,25 @@ where
     fn from(p: ECPoint) -> Self {
         match p {
             ECPoint::Infinite => Self::new(Default::default(), Default::default(), true),
-            ECPoint::Finite((x, y)) => Self::new(
+            ECPoint::Finite(FiniteECPoint(x, y)) => Self::new(
                 ark_ff::BigInteger256::from(x).into(),
                 ark_ff::BigInteger256::from(y).into(),
                 false,
             ),
         }
+    }
+}
+
+impl<P> From<FiniteECPoint> for GroupAffine<P>
+where
+    P: ark_ec::SWModelParameters,
+    <P as ModelParameters>::BaseField: From<ark_ff::BigInteger256>,
+{
+    fn from(FiniteECPoint(x, y): FiniteECPoint) -> Self {
+        Self::new(
+            ark_ff::BigInteger256::from(x).into(),
+            ark_ff::BigInteger256::from(y).into(),
+            false,
+        )
     }
 }
