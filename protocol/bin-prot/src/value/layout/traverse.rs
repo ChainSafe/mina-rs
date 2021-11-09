@@ -45,9 +45,9 @@ impl Iterator for BinProtRuleIterator {
                             rules
                                 .drain(0..)
                                 .map(|field| {
-                                    if field.field_name == "current_protocol_version" {
-                                        println!("{:#?}", field.field_rule);
-                                    }
+                                    // if field.field_name == "current_protocol_version" {
+                                    //     println!("{:#?}", field.field_rule);
+                                    // }
                                     field.field_rule
                                 })
                                 .rev(),

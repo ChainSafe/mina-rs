@@ -35,7 +35,13 @@ jobs:
           components: clippy
           override: true
       - run: cargo test --release --all-features
+      - run: cargo bench --all-features
       - run: cargo clippy --release --all-features -- --deny warnings
+      - uses: actions/upload-artifact@v2
+        with:
+          name: criterion
+          path: target/criterion/**/*
+          if-no-files-found: error
   wasm:
     runs-on: ubuntu-latest
     steps:
