@@ -5,7 +5,8 @@ authors = ["ChainSafe Systems <info@chainsafe.io>"]
 edition = "2021"
 
 [dependencies]
-wire-type = {path = "../wire-type" }
+wire-type = {path = "../protocol/wire-type" }
+
 mina-crypto = { path = "../crypto" }
 
 anyhow = "1"

@@ -1,12 +1,13 @@
 [workspace]
 members = [
 	"base",
-	"bin_prot_checker",
 	"consensus",
 	"crypto",
-	"bin-prot",
-	"wire-type",
-	"wire-type-derive",
-	"test-fixtures",
-	"test-serialization",
+	# All crates related to bin prot wire protocol
+	"protocol/bin-prot",
+	"protocol/wire-type",
+	"protocol/bin_prot_checker",
+	"protocol/wire-type-derive",
+	"protocol/test-fixtures",
+	"protocol/test-serialization",
 ]

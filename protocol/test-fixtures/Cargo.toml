@@ -7,7 +7,7 @@ publish = false
 
 [dependencies]
 bin-prot = { path = "../bin-prot" }
-mina-rs-base = { path = "../base" }
+mina-rs-base = { path = "../../base" }
 
 anyhow = "1"
 serde = { version = "1", features = ["derive"] }
