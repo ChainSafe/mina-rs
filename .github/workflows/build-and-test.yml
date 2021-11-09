@@ -17,6 +17,9 @@ jobs:
           components: rustfmt
           override: true
       - run: cargo fmt --all -- --check
+      - name: Check license
+        run: |
+          sh ./scripts/add_license.sh
   x86_64:
     runs-on: ubuntu-latest
     steps:
@@ -42,8 +45,11 @@ jobs:
           override: true
       # clippy includes cargo check
       - run: cargo clippy --release --all-features --target wasm32-unknown-unknown -- --deny warnings
-      - run: cargo install wasm-pack
-      - run: |
+      - name: Install wasm-pack
+        # run: cargo install wasm-pack
+        run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
+      - name: wasm-pack tests for test-serialization
+        run: |
           cd protocol/test-serialization
           wasm-pack test --node --release
           wasm-pack test --headless --chrome --release --features browser
