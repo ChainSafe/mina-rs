@@ -9,6 +9,7 @@ mod tests {
     use super::{block_path_test, block_path_test_batch};
     use bin_prot::{from_reader, to_writer, Value};
     use mina_crypto::hash::*;
+    use wasm_bindgen_test::*;
     use mina_crypto::signature::{
         FieldPoint, InnerCurveScalar, PublicKey, PublicKey2, PublicKey3, Signature,
     };
@@ -18,42 +19,42 @@ mod tests {
     use std::str::FromStr;
     use test_fixtures::*;
 
-    #[test]
+    #[wasm_bindgen_test]
     fn test_external_transition() {
         block_path_test_batch! {
             ExternalTransition => ""
         }
     }
 
-    #[test]
+    #[wasm_bindgen_test]
     fn test_protocol_state() {
         block_path_test_batch! {
             ProtocolState => "t/protocol_state"
         }
     }
 
-    #[test]
+    #[wasm_bindgen_test]
     fn test_protocol_state_previous_state_hash() {
         block_path_test_batch! {
             StateHash => "t/protocol_state/t/t/previous_state_hash"
         }
     }
 
-    #[test]
+    #[wasm_bindgen_test]
     fn test_protocol_state_body() {
         block_path_test_batch! {
             ProtocolStateBody => "t/protocol_state/t/t/body"
         }
     }
 
-    #[test]
+    #[wasm_bindgen_test]
     fn test_protocol_state_body_genesis_state_hash() {
         block_path_test_batch! {
             StateHash => "t/protocol_state/t/t/body/t/t/genesis_state_hash"
         }
     }
 
-    #[test]
+    #[wasm_bindgen_test]
     fn test_protocol_state_body_blockchain_state() {
         block_path_test_batch! {
             SnarkedLedgerHash => "t/protocol_state/t/t/body/t/t/blockchain_state/t/t/snarked_ledger_hash"
@@ -64,7 +65,7 @@ mod tests {
         };
     }
 
-    #[test]
+    #[wasm_bindgen_test]
     fn test_protocol_state_body_blockchain_state_staged_ledger_hash() {
         block_path_test_batch! {
             LedgerHash => "t/protocol_state/t/t/body/t/t/blockchain_state/t/t/staged_ledger_hash/t/t/non_snark/t/ledger_hash"
@@ -76,7 +77,7 @@ mod tests {
         };
     }
 
-    #[test]
+    #[wasm_bindgen_test]
     fn test_protocol_state_body_consensus_state() {
         block_path_test_batch! {
             Length => "t/protocol_state/t/t/body/t/t/consensus_state/t/t/blockchain_length"
@@ -95,7 +96,7 @@ mod tests {
         }
     }
 
-    #[test]
+    #[wasm_bindgen_test]
     fn test_protocol_state_body_consensus_state_staking_epoch_data() {
         block_path_test_batch! {
             EpochLedger => "t/protocol_state/t/t/body/t/t/consensus_state/t/t/staking_epoch_data/t/t/ledger"
@@ -104,7 +105,7 @@ mod tests {
         }
     }
 
-    #[test]
+    #[wasm_bindgen_test]
     fn test_protocol_state_body_constants() {
         block_path_test_batch! {
             Length => "t/protocol_state/t/t/body/t/t/constants/t/t/k"
@@ -116,28 +117,28 @@ mod tests {
         }
     }
 
-    #[test]
+    #[wasm_bindgen_test]
     fn test_staged_ledger_state_proof() {
         block_path_test_batch! {
             ProtocolStateProof => "t/protocol_state_proof"
         }
     }
 
-    #[test]
+    #[wasm_bindgen_test]
     fn test_staged_ledger_state_proof_statement() {
         block_path_test_batch! {
             ProofStatement => "t/protocol_state_proof/t/t/t/t/statement"
         }
     }
 
-    #[test]
+    #[wasm_bindgen_test]
     fn test_staged_ledger_state_proof_statement_proof_state() {
         block_path_test_batch! {
             ProofState => "t/protocol_state_proof/t/t/t/t/statement/t/t/proof_state"
         }
     }
 
-    #[test]
+    #[wasm_bindgen_test]
     fn test_staged_ledger_state_proof_statement_proof_state_deferred_values() {
         block_path_test_batch! {
             () => "t/protocol_state_proof/t/t/t/t/statement/t/t/proof_state/t/deferred_values/t/bulletproof_challenges/t/t/18"
@@ -159,7 +160,7 @@ mod tests {
         }
     }
 
-    #[test]
+    #[wasm_bindgen_test]
     fn test_staged_ledger_state_proof_statement_proof_state_sponge_digest_before_evaluations() {
         block_path_test_batch! {
            () => "t/protocol_state_proof/t/t/t/t/statement/t/t/proof_state/t/sponge_digest_before_evaluations/t/t/4"
@@ -171,7 +172,7 @@ mod tests {
         }
     }
 
-    #[test]
+    #[wasm_bindgen_test]
     fn test_staged_ledger_state_proof_statement_proof_state_me_only() {
         block_path_test_batch! {
             () => "t/protocol_state_proof/t/t/t/t/statement/t/t/proof_state/t/me_only/t/old_bulletproof_challenges/t/2"
@@ -185,7 +186,7 @@ mod tests {
         }
     }
 
-    #[test]
+    #[wasm_bindgen_test]
     fn test_staged_ledger_state_proof_statement_pass_through() {
         block_path_test_batch! {
             () => "t/protocol_state_proof/t/t/t/t/statement/t/t/pass_through/t/old_bulletproof_challenges/t/0/t/t/18"
@@ -202,28 +203,28 @@ mod tests {
         }
     }
 
-    #[test]
+    #[wasm_bindgen_test]
     fn test_staged_ledger_state_proof_prev_evals() {
         block_path_test_batch! {
             PrevEvals => "t/protocol_state_proof/t/t/t/t/prev_evals"
         }
     }
 
-    #[test]
+    #[wasm_bindgen_test]
     fn test_staged_ledger_state_proof_prev_x_hat() {
         block_path_test_batch! {
             PrevXHat => "t/protocol_state_proof/t/t/t/t/prev_x_hat"
         }
     }
 
-    #[test]
+    #[wasm_bindgen_test]
     fn test_staged_ledger_state_proof_proof() {
         block_path_test_batch! {
             Proof => "t/protocol_state_proof/t/t/t/t/proof"
         }
     }
 
-    #[test]
+    #[wasm_bindgen_test]
     fn test_staged_ledger_state_proof_proof_messages() {
         block_path_test_batch! {
             ProofMessageWithoutDegreeBoundList => "t/protocol_state_proof/t/t/t/t/proof/t/t/messages/t/l_comm"
@@ -237,14 +238,14 @@ mod tests {
         }
     }
 
-    #[test]
+    #[wasm_bindgen_test]
     fn test_staged_ledger_state_proof_proof_openings() {
         block_path_test_batch! {
             ProofOpenings => "t/protocol_state_proof/t/t/t/t/proof/t/t/openings"
         }
     }
 
-    #[test]
+    #[wasm_bindgen_test]
     fn test_staged_ledger_state_proof_proof_openings_proof() {
         block_path_test_batch! {
             BackendCommonHashTuple => "t/protocol_state_proof/t/t/t/t/proof/t/t/openings/t/proof/t/lr/t/0/0"
@@ -258,7 +259,7 @@ mod tests {
         }
     }
 
-    #[test]
+    #[wasm_bindgen_test]
     fn test_staged_ledger_state_proof_proof_openings_evals() {
         block_path_test_batch! {
             BackendCommonHashList => "t/protocol_state_proof/t/t/t/t/proof/t/t/openings/t/evals/0/t/l"
@@ -275,42 +276,42 @@ mod tests {
         }
     }
 
-    #[test]
+    #[wasm_bindgen_test]
     fn test_staged_ledger_diff() {
         block_path_test_batch! {
             StagedLedgerDiff => "t/staged_ledger_diff"
         }
     }
 
-    #[test]
+    #[wasm_bindgen_test]
     fn test_staged_ledger_diff_diff() {
         block_path_test_batch! {
             StagedLedgerDiffTuple => "t/staged_ledger_diff/t/diff"
         }
     }
 
-    #[test]
+    #[wasm_bindgen_test]
     fn test_staged_ledger_diff_one() {
         block_path_test_batch! {
             Option<StagedLedgerPreDiffOne> => "t/staged_ledger_diff/t/diff/t/1"
         }
     }
 
-    #[test]
+    #[wasm_bindgen_test]
     fn test_staged_ledger_diff_diff_two() {
         block_path_test_batch! {
             StagedLedgerPreDiffTwo => "t/staged_ledger_diff/t/diff/t/0"
         }
     }
 
-    #[test]
+    #[wasm_bindgen_test]
     fn test_staged_ledger_diff_diff_completed_works() {
         block_path_test_batch! {
             Vec<TransactionSnarkWork> => "t/staged_ledger_diff/t/diff/t/0/t/t/completed_works"
         }
     }
 
-    #[test]
+    #[wasm_bindgen_test]
     fn test_staged_ledger_diff_diff_commands() {
         block_path_test_batch! {
             UserCommandWithStatus => "t/staged_ledger_diff/t/diff/t/0/t/t/commands/0"
@@ -318,7 +319,7 @@ mod tests {
         }
     }
 
-    #[test]
+    #[wasm_bindgen_test]
     fn test_staged_ledger_diff_diff_commands_data() {
         block_path_test_batch! {
             SignedCommand => "t/staged_ledger_diff/t/diff/t/0/t/t/commands/0/t/data/t/t/[sum]"
@@ -326,7 +327,7 @@ mod tests {
         }
     }
 
-    #[test]
+    #[wasm_bindgen_test]
     fn test_staged_ledger_diff_diff_commands_data_payload_common() {
         block_path_test_batch! {
             Amount => "t/staged_ledger_diff/t/diff/t/0/t/t/commands/0/t/data/t/t/0/t/t/payload/t/t/common/t/t/t/fee"
@@ -340,7 +341,7 @@ mod tests {
         }
     }
 
-    #[test]
+    #[wasm_bindgen_test]
     fn test_staged_ledger_diff_diff_commands_data_payload_body() {
         block_path_test_batch! {
            PublicKey2 => "t/staged_ledger_diff/t/diff/t/0/t/t/commands/0/t/data/t/t/0/t/t/payload/t/t/body/t/t/0/t/t/source_pk"
@@ -353,14 +354,14 @@ mod tests {
         }
     }
 
-    #[test]
+    #[wasm_bindgen_test]
     fn test_staged_ledger_diff_diff_commands_data_signer() {
         block_path_test_batch! {
             PublicKey3 => "t/staged_ledger_diff/t/diff/t/0/t/t/commands/0/t/data/t/t/0/t/t/signer"
         }
     }
 
-    #[test]
+    #[wasm_bindgen_test]
     fn test_staged_ledger_diff_diff_commands_data_signature() {
         block_path_test_batch! {
             FieldPoint => "t/staged_ledger_diff/t/diff/t/0/t/t/commands/0/t/data/t/t/0/t/t/signature/t/t/0"
@@ -373,7 +374,7 @@ mod tests {
         }
     }
 
-    #[test]
+    #[wasm_bindgen_test]
     fn test_staged_ledger_diff_diff_commands_status() {
         block_path_test_batch! {
             TransactionStatusAuxiliaryData => "t/staged_ledger_diff/t/diff/t/0/t/t/commands/0/t/status/t/0"
@@ -383,7 +384,7 @@ mod tests {
         }
     }
 
-    #[test]
+    #[wasm_bindgen_test]
     fn test_staged_ledger_diff_diff_coinbase() {
         block_path_test_batch! {
             Option<CoinBaseFeeTransfer> => "t/staged_ledger_diff/t/diff/t/0/t/t/coinbase/t/[sum]"
@@ -391,7 +392,7 @@ mod tests {
         }
     }
 
-    #[test]
+    #[wasm_bindgen_test]
     fn test_staged_ledger_diff_diff_internal_command_balances() {
         block_path_test_batch! {
             CoinBaseBalanceData => "t/staged_ledger_diff/t/diff/t/0/t/t/internal_command_balances/0/t/[sum]"
@@ -402,7 +403,7 @@ mod tests {
         }
     }
 
-    #[test]
+    #[wasm_bindgen_test]
     fn test_delta_transition_chain_proof() {
         block_path_test_batch! {
             StateHash => "t/delta_transition_chain_proof/0"
@@ -415,7 +416,7 @@ mod tests {
         }
     }
 
-    #[test]
+    #[wasm_bindgen_test]
     fn test_all_block_subtypes() {
         ////////////////////////////////////////////////////////////////
         // Here is where to add calls to test_in_block for every type
@@ -483,7 +484,7 @@ mod tests {
         }
     }
 
-    #[test]
+    #[wasm_bindgen_test]
     fn smoke_test_roundtrip_block1() {
         let block = TEST_BLOCKS.get("block1").expect("Failed to load block1");
 
@@ -505,7 +506,7 @@ mod tests {
         test_roundtrip(&block.value, block.bytes.as_slice());
     }
 
-    #[test]
+    #[wasm_bindgen_test]
     fn smoke_test_deserialize_block() {
         // check we can deserialize into this type without error
         for (name, block) in TEST_BLOCKS.iter() {
