@@ -1,14 +1,12 @@
 on:
   push:
-    branches: [main, types-working-bee-base]
+    branches: [main]
   pull_request:
-    branches: [main, types-working-bee-base]
 
 name: Continuous integration
 
 jobs:
-  check:
-    name: Check
+  checks:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -16,43 +14,10 @@ jobs:
         with:
           profile: minimal
           toolchain: stable
-          override: true
-      - uses: actions-rs/cargo@v1
-        with:
-          command: check
-
-  test:
-    name: Test Suite
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions-rs/toolchain@v1
-        with:
-          profile: minimal
-          toolchain: stable
-          override: true
-      - uses: actions-rs/cargo@v1
-        with:
-          command: test
-
-  fmt:
-    name: Rustfmt
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions-rs/toolchain@v1
-        with:
-          profile: minimal
-          toolchain: stable
-          override: true
           components: rustfmt
-      - uses: actions-rs/cargo@v1
-        with:
-          command: fmt
-          args: --all -- --check
-
-  clippy:
-    name: Clippy
+          override: true
+      - run: cargo fmt --all -- --check
+  x86_64:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -60,15 +25,11 @@ jobs:
         with:
           profile: minimal
           toolchain: stable
-          override: true
           components: clippy
-      - uses: actions-rs/cargo@v1
-        with:
-          command: clippy
-          args: -- -D warnings
-
+          override: true
+      - run: cargo test --release --all-features
+      - run: cargo clippy --release --all-features -- --deny warnings
   wasm:
-    name: WasmBuild
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -76,15 +37,17 @@ jobs:
         with:
           profile: minimal
           toolchain: stable
-          override: true
+          components: clippy
           target: wasm32-unknown-unknown
-      - uses: actions-rs/cargo@v1
-        with:
-          command: check
-          args: --target wasm32-unknown-unknown
-
-  codecov:
-    name: Code Coverage
+          override: true
+      # clippy includes cargo check
+      - run: cargo clippy --release --all-features --target wasm32-unknown-unknown -- --deny warnings
+      - run: cargo install wasm-pack
+      - run: |
+          cd protocol/test-serialization
+          wasm-pack test --node --release
+          wasm-pack test --headless --chrome --release --features browser
+  codecov-x86_64:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
