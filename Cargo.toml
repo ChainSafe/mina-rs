@@ -10,4 +10,6 @@ members = [
 	"protocol/wire-type-derive",
 	"protocol/test-fixtures",
 	"protocol/test-serialization",
+	# binaries - entry points for an end user
+	"apps/cli"
 ]
