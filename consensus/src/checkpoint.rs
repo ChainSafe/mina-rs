@@ -4,7 +4,7 @@ use mina_rs_base::protocol_state::ProtocolState;
 
 /// init_checkpoints initializes the checkpoints for the genesis block
 /// This function assumes the state hash of `genesis` is already set
-fn init_checkpoints(genesis: &mut ProtocolState) -> () {
+fn init_checkpoints(genesis: &mut ProtocolState) {
     let state_hash = genesis.hash();
     genesis
         .body
@@ -24,7 +24,7 @@ fn init_checkpoints(genesis: &mut ProtocolState) -> () {
     genesis.body.consensus_state.next_epoch_data.lock_checkpoint = state_hash;
 }
 
-fn update_checkpoints(parent: &ProtocolState, block: &mut ProtocolState) -> () {
+fn update_checkpoints(parent: &ProtocolState, block: &mut ProtocolState) {
     let parent_hash = parent.hash();
     if block.epoch_slot().unwrap() == 0 {
         block.body.consensus_state.next_epoch_data.start_checkpoint = parent_hash;
