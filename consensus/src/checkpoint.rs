@@ -52,7 +52,7 @@ fn is_short_range(c0: &ProtocolStateChain, c1: &ProtocolStateChain) -> bool {
 mod tests {
     use super::*;
     use mina_rs_base::global_slot::GlobalSlot;
-    use mina_rs_base::numbers::{GlobalSlot as GlobalSlotNumber, Length};
+    use mina_rs_base::numbers::{GlobalSlotNumber, Length};
 
     fn test_init_checkpoints() {
         let mut genesis: ProtocolState = Default::default();
