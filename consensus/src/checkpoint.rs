@@ -1,3 +1,6 @@
+// Copyright 2020 ChainSafe Systems
+// SPDX-License-Identifier: Apache-2.0
+
 use crate::common::{Common, ProtocolStateChain};
 use mina_crypto::hash::{Hashable, StateHash};
 use mina_rs_base::protocol_state::ProtocolState;
