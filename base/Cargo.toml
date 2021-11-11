@@ -17,14 +17,14 @@ num = "0.4"
 serde = { version = "1", features = ["derive"] }
 thiserror = "1"
 
-plonk_protocol_dlog = { git = "https://github.com/o1-labs/proof-systems" }
-plonk_circuits = { git = "https://github.com/o1-labs/proof-systems" }
-commitment_dlog = { git = "https://github.com/o1-labs/proof-systems" }
-mina-curves = { git = "https://github.com/o1-labs/proof-systems" }
+plonk_protocol_dlog = { git = "https://github.com/o1-labs/proof-systems", rev = "81a61f9e345fad6d2a652fb323a882f39c6c1057" }
+plonk_circuits = { git = "https://github.com/o1-labs/proof-systems", rev = "81a61f9e345fad6d2a652fb323a882f39c6c1057" }
+commitment_dlog = { git = "https://github.com/o1-labs/proof-systems", rev = "81a61f9e345fad6d2a652fb323a882f39c6c1057" }
+mina-curves = { git = "https://github.com/o1-labs/proof-systems", rev = "81a61f9e345fad6d2a652fb323a882f39c6c1057" }
 ark-ec = "0.3.0"
 ark-ff = "0.3.0"
 
-# This dependency is not used by the crate but is a subdependency of commitment_dlog
+# This dependency is not used by the crate, but is a subdependency of commitment_dlog
 # This features must be enable to build with WASM support
 # It has no effect for normal builds
 getrandom = { version = "0.2", features = ["js"] }

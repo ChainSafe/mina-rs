@@ -242,6 +242,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "bumpalo"
+version = "3.8.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "8f1e260c3a9040a7c19a12468758f4c16f31a81a1fe087482be9570ec864bb6c"
+
+[[package]]
 name = "byteorder"
 version = "1.4.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -301,7 +307,7 @@ dependencies = [
 [[package]]
 name = "commitment_dlog"
 version = "0.1.0"
-source = "git+https://github.com/o1-labs/proof-systems#3b9bc2d3f2ed9b4c1a6a4d33f521eae05c426ffb"
+source = "git+https://github.com/o1-labs/proof-systems?rev=81a61f9e345fad6d2a652fb323a882f39c6c1057#81a61f9e345fad6d2a652fb323a882f39c6c1057"
 dependencies = [
  "ark-ec",
  "ark-ff",
@@ -521,14 +527,16 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "7fcd999463524c52659517fe2cea98493cfe485d10565e7b0fb07dbba7ad2753"
 dependencies = [
  "cfg-if",
+ "js-sys",
  "libc",
  "wasi",
+ "wasm-bindgen",
 ]
 
 [[package]]
 name = "groupmap"
 version = "0.1.0"
-source = "git+https://github.com/o1-labs/proof-systems#3b9bc2d3f2ed9b4c1a6a4d33f521eae05c426ffb"
+source = "git+https://github.com/o1-labs/proof-systems?rev=81a61f9e345fad6d2a652fb323a882f39c6c1057#81a61f9e345fad6d2a652fb323a882f39c6c1057"
 dependencies = [
  "ark-ec",
  "ark-ff",
@@ -590,6 +598,15 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b71991ff56294aa922b450139ee08b3bfc70982c6b2c7562771375cf73542dd4"
 
 [[package]]
+name = "js-sys"
+version = "0.3.55"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "7cc9ffccd38c451a86bf13657df244e9c3f37493cce8e5e21e940963777acc84"
+dependencies = [
+ "wasm-bindgen",
+]
+
+[[package]]
 name = "lazy_static"
 version = "1.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -606,6 +623,15 @@ name = "libm"
 version = "0.2.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "c7d73b3f436185384286bd8098d17ec07c9a7d2388a6599f824d8502b529702a"
+
+[[package]]
+name = "log"
+version = "0.4.14"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "51b9bbe6c47d51fc3e1a9b945965946b4c44142ab8792c50835a980d362c2710"
+dependencies = [
+ "cfg-if",
+]
 
 [[package]]
 name = "matrixmultiply"
@@ -652,7 +678,7 @@ dependencies = [
 [[package]]
 name = "mina-curves"
 version = "0.1.0"
-source = "git+https://github.com/o1-labs/proof-systems#3b9bc2d3f2ed9b4c1a6a4d33f521eae05c426ffb"
+source = "git+https://github.com/o1-labs/proof-systems?rev=81a61f9e345fad6d2a652fb323a882f39c6c1057#81a61f9e345fad6d2a652fb323a882f39c6c1057"
 dependencies = [
  "ark-ec",
  "ark-ff",
@@ -669,6 +695,7 @@ dependencies = [
  "chrono",
  "commitment_dlog",
  "derive_deref",
+ "getrandom",
  "mina-crypto",
  "mina-curves",
  "num",
@@ -812,7 +839,7 @@ dependencies = [
 [[package]]
 name = "o1-utils"
 version = "0.1.0"
-source = "git+https://github.com/o1-labs/proof-systems#3b9bc2d3f2ed9b4c1a6a4d33f521eae05c426ffb"
+source = "git+https://github.com/o1-labs/proof-systems?rev=81a61f9e345fad6d2a652fb323a882f39c6c1057#81a61f9e345fad6d2a652fb323a882f39c6c1057"
 dependencies = [
  "ark-ec",
  "ark-ff",
@@ -838,7 +865,7 @@ checksum = "624a8340c38c1b80fd549087862da4ba43e08858af025b236e509b6649fc13d5"
 [[package]]
 name = "oracle"
 version = "0.1.0"
-source = "git+https://github.com/o1-labs/proof-systems#3b9bc2d3f2ed9b4c1a6a4d33f521eae05c426ffb"
+source = "git+https://github.com/o1-labs/proof-systems?rev=81a61f9e345fad6d2a652fb323a882f39c6c1057#81a61f9e345fad6d2a652fb323a882f39c6c1057"
 dependencies = [
  "ark-ec",
  "ark-ff",
@@ -882,7 +909,7 @@ dependencies = [
 [[package]]
 name = "plonk_circuits"
 version = "0.1.0"
-source = "git+https://github.com/o1-labs/proof-systems#3b9bc2d3f2ed9b4c1a6a4d33f521eae05c426ffb"
+source = "git+https://github.com/o1-labs/proof-systems?rev=81a61f9e345fad6d2a652fb323a882f39c6c1057#81a61f9e345fad6d2a652fb323a882f39c6c1057"
 dependencies = [
  "ark-ff",
  "ark-poly",
@@ -900,7 +927,7 @@ dependencies = [
 [[package]]
 name = "plonk_protocol_dlog"
 version = "0.1.0"
-source = "git+https://github.com/o1-labs/proof-systems#3b9bc2d3f2ed9b4c1a6a4d33f521eae05c426ffb"
+source = "git+https://github.com/o1-labs/proof-systems?rev=81a61f9e345fad6d2a652fb323a882f39c6c1057#81a61f9e345fad6d2a652fb323a882f39c6c1057"
 dependencies = [
  "ark-ec",
  "ark-ff",
@@ -1418,6 +1445,60 @@ name = "wasi"
 version = "0.10.0+wasi-snapshot-preview1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "1a143597ca7c7793eff794def352d41792a93c481eb1042423ff7ff72ba2c31f"
+
+[[package]]
+name = "wasm-bindgen"
+version = "0.2.78"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "632f73e236b219150ea279196e54e610f5dbafa5d61786303d4da54f84e47fce"
+dependencies = [
+ "cfg-if",
+ "wasm-bindgen-macro",
+]
+
+[[package]]
+name = "wasm-bindgen-backend"
+version = "0.2.78"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "a317bf8f9fba2476b4b2c85ef4c4af8ff39c3c7f0cdfeed4f82c34a880aa837b"
+dependencies = [
+ "bumpalo",
+ "lazy_static",
+ "log",
+ "proc-macro2",
+ "quote",
+ "syn",
+ "wasm-bindgen-shared",
+]
+
+[[package]]
+name = "wasm-bindgen-macro"
+version = "0.2.78"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "d56146e7c495528bf6587663bea13a8eb588d39b36b679d83972e1a2dbbdacf9"
+dependencies = [
+ "quote",
+ "wasm-bindgen-macro-support",
+]
+
+[[package]]
+name = "wasm-bindgen-macro-support"
+version = "0.2.78"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "7803e0eea25835f8abdc585cd3021b3deb11543c6fe226dcd30b228857c5c5ab"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn",
+ "wasm-bindgen-backend",
+ "wasm-bindgen-shared",
+]
+
+[[package]]
+name = "wasm-bindgen-shared"
+version = "0.2.78"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "0237232789cf037d5480773fe568aac745bfe2afbc11a863e97901780a6b47cc"
 
 [[package]]
 name = "winapi"
