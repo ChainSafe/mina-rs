@@ -18,27 +18,9 @@ mod tests {
     use std::str::FromStr;
     use test_fixtures::*;
 
-    use mina_crypto::hash::*;
     use mina_rs_base::protocol_state_proof::proof_messages::{
         ProofMessageWithDegreeBound, ProofMessageWithoutDegreeBoundList,
     };
-    use mina_rs_base::types::*;
-
-    const BLOCK_LAYOUT: &str = std::include_str!("../../layouts/external_transition.json");
-    const BLOCK_BYTES: &[u8] = std::include_bytes!("../../test-fixtures/block");
-
-    // this allows the expensive block rule deserialization and parsing to be done only once for all tests
-    lazy_static! {
-        static ref BLOCK_RULE: BinProtRule = {
-            let mut deserializer = serde_json::Deserializer::from_str(BLOCK_LAYOUT);
-            deserializer.disable_recursion_limit();
-            let deserializer = serde_stacker::Deserializer::new(&mut deserializer);
-            bin_prot::Layout::deserialize(deserializer)
-                .unwrap()
-                .bin_prot_rule
-        };
-        static ref TEST_BLOCK_1: bin_prot::Value = load_test_block();
-    }
 
     #[test]
     fn test_external_transition() {
