@@ -264,6 +264,7 @@ mod tests {
 
     #[test]
     fn test_staged_ledger_state_proof_proof_openings_evals() {
+        type ProofEvaluationsTuple = (ProofEvaluations, ProofEvaluations);
         block_path_test_batch! {
             FieldElementVec => "t/protocol_state_proof/t/t/t/t/proof/t/t/openings/t/evals/0/t/l"
             FieldElementVec => "t/protocol_state_proof/t/t/t/t/proof/t/t/openings/t/evals/0/t/r"
@@ -275,7 +276,7 @@ mod tests {
             FieldElementVec => "t/protocol_state_proof/t/t/t/t/proof/t/t/openings/t/evals/0/t/sigma2"
             ProofEvaluations => "t/protocol_state_proof/t/t/t/t/proof/t/t/openings/t/evals/0"
             ProofEvaluations => "t/protocol_state_proof/t/t/t/t/proof/t/t/openings/t/evals/1"
-            // ProofOpeningsEvalTuple => "t/protocol_state_proof/t/t/t/t/proof/t/t/openings/t/evals"
+            ProofEvaluationsTuple => "t/protocol_state_proof/t/t/t/t/proof/t/t/openings/t/evals"
         }
     }
 
