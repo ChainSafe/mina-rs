@@ -56,6 +56,7 @@ mod tests {
     use super::*;
     use mina_rs_base::global_slot::GlobalSlot;
     use mina_rs_base::numbers::{GlobalSlotNumber, Length};
+
     #[test]
     fn test_init_checkpoints() {
         let mut genesis: ProtocolState = Default::default();
@@ -90,6 +91,7 @@ mod tests {
             state_hash
         );
     }
+    
     #[test]
     fn test_update_checkpoints() {
         let mut genesis: ProtocolState = Default::default();
