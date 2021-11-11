@@ -5,6 +5,8 @@ use crate::common::{Common, ProtocolStateChain};
 use mina_crypto::hash::{Hashable, StateHash};
 use mina_rs_base::protocol_state::ProtocolState;
 
+const slots_per_epoch: u32 = 7140;
+
 /// init_checkpoints initializes the checkpoints for the genesis block
 /// This function assumes the state hash of `genesis` is already set
 fn initCheckpoints(genesis: &mut ProtocolState) {
@@ -23,23 +25,24 @@ fn initCheckpoints(genesis: &mut ProtocolState) {
         .body
         .consensus_state
         .next_epoch_data
-        .start_checkpoint = state_hash;
+        .start_checkpoint = StateHash::default();
     genesis.body.consensus_state.next_epoch_data.lock_checkpoint = state_hash;
 }
 
 fn updateCheckpoints(parent: &ProtocolState, block: &mut ProtocolState) {
     let parent_hash = parent.hash();
-    if block.epoch_slot().unwrap() == 0 {
+    let epoch_slot = block.epoch_slot().unwrap();
+
+    if epoch_slot == 0 {
         block.body.consensus_state.next_epoch_data.start_checkpoint = parent_hash;
     }
 
-    let epoch_slot = block.epoch_slot().unwrap();
-    if epoch_slot < (2 / 3) * block.body.constants.slots_per_epoch.0 {
+    if epoch_slot >= (2 / 3) * slots_per_epoch {
         block.body.consensus_state.next_epoch_data.lock_checkpoint = parent_hash;
     }
 }
 
-fn isShortRange (c0: &ProtocolStateChain, c1: &ProtocolStateChain) -> bool {
+fn isShortRange(c0: &ProtocolStateChain, c1: &ProtocolStateChain) -> bool {
     c0.consensus_state()
         .unwrap()
         .staking_epoch_data
@@ -84,7 +87,7 @@ mod tests {
                 .consensus_state
                 .next_epoch_data
                 .start_checkpoint,
-            state_hash
+            StateHash::default()
         );
         assert_eq!(
             genesis.body.consensus_state.next_epoch_data.lock_checkpoint,
@@ -92,13 +95,13 @@ mod tests {
         );
     }
 
-    #[test]
     fn test_update_checkpoints() {
         let mut genesis: ProtocolState = Default::default();
         let state_hash = genesis.hash();
         initCheckpoints(&mut genesis);
 
         let mut b1: ProtocolState = Default::default();
+        b1.body.consensus_state.blockchain_length = Length(0);
         b1.body.consensus_state.curr_global_slot = GlobalSlot {
             slot_number: GlobalSlotNumber(0),
             slots_per_epoch: Length(1000),
@@ -114,6 +117,7 @@ mod tests {
         );
 
         let mut b1: ProtocolState = Default::default();
+        b1.body.consensus_state.blockchain_length = Length(1);
         b1.body.consensus_state.curr_global_slot = GlobalSlot {
             slot_number: GlobalSlotNumber(1),
             slots_per_epoch: Length(1000),
@@ -143,4 +147,7 @@ mod tests {
             StateHash::default()
         );
     }
+
+    #[test]
+    fn test_is_short_range() {}
 }
