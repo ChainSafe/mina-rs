@@ -1,18 +1,18 @@
 [package]
+authors = ["ChainSafe Systems <info@chainsafe.io>"]
 name = "bin-prot"
 version = "0.1.0"
-license = "Apache-2.0"
-authors = ["ChainSafe Systems <info@chainsafe.io>"]
+
 edition = "2021"
+license = "Apache-2.0"
 
 [dependencies]
 byteorder = "1.4.3"
 duplicate = "0.3.0"
 num = "0.4.0"
-serde = { version = "1.0.125" }
-serde_json = { version = "1.0.64" }
+serde = "1"
+serde_json = "1"
 thiserror = "1.0.24"
 
 [dev-dependencies]
-difference = "2.0.0"
-serde = { version = "1.0.125", features = ["derive"] }
+serde = {version = "1", features = ["derive"]}
