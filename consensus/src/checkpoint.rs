@@ -7,7 +7,7 @@ use mina_rs_base::protocol_state::ProtocolState;
 
 /// init_checkpoints initializes the checkpoints for the genesis block
 /// This function assumes the state hash of `genesis` is already set
-fn init_checkpoints(genesis: &mut ProtocolState) {
+fn initCheckpoints(genesis: &mut ProtocolState) {
     let state_hash = genesis.hash();
     genesis
         .body
@@ -27,7 +27,7 @@ fn init_checkpoints(genesis: &mut ProtocolState) {
     genesis.body.consensus_state.next_epoch_data.lock_checkpoint = state_hash;
 }
 
-fn update_checkpoints(parent: &ProtocolState, block: &mut ProtocolState) {
+fn updateCheckpoints(parent: &ProtocolState, block: &mut ProtocolState) {
     let parent_hash = parent.hash();
     if block.epoch_slot().unwrap() == 0 {
         block.body.consensus_state.next_epoch_data.start_checkpoint = parent_hash;
@@ -39,7 +39,7 @@ fn update_checkpoints(parent: &ProtocolState, block: &mut ProtocolState) {
     }
 }
 
-fn is_short_range(c0: &ProtocolStateChain, c1: &ProtocolStateChain) -> bool {
+fn isShortRange (c0: &ProtocolStateChain, c1: &ProtocolStateChain) -> bool {
     c0.consensus_state()
         .unwrap()
         .staking_epoch_data
@@ -61,7 +61,7 @@ mod tests {
     fn test_init_checkpoints() {
         let mut genesis: ProtocolState = Default::default();
         let state_hash = genesis.hash();
-        init_checkpoints(&mut genesis);
+        initCheckpoints(&mut genesis);
         assert_eq!(
             genesis
                 .body
@@ -91,19 +91,19 @@ mod tests {
             state_hash
         );
     }
-    
+
     #[test]
     fn test_update_checkpoints() {
         let mut genesis: ProtocolState = Default::default();
         let state_hash = genesis.hash();
-        init_checkpoints(&mut genesis);
+        initCheckpoints(&mut genesis);
 
         let mut b1: ProtocolState = Default::default();
         b1.body.consensus_state.curr_global_slot = GlobalSlot {
             slot_number: GlobalSlotNumber(0),
             slots_per_epoch: Length(1000),
         };
-        update_checkpoints(&genesis, &mut b1);
+        updateCheckpoints(&genesis, &mut b1);
         assert_eq!(
             b1.body.consensus_state.next_epoch_data.start_checkpoint,
             state_hash
@@ -118,7 +118,7 @@ mod tests {
             slot_number: GlobalSlotNumber(1),
             slots_per_epoch: Length(1000),
         };
-        update_checkpoints(&genesis, &mut b1);
+        updateCheckpoints(&genesis, &mut b1);
         assert_eq!(
             b1.body.consensus_state.next_epoch_data.start_checkpoint,
             StateHash::default()
@@ -133,7 +133,7 @@ mod tests {
             slot_number: GlobalSlotNumber(667),
             slots_per_epoch: Length(1000),
         };
-        update_checkpoints(&genesis, &mut b1);
+        updateCheckpoints(&genesis, &mut b1);
         assert_eq!(
             b1.body.consensus_state.next_epoch_data.start_checkpoint,
             StateHash::default()
