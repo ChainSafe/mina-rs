@@ -19,12 +19,12 @@ pub type FieldElement = BigInt256;
 #[serde(into = "<Self as WireType>::WireType")]
 pub struct FieldElementVec(pub Vec<FieldElement>);
 
-impl<Fs> Into<Vec<Fs>> for FieldElementVec
+impl<Fs> From<FieldElementVec> for Vec<Fs>
 where
     Fs: From<ark_ff::BigInteger256>,
 {
-    fn into(self) -> Vec<Fs> {
-        self.0
+    fn from(t: FieldElementVec) -> Self {
+        t.0
             .into_iter()
             .map(|i| ark_ff::BigInteger256::from(i).into())
             .collect()
