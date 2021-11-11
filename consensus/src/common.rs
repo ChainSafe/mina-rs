@@ -173,7 +173,6 @@ mod tests {
         assert_eq!(c.top(), Some(&expected));
     }
 
-    #[test]
     fn test_protocol_state_chain_epoch_slot() {
         let mut c: ProtocolStateChain = ProtocolStateChain(vec![]);
 
