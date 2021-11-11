@@ -36,7 +36,14 @@ jobs:
           override: true
       - run: cargo test --release --all-features
       - run: cargo bench --all-features
+      - run: cargo doc --release --all-features
+      - run: cargo test --release --all-features --doc
       - run: cargo clippy --release --all-features -- --deny warnings
+      - uses: actions/upload-artifact@v2
+        with:
+          name: doc
+          path: target/doc/**/*
+          if-no-files-found: error
       - uses: actions/upload-artifact@v2
         with:
           name: criterion
@@ -55,6 +62,7 @@ jobs:
           override: true
       # clippy includes cargo check
       - run: cargo clippy --release --all-features --target wasm32-unknown-unknown -- --deny warnings
+      - run: cargo doc --release --all-features --target wasm32-unknown-unknown
       - name: Install wasm-pack
         # run: cargo install wasm-pack
         run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh

@@ -60,6 +60,14 @@ pub struct ExtendedU64_3(pub u64);
 #[wire_type(recurse = 2)]
 pub struct ExtendedU64_2(pub u64);
 
+/// This structure represents float numbers
+/// # Example
+/// ```
+/// use mina_rs_base::numbers::*;
+///
+/// let amount = Amount(1000000030);
+/// assert_eq!(amount.to_formatted_string(), "1.000000030");
+/// ```
 #[derive(Clone, Serialize, Deserialize, PartialEq, Debug, Hash, Default, WireType)]
 #[serde(from = "<Self as WireType>::WireType")]
 #[serde(into = "<Self as WireType>::WireType")]
@@ -67,8 +75,8 @@ pub struct ExtendedU64_2(pub u64);
 pub struct Amount(pub u64);
 
 impl Amount {
-    // https://github.com/MinaProtocol/mina/pull/4306
-    // https://github.com/MinaProtocol/mina/blob/ec00ece4606244e842bf90d989d6f9bb66ab275f/src/lib/currency/currency.ml#L68
+    /// Ported from <https://github.com/MinaProtocol/mina/pull/4306>
+    /// and <https://github.com/MinaProtocol/mina/blob/ec00ece4606244e842bf90d989d6f9bb66ab275f/src/lib/currency/currency.ml#L68>
     pub fn to_formatted_string(&self) -> String {
         const PRECISION: u32 = 9;
         const PRECISION_EXP: u64 = 10_u64.pow(PRECISION);
@@ -111,10 +119,12 @@ pub struct GlobalSlotNumber(pub u32);
 pub struct BlockTime(u64);
 
 impl BlockTime {
+    /// Gets unix timestamp in milliseconds
     pub fn epoch_millis(&self) -> u64 {
         self.0
     }
 
+    /// Gets timestamp in [time::OffsetDateTime] format
     pub fn datetime(&self) -> time::OffsetDateTime {
         use time::OffsetDateTime;
         let (q, r) = (self.0 as i64).div_rem(&1000);
