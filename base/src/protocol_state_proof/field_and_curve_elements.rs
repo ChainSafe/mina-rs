@@ -24,8 +24,7 @@ where
     Fs: From<ark_ff::BigInteger256>,
 {
     fn from(t: FieldElementVec) -> Self {
-        t.0
-            .into_iter()
+        t.0.into_iter()
             .map(|i| ark_ff::BigInteger256::from(i).into())
             .collect()
     }
