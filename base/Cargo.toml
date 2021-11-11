@@ -1,21 +1,21 @@
 [package]
+authors = ["ChainSafe Systems <info@chainsafe.io>"]
 name = "mina-rs-base"
 version = "0.1.0"
-authors = ["ChainSafe Systems <info@chainsafe.io>"]
+
 edition = "2021"
+license = "Apache-2.0"
 
 [dependencies]
-wire-type = {path = "../protocol/wire-type" }
-
-mina-crypto = { path = "../crypto" }
+mina-crypto = {path = "../crypto"}
+wire-type = {path = "../protocol/wire-type"}
 
 anyhow = "1"
-blake2 = "0.9"
-chrono = "0.4"
 derive_deref = "1.1"
 num = "0.4"
-serde = { version = "1", features = ["derive"] }
+serde = {version = "1", features = ["derive"]}
 thiserror = "1"
+time = "0.3"
 
 plonk_protocol_dlog = { git = "https://github.com/o1-labs/proof-systems", rev = "81a61f9e345fad6d2a652fb323a882f39c6c1057" }
 plonk_circuits = { git = "https://github.com/o1-labs/proof-systems", rev = "81a61f9e345fad6d2a652fb323a882f39c6c1057" }

@@ -4,6 +4,7 @@
 use derive_deref::Deref;
 use num::Integer;
 use serde::{Deserialize, Serialize};
+use time::Duration;
 use wire_type::WireType;
 
 #[derive(
@@ -114,9 +115,15 @@ impl BlockTime {
         self.0
     }
 
-    pub fn datetime(&self) -> chrono::DateTime<chrono::Utc> {
-        use chrono::prelude::*;
-        Utc.timestamp_millis(self.0 as i64)
+    pub fn datetime(&self) -> time::OffsetDateTime {
+        use time::OffsetDateTime;
+        let (q, r) = (self.0 as i64).div_rem(&1000);
+        let dt = OffsetDateTime::from_unix_timestamp(q).expect("Invalid block time");
+        if r == 0 {
+            dt
+        } else {
+            dt + Duration::milliseconds(r)
+        }
     }
 }
 

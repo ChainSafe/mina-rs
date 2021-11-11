@@ -2,7 +2,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use bin_prot::to_writer;
-use difference::Changeset;
 use std::fmt::Write;
 
 mod common;
@@ -44,9 +43,7 @@ fn test_serialize_arrays() {
         writeln!(&mut buf, "-> {:?}", val).expect("its cooked");
     }
 
-    let cs = Changeset::new(&buf, EXPECTED, "");
-    println!("{}", cs);
-    assert_eq!(cs.distance, 0)
+    assert_eq!(&buf, EXPECTED);
 }
 
 #[test]

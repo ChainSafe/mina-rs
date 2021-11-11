@@ -1,15 +1,25 @@
 // Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
+#[cfg(all(test, feature = "browser"))]
+wasm_bindgen_test::wasm_bindgen_test_configure!(run_in_browser);
+
 #[cfg(test)]
 mod tests {
     use anyhow::bail;
-    use chrono::prelude::*;
+    use mina_crypto::base58::Base58Encodable;
     use mina_rs_base::staged_ledger_diff::{
         SignedCommandMemo, SignedCommandPayloadBody, UserCommand,
     };
     use pretty_assertions::assert_eq;
     use test_fixtures::*;
+    use time::macros::*;
+    use wasm_bindgen_test::*;
+
+    #[wasm_bindgen_test]
+    fn test_block_wasm() {
+        test_block().unwrap()
+    }
 
     // https://minaexplorer.com/block/3NKaBJsN1SehD6iJwRwJSFmVzJg5DXSUQVgnMxtH4eer4aF5BrDK
     #[test]
@@ -21,11 +31,17 @@ mod tests {
 
         let body = &et.protocol_state.body;
 
-        let protocol_state = &body.blockchain_state;
-        assert_eq!(protocol_state.timestamp.epoch_millis(), 1636092900000);
+        let protocol_state = &et.protocol_state;
         assert_eq!(
-            protocol_state.timestamp.datetime(),
-            Utc.ymd(2021, 11, 5).and_hms_nano(6, 15, 0, 0)
+            protocol_state.previous_state_hash.to_base58().into_string(),
+            "3NKDdX6eVtAgmmTVxaFLnnPPrsGKgVepG2k5cf8HocgSw6ps8Sww"
+        );
+
+        let blockchain_state = &body.blockchain_state;
+        assert_eq!(blockchain_state.timestamp.epoch_millis(), 1636092900000);
+        assert_eq!(
+            blockchain_state.timestamp.datetime(),
+            datetime!(2021-11-05 06:15:00 UTC)
         );
 
         let consensus_state = &body.consensus_state;
