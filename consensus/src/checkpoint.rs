@@ -4,7 +4,7 @@
 use crate::common::{Common, ProtocolStateChain};
 use mina_crypto::hash::{Hashable, StateHash};
 use mina_rs_base::protocol_state::ProtocolState;
-
+use wasm_bindgen_test::*;
 const slots_per_epoch: u32 = 7140;
 
 /// init_checkpoints initializes the checkpoints for the genesis block
@@ -60,7 +60,7 @@ mod tests {
     use mina_rs_base::global_slot::GlobalSlot;
     use mina_rs_base::numbers::{GlobalSlotNumber, Length};
 
-    #[test]
+    #[wasm_bindgen_test]
     fn test_init_checkpoints() {
         let mut genesis: ProtocolState = Default::default();
         let state_hash = genesis.hash();
@@ -95,6 +95,7 @@ mod tests {
         );
     }
 
+    #[wasm_bindgen_test]
     fn test_update_checkpoints() {
         let mut genesis: ProtocolState = Default::default();
         let state_hash = genesis.hash();
@@ -148,6 +149,6 @@ mod tests {
         );
     }
 
-    #[test]
+    #[wasm_bindgen_test]
     fn test_is_short_range() {}
 }

@@ -10,3 +10,4 @@ mina-crypto = { version = "0.1.0", path = "../crypto" }
 mina-rs-base = { version = "0.1.0", path = "../base" }
 serde-bin-prot = { git = "https://github.com/ChainSafe/serde-bin-prot", branch = "main" }
 thiserror = "1.0.24"
+wasm-bindgen-test = "0.3.0"
