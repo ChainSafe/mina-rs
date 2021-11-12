@@ -5,7 +5,7 @@ use crate::common::{Common, ProtocolStateChain};
 use mina_crypto::hash::{Hashable, StateHash};
 use mina_rs_base::protocol_state::ProtocolState;
 use wasm_bindgen_test::*;
-const slots_per_epoch: u32 = 7140;
+const SLOTS_PER_EPOCH: u32 = 7140;
 
 /// init_checkpoints initializes the checkpoints for the genesis block
 /// This function assumes the state hash of `genesis` is already set
@@ -37,7 +37,7 @@ fn update_checkpoints(parent: &ProtocolState, block: &mut ProtocolState) {
         block.body.consensus_state.next_epoch_data.start_checkpoint = parent_hash;
     }
 
-    if epoch_slot >= (2 / 3) * slots_per_epoch {
+    if epoch_slot >= (2 / 3) * SLOTS_PER_EPOCH {
         block.body.consensus_state.next_epoch_data.lock_checkpoint = parent_hash;
     }
 }
@@ -102,26 +102,24 @@ mod tests {
         init_checkpoints(&mut genesis);
 
         let mut b1: ProtocolState = Default::default();
-        b1.body.consensus_state.blockchain_length = Length(0);
         b1.body.consensus_state.curr_global_slot = GlobalSlot {
-            slot_number: GlobalSlotNumber(0),
-            slots_per_epoch: Length(1000),
+            slot_number: GlobalSlotNumber(1),
+            slots_per_epoch: Length(7140),
         };
         update_checkpoints(&genesis, &mut b1);
         assert_eq!(
             b1.body.consensus_state.next_epoch_data.start_checkpoint,
-            state_hash
+            StateHash::default()
         );
+
         assert_eq!(
             b1.body.consensus_state.next_epoch_data.lock_checkpoint,
             state_hash
         );
-
         let mut b1: ProtocolState = Default::default();
-        b1.body.consensus_state.blockchain_length = Length(1);
         b1.body.consensus_state.curr_global_slot = GlobalSlot {
-            slot_number: GlobalSlotNumber(1),
-            slots_per_epoch: Length(1000),
+            slot_number: GlobalSlotNumber(2),
+            slots_per_epoch: Length(7140),
         };
         update_checkpoints(&genesis, &mut b1);
         assert_eq!(
@@ -136,7 +134,7 @@ mod tests {
         let mut b1: ProtocolState = Default::default();
         b1.body.consensus_state.curr_global_slot = GlobalSlot {
             slot_number: GlobalSlotNumber(667),
-            slots_per_epoch: Length(1000),
+            slots_per_epoch: Length(7140),
         };
         update_checkpoints(&genesis, &mut b1);
         assert_eq!(
@@ -148,7 +146,4 @@ mod tests {
             StateHash::default()
         );
     }
-
-    #[wasm_bindgen_test]
-    fn test_is_short_range() {}
 }
