@@ -1,0 +1,34 @@
+[package]
+name = "mina-p2p-rs-demo"
+version = "0.1.0"
+
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[workspace]
+
+[features]
+default = []
+
+wasm = [
+  "libp2p/wasm-bindgen",
+  "libp2p/wasm-ext-websocket",
+]
+ws = [
+  "libp2p-websocket",
+]
+
+[dependencies]
+# libp2p = {version = "0.40", features = ["tcp-tokio"]}
+libp2p = {path = "../../../hanabi1224/rust-libp2p", features = ["tcp-tokio"]}
+libp2p-mplex = {path = "../../../hanabi1224/rust-libp2p/muxers/mplex"}
+libp2p-relay = {path = "../../../hanabi1224/rust-libp2p/protocols/relay"}
+libp2p-websocket = {path = "../../../hanabi1224/rust-libp2p/transports/websocket", optional = true}
+
+anyhow = "1"
+# async-std = {version = "1.10", features = ["attributes"]}
+env_logger = "0.9"
+hex = "0.4"
+multihash = "0.15"
+tokio = {version = "1.13", features = ["full"]}

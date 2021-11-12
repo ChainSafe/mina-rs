@@ -2,11 +2,14 @@ package main
 
 import (
 	"context"
+	"crypto/rand"
 	"fmt"
 	"log"
+	"sync"
 	"time"
 
 	"github.com/libp2p/go-libp2p"
+	"github.com/libp2p/go-libp2p-core/crypto"
 	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/libp2p/go-libp2p-core/peerstore"
@@ -29,8 +32,8 @@ const (
 
 	// mainnet seeds: https://storage.googleapis.com/mina-seed-lists/mainnet_seeds.txt
 	// devnet seeds:  https://storage.googleapis.com/seed-lists/devnet_seeds.txt
-	MINA_NODE_ADDRESS = "/ip4/127.0.0.1/tcp/8302/p2p/12D3KooWJhUBZr378KApyBg1T1DP4AoFaVddWiurmRfnU7ZtvdFz"
-	// MINA_NODE_ADDRESS = "/ip4/95.217.106.189/tcp/8302/p2p/12D3KooWSxxCtzRLfUzoxgRYW9fTKWPUujdvStuwCPSPUN3629mb"
+	// MINA_NODE_ADDRESS = "/ip4/127.0.0.1/tcp/8302/p2p/12D3KooWKK3RpV1MWAZk3FJ5xqbVPL2BMDdUEGSfwfQoUprBNZCv"
+	MINA_NODE_ADDRESS = "/ip4/95.217.106.189/tcp/8302/p2p/12D3KooWSxxCtzRLfUzoxgRYW9fTKWPUujdvStuwCPSPUN3629mb"
 )
 
 var (
@@ -52,14 +55,21 @@ func createRelayHost(isRelayNode bool, listenEnabled bool) (host host.Host, err 
 		relayOps = libp2p.EnableRelay()
 	}
 	listenAddr, _ := ma.NewMultiaddr("/ip4/127.0.0.1/tcp/0")
+	listenAddrWs, _ := ma.NewMultiaddr("/ip4/127.0.0.1/tcp/0/ws")
 	var listenAddrs config.Option
 	if listenEnabled {
-		listenAddrs = libp2p.ListenAddrs(listenAddr)
+		listenAddrs = libp2p.ListenAddrs(listenAddr, listenAddrWs)
 	} else {
 		listenAddrs = libp2p.ListenAddrs()
 	}
+	r := rand.Reader
+	prvKey, _, err := crypto.GenerateKeyPairWithReader(crypto.Ed25519, 2048, r)
+	if err != nil {
+		panic(err)
+	}
 	host, err = libp2p.New(
 		context.Background(),
+		libp2p.Identity(prvKey),
 		listenAddrs,
 		relayOps,
 		muxer,
@@ -134,23 +144,29 @@ func run() {
 		}
 
 		h1.Peerstore().AddAddrs(relayHostInfo.ID, relayHostInfo.Addrs, peerstore.ConnectedAddrTTL)
-		if err := h1.Connect(context.Background(), minaPeerInfoViaRelay); err != nil {
-			log.Printf("Failed to connect h1 to mina via relayHost: %v", err)
-			return
-		}
-		s, err := h1.NewStream(context.Background(), minaPeerInfoViaRelay.ID, "/mina/node-status")
-		if err != nil {
-			log.Println("huh, this should have worked: ", err)
-			return
-		}
-		time.Sleep(time.Second * 1)
-		data := make([]byte, BUFFER_SIZE)
-		n, _ := s.Read(data)
-		fmt.Printf("[h1] received: %s\n", string(data[:n]))
+		// if err := h1.Connect(context.Background(), minaPeerInfoViaRelay); err != nil {
+		// 	log.Printf("Failed to connect h1 to mina via relayHost: %v", err)
+		// 	return
+		// }
+		// s, err := h1.NewStream(context.Background(), minaPeerInfoViaRelay.ID, "/mina/node-status")
+		// if err != nil {
+		// 	log.Println("huh, this should have worked: ", err)
+		// 	return
+		// }
+		// time.Sleep(time.Second * 1)
+		// data := make([]byte, BUFFER_SIZE)
+		// n, _ := s.Read(data)
+		// fmt.Printf("[h1] received: %s\n", string(data[:n]))
+
+		log.Printf("RelayAddr: %s %x\n", relayaddr, pnetKey)
+		log.Printf("relayHost: %s %s\n", relayHost.Addrs(), relayHost.ID())
 	}
 }
 
 func main() {
 	mplex.MaxMessageSize = 1 << 30
 	run()
+	wg := sync.WaitGroup{}
+	wg.Add(1)
+	wg.Wait()
 }
