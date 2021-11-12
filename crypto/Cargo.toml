@@ -1,13 +1,17 @@
 [package]
+authors = ["ChainSafe Systems <info@chainsafe.io>"]
 name = "mina-crypto"
 version = "0.1.0"
-authors = ["ChainSafe Systems <info@chainsafe.io>"]
+
 edition = "2021"
+license = "Apache-2.0"
 
 [dependencies]
-bs58 = { version = "0.4.0", features = ["check"] }
-serde = { version = "1.0.126", features = ["derive"] }
-wire-type = {path = "../wire-type" }
-bin-prot = { path = "../bin-prot" }
-thiserror = "1.0.25"
+bin-prot = {path = "../protocol/bin-prot"}
+wire-type = {path = "../protocol/wire-type"}
+
 blake2 = "0.9.1"
+bs58 = {version = "0.4.0", features = ["check"]}
+derive_deref = "1.1"
+serde = {version = "1", features = ["derive"]}
+thiserror = "1.0.25"

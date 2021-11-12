@@ -1,18 +1,18 @@
 [package]
 authors = ["ChainSafe Systems <info@chainsafe.io>"]
-name = "mina-rs-base"
+name = "bin-prot"
 version = "0.1.0"
 
 edition = "2021"
 license = "Apache-2.0"
 
 [dependencies]
-mina-crypto = {path = "../crypto"}
-wire-type = {path = "../protocol/wire-type"}
+byteorder = "1.4.3"
+duplicate = "0.3.0"
+num = "0.4.0"
+serde = "1"
+serde_json = "1"
+thiserror = "1.0.24"
 
-anyhow = "1"
-derive_deref = "1.1"
-num = "0.4"
+[dev-dependencies]
 serde = {version = "1", features = ["derive"]}
-thiserror = "1"
-time = "0.3"

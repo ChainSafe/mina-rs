@@ -1,0 +1,26 @@
+[package]
+authors = ["ChainSafe Systems <info@chainsafe.io>"]
+name = "test-fixtures"
+version = "0.1.0"
+
+edition = "2021"
+license = "Apache-2.0"
+publish = false
+
+[dependencies]
+bin-prot = {path = "../bin-prot"}
+mina-rs-base = {path = "../../base"}
+
+anyhow = "1"
+hex = "0.4"
+lazy_static = "1"
+serde = {version = "1", features = ["derive"]}
+serde_json = {version = "1", features = ["unbounded_depth"]}
+serde_stacker = "0.1"
+
+[lib]
+# Data files might grow very large, 
+# Allow dynamic linking to save build time during development
+# by setting RUSTFLAGS="-C prefer-dynamic".
+# Keeping only dylib here will cause errors when running `cargo test` from root, see https://github.com/rust-lang/cargo/issues/7226
+crate-type = ["dylib", "lib"]

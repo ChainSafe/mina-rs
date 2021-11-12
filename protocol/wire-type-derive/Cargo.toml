@@ -1,18 +1,21 @@
 [package]
 authors = ["ChainSafe Systems <info@chainsafe.io>"]
-name = "mina-rs-base"
+name = "wire-type-derive"
 version = "0.1.0"
 
 edition = "2021"
 license = "Apache-2.0"
 
-[dependencies]
-mina-crypto = {path = "../crypto"}
-wire-type = {path = "../protocol/wire-type"}
+[lib]
+proc-macro = true
 
-anyhow = "1"
-derive_deref = "1.1"
-num = "0.4"
+[dependencies]
+quote = "1.0"
+syn = "1.0"
+
+darling = "0.13.0"
+
+[dev-dependencies]
+wire-type = {path = "../wire-type"}
+
 serde = {version = "1", features = ["derive"]}
-thiserror = "1"
-time = "0.3"
