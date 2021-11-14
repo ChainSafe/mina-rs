@@ -8,4 +8,4 @@ use wire_type::WireType;
 #[serde(from = "<Self as WireType>::WireType")]
 #[serde(into = "<Self as WireType>::WireType")]
 #[wire_type(recurse = 3)]
-pub struct TokenId(u64);
+pub struct TokenId(pub u64);

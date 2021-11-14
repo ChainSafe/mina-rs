@@ -17,11 +17,11 @@ use mina_crypto::hash::StateHash;
 #[serde(into = "<Self as WireType>::WireType")]
 #[wire_type(recurse = 2)]
 pub struct ProtocolConstants {
-    k: Length,
-    slots_per_epoch: Length,
-    slots_per_sub_window: Length,
-    delta: Delta,
-    genesis_state_timestamp: BlockTime,
+    pub k: Length,
+    pub slots_per_epoch: Length,
+    pub slots_per_sub_window: Length,
+    pub delta: Delta,
+    pub genesis_state_timestamp: BlockTime,
 }
 
 /// This structure can be thought of like the block header. It contains the most essential information of a block.
