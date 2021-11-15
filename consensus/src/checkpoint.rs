@@ -3,7 +3,7 @@
 
 use crate::common::{Common, ProtocolStateChain};
 use mina_crypto::base58::Base58Encodable;
-use mina_crypto::hash::{Hashable, StateHash};
+use mina_crypto::hash::{Hashable, StateHash, EpochSeed};
 use mina_rs_base::protocol_state::ProtocolState;
 use wasm_bindgen_test::*;
 const SLOTS_PER_EPOCH: u32 = 7140;
@@ -12,6 +12,7 @@ const SLOTS_PER_EPOCH: u32 = 7140;
 /// This function assumes the state hash of `genesis` is already set
 fn init_checkpoints(genesis: &mut ProtocolState) {
     let state_hash = genesis.hash();
+    genesis.body.consensus_state.staking_epoch_data.seed = EpochSeed::default();
     genesis
         .body
         .consensus_state
