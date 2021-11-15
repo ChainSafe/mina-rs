@@ -1,2 +1,7 @@
 ignore:
-  - "**/test-*"
+  - "**/tests"
+  - "**/benches"
+  - "**/examples"
+  - "protocol/bin_prot_checker"
+  - "protocol/test-fixtures"
+  - "protocol/test-serialization"

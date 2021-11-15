@@ -5,7 +5,7 @@
 //! Hash and Hasher types reused throughout
 //!
 //! When converted to human readable forms, hashes in Mina use the Bitcoin Base58Check encoding
-//! see https://github.com/MinaProtocol/mina/blob/f88edb440e321114e26f7691e599adab30ce16cd/src/lib/base58_check/README.md
+//! see <https://github.com/MinaProtocol/mina/blob/f88edb440e321114e26f7691e599adab30ce16cd/src/lib/base58_check/README.md>
 //!
 //! Depending on the type of hash a different byte prefix is used in the human readable form
 //!
