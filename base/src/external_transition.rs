@@ -6,6 +6,7 @@ use wire_type::WireType;
 
 use crate::types::*;
 
+/// This structure represents a mina block
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize, WireType)]
 #[serde(from = "<Self as WireType>::WireType")]
 #[serde(into = "<Self as WireType>::WireType")]
