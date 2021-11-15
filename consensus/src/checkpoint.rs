@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::common::{Common, ProtocolStateChain};
+use mina_crypto::base58::Base58Encodable;
 use mina_crypto::hash::{Hashable, StateHash};
 use mina_rs_base::protocol_state::ProtocolState;
 use wasm_bindgen_test::*;
@@ -24,9 +25,21 @@ fn init_checkpoints(genesis: &mut ProtocolState) {
     genesis
         .body
         .consensus_state
+        .staking_epoch_data
+        .epoch_length
+        .0 = 1;
+    genesis.body.consensus_state.next_epoch_data.seed =
+        Base58Encodable::from_base58("2vaRh7FQ5wSzmpFReF9gcRKjv48CcJvHs25aqb3SSZiPgHQBy5Dt")
+            .unwrap();
+    genesis
+        .body
+        .consensus_state
         .next_epoch_data
         .start_checkpoint = StateHash::default();
-    genesis.body.consensus_state.next_epoch_data.lock_checkpoint = state_hash;
+    genesis.body.consensus_state.next_epoch_data.lock_checkpoint =
+        Base58Encodable::from_base58("3NLoKn22eMnyQ7rxh5pxB6vBA3XhSAhhrf7akdqS6HbAKD14Dh1d")
+            .unwrap();
+    genesis.body.consensus_state.next_epoch_data.epoch_length.0 = 2;
 }
 
 fn is_short_range(c0: &ProtocolStateChain, c1: &ProtocolStateChain) -> bool {
@@ -97,7 +110,8 @@ mod tests {
         );
         assert_eq!(
             genesis.body.consensus_state.next_epoch_data.lock_checkpoint,
-            state_hash
+            Base58Encodable::from_base58("3NLoKn22eMnyQ7rxh5pxB6vBA3XhSAhhrf7akdqS6HbAKD14Dh1d")
+                .unwrap()
         );
     }
 }
