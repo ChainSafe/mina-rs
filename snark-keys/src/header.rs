@@ -14,32 +14,32 @@ use serde::Deserialize;
 
 pub(crate) const FILE_ID: &str = "MINA_SNARK_KEYS";
 
-#[derive(Deserialize)]
+#[derive(Debug, Deserialize)]
 pub struct KeyFileHeader {
     header_version: u8,
     kind: Kind,
     constraint_constants: ConstraintConstants,
     commits: Commits,
     length: u64,
-    commit_data: String,
+    commit_date: String,
     constraint_system_hash: String,
     identifying_hash: String,
 }
 
-#[derive(Deserialize)]
+#[derive(Debug, Deserialize)]
 struct Kind {
     r#type: KeyType,
     identifier: KeyIdentifier,
 }
 
-#[derive(Deserialize)]
+#[derive(Debug, Deserialize)]
 #[serde(rename_all = "kebab-case")]
 enum KeyType {
     StepVerificationKey,
     WrapVerificationKey,
 }
 
-#[derive(Deserialize)]
+#[derive(Debug, Deserialize)]
 #[serde(rename_all = "kebab-case")]
 enum KeyIdentifier {
     BlockchainSnarkStep,
@@ -49,17 +49,17 @@ enum KeyIdentifier {
     TransactionSnark
 }
 
-#[derive(Deserialize)]
+#[derive(Debug, Deserialize)]
 struct TransactionCapacity {
     two_to_the: u64
 }
 
-#[derive(Deserialize)]
+#[derive(Debug, Deserialize)]
 struct ConstraintConstants {
     sub_windows_per_window: u64,
     ledger_depth: u64,
     work_delay: u64,
-    block_window_duration_ls: u64,
+    block_window_duration_ms: u64,
     transaction_capacity: TransactionCapacity,
     pending_coinbase_depth: u64,
     coinbase_amount: String,
@@ -68,14 +68,14 @@ struct ConstraintConstants {
     fork: Fork,
 }
 
-#[derive(Deserialize)]
+#[derive(Debug, Deserialize)]
 struct Fork {
-    previous_state_hash: String,
-    previous_length: u64,
-    previous_global_slot: u64,
+    previous_state_hash: Option<String>,
+    previous_length: Option<u64>,
+    previous_global_slot: Option<u64>,
 }
 
-#[derive(Deserialize)]
+#[derive(Debug, Deserialize)]
 struct Commits {
     mina: String,
     marlin: String,
