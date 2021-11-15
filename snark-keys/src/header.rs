@@ -37,6 +37,8 @@ struct Kind {
 enum KeyType {
     StepVerificationKey,
     WrapVerificationKey,
+    StepProvingKey,
+    WrapProvingKey,
 }
 
 #[derive(Debug, Deserialize)]
