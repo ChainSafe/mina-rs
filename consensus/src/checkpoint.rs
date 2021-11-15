@@ -29,36 +29,42 @@ fn init_checkpoints(genesis: &mut ProtocolState) {
     genesis.body.consensus_state.next_epoch_data.lock_checkpoint = state_hash;
 }
 
-fn update_checkpoints(parent: &ProtocolState, block: &mut ProtocolState) {
-    let parent_hash = parent.hash();
-    let epoch_slot = block.epoch_slot().unwrap();
-
-    if epoch_slot == 0 {
-        block.body.consensus_state.next_epoch_data.start_checkpoint = parent_hash;
-    }
-
-    if epoch_slot >= (2 / 3) * SLOTS_PER_EPOCH {
-        block.body.consensus_state.next_epoch_data.lock_checkpoint = parent_hash;
-    }
-}
-
 fn is_short_range(c0: &ProtocolStateChain, c1: &ProtocolStateChain) -> bool {
-    c0.consensus_state()
-        .unwrap()
-        .staking_epoch_data
-        .lock_checkpoint
-        == c1
+    if c0.consensus_state().unwrap().epoch_count == c1.consensus_state().unwrap().epoch_count {
+        return c0
             .consensus_state()
             .unwrap()
             .staking_epoch_data
             .lock_checkpoint
+            == c1
+                .consensus_state()
+                .unwrap()
+                .staking_epoch_data
+                .lock_checkpoint;
+    }
+
+    if c0.consensus_state().unwrap().epoch_count.0
+        == c1.consensus_state().unwrap().epoch_count.0 + 1
+        && Common::epoch_slot(c1) >= Some((2 / 3) * SLOTS_PER_EPOCH)
+    {
+        return c0
+            .consensus_state()
+            .unwrap()
+            .staking_epoch_data
+            .lock_checkpoint
+            == c1
+                .consensus_state()
+                .unwrap()
+                .next_epoch_data
+                .lock_checkpoint;
+    } else {
+        return false;
+    }
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
-    use mina_rs_base::global_slot::GlobalSlot;
-    use mina_rs_base::numbers::{GlobalSlotNumber, Length};
 
     #[wasm_bindgen_test]
     fn test_init_checkpoints() {
@@ -92,58 +98,6 @@ mod tests {
         assert_eq!(
             genesis.body.consensus_state.next_epoch_data.lock_checkpoint,
             state_hash
-        );
-    }
-
-    #[wasm_bindgen_test]
-    fn test_update_checkpoints() {
-        let mut genesis: ProtocolState = Default::default();
-        let state_hash = genesis.hash();
-        init_checkpoints(&mut genesis);
-
-        let mut b1: ProtocolState = Default::default();
-        b1.body.consensus_state.curr_global_slot = GlobalSlot {
-            slot_number: GlobalSlotNumber(1),
-            slots_per_epoch: Length(7140),
-        };
-        update_checkpoints(&genesis, &mut b1);
-        assert_eq!(
-            b1.body.consensus_state.next_epoch_data.start_checkpoint,
-            StateHash::default()
-        );
-
-        assert_eq!(
-            b1.body.consensus_state.next_epoch_data.lock_checkpoint,
-            state_hash
-        );
-        let mut b1: ProtocolState = Default::default();
-        b1.body.consensus_state.curr_global_slot = GlobalSlot {
-            slot_number: GlobalSlotNumber(2),
-            slots_per_epoch: Length(7140),
-        };
-        update_checkpoints(&genesis, &mut b1);
-        assert_eq!(
-            b1.body.consensus_state.next_epoch_data.start_checkpoint,
-            StateHash::default()
-        );
-        assert_eq!(
-            b1.body.consensus_state.next_epoch_data.lock_checkpoint,
-            state_hash
-        );
-
-        let mut b1: ProtocolState = Default::default();
-        b1.body.consensus_state.curr_global_slot = GlobalSlot {
-            slot_number: GlobalSlotNumber(667),
-            slots_per_epoch: Length(7140),
-        };
-        update_checkpoints(&genesis, &mut b1);
-        assert_eq!(
-            b1.body.consensus_state.next_epoch_data.start_checkpoint,
-            StateHash::default()
-        );
-        assert_eq!(
-            b1.body.consensus_state.next_epoch_data.lock_checkpoint,
-            StateHash::default()
         );
     }
 }
