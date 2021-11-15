@@ -923,6 +923,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "snark-keys"
+version = "0.1.0"
+dependencies = [
+ "serde",
+ "serde_json",
+]
+
+[[package]]
 name = "stacker"
 version = "0.1.14"
 source = "registry+https://github.com/rust-lang/crates.io-index"
