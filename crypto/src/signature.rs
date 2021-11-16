@@ -42,11 +42,35 @@ pub struct PublicKey3(pub CompressedCurvePoint);
 #[wire_type(recurse = 2)]
 pub struct Signature((FieldPoint, InnerCurveScalar));
 
+impl Signature {
+    /// field_point
+    pub fn field_point(&self) -> &FieldPoint {
+        &self.0 .0
+    }
+
+    /// inner_curve_scalar
+    pub fn inner_curve_scalar(&self) -> &InnerCurveScalar {
+        &self.0 .1
+    }
+}
+
 #[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug)]
 pub struct FieldPoint(BaseHash);
 
+impl AsRef<[u8]> for FieldPoint {
+    fn as_ref(&self) -> &[u8] {
+        self.0.as_ref()
+    }
+}
+
 #[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug)]
 pub struct InnerCurveScalar(BaseHash);
+
+impl AsRef<[u8]> for InnerCurveScalar {
+    fn as_ref(&self) -> &[u8] {
+        self.0.as_ref()
+    }
+}
 
 #[cfg(test)]
 pub mod tests {
