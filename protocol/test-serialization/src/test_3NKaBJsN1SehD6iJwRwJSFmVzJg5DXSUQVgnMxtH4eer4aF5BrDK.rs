@@ -290,23 +290,23 @@ mod tests {
             _ => bail!("CoinBase::One expected, but found: {:#?}", coinbase),
         };
 
-        let inernal_commands = &et
+        let internal_commands = &et
             .staged_ledger_diff
             .diff
             .diff_two()
             .internal_command_balances;
-        assert_eq!(inernal_commands.len(), 2);
-        match &inernal_commands[0] {
+        assert_eq!(internal_commands.len(), 2);
+        match &internal_commands[0] {
             InternalCommandBalanceData::CoinBase(cb) => {
                 assert!(cb.fee_transfer_receiver_balance.is_none());
                 assert_eq!(cb.coinbase_receiver_balance.0, 20203793056339);
             }
             _ => {
-                bail!("CoinBase expected, but found: {:#?}", inernal_commands[0])
+                bail!("CoinBase expected, but found: {:#?}", internal_commands[0])
             }
         };
 
-        match &inernal_commands[1] {
+        match &internal_commands[1] {
             InternalCommandBalanceData::FeeTransfer(ft) => {
                 assert_eq!(ft.receiver1_balance.0, 20203805056339);
                 assert!(ft.receiver2_balance.is_none());
@@ -314,7 +314,7 @@ mod tests {
             _ => {
                 bail!(
                     "FeeTransfer expected, but found: {:#?}",
-                    inernal_commands[1]
+                    internal_commands[1]
                 )
             }
         };
