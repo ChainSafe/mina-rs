@@ -93,6 +93,12 @@ impl From<HashBytes> for LedgerHash {
 #[wire_type(recurse = 2)]
 pub struct CoinBaseHash(BaseHash);
 
+impl AsRef<[u8]> for CoinBaseHash {
+    fn as_ref(&self) -> &[u8] {
+        self.0.as_ref()
+    }
+}
+
 //////////////////////////////////////////////////////////////////////////
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize, WireType)]
@@ -161,6 +167,12 @@ pub struct NonSnarkStagedLedgerHash {
 #[serde(from = "<Self as WireType>::WireType")]
 #[serde(into = "<Self as WireType>::WireType")]
 pub struct AuxHash(Vec<u8>);
+
+impl AsRef<[u8]> for AuxHash {
+    fn as_ref(&self) -> &[u8] {
+        self.0.as_ref()
+    }
+}
 
 //////////////////////////////////////////////////////////////////////////
 

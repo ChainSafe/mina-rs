@@ -74,6 +74,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "base64"
+version = "0.13.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "904dfeac50f3cdaba28fc6f57fdcddb75f49ed61346676a78c4ffe55877802fd"
+
+[[package]]
 name = "bin-prot"
 version = "0.1.0"
 dependencies = [
@@ -1101,6 +1107,7 @@ name = "test-serialization"
 version = "0.1.0"
 dependencies = [
  "anyhow",
+ "base64",
  "bin-prot",
  "bs58",
  "criterion",
