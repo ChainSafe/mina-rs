@@ -7,7 +7,7 @@ use mina_rs_base::types::ExternalTransition;
 use serde::Deserialize;
 use std::str::FromStr;
 
-const BLOCK_BYTES: &[u8] = include_bytes!("../../../protocol/test-fixtures/src/data/block1");
+const BLOCK_BYTES: &[u8] = include_bytes!("../../../../protocol/test-fixtures/src/data/block1");
 
 fn main() -> anyhow::Result<()> {
     let matches = App::new("block-serde-app")
@@ -27,8 +27,7 @@ fn main() -> anyhow::Result<()> {
     match mode {
         Mode::Cpu => cpu_profile_serialization(),
         Mode::Heap => heap_profile_serialization(),
-    }
-    .unwrap();
+    }?;
     Ok(())
 }
 

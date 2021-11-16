@@ -13,5 +13,5 @@ members = [
 	"protocol/test-serialization",
 
 	# All apps
-	"apps/block-serde-profiler"
+	"apps/profilers"
 ]
