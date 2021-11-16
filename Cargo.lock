@@ -128,19 +128,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "block-serde-profiler"
-version = "0.1.0"
-dependencies = [
- "anyhow",
- "bin-prot",
- "clap",
- "dhat",
- "mina-crypto",
- "mina-rs-base",
- "serde",
-]
-
-[[package]]
 name = "bs58"
 version = "0.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -613,6 +600,19 @@ dependencies = [
  "thiserror",
  "time",
  "wire-type",
+]
+
+[[package]]
+name = "mina-rs-profilers"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "bin-prot",
+ "clap",
+ "dhat",
+ "mina-crypto",
+ "mina-rs-base",
+ "serde",
 ]
 
 [[package]]

@@ -1,6 +1,6 @@
 [package]
 authors = ["ChainSafe Systems <info@chainsafe.io>"]
-name = "block-serde-profiler"
+name = "mina-rs-profilers"
 version = "0.1.0"
 
 edition = "2021"
