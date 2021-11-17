@@ -4,6 +4,7 @@
 use derive_deref::Deref;
 use num::Integer;
 use serde::{Deserialize, Serialize};
+use time::Duration;
 use wire_type::WireType;
 
 #[derive(
@@ -59,6 +60,14 @@ pub struct ExtendedU64_3(pub u64);
 #[wire_type(recurse = 2)]
 pub struct ExtendedU64_2(pub u64);
 
+/// This structure represents float numbers
+/// # Example
+/// ```
+/// use mina_rs_base::numbers::*;
+///
+/// let amount = Amount(1000000030);
+/// assert_eq!(amount.to_formatted_string(), "1.000000030");
+/// ```
 #[derive(Clone, Serialize, Deserialize, PartialEq, Debug, Hash, Default, WireType)]
 #[serde(from = "<Self as WireType>::WireType")]
 #[serde(into = "<Self as WireType>::WireType")]
@@ -66,8 +75,8 @@ pub struct ExtendedU64_2(pub u64);
 pub struct Amount(pub u64);
 
 impl Amount {
-    // https://github.com/MinaProtocol/mina/pull/4306
-    // https://github.com/MinaProtocol/mina/blob/ec00ece4606244e842bf90d989d6f9bb66ab275f/src/lib/currency/currency.ml#L68
+    /// Ported from <https://github.com/MinaProtocol/mina/pull/4306>
+    /// and <https://github.com/MinaProtocol/mina/blob/ec00ece4606244e842bf90d989d6f9bb66ab275f/src/lib/currency/currency.ml#L68>
     pub fn to_formatted_string(&self) -> String {
         const PRECISION: u32 = 9;
         const PRECISION_EXP: u64 = 10_u64.pow(PRECISION);
@@ -110,26 +119,41 @@ pub struct GlobalSlotNumber(pub u32);
 pub struct BlockTime(u64);
 
 impl BlockTime {
+    /// Gets unix timestamp in milliseconds
     pub fn epoch_millis(&self) -> u64 {
         self.0
     }
 
-    pub fn datetime(&self) -> chrono::DateTime<chrono::Utc> {
-        use chrono::prelude::*;
-        Utc.timestamp_millis(self.0 as i64)
+    /// Gets timestamp in [time::OffsetDateTime] format
+    pub fn datetime(&self) -> time::OffsetDateTime {
+        use time::OffsetDateTime;
+        let (q, r) = (self.0 as i64).div_rem(&1000);
+        let dt = OffsetDateTime::from_unix_timestamp(q).expect("Invalid block time");
+        if r == 0 {
+            dt
+        } else {
+            dt + Duration::milliseconds(r)
+        }
     }
 }
 
 #[derive(Clone, Serialize, Deserialize, PartialEq, Debug, Hash, Default)]
 pub struct BlockTimeSpan(pub u64);
 
-// Consider switch to [ark-ff](https://docs.rs/ark-ff/0.3.0/ark_ff/biginteger/struct.BigInteger256.html)
 #[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug)]
 pub struct BigInt256(pub [u8; 32]);
+
+impl From<BigInt256> for ark_ff::BigInteger256 {
+    fn from(i: BigInt256) -> Self {
+        use ark_ff::bytes::FromBytes;
+        Self::read(&i.0[..]).unwrap()
+    }
+}
 
 #[cfg(test)]
 pub mod tests {
     use crate::numbers::Amount;
+    use crate::numbers::BigInt256;
 
     #[test]
     pub fn test_amount_to_formatted_string() {
@@ -139,5 +163,13 @@ pub mod tests {
         assert_eq!(Amount(1000000030).to_formatted_string(), "1.000000030");
         assert_eq!(Amount(1300000000).to_formatted_string(), "1.300000000");
         assert_eq!(Amount(1000000000).to_formatted_string(), "1.000000000");
+    }
+
+    #[test]
+    fn test_convert_bigint_to_arkworks_zero() {
+        use ark_ff::BigInteger256;
+        let i = BigInt256([0; 32]);
+        let ark_i: BigInteger256 = i.into();
+        assert_eq!(ark_i, BigInteger256::default())
     }
 }

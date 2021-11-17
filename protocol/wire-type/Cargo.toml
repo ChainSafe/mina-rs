@@ -1,13 +1,16 @@
 [package]
-name = "wire-type"
 authors = ["ChainSafe Systems <info@chainsafe.io>"]
+name = "wire-type"
 version = "0.1.0"
+
 edition = "2021"
+license = "Apache-2.0"
 
 [dependencies]
-serde = { version = "1.0.126" }
-wire-type-derive = { path = "../wire-type-derive" }
+wire-type-derive = {path = "../wire-type-derive"}
+
+serde = {version = "1"}
 
 [dev-dependencies]
-serde = { version = "1.0.126", features = ["derive"] }
-serde_json = "1.0.68"
+serde = {version = "1", features = ["derive"]}
+serde_json = "1"

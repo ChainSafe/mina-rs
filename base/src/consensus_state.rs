@@ -18,6 +18,12 @@ pub struct VrfOutputTruncated(Vec<u8>);
 
 impl Hashable<VrfOutputHash> for VrfOutputTruncated {}
 
+impl AsRef<[u8]> for VrfOutputTruncated {
+    fn as_ref(&self) -> &[u8] {
+        self.0.as_slice()
+    }
+}
+
 /// This structure encapsulates the succinct state of the consensus protocol.
 ///
 /// The stake distribution information is contained by the staking_epoch_data field.
@@ -39,7 +45,7 @@ pub struct ConsensusState {
     /// Minimum odnws density oberved on the chain
     pub min_window_density: Length,
     /// Current sliding window of densities
-    pub sub_window_densities: Vec<Length>,
+    sub_window_densities: Vec<Length>,
     /// Additional VRS output from leader (for seeding Random Oracle)
     pub last_vrf_output: VrfOutputTruncated,
     /// Total supply of currency
@@ -61,4 +67,10 @@ pub struct ConsensusState {
     pub coinbase_receiver: PublicKey,
     /// true if block_stake_winner has no locked tokens, false otherwise
     pub supercharge_coinbase: bool,
+}
+
+impl ConsensusState {
+    pub fn sub_window_densities(&self) -> Vec<u32> {
+        self.sub_window_densities.iter().map(|i| i.0).collect()
+    }
 }

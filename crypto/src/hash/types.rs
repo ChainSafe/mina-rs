@@ -5,7 +5,7 @@
 //! Hash and Hasher types reused throughout
 //!
 //! When converted to human readable forms, hashes in Mina use the Bitcoin Base58Check encoding
-//! see https://github.com/MinaProtocol/mina/blob/f88edb440e321114e26f7691e599adab30ce16cd/src/lib/base58_check/README.md
+//! see <https://github.com/MinaProtocol/mina/blob/f88edb440e321114e26f7691e599adab30ce16cd/src/lib/base58_check/README.md>
 //!
 //! Depending on the type of hash a different byte prefix is used in the human readable form
 //!
@@ -93,6 +93,12 @@ impl From<HashBytes> for LedgerHash {
 #[wire_type(recurse = 2)]
 pub struct CoinBaseHash(BaseHash);
 
+impl AsRef<[u8]> for CoinBaseHash {
+    fn as_ref(&self) -> &[u8] {
+        self.0.as_ref()
+    }
+}
+
 //////////////////////////////////////////////////////////////////////////
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize, WireType)]
@@ -161,6 +167,12 @@ pub struct NonSnarkStagedLedgerHash {
 #[serde(from = "<Self as WireType>::WireType")]
 #[serde(into = "<Self as WireType>::WireType")]
 pub struct AuxHash(Vec<u8>);
+
+impl AsRef<[u8]> for AuxHash {
+    fn as_ref(&self) -> &[u8] {
+        self.0.as_ref()
+    }
+}
 
 //////////////////////////////////////////////////////////////////////////
 

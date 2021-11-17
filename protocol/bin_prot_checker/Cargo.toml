@@ -1,11 +1,14 @@
 [package]
+authors = ["ChainSafe Systems <info@chainsafe.io>"]
 name = "bin_prot_checker"
 version = "0.1.0"
-authors = ["ChainSafe Systems <info@chainsafe.io>"]
+
 edition = "2021"
+license = "Apache-2.0"
 
 [dependencies]
-serde = { version = "1.0.126", features = ["derive"] }
-structopt = "0.3.21"
-bin-prot = { path = "../bin-prot" }
+bin-prot = {path = "../bin-prot"}
+
 erased-serde = "0.3.15"
+serde = {version = "1", features = ["derive"]}
+structopt = "0.3.21"
