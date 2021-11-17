@@ -8,7 +8,7 @@ use mina_rs_base::global_slot::GlobalSlot;
 use mina_rs_base::protocol_state::{Header, ProtocolState};
 use thiserror::Error;
 
-pub struct ProtocolStateChain(Vec<ProtocolState>);
+pub struct ProtocolStateChain(pub Vec<ProtocolState>);
 
 #[derive(Error, Debug, PartialEq)]
 pub enum ChainError {
