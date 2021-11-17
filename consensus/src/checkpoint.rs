@@ -3,7 +3,7 @@
 
 use crate::common::{Common, ProtocolStateChain};
 use mina_crypto::base58::Base58Encodable;
-use mina_crypto::hash::{EpochSeed, Hashable, StateHash};
+use mina_crypto::hash::{EpochSeed, StateHash};
 use mina_rs_base::protocol_state::ProtocolState;
 use wasm_bindgen_test::*;
 const SLOTS_PER_EPOCH: u32 = 7140;
