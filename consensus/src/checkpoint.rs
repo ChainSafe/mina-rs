@@ -11,7 +11,6 @@ const SLOTS_PER_EPOCH: u32 = 7140;
 /// init_checkpoints initializes the checkpoints for the genesis block
 /// This function assumes the state hash of `genesis` is already set
 fn init_checkpoints(genesis: &mut ProtocolState) {
-    let state_hash = genesis.hash();
     genesis.body.consensus_state.staking_epoch_data.seed = EpochSeed::default();
     genesis
         .body
