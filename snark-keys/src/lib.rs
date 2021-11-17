@@ -9,6 +9,8 @@ use header::{KeyFileHeader, FILE_ID};
 mod error;
 use error::{Error, Result};
 
+mod verification_key;
+
 pub fn read_snark_key_file<R: Read>(r: R) -> Result<KeyFileHeader> {
     let mut r = BufReader::new(r);
     read_file_id(&mut r)?;
