@@ -1,15 +1,13 @@
 // Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
-use crate::common::{Common, ProtocolStateChain};
+use crate::common::{Chain, ProtocolStateChain};
 use mina_crypto::base58::Base58Encodable;
 use mina_crypto::hash::{EpochSeed, StateHash};
 use mina_rs_base::protocol_state::ProtocolState;
 use wasm_bindgen_test::*;
 const SLOTS_PER_EPOCH: u32 = 7140;
 
-/// init_checkpoints initializes the checkpoints for the genesis block
-/// This function assumes the state hash of `genesis` is already set
 fn init_checkpoints(genesis: &mut ProtocolState) {
     genesis.body.consensus_state.staking_epoch_data.seed = EpochSeed::default();
     genesis
@@ -58,7 +56,7 @@ fn is_short_range(c0: &ProtocolStateChain, c1: &ProtocolStateChain) -> bool {
 
     if c0.consensus_state().unwrap().epoch_count.0
         == c1.consensus_state().unwrap().epoch_count.0 + 1
-        && Common::epoch_slot(c1) >= Some((2 / 3) * SLOTS_PER_EPOCH)
+        && Chain::epoch_slot(c1) >= Some((2 / 3) * SLOTS_PER_EPOCH)
     {
         return c0
             .consensus_state()
