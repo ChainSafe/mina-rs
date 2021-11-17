@@ -22,6 +22,10 @@ mod tests {
     use test_fixtures::*;
     use wasm_bindgen_test::*;
 
+    use mina_rs_base::protocol_state_proof::proof_messages::{
+        ProofMessageWithDegreeBound, ProofMessageWithoutDegreeBoundList,
+    };
+
     #[test]
     #[wasm_bindgen_test]
     fn test_external_transition() {
@@ -197,7 +201,7 @@ mod tests {
             () => "t/protocol_state_proof/t/t/t/t/statement/t/t/proof_state/t/me_only/t/old_bulletproof_challenges/t/2"
         }
         block_path_test_batch! {
-            BackendCommonHashTuple => "t/protocol_state_proof/t/t/t/t/statement/t/t/proof_state/t/me_only/t/sg"
+            FiniteECPoint => "t/protocol_state_proof/t/t/t/t/statement/t/t/proof_state/t/me_only/t/sg"
             BulletproofChallengeTuple17 => "t/protocol_state_proof/t/t/t/t/statement/t/t/proof_state/t/me_only/t/old_bulletproof_challenges/t/0"
             BulletproofChallengeTuple17 => "t/protocol_state_proof/t/t/t/t/statement/t/t/proof_state/t/me_only/t/old_bulletproof_challenges/t/1"
             ProofStateBulletproofChallenges => "t/protocol_state_proof/t/t/t/t/statement/t/t/proof_state/t/me_only/t/old_bulletproof_challenges"
@@ -213,7 +217,7 @@ mod tests {
         }
         block_path_test_batch! {
             () => "t/protocol_state_proof/t/t/t/t/statement/t/t/pass_through/t/app_state"
-            BackendCommonHashTupleList => "t/protocol_state_proof/t/t/t/t/statement/t/t/pass_through/t/sg"
+            FiniteECPointVec => "t/protocol_state_proof/t/t/t/t/statement/t/t/pass_through/t/sg"
             BulletproofPreChallenge => "t/protocol_state_proof/t/t/t/t/statement/t/t/pass_through/t/old_bulletproof_challenges/t/0/t/t/0/t/prechallenge"
             BulletproofChallenge => "t/protocol_state_proof/t/t/t/t/statement/t/t/pass_through/t/old_bulletproof_challenges/t/0/t/t/0"
             BulletproofChallenge => "t/protocol_state_proof/t/t/t/t/statement/t/t/pass_through/t/old_bulletproof_challenges/t/0/t/t/17"
@@ -255,8 +259,8 @@ mod tests {
             ProofMessageWithoutDegreeBoundList => "t/protocol_state_proof/t/t/t/t/proof/t/t/messages/t/r_comm"
             ProofMessageWithoutDegreeBoundList => "t/protocol_state_proof/t/t/t/t/proof/t/t/messages/t/o_comm"
             ProofMessageWithoutDegreeBoundList => "t/protocol_state_proof/t/t/t/t/proof/t/t/messages/t/z_comm"
-            ProofMessageWithDegreeBoundFiniteOrInfiniteList => "t/protocol_state_proof/t/t/t/t/proof/t/t/messages/t/t_comm/t/unshifted"
-            ProofMessageWithDegreeBoundFiniteOrInfinite => "t/protocol_state_proof/t/t/t/t/proof/t/t/messages/t/t_comm/t/shifted"
+            ECPointVec => "t/protocol_state_proof/t/t/t/t/proof/t/t/messages/t/t_comm/t/unshifted"
+            ECPoint => "t/protocol_state_proof/t/t/t/t/proof/t/t/messages/t/t_comm/t/shifted"
             ProofMessageWithDegreeBound => "t/protocol_state_proof/t/t/t/t/proof/t/t/messages/t/t_comm"
             ProofMessages => "t/protocol_state_proof/t/t/t/t/proof/t/t/messages"
         }
@@ -274,32 +278,33 @@ mod tests {
     #[wasm_bindgen_test]
     fn test_staged_ledger_state_proof_proof_openings_proof() {
         block_path_test_batch! {
-            BackendCommonHashTuple => "t/protocol_state_proof/t/t/t/t/proof/t/t/openings/t/proof/t/lr/t/0/0"
-            BackendCommonHashTuple => "t/protocol_state_proof/t/t/t/t/proof/t/t/openings/t/proof/t/lr/t/0/1"
-            BackendCommonHashTupleTupleList => "t/protocol_state_proof/t/t/t/t/proof/t/t/openings/t/proof/t/lr"
+            FiniteECPoint => "t/protocol_state_proof/t/t/t/t/proof/t/t/openings/t/proof/t/lr/t/0/0"
+            FiniteECPoint => "t/protocol_state_proof/t/t/t/t/proof/t/t/openings/t/proof/t/lr/t/0/1"
+            FiniteECPointPairVec => "t/protocol_state_proof/t/t/t/t/proof/t/t/openings/t/proof/t/lr"
             BigInt256 => "t/protocol_state_proof/t/t/t/t/proof/t/t/openings/t/proof/t/z_1"
             BigInt256 => "t/protocol_state_proof/t/t/t/t/proof/t/t/openings/t/proof/t/z_2"
-            BackendCommonHashTuple => "t/protocol_state_proof/t/t/t/t/proof/t/t/openings/t/proof/t/delta"
-            BackendCommonHashTuple => "t/protocol_state_proof/t/t/t/t/proof/t/t/openings/t/proof/t/sg"
-            ProofOpeningsProof => "t/protocol_state_proof/t/t/t/t/proof/t/t/openings/t/proof"
+            FiniteECPoint => "t/protocol_state_proof/t/t/t/t/proof/t/t/openings/t/proof/t/delta"
+            FiniteECPoint => "t/protocol_state_proof/t/t/t/t/proof/t/t/openings/t/proof/t/sg"
+            OpeningProof => "t/protocol_state_proof/t/t/t/t/proof/t/t/openings/t/proof"
         }
     }
 
     #[test]
     #[wasm_bindgen_test]
     fn test_staged_ledger_state_proof_proof_openings_evals() {
+        type ProofEvaluationsTuple = (ProofEvaluations, ProofEvaluations);
         block_path_test_batch! {
-            BackendCommonHashList => "t/protocol_state_proof/t/t/t/t/proof/t/t/openings/t/evals/0/t/l"
-            BackendCommonHashList => "t/protocol_state_proof/t/t/t/t/proof/t/t/openings/t/evals/0/t/r"
-            BackendCommonHashList => "t/protocol_state_proof/t/t/t/t/proof/t/t/openings/t/evals/0/t/o"
-            BackendCommonHashList => "t/protocol_state_proof/t/t/t/t/proof/t/t/openings/t/evals/0/t/z"
-            BackendCommonHashList => "t/protocol_state_proof/t/t/t/t/proof/t/t/openings/t/evals/0/t/t"
-            BackendCommonHashList => "t/protocol_state_proof/t/t/t/t/proof/t/t/openings/t/evals/0/t/f"
-            BackendCommonHashList => "t/protocol_state_proof/t/t/t/t/proof/t/t/openings/t/evals/0/t/sigma1"
-            BackendCommonHashList => "t/protocol_state_proof/t/t/t/t/proof/t/t/openings/t/evals/0/t/sigma2"
-            ProofOpeningsEval => "t/protocol_state_proof/t/t/t/t/proof/t/t/openings/t/evals/0"
-            ProofOpeningsEval => "t/protocol_state_proof/t/t/t/t/proof/t/t/openings/t/evals/1"
-            ProofOpeningsEvalTuple => "t/protocol_state_proof/t/t/t/t/proof/t/t/openings/t/evals"
+            FieldElementVec => "t/protocol_state_proof/t/t/t/t/proof/t/t/openings/t/evals/0/t/l"
+            FieldElementVec => "t/protocol_state_proof/t/t/t/t/proof/t/t/openings/t/evals/0/t/r"
+            FieldElementVec => "t/protocol_state_proof/t/t/t/t/proof/t/t/openings/t/evals/0/t/o"
+            FieldElementVec => "t/protocol_state_proof/t/t/t/t/proof/t/t/openings/t/evals/0/t/z"
+            FieldElementVec => "t/protocol_state_proof/t/t/t/t/proof/t/t/openings/t/evals/0/t/t"
+            FieldElementVec => "t/protocol_state_proof/t/t/t/t/proof/t/t/openings/t/evals/0/t/f"
+            FieldElementVec => "t/protocol_state_proof/t/t/t/t/proof/t/t/openings/t/evals/0/t/sigma1"
+            FieldElementVec => "t/protocol_state_proof/t/t/t/t/proof/t/t/openings/t/evals/0/t/sigma2"
+            ProofEvaluations => "t/protocol_state_proof/t/t/t/t/proof/t/t/openings/t/evals/0"
+            ProofEvaluations => "t/protocol_state_proof/t/t/t/t/proof/t/t/openings/t/evals/1"
+            ProofEvaluationsTuple => "t/protocol_state_proof/t/t/t/t/proof/t/t/openings/t/evals"
         }
     }
 
