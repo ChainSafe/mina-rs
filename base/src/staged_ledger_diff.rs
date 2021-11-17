@@ -133,7 +133,7 @@ pub struct PaymentPayload {
 #[serde(from = "<Self as WireType>::WireType")]
 #[serde(into = "<Self as WireType>::WireType")]
 #[wire_type(recurse = 3)]
-pub struct SignedCommandFeeToken(u64);
+pub struct SignedCommandFeeToken(pub u64);
 
 #[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, WireType)]
 #[serde(from = "<Self as WireType>::WireType")]
@@ -200,7 +200,18 @@ impl Default for TransactionStatus {
     }
 }
 
-pub type TransactionStatusApplied = (TransactionStatusAuxiliaryData, TransactionStatusBalanceData);
+#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug)]
+pub struct TransactionStatusApplied((TransactionStatusAuxiliaryData, TransactionStatusBalanceData));
+
+impl TransactionStatusApplied {
+    pub fn auxiliary_data(&self) -> &TransactionStatusAuxiliaryData {
+        &self.0 .0
+    }
+
+    pub fn balance_data(&self) -> &TransactionStatusBalanceData {
+        &self.0 .1
+    }
+}
 
 #[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, WireType)]
 #[serde(from = "<Self as WireType>::WireType")]

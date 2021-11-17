@@ -16,6 +16,9 @@ pub enum Error {
 
     #[error("Reached the end of the file")]
     UnexpectedEndOfFileError,
+
+    #[error("Error deserializing bin-prot encoded part")]
+    BinProtDeserializationError(#[from] bin_prot::error::Error)
 }
 
 pub type Result<T> = std::result::Result<T, Error>;

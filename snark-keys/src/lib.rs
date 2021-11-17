@@ -10,12 +10,14 @@ mod error;
 use error::{Error, Result};
 
 mod verification_key;
+use verification_key::VerificationKey;
 
-pub fn read_snark_key_file<R: Read>(r: R) -> Result<KeyFileHeader> {
+pub fn read_snark_key_file<R: Read>(r: R) -> Result<(KeyFileHeader, VerificationKey)> {
     let mut r = BufReader::new(r);
     read_file_id(&mut r)?;
     let header = read_header(&mut r)?;
-    Ok(header)
+    let key = read_body(&mut r)?;
+    Ok((header, key))
 }
 
 fn read_file_id<R: BufRead>(r: &mut R) -> Result<()> {
@@ -43,9 +45,10 @@ fn read_header<R: BufRead>(r: &mut R) -> Result<KeyFileHeader> {
     }
 }
 
-// fn read_body<R: Read>(r: &mut R) -> Result<()> {
-
-// }
+fn read_body<R: Read>(r: &mut R) -> Result<VerificationKey> {
+    let result = bin_prot::from_reader(r)?;
+    Ok(result)
+}
 
 #[cfg(test)]
 mod tests {

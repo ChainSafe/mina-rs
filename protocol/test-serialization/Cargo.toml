@@ -20,6 +20,7 @@ mina-rs-base = {path = "../../base"}
 test-fixtures = {path = "../test-fixtures"}
 
 anyhow = "1"
+base64 = "0.13"
 bs58 = {version = "0.4", features = ["check"]}
 criterion = {version = "0.3", features = ["html_reports"]}
 pretty_assertions = "1"

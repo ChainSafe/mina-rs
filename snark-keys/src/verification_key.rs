@@ -1,13 +1,15 @@
 use serde::{Deserialize, Serialize};
 use wire_type::WireType;
 
+use mina_rs_base::protocol_state_proof::field_and_curve_elements::FiniteECPoint;
+
 #[derive(Clone, Serialize, Deserialize, Default, Debug, PartialEq, WireType)]
 #[serde(from = "<Self as WireType>::WireType")]
 #[serde(into = "<Self as WireType>::WireType")]
 pub struct VerificationKey {
 	// constraint system compilation (Dee.Affine.t array Abc.t Matrix_evals.t)
 	// a MatrixEvals of ABC of arrays of Dee.Affine (elliptic curve points)
-	commitments: , 
+	commitments: MatrixEvals, 
 	// evaluation domains as multiplicative groups of roots of unity (Domains.t array)
 	// an array of Domains
 	step_domains: Vec<Domain>, 
