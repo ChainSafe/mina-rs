@@ -120,21 +120,41 @@ mod tests {
         init_checkpoints(&mut genesis);
         let mut c0: ProtocolStateChain = ProtocolStateChain(vec![]);
         let mut c1: ProtocolStateChain = ProtocolStateChain(vec![]);
+        let mut c3: ProtocolStateChain = ProtocolStateChain(vec![]);
         let mut b0: ProtocolState = Default::default();
         b0.body.consensus_state.blockchain_length = Length(0);
         b0.body.consensus_state.curr_global_slot = GlobalSlot {
-            slot_number: GlobalSlotNumber(1),
+            slot_number: GlobalSlotNumber(0),
             slots_per_epoch: Length(7140),
         };
         let mut b1: ProtocolState = Default::default();
         b1.body.consensus_state.blockchain_length = Length(1);
         b1.body.consensus_state.curr_global_slot = GlobalSlot {
-            slot_number: GlobalSlotNumber(2),
+            slot_number: GlobalSlotNumber(1),
             slots_per_epoch: Length(7140),
         };
 
         c0.push(b0.clone()).unwrap();
         c1.push(b1.clone()).unwrap();
         assert_eq!(is_short_range(&c0, &c1), true);
+        assert_eq!(is_short_range(&c1, &c0), true);
+
+        init_checkpoints(&mut genesis);
+        let mut b1: ProtocolState = Default::default();
+        b1.body.consensus_state.blockchain_length = Length(2);
+        b1.body.consensus_state.curr_global_slot = GlobalSlot {
+            slot_number: GlobalSlotNumber(2),
+            slots_per_epoch: Length(7140),
+        };
+        let mut b2: ProtocolState = Default::default();
+        b2.body.consensus_state.blockchain_length = Length(667);
+        b2.body.consensus_state.epoch_count = Length(11);
+        b2.body.consensus_state.curr_global_slot = GlobalSlot {
+            slot_number: GlobalSlotNumber(667),
+            slots_per_epoch: Length(7140),
+        };
+        c3.push(b2).unwrap();
+        assert_eq!(is_short_range(&c3, &c0), false);
+        assert_eq!(is_short_range(&c0, &c3), false);
     }
 }
