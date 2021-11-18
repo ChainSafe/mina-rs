@@ -6,13 +6,10 @@ use mina_rs_base::protocol_state_proof::field_and_curve_elements::FiniteECPoint;
 #[derive(Clone, Serialize, Deserialize, Default, Debug, PartialEq, WireType)]
 #[serde(from = "<Self as WireType>::WireType")]
 #[serde(into = "<Self as WireType>::WireType")]
+#[wire_type(recurse = 2)]
 pub struct VerificationKey {
-	// constraint system compilation (Dee.Affine.t array Abc.t Matrix_evals.t)
-	// a MatrixEvals of ABC of arrays of Dee.Affine (elliptic curve points)
-	commitments: MatrixEvals, 
-	// evaluation domains as multiplicative groups of roots of unity (Domains.t array)
-	// an array of Domains
-	step_domains: Vec<Domain>, 
+	commitments: VerificationKeyEvals,
+	step_domains: Vec<Domains>, 
 	data: Data,
 }
 
@@ -21,7 +18,6 @@ pub struct VerificationKey {
 #[serde(into = "<Self as WireType>::WireType")]
 struct Domains {
 	h: Domain,
-	k: Domain,
 	x: Domain
 }
 
@@ -43,29 +39,29 @@ impl Default for Domain {
 #[serde(from = "<Self as WireType>::WireType")]
 #[serde(into = "<Self as WireType>::WireType")]
 struct Data {
-	public_input: usize,
-	variables: usize,
 	constraints: usize,
-	nonzero_entries: usize,
-	max_degree: usize, // max_poly_size in arkworks
-}
-
-/// a fancy 3-tuple used in Mina
-#[derive(Clone, Serialize, Deserialize, Default, Debug, PartialEq, WireType)]
-#[serde(from = "<Self as WireType>::WireType")]
-#[serde(into = "<Self as WireType>::WireType")]
-struct ABC {
-	a: Vec<FiniteECPoint>,
-	b: Vec<FiniteECPoint>,
-	c: Vec<FiniteECPoint>,
 }
 
 #[derive(Clone, Serialize, Deserialize, Default, Debug, PartialEq, WireType)]
 #[serde(from = "<Self as WireType>::WireType")]
 #[serde(into = "<Self as WireType>::WireType")]
-struct MatrixEvals {
-	row: ABC,
-	col: ABC,
-	value: ABC,
-	rc: ABC,
+struct VerificationKeyEvals {
+	sigma_comm_0: Vec<FiniteECPoint>,
+	sigma_comm_1: Vec<FiniteECPoint>,
+	sigma_comm_2: Vec<FiniteECPoint>,
+	ql_comm: Vec<FiniteECPoint>,
+	qr_comm: Vec<FiniteECPoint>,
+	qo_comm: Vec<FiniteECPoint>,
+	qm_comm: Vec<FiniteECPoint>,
+	qc_comm: Vec<FiniteECPoint>,
+	rcm_comm_0: Vec<FiniteECPoint>,
+	rcm_comm_1: Vec<FiniteECPoint>,
+	rcm_comm_2: Vec<FiniteECPoint>,
+	psm_comm: Vec<FiniteECPoint>,
+	add_comm: Vec<FiniteECPoint>,
+	mul1_comm: Vec<FiniteECPoint>,
+	mul2_comm: Vec<FiniteECPoint>,
+	emul1_comm: Vec<FiniteECPoint>,
+	emul2_comm: Vec<FiniteECPoint>,
+	emul3_comm: Vec<FiniteECPoint>,
 }

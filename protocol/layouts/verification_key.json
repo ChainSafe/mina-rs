@@ -1,0 +1,1352 @@
+{
+ "layout_loc": "File \"src/lib/pickles/verification_key.ml\", line 36, characters 4-238:",
+ "module_path": "Verification_key",
+ "version_opt": 1,
+ "type_decl": "type t = { version: int ; t: typ }",
+ "bin_io_derived": false,
+ "bin_prot_rule":
+ [
+  "Record",
+  [
+   {
+    "field_name": "version",
+    "field_rule":
+    [
+     "Int"
+    ]
+   },
+   {
+    "field_name": "t",
+    "field_rule":
+    [
+     "Reference",
+     [
+      "Resolved",
+      {
+       "source_type_decl": "type t = { version: int ; t: typ }",
+       "source_module_path": "Verification_key.Repr",
+       "bin_io_derived": false,
+       "ref_rule":
+       [
+        "Record",
+        [
+         {
+          "field_name": "version",
+          "field_rule":
+          [
+           "Int"
+          ]
+         },
+         {
+          "field_name": "t",
+          "field_rule":
+          [
+           "Reference",
+           [
+            "Resolved",
+            {
+             "source_type_decl": "type t = { commitments: Backend.Tock.Curve.Affine.Stable.V1.t array Plonk_verification_key_evals.Stable.V1.t ; step_domains: Domains.Stable.V1.t array ; data: Data.Stable.V1.t }",
+             "source_module_path": "Verification_key.Repr.Stable.V1",
+             "bin_io_derived": true,
+             "ref_rule":
+             [
+              "Record",
+              [
+               {
+                "field_name": "commitments",
+                "field_rule":
+                [
+                 "Reference",
+                 [
+                  "Resolved",
+                  {
+                   "source_type_decl": "type 'comm t = { version: int ; t: 'comm typ }",
+                   "source_module_path": "Plonk_verification_key_evals",
+                   "bin_io_derived": true,
+                   "ref_rule":
+                   [
+                    "Record",
+                    [
+                     {
+                      "field_name": "version",
+                      "field_rule":
+                      [
+                       "Int"
+                      ]
+                     },
+                     {
+                      "field_name": "t",
+                      "field_rule":
+                      [
+                       "Reference",
+                       [
+                        "Resolved",
+                        {
+                         "source_type_decl": "type 'comm t = 'comm Marlin_plonk_bindings_types.Plonk_verification_evals.t = { sigma_comm_0: 'comm ; sigma_comm_1: 'comm ; sigma_comm_2: 'comm ; ql_comm: 'comm ; qr_comm: 'comm ; qo_comm: 'comm ; qm_comm: 'comm ; qc_comm: 'comm ; rcm_comm_0: 'comm ; rcm_comm_1: 'comm ; rcm_comm_2: 'comm ; psm_comm: 'comm ; add_comm: 'comm ; mul1_comm: 'comm ; mul2_comm: 'comm ; emul1_comm: 'comm ; emul2_comm: 'comm ; emul3_comm: 'comm }",
+                         "source_module_path": "Plonk_verification_key_evals.Stable.V1",
+                         "bin_io_derived": true,
+                         "ref_rule":
+                         [
+                          "Record",
+                          [
+                           {
+                            "field_name": "sigma_comm_0",
+                            "field_rule":
+                            [
+                             "List",
+                             [
+                              "Reference",
+                              [
+                               "Resolved",
+                               {
+                                "source_type_decl": "type t = (BaseField.Stable.Latest.t * BaseField.Stable.Latest.t)",
+                                "source_module_path": "Curve.Make.Affine.Stable.V1.T",
+                                "bin_io_derived": false,
+                                "ref_rule":
+                                [
+                                 "Tuple",
+                                 [
+                                  [
+                                   "Reference",
+                                   [
+                                    "Resolved",
+                                    {
+                                     "source_type_decl": "Field.t",
+                                     "source_module_path": "Zexe_backend.Zexe_backend_common.Stable.Field",
+                                     "bin_io_derived": false,
+                                     "ref_rule":
+                                     [
+                                      "Custom",
+                                      []
+                                     ]
+                                    }
+                                   ]
+                                  ],
+                                  [
+                                   "Reference",
+                                   [
+                                    "Resolved",
+                                    {
+                                     "source_type_decl": "Field.t",
+                                     "source_module_path": "Zexe_backend.Zexe_backend_common.Stable.Field",
+                                     "bin_io_derived": false,
+                                     "ref_rule":
+                                     [
+                                      "Custom",
+                                      []
+                                     ]
+                                    }
+                                   ]
+                                  ]
+                                 ]
+                                ]
+                               }
+                              ]
+                             ]
+                            ]
+                           },
+                           {
+                            "field_name": "sigma_comm_1",
+                            "field_rule":
+                            [
+                             "List",
+                             [
+                              "Reference",
+                              [
+                               "Resolved",
+                               {
+                                "source_type_decl": "type t = (BaseField.Stable.Latest.t * BaseField.Stable.Latest.t)",
+                                "source_module_path": "Curve.Make.Affine.Stable.V1.T",
+                                "bin_io_derived": false,
+                                "ref_rule":
+                                [
+                                 "Tuple",
+                                 [
+                                  [
+                                   "Reference",
+                                   [
+                                    "Resolved",
+                                    {
+                                     "source_type_decl": "Field.t",
+                                     "source_module_path": "Zexe_backend.Zexe_backend_common.Stable.Field",
+                                     "bin_io_derived": false,
+                                     "ref_rule":
+                                     [
+                                      "Custom",
+                                      []
+                                     ]
+                                    }
+                                   ]
+                                  ],
+                                  [
+                                   "Reference",
+                                   [
+                                    "Resolved",
+                                    {
+                                     "source_type_decl": "Field.t",
+                                     "source_module_path": "Zexe_backend.Zexe_backend_common.Stable.Field",
+                                     "bin_io_derived": false,
+                                     "ref_rule":
+                                     [
+                                      "Custom",
+                                      []
+                                     ]
+                                    }
+                                   ]
+                                  ]
+                                 ]
+                                ]
+                               }
+                              ]
+                             ]
+                            ]
+                           },
+                           {
+                            "field_name": "sigma_comm_2",
+                            "field_rule":
+                            [
+                             "List",
+                             [
+                              "Reference",
+                              [
+                               "Resolved",
+                               {
+                                "source_type_decl": "type t = (BaseField.Stable.Latest.t * BaseField.Stable.Latest.t)",
+                                "source_module_path": "Curve.Make.Affine.Stable.V1.T",
+                                "bin_io_derived": false,
+                                "ref_rule":
+                                [
+                                 "Tuple",
+                                 [
+                                  [
+                                   "Reference",
+                                   [
+                                    "Resolved",
+                                    {
+                                     "source_type_decl": "Field.t",
+                                     "source_module_path": "Zexe_backend.Zexe_backend_common.Stable.Field",
+                                     "bin_io_derived": false,
+                                     "ref_rule":
+                                     [
+                                      "Custom",
+                                      []
+                                     ]
+                                    }
+                                   ]
+                                  ],
+                                  [
+                                   "Reference",
+                                   [
+                                    "Resolved",
+                                    {
+                                     "source_type_decl": "Field.t",
+                                     "source_module_path": "Zexe_backend.Zexe_backend_common.Stable.Field",
+                                     "bin_io_derived": false,
+                                     "ref_rule":
+                                     [
+                                      "Custom",
+                                      []
+                                     ]
+                                    }
+                                   ]
+                                  ]
+                                 ]
+                                ]
+                               }
+                              ]
+                             ]
+                            ]
+                           },
+                           {
+                            "field_name": "ql_comm",
+                            "field_rule":
+                            [
+                             "List",
+                             [
+                              "Reference",
+                              [
+                               "Resolved",
+                               {
+                                "source_type_decl": "type t = (BaseField.Stable.Latest.t * BaseField.Stable.Latest.t)",
+                                "source_module_path": "Curve.Make.Affine.Stable.V1.T",
+                                "bin_io_derived": false,
+                                "ref_rule":
+                                [
+                                 "Tuple",
+                                 [
+                                  [
+                                   "Reference",
+                                   [
+                                    "Resolved",
+                                    {
+                                     "source_type_decl": "Field.t",
+                                     "source_module_path": "Zexe_backend.Zexe_backend_common.Stable.Field",
+                                     "bin_io_derived": false,
+                                     "ref_rule":
+                                     [
+                                      "Custom",
+                                      []
+                                     ]
+                                    }
+                                   ]
+                                  ],
+                                  [
+                                   "Reference",
+                                   [
+                                    "Resolved",
+                                    {
+                                     "source_type_decl": "Field.t",
+                                     "source_module_path": "Zexe_backend.Zexe_backend_common.Stable.Field",
+                                     "bin_io_derived": false,
+                                     "ref_rule":
+                                     [
+                                      "Custom",
+                                      []
+                                     ]
+                                    }
+                                   ]
+                                  ]
+                                 ]
+                                ]
+                               }
+                              ]
+                             ]
+                            ]
+                           },
+                           {
+                            "field_name": "qr_comm",
+                            "field_rule":
+                            [
+                             "List",
+                             [
+                              "Reference",
+                              [
+                               "Resolved",
+                               {
+                                "source_type_decl": "type t = (BaseField.Stable.Latest.t * BaseField.Stable.Latest.t)",
+                                "source_module_path": "Curve.Make.Affine.Stable.V1.T",
+                                "bin_io_derived": false,
+                                "ref_rule":
+                                [
+                                 "Tuple",
+                                 [
+                                  [
+                                   "Reference",
+                                   [
+                                    "Resolved",
+                                    {
+                                     "source_type_decl": "Field.t",
+                                     "source_module_path": "Zexe_backend.Zexe_backend_common.Stable.Field",
+                                     "bin_io_derived": false,
+                                     "ref_rule":
+                                     [
+                                      "Custom",
+                                      []
+                                     ]
+                                    }
+                                   ]
+                                  ],
+                                  [
+                                   "Reference",
+                                   [
+                                    "Resolved",
+                                    {
+                                     "source_type_decl": "Field.t",
+                                     "source_module_path": "Zexe_backend.Zexe_backend_common.Stable.Field",
+                                     "bin_io_derived": false,
+                                     "ref_rule":
+                                     [
+                                      "Custom",
+                                      []
+                                     ]
+                                    }
+                                   ]
+                                  ]
+                                 ]
+                                ]
+                               }
+                              ]
+                             ]
+                            ]
+                           },
+                           {
+                            "field_name": "qo_comm",
+                            "field_rule":
+                            [
+                             "List",
+                             [
+                              "Reference",
+                              [
+                               "Resolved",
+                               {
+                                "source_type_decl": "type t = (BaseField.Stable.Latest.t * BaseField.Stable.Latest.t)",
+                                "source_module_path": "Curve.Make.Affine.Stable.V1.T",
+                                "bin_io_derived": false,
+                                "ref_rule":
+                                [
+                                 "Tuple",
+                                 [
+                                  [
+                                   "Reference",
+                                   [
+                                    "Resolved",
+                                    {
+                                     "source_type_decl": "Field.t",
+                                     "source_module_path": "Zexe_backend.Zexe_backend_common.Stable.Field",
+                                     "bin_io_derived": false,
+                                     "ref_rule":
+                                     [
+                                      "Custom",
+                                      []
+                                     ]
+                                    }
+                                   ]
+                                  ],
+                                  [
+                                   "Reference",
+                                   [
+                                    "Resolved",
+                                    {
+                                     "source_type_decl": "Field.t",
+                                     "source_module_path": "Zexe_backend.Zexe_backend_common.Stable.Field",
+                                     "bin_io_derived": false,
+                                     "ref_rule":
+                                     [
+                                      "Custom",
+                                      []
+                                     ]
+                                    }
+                                   ]
+                                  ]
+                                 ]
+                                ]
+                               }
+                              ]
+                             ]
+                            ]
+                           },
+                           {
+                            "field_name": "qm_comm",
+                            "field_rule":
+                            [
+                             "List",
+                             [
+                              "Reference",
+                              [
+                               "Resolved",
+                               {
+                                "source_type_decl": "type t = (BaseField.Stable.Latest.t * BaseField.Stable.Latest.t)",
+                                "source_module_path": "Curve.Make.Affine.Stable.V1.T",
+                                "bin_io_derived": false,
+                                "ref_rule":
+                                [
+                                 "Tuple",
+                                 [
+                                  [
+                                   "Reference",
+                                   [
+                                    "Resolved",
+                                    {
+                                     "source_type_decl": "Field.t",
+                                     "source_module_path": "Zexe_backend.Zexe_backend_common.Stable.Field",
+                                     "bin_io_derived": false,
+                                     "ref_rule":
+                                     [
+                                      "Custom",
+                                      []
+                                     ]
+                                    }
+                                   ]
+                                  ],
+                                  [
+                                   "Reference",
+                                   [
+                                    "Resolved",
+                                    {
+                                     "source_type_decl": "Field.t",
+                                     "source_module_path": "Zexe_backend.Zexe_backend_common.Stable.Field",
+                                     "bin_io_derived": false,
+                                     "ref_rule":
+                                     [
+                                      "Custom",
+                                      []
+                                     ]
+                                    }
+                                   ]
+                                  ]
+                                 ]
+                                ]
+                               }
+                              ]
+                             ]
+                            ]
+                           },
+                           {
+                            "field_name": "qc_comm",
+                            "field_rule":
+                            [
+                             "List",
+                             [
+                              "Reference",
+                              [
+                               "Resolved",
+                               {
+                                "source_type_decl": "type t = (BaseField.Stable.Latest.t * BaseField.Stable.Latest.t)",
+                                "source_module_path": "Curve.Make.Affine.Stable.V1.T",
+                                "bin_io_derived": false,
+                                "ref_rule":
+                                [
+                                 "Tuple",
+                                 [
+                                  [
+                                   "Reference",
+                                   [
+                                    "Resolved",
+                                    {
+                                     "source_type_decl": "Field.t",
+                                     "source_module_path": "Zexe_backend.Zexe_backend_common.Stable.Field",
+                                     "bin_io_derived": false,
+                                     "ref_rule":
+                                     [
+                                      "Custom",
+                                      []
+                                     ]
+                                    }
+                                   ]
+                                  ],
+                                  [
+                                   "Reference",
+                                   [
+                                    "Resolved",
+                                    {
+                                     "source_type_decl": "Field.t",
+                                     "source_module_path": "Zexe_backend.Zexe_backend_common.Stable.Field",
+                                     "bin_io_derived": false,
+                                     "ref_rule":
+                                     [
+                                      "Custom",
+                                      []
+                                     ]
+                                    }
+                                   ]
+                                  ]
+                                 ]
+                                ]
+                               }
+                              ]
+                             ]
+                            ]
+                           },
+                           {
+                            "field_name": "rcm_comm_0",
+                            "field_rule":
+                            [
+                             "List",
+                             [
+                              "Reference",
+                              [
+                               "Resolved",
+                               {
+                                "source_type_decl": "type t = (BaseField.Stable.Latest.t * BaseField.Stable.Latest.t)",
+                                "source_module_path": "Curve.Make.Affine.Stable.V1.T",
+                                "bin_io_derived": false,
+                                "ref_rule":
+                                [
+                                 "Tuple",
+                                 [
+                                  [
+                                   "Reference",
+                                   [
+                                    "Resolved",
+                                    {
+                                     "source_type_decl": "Field.t",
+                                     "source_module_path": "Zexe_backend.Zexe_backend_common.Stable.Field",
+                                     "bin_io_derived": false,
+                                     "ref_rule":
+                                     [
+                                      "Custom",
+                                      []
+                                     ]
+                                    }
+                                   ]
+                                  ],
+                                  [
+                                   "Reference",
+                                   [
+                                    "Resolved",
+                                    {
+                                     "source_type_decl": "Field.t",
+                                     "source_module_path": "Zexe_backend.Zexe_backend_common.Stable.Field",
+                                     "bin_io_derived": false,
+                                     "ref_rule":
+                                     [
+                                      "Custom",
+                                      []
+                                     ]
+                                    }
+                                   ]
+                                  ]
+                                 ]
+                                ]
+                               }
+                              ]
+                             ]
+                            ]
+                           },
+                           {
+                            "field_name": "rcm_comm_1",
+                            "field_rule":
+                            [
+                             "List",
+                             [
+                              "Reference",
+                              [
+                               "Resolved",
+                               {
+                                "source_type_decl": "type t = (BaseField.Stable.Latest.t * BaseField.Stable.Latest.t)",
+                                "source_module_path": "Curve.Make.Affine.Stable.V1.T",
+                                "bin_io_derived": false,
+                                "ref_rule":
+                                [
+                                 "Tuple",
+                                 [
+                                  [
+                                   "Reference",
+                                   [
+                                    "Resolved",
+                                    {
+                                     "source_type_decl": "Field.t",
+                                     "source_module_path": "Zexe_backend.Zexe_backend_common.Stable.Field",
+                                     "bin_io_derived": false,
+                                     "ref_rule":
+                                     [
+                                      "Custom",
+                                      []
+                                     ]
+                                    }
+                                   ]
+                                  ],
+                                  [
+                                   "Reference",
+                                   [
+                                    "Resolved",
+                                    {
+                                     "source_type_decl": "Field.t",
+                                     "source_module_path": "Zexe_backend.Zexe_backend_common.Stable.Field",
+                                     "bin_io_derived": false,
+                                     "ref_rule":
+                                     [
+                                      "Custom",
+                                      []
+                                     ]
+                                    }
+                                   ]
+                                  ]
+                                 ]
+                                ]
+                               }
+                              ]
+                             ]
+                            ]
+                           },
+                           {
+                            "field_name": "rcm_comm_2",
+                            "field_rule":
+                            [
+                             "List",
+                             [
+                              "Reference",
+                              [
+                               "Resolved",
+                               {
+                                "source_type_decl": "type t = (BaseField.Stable.Latest.t * BaseField.Stable.Latest.t)",
+                                "source_module_path": "Curve.Make.Affine.Stable.V1.T",
+                                "bin_io_derived": false,
+                                "ref_rule":
+                                [
+                                 "Tuple",
+                                 [
+                                  [
+                                   "Reference",
+                                   [
+                                    "Resolved",
+                                    {
+                                     "source_type_decl": "Field.t",
+                                     "source_module_path": "Zexe_backend.Zexe_backend_common.Stable.Field",
+                                     "bin_io_derived": false,
+                                     "ref_rule":
+                                     [
+                                      "Custom",
+                                      []
+                                     ]
+                                    }
+                                   ]
+                                  ],
+                                  [
+                                   "Reference",
+                                   [
+                                    "Resolved",
+                                    {
+                                     "source_type_decl": "Field.t",
+                                     "source_module_path": "Zexe_backend.Zexe_backend_common.Stable.Field",
+                                     "bin_io_derived": false,
+                                     "ref_rule":
+                                     [
+                                      "Custom",
+                                      []
+                                     ]
+                                    }
+                                   ]
+                                  ]
+                                 ]
+                                ]
+                               }
+                              ]
+                             ]
+                            ]
+                           },
+                           {
+                            "field_name": "psm_comm",
+                            "field_rule":
+                            [
+                             "List",
+                             [
+                              "Reference",
+                              [
+                               "Resolved",
+                               {
+                                "source_type_decl": "type t = (BaseField.Stable.Latest.t * BaseField.Stable.Latest.t)",
+                                "source_module_path": "Curve.Make.Affine.Stable.V1.T",
+                                "bin_io_derived": false,
+                                "ref_rule":
+                                [
+                                 "Tuple",
+                                 [
+                                  [
+                                   "Reference",
+                                   [
+                                    "Resolved",
+                                    {
+                                     "source_type_decl": "Field.t",
+                                     "source_module_path": "Zexe_backend.Zexe_backend_common.Stable.Field",
+                                     "bin_io_derived": false,
+                                     "ref_rule":
+                                     [
+                                      "Custom",
+                                      []
+                                     ]
+                                    }
+                                   ]
+                                  ],
+                                  [
+                                   "Reference",
+                                   [
+                                    "Resolved",
+                                    {
+                                     "source_type_decl": "Field.t",
+                                     "source_module_path": "Zexe_backend.Zexe_backend_common.Stable.Field",
+                                     "bin_io_derived": false,
+                                     "ref_rule":
+                                     [
+                                      "Custom",
+                                      []
+                                     ]
+                                    }
+                                   ]
+                                  ]
+                                 ]
+                                ]
+                               }
+                              ]
+                             ]
+                            ]
+                           },
+                           {
+                            "field_name": "add_comm",
+                            "field_rule":
+                            [
+                             "List",
+                             [
+                              "Reference",
+                              [
+                               "Resolved",
+                               {
+                                "source_type_decl": "type t = (BaseField.Stable.Latest.t * BaseField.Stable.Latest.t)",
+                                "source_module_path": "Curve.Make.Affine.Stable.V1.T",
+                                "bin_io_derived": false,
+                                "ref_rule":
+                                [
+                                 "Tuple",
+                                 [
+                                  [
+                                   "Reference",
+                                   [
+                                    "Resolved",
+                                    {
+                                     "source_type_decl": "Field.t",
+                                     "source_module_path": "Zexe_backend.Zexe_backend_common.Stable.Field",
+                                     "bin_io_derived": false,
+                                     "ref_rule":
+                                     [
+                                      "Custom",
+                                      []
+                                     ]
+                                    }
+                                   ]
+                                  ],
+                                  [
+                                   "Reference",
+                                   [
+                                    "Resolved",
+                                    {
+                                     "source_type_decl": "Field.t",
+                                     "source_module_path": "Zexe_backend.Zexe_backend_common.Stable.Field",
+                                     "bin_io_derived": false,
+                                     "ref_rule":
+                                     [
+                                      "Custom",
+                                      []
+                                     ]
+                                    }
+                                   ]
+                                  ]
+                                 ]
+                                ]
+                               }
+                              ]
+                             ]
+                            ]
+                           },
+                           {
+                            "field_name": "mul1_comm",
+                            "field_rule":
+                            [
+                             "List",
+                             [
+                              "Reference",
+                              [
+                               "Resolved",
+                               {
+                                "source_type_decl": "type t = (BaseField.Stable.Latest.t * BaseField.Stable.Latest.t)",
+                                "source_module_path": "Curve.Make.Affine.Stable.V1.T",
+                                "bin_io_derived": false,
+                                "ref_rule":
+                                [
+                                 "Tuple",
+                                 [
+                                  [
+                                   "Reference",
+                                   [
+                                    "Resolved",
+                                    {
+                                     "source_type_decl": "Field.t",
+                                     "source_module_path": "Zexe_backend.Zexe_backend_common.Stable.Field",
+                                     "bin_io_derived": false,
+                                     "ref_rule":
+                                     [
+                                      "Custom",
+                                      []
+                                     ]
+                                    }
+                                   ]
+                                  ],
+                                  [
+                                   "Reference",
+                                   [
+                                    "Resolved",
+                                    {
+                                     "source_type_decl": "Field.t",
+                                     "source_module_path": "Zexe_backend.Zexe_backend_common.Stable.Field",
+                                     "bin_io_derived": false,
+                                     "ref_rule":
+                                     [
+                                      "Custom",
+                                      []
+                                     ]
+                                    }
+                                   ]
+                                  ]
+                                 ]
+                                ]
+                               }
+                              ]
+                             ]
+                            ]
+                           },
+                           {
+                            "field_name": "mul2_comm",
+                            "field_rule":
+                            [
+                             "List",
+                             [
+                              "Reference",
+                              [
+                               "Resolved",
+                               {
+                                "source_type_decl": "type t = (BaseField.Stable.Latest.t * BaseField.Stable.Latest.t)",
+                                "source_module_path": "Curve.Make.Affine.Stable.V1.T",
+                                "bin_io_derived": false,
+                                "ref_rule":
+                                [
+                                 "Tuple",
+                                 [
+                                  [
+                                   "Reference",
+                                   [
+                                    "Resolved",
+                                    {
+                                     "source_type_decl": "Field.t",
+                                     "source_module_path": "Zexe_backend.Zexe_backend_common.Stable.Field",
+                                     "bin_io_derived": false,
+                                     "ref_rule":
+                                     [
+                                      "Custom",
+                                      []
+                                     ]
+                                    }
+                                   ]
+                                  ],
+                                  [
+                                   "Reference",
+                                   [
+                                    "Resolved",
+                                    {
+                                     "source_type_decl": "Field.t",
+                                     "source_module_path": "Zexe_backend.Zexe_backend_common.Stable.Field",
+                                     "bin_io_derived": false,
+                                     "ref_rule":
+                                     [
+                                      "Custom",
+                                      []
+                                     ]
+                                    }
+                                   ]
+                                  ]
+                                 ]
+                                ]
+                               }
+                              ]
+                             ]
+                            ]
+                           },
+                           {
+                            "field_name": "emul1_comm",
+                            "field_rule":
+                            [
+                             "List",
+                             [
+                              "Reference",
+                              [
+                               "Resolved",
+                               {
+                                "source_type_decl": "type t = (BaseField.Stable.Latest.t * BaseField.Stable.Latest.t)",
+                                "source_module_path": "Curve.Make.Affine.Stable.V1.T",
+                                "bin_io_derived": false,
+                                "ref_rule":
+                                [
+                                 "Tuple",
+                                 [
+                                  [
+                                   "Reference",
+                                   [
+                                    "Resolved",
+                                    {
+                                     "source_type_decl": "Field.t",
+                                     "source_module_path": "Zexe_backend.Zexe_backend_common.Stable.Field",
+                                     "bin_io_derived": false,
+                                     "ref_rule":
+                                     [
+                                      "Custom",
+                                      []
+                                     ]
+                                    }
+                                   ]
+                                  ],
+                                  [
+                                   "Reference",
+                                   [
+                                    "Resolved",
+                                    {
+                                     "source_type_decl": "Field.t",
+                                     "source_module_path": "Zexe_backend.Zexe_backend_common.Stable.Field",
+                                     "bin_io_derived": false,
+                                     "ref_rule":
+                                     [
+                                      "Custom",
+                                      []
+                                     ]
+                                    }
+                                   ]
+                                  ]
+                                 ]
+                                ]
+                               }
+                              ]
+                             ]
+                            ]
+                           },
+                           {
+                            "field_name": "emul2_comm",
+                            "field_rule":
+                            [
+                             "List",
+                             [
+                              "Reference",
+                              [
+                               "Resolved",
+                               {
+                                "source_type_decl": "type t = (BaseField.Stable.Latest.t * BaseField.Stable.Latest.t)",
+                                "source_module_path": "Curve.Make.Affine.Stable.V1.T",
+                                "bin_io_derived": false,
+                                "ref_rule":
+                                [
+                                 "Tuple",
+                                 [
+                                  [
+                                   "Reference",
+                                   [
+                                    "Resolved",
+                                    {
+                                     "source_type_decl": "Field.t",
+                                     "source_module_path": "Zexe_backend.Zexe_backend_common.Stable.Field",
+                                     "bin_io_derived": false,
+                                     "ref_rule":
+                                     [
+                                      "Custom",
+                                      []
+                                     ]
+                                    }
+                                   ]
+                                  ],
+                                  [
+                                   "Reference",
+                                   [
+                                    "Resolved",
+                                    {
+                                     "source_type_decl": "Field.t",
+                                     "source_module_path": "Zexe_backend.Zexe_backend_common.Stable.Field",
+                                     "bin_io_derived": false,
+                                     "ref_rule":
+                                     [
+                                      "Custom",
+                                      []
+                                     ]
+                                    }
+                                   ]
+                                  ]
+                                 ]
+                                ]
+                               }
+                              ]
+                             ]
+                            ]
+                           },
+                           {
+                            "field_name": "emul3_comm",
+                            "field_rule":
+                            [
+                             "List",
+                             [
+                              "Reference",
+                              [
+                               "Resolved",
+                               {
+                                "source_type_decl": "type t = (BaseField.Stable.Latest.t * BaseField.Stable.Latest.t)",
+                                "source_module_path": "Curve.Make.Affine.Stable.V1.T",
+                                "bin_io_derived": false,
+                                "ref_rule":
+                                [
+                                 "Tuple",
+                                 [
+                                  [
+                                   "Reference",
+                                   [
+                                    "Resolved",
+                                    {
+                                     "source_type_decl": "Field.t",
+                                     "source_module_path": "Zexe_backend.Zexe_backend_common.Stable.Field",
+                                     "bin_io_derived": false,
+                                     "ref_rule":
+                                     [
+                                      "Custom",
+                                      []
+                                     ]
+                                    }
+                                   ]
+                                  ],
+                                  [
+                                   "Reference",
+                                   [
+                                    "Resolved",
+                                    {
+                                     "source_type_decl": "Field.t",
+                                     "source_module_path": "Zexe_backend.Zexe_backend_common.Stable.Field",
+                                     "bin_io_derived": false,
+                                     "ref_rule":
+                                     [
+                                      "Custom",
+                                      []
+                                     ]
+                                    }
+                                   ]
+                                  ]
+                                 ]
+                                ]
+                               }
+                              ]
+                             ]
+                            ]
+                           }
+                          ]
+                         ]
+                        }
+                       ]
+                      ]
+                     }
+                    ]
+                   ]
+                  }
+                 ]
+                ]
+               },
+               {
+                "field_name": "step_domains",
+                "field_rule":
+                [
+                 "List",
+                 [
+                  "Reference",
+                  [
+                   "Resolved",
+                   {
+                    "source_type_decl": "type t = { version: int ; t: typ }",
+                    "source_module_path": "Domains",
+                    "bin_io_derived": true,
+                    "ref_rule":
+                    [
+                     "Record",
+                     [
+                      {
+                       "field_name": "version",
+                       "field_rule":
+                       [
+                        "Int"
+                       ]
+                      },
+                      {
+                       "field_name": "t",
+                       "field_rule":
+                       [
+                        "Reference",
+                        [
+                         "Resolved",
+                         {
+                          "source_type_decl": "type t = { h: Domain.Stable.V1.t ; x: Domain.Stable.V1.t }",
+                          "source_module_path": "Domains.Stable.V1",
+                          "bin_io_derived": true,
+                          "ref_rule":
+                          [
+                           "Record",
+                           [
+                            {
+                             "field_name": "h",
+                             "field_rule":
+                             [
+                              "Reference",
+                              [
+                               "Resolved",
+                               {
+                                "source_type_decl": "type t = { version: int ; t: typ }",
+                                "source_module_path": "Domain",
+                                "bin_io_derived": true,
+                                "ref_rule":
+                                [
+                                 "Record",
+                                 [
+                                  {
+                                   "field_name": "version",
+                                   "field_rule":
+                                   [
+                                    "Int"
+                                   ]
+                                  },
+                                  {
+                                   "field_name": "t",
+                                   "field_rule":
+                                   [
+                                    "Reference",
+                                    [
+                                     "Resolved",
+                                     {
+                                      "source_type_decl": "type t = | Pow_2_roots_of_unity of int ",
+                                      "source_module_path": "Domain.Stable.V1",
+                                      "bin_io_derived": true,
+                                      "ref_rule":
+                                      [
+                                       "Sum",
+                                       [
+                                        {
+                                         "ctor_name": "Pow_2_roots_of_unity",
+                                         "index": 0,
+                                         "ctor_args":
+                                         [
+                                          [
+                                           "Int"
+                                          ]
+                                         ]
+                                        }
+                                       ]
+                                      ]
+                                     }
+                                    ]
+                                   ]
+                                  }
+                                 ]
+                                ]
+                               }
+                              ]
+                             ]
+                            },
+                            {
+                             "field_name": "x",
+                             "field_rule":
+                             [
+                              "Reference",
+                              [
+                               "Resolved",
+                               {
+                                "source_type_decl": "type t = { version: int ; t: typ }",
+                                "source_module_path": "Domain",
+                                "bin_io_derived": true,
+                                "ref_rule":
+                                [
+                                 "Record",
+                                 [
+                                  {
+                                   "field_name": "version",
+                                   "field_rule":
+                                   [
+                                    "Int"
+                                   ]
+                                  },
+                                  {
+                                   "field_name": "t",
+                                   "field_rule":
+                                   [
+                                    "Reference",
+                                    [
+                                     "Resolved",
+                                     {
+                                      "source_type_decl": "type t = | Pow_2_roots_of_unity of int ",
+                                      "source_module_path": "Domain.Stable.V1",
+                                      "bin_io_derived": true,
+                                      "ref_rule":
+                                      [
+                                       "Sum",
+                                       [
+                                        {
+                                         "ctor_name": "Pow_2_roots_of_unity",
+                                         "index": 0,
+                                         "ctor_args":
+                                         [
+                                          [
+                                           "Int"
+                                          ]
+                                         ]
+                                        }
+                                       ]
+                                      ]
+                                     }
+                                    ]
+                                   ]
+                                  }
+                                 ]
+                                ]
+                               }
+                              ]
+                             ]
+                            }
+                           ]
+                          ]
+                         }
+                        ]
+                       ]
+                      }
+                     ]
+                    ]
+                   }
+                  ]
+                 ]
+                ]
+               },
+               {
+                "field_name": "data",
+                "field_rule":
+                [
+                 "Reference",
+                 [
+                  "Resolved",
+                  {
+                   "source_type_decl": "type t = { version: int ; t: typ }",
+                   "source_module_path": "Verification_key.Data",
+                   "bin_io_derived": true,
+                   "ref_rule":
+                   [
+                    "Record",
+                    [
+                     {
+                      "field_name": "version",
+                      "field_rule":
+                      [
+                       "Int"
+                      ]
+                     },
+                     {
+                      "field_name": "t",
+                      "field_rule":
+                      [
+                       "Reference",
+                       [
+                        "Resolved",
+                        {
+                         "source_type_decl": "type t = { constraints: int }",
+                         "source_module_path": "Verification_key.Data.Stable.V1",
+                         "bin_io_derived": true,
+                         "ref_rule":
+                         [
+                          "Record",
+                          [
+                           {
+                            "field_name": "constraints",
+                            "field_rule":
+                            [
+                             "Int"
+                            ]
+                           }
+                          ]
+                         ]
+                        }
+                       ]
+                      ]
+                     }
+                    ]
+                   ]
+                  }
+                 ]
+                ]
+               }
+              ]
+             ]
+            }
+           ]
+          ]
+         }
+        ]
+       ]
+      }
+     ]
+    ]
+   }
+  ]
+ ]
+}
