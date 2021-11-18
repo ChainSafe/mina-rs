@@ -50,16 +50,41 @@ fn read_body<R: Read>(r: &mut R) -> Result<VerificationKey> {
     Ok(result)
 }
 
+use bin_prot::BinProtRule;
+
+fn read_body_loose<R: Read>(r: &mut R, layout: &BinProtRule) -> Result<bin_prot::Value> {
+    let mut de = bin_prot::Deserializer::from_reader(r).with_layout(layout);
+    Ok(serde::Deserialize::deserialize(&mut de)?)
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
+    use serde::Deserialize;
+
     const TEST_KEYFILE: &[u8] = include_bytes!(
         "../vk-wrap-wrap-verification-key-blockchain-snark-d3623dbfa42f563e40cd5f2d032ad91f"
     );
 
+    const LAYOUT_JSON: &str = include_str!("../../protocol/layouts/verification_key.json");
+
+    lazy_static::lazy_static! {
+        pub static ref KEY_RULE: BinProtRule = {
+            let mut deserializer = serde_json::Deserializer::from_str(LAYOUT_JSON);
+            bin_prot::Layout::deserialize(&mut deserializer)
+                .unwrap()
+                .bin_prot_rule
+        };
+    }
+
+
     #[test]
     fn smoke_test_read_file() {
-        let header = read_snark_key_file(TEST_KEYFILE).unwrap();
+        let mut r = BufReader::new(TEST_KEYFILE);
+        read_file_id(&mut r).unwrap();
+        let header = read_header(&mut r).unwrap();
+        let key = read_body_loose(&mut r, &KEY_RULE).unwrap();
         println!("{:?}", header);
+        println!("{:#?}", key);
     }
 }
