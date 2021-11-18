@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 use wire_type::WireType;
 
-use mina_rs_base::protocol_state_proof::field_and_curve_elements::FiniteECPoint;
+use crate::protocol_state_proof::field_and_curve_elements::FiniteECPoint;
 
 #[derive(Clone, Serialize, Deserialize, Default, Debug, PartialEq, WireType)]
 #[serde(from = "<Self as WireType>::WireType")]

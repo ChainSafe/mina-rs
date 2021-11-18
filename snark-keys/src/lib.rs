@@ -9,8 +9,7 @@ use header::{KeyFileHeader, FILE_ID};
 mod error;
 use error::{Error, Result};
 
-mod verification_key;
-use verification_key::VerificationKey;
+use mina_rs_base::verification_key::VerificationKey;
 
 pub fn read_snark_key_file<R: Read>(r: R) -> Result<(KeyFileHeader, VerificationKey)> {
     let mut r = BufReader::new(r);
@@ -62,10 +61,6 @@ mod tests {
     fn smoke_test_read_file() {
         let mut r = BufReader::new(TEST_KEYFILE);
         read_file_id(&mut r).unwrap();
-        
-        let (header, key) = read_snark_key_file(TEST_KEYFILE).unwrap();
-
-        println!("{:?}", header);
-        println!("{:#?}", key);
+        let (_header, _key) = read_snark_key_file(TEST_KEYFILE).unwrap();
     }
 }
