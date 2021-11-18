@@ -134,8 +134,8 @@ mod tests {
             slots_per_epoch: Length(7140),
         };
 
-        c0.push(b0.clone()).unwrap();
-        c1.push(b1.clone()).unwrap();
+        c0.push(b0).unwrap();
+        c1.push(b1).unwrap();
         assert_eq!(is_short_range(&c0, &c1), true);
         assert_eq!(is_short_range(&c1, &c0), true);
 
