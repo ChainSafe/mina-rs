@@ -5,7 +5,7 @@ use thiserror::Error;
 
 #[derive(Error, Debug)]
 pub enum Error {
-    #[error("Error reading snark key")]
+    #[error("Error reading snark key file")]
     ReadError(#[from] std::io::Error),
 
     #[error("Error deserializing header JSON")]
@@ -17,7 +17,7 @@ pub enum Error {
     #[error("Reached the end of the file")]
     UnexpectedEndOfFileError,
 
-    #[error("Error deserializing bin-prot encoded part")]
+    #[error("Error deserializing bin-prot encoded body")]
     BinProtDeserializationError(#[from] bin_prot::error::Error)
 }
 
