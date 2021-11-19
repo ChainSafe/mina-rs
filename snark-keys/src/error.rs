@@ -18,7 +18,7 @@ pub enum Error {
     UnexpectedEndOfFileError,
 
     #[error("Error deserializing bin-prot encoded body")]
-    BinProtDeserializationError(#[from] bin_prot::error::Error)
+    BinProtDeserializationError(#[from] bin_prot::error::Error),
 }
 
 pub type Result<T> = std::result::Result<T, Error>;

@@ -6,7 +6,7 @@ use serde::Deserialize;
 pub(crate) const FILE_ID: &str = "MINA_SNARK_KEYS";
 
 /// The header included in Mina serialized SNARK key files.
-/// Describes parameters of the key and the type to expect 
+/// Describes parameters of the key and the type to expect
 /// to be included in the binary section of the file
 #[derive(Debug, Deserialize)]
 pub struct KeyFileHeader {

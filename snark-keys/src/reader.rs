@@ -3,8 +3,8 @@
 
 use std::io::{BufRead, BufReader, Read};
 
-use crate::header::{KeyFileHeader, FILE_ID};
 use crate::error::{Error, Result};
+use crate::header::{KeyFileHeader, FILE_ID};
 
 use mina_rs_base::verification_key::VerificationKey;
 

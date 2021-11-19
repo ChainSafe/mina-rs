@@ -40,7 +40,9 @@ lazy_static! {
     );
 }
 
-pub const VERIFICATION_KEY: &[u8] = include_bytes!("data/vk-wrap-wrap-verification-key-blockchain-snark-d3623dbfa42f563e40cd5f2d032ad91f");
+pub const VERIFICATION_KEY: &[u8] = include_bytes!(
+    "data/vk-wrap-wrap-verification-key-blockchain-snark-d3623dbfa42f563e40cd5f2d032ad91f"
+);
 
 pub struct BlockFixture {
     pub bytes: Vec<u8>,

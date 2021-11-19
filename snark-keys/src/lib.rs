@@ -10,10 +10,10 @@
 //!
 //! For the full specification see https://github.com/MinaProtocol/mina/blob/f88edb440e321114e26f7691e599adab30ce16cd/docs/specs/types_and_structures/serialized_key.md
 
-mod header;
 mod error;
+mod header;
 mod reader;
 
-pub use header::*;
 pub use error::{Error, Result};
+pub use header::*;
 pub use reader::read_snark_key_file;
