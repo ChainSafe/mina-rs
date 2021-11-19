@@ -13,4 +13,3 @@ mina-rs-base = {version = "0.1.0", path = "../base"}
 hex = "0.4.3"
 serde-bin-prot = {git = "https://github.com/ChainSafe/serde-bin-prot", branch = "main"}
 thiserror = "1.0.24"
-wasm-bindgen-test = "0.3.0"
