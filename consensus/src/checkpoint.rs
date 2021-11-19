@@ -5,7 +5,6 @@ use crate::common::{Chain, ProtocolStateChain};
 use mina_crypto::base58::Base58Encodable;
 use mina_crypto::hash::{EpochSeed, StateHash};
 use mina_rs_base::protocol_state::ProtocolState;
-use wasm_bindgen_test::*;
 const SLOTS_PER_EPOCH: u32 = 7140;
 
 fn init_checkpoints(genesis: &mut ProtocolState) {
@@ -78,7 +77,8 @@ mod tests {
     use super::*;
     use mina_rs_base::global_slot::GlobalSlot;
     use mina_rs_base::numbers::{GlobalSlotNumber, Length};
-
+    use wasm_bindgen_test::*;
+    
     #[wasm_bindgen_test]
     fn test_init_checkpoints() {
         let mut genesis: ProtocolState = Default::default();
