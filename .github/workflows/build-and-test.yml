@@ -45,15 +45,14 @@ jobs:
           override: true
       - run: cargo test --release --all-features
       - run: cargo bench --all-features
-      - run: cargo doc --release --all-features
+      - run: cargo doc --no-deps --release --all-features
       - run: cargo test --release --all-features --doc
       - run: cargo clippy --release --all-features -- --deny warnings
-      # Disable doc uploading for now as it's large and slow
-      # - uses: actions/upload-artifact@v2
-      #   with:
-      #     name: doc
-      #     path: target/doc/**/*
-      #     if-no-files-found: error
+      - uses: actions/upload-artifact@v2
+        with:
+          name: doc
+          path: target/doc/**/*
+          if-no-files-found: error
       - uses: actions/upload-artifact@v2
         with:
           name: criterion
