@@ -8,6 +8,9 @@ use crate::error::{Error, Result};
 
 use mina_rs_base::verification_key::VerificationKey;
 
+/// Read a SNARK key file from a reader and return the header and encoded key itself
+/// Note: This currently only support VerificationKey as its return type. In the future this
+/// will need to support other key types as well
 pub fn read_snark_key_file<R: Read>(r: R) -> Result<(KeyFileHeader, VerificationKey)> {
     let mut r = BufReader::new(r);
     read_file_id(&mut r)?;
@@ -51,7 +54,23 @@ mod tests {
     use super::*;
 
     #[test]
-    fn smoke_test_read_file() {
-        let (_header, _key) = read_snark_key_file(test_fixtures::VERIFICATION_KEY).unwrap();
+    fn read_file_id_error_if_incorrect_file_id() {
+        let file_id = br#"INCORRECT_FILE_ID"#;
+        let mut r = BufReader::new(&file_id[..]);
+        assert!(read_file_id(&mut r).is_err());
+    }
+
+    #[test]
+    fn read_file_id_read_correct_file_id() {
+        let file_id = br#"MINA_SNARK_KEYS"#;
+        let mut r = BufReader::new(&file_id[..]);
+        assert!(read_file_id(&mut r).is_ok());
+    }
+
+    #[test]
+    fn snark_key_test_read_file() {
+        let (header, key) = read_snark_key_file(test_fixtures::VERIFICATION_KEY).unwrap();
+        assert_eq!(header.kind.r#type, crate::KeyType::WrapVerificationKey);
+        assert_eq!(key.data.constraints, 131072);
     }
 }

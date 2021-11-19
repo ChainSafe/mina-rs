@@ -10,7 +10,7 @@ use crate::protocol_state_proof::field_and_curve_elements::FiniteECPoint;
 pub struct VerificationKey {
 	commitments: VerificationKeyEvals,
 	step_domains: Vec<Domains>, 
-	data: Data,
+	pub data: Data,
 }
 
 #[derive(Clone, Serialize, Deserialize, Default, Debug, PartialEq, WireType)]
@@ -38,8 +38,8 @@ impl Default for Domain {
 #[derive(Clone, Serialize, Deserialize, Default, Debug, PartialEq, WireType)]
 #[serde(from = "<Self as WireType>::WireType")]
 #[serde(into = "<Self as WireType>::WireType")]
-struct Data {
-	constraints: usize,
+pub struct Data {
+	pub constraints: usize,
 }
 
 #[derive(Clone, Serialize, Deserialize, Default, Debug, PartialEq, WireType)]

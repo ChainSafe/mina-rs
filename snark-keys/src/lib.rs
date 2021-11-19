@@ -14,6 +14,6 @@ mod header;
 mod error;
 mod reader;
 
-pub use header::KeyFileHeader;
+pub use header::*;
 pub use error::{Error, Result};
 pub use reader::read_snark_key_file;
