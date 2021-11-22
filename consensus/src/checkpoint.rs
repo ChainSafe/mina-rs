@@ -72,7 +72,7 @@ fn is_short_range(c0: &ProtocolStateChain, c1: &ProtocolStateChain) -> bool {
                 .next_epoch_data
                 .lock_checkpoint;
     } else {
-        return false;
+        false
     }
 }
 
