@@ -30,47 +30,6 @@ where
     fn state_hash(&self) -> Option<StateHash>;
 }
 
-impl Chain<ProtocolState> for ProtocolState {
-    fn push(&mut self, _: ProtocolState) -> Result<(), ChainError> {
-        Ok(())
-    }
-
-    fn top(&self) -> Option<&ProtocolState> {
-        Some(self)
-    }
-
-    fn consensus_state(&self) -> Option<&ConsensusState> {
-        Some(&self.body.consensus_state)
-    }
-
-    fn global_slot(&self) -> Option<&GlobalSlot> {
-        Some(&self.body.consensus_state.curr_global_slot)
-    }
-
-    fn epoch_slot(&self) -> Option<u32> {
-        let global_slot = self.global_slot().unwrap();
-        Some(global_slot.slot_number.0 % global_slot.slots_per_epoch.0)
-    }
-
-    fn length(&self) -> usize {
-        1
-    }
-
-    fn last_vrf(&self) -> Option<String> {
-        Some(
-            self.body
-                .consensus_state
-                .last_vrf_output
-                .hash()
-                .encode_hex::<String>(),
-        )
-    }
-
-    fn state_hash(&self) -> Option<StateHash> {
-        Some(self.hash())
-    }
-}
-
 impl Chain<ProtocolState> for ProtocolStateChain {
     fn push(&mut self, new: ProtocolState) -> Result<(), ChainError> {
         match self.0.len() {
