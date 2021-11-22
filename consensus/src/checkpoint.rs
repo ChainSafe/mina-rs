@@ -1,6 +1,5 @@
 // Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
-#[allow(clippy::erasing_op)]
 use crate::common::{Chain, ProtocolStateChain};
 use mina_crypto::base58::Base58Encodable;
 use mina_crypto::hash::{EpochSeed, StateHash};
@@ -52,7 +51,8 @@ fn is_short_range(c0: &ProtocolStateChain, c1: &ProtocolStateChain) -> bool {
                 .staking_epoch_data
                 .lock_checkpoint;
     }
-
+    
+    #[allow(clippy::erasing_op)]
     if c0.consensus_state().unwrap().epoch_count.0
         == c1.consensus_state().unwrap().epoch_count.0 + 1
         && Chain::epoch_slot(c1) >= Some((2 / 3) * SLOTS_PER_EPOCH)
