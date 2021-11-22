@@ -8,7 +8,8 @@
 //! The second line is json formatted and describes the key parameters
 //! The remainder is the bin_prot encoded key data of the given type (e.g. VerificatioKey, ProvingKey)
 //!
-//! For the full specification see https://github.com/MinaProtocol/mina/blob/f88edb440e321114e26f7691e599adab30ce16cd/docs/specs/types_and_structures/serialized_key.md
+//! For the full specification see <https://github.com/MinaProtocol/mina/blob/f88edb440e321114e26f7691e599adab30ce16cd/docs/specs/types_and_structures/serialized_key.md>
+#![deny(rustdoc::all)]
 
 mod error;
 mod header;
