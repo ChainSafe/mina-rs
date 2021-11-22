@@ -51,7 +51,7 @@ fn is_short_range(c0: &ProtocolStateChain, c1: &ProtocolStateChain) -> bool {
                 .staking_epoch_data
                 .lock_checkpoint;
     }
-    
+
     #[allow(clippy::erasing_op)]
     if c0.consensus_state().unwrap().epoch_count.0
         == c1.consensus_state().unwrap().epoch_count.0 + 1
@@ -156,5 +156,4 @@ mod tests {
         assert_eq!(is_short_range(&c3, &c0), false);
         assert_eq!(is_short_range(&c0, &c3), false);
     }
-    
 }
