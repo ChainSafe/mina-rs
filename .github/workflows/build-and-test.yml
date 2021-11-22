@@ -43,11 +43,17 @@ jobs:
           toolchain: stable
           components: clippy
           override: true
+      - run: cargo build --release --all-features
       - run: cargo test --release --all-features
       - run: cargo bench --all-features
       - run: cargo doc --release --all-features
       - run: cargo test --release --all-features --doc
       - run: cargo clippy --release --all-features -- --deny warnings
+      - name: Run profilers
+        run: |
+          sudo apt-get install -y valgrind graphviz
+          sudo pip install gprof2dot
+          ./scripts/profiler.sh
       # Disable doc uploading for now as it's large and slow
       # - uses: actions/upload-artifact@v2
       #   with:
@@ -58,6 +64,11 @@ jobs:
         with:
           name: criterion
           path: target/criterion/**/*
+          if-no-files-found: error
+      - uses: actions/upload-artifact@v2
+        with:
+          name: profiler-reports
+          path: target/release/profiler-reports/**/*
           if-no-files-found: error
   wasm:
     runs-on: ubuntu-latest
