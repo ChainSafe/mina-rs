@@ -1,6 +1,6 @@
 // Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
-
+#[allow(clippy::erasing_op)]
 use crate::common::{Chain, ProtocolStateChain};
 use mina_crypto::base58::Base58Encodable;
 use mina_crypto::hash::{EpochSeed, StateHash};
@@ -156,4 +156,5 @@ mod tests {
         assert_eq!(is_short_range(&c3, &c0), false);
         assert_eq!(is_short_range(&c0, &c3), false);
     }
+    
 }
