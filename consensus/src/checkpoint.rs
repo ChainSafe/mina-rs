@@ -8,7 +8,11 @@ use mina_rs_base::protocol_state::ProtocolState;
 
 pub const SLOTS_PER_EPOCH: u32 = 7140;
 
-pub fn init_checkpoints(genesis: &mut ProtocolState) {
+#[derive(Debug)]
+pub enum ConsensusErrTyp {
+    ConsensusInitFail,
+}
+pub fn init_checkpoints(genesis: &mut ProtocolState) -> Result<(), ConsensusErrTyp> {
     genesis.body.consensus_state.staking_epoch_data.seed = EpochSeed::default();
     genesis
         .body
@@ -28,7 +32,7 @@ pub fn init_checkpoints(genesis: &mut ProtocolState) {
         .0 = 1;
     genesis.body.consensus_state.next_epoch_data.seed =
         Base58Encodable::from_base58("2vaRh7FQ5wSzmpFReF9gcRKjv48CcJvHs25aqb3SSZiPgHQBy5Dt")
-            .unwrap();
+            .map_err(|_| ConsensusErrTyp::ConsensusInitFail)?;
     genesis
         .body
         .consensus_state
@@ -36,40 +40,37 @@ pub fn init_checkpoints(genesis: &mut ProtocolState) {
         .start_checkpoint = StateHash::default();
     genesis.body.consensus_state.next_epoch_data.lock_checkpoint =
         Base58Encodable::from_base58("3NLoKn22eMnyQ7rxh5pxB6vBA3XhSAhhrf7akdqS6HbAKD14Dh1d")
-            .unwrap();
+            .map_err(|_| ConsensusErrTyp::ConsensusInitFail)?;
     genesis.body.consensus_state.next_epoch_data.epoch_length.0 = 2;
+    Ok(())
 }
 
-pub fn is_short_range(c0: &ProtocolStateChain, c1: &ProtocolStateChain) -> bool {
-    if c0.consensus_state().unwrap().epoch_count == c1.consensus_state().unwrap().epoch_count {
-        return c0
-            .consensus_state()
-            .unwrap()
-            .staking_epoch_data
-            .lock_checkpoint
-            == c1
-                .consensus_state()
-                .unwrap()
-                .staking_epoch_data
-                .lock_checkpoint;
+pub fn is_short_range(
+    c0: &ProtocolStateChain,
+    c1: &ProtocolStateChain,
+) -> Result<bool, ConsensusErrTyp> {
+    let s0 = &c0
+        .consensus_state()
+        .ok_or(ConsensusErrTyp::ConsensusInitFail)?;
+    let s1 = &c1
+        .consensus_state()
+        .ok_or(ConsensusErrTyp::ConsensusInitFail)?;
+
+    if s0.epoch_count == s1.epoch_count {
+        let s0_lock_checkpoint = &s0.staking_epoch_data.lock_checkpoint;
+        let s1_lock_checkpoint = &s1.staking_epoch_data.lock_checkpoint;
+
+        return Ok(s0_lock_checkpoint == s1_lock_checkpoint);
     }
 
-    if c0.consensus_state().unwrap().epoch_count.0
-        == c1.consensus_state().unwrap().epoch_count.0 + 1
+    if s0.epoch_count.0 == s1.epoch_count.0 + 1
         && Chain::epoch_slot(c1) >= Some(SLOTS_PER_EPOCH * 2 / 3)
     {
-        return c0
-            .consensus_state()
-            .unwrap()
-            .staking_epoch_data
-            .lock_checkpoint
-            == c1
-                .consensus_state()
-                .unwrap()
-                .next_epoch_data
-                .lock_checkpoint;
+        let s0_lock_checkpoint = &s0.staking_epoch_data.lock_checkpoint;
+        let s1_next_epoch_lock_checkpoint = &s1.next_epoch_data.lock_checkpoint;
+        return Ok(s0_lock_checkpoint == s1_next_epoch_lock_checkpoint);
     } else {
-        false
+        Ok(false)
     }
 }
 
@@ -136,8 +137,8 @@ mod tests {
 
         c0.push(b0).unwrap();
         c1.push(b1).unwrap();
-        assert_eq!(is_short_range(&c0, &c1), true);
-        assert_eq!(is_short_range(&c1, &c0), true);
+        assert_eq!(is_short_range(&c0, &c1).unwrap(), true);
+        assert_eq!(is_short_range(&c1, &c0).unwrap(), true);
 
         init_checkpoints(&mut genesis);
         let mut b1: ProtocolState = Default::default();
@@ -154,7 +155,7 @@ mod tests {
             slots_per_epoch: Length(7140),
         };
         c3.push(b2).unwrap();
-        assert_eq!(is_short_range(&c3, &c0), false);
-        assert_eq!(is_short_range(&c0, &c3), false);
+        assert_eq!(is_short_range(&c3, &c0).unwrap(), false);
+        assert_eq!(is_short_range(&c0, &c3).unwrap(), false);
     }
 }
