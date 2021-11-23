@@ -5,11 +5,10 @@ use crate::common::{Chain, ProtocolStateChain};
 use mina_crypto::base58::Base58Encodable;
 use mina_crypto::hash::{EpochSeed, StateHash};
 use mina_rs_base::protocol_state::ProtocolState;
-#[allow(dead_code)]
-const SLOTS_PER_EPOCH: u32 = 7140;
 
-#[allow(dead_code)]
-fn init_checkpoints(genesis: &mut ProtocolState) {
+pub const SLOTS_PER_EPOCH: u32 = 7140;
+
+pub fn init_checkpoints(genesis: &mut ProtocolState) {
     genesis.body.consensus_state.staking_epoch_data.seed = EpochSeed::default();
     genesis
         .body
@@ -41,8 +40,7 @@ fn init_checkpoints(genesis: &mut ProtocolState) {
     genesis.body.consensus_state.next_epoch_data.epoch_length.0 = 2;
 }
 
-#[allow(dead_code)]
-fn is_short_range(c0: &ProtocolStateChain, c1: &ProtocolStateChain) -> bool {
+pub fn is_short_range(c0: &ProtocolStateChain, c1: &ProtocolStateChain) -> bool {
     if c0.consensus_state().unwrap().epoch_count == c1.consensus_state().unwrap().epoch_count {
         return c0
             .consensus_state()
