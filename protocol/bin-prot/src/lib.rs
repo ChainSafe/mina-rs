@@ -1,6 +1,12 @@
 // Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
+#![deny(rustdoc::all)]
+
+//!
+//! This crate implements <https://github.com/janestreet/bin_prot> in rust
+//!
+
 mod array;
 mod consts;
 mod de;

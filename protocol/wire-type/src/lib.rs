@@ -1,6 +1,8 @@
 // Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
+#![deny(rustdoc::all)]
+
 //! # Wire Type
 //!
 //!  `wire-type` exports a trait and a corresponding derive macro to annotate types in Mina-rs
