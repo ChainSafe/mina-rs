@@ -54,7 +54,6 @@ pub fn is_short_range(c0: &ProtocolStateChain, c1: &ProtocolStateChain) -> bool 
                 .lock_checkpoint;
     }
 
-    #[allow(clippy::erasing_op)]
     if c0.consensus_state().unwrap().epoch_count.0
         == c1.consensus_state().unwrap().epoch_count.0 + 1
         && Chain::epoch_slot(c1) >= Some(SLOTS_PER_EPOCH * 2 / 3)
