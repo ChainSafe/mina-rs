@@ -6,5 +6,5 @@
 //!
 //! Contains definitions of data structures for mina consensus
 //!
-
+pub mod checkpoint;
 pub mod common;
