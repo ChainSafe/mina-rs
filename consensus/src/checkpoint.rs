@@ -60,7 +60,7 @@ pub fn is_short_range(
     let s1_next_epoch_lock_checkpoint = &s1.next_epoch_data.lock_checkpoint;
 
     if s0.epoch_count == s1.epoch_count {
-        return Ok(s0_lock_checkpoint == s1_lock_checkpoint)
+        return Ok(s0_lock_checkpoint == s1_lock_checkpoint);
     }
 
     if s0.epoch_count.0 == s1.epoch_count.0 + 1 && c1.epoch_slot() >= Some(SLOTS_PER_EPOCH * 2 / 3)
