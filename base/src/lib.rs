@@ -13,6 +13,7 @@
 // below or it will error. The error will be fixed in the future when derive becomes like a regular
 // attribute macro and an order of operations well defined
 #![allow(legacy_derive_helpers)]
+#![deny(rustdoc::all)]
 
 pub mod blockchain_state;
 pub mod consensus_state;

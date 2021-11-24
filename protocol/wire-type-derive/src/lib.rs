@@ -1,6 +1,12 @@
 // Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
+#![deny(rustdoc::all)]
+
+//!
+//! This crate contains procedural macro for for deriving WireType trait
+//!
+
 use darling::FromDeriveInput;
 use proc_macro::TokenStream;
 use quote::{format_ident, quote};
