@@ -6,6 +6,12 @@ version = "0.1.0"
 edition = "2021"
 license = "Apache-2.0"
 
+[features]
+default = []
+
+# browser feature is used to run wasm tests in headless browser context
+browser = []
+
 [dependencies]
 mina-crypto = {version = "0.1.0", path = "../crypto"}
 mina-rs-base = {version = "0.1.0", path = "../base"}
@@ -13,3 +19,6 @@ mina-rs-base = {version = "0.1.0", path = "../base"}
 hex = "0.4.3"
 lazy_static = "1"
 thiserror = "1.0.24"
+
+[dev-dependencies]
+wasm-bindgen-test = "0.3"

@@ -91,6 +91,11 @@ jobs:
           cd protocol/test-serialization
           wasm-pack test --node --release
           wasm-pack test --headless --chrome --release --features browser
+      - name: wasm-pack tests for consensus
+        run: |
+          cd consensus
+          wasm-pack test --node --release
+          wasm-pack test --headless --chrome --release --features browser
   codecov-x86_64:
     runs-on: ubuntu-latest
     steps:

@@ -74,10 +74,11 @@ pub fn is_short_range(
 #[cfg(test)]
 mod tests {
     use super::*;
-    use mina_rs_base::global_slot::GlobalSlot;
-    use mina_rs_base::numbers::{GlobalSlotNumber, Length};
+    use mina_rs_base::types::*;
+    use wasm_bindgen_test::*;
 
     #[test]
+    #[wasm_bindgen_test]
     fn test_init_checkpoints() {
         let mut genesis: ProtocolState = Default::default();
         init_checkpoints(&mut genesis).unwrap();
@@ -113,6 +114,7 @@ mod tests {
     }
 
     #[test]
+    #[wasm_bindgen_test]
     fn test_is_short_range() {
         let mut genesis: ProtocolState = Default::default();
         init_checkpoints(&mut genesis).unwrap();

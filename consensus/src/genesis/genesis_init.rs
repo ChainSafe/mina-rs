@@ -58,9 +58,11 @@ impl GenesisInit for ExternalTransition {
 mod tests {
     use super::*;
     use mina_crypto::base58::Base58Encodable;
+    use wasm_bindgen_test::*;
 
     // https://github.com/MinaProtocol/mina/tree/feature/9665-spec-ouroboros-samasika-checkpointing/docs/specs/consensus#611-genesis-block
     #[test]
+    #[wasm_bindgen_test]
     fn test_genesis_mainnet() {
         let et = ExternalTransition::init_genesis(&MAINNET_CONFIG);
 

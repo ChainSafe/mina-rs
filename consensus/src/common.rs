@@ -85,8 +85,10 @@ impl Chain<ProtocolState> for ProtocolStateChain {
 mod tests {
     use super::*;
     use mina_rs_base::numbers::{GlobalSlotNumber, Length};
+    use wasm_bindgen_test::*;
 
     #[test]
+    #[wasm_bindgen_test]
     fn test_protocol_state_chain_push() {
         let mut c: ProtocolStateChain = ProtocolStateChain(vec![]);
         assert_eq!(c.length(), 0);
@@ -112,6 +114,7 @@ mod tests {
     }
 
     #[test]
+    #[wasm_bindgen_test]
     fn test_protocol_state_chain_top() {
         let mut c: ProtocolStateChain = ProtocolStateChain(vec![]);
         assert_eq!(c.length(), 0);
@@ -133,6 +136,7 @@ mod tests {
     }
 
     #[test]
+    #[wasm_bindgen_test]
     fn test_protocol_state_chain_epoch_slot() {
         let mut c: ProtocolStateChain = ProtocolStateChain(vec![]);
 
@@ -168,6 +172,7 @@ mod tests {
     }
 
     #[test]
+    #[wasm_bindgen_test]
     fn test_protocol_state_chain_state_hash() {
         let mut c: ProtocolStateChain = ProtocolStateChain(vec![]);
 
@@ -180,6 +185,7 @@ mod tests {
     }
 
     #[test]
+    #[wasm_bindgen_test]
     fn test_protocol_state_chain_last_vrf() {
         let mut c: ProtocolStateChain = ProtocolStateChain(vec![]);
         assert_eq!(None, c.last_vrf());

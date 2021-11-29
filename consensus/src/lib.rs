@@ -10,3 +10,6 @@
 pub mod checkpoint;
 pub mod common;
 pub mod genesis;
+
+#[cfg(all(test, feature = "browser"))]
+wasm_bindgen_test::wasm_bindgen_test_configure!(run_in_browser);
