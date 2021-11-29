@@ -27,6 +27,7 @@ pub mod protocol_state_proof;
 pub mod protocol_version;
 pub mod staged_ledger_diff;
 pub mod token_id;
+pub mod verification_key;
 
 pub mod types {
     pub use super::blockchain_state::*;
@@ -41,4 +42,5 @@ pub mod types {
     pub use super::protocol_version::*;
     pub use super::staged_ledger_diff::*;
     pub use super::token_id::*;
+    pub use super::verification_key::*;
 }

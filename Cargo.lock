@@ -1524,6 +1524,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "snark-keys"
+version = "0.1.0"
+dependencies = [
+ "bin-prot",
+ "mina-rs-base",
+ "serde",
+ "serde_json",
+ "test-fixtures",
+ "thiserror",
+]
+
+[[package]]
 name = "sprs"
 version = "0.7.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
