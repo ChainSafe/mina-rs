@@ -22,12 +22,14 @@ jobs:
       - uses: actions-rs/toolchain@v1
         with:
           profile: minimal
-          toolchain: stable
+          toolchain: nightly
           components: rustfmt
           override: true
       - run: cargo fmt --all -- --check
       - name: Check license
         run: ./scripts/add_license.sh
+      - run: cargo install cargo-udeps || echo 'already installed'
+      - run: cargo udeps --all-targets --all-features
       - run: cargo install cargo-deny || echo 'already installed'
       - run: cargo deny check Ban -s
       - run: cargo deny check License -s
