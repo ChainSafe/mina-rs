@@ -8,3 +8,4 @@
 //!
 pub mod checkpoint;
 pub mod common;
+pub mod genesis;

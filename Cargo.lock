@@ -802,9 +802,9 @@ name = "mina-consensus"
 version = "0.1.0"
 dependencies = [
  "hex",
+ "lazy_static",
  "mina-crypto",
  "mina-rs-base",
- "serde-bin-prot",
  "thiserror",
 ]
 
@@ -1420,19 +1420,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "serde-bin-prot"
-version = "0.1.0"
-source = "git+https://github.com/ChainSafe/serde-bin-prot?branch=main#38e886e8f0b8faae81b06735ba9be0fb4627018f"
-dependencies = [
- "byteorder",
- "num",
- "serde",
- "serde_json",
- "shrinkwraprs",
- "thiserror",
-]
-
-[[package]]
 name = "serde_cbor"
 version = "0.11.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1508,19 +1495,6 @@ dependencies = [
  "cpufeatures",
  "digest",
  "opaque-debug",
-]
-
-[[package]]
-name = "shrinkwraprs"
-version = "0.3.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e63e6744142336dfb606fe2b068afa2e1cca1ee6a5d8377277a92945d81fa331"
-dependencies = [
- "bitflags",
- "itertools 0.8.2",
- "proc-macro2",
- "quote",
- "syn",
 ]
 
 [[package]]

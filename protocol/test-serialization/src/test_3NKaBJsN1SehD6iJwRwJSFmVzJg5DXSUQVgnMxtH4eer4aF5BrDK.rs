@@ -8,10 +8,7 @@ wasm_bindgen_test::wasm_bindgen_test_configure!(run_in_browser);
 mod tests {
     use anyhow::bail;
     use mina_crypto::base58::Base58Encodable;
-    use mina_rs_base::staged_ledger_diff::{
-        CoinBase, InternalCommandBalanceData, SignedCommandMemo, SignedCommandPayloadBody,
-        TransactionStatus, UserCommand,
-    };
+    use mina_rs_base::types::*;
     use pretty_assertions::assert_eq;
     use test_fixtures::*;
     use time::macros::*;
@@ -327,6 +324,11 @@ mod tests {
         //     et.delta_transition_chain_proof.0.to_base58().into_string(),
         //     "jwHLk8kaC6B45K3sjuX2sM38649VtfpUAteTfKFQMPcqTeXjGiT"
         // );
+        assert_eq!(et.current_protocol_version.major, 2);
+        assert_eq!(et.current_protocol_version.minor, 0);
+        assert_eq!(et.current_protocol_version.patch, 0);
+        assert_eq!(et.current_protocol_version, ProtocolVersion::default());
+        assert_eq!(et.proposed_protocol_version_opt, None);
         Ok(())
     }
 }
