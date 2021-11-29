@@ -14,7 +14,7 @@ use wire_type::WireType;
 #[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, WireType)]
 #[serde(from = "<Self as WireType>::WireType")]
 #[serde(into = "<Self as WireType>::WireType")]
-pub struct VrfOutputTruncated(Vec<u8>);
+pub struct VrfOutputTruncated(pub Vec<u8>);
 
 impl Hashable<VrfOutputHash> for VrfOutputTruncated {}
 
@@ -45,7 +45,7 @@ pub struct ConsensusState {
     /// Minimum odnws density oberved on the chain
     pub min_window_density: Length,
     /// Current sliding window of densities
-    sub_window_densities: Vec<Length>,
+    pub sub_window_densities: Vec<Length>,
     /// Additional VRS output from leader (for seeding Random Oracle)
     pub last_vrf_output: VrfOutputTruncated,
     /// Total supply of currency

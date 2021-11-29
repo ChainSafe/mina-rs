@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 #![deny(rustdoc::all)]
+#![allow(rustdoc::private_doc_tests)]
 
 //!
 //! Contains definitions of data structures for mina consensus

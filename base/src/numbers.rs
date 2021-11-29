@@ -25,6 +25,12 @@ use wire_type::WireType;
 #[wire_type(recurse = 2)]
 pub struct Length(pub u32);
 
+impl From<u32> for Length {
+    fn from(v: u32) -> Self {
+        Self(v)
+    }
+}
+
 #[derive(
     Clone, Serialize, Deserialize, PartialEq, PartialOrd, Debug, Hash, Copy, Default, WireType,
 )]
@@ -32,6 +38,12 @@ pub struct Length(pub u32);
 #[serde(into = "<Self as WireType>::WireType")]
 #[wire_type(recurse = 2)]
 pub struct Delta(pub u32);
+
+impl From<u32> for Delta {
+    fn from(v: u32) -> Self {
+        Self(v)
+    }
+}
 
 #[derive(
     Clone, Serialize, Deserialize, PartialEq, PartialOrd, Debug, Hash, Copy, Default, WireType,
@@ -112,6 +124,12 @@ pub struct Char(u8);
 #[wire_type(recurse = 2)]
 pub struct GlobalSlotNumber(pub u32);
 
+impl From<u32> for GlobalSlotNumber {
+    fn from(v: u32) -> Self {
+        Self(v)
+    }
+}
+
 #[derive(Clone, Serialize, Deserialize, PartialEq, Debug, Hash, Default, WireType)]
 #[serde(from = "<Self as WireType>::WireType")]
 #[serde(into = "<Self as WireType>::WireType")]
@@ -119,6 +137,10 @@ pub struct GlobalSlotNumber(pub u32);
 pub struct BlockTime(u64);
 
 impl BlockTime {
+    pub fn from_unix_timestamp(ts: u64) -> Self {
+        Self(ts * 1000)
+    }
+
     /// Gets unix timestamp in milliseconds
     pub fn epoch_millis(&self) -> u64 {
         self.0
