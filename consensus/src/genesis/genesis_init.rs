@@ -22,6 +22,8 @@ impl GenesisInit for ExternalTransition {
     fn init_genesis(config: &GenesisInitConfig) -> ExternalTransition {
         let mut et = ExternalTransition::default();
 
+        et.protocol_state.body.blockchain_state = config.blockchain_state.clone();
+
         let cs = &mut et.protocol_state.body.consensus_state;
         cs.blockchain_length = 1.into();
         cs.epoch_count = 0.into();
@@ -49,6 +51,14 @@ impl GenesisInit for ExternalTransition {
         cs.global_slot_since_genesis = 0.into();
         cs.staking_epoch_data = config.staking_epoch_data.clone();
         cs.next_epoch_data = config.next_epoch_data.clone();
+        cs.has_ancestor_in_same_checkpoint_window = false;
+        cs.block_stake_winner = config.block_stake_winner.clone();
+        cs.block_creator = config.block_creator.clone();
+        cs.coinbase_receiver = config.coinbase_receiver.clone();
+        cs.supercharge_coinbase = false;
+
+        et.protocol_state.previous_state_hash = config.previous_state_hash.clone();
+        et.protocol_state.body.genesis_state_hash = config.genesis_state_hash.clone();
 
         et
     }
@@ -126,5 +136,37 @@ mod tests {
             );
             assert_eq!(ned.epoch_length, 2.into());
         }
+
+        assert_eq!(cs.has_ancestor_in_same_checkpoint_window, false);
+        assert_eq!(
+            cs.block_stake_winner.to_base58().into_string(),
+            "B62qiy32p8kAKnny8ZFwoMhYpBppM1DWVCqAPBYNcXnsAHhnfAAuXgg"
+        );
+        assert_eq!(
+            cs.block_creator.to_base58().into_string(),
+            "B62qiy32p8kAKnny8ZFwoMhYpBppM1DWVCqAPBYNcXnsAHhnfAAuXgg"
+        );
+        assert_eq!(
+            cs.coinbase_receiver.to_base58().into_string(),
+            "B62qiy32p8kAKnny8ZFwoMhYpBppM1DWVCqAPBYNcXnsAHhnfAAuXgg"
+        );
+        assert_eq!(cs.supercharge_coinbase, false);
+        // et.protocol_state.previous_state_hash = config.previous_state_hash.clone();
+        // et.protocol_state.body.genesis_state_hash = config.genesis_state_hash.clone();
+        assert_eq!(
+            et.protocol_state
+                .previous_state_hash
+                .to_base58()
+                .into_string(),
+            "3NLoKn22eMnyQ7rxh5pxB6vBA3XhSAhhrf7akdqS6HbAKD14Dh1d"
+        );
+        assert_eq!(
+            et.protocol_state
+                .body
+                .genesis_state_hash
+                .to_base58()
+                .into_string(),
+            "3NKeMoncuHab5ScarV5ViyF16cJPT4taWNSaTLS64Dp67wuXigPZ"
+        );
     }
 }

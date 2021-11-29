@@ -4,6 +4,7 @@
 use mina_crypto::{
     base58::Base58Encodable,
     hash::{EpochSeed, LedgerHash, StateHash},
+    signature::PublicKey,
 };
 use mina_rs_base::types::*;
 
@@ -15,10 +16,17 @@ lazy_static::lazy_static! {
 }
 
 pub struct GenesisInitConfig {
-    pub(crate) sub_windows_per_window: u32,
     pub(crate) constants: ProtocolConstants,
+
+    pub(crate) sub_windows_per_window: u32,
     pub(crate) staking_epoch_data: EpochData,
     pub(crate) next_epoch_data: EpochData,
+    pub(crate) block_stake_winner: PublicKey,
+    pub(crate) block_creator: PublicKey,
+    pub(crate) coinbase_receiver: PublicKey,
+    pub(crate) genesis_state_hash: StateHash,
+    pub(crate) previous_state_hash: StateHash,
+    pub(crate) blockchain_state: BlockchainState,
 }
 
 impl GenesisInitConfig {
@@ -70,11 +78,38 @@ impl GenesisInitConfig {
             data
         };
 
+        let blockchain_state = BlockchainState {
+            timestamp: BlockTime::from_unix_timestamp(1615939200000),
+            // staged_ledger_hash:
+            ..Default::default()
+        };
+
         Self {
             sub_windows_per_window: 11,
             constants,
             staking_epoch_data,
             next_epoch_data,
+            block_stake_winner: PublicKey::from_base58(
+                "B62qiy32p8kAKnny8ZFwoMhYpBppM1DWVCqAPBYNcXnsAHhnfAAuXgg",
+            )
+            .expect(ERR_FAIL_TO_DECODE_B58),
+            block_creator: PublicKey::from_base58(
+                "B62qiy32p8kAKnny8ZFwoMhYpBppM1DWVCqAPBYNcXnsAHhnfAAuXgg",
+            )
+            .expect(ERR_FAIL_TO_DECODE_B58),
+            coinbase_receiver: PublicKey::from_base58(
+                "B62qiy32p8kAKnny8ZFwoMhYpBppM1DWVCqAPBYNcXnsAHhnfAAuXgg",
+            )
+            .expect(ERR_FAIL_TO_DECODE_B58),
+            genesis_state_hash: StateHash::from_base58(
+                "3NKeMoncuHab5ScarV5ViyF16cJPT4taWNSaTLS64Dp67wuXigPZ",
+            )
+            .expect(ERR_FAIL_TO_DECODE_B58),
+            previous_state_hash: StateHash::from_base58(
+                "3NLoKn22eMnyQ7rxh5pxB6vBA3XhSAhhrf7akdqS6HbAKD14Dh1d",
+            )
+            .expect(ERR_FAIL_TO_DECODE_B58),
+            blockchain_state,
         }
     }
 
