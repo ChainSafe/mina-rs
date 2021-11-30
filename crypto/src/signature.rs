@@ -26,7 +26,7 @@ pub struct PublicKey {
 }
 
 impl Base58Encodable for PublicKey {
-    const VERSION_BYTE: u8 = crate::base58::version_bytes::NON_ZERO_CURVE_POINT_COMPRESSED;
+    const VERSION_BYTE: u8 = version_bytes::NON_ZERO_CURVE_POINT_COMPRESSED;
 }
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize, Deref, WireType)]

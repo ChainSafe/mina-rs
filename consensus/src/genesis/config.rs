@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use mina_crypto::{
-    base58::{Base58Encodable, Base58EncodableHash},
+    base58::{version_bytes, Base58Encodable, Base58EncodableHash},
     hash::*,
     signature::PublicKey,
 };
@@ -95,9 +95,14 @@ impl GenesisInitConfig {
                         "jx7buQVWFLsXTtzRgSxbYcT8EYLS8KCZbLrfDcJxMtyy4thw2Ee",
                     )
                     .expect(ERR_FAIL_TO_DECODE_B58),
-                    ..Default::default()
-                    // aux_hash: (),
-                    // pending_coinbase_aux: (),
+                    aux_hash: AuxHash(decode_aux_hash_from_base58(
+                        "UDRUFHSvxUAtV8sh7gzMVPqpbd46roG1wzWR6dYvB6RunPihom",
+                        version_bytes::STAGED_LEDGER_HASH_AUX_HASH,
+                    )),
+                    pending_coinbase_aux: AuxHash(decode_aux_hash_from_base58(
+                        "WAAeUjUnP9Q2JiabhJzJozcjiEmkZe8ob4cfFKSuq6pQSNmHh7",
+                        version_bytes::STAGED_LEDGER_HASH_PENDING_COINBASE_AUX,
+                    )),
                 },
                 pending_coinbase_hash: CoinBaseHash::from_base58(
                     "2n1tLdP2gkifmyVmrmzYXTS4ohPbZPJn6Qq4x55ywrbRWB4543cC",
@@ -139,4 +144,13 @@ impl GenesisInitConfig {
         // FIXME: Figure out devnet config
         Self::mainnet()
     }
+}
+
+fn decode_aux_hash_from_base58(s: impl AsRef<[u8]>, check: u8) -> Vec<u8> {
+    let bytes: Vec<u8> = bs58::decode(s)
+        .with_check(Some(check))
+        .into_vec()
+        .expect(ERR_FAIL_TO_DECODE_B58);
+
+    bytes.into_iter().skip(1).take(32).collect()
 }

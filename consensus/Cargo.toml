@@ -16,6 +16,7 @@ browser = []
 mina-crypto = {version = "0.1.0", path = "../crypto"}
 mina-rs-base = {version = "0.1.0", path = "../base"}
 
+bs58 = {version = "0.4.0", features = ["check"]}
 hex = "0.4.3"
 lazy_static = "1"
 thiserror = "1.0.24"

@@ -782,6 +782,7 @@ dependencies = [
 name = "mina-consensus"
 version = "0.1.0"
 dependencies = [
+ "bs58",
  "hex",
  "lazy_static",
  "mina-crypto",
