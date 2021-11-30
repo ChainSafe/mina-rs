@@ -77,7 +77,7 @@ mod tests {
         let t = TestType(123);
         let h = t.hash();
         assert_eq!(
-            h.to_base58().into_string(),
+            h.to_base58_string(),
             "Zbx5bAfiyj8yPh8nhXEW3et2TEbnZvEPrShQxTaJaLX3cvPPZV"
         )
     }

@@ -137,8 +137,12 @@ impl From<u32> for GlobalSlotNumber {
 pub struct BlockTime(u64);
 
 impl BlockTime {
-    pub fn from_unix_timestamp(ts: u64) -> Self {
-        Self(ts * 1000)
+    pub fn from_unix_epoch(ts: u64) -> Self {
+        Self::from_unix_epoch_millis(ts * 1000)
+    }
+
+    pub fn from_unix_epoch_millis(ts: u64) -> Self {
+        Self(ts)
     }
 
     /// Gets unix timestamp in milliseconds

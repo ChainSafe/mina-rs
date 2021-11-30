@@ -68,6 +68,7 @@ impl GenesisInit for ExternalTransition {
 mod tests {
     use super::*;
     use mina_crypto::base58::{Base58Encodable, Base58EncodableHash};
+    use time::macros::*;
     use wasm_bindgen_test::*;
 
     // https://github.com/MinaProtocol/mina/tree/feature/9665-spec-ouroboros-samasika-checkpointing/docs/specs/consensus#611-genesis-block
@@ -75,6 +76,31 @@ mod tests {
     #[wasm_bindgen_test]
     fn test_genesis_mainnet() {
         let et = ExternalTransition::init_genesis(&MAINNET_CONFIG);
+
+        let bs = &et.protocol_state.body.blockchain_state;
+        assert_eq!(bs.timestamp.datetime(), datetime!(2021-03-17 00:00:0 UTC));
+        assert_eq!(bs.snarked_next_available_token.0, 2);
+        assert_eq!(
+            bs.snarked_ledger_hash.to_base58_string(),
+            "jx7buQVWFLsXTtzRgSxbYcT8EYLS8KCZbLrfDcJxMtyy4thw2Ee"
+        );
+        assert_eq!(
+            bs.genesis_ledger_hash.to_base58_string(),
+            "jx7buQVWFLsXTtzRgSxbYcT8EYLS8KCZbLrfDcJxMtyy4thw2Ee"
+        );
+        assert_eq!(
+            bs.staged_ledger_hash
+                .pending_coinbase_hash
+                .to_base58_string(),
+            "2n1tLdP2gkifmyVmrmzYXTS4ohPbZPJn6Qq4x55ywrbRWB4543cC"
+        );
+        assert_eq!(
+            bs.staged_ledger_hash
+                .non_snark
+                .ledger_hash
+                .to_base58_string(),
+            "jx7buQVWFLsXTtzRgSxbYcT8EYLS8KCZbLrfDcJxMtyy4thw2Ee"
+        );
 
         let cs = &et.protocol_state.body.consensus_state;
         assert_eq!(cs.blockchain_length, 1.into());
@@ -97,20 +123,20 @@ mod tests {
         {
             let sed = &cs.staking_epoch_data;
             assert_eq!(
-                sed.ledger.hash.to_base58().into_string(),
+                sed.ledger.hash.to_base58_string(),
                 "jx7buQVWFLsXTtzRgSxbYcT8EYLS8KCZbLrfDcJxMtyy4thw2Ee"
             );
             assert_eq!(sed.ledger.total_currency.0, 805385692840039300);
             assert_eq!(
-                sed.seed.to_base58().into_string(),
+                sed.seed.to_base58_string(),
                 "2va9BGv9JrLTtrzZttiEMDYw1Zj6a6EHzXjmP9evHDTG3oEquURA"
             );
             assert_eq!(
-                sed.start_checkpoint.to_base58().into_string(),
+                sed.start_checkpoint.to_base58_string(),
                 "3NK2tkzqqK5spR2sZ7tujjqPksL45M3UUrcA4WhCkeiPtnugyE2x"
             );
             assert_eq!(
-                sed.lock_checkpoint.to_base58().into_string(),
+                sed.lock_checkpoint.to_base58_string(),
                 "3NK2tkzqqK5spR2sZ7tujjqPksL45M3UUrcA4WhCkeiPtnugyE2x"
             );
             assert_eq!(sed.epoch_length, 1.into());
@@ -118,20 +144,20 @@ mod tests {
         {
             let ned = &cs.next_epoch_data;
             assert_eq!(
-                ned.ledger.hash.to_base58().into_string(),
+                ned.ledger.hash.to_base58_string(),
                 "jx7buQVWFLsXTtzRgSxbYcT8EYLS8KCZbLrfDcJxMtyy4thw2Ee"
             );
             assert_eq!(ned.ledger.total_currency.0, 805385692840039300);
             assert_eq!(
-                ned.seed.to_base58().into_string(),
+                ned.seed.to_base58_string(),
                 "2vaRh7FQ5wSzmpFReF9gcRKjv48CcJvHs25aqb3SSZiPgHQBy5Dt"
             );
             assert_eq!(
-                ned.start_checkpoint.to_base58().into_string(),
+                ned.start_checkpoint.to_base58_string(),
                 "3NK2tkzqqK5spR2sZ7tujjqPksL45M3UUrcA4WhCkeiPtnugyE2x"
             );
             assert_eq!(
-                ned.lock_checkpoint.to_base58().into_string(),
+                ned.lock_checkpoint.to_base58_string(),
                 "3NLoKn22eMnyQ7rxh5pxB6vBA3XhSAhhrf7akdqS6HbAKD14Dh1d"
             );
             assert_eq!(ned.epoch_length, 2.into());
@@ -139,31 +165,24 @@ mod tests {
 
         assert_eq!(cs.has_ancestor_in_same_checkpoint_window, true);
         assert_eq!(
-            cs.block_stake_winner.to_base58().into_string(),
+            cs.block_stake_winner.to_base58_string(),
             "B62qiy32p8kAKnny8ZFwoMhYpBppM1DWVCqAPBYNcXnsAHhnfAAuXgg"
         );
         assert_eq!(
-            cs.block_creator.to_base58().into_string(),
+            cs.block_creator.to_base58_string(),
             "B62qiy32p8kAKnny8ZFwoMhYpBppM1DWVCqAPBYNcXnsAHhnfAAuXgg"
         );
         assert_eq!(
-            cs.coinbase_receiver.to_base58().into_string(),
+            cs.coinbase_receiver.to_base58_string(),
             "B62qiy32p8kAKnny8ZFwoMhYpBppM1DWVCqAPBYNcXnsAHhnfAAuXgg"
         );
         assert_eq!(cs.supercharge_coinbase, true);
         assert_eq!(
-            et.protocol_state
-                .previous_state_hash
-                .to_base58()
-                .into_string(),
+            et.protocol_state.previous_state_hash.to_base58_string(),
             "3NLoKn22eMnyQ7rxh5pxB6vBA3XhSAhhrf7akdqS6HbAKD14Dh1d"
         );
         assert_eq!(
-            et.protocol_state
-                .body
-                .genesis_state_hash
-                .to_base58()
-                .into_string(),
+            et.protocol_state.body.genesis_state_hash.to_base58_string(),
             "3NKeMoncuHab5ScarV5ViyF16cJPT4taWNSaTLS64Dp67wuXigPZ"
         );
     }

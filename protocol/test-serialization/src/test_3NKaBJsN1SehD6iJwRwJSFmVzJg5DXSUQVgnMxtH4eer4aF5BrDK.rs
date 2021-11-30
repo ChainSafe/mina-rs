@@ -27,19 +27,19 @@ mod tests {
 
         let protocol_state = &et.protocol_state;
         assert_eq!(
-            protocol_state.previous_state_hash.to_base58().into_string(),
+            protocol_state.previous_state_hash.to_base58_string(),
             "3NKDdX6eVtAgmmTVxaFLnnPPrsGKgVepG2k5cf8HocgSw6ps8Sww"
         );
 
         let body = &et.protocol_state.body;
         assert_eq!(
-            body.genesis_state_hash.to_base58().into_string(),
+            body.genesis_state_hash.to_base58_string(),
             "3NKeMoncuHab5ScarV5ViyF16cJPT4taWNSaTLS64Dp67wuXigPZ"
         );
         let blockchain_state = &body.blockchain_state;
         let non_snark = &blockchain_state.staged_ledger_hash.non_snark;
         assert_eq!(
-            non_snark.ledger_hash.to_base58().into_string(),
+            non_snark.ledger_hash.to_base58_string(),
             "jwD5Kx1GtLKJGSWufhkvCn8m7EFLm2LmAM7neyzLtTiN8wyn2po"
         );
 
@@ -57,22 +57,15 @@ mod tests {
             blockchain_state
                 .staged_ledger_hash
                 .pending_coinbase_hash
-                .to_base58()
-                .into_string(), // .as_ref(),
+                .to_base58_string(),
             "2mzpdUi5ddLicLGUns4iYFiNahL5B5cPkTUot83v2moNtr4mzRYf"
         );
         assert_eq!(
-            blockchain_state
-                .snarked_ledger_hash
-                .to_base58()
-                .into_string(),
+            blockchain_state.snarked_ledger_hash.to_base58_string(),
             "jxkQm8ge9sYPwPyUYUMZ6wr7SQ6Pit5szbRvPmEzYKQQZAnACyC"
         );
         assert_eq!(
-            blockchain_state
-                .genesis_ledger_hash
-                .to_base58()
-                .into_string(),
+            blockchain_state.genesis_ledger_hash.to_base58_string(),
             "jx7buQVWFLsXTtzRgSxbYcT8EYLS8KCZbLrfDcJxMtyy4thw2Ee"
         );
         assert_eq!(blockchain_state.snarked_next_available_token.0, 2);
@@ -108,7 +101,7 @@ mod tests {
 
         let staking_epoch_data = &consensus_state.staking_epoch_data;
         assert_eq!(
-            staking_epoch_data.ledger.hash.to_base58().into_string(),
+            staking_epoch_data.ledger.hash.to_base58_string(),
             "jxn15ATGoe4WGgYpbssxJH9XW8NXRDy22WvSsBqvMqcnLPgPAwN"
         );
         assert_eq!(
@@ -119,25 +112,22 @@ mod tests {
             "861208012.840039233"
         );
         assert_eq!(
-            staking_epoch_data.seed.to_base58().into_string(),
+            staking_epoch_data.seed.to_base58_string(),
             "2vao4i3odTHZVRbEhdkKvLoD1rW2UuiVaayVFosYtkghABg29o7i"
         );
         assert_eq!(
-            staking_epoch_data
-                .start_checkpoint
-                .to_base58()
-                .into_string(),
+            staking_epoch_data.start_checkpoint.to_base58_string(),
             "3NLM6x7j2Z68e8gGspyvc1aU884uU6yWkwz9aW127BFckn9b5uvo"
         );
         assert_eq!(
-            staking_epoch_data.lock_checkpoint.to_base58().into_string(),
+            staking_epoch_data.lock_checkpoint.to_base58_string(),
             "3NLiFhztdCsuWSociNGMspidiYkyqNKZw6ufH7jqbgQtEgGtBb2P"
         );
         assert_eq!(*staking_epoch_data.epoch_length, 4697);
 
         let next_epoch_data = &consensus_state.next_epoch_data;
         assert_eq!(
-            next_epoch_data.ledger.hash.to_base58().into_string(),
+            next_epoch_data.ledger.hash.to_base58_string(),
             "jwAXd4GZgxE3YCwqs99g4MpLNiEV2ZfZPstyah4jxo753AVgL6R"
         );
         assert_eq!(
@@ -145,30 +135,30 @@ mod tests {
             "864998092.840039233"
         );
         assert_eq!(
-            next_epoch_data.seed.to_base58().into_string(),
+            next_epoch_data.seed.to_base58_string(),
             "2vbUkQGF5swXK7PNaAJDUQirW1fbZiUJDzbBKwfPGdJXZiryburD"
         );
         assert_eq!(
-            next_epoch_data.start_checkpoint.to_base58().into_string(),
+            next_epoch_data.start_checkpoint.to_base58_string(),
             "3NLkdXKqoHfwZ5jT1uxSY3eoFy3C2jpAUFZ1Y6eSMsE66MNJqErx"
         );
         assert_eq!(
-            next_epoch_data.lock_checkpoint.to_base58().into_string(),
+            next_epoch_data.lock_checkpoint.to_base58_string(),
             "3NLW5kBi9nXDzzdr2C3p9X6QaKaASMaVHp3otwreKXKJToUNK7yu"
         );
         assert_eq!(*next_epoch_data.epoch_length, 3285);
 
         assert_eq!(consensus_state.has_ancestor_in_same_checkpoint_window, true);
         assert_eq!(
-            consensus_state.block_stake_winner.to_base58().into_string(),
+            consensus_state.block_stake_winner.to_base58_string(),
             "B62qmsYXFNNE565yv7bEMPsPnpRCsMErf7J2v5jMnuKQ1jgwZS8BzXS"
         );
         assert_eq!(
-            consensus_state.block_creator.to_base58().into_string(),
+            consensus_state.block_creator.to_base58_string(),
             "B62qpge4uMq4Vv5Rvc8Gw9qSquUYd6xoW1pz7HQkMSHm6h1o7pvLPAN"
         );
         assert_eq!(
-            consensus_state.coinbase_receiver.to_base58().into_string(),
+            consensus_state.coinbase_receiver.to_base58_string(),
             "B62qk9WYHu2PBYv4EyEubnVQURcwpiV2ysuYYoMdwi8YTnwZQ7H4bLM"
         );
         assert_eq!(consensus_state.supercharge_coinbase, false);
@@ -208,7 +198,7 @@ mod tests {
                     .unwrap();
                 assert_eq!(command.signer.x[..], bytes[3..35]);
 
-                assert_eq!(command.signature.to_base58().into_string(), "7mXTB1bcHYLJTmTfMtTboo4FSGStvera3z2wd6qjSxhpz1hZFMZZjcyaWAFEmZhgbq6DqVqGsNodnYKsCbMAq7D8yWo5bRSd");
+                assert_eq!(command.signature.to_base58_string(), "7mXTB1bcHYLJTmTfMtTboo4FSGStvera3z2wd6qjSxhpz1hZFMZZjcyaWAFEmZhgbq6DqVqGsNodnYKsCbMAq7D8yWo5bRSd");
                 let bytes = bs58::decode("7mXTB1bcHYLJTmTfMtTboo4FSGStvera3z2wd6qjSxhpz1hZFMZZjcyaWAFEmZhgbq6DqVqGsNodnYKsCbMAq7D8yWo5bRSd")
                     .into_vec()
                     .unwrap();
@@ -313,7 +303,7 @@ mod tests {
         };
 
         assert_eq!(
-            et.delta_transition_chain_proof.0.to_base58().into_string(),
+            et.delta_transition_chain_proof.0.to_base58_string(),
             "jwHLk8kaC6B45K3sjuX2sM38649VtfpUAteTfKFQMPcqTeXjGiT"
         );
         assert_eq!(et.current_protocol_version.major, 2);

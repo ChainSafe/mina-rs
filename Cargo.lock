@@ -787,6 +787,7 @@ dependencies = [
  "mina-crypto",
  "mina-rs-base",
  "thiserror",
+ "time",
  "wasm-bindgen-test",
 ]
 

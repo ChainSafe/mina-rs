@@ -74,6 +74,13 @@ impl Signature {
         bs58::encode(buf).with_check_version(Self::VERSION_BYTE)
     }
 
+    pub fn to_base58_string(&self) -> String
+    where
+        Self: Sized + Serialize,
+    {
+        self.to_base58().into_string()
+    }
+
     pub fn from_base58<I>(i: I) -> Result<Self, bin_prot::error::Error>
     where
         I: AsRef<[u8]>,
@@ -129,13 +136,13 @@ pub mod tests {
     fn public_key_from_base58_roundtrip() {
         let s = "B62qonDZEKYULNkfq7WGu1Z881YBRnMSuBGGX5DhnTv26mUyvN99mpo";
         let k = PublicKey::from_base58(s).unwrap();
-        assert_eq!(s, k.to_base58().into_string())
+        assert_eq!(s, k.to_base58_string())
     }
 
     #[test]
     fn signature_from_base58_roundtrip() {
         let s = "7mXTB1bcHYLJTmTfMtTboo4FSGStvera3z2wd6qjSxhpz1hZFMZZjcyaWAFEmZhgbq6DqVqGsNodnYKsCbMAq7D8yWo5bRSd";
         let k = Signature::from_base58(s).unwrap();
-        assert_eq!(s, k.to_base58().into_string())
+        assert_eq!(s, k.to_base58_string())
     }
 }

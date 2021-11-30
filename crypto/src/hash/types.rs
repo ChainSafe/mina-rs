@@ -184,21 +184,21 @@ pub mod test {
             17, 245, 30, 111, 61, 210, 168, 20, 160, 79, 111, 37, 167, 2,
         ];
         let h = LedgerHash(BaseHash(bytes));
-        println!("{}", h.to_base58().into_string())
+        println!("{}", h.to_base58_string())
     }
 
     #[test]
     fn ledger_hash_from_base58() {
         let s = "jxV4SS44wHUVrGEucCsfxLisZyUC5QddsiokGH3kz5xm2hJWZ25";
         let h = LedgerHash::from_base58(s).unwrap();
-        assert_eq!(h.to_base58().into_string(), s);
+        assert_eq!(h.to_base58_string(), s);
     }
 
     #[test]
     fn coinbase_hash_from_base58() {
         let s = "2n1tLdP2gkifmyVmrmzYXTS4ohPbZPJn6Qq4x55ywrbRWB4543cC";
         let h = CoinBaseHash::from_base58(s).unwrap();
-        assert_eq!(h.to_base58().into_string(), s);
+        assert_eq!(h.to_base58_string(), s);
     }
 
     #[test]
@@ -211,7 +211,7 @@ pub mod test {
         let h = LedgerHash(BaseHash(bytes));
         assert_eq!(
             h.clone(),
-            LedgerHash::from_base58(h.to_base58().into_string()).unwrap()
+            LedgerHash::from_base58(h.to_base58_string()).unwrap()
         )
     }
 }

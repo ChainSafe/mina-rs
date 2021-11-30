@@ -23,6 +23,13 @@ pub trait Base58Encodable {
         encode(buf).with_check_version(Self::VERSION_BYTE)
     }
 
+    fn to_base58_string(&self) -> String
+    where
+        Self: Sized + Serialize,
+    {
+        self.to_base58().into_string()
+    }
+
     fn from_base58<'a, I>(i: I) -> Result<Self, bin_prot::error::Error>
     where
         I: AsRef<[u8]>,
@@ -57,6 +64,13 @@ pub trait Base58EncodableHash {
             buf.push(b);
         }
         encode(buf).with_check_version(Self::VERSION_BYTE)
+    }
+
+    fn to_base58_string(&self) -> String
+    where
+        Self: AsRef<[u8; 32]>,
+    {
+        self.to_base58().into_string()
     }
 
     fn from_base58<I>(i: I) -> Result<Self, bin_prot::error::Error>

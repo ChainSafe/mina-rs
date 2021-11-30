@@ -37,7 +37,7 @@ impl GenesisInitConfig {
             slots_per_epoch: 7140.into(),
             slots_per_sub_window: 7.into(),
             delta: 0.into(),
-            genesis_state_timestamp: BlockTime::from_unix_timestamp(1615939200000),
+            genesis_state_timestamp: BlockTime::from_unix_epoch(1615939200),
         };
 
         let staking_epoch_data = {
@@ -79,7 +79,7 @@ impl GenesisInitConfig {
         };
 
         let blockchain_state = BlockchainState {
-            timestamp: BlockTime::from_unix_timestamp(1615939200000),
+            timestamp: BlockTime::from_unix_epoch(1615939200),
             snarked_next_available_token: TokenId(2),
             snarked_ledger_hash: SnarkedLedgerHash::from_base58(
                 "jx7buQVWFLsXTtzRgSxbYcT8EYLS8KCZbLrfDcJxMtyy4thw2Ee",
