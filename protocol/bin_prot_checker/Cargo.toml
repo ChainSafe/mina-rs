@@ -9,6 +9,5 @@ license = "Apache-2.0"
 [dependencies]
 bin-prot = {path = "../bin-prot"}
 
-erased-serde = "0.3.15"
 serde = {version = "1", features = ["derive"]}
 structopt = "0.3.21"
