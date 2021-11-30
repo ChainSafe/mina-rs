@@ -4,13 +4,14 @@
 #[cfg(all(test, feature = "browser"))]
 wasm_bindgen_test::wasm_bindgen_test_configure!(run_in_browser);
 
+mod genesis;
 #[allow(non_snake_case)]
 mod test_3NKaBJsN1SehD6iJwRwJSFmVzJg5DXSUQVgnMxtH4eer4aF5BrDK;
 
 #[cfg(test)]
 mod tests {
     use super::{block_path_test, block_path_test_batch};
-    use bin_prot::{from_reader, to_writer, Value};
+    use bin_prot::{from_reader, to_writer, BinProtDeser, Value};
     use mina_crypto::hash::*;
     use mina_crypto::signature::{
         FieldPoint, InnerCurveScalar, PublicKey, PublicKey2, PublicKey3, Signature,
@@ -31,6 +32,26 @@ mod tests {
         block_path_test_batch! {
             ExternalTransition => ""
         }
+    }
+
+    #[test]
+    #[wasm_bindgen_test]
+    fn test_external_transition_preallocate_buffer_bytes() {
+        let max_bytes = TEST_BLOCKS
+            .values()
+            .map(|v| v.bytes.len())
+            .max()
+            .unwrap_or_default();
+        assert!(
+            max_bytes <= ExternalTransition::PREALLOCATE_BUFFER_BYTES,
+            "max_bytes:{}",
+            max_bytes
+        );
+        assert!(
+            max_bytes * 12 / 10 > ExternalTransition::PREALLOCATE_BUFFER_BYTES,
+            "max_bytes:{}",
+            max_bytes
+        );
     }
 
     #[test]

@@ -835,9 +835,9 @@ dependencies = [
 name = "mina-rs-base"
 version = "0.1.0"
 dependencies = [
- "anyhow",
  "ark-ec",
  "ark-ff",
+ "bin-prot",
  "commitment_dlog",
  "derive_deref",
  "getrandom",
@@ -1623,6 +1623,7 @@ dependencies = [
  "bin-prot",
  "bs58",
  "criterion",
+ "mina-consensus",
  "mina-crypto",
  "mina-rs-base",
  "pretty_assertions",
