@@ -28,6 +28,9 @@ jobs:
       - run: cargo fmt --all -- --check
       - name: Check license
         run: ./scripts/add_license.sh
+      - run: cargo install cargo-udeps || echo 'already installed'
+      - run: rustup install nightly
+      - run: cargo +nightly udeps --all-targets --all-features
       - run: cargo install cargo-deny || echo 'already installed'
       - run: cargo deny check Ban -s
       - run: cargo deny check License -s
