@@ -30,7 +30,7 @@ mod tests {
 
     #[ignore = "genesis config for devnet not implemented yet"]
     #[test]
-    #[wasm_bindgen_test]
+    // #[wasm_bindgen_test]
     fn test_genesis_consensus_mainnet() {
         test_genesis_consensus(&GENESIS_BLOCK_MAINNET, &MAINNET_CONFIG)
     }
