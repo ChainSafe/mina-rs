@@ -51,11 +51,11 @@ impl GenesisInit for ExternalTransition {
         cs.global_slot_since_genesis = 0.into();
         cs.staking_epoch_data = config.staking_epoch_data.clone();
         cs.next_epoch_data = config.next_epoch_data.clone();
-        cs.has_ancestor_in_same_checkpoint_window = false;
+        cs.has_ancestor_in_same_checkpoint_window = true;
         cs.block_stake_winner = config.block_stake_winner.clone();
         cs.block_creator = config.block_creator.clone();
         cs.coinbase_receiver = config.coinbase_receiver.clone();
-        cs.supercharge_coinbase = false;
+        cs.supercharge_coinbase = true;
 
         et.protocol_state.previous_state_hash = config.previous_state_hash.clone();
         et.protocol_state.body.genesis_state_hash = config.genesis_state_hash.clone();
@@ -67,7 +67,7 @@ impl GenesisInit for ExternalTransition {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use mina_crypto::base58::Base58Encodable;
+    use mina_crypto::base58::{Base58Encodable, Base58EncodableHash};
     use wasm_bindgen_test::*;
 
     // https://github.com/MinaProtocol/mina/tree/feature/9665-spec-ouroboros-samasika-checkpointing/docs/specs/consensus#611-genesis-block
@@ -137,7 +137,7 @@ mod tests {
             assert_eq!(ned.epoch_length, 2.into());
         }
 
-        assert_eq!(cs.has_ancestor_in_same_checkpoint_window, false);
+        assert_eq!(cs.has_ancestor_in_same_checkpoint_window, true);
         assert_eq!(
             cs.block_stake_winner.to_base58().into_string(),
             "B62qiy32p8kAKnny8ZFwoMhYpBppM1DWVCqAPBYNcXnsAHhnfAAuXgg"
@@ -150,7 +150,7 @@ mod tests {
             cs.coinbase_receiver.to_base58().into_string(),
             "B62qiy32p8kAKnny8ZFwoMhYpBppM1DWVCqAPBYNcXnsAHhnfAAuXgg"
         );
-        assert_eq!(cs.supercharge_coinbase, false);
+        assert_eq!(cs.supercharge_coinbase, true);
         // et.protocol_state.previous_state_hash = config.previous_state_hash.clone();
         // et.protocol_state.body.genesis_state_hash = config.genesis_state_hash.clone();
         assert_eq!(

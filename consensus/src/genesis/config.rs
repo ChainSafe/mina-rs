@@ -2,13 +2,13 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use mina_crypto::{
-    base58::Base58Encodable,
-    hash::{EpochSeed, LedgerHash, StateHash},
+    base58::{Base58Encodable, Base58EncodableHash},
+    hash::*,
     signature::PublicKey,
 };
 use mina_rs_base::types::*;
 
-const ERR_FAIL_TO_DECODE_B58: &str = "Failed to decode ledger hash from base58";
+const ERR_FAIL_TO_DECODE_B58: &str = "Failed to decode hash from base58";
 
 lazy_static::lazy_static! {
     pub static ref MAINNET_CONFIG: GenesisInitConfig = GenesisInitConfig::mainnet();
@@ -80,8 +80,30 @@ impl GenesisInitConfig {
 
         let blockchain_state = BlockchainState {
             timestamp: BlockTime::from_unix_timestamp(1615939200000),
-            // staged_ledger_hash:
-            ..Default::default()
+            snarked_next_available_token: TokenId(2),
+            snarked_ledger_hash: SnarkedLedgerHash::from_base58(
+                "jx7buQVWFLsXTtzRgSxbYcT8EYLS8KCZbLrfDcJxMtyy4thw2Ee",
+            )
+            .expect(ERR_FAIL_TO_DECODE_B58),
+            genesis_ledger_hash: SnarkedLedgerHash::from_base58(
+                "jx7buQVWFLsXTtzRgSxbYcT8EYLS8KCZbLrfDcJxMtyy4thw2Ee",
+            )
+            .expect(ERR_FAIL_TO_DECODE_B58),
+            staged_ledger_hash: StagedLedgerHash {
+                non_snark: NonSnarkStagedLedgerHash {
+                    ledger_hash: LedgerHash::from_base58(
+                        "jx7buQVWFLsXTtzRgSxbYcT8EYLS8KCZbLrfDcJxMtyy4thw2Ee",
+                    )
+                    .expect(ERR_FAIL_TO_DECODE_B58),
+                    ..Default::default()
+                    // aux_hash: (),
+                    // pending_coinbase_aux: (),
+                },
+                pending_coinbase_hash: CoinBaseHash::from_base58(
+                    "2n1tLdP2gkifmyVmrmzYXTS4ohPbZPJn6Qq4x55ywrbRWB4543cC",
+                )
+                .expect(ERR_FAIL_TO_DECODE_B58),
+            },
         };
 
         Self {

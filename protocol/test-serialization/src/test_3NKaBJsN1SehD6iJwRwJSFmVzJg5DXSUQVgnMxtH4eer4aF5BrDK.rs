@@ -4,7 +4,7 @@
 #[cfg(test)]
 mod tests {
     use anyhow::bail;
-    use mina_crypto::base58::Base58Encodable;
+    use mina_crypto::base58::{Base58Encodable, Base58EncodableHash};
     use mina_rs_base::types::*;
     use pretty_assertions::assert_eq;
     use test_fixtures::*;
@@ -53,15 +53,13 @@ mod tests {
             .unwrap();
         assert_eq!(non_snark.pending_coinbase_aux.as_ref()[..], bytes[1..33]);
 
-        let bytes = bs58::decode("2mzpdUi5ddLicLGUns4iYFiNahL5B5cPkTUot83v2moNtr4mzRYf")
-            .into_vec()
-            .unwrap();
         assert_eq!(
             blockchain_state
                 .staged_ledger_hash
                 .pending_coinbase_hash
-                .as_ref(),
-            &bytes[2..34]
+                .to_base58()
+                .into_string(), // .as_ref(),
+            "2mzpdUi5ddLicLGUns4iYFiNahL5B5cPkTUot83v2moNtr4mzRYf"
         );
         assert_eq!(
             blockchain_state
@@ -209,16 +207,7 @@ mod tests {
                     .into_vec()
                     .unwrap();
                 assert_eq!(command.signer.x[..], bytes[3..35]);
-
-                let bytes = bs58::decode("7mXTB1bcHYLJTmTfMtTboo4FSGStvera3z2wd6qjSxhpz1hZFMZZjcyaWAFEmZhgbq6DqVqGsNodnYKsCbMAq7D8yWo5bRSd")
-                    .into_vec()
-                    .unwrap();
-                assert_eq!(command.signature.field_point().as_ref(), &bytes[2..34]);
-                assert_eq!(
-                    command.signature.inner_curve_scalar().as_ref(),
-                    &bytes[34..66]
-                );
-
+                assert_eq!(command.signature.to_base58().into_string(), "7mXTB1bcHYLJTmTfMtTboo4FSGStvera3z2wd6qjSxhpz1hZFMZZjcyaWAFEmZhgbq6DqVqGsNodnYKsCbMAq7D8yWo5bRSd");
                 assert_eq!(command.payload.common.nonce.0, 5694);
                 assert_eq!(
                     command.payload.common.memo.0,

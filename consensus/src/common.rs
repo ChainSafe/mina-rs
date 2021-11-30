@@ -72,6 +72,7 @@ impl Chain<ProtocolState> for ProtocolStateChain {
                 .consensus_state
                 .last_vrf_output
                 .hash()
+                .as_ref()
                 .encode_hex::<String>()
         })
     }
@@ -194,7 +195,14 @@ mod tests {
         b0.body.consensus_state.blockchain_length = Length(0);
         c.push(b0.clone()).unwrap();
 
-        let expected = Some(b0.body.consensus_state.last_vrf_output.hash().encode_hex());
+        let expected = Some(
+            b0.body
+                .consensus_state
+                .last_vrf_output
+                .hash()
+                .as_ref()
+                .encode_hex(),
+        );
         assert_eq!(expected, c.last_vrf());
     }
 }

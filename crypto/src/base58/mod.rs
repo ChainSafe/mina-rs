@@ -4,4 +4,4 @@
 mod encodable;
 pub mod version_bytes;
 
-pub use encodable::Base58Encodable;
+pub use encodable::*;
