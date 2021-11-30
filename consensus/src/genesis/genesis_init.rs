@@ -151,8 +151,6 @@ mod tests {
             "B62qiy32p8kAKnny8ZFwoMhYpBppM1DWVCqAPBYNcXnsAHhnfAAuXgg"
         );
         assert_eq!(cs.supercharge_coinbase, true);
-        // et.protocol_state.previous_state_hash = config.previous_state_hash.clone();
-        // et.protocol_state.body.genesis_state_hash = config.genesis_state_hash.clone();
         assert_eq!(
             et.protocol_state
                 .previous_state_hash
