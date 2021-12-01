@@ -59,16 +59,14 @@ mod tests {
         }
     }
 
-    #[ignore = "genesis config for devnet not implemented yet"]
     #[test]
-    // #[wasm_bindgen_test]
+    #[wasm_bindgen_test]
     fn test_genesis_consensus_mainnet() {
         test_genesis_consensus(&GENESIS_BLOCK_MAINNET, &MAINNET_CONFIG)
     }
 
-    #[ignore = "genesis config for devnet not implemented yet"]
     #[test]
-    // #[wasm_bindgen_test]
+    #[wasm_bindgen_test]
     fn test_genesis_consensus_devnet() {
         test_genesis_consensus(&GENESIS_BLOCK_DEVNET, &DEVNET_CONFIG)
     }
@@ -131,24 +129,42 @@ mod tests {
             &b.protocol_state
         });
 
-        // test_path(
-        //     &genesis,
-        //     &fixture,
-        //     "t/protocol_state_proof/t/t/t/t/statement/t/t/proof_state",
-        //     |b| &b.protocol_state_proof.statement.proof_state,
-        // );
+        test_path(
+            &genesis,
+            &fixture,
+            "t/protocol_state_proof/t/t/t/t/statement/t/t/proof_state/t/deferred_values",
+            |b| &b.protocol_state_proof.statement.proof_state.deferred_values,
+        );
+        test_path(
+            &genesis,
+            &fixture,
+            "t/protocol_state_proof/t/t/t/t/statement/t/t/proof_state/t/sponge_digest_before_evaluations",
+            |b| &b.protocol_state_proof.statement.proof_state.sponge_digest_before_evaluations,
+        );
+        test_path(
+            &genesis,
+            &fixture,
+            "t/protocol_state_proof/t/t/t/t/statement/t/t/proof_state/t/me_only",
+            |b| &b.protocol_state_proof.statement.proof_state.me_only,
+        );
+        test_path(
+            &genesis,
+            &fixture,
+            "t/protocol_state_proof/t/t/t/t/statement/t/t/proof_state",
+            |b| &b.protocol_state_proof.statement.proof_state,
+        );
         test_path(
             &genesis,
             &fixture,
             "t/protocol_state_proof/t/t/t/t/statement/t/t/pass_through",
             |b| &b.protocol_state_proof.statement.pass_through,
         );
-        // test_path(
-        //     &genesis,
-        //     &fixture,
-        //     "t/protocol_state_proof/t/t/t/t/statement",
-        //     |b| &b.protocol_state_proof.statement,
-        // );
+        test_path(
+            &genesis,
+            &fixture,
+            "t/protocol_state_proof/t/t/t/t/statement",
+            |b| &b.protocol_state_proof.statement,
+        );
         test_path(
             &genesis,
             &fixture,
@@ -197,12 +213,9 @@ mod tests {
             "t/protocol_state_proof/t/t/t/t/proof",
             |b| &b.protocol_state_proof.proof,
         );
-        // test_path(
-        //     &genesis,
-        //     &fixture,
-        //     "t/protocol_state_proof",
-        //     |b| &b.protocol_state_proof,
-        // );
+        test_path(&genesis, &fixture, "t/protocol_state_proof", |b| {
+            &b.protocol_state_proof
+        });
 
         test_path(&genesis, &fixture, "t/staged_ledger_diff", |b| {
             &b.staged_ledger_diff

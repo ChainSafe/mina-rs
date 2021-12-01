@@ -122,7 +122,7 @@ impl From<i64> for Hex64 {
 #[derive(Clone, Serialize, Deserialize, PartialEq, Debug, Hash, Default, WireType)]
 #[serde(from = "<Self as WireType>::WireType")]
 #[serde(into = "<Self as WireType>::WireType")]
-pub struct Char(u8);
+pub struct Char(pub u8);
 
 #[derive(Clone, Serialize, Deserialize, PartialEq, Debug, Hash, Default, Deref, WireType)]
 #[serde(from = "<Self as WireType>::WireType")]

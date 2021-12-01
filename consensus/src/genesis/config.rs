@@ -176,6 +176,83 @@ impl GenesisInitConfig {
                 BulletproofChallenges(vec![t18.clone(), t18])
             };
 
+            p.statement.proof_state.deferred_values.plonk.alpha =
+                BulletproofPreChallenge::scalar(8485106177194710905, -1312226530362767951);
+            p.statement.proof_state.deferred_values.plonk.beta =
+                ScalarChallengeVector2::new(-6430667927186375774, -3337607204513408471);
+            p.statement.proof_state.deferred_values.plonk.gamma =
+                ScalarChallengeVector2::new(8370999550582557960, 2564953582899372946);
+            p.statement.proof_state.deferred_values.plonk.zeta =
+                BulletproofPreChallenge::scalar(723815570568662761, -7895844621402831008);
+            p.statement
+                .proof_state
+                .deferred_values
+                .combined_inner_product = ShiftedValue::ShiftedValue(
+                BigInt256::try_from_hex_string(
+                    "0x000c4669b4dcafbb30ba5442962c0e352818b397156aa59c007e1f2af989b938",
+                )
+                .expect(ERR_FAIL_TO_DECODE_HEX),
+            );
+            p.statement.proof_state.deferred_values.b = ShiftedValue::ShiftedValue(
+                BigInt256::try_from_hex_string(
+                    "0x405fb711eae9fca78875db8db66189c56d426fea068f2826fe5cb0b0afe06a0e",
+                )
+                .expect(ERR_FAIL_TO_DECODE_HEX),
+            );
+            p.statement.proof_state.deferred_values.xi =
+                BulletproofPreChallenge::scalar(9192024484525083167, -4963136190301137182);
+            p.statement
+                .proof_state
+                .deferred_values
+                .bulletproof_challenges =
+                p.statement.pass_through.old_bulletproof_challenges.0[0].clone();
+            p.statement.proof_state.deferred_values.which_branch = Char(0);
+
+            p.statement.proof_state.me_only.sg = finite_ec_point!(
+                "0xc60a524476af46c04d571246d5dfd73b82d34a5cc50d3e279dd4e96239879c1b",
+                "0xb9840fae14d5456882791e827d1b21be94a173c96e149e0a226af7d47431d604"
+            )
+            .expect(ERR_FAIL_TO_DECODE_HEX);
+            p.statement.proof_state.me_only.old_bulletproof_challenges = {
+                let t17 = BulletproofChallengeTuple17::new([
+                    -4147613965780683501,
+                    1618424163113385480,
+                    5242665654050011345,
+                    1974270862881305038,
+                    3711726721677311855,
+                    8761545649494038627,
+                    -2505642933990422633,
+                    -2487422680924118585,
+                    -4113786261177851957,
+                    566815174034496733,
+                    5993263758714673683,
+                    -6259514542256722053,
+                    -2117686120277866613,
+                    -550460597093069586,
+                    2143052809542605959,
+                    5556201566125368992,
+                    -7172698754141626607,
+                    -6773867482688065048,
+                    6641554769559773261,
+                    6524714810323564443,
+                    2504198601910020936,
+                    -6446749539458519571,
+                    -8068243033437084562,
+                    -4483743298391994862,
+                    4919588161765452745,
+                    -7115468514000056859,
+                    4798728907681213006,
+                    -7518434295045703748,
+                    -7365006775264907657,
+                    -1160122940338191724,
+                    5439700123898059092,
+                    -7701257753186809792,
+                    3229587527204030387,
+                    6616313680930013725,
+                ]);
+                ProofStateBulletproofChallenges((t17.clone(), t17, ()))
+            };
+
             p.prev_evals.0 .0 = (|| {
                 Ok::<_, hex::FromHexError>(ProofEvaluations {
                     l: FieldElementVec::try_from_hex_string(
