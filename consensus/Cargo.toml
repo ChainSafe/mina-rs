@@ -12,3 +12,5 @@ mina-rs-base = {version = "0.1.0", path = "../base"}
 
 hex = "0.4"
 thiserror = "1"
+quickcheck = "1"
+proptest = "1.0.0"

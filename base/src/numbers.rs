@@ -116,7 +116,7 @@ pub struct GlobalSlotNumber(pub u32);
 #[serde(from = "<Self as WireType>::WireType")]
 #[serde(into = "<Self as WireType>::WireType")]
 #[wire_type(recurse = 2)]
-pub struct BlockTime(u64);
+pub struct BlockTime(pub u64);
 
 impl BlockTime {
     /// Gets unix timestamp in milliseconds

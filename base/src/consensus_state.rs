@@ -6,8 +6,14 @@ use crate::{
     global_slot::GlobalSlot,
     numbers::{Amount, GlobalSlotNumber, Length},
 };
+
+use mina_crypto::{
+    base58::{Base58Encodable},
+    hash::*,
+    signature::PublicKey,
+};
+
 use mina_crypto::hash::{Hashable, VrfOutputHash};
-use mina_crypto::signature::PublicKey;
 use serde::{Deserialize, Serialize};
 use wire_type::WireType;
 
@@ -16,6 +22,7 @@ use wire_type::WireType;
 #[serde(into = "<Self as WireType>::WireType")]
 pub struct VrfOutputTruncated(Vec<u8>);
 
+const ERR_FAIL_TO_DECODE_B58: &str = "Failed to decode hash from base58";
 impl Hashable<VrfOutputHash> for VrfOutputTruncated {}
 
 impl AsRef<[u8]> for VrfOutputTruncated {
@@ -70,6 +77,88 @@ pub struct ConsensusState {
 }
 
 impl ConsensusState {
+    pub fn new() -> Self {
+        let total_currency = Amount(805385692840039233);
+        let staking_epoch_data = {
+            let mut data = EpochData::default();
+           
+            data.epoch_length.0 = 1;
+            data.ledger.hash =
+                LedgerHash::from_base58("jx7buQVWFLsXTtzRgSxbYcT8EYLS8KCZbLrfDcJxMtyy4thw2Ee")
+                    .expect(ERR_FAIL_TO_DECODE_B58);
+            data.ledger.total_currency = total_currency;
+            data.seed =
+                EpochSeed::from_base58("2va9BGv9JrLTtrzZttiEMDYw1Zj6a6EHzXjmP9evHDTG3oEquURA")
+                    .expect(ERR_FAIL_TO_DECODE_B58);
+            data.start_checkpoint =
+                StateHash::from_base58("3NK2tkzqqK5spR2sZ7tujjqPksL45M3UUrcA4WhCkeiPtnugyE2x")
+                    .expect(ERR_FAIL_TO_DECODE_B58);
+            data.lock_checkpoint =
+                StateHash::from_base58("3NK2tkzqqK5spR2sZ7tujjqPksL45M3UUrcA4WhCkeiPtnugyE2x")
+                    .expect(ERR_FAIL_TO_DECODE_B58);
+            data
+        };
+
+        let next_epoch_data = {
+            let mut data = EpochData::default();
+            data.epoch_length.0 = 2;
+            data.ledger.hash =
+                LedgerHash::from_base58("jx7buQVWFLsXTtzRgSxbYcT8EYLS8KCZbLrfDcJxMtyy4thw2Ee")
+                    .expect(ERR_FAIL_TO_DECODE_B58);
+            data.ledger.total_currency = total_currency;
+            data.seed =
+                EpochSeed::from_base58("2vaRh7FQ5wSzmpFReF9gcRKjv48CcJvHs25aqb3SSZiPgHQBy5Dt")
+                    .expect(ERR_FAIL_TO_DECODE_B58);
+            data.start_checkpoint =
+                StateHash::from_base58("3NK2tkzqqK5spR2sZ7tujjqPksL45M3UUrcA4WhCkeiPtnugyE2x")
+                    .expect(ERR_FAIL_TO_DECODE_B58);
+            data.lock_checkpoint =
+                StateHash::from_base58("3NLoKn22eMnyQ7rxh5pxB6vBA3XhSAhhrf7akdqS6HbAKD14Dh1d")
+                    .expect(ERR_FAIL_TO_DECODE_B58);
+            data
+        };
+
+        Self {
+            blockchain_length: Length(1),
+            epoch_count: Length(0),
+            min_window_density:Length(77),
+            sub_window_densities: vec![
+                1.into(),
+                7.into(),
+                7.into(),
+                7.into(),
+                7.into(),
+                7.into(),
+                7.into(),
+                7.into(),
+                7.into(),
+                7.into(),
+                7.into(),
+            ],
+            last_vrf_output: VrfOutputTruncated(vec![13]),
+            total_currency: total_currency,
+            curr_global_slot: GlobalSlot {
+                slot_number: GlobalSlotNumber(0),
+                slots_per_epoch: Length(7140),
+            },
+            global_slot_since_genesis: GlobalSlotNumber(0),
+            staking_epoch_data: staking_epoch_data,
+            next_epoch_data: next_epoch_data,
+            has_ancestor_in_same_checkpoint_window: true,
+            block_stake_winner: Base58Encodable::from_base58(
+                "B62qiy32p8kAKnny8ZFwoMhYpBppM1DWVCqAPBYNcXnsAHhnfAAuXgg",
+            ).expect(ERR_FAIL_TO_DECODE_B58),
+            block_creator: Base58Encodable::from_base58(
+                "B62qiy32p8kAKnny8ZFwoMhYpBppM1DWVCqAPBYNcXnsAHhnfAAuXgg",
+            )
+            .expect(ERR_FAIL_TO_DECODE_B58),
+            coinbase_receiver:  Base58Encodable::from_base58("B62qiy32p8kAKnny8ZFwoMhYpBppM1DWVCqAPBYNcXnsAHhnfAAuXgg")
+            .expect(ERR_FAIL_TO_DECODE_B58),
+            supercharge_coinbase: true,
+        }
+
+    }
+
     pub fn sub_window_densities(&self) -> Vec<u32> {
         self.sub_window_densities.iter().map(|i| i.0).collect()
     }

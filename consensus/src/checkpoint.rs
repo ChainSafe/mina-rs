@@ -76,11 +76,15 @@ mod tests {
     use super::*;
     use mina_rs_base::global_slot::GlobalSlot;
     use mina_rs_base::numbers::{GlobalSlotNumber, Length};
-
+    use mina_rs_base::{protocol_state::ProtocolConstants,consensus_state::ConsensusState};
+    extern crate quickcheck;
+    use proptest::prelude::*;
+    use quickcheck::QuickCheck;
+ 
     #[test]
     fn test_init_checkpoints() {
         let mut genesis: ProtocolState = Default::default();
-        init_checkpoints(&mut genesis);
+        init_checkpoints(&mut genesis).unwrap();
         assert_eq!(
             genesis
                 .body
@@ -154,5 +158,96 @@ mod tests {
         c3.push(b2).unwrap();
         assert_eq!(is_short_range(&c3, &c0).unwrap(), false);
         assert_eq!(is_short_range(&c0, &c3).unwrap(), false);
+    }
+
+    #[test]
+    fn equal_state_in_short_fork_range() {
+        let mut a: ProtocolState = Default::default();
+        a.body.consensus_state.blockchain_length = Length(0);
+        a.body.consensus_state.epoch_count = Length(14);
+        a.body.consensus_state.curr_global_slot = GlobalSlot {
+            slot_number: GlobalSlotNumber(0),
+            slots_per_epoch: Length(7140),
+        };
+
+        let mut b: ProtocolState = Default::default();
+        b.body.consensus_state.blockchain_length = Length(1);
+        b.body.consensus_state.epoch_count = Length(15);
+        b.body.consensus_state.curr_global_slot = GlobalSlot {
+            slot_number: GlobalSlotNumber(1),
+            slots_per_epoch: Length(7140),
+        };
+
+        let consensus_constants = ConsensusState::new();
+        let protocol_constants = ProtocolConstants::new();
+    }
+
+    #[test]
+    fn gen_spot_pair_short_aligned_generates_pairs_of_states_in_short_fork_range() {
+        // Both states will share their staking epoch checkpoints.
+        let mut a: ProtocolState = Default::default();
+        a.body.consensus_state.blockchain_length = Length(0);
+        a.body.consensus_state.epoch_count = Length(14);
+        a.body.consensus_state.curr_global_slot = GlobalSlot {
+            slot_number: GlobalSlotNumber(0),
+            slots_per_epoch: Length(7140),
+        };
+
+        let mut b: ProtocolState = Default::default();
+        b.body.consensus_state.blockchain_length = Length(1);
+        b.body.consensus_state.epoch_count = Length(15);
+        b.body.consensus_state.curr_global_slot = GlobalSlot {
+            slot_number: GlobalSlotNumber(1),
+            slots_per_epoch: Length(7140),
+        };
+
+        let consensus_constants = ConsensusState::new();
+        let protocol_constants = ProtocolConstants::new();
+    }
+
+    #[test]
+    fn gen_spot_pair_short_misaligned_generates_pairs_of_states_in_short_fork_range() {
+        // Compute the root epoch position of `b`. This needs to be one epoch ahead of a, so we
+        // compute it by extending the root epoch position of `a` by a single epoch
+        let mut a: ProtocolState = Default::default();
+        a.body.consensus_state.blockchain_length = Length(0);
+        a.body.consensus_state.epoch_count = Length(14);
+        a.body.consensus_state.curr_global_slot = GlobalSlot {
+            slot_number: GlobalSlotNumber(0),
+            slots_per_epoch: Length(7140),
+        };
+
+        let mut b: ProtocolState = Default::default();
+        b.body.consensus_state.blockchain_length = Length(1);
+        b.body.consensus_state.epoch_count = Length(15);
+        b.body.consensus_state.curr_global_slot = GlobalSlot {
+            slot_number: GlobalSlotNumber(1),
+            slots_per_epoch: Length(7140),
+        };
+        let consensus_constants = ConsensusState::new();
+        let protocol_constants = ProtocolConstants::new();
+        // Constrain first state to be within last 1/3rd of its epoch (ensuring it's checkpoints and seed are fixed). *)
+        let min_a_curr_epoch_slot =;
+        // (2 * (Length.to_int constants.slots_per_epoch / 3)) + 1;
+    }
+
+    #[test]
+    fn gen_spot_pair_long_generates_pairs_of_states_in_long_fork_range() {
+        let mut a: ProtocolState = Default::default();
+        a.body.consensus_state.blockchain_length = Length(0);
+        a.body.consensus_state.curr_global_slot = GlobalSlot {
+            slot_number: GlobalSlotNumber(0),
+            slots_per_epoch: Length(7140),
+        };
+
+        let mut b: ProtocolState = Default::default();
+        b.body.consensus_state.blockchain_length = Length(1);
+        b.body.consensus_state.curr_global_slot = GlobalSlot {
+            slot_number: GlobalSlotNumber(1),
+            slots_per_epoch: Length(7140),
+        };
+
+        let consensus_constants = ConsensusState::new();
+        let protocol_constants = ProtocolConstants::new();
     }
 }
