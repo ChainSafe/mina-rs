@@ -782,6 +782,7 @@ dependencies = [
 name = "mina-consensus"
 version = "0.1.0"
 dependencies = [
+ "base64",
  "bs58",
  "hex",
  "lazy_static",
@@ -820,10 +821,12 @@ version = "0.1.0"
 dependencies = [
  "ark-ec",
  "ark-ff",
+ "base64",
  "bin-prot",
  "commitment_dlog",
  "derive_deref",
  "getrandom",
+ "hex",
  "mina-crypto",
  "mina-curves",
  "num",

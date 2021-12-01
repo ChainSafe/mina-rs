@@ -23,27 +23,16 @@ impl GenesisInit for ExternalTransition {
         let mut et = ExternalTransition::default();
 
         et.protocol_state.body.blockchain_state = config.blockchain_state.clone();
+        et.protocol_state.body.constants = config.constants.clone();
 
         let cs = &mut et.protocol_state.body.consensus_state;
         cs.blockchain_length = 1.into();
         cs.epoch_count = 0.into();
         cs.min_window_density =
             (config.sub_windows_per_window * config.constants.slots_per_sub_window.0).into();
-        cs.sub_window_densities = vec![
-            1.into(),
-            7.into(),
-            7.into(),
-            7.into(),
-            7.into(),
-            7.into(),
-            7.into(),
-            7.into(),
-            7.into(),
-            7.into(),
-            7.into(),
-        ];
-        cs.last_vrf_output = VrfOutputTruncated(vec![0; 32]);
-        cs.total_currency = Amount(805385692840039233);
+        cs.sub_window_densities = config.sub_window_densities.clone();
+        cs.last_vrf_output = config.last_vrf_output.clone();
+        cs.total_currency = config.total_currency;
         cs.curr_global_slot = GlobalSlot {
             slot_number: 0.into(),
             slots_per_epoch: config.constants.slots_per_epoch,
@@ -59,6 +48,12 @@ impl GenesisInit for ExternalTransition {
 
         et.protocol_state.previous_state_hash = config.previous_state_hash.clone();
         et.protocol_state.body.genesis_state_hash = config.genesis_state_hash.clone();
+
+        et.protocol_state_proof = config.protocol_state_proof.clone();
+
+        et.delta_transition_chain_proof = config.delta_transition_chain_proof.clone();
+        et.current_protocol_version = ProtocolVersion::default();
+        et.proposed_protocol_version_opt = None;
 
         et
     }
@@ -111,7 +106,10 @@ mod tests {
             cs.sub_window_densities(),
             vec![1, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7]
         );
-        assert_eq!(cs.last_vrf_output.0, vec![0; 32]);
+        assert_eq!(
+            cs.last_vrf_output.0,
+            base64::decode("NfThG1r1GxQuhaGLSJWGxcpv24SudtXG4etB0TnGqwg=").unwrap()
+        );
         assert_eq!(
             cs.total_currency.to_formatted_string(),
             "805385692.840039233"
@@ -126,7 +124,7 @@ mod tests {
                 sed.ledger.hash.to_base58_string(),
                 "jx7buQVWFLsXTtzRgSxbYcT8EYLS8KCZbLrfDcJxMtyy4thw2Ee"
             );
-            assert_eq!(sed.ledger.total_currency.0, 805385692840039300);
+            assert_eq!(sed.ledger.total_currency.0, 805385692840039233);
             assert_eq!(
                 sed.seed.to_base58_string(),
                 "2va9BGv9JrLTtrzZttiEMDYw1Zj6a6EHzXjmP9evHDTG3oEquURA"
@@ -147,7 +145,7 @@ mod tests {
                 ned.ledger.hash.to_base58_string(),
                 "jx7buQVWFLsXTtzRgSxbYcT8EYLS8KCZbLrfDcJxMtyy4thw2Ee"
             );
-            assert_eq!(ned.ledger.total_currency.0, 805385692840039300);
+            assert_eq!(ned.ledger.total_currency.0, 805385692840039233);
             assert_eq!(
                 ned.seed.to_base58_string(),
                 "2vaRh7FQ5wSzmpFReF9gcRKjv48CcJvHs25aqb3SSZiPgHQBy5Dt"
@@ -183,7 +181,7 @@ mod tests {
         );
         assert_eq!(
             et.protocol_state.body.genesis_state_hash.to_base58_string(),
-            "3NKeMoncuHab5ScarV5ViyF16cJPT4taWNSaTLS64Dp67wuXigPZ"
+            "3NLoKn22eMnyQ7rxh5pxB6vBA3XhSAhhrf7akdqS6HbAKD14Dh1d"
         );
     }
 }

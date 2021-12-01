@@ -3,4 +3,4 @@
 
 use mina_crypto::hash::*;
 
-pub type DeltaTransitionChainProof = (LedgerHash, Vec<LedgerHash>);
+pub type DeltaTransitionChainProof = (StateHash, Vec<StateHash>);

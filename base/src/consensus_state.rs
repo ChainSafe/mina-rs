@@ -16,6 +16,16 @@ use wire_type::WireType;
 #[serde(into = "<Self as WireType>::WireType")]
 pub struct VrfOutputTruncated(pub Vec<u8>);
 
+impl VrfOutputTruncated {
+    pub fn to_base64(&self) -> String {
+        base64::encode(&self.0)
+    }
+
+    pub fn try_from_base64(s: impl AsRef<[u8]>) -> Result<Self, base64::DecodeError> {
+        Ok(Self(base64::decode(s)?))
+    }
+}
+
 impl Hashable<VrfOutputHash> for VrfOutputTruncated {}
 
 impl AsRef<[u8]> for VrfOutputTruncated {

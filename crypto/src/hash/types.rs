@@ -11,7 +11,7 @@
 //!
 
 use super::prefixes::*;
-use crate::base58::{version_bytes, Base58Encodable, Base58EncodableHash};
+use crate::base58::{version_bytes, Base58EncodableHash};
 use crate::hash::Hash;
 use crate::impl_hash_bs58;
 use serde::{Deserialize, Serialize};
@@ -145,9 +145,10 @@ pub struct NonSnarkStagedLedgerHash {
 #[serde(into = "<Self as WireType>::WireType")]
 pub struct AuxHash(pub Vec<u8>);
 
-impl Base58Encodable for AuxHash {
-    const VERSION_BYTE: u8 = version_bytes::STAGED_LEDGER_HASH_AUX_HASH;
-}
+// FIXME:
+// impl Base58Encodable for AuxHash {
+//     const VERSION_BYTE: u8 = version_bytes::STAGED_LEDGER_HASH_AUX_HASH;
+// }
 
 impl AsRef<[u8]> for AuxHash {
     fn as_ref(&self) -> &[u8] {

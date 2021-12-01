@@ -80,7 +80,7 @@ pub struct ExtendedU64_2(pub u64);
 /// let amount = Amount(1000000030);
 /// assert_eq!(amount.to_formatted_string(), "1.000000030");
 /// ```
-#[derive(Clone, Serialize, Deserialize, PartialEq, Debug, Hash, Default, WireType)]
+#[derive(Copy, Clone, Serialize, Deserialize, PartialEq, Debug, Hash, Default, WireType)]
 #[serde(from = "<Self as WireType>::WireType")]
 #[serde(into = "<Self as WireType>::WireType")]
 #[wire_type(recurse = 2)]

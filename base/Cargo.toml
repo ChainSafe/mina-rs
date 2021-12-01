@@ -11,7 +11,9 @@ bin-prot = {path = "../protocol/bin-prot"}
 mina-crypto = {path = "../crypto"}
 wire-type = {path = "../protocol/wire-type"}
 
+base64 = "0.13"
 derive_deref = "1.1"
+hex = "0.4"
 num = "0.4"
 serde = {version = "1", features = ["derive"]}
 thiserror = "1"

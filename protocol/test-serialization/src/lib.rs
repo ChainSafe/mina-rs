@@ -537,7 +537,10 @@ mod tests {
         }
     }
 
-    fn select_path<'a>(block: &'a bin_prot::Value, path: impl AsRef<str>) -> &'a bin_prot::Value {
+    pub(crate) fn select_path<'a>(
+        block: &'a bin_prot::Value,
+        path: impl AsRef<str>,
+    ) -> &'a bin_prot::Value {
         // pull out the bin_prot::Value corresponding to the path
         // will panic if the path is invalid
         let path_ref = path.as_ref();
