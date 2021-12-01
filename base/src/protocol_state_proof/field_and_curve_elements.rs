@@ -7,11 +7,32 @@ use num::Integer;
 use serde::{Deserialize, Serialize};
 use wire_type::WireType;
 
+use super::*;
 use crate::numbers::BigInt256;
 
 /// Represents an element in a finite field that can be encoded as
 /// a BigInt256. All finite field elements used in Mina satisfiy this requirement
 pub type FieldElement = BigInt256;
+
+impl HexConvertable for FieldElement {
+    type Error = hex::FromHexError;
+
+    fn to_hex_string(&self) -> String {
+        hex::encode(self.0)
+    }
+
+    fn try_from_hex_string(s: impl AsRef<[u8]>) -> Result<Self, Self::Error> {
+        let mut s = s.as_ref();
+        if s[1] == b'x' && (s[0] == b'0' || s[0] == b'\\') {
+            s = &s[2..];
+        }
+        let bytes = hex::decode(s)?;
+        let mut b32 = [0; 32];
+        b32.copy_from_slice(&bytes);
+
+        Ok(Self(b32))
+    }
+}
 
 /// Vector of finite field elements (with version number defined in the WireType)
 #[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, WireType)]
@@ -19,33 +40,30 @@ pub type FieldElement = BigInt256;
 #[serde(into = "<Self as WireType>::WireType")]
 pub struct FieldElementVec(pub Vec<FieldElement>);
 
-impl FieldElementVec {
-    pub fn to_hex_string(&self) -> String {
-        let mut bytes = Vec::with_capacity(self.0.len() * 32);
+impl HexConvertable for FieldElementVec {
+    type Error = hex::FromHexError;
+
+    fn to_hex_string(&self) -> String {
+        let mut s = String::with_capacity(64 * self.0.len());
         for i in &self.0 {
-            for b in i.0 {
-                bytes.push(b);
-            }
+            s.push_str(&i.to_hex_string());
         }
-        hex::encode(bytes)
+        s
     }
 
-    pub fn try_from_hex_string(s: impl AsRef<[u8]>) -> Result<Self, hex::FromHexError> {
+    fn try_from_hex_string(s: impl AsRef<[u8]>) -> Result<Self, Self::Error> {
         let mut s = s.as_ref();
         if s[1] == b'x' && (s[0] == b'0' || s[0] == b'\\') {
             s = &s[2..];
         }
-        let bytes = hex::decode(s)?;
-        let (q, r) = bytes.len().div_rem(&32);
+        let (q, r) = s.len().div_rem(&64);
         let mut vec = Vec::with_capacity(match r > 0 {
             true => q + 1,
             _ => q,
         });
-        bytes.chunks(32).for_each(|chunk| {
-            let mut b32 = [0; 32];
-            b32.copy_from_slice(chunk);
-            vec.push(BigInt256(b32));
-        });
+        for chunk in s.chunks(64) {
+            vec.push(BigInt256::try_from_hex_string(chunk)?);
+        }
 
         Ok(Self(vec))
     }
@@ -81,6 +99,18 @@ where
     }
 }
 
+#[macro_export]
+macro_rules! finite_ec_point {
+    ($e1:expr, $e2:expr) => {
+        (|s1, s2| {
+            Ok::<_, hex::FromHexError>(FiniteECPoint(
+                FieldElement::try_from_hex_string(s1)?,
+                FieldElement::try_from_hex_string(s2)?,
+            ))
+        })($e1, $e2)
+    };
+}
+
 /// Vector of finite EC points (with version number defined in the WireType)
 #[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, WireType)]
 #[serde(from = "<Self as WireType>::WireType")]
@@ -97,11 +127,24 @@ where
     }
 }
 
+pub type FiniteECPointPair = (FiniteECPoint, FiniteECPoint);
+
+#[macro_export]
+macro_rules! finite_ec_point_pair {
+    ($e1:expr, $e2:expr, $e3:expr, $e4:expr) => {
+        (|s1, s2, s3, s4| {
+            use mina_rs_base::finite_ec_point;
+            use mina_rs_base::protocol_state_proof::*;
+            Ok::<_, hex::FromHexError>((finite_ec_point!(s1, s2)?, finite_ec_point!(s3, s4)?))
+        })($e1, $e2, $e3, $e4)
+    };
+}
+
 /// Vector of 2-tuples of finite EC points (with version number defined in the WireType)
 #[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, WireType)]
 #[serde(from = "<Self as WireType>::WireType")]
 #[serde(into = "<Self as WireType>::WireType")]
-pub struct FiniteECPointPairVec(Vec<(FiniteECPoint, FiniteECPoint)>);
+pub struct FiniteECPointPairVec(pub Vec<FiniteECPointPair>);
 
 impl<P> From<FiniteECPointPairVec> for Vec<(GroupAffine<P>, GroupAffine<P>)>
 where

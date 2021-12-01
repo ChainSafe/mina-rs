@@ -6,7 +6,7 @@ use mina_crypto::{
     hash::*,
     signature::PublicKey,
 };
-use mina_rs_base::types::*;
+use mina_rs_base::{finite_ec_point, finite_ec_point_pair, types::*};
 
 const ERR_FAIL_TO_DECODE_B58: &str = "Failed to decode hash from base58";
 const ERR_FAIL_TO_DECODE_B64: &str = "Failed to decode hash from base64";
@@ -122,86 +122,126 @@ impl GenesisInitConfig {
         let protocol_state_proof = {
             let mut p = ProtocolStateProof::default();
 
-            let ev0 = &mut p.proof.openings.evals.0;
-            ev0.l = FieldElementVec::try_from_hex_string(
-                "0x2e53605b801ad7fea745e9766add8da9ed33589d758fb339fed40c329c59aa27",
+            let pr = &mut p.proof.openings.proof;
+            pr.lr = (|| {
+                let pair = finite_ec_point_pair!(
+                    "0x0100000000000000000000000000000000000000000000000000000000000000",
+                    "0xbb2aedca237acf1971473d33d45b658f54ee7863f0a9df537c93120aa3b5741b",
+                    "0x0100000000000000000000000000000000000000000000000000000000000000",
+                    "0xbb2aedca237acf1971473d33d45b658f54ee7863f0a9df537c93120aa3b5741b"
+                )?;
+                Ok::<_, hex::FromHexError>(FiniteECPointPairVec(vec![
+                    pair.clone(),
+                    pair.clone(),
+                    pair.clone(),
+                    pair.clone(),
+                    pair.clone(),
+                    pair.clone(),
+                    pair.clone(),
+                    pair.clone(),
+                    pair.clone(),
+                    pair.clone(),
+                    pair.clone(),
+                    pair.clone(),
+                    pair.clone(),
+                    pair.clone(),
+                    pair.clone(),
+                    pair.clone(),
+                    pair,
+                ]))
+            })()
+            .expect(ERR_FAIL_TO_DECODE_HEX);
+            pr.z_1 = BigInt256::try_from_hex_string(
+                "0x27a6753e3c16b98921d53d185402e874f318a819fdf2f3ac6667262045aa8a26",
             )
             .expect(ERR_FAIL_TO_DECODE_HEX);
-            ev0.r = FieldElementVec::try_from_hex_string(
-                "0xb77a8788b07f7cd1c9c61618755cca3d0d303a7b096124ce0c02dc5f451a0f03",
+            pr.z_2 = BigInt256::try_from_hex_string(
+                "0x664e7ca6fe93f151f069508b826ad5d06c71549318cbc911da6b74d06efe2806",
             )
             .expect(ERR_FAIL_TO_DECODE_HEX);
-            ev0.o = FieldElementVec::try_from_hex_string(
-                "0x2e1e68731d00b84720038823777ec6522d9a1e9e365920c3e7ce064ade0c2e1e",
+            pr.delta = finite_ec_point!(
+                "0x0100000000000000000000000000000000000000000000000000000000000000",
+                "0xbb2aedca237acf1971473d33d45b658f54ee7863f0a9df537c93120aa3b5741b"
             )
             .expect(ERR_FAIL_TO_DECODE_HEX);
-            ev0.z = FieldElementVec::try_from_hex_string(
-                "0xd96d62e54a0a49d3a44c919eb4b089333d64a236edcda1921274ac6903bad937",
-            )
-            .expect(ERR_FAIL_TO_DECODE_HEX);
-            ev0.t = FieldElementVec::try_from_hex_string(
-                [
-                    "717115e59713c84f88babe2ec0292518060d2cc82b54e9a9c9a2d2a87ce91e15",
-                    "6994e270f284a557c418afebfaaca2794c8af6a476cb1b9478c205e8a901170f",
-                    "d82d38717842bde317157edf186a5b2a5ac2a035a069b18a1bb790d8a1b60e26",
-                    "c37d692c8473aa9a246bb85e5c4323cd0c5a69e4b9ce1ae160f961447c31ae2e",
-                    "cce3a78dfa242d8c53e89467cc986dfd332db987d76c66e7735a47ef34e90f28",
-                ]
-                .join(""),
-            )
-            .expect(ERR_FAIL_TO_DECODE_HEX);
-            ev0.f = FieldElementVec::try_from_hex_string(
-                "0x5dd93c9b2c3fcee30fa34960f2472fcd04d9de8486f635c9b96d776fae31221f",
-            )
-            .expect(ERR_FAIL_TO_DECODE_HEX);
-            ev0.sigma1 = FieldElementVec::try_from_hex_string(
-                "0xa84f94a0d6d64be0b97049b92ae2c58a8cb93e792179fab57fa32c4695abe724",
-            )
-            .expect(ERR_FAIL_TO_DECODE_HEX);
-            ev0.sigma2 = FieldElementVec::try_from_hex_string(
-                "0x2c7c6aa5123b41aa8eace85a7eeeb8ebb22219c9353b9276711199aaa8018217",
+            pr.sg = finite_ec_point!(
+                "0x0100000000000000000000000000000000000000000000000000000000000000",
+                "0xbb2aedca237acf1971473d33d45b658f54ee7863f0a9df537c93120aa3b5741b"
             )
             .expect(ERR_FAIL_TO_DECODE_HEX);
 
-            let ev1 = &mut p.proof.openings.evals.1;
-            ev1.l = FieldElementVec::try_from_hex_string(
-                "0x16eba2ebda9feac442e29ef9293f5c4576933d531a6e3c07518e352241055f3d",
-            )
+            p.proof.openings.evals.0 = (|| {
+                Ok::<_, hex::FromHexError>(ProofEvaluations {
+                    l: FieldElementVec::try_from_hex_string(
+                        "0x2e53605b801ad7fea745e9766add8da9ed33589d758fb339fed40c329c59aa27",
+                    )?,
+                    r: FieldElementVec::try_from_hex_string(
+                        "0xb77a8788b07f7cd1c9c61618755cca3d0d303a7b096124ce0c02dc5f451a0f03",
+                    )?,
+                    o: FieldElementVec::try_from_hex_string(
+                        "0x2e1e68731d00b84720038823777ec6522d9a1e9e365920c3e7ce064ade0c2e1e",
+                    )?,
+                    z: FieldElementVec::try_from_hex_string(
+                        "0xd96d62e54a0a49d3a44c919eb4b089333d64a236edcda1921274ac6903bad937",
+                    )?,
+                    t: FieldElementVec::try_from_hex_string(
+                        [
+                            "717115e59713c84f88babe2ec0292518060d2cc82b54e9a9c9a2d2a87ce91e15",
+                            "6994e270f284a557c418afebfaaca2794c8af6a476cb1b9478c205e8a901170f",
+                            "d82d38717842bde317157edf186a5b2a5ac2a035a069b18a1bb790d8a1b60e26",
+                            "c37d692c8473aa9a246bb85e5c4323cd0c5a69e4b9ce1ae160f961447c31ae2e",
+                            "cce3a78dfa242d8c53e89467cc986dfd332db987d76c66e7735a47ef34e90f28",
+                        ]
+                        .join(""),
+                    )?,
+                    f: FieldElementVec::try_from_hex_string(
+                        "0x5dd93c9b2c3fcee30fa34960f2472fcd04d9de8486f635c9b96d776fae31221f",
+                    )?,
+                    sigma1: FieldElementVec::try_from_hex_string(
+                        "0xa84f94a0d6d64be0b97049b92ae2c58a8cb93e792179fab57fa32c4695abe724",
+                    )?,
+                    sigma2: FieldElementVec::try_from_hex_string(
+                        "0x2c7c6aa5123b41aa8eace85a7eeeb8ebb22219c9353b9276711199aaa8018217",
+                    )?,
+                })
+            })()
             .expect(ERR_FAIL_TO_DECODE_HEX);
-            ev1.r = FieldElementVec::try_from_hex_string(
-                "0xdcf5b2e12453b8369c420e76ada0fb6c6e173f2271aa19ec6db8010112611605",
-            )
-            .expect(ERR_FAIL_TO_DECODE_HEX);
-            ev1.o = FieldElementVec::try_from_hex_string(
-                "0x35362d986f20c598e53c3de0b8fc41300484243172af893cc99ca199aa16163c",
-            )
-            .expect(ERR_FAIL_TO_DECODE_HEX);
-            ev1.z = FieldElementVec::try_from_hex_string(
-                "0xf0951e6a385fb4ea8b5e2cf0e89e54807a99938b0ab69c77f1b9b210a05d152e",
-            )
-            .expect(ERR_FAIL_TO_DECODE_HEX);
-            ev1.t = FieldElementVec::try_from_hex_string(
-                [
-                    "b5c98d3a881eaad5600d89920dff83025079d27bde3ceadd14425bfc8a40d310",
-                    "ee802beaf4ddbaf3b69698689d7e76b670caa65ddbd92197227ab0c8dfba3624",
-                    "6bdf230ec07a915319c606ad930c41dd7f097222ada2776a484e755feb2d491c",
-                    "e00d36cc2b6076c23184046c0a2a062085215644fe29549a6252025055bdfb1c",
-                    "37befa9d80c628fb8b3f7f5316912c175426a0ad9a83db780847d636f1ccab09",
-                ]
-                .join(""),
-            )
-            .expect(ERR_FAIL_TO_DECODE_HEX);
-            ev1.f = FieldElementVec::try_from_hex_string(
-                "0xc0441628012519d76fef0107434dc56bb174e7d1610cde2fc86d6aa72b75ad1a",
-            )
-            .expect(ERR_FAIL_TO_DECODE_HEX);
-            ev1.sigma1 = FieldElementVec::try_from_hex_string(
-                "0xcd71c8afe1a719f2e5e83fce7941fb9a313e2b9262480afa68675dcfab64b20a",
-            )
-            .expect(ERR_FAIL_TO_DECODE_HEX);
-            ev1.sigma2 = FieldElementVec::try_from_hex_string(
-                "0xe580093d240406f6684b313ce40669bd5ba1c8df3ed53ced2f473c037af19a08",
-            )
+
+            p.proof.openings.evals.1 = (|| {
+                Ok::<_, hex::FromHexError>(ProofEvaluations {
+                    l: FieldElementVec::try_from_hex_string(
+                        "0x16eba2ebda9feac442e29ef9293f5c4576933d531a6e3c07518e352241055f3d",
+                    )?,
+                    r: FieldElementVec::try_from_hex_string(
+                        "0xdcf5b2e12453b8369c420e76ada0fb6c6e173f2271aa19ec6db8010112611605",
+                    )?,
+                    o: FieldElementVec::try_from_hex_string(
+                        "0x35362d986f20c598e53c3de0b8fc41300484243172af893cc99ca199aa16163c",
+                    )?,
+                    z: FieldElementVec::try_from_hex_string(
+                        "0xf0951e6a385fb4ea8b5e2cf0e89e54807a99938b0ab69c77f1b9b210a05d152e",
+                    )?,
+                    t: FieldElementVec::try_from_hex_string(
+                        [
+                            "b5c98d3a881eaad5600d89920dff83025079d27bde3ceadd14425bfc8a40d310",
+                            "ee802beaf4ddbaf3b69698689d7e76b670caa65ddbd92197227ab0c8dfba3624",
+                            "6bdf230ec07a915319c606ad930c41dd7f097222ada2776a484e755feb2d491c",
+                            "e00d36cc2b6076c23184046c0a2a062085215644fe29549a6252025055bdfb1c",
+                            "37befa9d80c628fb8b3f7f5316912c175426a0ad9a83db780847d636f1ccab09",
+                        ]
+                        .join(""),
+                    )?,
+                    f: FieldElementVec::try_from_hex_string(
+                        "0xc0441628012519d76fef0107434dc56bb174e7d1610cde2fc86d6aa72b75ad1a",
+                    )?,
+                    sigma1: FieldElementVec::try_from_hex_string(
+                        "0xcd71c8afe1a719f2e5e83fce7941fb9a313e2b9262480afa68675dcfab64b20a",
+                    )?,
+                    sigma2: FieldElementVec::try_from_hex_string(
+                        "0xe580093d240406f6684b313ce40669bd5ba1c8df3ed53ced2f473c037af19a08",
+                    )?,
+                })
+            })()
             .expect(ERR_FAIL_TO_DECODE_HEX);
 
             p

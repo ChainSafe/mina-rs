@@ -134,13 +134,32 @@ mod tests {
         test_path(
             &genesis,
             &fixture,
+            "t/protocol_state_proof/t/t/t/t/proof/t/t/openings/t/proof/t/lr",
+            |b| &b.protocol_state_proof.proof.openings.proof.lr,
+        );
+        test_path(
+            &genesis,
+            &fixture,
+            "t/protocol_state_proof/t/t/t/t/proof/t/t/openings/t/proof",
+            |b| &b.protocol_state_proof.proof.openings.proof,
+        );
+        test_path(
+            &genesis,
+            &fixture,
             "t/protocol_state_proof/t/t/t/t/proof/t/t/openings/t/evals",
             |b| &b.protocol_state_proof.proof.openings.evals,
         );
+        test_path(
+            &genesis,
+            &fixture,
+            "t/protocol_state_proof/t/t/t/t/proof/t/t/openings",
+            |b| &b.protocol_state_proof.proof.openings,
+        );
         // test_path(
-        //     &genesis.protocol_state_proof,
+        //     &genesis,
         //     &fixture,
         //     "t/protocol_state_proof",
+        //     |b| &b.protocol_state_proof,
         // );
 
         test_path(&genesis, &fixture, "t/staged_ledger_diff", |b| {
