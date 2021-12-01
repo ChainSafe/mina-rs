@@ -115,7 +115,7 @@ macro_rules! finite_ec_point {
 #[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, WireType)]
 #[serde(from = "<Self as WireType>::WireType")]
 #[serde(into = "<Self as WireType>::WireType")]
-pub struct FiniteECPointVec(Vec<FiniteECPoint>);
+pub struct FiniteECPointVec(pub Vec<FiniteECPoint>);
 
 impl<P> From<FiniteECPointVec> for Vec<GroupAffine<P>>
 where
@@ -194,7 +194,7 @@ where
 #[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, WireType)]
 #[serde(from = "<Self as WireType>::WireType")]
 #[serde(into = "<Self as WireType>::WireType")]
-pub struct ECPointVec(Vec<ECPoint>);
+pub struct ECPointVec(pub Vec<ECPoint>);
 
 impl<P> From<ECPointVec> for Vec<GroupAffine<P>>
 where

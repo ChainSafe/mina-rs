@@ -6,7 +6,10 @@ use mina_crypto::{
     hash::*,
     signature::PublicKey,
 };
-use mina_rs_base::{finite_ec_point, finite_ec_point_pair, types::*};
+use mina_rs_base::{
+    finite_ec_point, finite_ec_point_pair,
+    types::{proof_messages::ProofMessageWithoutDegreeBoundList, *},
+};
 
 const ERR_FAIL_TO_DECODE_B58: &str = "Failed to decode hash from base58";
 const ERR_FAIL_TO_DECODE_B64: &str = "Failed to decode hash from base64";
@@ -122,6 +125,160 @@ impl GenesisInitConfig {
         let protocol_state_proof = {
             let mut p = ProtocolStateProof::default();
 
+            p.statement.pass_through.sg = (|| {
+                let fpp = finite_ec_point!(
+                    "0x9c84b80df8bb7db9a77648695dc02c08996d3b6ce15a9bca579dd4d1ef2ca831",
+                    "0x46fa45bdaa020b13e81365a2df2685c07d355deb88e2adf6a98769ab64177335"
+                )?;
+                Ok::<_, hex::FromHexError>(FiniteECPointVec(vec![fpp.clone(), fpp]))
+            })()
+            .expect(ERR_FAIL_TO_DECODE_HEX);
+
+            p.statement.pass_through.old_bulletproof_challenges = {
+                let t18 = BulletproofChallengeTuple18::new([
+                    621834770194220300,
+                    -4327941673388439925,
+                    8902445049614368905,
+                    -5479804816757020655,
+                    8345091427968288705,
+                    8258453988658898844,
+                    746390447645740837,
+                    -5643124118675291918,
+                    -5948286762976073031,
+                    3913620533516803836,
+                    6451156200849374208,
+                    -7149474906925249401,
+                    2545802753099625135,
+                    -3046285123411643010,
+                    1476045778313053942,
+                    7088211501506636392,
+                    -5780902958823199474,
+                    684672559108579835,
+                    -479599555522051695,
+                    6277689784759994790,
+                    -6174909374622547011,
+                    -2876420228592515736,
+                    -5612139484668830099,
+                    -141685165274757211,
+                    -9057284384873862529,
+                    -218923106050670804,
+                    -4381571242292214582,
+                    -7982158890774157783,
+                    -2589693721356185105,
+                    47703702537737607,
+                    6933529253212730047,
+                    -453811945482877525,
+                    -7749055720453093542,
+                    -3329383869546507530,
+                    -4722006655881085948,
+                    -2216518060947545516,
+                ]);
+                BulletproofChallenges(vec![t18.clone(), t18])
+            };
+
+            p.prev_evals.0 .0 = (|| {
+                Ok::<_, hex::FromHexError>(ProofEvaluations {
+                    l: FieldElementVec::try_from_hex_string(
+                        "0x0e5019ef595b796f872edae874df3e6bd1e94424aed7ba4d7ac5fe5ae2252415",
+                    )?,
+                    r: FieldElementVec::try_from_hex_string(
+                        "0xcece924af1289b226fbb6cbef809b94422a9d91f0782ada0d87efc83d019b91b",
+                    )?,
+                    o: FieldElementVec::try_from_hex_string(
+                        "0x4a4ee9d8cef37e704d57836e2bd42c696466e27197e166e5a4ac87af6f17a924",
+                    )?,
+                    z: FieldElementVec::try_from_hex_string(
+                        "0xde7e57ed0235ed1315ee7c76582fe85ef13410571a7537bcd7bd3919f266ec1e",
+                    )?,
+                    t: FieldElementVec::try_from_hex_string(
+                        [
+                            "8d1ef8e24acf35e68f404480324352e921645bc354b05644e7bd4eb3a80e9d13",
+                            "d23d44555c569324067d82817632a4b48be314267101a09873197275d0284f05",
+                            "9984de5ad3091c523f90db6792526b36b3d0936bda8aa8aa82112748e1aafb2d",
+                            "9d53c85bdbc8b9f895fd3cf285409ade24d077c6b1fb884be8ed03a609207a15",
+                            "7ea8c0fb257e5118e548d9c7d59f5858ca153b9f785062313d250e24e2032914",
+                        ]
+                        .join(""),
+                    )?,
+                    f: FieldElementVec::try_from_hex_string(
+                        "0xadb1afcfaffe7569656b54d5ce39f7c11a55958f63f432efba9aa96334e3f013",
+                    )?,
+                    sigma1: FieldElementVec::try_from_hex_string(
+                        "0x0d19edbacb9cf02bbf5c1c1053d422479526855038c072772a0a970f3a54d525",
+                    )?,
+                    sigma2: FieldElementVec::try_from_hex_string(
+                        "0x89ac7052c36f50a89bcd060ba67fa9446dfeb0b6d80a74ef617dd4af66cc2039",
+                    )?,
+                })
+            })()
+            .expect(ERR_FAIL_TO_DECODE_HEX);
+
+            p.prev_evals.0 .1 = (|| {
+                Ok::<_, hex::FromHexError>(ProofEvaluations {
+                    l: FieldElementVec::try_from_hex_string(
+                        "0xac5d1055e6dc85e696cde2e4cd58e4117556622de616c04b3427ebcf4e792139",
+                    )?,
+                    r: FieldElementVec::try_from_hex_string(
+                        "0xa2e054c65b914b2ecca3a9baa335a0d6a5019cfbb19ce073ead52e1f0f963f30",
+                    )?,
+                    o: FieldElementVec::try_from_hex_string(
+                        "0xde64bff3163383af2268774d29f97382656925a3846e08d1b9dbfd8107095008",
+                    )?,
+                    z: FieldElementVec::try_from_hex_string(
+                        "0x1a79c92067af3a93e38e3b7ab551ed30cb2598be3d531afcb3161ff46452790c",
+                    )?,
+                    t: FieldElementVec::try_from_hex_string(
+                        [
+                            "ffdb4e909d77296575ef162db731581693a8ae1a2628e9d7b114f6e64832300a",
+                            "17e6fcda006321d26f68e2968b0848763607f832f9adb0baa71a15b92f798825",
+                            "cfe6f5fcc752393dcbfc941256c2ba8499d32228ae1add120d0fbeccd9389233",
+                            "2888c27164b90b341a97a882c5454f5868a8d68796b3f18ef54280ee3f96283a",
+                            "c3181d87d0ab4a99cec885b3d4de51b0bca32b306ebece8dca1a872bc0efc41d",
+                        ]
+                        .join(""),
+                    )?,
+                    f: FieldElementVec::try_from_hex_string(
+                        "0x40128adc323cecd24b5f4deff834be960c90a5c97d16ce6d123ede8c95b2bf3c",
+                    )?,
+                    sigma1: FieldElementVec::try_from_hex_string(
+                        "0x92f5fcdc0c4cd3f6de427948b078312e0b3744b64932b55af6141ce8fe6ed82c",
+                    )?,
+                    sigma2: FieldElementVec::try_from_hex_string(
+                        "0x4cb1e1bcec843fab7e37780f44880d58ebfa3c28b4c0c913ae41495a5bcf5b19",
+                    )?,
+                })
+            })()
+            .expect(ERR_FAIL_TO_DECODE_HEX);
+
+            p.prev_x_hat = PrevXHat(
+                finite_ec_point!(
+                    "0xc0c84dfea15306bb962715b921c0117fde9f3f9dffa9734fca977cae86549037",
+                    "0xad6cf259ffead18d3afd382f410e771a3d5d0f261454fa699693d81c45cc803c"
+                )
+                .expect(ERR_FAIL_TO_DECODE_HEX),
+            );
+
+            let pm = &mut p.proof.messages;
+            let ec_point = finite_ec_point!(
+                "0x0100000000000000000000000000000000000000000000000000000000000000",
+                "0xbb2aedca237acf1971473d33d45b658f54ee7863f0a9df537c93120aa3b5741b"
+            )
+            .expect(ERR_FAIL_TO_DECODE_HEX);
+            let comm = ProofMessageWithoutDegreeBoundList(vec![ec_point.clone()]);
+            pm.l_comm = comm.clone();
+            pm.r_comm = comm.clone();
+            pm.o_comm = comm.clone();
+            pm.z_comm = comm;
+
+            pm.t_comm.shifted = ECPoint::Finite(ec_point.clone());
+            pm.t_comm.unshifted = ECPointVec(vec![
+                ECPoint::Finite(ec_point.clone()),
+                ECPoint::Finite(ec_point.clone()),
+                ECPoint::Finite(ec_point.clone()),
+                ECPoint::Finite(ec_point.clone()),
+                ECPoint::Finite(ec_point.clone()),
+            ]);
+
             let pr = &mut p.proof.openings.proof;
             pr.lr = (|| {
                 let pair = finite_ec_point_pair!(
@@ -159,16 +316,8 @@ impl GenesisInitConfig {
                 "0x664e7ca6fe93f151f069508b826ad5d06c71549318cbc911da6b74d06efe2806",
             )
             .expect(ERR_FAIL_TO_DECODE_HEX);
-            pr.delta = finite_ec_point!(
-                "0x0100000000000000000000000000000000000000000000000000000000000000",
-                "0xbb2aedca237acf1971473d33d45b658f54ee7863f0a9df537c93120aa3b5741b"
-            )
-            .expect(ERR_FAIL_TO_DECODE_HEX);
-            pr.sg = finite_ec_point!(
-                "0x0100000000000000000000000000000000000000000000000000000000000000",
-                "0xbb2aedca237acf1971473d33d45b658f54ee7863f0a9df537c93120aa3b5741b"
-            )
-            .expect(ERR_FAIL_TO_DECODE_HEX);
+            pr.delta = ec_point.clone();
+            pr.sg = ec_point;
 
             p.proof.openings.evals.0 = (|| {
                 Ok::<_, hex::FromHexError>(ProofEvaluations {

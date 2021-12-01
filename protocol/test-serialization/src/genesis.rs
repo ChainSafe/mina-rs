@@ -131,6 +131,42 @@ mod tests {
             &b.protocol_state
         });
 
+        // test_path(
+        //     &genesis,
+        //     &fixture,
+        //     "t/protocol_state_proof/t/t/t/t/statement/t/t/proof_state",
+        //     |b| &b.protocol_state_proof.statement.proof_state,
+        // );
+        test_path(
+            &genesis,
+            &fixture,
+            "t/protocol_state_proof/t/t/t/t/statement/t/t/pass_through",
+            |b| &b.protocol_state_proof.statement.pass_through,
+        );
+        // test_path(
+        //     &genesis,
+        //     &fixture,
+        //     "t/protocol_state_proof/t/t/t/t/statement",
+        //     |b| &b.protocol_state_proof.statement,
+        // );
+        test_path(
+            &genesis,
+            &fixture,
+            "t/protocol_state_proof/t/t/t/t/prev_evals",
+            |b| &b.protocol_state_proof.prev_evals,
+        );
+        test_path(
+            &genesis,
+            &fixture,
+            "t/protocol_state_proof/t/t/t/t/prev_x_hat",
+            |b| &b.protocol_state_proof.prev_x_hat,
+        );
+        test_path(
+            &genesis,
+            &fixture,
+            "t/protocol_state_proof/t/t/t/t/proof/t/t/messages",
+            |b| &b.protocol_state_proof.proof.messages,
+        );
         test_path(
             &genesis,
             &fixture,
@@ -154,6 +190,12 @@ mod tests {
             &fixture,
             "t/protocol_state_proof/t/t/t/t/proof/t/t/openings",
             |b| &b.protocol_state_proof.proof.openings,
+        );
+        test_path(
+            &genesis,
+            &fixture,
+            "t/protocol_state_proof/t/t/t/t/proof",
+            |b| &b.protocol_state_proof.proof,
         );
         // test_path(
         //     &genesis,

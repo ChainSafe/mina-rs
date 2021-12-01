@@ -119,12 +119,12 @@ pub struct PairingBased {
 #[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, WireType)]
 #[serde(from = "<Self as WireType>::WireType")]
 #[serde(into = "<Self as WireType>::WireType")]
-pub struct PrevEvals((ProofEvaluations, ProofEvaluations));
+pub struct PrevEvals(pub (ProofEvaluations, ProofEvaluations));
 
 #[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, WireType)]
 #[serde(from = "<Self as WireType>::WireType")]
 #[serde(into = "<Self as WireType>::WireType")]
-pub struct PrevXHat(FiniteECPoint);
+pub struct PrevXHat(pub FiniteECPoint);
 
 #[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, WireType)]
 #[serde(from = "<Self as WireType>::WireType")]

@@ -113,6 +113,12 @@ impl Amount {
 #[serde(into = "<Self as WireType>::WireType")]
 pub struct Hex64(i64);
 
+impl From<i64> for Hex64 {
+    fn from(i: i64) -> Self {
+        Self(i)
+    }
+}
+
 #[derive(Clone, Serialize, Deserialize, PartialEq, Debug, Hash, Default, WireType)]
 #[serde(from = "<Self as WireType>::WireType")]
 #[serde(into = "<Self as WireType>::WireType")]
