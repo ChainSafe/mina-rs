@@ -12,5 +12,9 @@ mina-rs-base = {version = "0.1.0", path = "../base"}
 
 hex = "0.4"
 thiserror = "1"
+
+[dev-dependencies]
+base64 = "0.13"
+wasm-bindgen-test = "0.3"
 quickcheck = "1"
 proptest = "1.0.0"

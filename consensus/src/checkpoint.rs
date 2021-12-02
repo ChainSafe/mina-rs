@@ -80,6 +80,7 @@ mod tests {
     extern crate quickcheck;
     use proptest::prelude::*;
     use quickcheck::QuickCheck;
+    use wasm_bindgen_test::*;
  
     #[test]
     fn test_init_checkpoints() {
@@ -162,6 +163,8 @@ mod tests {
 
     #[test]
     fn equal_state_in_short_fork_range() {
+        // TODO: Generate blockchain position and epoch lengths.
+        // staking_epoch == root_epoch, next_staking_epoch == root_epoch + 1
         let mut genesis: ProtocolState = Default::default();
         init_checkpoints(&mut genesis).unwrap();
 
@@ -177,7 +180,7 @@ mod tests {
         b.body.consensus_state.blockchain_length = Length(1);
         b.body.consensus_state.epoch_count = Length(15);
         b.body.consensus_state.curr_global_slot = GlobalSlot {
-            slot_number: GlobalSlotNumber(1),
+            slot_number: GlobalSlotNumber(0),
             slots_per_epoch: Length(7140),
         };
 
@@ -195,6 +198,7 @@ mod tests {
     }
 
     #[test]
+    #[wasm_bindgen_test]
     fn gen_spot_pair_short_aligned_generates_pairs_of_states_in_short_fork_range() {
         // TODO: Both states will share their staking epoch checkpoints.
         let mut genesis: ProtocolState = Default::default();
@@ -229,6 +233,7 @@ mod tests {
     }
 
     #[test]
+    #[wasm_bindgen_test]
     fn gen_spot_pair_short_misaligned_generates_pairs_of_states_in_short_fork_range() {
         // TODO: Compute the root epoch position of `b`. This needs to be one epoch ahead of a, so we
         // compute it by extending the root epoch position of `a` by a single epoch
@@ -266,6 +271,7 @@ mod tests {
     }
 
     #[test]
+    #[wasm_bindgen_test]
     fn gen_spot_pair_long_generates_pairs_of_states_in_long_fork_range() {
         let mut genesis: ProtocolState = Default::default();
         init_checkpoints(&mut genesis).unwrap();
