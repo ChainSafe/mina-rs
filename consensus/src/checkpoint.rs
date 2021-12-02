@@ -162,6 +162,9 @@ mod tests {
 
     #[test]
     fn equal_state_in_short_fork_range() {
+        let mut genesis: ProtocolState = Default::default();
+        init_checkpoints(&mut genesis).unwrap();
+
         let mut a: ProtocolState = Default::default();
         a.body.consensus_state.blockchain_length = Length(0);
         a.body.consensus_state.epoch_count = Length(14);
@@ -178,13 +181,25 @@ mod tests {
             slots_per_epoch: Length(7140),
         };
 
+        let mut c0: ProtocolStateChain = ProtocolStateChain(vec![]);
+        let mut c1: ProtocolStateChain = ProtocolStateChain(vec![]);
+
         let consensus_constants = ConsensusState::new();
         let protocol_constants = ProtocolConstants::new();
+
+        c0.push(a).unwrap();
+        c1.push(b).unwrap();
+        assert_eq!(is_short_range(&c0, &c1).unwrap(), true);
+        assert_eq!(is_short_range(&c1, &c0).unwrap(), true);
+
     }
 
     #[test]
     fn gen_spot_pair_short_aligned_generates_pairs_of_states_in_short_fork_range() {
-        // Both states will share their staking epoch checkpoints.
+        // TODO: Both states will share their staking epoch checkpoints.
+        let mut genesis: ProtocolState = Default::default();
+        init_checkpoints(&mut genesis).unwrap();
+
         let mut a: ProtocolState = Default::default();
         a.body.consensus_state.blockchain_length = Length(0);
         a.body.consensus_state.epoch_count = Length(14);
@@ -201,14 +216,25 @@ mod tests {
             slots_per_epoch: Length(7140),
         };
 
+        let mut c0: ProtocolStateChain = ProtocolStateChain(vec![]);
+        let mut c1: ProtocolStateChain = ProtocolStateChain(vec![]);
         let consensus_constants = ConsensusState::new();
         let protocol_constants = ProtocolConstants::new();
+
+        c0.push(a).unwrap();
+        c1.push(b).unwrap();
+        assert_eq!(is_short_range(&c0, &c1).unwrap(), true);
+        assert_eq!(is_short_range(&c1, &c0).unwrap(), true);
+        
     }
 
     #[test]
     fn gen_spot_pair_short_misaligned_generates_pairs_of_states_in_short_fork_range() {
-        // Compute the root epoch position of `b`. This needs to be one epoch ahead of a, so we
+        // TODO: Compute the root epoch position of `b`. This needs to be one epoch ahead of a, so we
         // compute it by extending the root epoch position of `a` by a single epoch
+        let mut genesis: ProtocolState = Default::default();
+        init_checkpoints(&mut genesis).unwrap();
+
         let mut a: ProtocolState = Default::default();
         a.body.consensus_state.blockchain_length = Length(0);
         a.body.consensus_state.epoch_count = Length(14);
@@ -224,15 +250,26 @@ mod tests {
             slot_number: GlobalSlotNumber(1),
             slots_per_epoch: Length(7140),
         };
+
+        let mut c0: ProtocolStateChain = ProtocolStateChain(vec![]);
+        let mut c1: ProtocolStateChain = ProtocolStateChain(vec![]);
+
         let consensus_constants = ConsensusState::new();
         let protocol_constants = ProtocolConstants::new();
-        // Constrain first state to be within last 1/3rd of its epoch (ensuring it's checkpoints and seed are fixed). *)
-        let min_a_curr_epoch_slot =;
-        // (2 * (Length.to_int constants.slots_per_epoch / 3)) + 1;
+        // TODO Constrain first state to be within last 1/3rd of its epoch (ensuring it's checkpoints and seed are fixed). *)
+        // let min_a_curr_epoch_slot = (2 * (Length.to_int constants.slots_per_epoch / 3)) + 1;
+
+        c0.push(a).unwrap();
+        c1.push(b).unwrap();
+        assert_eq!(is_short_range(&c0, &c1).unwrap(), true);
+        assert_eq!(is_short_range(&c1, &c0).unwrap(), true);
     }
 
     #[test]
     fn gen_spot_pair_long_generates_pairs_of_states_in_long_fork_range() {
+        let mut genesis: ProtocolState = Default::default();
+        init_checkpoints(&mut genesis).unwrap();
+
         let mut a: ProtocolState = Default::default();
         a.body.consensus_state.blockchain_length = Length(0);
         a.body.consensus_state.curr_global_slot = GlobalSlot {
@@ -247,7 +284,15 @@ mod tests {
             slots_per_epoch: Length(7140),
         };
 
+        let mut c0: ProtocolStateChain = ProtocolStateChain(vec![]);
+        let mut c1: ProtocolStateChain = ProtocolStateChain(vec![]);
+
         let consensus_constants = ConsensusState::new();
         let protocol_constants = ProtocolConstants::new();
+
+        c0.push(a).unwrap();
+        c1.push(b).unwrap();
+        assert_eq!(is_short_range(&c0, &c1).unwrap(), false);
+        assert_eq!(is_short_range(&c1, &c0).unwrap(), false);
     }
 }
