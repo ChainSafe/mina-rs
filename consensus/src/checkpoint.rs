@@ -85,7 +85,7 @@ mod tests {
     #[test]
     fn test_init_checkpoints() {
         let mut genesis: ProtocolState = Default::default();
-        init_checkpoints(&mut genesis).unwrap();
+        init_checkpoints(&mut genesis);
         assert_eq!(
             genesis
                 .body
@@ -139,6 +139,21 @@ mod tests {
         block.body.consensus_state = consensus_state;
     }
 
+    fn gen_spot_pair_common_checkpoints(a: &mut ProtocolState, b: &mut ProtocolState) {
+        // TODO: new pairs of spot blocks that share common checkpoints.
+        // The overlap of the checkpoints and the root epoch positions of the blocks
+        // that are generated can be configured independently so that this function
+        // can be used in other generators that wish to generates pairs of spot blocks
+        // with specific constraints.
+        let default_slot_fill_rate = 0.65;
+        let default_slot_fill_rate_delta = 0.15;
+        gen_spot_root_epoch_position(default_slot_fill_rate, default_slot_fill_rate_delta);
+
+        // TODO: Constraining the second state to have a greater blockchain length than the
+        // first, we need to constrain the first blockchain length such that there is some room
+        // leftover in the epoch for at least 1 more block to be generated. *)
+    }
+
     #[test]
     #[wasm_bindgen_test]
     fn equal_state_in_short_fork_range() {
@@ -172,6 +187,7 @@ mod tests {
 
         gen_spot(&mut a);
         gen_spot(&mut b);
+        gen_spot_pair_common_checkpoints(&mut a, &mut b);
 
         let mut c0: ProtocolStateChain = ProtocolStateChain(vec![]);
         let mut c1: ProtocolStateChain = ProtocolStateChain(vec![]);
@@ -195,6 +211,7 @@ mod tests {
 
         gen_spot(&mut a);
         gen_spot(&mut b);
+        gen_spot_pair_common_checkpoints(&mut a, &mut b);
 
         let mut c0: ProtocolStateChain = ProtocolStateChain(vec![]);
         let mut c1: ProtocolStateChain = ProtocolStateChain(vec![]);
