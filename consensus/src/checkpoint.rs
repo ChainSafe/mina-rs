@@ -177,7 +177,7 @@ mod tests {
         // Compute total currency for state.
         // Generate epoch data for staking and next epochs.
         // TODO: Generate chain quality and vrf output.
-        // Generate block reward information (unused in chain selection). 
+        // Generate block reward information (unused in chain selection).
         let consensus_constants = ConsensusState::new();
         let protocol_constants = ProtocolConstants::new();
         block.body.consensus_state = consensus_constants;
@@ -213,7 +213,7 @@ mod tests {
 
         let mut a: ProtocolState = Default::default();
         let mut b: ProtocolState = Default::default();
-     
+
         gen_spot(&mut a);
         gen_spot(&mut b);
 
@@ -236,7 +236,7 @@ mod tests {
 
         let mut a: ProtocolState = Default::default();
         let mut b: ProtocolState = Default::default();
-  
+
         gen_spot(&mut a);
         gen_spot(&mut b);
 
@@ -260,7 +260,7 @@ mod tests {
 
         let mut a: ProtocolState = Default::default();
         let mut b: ProtocolState = Default::default();
-       
+
         gen_spot(&mut a);
         gen_spot(&mut b);
         a.body.consensus_state.epoch_count = Length(14);

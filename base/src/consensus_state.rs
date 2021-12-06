@@ -7,11 +7,7 @@ use crate::{
     numbers::{Amount, GlobalSlotNumber, Length},
 };
 
-use mina_crypto::{
-    base58::{Base58Encodable},
-    hash::*,
-    signature::PublicKey,
-};
+use mina_crypto::{base58::Base58Encodable, hash::*, signature::PublicKey};
 
 use mina_crypto::hash::{Hashable, VrfOutputHash};
 use serde::{Deserialize, Serialize};
@@ -81,7 +77,7 @@ impl ConsensusState {
         let total_currency = Amount(805385692840039233);
         let staking_epoch_data = {
             let mut data = EpochData::default();
-           
+
             data.epoch_length.0 = 1;
             data.ledger.hash =
                 LedgerHash::from_base58("jx7buQVWFLsXTtzRgSxbYcT8EYLS8KCZbLrfDcJxMtyy4thw2Ee")
@@ -121,7 +117,7 @@ impl ConsensusState {
         Self {
             blockchain_length: Length(1),
             epoch_count: Length(0),
-            min_window_density:Length(77),
+            min_window_density: Length(77),
             sub_window_densities: vec![
                 1.into(),
                 7.into(),
@@ -136,27 +132,29 @@ impl ConsensusState {
                 7.into(),
             ],
             last_vrf_output: VrfOutputTruncated(vec![13]),
-            total_currency: total_currency,
+            total_currency,
             curr_global_slot: GlobalSlot {
                 slot_number: GlobalSlotNumber(0),
                 slots_per_epoch: Length(7140),
             },
             global_slot_since_genesis: GlobalSlotNumber(0),
-            staking_epoch_data: staking_epoch_data,
-            next_epoch_data: next_epoch_data,
+            staking_epoch_data,
+            next_epoch_data,
             has_ancestor_in_same_checkpoint_window: true,
             block_stake_winner: Base58Encodable::from_base58(
                 "B62qiy32p8kAKnny8ZFwoMhYpBppM1DWVCqAPBYNcXnsAHhnfAAuXgg",
-            ).expect(ERR_FAIL_TO_DECODE_B58),
+            )
+            .expect(ERR_FAIL_TO_DECODE_B58),
             block_creator: Base58Encodable::from_base58(
                 "B62qiy32p8kAKnny8ZFwoMhYpBppM1DWVCqAPBYNcXnsAHhnfAAuXgg",
             )
             .expect(ERR_FAIL_TO_DECODE_B58),
-            coinbase_receiver:  Base58Encodable::from_base58("B62qiy32p8kAKnny8ZFwoMhYpBppM1DWVCqAPBYNcXnsAHhnfAAuXgg")
+            coinbase_receiver: Base58Encodable::from_base58(
+                "B62qiy32p8kAKnny8ZFwoMhYpBppM1DWVCqAPBYNcXnsAHhnfAAuXgg",
+            )
             .expect(ERR_FAIL_TO_DECODE_B58),
             supercharge_coinbase: true,
         }
-
     }
 
     pub fn sub_window_densities(&self) -> Vec<u32> {
