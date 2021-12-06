@@ -1,13 +1,14 @@
 // Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
+pub use bin_prot::error::Error;
 use bin_prot::Deserializer;
 use serde::{Deserialize, Serialize};
 
 pub trait BinProtEncodable {
     const PREALLOCATE_BUFFER_BYTES: usize;
 
-    fn try_encode_binprot(&self) -> Result<Vec<u8>, bin_prot::error::Error>
+    fn try_encode_binprot(&self) -> Result<Vec<u8>, Error>
     where
         Self: Serialize,
     {
@@ -16,7 +17,7 @@ pub trait BinProtEncodable {
         Ok(output)
     }
 
-    fn try_decode_binprot<'de>(bytes: impl AsRef<[u8]>) -> Result<Self, bin_prot::error::Error>
+    fn try_decode_binprot<'de>(bytes: impl AsRef<[u8]>) -> Result<Self, Error>
     where
         Self: Deserialize<'de> + Sized,
     {

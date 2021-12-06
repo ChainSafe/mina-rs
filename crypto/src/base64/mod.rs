@@ -3,3 +3,5 @@
 
 mod encodable;
 pub use encodable::*;
+mod error;
+pub use error::*;

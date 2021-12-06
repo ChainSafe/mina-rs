@@ -1,7 +1,7 @@
 // Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
-pub use bs58::decode::Error;
+use super::*;
 use bs58::encode::EncodeBuilder;
 
 pub trait Base58Encodable {
@@ -24,7 +24,7 @@ pub trait Base58Encodable {
         self.to_base58().into_string()
     }
 
-    fn from_base58(i: impl AsRef<[u8]>) -> Result<Self, bin_prot::error::Error>
+    fn from_base58(i: impl AsRef<[u8]>) -> Result<Self, Error>
     where
         Self: TryFrom<Vec<u8>>,
         <Self as TryFrom<std::vec::Vec<u8>>>::Error: std::fmt::Debug,
@@ -32,9 +32,7 @@ pub trait Base58Encodable {
         let bytes: Vec<u8> = bs58::decode(i)
             .with_check(Some(Self::VERSION_BYTE))
             .into_vec()
-            .map_err(|e| bin_prot::error::Error::Custom {
-                message: format!("{:?}", e),
-            })?;
+            .map_err(|e| Error::OtherError(format!("{:?}", e)))?;
 
         // skip the bs58 version byte and mina bin_prot version bytes
         let stored_bytes: Vec<u8> = bytes
@@ -43,9 +41,7 @@ pub trait Base58Encodable {
             .collect();
         stored_bytes
             .try_into()
-            .map_err(|e| bin_prot::error::Error::Custom {
-                message: format!("{:?}", e),
-            })
+            .map_err(|e| Error::OtherError(format!("{:?}", e)))
     }
 
     // Have to sacrifice perf here in order to share the trait between bin-prot and hash

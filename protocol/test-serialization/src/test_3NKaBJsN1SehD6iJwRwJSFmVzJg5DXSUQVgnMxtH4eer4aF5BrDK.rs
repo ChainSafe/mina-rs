@@ -314,7 +314,8 @@ mod tests {
             .into_vec()
             .unwrap();
         assert_eq!(et.delta_transition_chain_proof.0.as_ref()[..], bytes[2..34]);
-        // FIXME:
+        // FIXME: Version byte here disagrees with what is being used for genesis block
+        // Note that version byte is not part of binprot binary, it's only used for bs58 representation
         // assert_eq!(
         //     et.delta_transition_chain_proof.0.to_base58_string(),
         //     "jwHLk8kaC6B45K3sjuX2sM38649VtfpUAteTfKFQMPcqTeXjGiT"
