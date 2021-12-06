@@ -62,7 +62,7 @@ impl GenesisInit for ExternalTransition {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use mina_crypto::base58::Base58Encodable;
+    use mina_crypto::prelude::*;
     use time::macros::*;
     use wasm_bindgen_test::*;
 

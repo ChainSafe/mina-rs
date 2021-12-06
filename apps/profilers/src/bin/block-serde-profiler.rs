@@ -1,8 +1,8 @@
 // Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
-use bin_prot::BinProtDeser;
 use clap::{App, Arg};
+use mina_crypto::prelude::*;
 use mina_rs_base::types::ExternalTransition;
 use std::str::FromStr;
 
@@ -31,7 +31,7 @@ fn main() -> anyhow::Result<()> {
 }
 
 fn cpu_profile_serialization() -> anyhow::Result<ExternalTransition> {
-    Ok(ExternalTransition::try_deserialize(BLOCK_BYTES)?)
+    Ok(ExternalTransition::try_decode_binprot(BLOCK_BYTES)?)
 }
 
 fn heap_profile_serialization() -> anyhow::Result<ExternalTransition> {

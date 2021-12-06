@@ -1,22 +1,22 @@
 // Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
-use crate::de::Deserializer;
+use bin_prot::Deserializer;
 use serde::{Deserialize, Serialize};
 
-pub trait BinProtDeser {
+pub trait BinProtEncodable {
     const PREALLOCATE_BUFFER_BYTES: usize;
 
-    fn try_serialize(&self) -> Result<Vec<u8>, crate::error::Error>
+    fn try_encode_binprot(&self) -> Result<Vec<u8>, bin_prot::error::Error>
     where
         Self: Serialize,
     {
         let mut output = Vec::with_capacity(Self::PREALLOCATE_BUFFER_BYTES);
-        crate::to_writer(&mut output, &self)?;
+        bin_prot::to_writer(&mut output, &self)?;
         Ok(output)
     }
 
-    fn try_deserialize<'de>(bytes: impl AsRef<[u8]>) -> Result<Self, crate::error::Error>
+    fn try_decode_binprot<'de>(bytes: impl AsRef<[u8]>) -> Result<Self, bin_prot::error::Error>
     where
         Self: Deserialize<'de> + Sized,
     {

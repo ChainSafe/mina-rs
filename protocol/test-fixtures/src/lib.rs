@@ -1,8 +1,9 @@
 // Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
-use bin_prot::{BinProtDeser, BinProtRule, Deserializer};
+use bin_prot::{BinProtRule, Deserializer};
 use lazy_static::lazy_static;
+use mina_crypto::prelude::*;
 use mina_rs_base::external_transition::ExternalTransition;
 use serde::Deserialize;
 use std::{borrow::Borrow, collections::HashMap};
@@ -51,7 +52,9 @@ pub struct BlockFixture {
 
 impl BlockFixture {
     pub fn external_transition(&self) -> anyhow::Result<ExternalTransition> {
-        Ok(ExternalTransition::try_deserialize(self.bytes.as_slice())?)
+        Ok(ExternalTransition::try_decode_binprot(
+            self.bytes.as_slice(),
+        )?)
     }
 }
 

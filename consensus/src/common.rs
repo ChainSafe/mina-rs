@@ -2,10 +2,8 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use hex::ToHex;
-use mina_crypto::hash::{Hashable, StateHash};
-use mina_rs_base::consensus_state::ConsensusState;
-use mina_rs_base::global_slot::GlobalSlot;
-use mina_rs_base::protocol_state::{Header, ProtocolState};
+use mina_crypto::prelude::*;
+use mina_rs_base::types::*;
 use thiserror::Error;
 
 pub struct ProtocolStateChain(pub Vec<ProtocolState>);

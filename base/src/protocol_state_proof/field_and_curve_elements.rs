@@ -3,7 +3,7 @@
 
 use ark_ec::models::ModelParameters;
 use ark_ec::short_weierstrass_jacobian::GroupAffine;
-use mina_crypto::hex::HexEncodable;
+use mina_crypto::prelude::*;
 use num::Integer;
 use serde::{Deserialize, Serialize};
 use wire_type::WireType;

@@ -1616,6 +1616,7 @@ dependencies = [
  "bin-prot",
  "hex",
  "lazy_static",
+ "mina-crypto",
  "mina-rs-base",
  "serde",
  "serde_json",

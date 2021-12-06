@@ -3,7 +3,7 @@
 
 use derive_deref::Deref;
 use derive_more::From;
-use mina_crypto::hex::HexEncodable;
+use mina_crypto::prelude::*;
 use num::Integer;
 use serde::{Deserialize, Serialize};
 use time::Duration;

@@ -11,11 +11,8 @@ mod test_3NKaBJsN1SehD6iJwRwJSFmVzJg5DXSUQVgnMxtH4eer4aF5BrDK;
 #[cfg(test)]
 mod tests {
     use super::{block_path_test, block_path_test_batch};
-    use bin_prot::{from_reader, to_writer, BinProtDeser, Value};
-    use mina_crypto::hash::*;
-    use mina_crypto::signature::{
-        FieldPoint, InnerCurveScalar, PublicKey, PublicKey2, PublicKey3, Signature,
-    };
+    use bin_prot::{from_reader, to_writer, Value};
+    use mina_crypto::prelude::*;
     use mina_rs_base::protocol_state_proof::proof_messages::{
         ProofMessageWithDegreeBound, ProofMessageWithoutDegreeBoundList,
     };

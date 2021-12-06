@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::{numbers::BlockTime, token_id::TokenId};
-use mina_crypto::hash::{SnarkedLedgerHash, StagedLedgerHash};
+use mina_crypto::prelude::*;
 use serde::{Deserialize, Serialize};
 use wire_type::WireType;
 

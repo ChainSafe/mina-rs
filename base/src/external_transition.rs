@@ -1,7 +1,7 @@
 // Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
-use bin_prot::BinProtDeser;
+use mina_crypto::prelude::*;
 use serde::{Deserialize, Serialize};
 use wire_type::WireType;
 
@@ -21,6 +21,6 @@ pub struct ExternalTransition {
     pub validation_callback: (),
 }
 
-impl BinProtDeser for ExternalTransition {
+impl BinProtEncodable for ExternalTransition {
     const PREALLOCATE_BUFFER_BYTES: usize = 13 * 1024;
 }

@@ -7,11 +7,7 @@ use crate::{
     numbers::{Amount, GlobalSlotNumber, Length},
 };
 use derive_more::From;
-use mina_crypto::signature::PublicKey;
-use mina_crypto::{
-    base64::Base64Encodable,
-    hash::{Hashable, VrfOutputHash},
-};
+use mina_crypto::prelude::*;
 use serde::{Deserialize, Serialize};
 use wire_type::WireType;
 

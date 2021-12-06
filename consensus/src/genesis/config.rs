@@ -1,15 +1,14 @@
 // Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
-use mina_crypto::{
-    base58::Base58Encodable, base64::Base64Encodable, hash::*, hex::HexEncodable,
-    signature::PublicKey,
-};
+use mina_crypto::prelude::*;
 use mina_rs_base::{
     finite_ec_point, finite_ec_point_pair,
     types::{proof_messages::ProofMessageWithoutDegreeBoundList, *},
 };
 
+// Panic messages for hard coded genesis block
+// Avoid using unwrap or expect elsewhere without justification
 const ERR_FAIL_TO_DECODE_B58: &str = "Failed to decode hash from base58";
 const ERR_FAIL_TO_DECODE_B64: &str = "Failed to decode hash from base64";
 const ERR_FAIL_TO_DECODE_HEX: &str = "Failed to decode hash from hex";

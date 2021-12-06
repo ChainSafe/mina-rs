@@ -4,7 +4,7 @@
 #[cfg(test)]
 mod tests {
     use anyhow::bail;
-    use mina_crypto::base58::Base58Encodable;
+    use mina_crypto::prelude::*;
     use mina_rs_base::types::*;
     use pretty_assertions::assert_eq;
     use test_fixtures::*;

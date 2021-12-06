@@ -9,6 +9,7 @@ publish = false
 
 [dependencies]
 bin-prot = {path = "../bin-prot"}
+mina-crypto = {path = "../../crypto"}
 mina-rs-base = {path = "../../base"}
 
 anyhow = "1"
