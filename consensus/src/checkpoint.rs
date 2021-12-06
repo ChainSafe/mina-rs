@@ -117,50 +117,6 @@ mod tests {
         );
     }
 
-    #[test]
-    fn test_is_short_range() {
-        let mut genesis: ProtocolState = Default::default();
-        init_checkpoints(&mut genesis);
-        let mut c0: ProtocolStateChain = ProtocolStateChain(vec![]);
-        let mut c1: ProtocolStateChain = ProtocolStateChain(vec![]);
-        let mut c3: ProtocolStateChain = ProtocolStateChain(vec![]);
-        let mut b0: ProtocolState = Default::default();
-        b0.body.consensus_state.blockchain_length = Length(0);
-        b0.body.consensus_state.curr_global_slot = GlobalSlot {
-            slot_number: GlobalSlotNumber(0),
-            slots_per_epoch: Length(7140),
-        };
-        let mut b1: ProtocolState = Default::default();
-        b1.body.consensus_state.blockchain_length = Length(1);
-        b1.body.consensus_state.curr_global_slot = GlobalSlot {
-            slot_number: GlobalSlotNumber(1),
-            slots_per_epoch: Length(7140),
-        };
-
-        c0.push(b0).unwrap();
-        c1.push(b1).unwrap();
-        assert_eq!(is_short_range(&c0, &c1).unwrap(), true);
-        assert_eq!(is_short_range(&c1, &c0).unwrap(), true);
-
-        init_checkpoints(&mut genesis);
-        let mut b1: ProtocolState = Default::default();
-        b1.body.consensus_state.blockchain_length = Length(2);
-        b1.body.consensus_state.curr_global_slot = GlobalSlot {
-            slot_number: GlobalSlotNumber(2),
-            slots_per_epoch: Length(7140),
-        };
-        let mut b2: ProtocolState = Default::default();
-        b2.body.consensus_state.blockchain_length = Length(667);
-        b2.body.consensus_state.epoch_count = Length(11);
-        b2.body.consensus_state.curr_global_slot = GlobalSlot {
-            slot_number: GlobalSlotNumber(667),
-            slots_per_epoch: Length(7140),
-        };
-        c3.push(b2).unwrap();
-        assert_eq!(is_short_range(&c3, &c0).unwrap(), false);
-        assert_eq!(is_short_range(&c0, &c3).unwrap(), false);
-    }
-
     fn gen_spot_root_epoch_position(slot_fill_rate: f64, slot_fill_rate_delta: f64) {
         //   TODO: We need to simulate both the staking epoch and the next staking epoch,
         //  the root epoch is the staking epoch. The root epoch position this function generates
@@ -170,7 +126,7 @@ mod tests {
     }
 
     fn gen_spot(block: &mut ProtocolState) {
-        // Populate default generators
+        // New default consensus state and Protocol constant
         // Generate blockchain position and epoch lengths.
         // staking_epoch == root_epoch, next_staking_epoch == root_epoch + 1
         // TODO: Compute state slot and length.
@@ -178,9 +134,9 @@ mod tests {
         // Generate epoch data for staking and next epochs.
         // TODO: Generate chain quality and vrf output.
         // Generate block reward information (unused in chain selection).
-        let consensus_constants = ConsensusState::new();
+        let consensus_state = ConsensusState::new();
         let protocol_constants = ProtocolConstants::new();
-        block.body.consensus_state = consensus_constants;
+        block.body.consensus_state = consensus_state;
     }
 
     #[test]
