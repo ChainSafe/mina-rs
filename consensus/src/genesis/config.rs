@@ -3,6 +3,7 @@
 
 use mina_crypto::{
     base58::{version_bytes, Base58Encodable, Base58EncodableHash},
+    base64::Base64Encodable,
     hash::*,
     signature::PublicKey,
 };

@@ -6,25 +6,21 @@ use crate::{
     global_slot::GlobalSlot,
     numbers::{Amount, GlobalSlotNumber, Length},
 };
-use mina_crypto::hash::{Hashable, VrfOutputHash};
+use derive_more::From;
 use mina_crypto::signature::PublicKey;
+use mina_crypto::{
+    base64::Base64Encodable,
+    hash::{Hashable, VrfOutputHash},
+};
 use serde::{Deserialize, Serialize};
 use wire_type::WireType;
 
-#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, WireType)]
+#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, WireType, From)]
 #[serde(from = "<Self as WireType>::WireType")]
 #[serde(into = "<Self as WireType>::WireType")]
 pub struct VrfOutputTruncated(pub Vec<u8>);
 
-impl VrfOutputTruncated {
-    pub fn to_base64(&self) -> String {
-        base64::encode(&self.0)
-    }
-
-    pub fn try_from_base64(s: impl AsRef<[u8]>) -> Result<Self, base64::DecodeError> {
-        Ok(Self(base64::decode(s)?))
-    }
-}
+impl Base64Encodable for VrfOutputTruncated {}
 
 impl Hashable<VrfOutputHash> for VrfOutputTruncated {}
 

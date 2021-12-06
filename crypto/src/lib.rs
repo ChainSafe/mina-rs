@@ -16,5 +16,6 @@
 // attribute macro and an order of operations well defined
 
 pub mod base58;
+pub mod base64;
 pub mod hash;
 pub mod signature;
