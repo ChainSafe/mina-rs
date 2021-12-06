@@ -6,6 +6,7 @@ mod tests {
     use super::super::tests::select_path;
     use bin_prot::BinProtDeser;
     use mina_consensus::genesis::{GenesisInit, GenesisInitConfig, DEVNET_CONFIG, MAINNET_CONFIG};
+    use mina_crypto::hex::HexEncodable;
     use mina_rs_base::types::*;
     use pretty_assertions::assert_eq;
     use serde::Serialize;

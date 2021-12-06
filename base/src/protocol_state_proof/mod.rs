@@ -142,11 +142,3 @@ pub struct ProofOpenings {
     pub proof: OpeningProof,
     pub evals: (ProofEvaluations, ProofEvaluations),
 }
-
-pub trait HexConvertable {
-    type Error;
-    fn to_hex_string(&self) -> String;
-    fn try_from_hex_string(s: impl AsRef<[u8]>) -> Result<Self, Self::Error>
-    where
-        Self: Sized;
-}

@@ -18,4 +18,5 @@
 pub mod base58;
 pub mod base64;
 pub mod hash;
+pub mod hex;
 pub mod signature;

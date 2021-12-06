@@ -3,6 +3,7 @@
 
 use derive_deref::Deref;
 use derive_more::From;
+use mina_crypto::hex::HexEncodable;
 use num::Integer;
 use serde::{Deserialize, Serialize};
 use time::Duration;
@@ -158,6 +159,35 @@ pub struct BlockTimeSpan(pub u64);
 
 #[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug)]
 pub struct BigInt256(pub [u8; 32]);
+
+impl AsRef<[u8]> for BigInt256 {
+    fn as_ref(&self) -> &[u8] {
+        self.0.as_ref()
+    }
+}
+
+impl HexEncodable for BigInt256 {
+    type Error = hex::FromHexError;
+
+    fn to_hex_string(&self) -> String
+    where
+        Self: AsRef<[u8]>,
+    {
+        hex::encode(self)
+    }
+
+    fn try_from_hex(s: impl AsRef<[u8]>) -> Result<Self, Self::Error> {
+        let mut s = s.as_ref();
+        if s[1] == b'x' && (s[0] == b'0' || s[0] == b'\\') {
+            s = &s[2..];
+        }
+        let bytes = hex::decode(s)?;
+        let mut b32 = [0; 32];
+        b32.copy_from_slice(&bytes);
+
+        Ok(Self(b32))
+    }
+}
 
 impl From<BigInt256> for ark_ff::BigInteger256 {
     fn from(i: BigInt256) -> Self {
