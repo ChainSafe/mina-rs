@@ -14,12 +14,13 @@ use super::prefixes::*;
 use crate::base58::{version_bytes, Base58EncodableHash};
 use crate::hash::Hash;
 use crate::impl_hash_bs58;
+use derive_more::From;
 use serde::{Deserialize, Serialize};
 use wire_type::WireType;
 
 pub(crate) type HashBytes = Box<[u8]>;
 
-#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize, From)]
 pub(crate) struct BaseHash([u8; 32]);
 
 impl From<HashBytes> for BaseHash {
@@ -28,12 +29,6 @@ impl From<HashBytes> for BaseHash {
         let mut o = BaseHash::default();
         o.0.copy_from_slice(&b);
         o
-    }
-}
-
-impl From<[u8; 32]> for BaseHash {
-    fn from(h: [u8; 32]) -> Self {
-        Self(h)
     }
 }
 

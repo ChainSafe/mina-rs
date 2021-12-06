@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use derive_deref::Deref;
+use derive_more::From;
 use num::Integer;
 use serde::{Deserialize, Serialize};
 use time::Duration;
@@ -19,31 +20,20 @@ use wire_type::WireType;
     Default,
     Deref,
     WireType,
+    From,
 )]
 #[serde(from = "<Self as WireType>::WireType")]
 #[serde(into = "<Self as WireType>::WireType")]
 #[wire_type(recurse = 2)]
 pub struct Length(pub u32);
 
-impl From<u32> for Length {
-    fn from(v: u32) -> Self {
-        Self(v)
-    }
-}
-
 #[derive(
-    Clone, Serialize, Deserialize, PartialEq, PartialOrd, Debug, Hash, Copy, Default, WireType,
+    Clone, Serialize, Deserialize, PartialEq, PartialOrd, Debug, Hash, Copy, Default, WireType, From,
 )]
 #[serde(from = "<Self as WireType>::WireType")]
 #[serde(into = "<Self as WireType>::WireType")]
 #[wire_type(recurse = 2)]
 pub struct Delta(pub u32);
-
-impl From<u32> for Delta {
-    fn from(v: u32) -> Self {
-        Self(v)
-    }
-}
 
 #[derive(
     Clone, Serialize, Deserialize, PartialEq, PartialOrd, Debug, Hash, Copy, Default, WireType,
@@ -108,33 +98,27 @@ impl Amount {
 
 // TODO: Impl From<String> for Amount {}
 
-#[derive(Clone, Serialize, Deserialize, PartialEq, Debug, Hash, Default, WireType)]
+#[derive(Clone, Serialize, Deserialize, PartialEq, Debug, Hash, Default, WireType, From)]
 #[serde(from = "<Self as WireType>::WireType")]
 #[serde(into = "<Self as WireType>::WireType")]
 pub struct Hex64(i64);
-
-impl From<i64> for Hex64 {
-    fn from(i: i64) -> Self {
-        Self(i)
-    }
-}
 
 #[derive(Clone, Serialize, Deserialize, PartialEq, Debug, Hash, Default, WireType)]
 #[serde(from = "<Self as WireType>::WireType")]
 #[serde(into = "<Self as WireType>::WireType")]
 pub struct Char(pub u8);
 
-#[derive(Clone, Serialize, Deserialize, PartialEq, Debug, Hash, Default, Deref, WireType)]
+#[derive(Clone, Serialize, Deserialize, PartialEq, Debug, Hash, Default, Deref, WireType, From)]
 #[serde(from = "<Self as WireType>::WireType")]
 #[serde(into = "<Self as WireType>::WireType")]
 #[wire_type(recurse = 2)]
 pub struct GlobalSlotNumber(pub u32);
 
-impl From<u32> for GlobalSlotNumber {
-    fn from(v: u32) -> Self {
-        Self(v)
-    }
-}
+// impl From<u32> for GlobalSlotNumber {
+//     fn from(v: u32) -> Self {
+//         Self(v)
+//     }
+// }
 
 #[derive(Clone, Serialize, Deserialize, PartialEq, Debug, Hash, Default, WireType)]
 #[serde(from = "<Self as WireType>::WireType")]
