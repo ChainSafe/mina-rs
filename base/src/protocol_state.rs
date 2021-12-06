@@ -18,15 +18,15 @@ use mina_crypto::hash::StateHash;
 #[wire_type(recurse = 2)]
 pub struct ProtocolConstants {
     /// Point of finality (number of confirmations)
-    k: Length,
+    pub k: Length,
     /// Number of slots per epoch
-    slots_per_epoch: Length,
+    pub slots_per_epoch: Length,
     /// No of slots in a sub-window = 7
     pub slots_per_sub_window: Length,
     /// Maximum permissable delay of packets (in slots after the current)
-    delta: Length,
+    pub delta: Length,
     /// Timestamp of genesis block in unixtime
-    genesis_state_timestamp: BlockTime,
+    pub genesis_state_timestamp: BlockTime,
     /// Sub windows within a window
     pub sub_windows_per_window: Length,
     /// Number of slots before minimum density is used in chain selection
