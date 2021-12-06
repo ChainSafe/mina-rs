@@ -130,10 +130,10 @@ mod tests {
         // Generate blockchain position and epoch lengths.
         // staking_epoch == root_epoch, next_staking_epoch == root_epoch + 1
         // TODO: Compute state slot and length.
-        // Compute total currency for state.
+        // TODO: Compute total currency for state.
         // Generate epoch data for staking and next epochs.
         // TODO: Generate chain quality and vrf output.
-        // Generate block reward information (unused in chain selection).
+        // TODO: Generate block reward information (unused in chain selection).
         let consensus_state = ConsensusState::new();
         let protocol_constants = ProtocolConstants::new();
         block.body.consensus_state = consensus_state;
