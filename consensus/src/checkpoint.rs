@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::common::{Chain, ProtocolStateChain};
-use mina_crypto::base58::Base58EncodableHash;
+use mina_crypto::base58::Base58Encodable;
 use mina_crypto::hash::{EpochSeed, StateHash};
 use mina_rs_base::protocol_state::ProtocolState;
 
@@ -74,7 +74,7 @@ pub fn is_short_range(
 #[cfg(test)]
 mod tests {
     use super::*;
-    use mina_crypto::base58::Base58EncodableHash;
+    use mina_crypto::base58::Base58Encodable;
     use mina_rs_base::types::*;
     use wasm_bindgen_test::*;
 

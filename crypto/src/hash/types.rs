@@ -11,9 +11,9 @@
 //!
 
 use super::prefixes::*;
-use crate::base58::{version_bytes, Base58EncodableHash};
+use crate::base58::{version_bytes, Base58Encodable};
 use crate::hash::Hash;
-use crate::impl_hash_bs58;
+use crate::impl_bs58_for_hash;
 use derive_more::From;
 use serde::{Deserialize, Serialize};
 use wire_type::WireType;
@@ -58,7 +58,7 @@ impl AsRef<[u8; 32]> for BaseHash {
 #[serde(into = "<Self as WireType>::WireType")]
 pub struct StateHash(BaseHash);
 
-impl_hash_bs58!(StateHash, version_bytes::STATE_HASH);
+impl_bs58_for_hash!(StateHash, version_bytes::STATE_HASH);
 
 impl From<HashBytes> for StateHash {
     fn from(b: HashBytes) -> Self {
@@ -77,7 +77,7 @@ impl Hash for StateHash {
 #[serde(into = "<Self as WireType>::WireType")]
 pub struct LedgerHash(BaseHash);
 
-impl_hash_bs58!(LedgerHash, version_bytes::LEDGER_HASH);
+impl_bs58_for_hash!(LedgerHash, version_bytes::LEDGER_HASH);
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize, WireType)]
 #[serde(from = "<Self as WireType>::WireType")]
@@ -85,7 +85,7 @@ impl_hash_bs58!(LedgerHash, version_bytes::LEDGER_HASH);
 #[wire_type(recurse = 2)]
 pub struct CoinBaseHash(BaseHash);
 
-impl_hash_bs58!(CoinBaseHash, 12);
+impl_bs58_for_hash!(CoinBaseHash, 12);
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -94,7 +94,7 @@ impl_hash_bs58!(CoinBaseHash, 12);
 #[serde(into = "<Self as WireType>::WireType")]
 pub struct EpochSeed(BaseHash);
 
-impl_hash_bs58!(EpochSeed, version_bytes::EPOCH_SEED);
+impl_bs58_for_hash!(EpochSeed, version_bytes::EPOCH_SEED);
 
 impl From<HashBytes> for EpochSeed {
     fn from(b: HashBytes) -> Self {
@@ -113,7 +113,7 @@ impl Hash for EpochSeed {
 #[serde(into = "<Self as WireType>::WireType")]
 pub struct SnarkedLedgerHash(BaseHash);
 
-impl_hash_bs58!(SnarkedLedgerHash, version_bytes::LEDGER_HASH);
+impl_bs58_for_hash!(SnarkedLedgerHash, version_bytes::LEDGER_HASH);
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -132,7 +132,7 @@ pub struct StagedLedgerHash {
 pub struct NonSnarkStagedLedgerHash {
     pub ledger_hash: LedgerHash,
     pub aux_hash: AuxHash,
-    pub pending_coinbase_aux: AuxHash,
+    pub pending_coinbase_aux: PendingCoinbaseAuxHash,
 }
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize, WireType)]
@@ -140,10 +140,40 @@ pub struct NonSnarkStagedLedgerHash {
 #[serde(into = "<Self as WireType>::WireType")]
 pub struct AuxHash(pub Vec<u8>);
 
-// FIXME:
-// impl Base58Encodable for AuxHash {
-//     const VERSION_BYTE: u8 = version_bytes::STAGED_LEDGER_HASH_AUX_HASH;
-// }
+impl Base58Encodable for AuxHash {
+    const VERSION_BYTE: u8 = version_bytes::STAGED_LEDGER_HASH_AUX_HASH;
+    const MINA_VERSION_BYTE_COUNT: usize = 0;
+
+    fn to_bytes(&self) -> Vec<u8> {
+        self.0.clone()
+    }
+}
+
+impl From<Vec<u8>> for AuxHash {
+    fn from(h: Vec<u8>) -> Self {
+        Self(h)
+    }
+}
+
+#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize, WireType)]
+#[serde(from = "<Self as WireType>::WireType")]
+#[serde(into = "<Self as WireType>::WireType")]
+pub struct PendingCoinbaseAuxHash(pub Vec<u8>);
+
+impl Base58Encodable for PendingCoinbaseAuxHash {
+    const VERSION_BYTE: u8 = version_bytes::STAGED_LEDGER_HASH_PENDING_COINBASE_AUX;
+    const MINA_VERSION_BYTE_COUNT: usize = 0;
+
+    fn to_bytes(&self) -> Vec<u8> {
+        self.0.clone()
+    }
+}
+
+impl From<Vec<u8>> for PendingCoinbaseAuxHash {
+    fn from(h: Vec<u8>) -> Self {
+        Self(h)
+    }
+}
 
 impl AsRef<[u8]> for AuxHash {
     fn as_ref(&self) -> &[u8] {
@@ -158,7 +188,7 @@ impl AsRef<[u8]> for AuxHash {
 #[serde(into = "<Self as WireType>::WireType")]
 pub struct VrfOutputHash(BaseHash);
 
-impl_hash_bs58!(VrfOutputHash, version_bytes::VRF_TRUNCATED_OUTPUT);
+impl_bs58_for_hash!(VrfOutputHash, version_bytes::VRF_TRUNCATED_OUTPUT);
 
 impl From<HashBytes> for VrfOutputHash {
     fn from(b: HashBytes) -> Self {

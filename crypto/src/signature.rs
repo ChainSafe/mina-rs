@@ -4,6 +4,7 @@
 use crate::{
     base58::{version_bytes, Base58Encodable},
     hash::BaseHash,
+    impl_bs58_for_binprot,
 };
 use bs58::encode::EncodeBuilder;
 use derive_deref::Deref;
@@ -25,9 +26,7 @@ pub struct PublicKey {
     pub poly: CompressedCurvePoint,
 }
 
-impl Base58Encodable for PublicKey {
-    const VERSION_BYTE: u8 = version_bytes::NON_ZERO_CURVE_POINT_COMPRESSED;
-}
+impl_bs58_for_binprot!(PublicKey, version_bytes::NON_ZERO_CURVE_POINT_COMPRESSED);
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize, Deref, WireType)]
 #[serde(from = "<Self as WireType>::WireType")]

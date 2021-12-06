@@ -4,7 +4,7 @@
 #[cfg(test)]
 mod tests {
     use anyhow::bail;
-    use mina_crypto::base58::{Base58Encodable, Base58EncodableHash};
+    use mina_crypto::base58::Base58Encodable;
     use mina_rs_base::types::*;
     use pretty_assertions::assert_eq;
     use test_fixtures::*;
@@ -46,12 +46,20 @@ mod tests {
         let bytes = bs58::decode("UworXDykADr3Lte856ePMsdawpTVhKLKT9Y3UKha7Tpbt4V1JP")
             .into_vec()
             .unwrap();
-        assert_eq!(non_snark.aux_hash.as_ref()[..], bytes[1..33]);
+        assert_eq!(non_snark.aux_hash.0[..], bytes[1..33]);
+        assert_eq!(
+            non_snark.aux_hash.to_base58_string(),
+            "UworXDykADr3Lte856ePMsdawpTVhKLKT9Y3UKha7Tpbt4V1JP"
+        );
 
         let bytes = bs58::decode("XbwfEKZjgcZiyDhHRZjHUx72TuxpnuzLPwVYpVWkMAAXkSy7go")
             .into_vec()
             .unwrap();
-        assert_eq!(non_snark.pending_coinbase_aux.as_ref()[..], bytes[1..33]);
+        assert_eq!(non_snark.pending_coinbase_aux.0[..], bytes[1..33]);
+        assert_eq!(
+            non_snark.pending_coinbase_aux.to_base58_string(),
+            "XbwfEKZjgcZiyDhHRZjHUx72TuxpnuzLPwVYpVWkMAAXkSy7go"
+        );
 
         assert_eq!(
             blockchain_state
