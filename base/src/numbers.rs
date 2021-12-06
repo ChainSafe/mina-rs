@@ -115,12 +115,6 @@ pub struct Char(pub u8);
 #[wire_type(recurse = 2)]
 pub struct GlobalSlotNumber(pub u32);
 
-// impl From<u32> for GlobalSlotNumber {
-//     fn from(v: u32) -> Self {
-//         Self(v)
-//     }
-// }
-
 #[derive(Clone, Serialize, Deserialize, PartialEq, Debug, Hash, Default, WireType)]
 #[serde(from = "<Self as WireType>::WireType")]
 #[serde(into = "<Self as WireType>::WireType")]
