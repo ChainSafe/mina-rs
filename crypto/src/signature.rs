@@ -6,7 +6,6 @@ use crate::{
     hash::BaseHash,
     impl_bs58_for_binprot,
 };
-use bs58::encode::EncodeBuilder;
 use derive_deref::Deref;
 use serde::{Deserialize, Serialize};
 use wire_type::WireType;
@@ -46,9 +45,6 @@ pub struct PublicKey3(pub CompressedCurvePoint);
 pub struct Signature((FieldPoint, InnerCurveScalar));
 
 impl Signature {
-    const VERSION_BYTE: u8 = version_bytes::SIGNATURE;
-    const MINA_VERSION_BYTE: u8 = 1;
-
     /// field_point
     pub fn field_point(&self) -> &FieldPoint {
         &self.0 .0
@@ -58,10 +54,15 @@ impl Signature {
     pub fn inner_curve_scalar(&self) -> &InnerCurveScalar {
         &self.0 .1
     }
+}
 
-    pub fn to_base58(&self) -> EncodeBuilder<'static, Vec<u8>> {
-        let mut buf = Vec::with_capacity(65);
-        buf.push(Self::MINA_VERSION_BYTE);
+impl Base58Encodable for Signature {
+    const VERSION_BYTE: u8 = version_bytes::SIGNATURE;
+    const MINA_VERSION_BYTE: u8 = 1;
+    const MINA_VERSION_BYTE_COUNT: usize = 1;
+
+    fn to_bytes(&self) -> Vec<u8> {
+        let mut buf = Vec::with_capacity(64);
         let field_point_bytes: &[u8; 32] = self.0 .0 .0.as_ref();
         for &b in field_point_bytes {
             buf.push(b);
@@ -70,34 +71,19 @@ impl Signature {
         for &b in inner_curve_scalar_bytes {
             buf.push(b);
         }
-        bs58::encode(buf).with_check_version(Self::VERSION_BYTE)
+        buf
     }
+}
 
-    pub fn to_base58_string(&self) -> String
-    where
-        Self: Sized + Serialize,
-    {
-        self.to_base58().into_string()
-    }
-
-    pub fn from_base58<I>(i: I) -> Result<Self, bin_prot::error::Error>
-    where
-        I: AsRef<[u8]>,
-    {
-        let bytes: Vec<u8> = bs58::decode(i)
-            .with_check(Some(Self::VERSION_BYTE))
-            .into_vec()
-            .map_err(|e| bin_prot::error::Error::Custom {
-                message: format!("{:?}", e),
-            })?;
-
+impl From<Vec<u8>> for Signature {
+    fn from(bytes: Vec<u8>) -> Self {
         // skip the bs58 version byte and mina bin_prot version byte
         let mut b32 = [0; 32];
-        b32.copy_from_slice(&bytes[2..34]);
+        b32.copy_from_slice(&bytes[..32]);
         let field_point = FieldPoint(b32.into());
-        b32.copy_from_slice(&bytes[34..]);
+        b32.copy_from_slice(&bytes[32..]);
         let inner_curve_scalar = InnerCurveScalar(b32.into());
-        Ok(Self((field_point, inner_curve_scalar)))
+        Self((field_point, inner_curve_scalar))
     }
 }
 

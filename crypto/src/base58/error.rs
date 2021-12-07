@@ -6,7 +6,7 @@ use thiserror::Error;
 #[derive(Error, Debug)]
 pub enum Error {
     #[error("Error decoding base58 string")]
-    Base58DecodeError(#[from] base64::DecodeError),
+    Base58DecodeError(#[from] bs58::decode::Error),
 
     #[error("Other error: '{0}'")]
     OtherError(String),
