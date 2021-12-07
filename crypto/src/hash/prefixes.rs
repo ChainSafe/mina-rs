@@ -7,68 +7,11 @@ const PADDING_CHAR: u8 = b'*';
 pub type HashPrefix = [u8; PREFIX_BYTE_LEN];
 
 const fn create(s: &[u8]) -> HashPrefix {
-    let len = s.len();
     let mut o = [PADDING_CHAR; PREFIX_BYTE_LEN];
-    // no loops allowed in const fn. We can unroll it for 20 elements but its not pretty
-    if 0 < len {
-        o[0] = s[0]
-    }
-    if 1 < len {
-        o[1] = s[1]
-    }
-    if 2 < len {
-        o[2] = s[2]
-    }
-    if 3 < len {
-        o[3] = s[3]
-    }
-    if 4 < len {
-        o[4] = s[4]
-    }
-    if 5 < len {
-        o[5] = s[5]
-    }
-    if 6 < len {
-        o[6] = s[6]
-    }
-    if 7 < len {
-        o[7] = s[7]
-    }
-    if 8 < len {
-        o[8] = s[8]
-    }
-    if 9 < len {
-        o[9] = s[9]
-    }
-    if 10 < len {
-        o[10] = s[10]
-    }
-    if 11 < len {
-        o[11] = s[11]
-    }
-    if 12 < len {
-        o[12] = s[12]
-    }
-    if 13 < len {
-        o[13] = s[13]
-    }
-    if 14 < len {
-        o[14] = s[14]
-    }
-    if 15 < len {
-        o[15] = s[15]
-    }
-    if 16 < len {
-        o[16] = s[16]
-    }
-    if 17 < len {
-        o[17] = s[17]
-    }
-    if 18 < len {
-        o[18] = s[18]
-    }
-    if 19 < len {
-        o[19] = s[19]
+    let mut i = 0;
+    while i < PREFIX_BYTE_LEN && i < s.len() {
+        o[i] = s[i];
+        i += 1;
     }
     o
 }
