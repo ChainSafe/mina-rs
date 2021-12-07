@@ -74,9 +74,10 @@ pub fn is_short_range(
 #[cfg(test)]
 mod tests {
     use super::*;
-    use mina_rs_base::global_slot::GlobalSlot;
-    use mina_rs_base::numbers::{GlobalSlotNumber, Length};
+    use mina_rs_base::numbers::Length;
     use mina_rs_base::{consensus_state::ConsensusState, protocol_state::ProtocolConstants};
+    use rand::{thread_rng, Rng};
+    use std::cmp;
     extern crate quickcheck;
     use proptest::prelude::*;
     use quickcheck::QuickCheck;
@@ -117,12 +118,32 @@ mod tests {
         );
     }
 
+    fn gen_num_blocks_in_epochs(slot_fill_rate: f64, slot_fill_rate_delta: f64, n: i64) {
+        let protocol_constants = ProtocolConstants::new();
+        gen_num_blocks_in_slots(
+            slot_fill_rate,
+            slot_fill_rate_delta,
+            n * protocol_constants.slots_per_epoch.0 as i64,
+        );
+    }
+
     fn gen_spot_root_epoch_position(slot_fill_rate: f64, slot_fill_rate_delta: f64) {
-        //   TODO: We need to simulate both the staking epoch and the next staking epoch,
+        //  We need to simulate both the staking epoch and the next staking epoch,
         //  the root epoch is the staking epoch. The root epoch position this function generates
         //   is the epoch number of the staking epoch and the block height the
         //  staking epoch starts at (the simulation of all blocks preceeding the
         //  staking epoch
+        let root_epoch_int = thread_rng().gen_range(0..100);
+        let root_block_height =
+            gen_num_blocks_in_epochs(slot_fill_rate, slot_fill_rate_delta, root_epoch_int);
+        (root_epoch_int, root_block_height);
+    }
+
+    fn gen_num_blocks_in_slots(slot_fill_rate: f64, slot_fill_rate_delta: f64, n: i64) {
+        let min_blocks = n * cmp::max((slot_fill_rate - slot_fill_rate_delta).round() as i64, 0);
+        let max_blocks = n * cmp::min((slot_fill_rate + slot_fill_rate_delta).round() as i64, 1);
+        let num_blocks_in_slots = thread_rng().gen_range(min_blocks..max_blocks);
+        println!("num_blocks_in_slots {}", num_blocks_in_slots);
     }
 
     fn gen_spot(block: &mut ProtocolState) {
@@ -135,7 +156,6 @@ mod tests {
         // TODO: Generate chain quality and vrf output.
         // TODO: Generate block reward information (unused in chain selection).
         let consensus_state = ConsensusState::new();
-        let protocol_constants = ProtocolConstants::new();
         block.body.consensus_state = consensus_state;
     }
 
@@ -149,9 +169,31 @@ mod tests {
         let default_slot_fill_rate_delta = 0.15;
         gen_spot_root_epoch_position(default_slot_fill_rate, default_slot_fill_rate_delta);
 
-        // TODO: Constraining the second state to have a greater blockchain length than the
+        // Constraining the second state to have a greater blockchain length than the
         // first, we need to constrain the first blockchain length such that there is some room
-        // leftover in the epoch for at least 1 more block to be generated. *)
+        // leftover in the epoch for at least 1 more block to be generated.
+        let blockchain_length_relativity = Some(&a);
+        let max_epoch_slot = match blockchain_length_relativity {
+            Some(blockchain_length_relativity) => {
+                a.body.consensus_state.curr_global_slot.slots_per_epoch.0 - 4
+            } // -1 to bring into inclusive range, -3 to provide 2 slots of fudge room
+            None => a.body.consensus_state.curr_global_slot.slots_per_epoch.0 - 1, // -1 to bring into inclusive range
+        };
+
+        let slot = thread_rng().gen_range(0..max_epoch_slot);
+        println!("slot {}", slot);
+        let length = gen_num_blocks_in_slots(
+            default_slot_fill_rate,
+            default_slot_fill_rate_delta,
+            slot as i64,
+        );
+        (slot, length);
+
+        // final result is the a and a_curr_epoch_length
+        // (a, a_curr_epoch_length);
+
+        // TODO: Handle relativity constriants for second state.
+        let a_curr_epoch_slot = &a.body.consensus_state.curr_global_slot;
     }
 
     #[test]

@@ -831,6 +831,7 @@ dependencies = [
  "mina-rs-base",
  "proptest",
  "quickcheck",
+ "rand",
  "thiserror",
  "wasm-bindgen-test",
 ]
