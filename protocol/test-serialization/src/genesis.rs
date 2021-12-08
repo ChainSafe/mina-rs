@@ -4,7 +4,7 @@
 #[cfg(test)]
 mod tests {
     use super::super::tests::select_path;
-    use mina_consensus::genesis::{GenesisInit, GenesisInitConfig, DEVNET_CONFIG, MAINNET_CONFIG};
+    use mina_consensus::genesis::*;
     use mina_crypto::prelude::*;
     use mina_rs_base::types::*;
     use pretty_assertions::assert_eq;
@@ -34,7 +34,7 @@ mod tests {
     #[wasm_bindgen_test]
     fn test_genesis_protocol_state_proof() {
         for et in [
-            ExternalTransition::init_genesis(&MAINNET_CONFIG),
+            ExternalTransition::from_genesis_config(&MAINNET_CONFIG),
             GENESIS_BLOCK_MAINNET.external_transition().unwrap(),
         ] {
             let protocol_state_proof = &et.protocol_state_proof;
@@ -75,7 +75,7 @@ mod tests {
         genesis_fixture: &BlockFixture,
         genesis_init_config: &GenesisInitConfig,
     ) {
-        let genesis = ExternalTransition::init_genesis(genesis_init_config);
+        let genesis = ExternalTransition::from_genesis_config(genesis_init_config);
         let output = genesis.try_encode_binprot().unwrap();
         assert_eq!(genesis_fixture.bytes, output)
     }
@@ -93,7 +93,7 @@ mod tests {
     }
 
     fn test_genesis_path(genesis_init_config: &GenesisInitConfig, fixture: &BlockFixture) {
-        let genesis = ExternalTransition::init_genesis(genesis_init_config);
+        let genesis = ExternalTransition::from_genesis_config(genesis_init_config);
 
         test_path(
             &genesis,
