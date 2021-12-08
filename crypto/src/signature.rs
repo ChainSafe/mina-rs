@@ -64,13 +64,9 @@ impl Base58Encodable for Signature {
     fn to_bytes(&self) -> Vec<u8> {
         let mut buf = Vec::with_capacity(64);
         let field_point_bytes: &[u8; 32] = self.0 .0 .0.as_ref();
-        for &b in field_point_bytes {
-            buf.push(b);
-        }
+        buf.extend(field_point_bytes);
         let inner_curve_scalar_bytes: &[u8; 32] = self.0 .1 .0.as_ref();
-        for &b in inner_curve_scalar_bytes {
-            buf.push(b);
-        }
+        buf.extend(inner_curve_scalar_bytes);
         buf
     }
 }
