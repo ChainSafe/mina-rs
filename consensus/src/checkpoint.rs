@@ -118,13 +118,14 @@ mod tests {
         );
     }
 
-    fn gen_num_blocks_in_epochs(slot_fill_rate: f64, slot_fill_rate_delta: f64, n: i64) {
+    fn gen_num_blocks_in_epochs(slot_fill_rate: f64, slot_fill_rate_delta: f64, n: f64) {
         let protocol_constants = ProtocolConstants::new();
         gen_num_blocks_in_slots(
             slot_fill_rate,
             slot_fill_rate_delta,
-            n * protocol_constants.slots_per_epoch.0 as i64,
+            n * protocol_constants.slots_per_epoch.0 as f64,
         );
+        println!("n {}", n * protocol_constants.slots_per_epoch.0 as f64);
     }
 
     fn gen_spot_root_epoch_position(slot_fill_rate: f64, slot_fill_rate_delta: f64) {
@@ -134,14 +135,16 @@ mod tests {
         //  staking epoch starts at (the simulation of all blocks preceeding the
         //  staking epoch
         let root_epoch_int = thread_rng().gen_range(0..100);
+        println!("root_epoch_int {}", root_epoch_int);
         let root_block_height =
-            gen_num_blocks_in_epochs(slot_fill_rate, slot_fill_rate_delta, root_epoch_int);
+            gen_num_blocks_in_epochs(slot_fill_rate, slot_fill_rate_delta, root_epoch_int as f64);
         (root_epoch_int, root_block_height);
     }
 
-    fn gen_num_blocks_in_slots(slot_fill_rate: f64, slot_fill_rate_delta: f64, n: i64) {
-        let min_blocks = n * cmp::max((slot_fill_rate - slot_fill_rate_delta).round() as i64, 0);
-        let max_blocks = n * cmp::min((slot_fill_rate + slot_fill_rate_delta).round() as i64, 1);
+    fn gen_num_blocks_in_slots(slot_fill_rate: f64, slot_fill_rate_delta: f64, n: f64) {
+        let min_blocks = n * f64::max(slot_fill_rate - slot_fill_rate_delta, 0.0);
+        let max_blocks = n * f64::min(slot_fill_rate + slot_fill_rate_delta, 1.0);
+        println!("min_blocks {} max_blocks{}", min_blocks, max_blocks);
         let num_blocks_in_slots = thread_rng().gen_range(min_blocks..max_blocks);
         println!("num_blocks_in_slots {}", num_blocks_in_slots);
     }
@@ -185,7 +188,7 @@ mod tests {
         let length = gen_num_blocks_in_slots(
             default_slot_fill_rate,
             default_slot_fill_rate_delta,
-            slot as i64,
+            slot as f64,
         );
         (slot, length);
 
