@@ -233,7 +233,6 @@ mod tests {
             a_curr_epoch_slot.0 + added_slots + 1;
 
         // TODO Handle b blockchain_length  
-        a.body.consensus_state.curr_global_slot.slot_number.0 = slot;
         // b.body.consensus_state.blockchain_length = Length(a_curr_epoch_length + added_blocks + 1);
     }
 
