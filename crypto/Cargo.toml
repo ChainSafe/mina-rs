@@ -10,8 +10,8 @@ license = "Apache-2.0"
 bin-prot = {path = "../protocol/bin-prot"}
 wire-type = {path = "../protocol/wire-type"}
 
-blake2 = "0.9.1"
-bs58 = {version = "0.4.0", features = ["check"]}
+blake2 = "0.10"
+bs58 = {version = "0.4", features = ["check"]}
 derive_deref = "1.1"
 serde = {version = "1", features = ["derive"]}
-thiserror = "1.0.25"
+thiserror = "1"
