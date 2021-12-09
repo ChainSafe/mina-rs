@@ -77,7 +77,6 @@ mod tests {
     use mina_rs_base::numbers::Length;
     use mina_rs_base::{consensus_state::ConsensusState, protocol_state::ProtocolConstants};
     use rand::{thread_rng, Rng};
-    use std::cmp;
     extern crate quickcheck;
     use proptest::prelude::*;
     use quickcheck::QuickCheck;
@@ -153,7 +152,7 @@ mod tests {
         // New default consensus state and Protocol constant
         // Generate blockchain position and epoch lengths.
         // staking_epoch == root_epoch, next_staking_epoch == root_epoch + 1
-        // TODO: Compute state slot and length.
+        // Compute state slot and length.
         // TODO: Compute total currency for state.
         // Generate epoch data for staking and next epochs.
         // TODO: Generate chain quality and vrf output.
