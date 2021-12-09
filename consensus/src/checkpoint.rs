@@ -162,15 +162,20 @@ mod tests {
         block.body.consensus_state = consensus_state;
     }
 
-    fn gen_spot_pair_common_checkpoints(a: &mut ProtocolState, b: &mut ProtocolState) {
-        // TODO: new pairs of spot blocks that share common checkpoints.
+    fn gen_spot_pair_common_checkpoints(
+        a: &mut ProtocolState,
+        b: &mut ProtocolState,
+        min_a_curr_epoch_slot: u32,
+    ) {
+        // new pairs of spot blocks that share common checkpoints.
         // The overlap of the checkpoints and the root epoch positions of the blocks
         // that are generated can be configured independently so that this function
         // can be used in other generators that wish to generates pairs of spot blocks
         // with specific constraints.
         let default_slot_fill_rate = 0.65;
         let default_slot_fill_rate_delta = 0.15;
-        gen_spot_root_epoch_position(default_slot_fill_rate, default_slot_fill_rate_delta);
+        let base_root_epoch_position =
+            gen_spot_root_epoch_position(default_slot_fill_rate, default_slot_fill_rate_delta);
 
         // Constraining the second state to have a greater blockchain length than the
         // first, we need to constrain the first blockchain length such that there is some room
@@ -183,20 +188,54 @@ mod tests {
             None => a.body.consensus_state.curr_global_slot.slots_per_epoch.0 - 1, // -1 to bring into inclusive range
         };
 
-        let slot = thread_rng().gen_range(0..max_epoch_slot);
-        println!("slot {}", slot);
+        let min_a_curr_epoch_slot_defaut = 0;
+        let min_a_curr_epoch_slot_sum = min_a_curr_epoch_slot_defaut + min_a_curr_epoch_slot;
+        let slot = thread_rng().gen_range(min_a_curr_epoch_slot_sum..max_epoch_slot);
+        println!(
+            " min_a_curr_epoch_slot_sum {} max_epoch_slot{} slot {}",
+            min_a_curr_epoch_slot_sum, max_epoch_slot, slot
+        );
         let length = gen_num_blocks_in_slots(
             default_slot_fill_rate,
             default_slot_fill_rate_delta,
             slot as f64,
         );
-        (slot, length);
+       
+        // TODO Handle a blockchain_length  
+        a.body.consensus_state.curr_global_slot.slot_number.0 = slot;
+        // a.body.consensus_state.blockchain_length.0 = length;
+        let root_epoch_position = (base_root_epoch_position, base_root_epoch_position);
 
-        // final result is the a and a_curr_epoch_length
-        // (a, a_curr_epoch_length);
+        let (_, root_epoch_length) = root_epoch_position;
+        let length_till_curr_epoch = a.body.consensus_state.staking_epoch_data.epoch_length.0
+            + a.body.consensus_state.next_epoch_data.epoch_length.0;
+        let a_curr_epoch_length = length_till_curr_epoch;
 
-        // TODO: Handle relativity constriants for second state.
-        let a_curr_epoch_slot = &a.body.consensus_state.curr_global_slot;
+        // Handle relativity constriants for second state.
+        let a_curr_epoch_slot = &a.body.consensus_state.curr_global_slot.slot_number;
+
+        // Generate second state position by extending the first state's position
+        let protocol_constants = ProtocolConstants::new();
+        let max_epoch_slot = protocol_constants.slots_per_epoch.0 - 1;
+
+        // This invariant needs to be held for the position of `a`
+        assert!(max_epoch_slot > a_curr_epoch_slot.0 + 2);
+
+        // Assume there is a next block in the slot directly preceeding the block for `a`
+        let added_slots = thread_rng().gen_range(a_curr_epoch_slot.0 + 2..max_epoch_slot);
+        println!("b_state added_slots {}", added_slots);
+
+        let added_blocks = gen_num_blocks_in_slots(
+            default_slot_fill_rate,
+            default_slot_fill_rate_delta,
+            added_slots as f64,
+        );
+        b.body.consensus_state.curr_global_slot.slot_number.0 =
+            a_curr_epoch_slot.0 + added_slots + 1;
+
+        // TODO Handle b blockchain_length  
+        a.body.consensus_state.curr_global_slot.slot_number.0 = slot;
+        // b.body.consensus_state.blockchain_length = Length(a_curr_epoch_length + added_blocks + 1);
     }
 
     #[test]
@@ -223,7 +262,7 @@ mod tests {
     #[test]
     #[wasm_bindgen_test]
     fn gen_spot_pair_short_aligned_generates_pairs_of_states_in_short_fork_range() {
-        // TODO: Both states will share their staking epoch checkpoints.
+        // Both states will share their staking epoch checkpoints.
         let mut genesis: ProtocolState = Default::default();
         init_checkpoints(&mut genesis).unwrap();
 
@@ -232,7 +271,7 @@ mod tests {
 
         gen_spot(&mut a);
         gen_spot(&mut b);
-        gen_spot_pair_common_checkpoints(&mut a, &mut b);
+        gen_spot_pair_common_checkpoints(&mut a, &mut b, 0);
 
         let mut c0: ProtocolStateChain = ProtocolStateChain(vec![]);
         let mut c1: ProtocolStateChain = ProtocolStateChain(vec![]);
@@ -246,8 +285,6 @@ mod tests {
     #[test]
     #[wasm_bindgen_test]
     fn gen_spot_pair_short_misaligned_generates_pairs_of_states_in_short_fork_range() {
-        // TODO: Compute the root epoch position of `b`. This needs to be one epoch ahead of a, so we
-        // compute it by extending the root epoch position of `a` by a single epoch
         let mut genesis: ProtocolState = Default::default();
         init_checkpoints(&mut genesis).unwrap();
 
@@ -256,13 +293,14 @@ mod tests {
 
         gen_spot(&mut a);
         gen_spot(&mut b);
-        gen_spot_pair_common_checkpoints(&mut a, &mut b);
+
+        // Constrain first state to be within last 1/3rd of its epoch (ensuring it's checkpoints and seed are fixed)
+        let protocol_constants = ProtocolConstants::new();
+        let min_a_curr_epoch_slot = 2 * (protocol_constants.slots_per_epoch.0 / 3) + 1;
+        gen_spot_pair_common_checkpoints(&mut a, &mut b, min_a_curr_epoch_slot);
 
         let mut c0: ProtocolStateChain = ProtocolStateChain(vec![]);
         let mut c1: ProtocolStateChain = ProtocolStateChain(vec![]);
-
-        // TODO Constrain first state to be within last 1/3rd of its epoch (ensuring it's checkpoints and seed are fixed). *)
-        // let min_a_curr_epoch_slot = (2 * (Length.to_int constants.slots_per_epoch / 3)) + 1;
 
         c0.push(a).unwrap();
         c1.push(b).unwrap();
