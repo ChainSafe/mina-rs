@@ -18,8 +18,7 @@ jobs:
             ~/.cargo/registry/cache/
             ~/.cargo/git/db/
             target/
-          # key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
-          key: ${{ runner.os }}-checks-cargo
+          key: ${{ runner.os }}-checks-cargo-${{ hashFiles('**/Cargo.lock') }}
       - uses: actions-rs/toolchain@v1
         with:
           profile: minimal
