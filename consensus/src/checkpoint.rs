@@ -127,19 +127,6 @@ mod tests {
         println!("n {}", n * protocol_constants.slots_per_epoch.0 as f64);
     }
 
-    fn gen_spot_root_epoch_position(slot_fill_rate: f64, slot_fill_rate_delta: f64) {
-        //  We need to simulate both the staking epoch and the next staking epoch,
-        //  the root epoch is the staking epoch. The root epoch position this function generates
-        //   is the epoch number of the staking epoch and the block height the
-        //  staking epoch starts at (the simulation of all blocks preceeding the
-        //  staking epoch
-        let root_epoch_int = thread_rng().gen_range(0..100);
-        println!("root_epoch_int {}", root_epoch_int);
-        let root_block_height =
-            gen_num_blocks_in_epochs(slot_fill_rate, slot_fill_rate_delta, root_epoch_int as f64);
-        (root_epoch_int, root_block_height);
-    }
-
     fn convert(x: f64) -> i32 {
         x.round().rem_euclid(2f64.powi(32)) as u32 as i32
     }
@@ -158,9 +145,9 @@ mod tests {
         // New default consensus state and Protocol constant
         // Generate blockchain position and epoch lengths.
         // staking_epoch == root_epoch, next_staking_epoch == root_epoch + 1
-        // Compute state slot and length.
+        // New state slot and length.
         // TODO: Compute total currency for state.
-        // Generate epoch data for staking and next epochs.
+        // New epoch data for staking and next epochs.
         // TODO: Generate chain quality and vrf output.
         // TODO: Generate block reward information (unused in chain selection).
         let consensus_state = ConsensusState::new();
@@ -179,9 +166,7 @@ mod tests {
         // with specific constraints.
         let default_slot_fill_rate = 0.65;
         let default_slot_fill_rate_delta = 0.15;
-        let base_root_epoch_position =
-            gen_spot_root_epoch_position(default_slot_fill_rate, default_slot_fill_rate_delta);
-
+      
         // Constraining the second state to have a greater blockchain length than the
         // first, we need to constrain the first blockchain length such that there is some room
         // leftover in the epoch for at least 1 more block to be generated.
@@ -208,9 +193,7 @@ mod tests {
 
         a.body.consensus_state.curr_global_slot.slot_number.0 = slot;
         a.body.consensus_state.blockchain_length.0 = length as u32;
-        let root_epoch_position = (base_root_epoch_position, base_root_epoch_position);
-
-        let (_, root_epoch_length) = root_epoch_position;
+      
         let length_till_curr_epoch = a.body.consensus_state.staking_epoch_data.epoch_length.0
             + a.body.consensus_state.next_epoch_data.epoch_length.0;
         let a_curr_epoch_length = length_till_curr_epoch;
