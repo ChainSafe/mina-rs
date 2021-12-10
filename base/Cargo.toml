@@ -21,10 +21,10 @@ time = "0.3"
 
 ark-ec = "0.3.0"
 ark-ff = "0.3.0"
-commitment_dlog = {git = "https://github.com/o1-labs/proof-systems", rev = "81a61f9e345fad6d2a652fb323a882f39c6c1057"}
-mina-curves = {git = "https://github.com/o1-labs/proof-systems", rev = "81a61f9e345fad6d2a652fb323a882f39c6c1057"}
-plonk_circuits = {git = "https://github.com/o1-labs/proof-systems", rev = "81a61f9e345fad6d2a652fb323a882f39c6c1057"}
-plonk_protocol_dlog = {git = "https://github.com/o1-labs/proof-systems", rev = "81a61f9e345fad6d2a652fb323a882f39c6c1057"}
+commitment_dlog = {git = "https://github.com/o1-labs/proof-systems", rev = "6af257b793d80f900675acc01b16fd4bf6375268"}
+mina-curves = {git = "https://github.com/o1-labs/proof-systems", rev = "6af257b793d80f900675acc01b16fd4bf6375268"}
+plonk_circuits = {git = "https://github.com/o1-labs/proof-systems", rev = "6af257b793d80f900675acc01b16fd4bf6375268"}
+plonk_protocol_dlog = {git = "https://github.com/o1-labs/proof-systems", rev = "6af257b793d80f900675acc01b16fd4bf6375268"}
 
 # This dependency is not used by the crate, but is a subdependency of commitment_dlog
 # This features must be enable to build with WASM support
