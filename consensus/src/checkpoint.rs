@@ -140,12 +140,18 @@ mod tests {
         (root_epoch_int, root_block_height);
     }
 
-    fn gen_num_blocks_in_slots(slot_fill_rate: f64, slot_fill_rate_delta: f64, n: f64) {
+    fn convert(x: f64) -> i32 {
+        x.round().rem_euclid(2f64.powi(32)) as u32 as i32
+    }
+
+    fn gen_num_blocks_in_slots(slot_fill_rate: f64, slot_fill_rate_delta: f64, n: f64) -> i32 {
         let min_blocks = n * f64::max(slot_fill_rate - slot_fill_rate_delta, 0.0);
         let max_blocks = n * f64::min(slot_fill_rate + slot_fill_rate_delta, 1.0);
         println!("min_blocks {} max_blocks{}", min_blocks, max_blocks);
         let num_blocks_in_slots = thread_rng().gen_range(min_blocks..max_blocks);
         println!("num_blocks_in_slots {}", num_blocks_in_slots);
+        let num = convert(num_blocks_in_slots);
+        return num;
     }
 
     fn gen_spot(block: &mut ProtocolState) {
@@ -166,7 +172,7 @@ mod tests {
         b: &mut ProtocolState,
         min_a_curr_epoch_slot: u32,
     ) {
-        // new pairs of spot blocks that share common checkpoints.
+        // New pairs of spot blocks that share common checkpoints.
         // The overlap of the checkpoints and the root epoch positions of the blocks
         // that are generated can be configured independently so that this function
         // can be used in other generators that wish to generates pairs of spot blocks
@@ -199,16 +205,16 @@ mod tests {
             default_slot_fill_rate_delta,
             slot as f64,
         );
-       
-        // TODO Handle a blockchain_length  
+
         a.body.consensus_state.curr_global_slot.slot_number.0 = slot;
-        // a.body.consensus_state.blockchain_length.0 = length;
+        a.body.consensus_state.blockchain_length.0 = length as u32;
         let root_epoch_position = (base_root_epoch_position, base_root_epoch_position);
 
         let (_, root_epoch_length) = root_epoch_position;
         let length_till_curr_epoch = a.body.consensus_state.staking_epoch_data.epoch_length.0
             + a.body.consensus_state.next_epoch_data.epoch_length.0;
         let a_curr_epoch_length = length_till_curr_epoch;
+        println!("a_curr_epoch_length {}", a_curr_epoch_length);
 
         // Handle relativity constriants for second state.
         let a_curr_epoch_slot = &a.body.consensus_state.curr_global_slot.slot_number;
@@ -229,11 +235,14 @@ mod tests {
             default_slot_fill_rate_delta,
             added_slots as f64,
         );
+
         b.body.consensus_state.curr_global_slot.slot_number.0 =
             a_curr_epoch_slot.0 + added_slots + 1;
-
-        // TODO Handle b blockchain_length  
-        // b.body.consensus_state.blockchain_length = Length(a_curr_epoch_length + added_blocks + 1);
+        b.body.consensus_state.blockchain_length.0 = a_curr_epoch_length + added_blocks as u32 + 1;
+        println!(
+            "Handle b blockchain_length {}",
+            b.body.consensus_state.blockchain_length.0
+        );
     }
 
     #[test]
