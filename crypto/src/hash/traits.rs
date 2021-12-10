@@ -4,7 +4,7 @@
 use super::prefixes::HashPrefix;
 use bin_prot::to_writer;
 use blake2::digest::VariableOutput;
-use blake2::VarBlake2b;
+use blake2::Blake2bVar;
 use serde::Serialize;
 
 const BLAKE_HASH_SIZE: usize = 32;
@@ -29,7 +29,7 @@ where
 {
     fn hash(&self) -> OutputType {
         // this is known to be a valid hash size
-        let mut hasher = VarBlake2b::new(BLAKE_HASH_SIZE).unwrap();
+        let mut hasher = Blake2bVar::new(BLAKE_HASH_SIZE).unwrap();
         // writing to a hasher can't fail
         to_writer(&mut hasher, self).unwrap();
         OutputType::from(hasher.finalize_boxed())
