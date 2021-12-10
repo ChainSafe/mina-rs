@@ -124,9 +124,7 @@ mod tests {
     fn gen_num_blocks_in_slots(slot_fill_rate: f64, slot_fill_rate_delta: f64, n: f64) -> i32 {
         let min_blocks = n * f64::max(slot_fill_rate - slot_fill_rate_delta, 0.0);
         let max_blocks = n * f64::min(slot_fill_rate + slot_fill_rate_delta, 1.0);
-        println!("min_blocks {} max_blocks{}", min_blocks, max_blocks);
         let num_blocks_in_slots = thread_rng().gen_range(min_blocks..max_blocks);
-        println!("num_blocks_in_slots {}", num_blocks_in_slots);
         let num = convert(num_blocks_in_slots);
         return num;
     }
@@ -171,10 +169,6 @@ mod tests {
         let min_a_curr_epoch_slot_defaut = 0;
         let min_a_curr_epoch_slot_sum = min_a_curr_epoch_slot_defaut + min_a_curr_epoch_slot;
         let slot = thread_rng().gen_range(min_a_curr_epoch_slot_sum..max_epoch_slot);
-        println!(
-            " min_a_curr_epoch_slot_sum {} max_epoch_slot{} slot {}",
-            min_a_curr_epoch_slot_sum, max_epoch_slot, slot
-        );
         let length = gen_num_blocks_in_slots(
             default_slot_fill_rate,
             default_slot_fill_rate_delta,
@@ -187,7 +181,6 @@ mod tests {
         let length_till_curr_epoch = a.body.consensus_state.staking_epoch_data.epoch_length.0
             + a.body.consensus_state.next_epoch_data.epoch_length.0;
         let a_curr_epoch_length = length_till_curr_epoch;
-        println!("a_curr_epoch_length {}", a_curr_epoch_length);
 
         // Handle relativity constriants for second state.
         let a_curr_epoch_slot = &a.body.consensus_state.curr_global_slot.slot_number;
@@ -201,7 +194,6 @@ mod tests {
 
         // Assume there is a next block in the slot directly preceeding the block for `a`
         let added_slots = thread_rng().gen_range(a_curr_epoch_slot.0 + 2..max_epoch_slot);
-        println!("b_state added_slots {}", added_slots);
 
         let added_blocks = gen_num_blocks_in_slots(
             default_slot_fill_rate,
@@ -212,10 +204,6 @@ mod tests {
         b.body.consensus_state.curr_global_slot.slot_number.0 =
             a_curr_epoch_slot.0 + added_slots + 1;
         b.body.consensus_state.blockchain_length.0 = a_curr_epoch_length + added_blocks as u32 + 1;
-        println!(
-            "Handle b blockchain_length {}",
-            b.body.consensus_state.blockchain_length.0
-        );
     }
 
     #[test]
