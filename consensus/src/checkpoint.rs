@@ -117,16 +117,6 @@ mod tests {
         );
     }
 
-    fn gen_num_blocks_in_epochs(slot_fill_rate: f64, slot_fill_rate_delta: f64, n: f64) {
-        let protocol_constants = ProtocolConstants::new();
-        gen_num_blocks_in_slots(
-            slot_fill_rate,
-            slot_fill_rate_delta,
-            n * protocol_constants.slots_per_epoch.0 as f64,
-        );
-        println!("n {}", n * protocol_constants.slots_per_epoch.0 as f64);
-    }
-
     fn convert(x: f64) -> i32 {
         x.round().rem_euclid(2f64.powi(32)) as u32 as i32
     }
@@ -166,7 +156,7 @@ mod tests {
         // with specific constraints.
         let default_slot_fill_rate = 0.65;
         let default_slot_fill_rate_delta = 0.15;
-      
+
         // Constraining the second state to have a greater blockchain length than the
         // first, we need to constrain the first blockchain length such that there is some room
         // leftover in the epoch for at least 1 more block to be generated.
@@ -193,7 +183,7 @@ mod tests {
 
         a.body.consensus_state.curr_global_slot.slot_number.0 = slot;
         a.body.consensus_state.blockchain_length.0 = length as u32;
-      
+
         let length_till_curr_epoch = a.body.consensus_state.staking_epoch_data.epoch_length.0
             + a.body.consensus_state.next_epoch_data.epoch_length.0;
         let a_curr_epoch_length = length_till_curr_epoch;
