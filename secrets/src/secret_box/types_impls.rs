@@ -1,6 +1,6 @@
 use super::*;
-use argon2::{password_hash::SaltString, Argon2, ParamsBuilder, PasswordHasher};
-use xsalsa20poly1305::{
+use mina_crypto::argon2::{self, password_hash::SaltString, Argon2, ParamsBuilder, PasswordHasher};
+use mina_crypto::xsalsa20poly1305::{
     aead::{generic_array::GenericArray, Aead, NewAead},
     XSalsa20Poly1305,
 };
@@ -35,36 +35,39 @@ impl TryFrom<SecretBoxJson> for SecretBox {
 impl TryFrom<&str> for SecretBox {
     type Error = Error;
     fn try_from(json_str: &str) -> Result<Self, Self::Error> {
-        let json: SecretBoxJson =
-            serde_json::from_str(json_str.as_ref()).map_err(Error::JsonSerdeError)?;
+        let json: SecretBoxJson = serde_json::from_str(json_str).map_err(Error::JsonSerdeError)?;
         json.try_into()
     }
 }
 
-impl Into<SecretBoxJson> for SecretBox {
-    fn into(self) -> SecretBoxJson {
+impl TryFrom<SecretBox> for SecretBoxJson {
+    type Error = Error;
+    fn try_from(sb: SecretBox) -> Result<SecretBoxJson, Self::Error> {
         let pwsalt = {
             // 16 is sufficient here, alloc array on stack instead
             // let mut buf = vec![0; self.pwsalt.len()];
             let mut buf = [0; 16];
-            let bytes = self.pwsalt.b64_decode(&mut buf).unwrap();
+            let bytes = sb
+                .pwsalt
+                .b64_decode(&mut buf)
+                .map_err(|e| Error::PasswordHashError(format!("{}", e)))?;
             base58_encode(bytes)
         };
-        SecretBoxJson {
-            box_primitive: self.box_primitive,
-            pw_primitive: self.pw_primitive,
-            nonce: base58_encode(self.nonce),
+        Ok(SecretBoxJson {
+            box_primitive: sb.box_primitive,
+            pw_primitive: sb.pw_primitive,
+            nonce: base58_encode(sb.nonce),
             pwsalt,
-            pwdiff: [self.pw_mem_limit_bytes, self.pw_ops_limit as i64],
-            ciphertext: base58_encode(self.ciphertext),
-        }
+            pwdiff: [sb.pw_mem_limit_bytes, sb.pw_ops_limit as i64],
+            ciphertext: base58_encode(sb.ciphertext),
+        })
     }
 }
 
 impl TryInto<String> for SecretBox {
     type Error = Error;
     fn try_into(self) -> Result<String, Error> {
-        let json: SecretBoxJson = self.into();
+        let json: SecretBoxJson = self.try_into()?;
         serde_json::to_string_pretty(&json).map_err(Error::JsonSerdeError)
     }
 }
@@ -96,7 +99,7 @@ impl SecretBox {
             .map_err(|e: argon2::password_hash::Error| Error::PasswordHashError(format!("{}", e)))?
             .hash
         {
-            Ok(hash.as_bytes().clone().into())
+            Ok((*hash.as_bytes()).into())
         } else {
             Err(Error::Argon2Error("Empty hash output".into()))
         }

@@ -12,5 +12,4 @@ use utils::*;
 
 mod types_impls;
 
-use derive_more::*;
 use serde::{Deserialize, Serialize};

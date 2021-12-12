@@ -1,6 +1,5 @@
-use argon2::password_hash::SaltString;
-
 use super::*;
+use mina_crypto::argon2::password_hash::SaltString;
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default)]
 pub(super) struct SecretBoxJson {
@@ -12,15 +11,13 @@ pub(super) struct SecretBoxJson {
     pub ciphertext: String,
 }
 
-type Bytes = Vec<u8>;
-
 #[derive(Clone, Debug)]
 pub struct SecretBox {
     pub(super) box_primitive: String,
     pub(super) pw_primitive: String,
-    pub(super) nonce: Bytes,
+    pub(super) nonce: Vec<u8>,
     pub(super) pwsalt: SaltString,
     pub(super) pw_mem_limit_bytes: i64,
     pub(super) pw_ops_limit: u32,
-    pub(super) ciphertext: Bytes,
+    pub(super) ciphertext: Vec<u8>,
 }

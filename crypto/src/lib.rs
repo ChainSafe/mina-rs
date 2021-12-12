@@ -18,3 +18,10 @@
 pub mod base58;
 pub mod hash;
 pub mod signature;
+
+// re-exports
+pub use argon2;
+pub use ark_ec;
+pub use ark_ff;
+pub use mina_curves;
+pub use xsalsa20poly1305;

@@ -1,12 +1,12 @@
 #[cfg(test)]
 mod tests {
-    use ark_ec::{AffineCurve, ProjectiveCurve};
-    use ark_ff::{BigInteger, BigInteger256, FromBytes};
+    use mina_crypto::ark_ec::{AffineCurve, ProjectiveCurve};
+    use mina_crypto::ark_ff::{BigInteger, BigInteger256, FromBytes};
+    use mina_crypto::mina_curves::pasta::{pallas, Fq};
     use mina_crypto::{
         base58::Base58Encodable,
         signature::{CompressedCurvePoint, PublicKey},
     };
-    use mina_curves::pasta::{pallas, Fq};
     use mina_secrets::secret_box::*;
 
     // Note that file permission validation is not covered in this test case
