@@ -394,7 +394,7 @@ dependencies = [
 [[package]]
 name = "commitment_dlog"
 version = "0.1.0"
-source = "git+https://github.com/o1-labs/proof-systems?rev=81a61f9e345fad6d2a652fb323a882f39c6c1057#81a61f9e345fad6d2a652fb323a882f39c6c1057"
+source = "git+https://github.com/o1-labs/proof-systems?rev=6af257b793d80f900675acc01b16fd4bf6375268#6af257b793d80f900675acc01b16fd4bf6375268"
 dependencies = [
  "ark-ec",
  "ark-ff",
@@ -736,7 +736,7 @@ checksum = "78cc372d058dcf6d5ecd98510e7fbc9e5aec4d21de70f65fea8fecebcd881bd4"
 [[package]]
 name = "groupmap"
 version = "0.1.0"
-source = "git+https://github.com/o1-labs/proof-systems?rev=81a61f9e345fad6d2a652fb323a882f39c6c1057#81a61f9e345fad6d2a652fb323a882f39c6c1057"
+source = "git+https://github.com/o1-labs/proof-systems?rev=6af257b793d80f900675acc01b16fd4bf6375268#6af257b793d80f900675acc01b16fd4bf6375268"
 dependencies = [
  "ark-ec",
  "ark-ff",
@@ -769,9 +769,9 @@ dependencies = [
 
 [[package]]
 name = "hermit-abi"
-version = "0.1.19"
+version = "0.1.20"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "62b467343b94ba476dcb2500d242dadbb39557df889310ac77c5d99100aaac33"
+checksum = "c7a30908dbce072eca83216eab939d2290080e00ca71611b96a09e5cdce5f3fa"
 dependencies = [
  "libc",
 ]
@@ -829,9 +829,9 @@ checksum = "e2abad23fbc42b3700f2f279844dc832adb2b2eb069b2df918f455c4e18cc646"
 
 [[package]]
 name = "libc"
-version = "0.2.109"
+version = "0.2.110"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f98a04dce437184842841303488f70d0188c5f51437d2a834dc097eafa909a01"
+checksum = "b58a4469763e4e3a906c4ed786e1c70512d16aa88f84dded826da42640fc6a1c"
 
 [[package]]
 name = "libm"
@@ -898,7 +898,7 @@ dependencies = [
 [[package]]
 name = "mina-curves"
 version = "0.1.0"
-source = "git+https://github.com/o1-labs/proof-systems?rev=81a61f9e345fad6d2a652fb323a882f39c6c1057#81a61f9e345fad6d2a652fb323a882f39c6c1057"
+source = "git+https://github.com/o1-labs/proof-systems?rev=6af257b793d80f900675acc01b16fd4bf6375268#6af257b793d80f900675acc01b16fd4bf6375268"
 dependencies = [
  "ark-ec",
  "ark-ff",
@@ -1098,7 +1098,7 @@ dependencies = [
 [[package]]
 name = "o1-utils"
 version = "0.1.0"
-source = "git+https://github.com/o1-labs/proof-systems?rev=81a61f9e345fad6d2a652fb323a882f39c6c1057#81a61f9e345fad6d2a652fb323a882f39c6c1057"
+source = "git+https://github.com/o1-labs/proof-systems?rev=6af257b793d80f900675acc01b16fd4bf6375268#6af257b793d80f900675acc01b16fd4bf6375268"
 dependencies = [
  "ark-ec",
  "ark-ff",
@@ -1139,7 +1139,7 @@ checksum = "624a8340c38c1b80fd549087862da4ba43e08858af025b236e509b6649fc13d5"
 [[package]]
 name = "oracle"
 version = "0.1.0"
-source = "git+https://github.com/o1-labs/proof-systems?rev=81a61f9e345fad6d2a652fb323a882f39c6c1057#81a61f9e345fad6d2a652fb323a882f39c6c1057"
+source = "git+https://github.com/o1-labs/proof-systems?rev=6af257b793d80f900675acc01b16fd4bf6375268#6af257b793d80f900675acc01b16fd4bf6375268"
 dependencies = [
  "ark-ec",
  "ark-ff",
@@ -1194,7 +1194,7 @@ dependencies = [
 [[package]]
 name = "plonk_circuits"
 version = "0.1.0"
-source = "git+https://github.com/o1-labs/proof-systems?rev=81a61f9e345fad6d2a652fb323a882f39c6c1057#81a61f9e345fad6d2a652fb323a882f39c6c1057"
+source = "git+https://github.com/o1-labs/proof-systems?rev=6af257b793d80f900675acc01b16fd4bf6375268#6af257b793d80f900675acc01b16fd4bf6375268"
 dependencies = [
  "ark-ff",
  "ark-poly",
@@ -1212,7 +1212,7 @@ dependencies = [
 [[package]]
 name = "plonk_protocol_dlog"
 version = "0.1.0"
-source = "git+https://github.com/o1-labs/proof-systems?rev=81a61f9e345fad6d2a652fb323a882f39c6c1057#81a61f9e345fad6d2a652fb323a882f39c6c1057"
+source = "git+https://github.com/o1-labs/proof-systems?rev=6af257b793d80f900675acc01b16fd4bf6375268#6af257b793d80f900675acc01b16fd4bf6375268"
 dependencies = [
  "ark-ec",
  "ark-ff",
