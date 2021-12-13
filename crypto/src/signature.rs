@@ -51,6 +51,26 @@ pub struct CompressedCurvePoint {
     pub is_odd: bool,
 }
 
+impl From<pallas::Affine> for CompressedCurvePoint {
+    fn from(p: pallas::Affine) -> Self {
+        let x: BigInteger256 = p.x.into();
+        let y: BigInteger256 = p.y.into();
+        let x_bytes_vec = x.to_bytes_le();
+        let mut x_bytes = [0; 32];
+        x_bytes.copy_from_slice(x_bytes_vec.as_slice());
+        Self {
+            x: x_bytes,
+            is_odd: y.get_bit(0),
+        }
+    }
+}
+
+impl From<pallas::Projective> for CompressedCurvePoint {
+    fn from(p: pallas::Projective) -> Self {
+        p.into_affine().into()
+    }
+}
+
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize, WireType)]
 #[serde(from = "<Self as WireType>::WireType")]
 #[serde(into = "<Self as WireType>::WireType")]
@@ -64,19 +84,7 @@ impl Base58Encodable for PublicKey {
 
 impl From<pallas::Affine> for PublicKey {
     fn from(p: pallas::Affine) -> Self {
-        let x = p.x;
-        let y = p.y;
-        let x_big: BigInteger256 = x.into();
-        let y_big: BigInteger256 = y.into();
-        let x_bytes_vec = x_big.to_bytes_le();
-        let mut x_bytes = [0; 32];
-        x_bytes.copy_from_slice(x_bytes_vec.as_slice());
-        Self {
-            poly: CompressedCurvePoint {
-                x: x_bytes,
-                is_odd: y_big.get_bit(0),
-            },
-        }
+        Self { poly: p.into() }
     }
 }
 

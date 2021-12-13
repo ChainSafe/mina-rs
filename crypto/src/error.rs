@@ -7,5 +7,5 @@ use thiserror::Error;
 #[non_exhaustive]
 pub enum Error {
     #[error("IoError: {0}")]
-    IoError(std::io::Error),
+    IoError(#[from] std::io::Error),
 }
