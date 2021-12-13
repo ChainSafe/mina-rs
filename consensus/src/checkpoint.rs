@@ -180,6 +180,7 @@ mod tests {
         let default_slot_fill_rate_delta = 0.15;
         let base_root_epoch_position =
             gen_spot_root_epoch_position(default_slot_fill_rate, default_slot_fill_rate_delta);
+
         // Constraining the second state to have a greater blockchain length than the
         // first, we need to constrain the first blockchain length such that there is some room
         // leftover in the epoch for at least 1 more block to be generated.
@@ -203,11 +204,12 @@ mod tests {
         a.body.consensus_state.curr_global_slot.slot_number.0 = slot;
         a.body.consensus_state.blockchain_length.0 = length as u32;
 
-        // TODO: Deciding wherether do we need randomized root_epoch_position for more robust test
-        let root_epoch_position = (base_root_epoch_position, base_root_epoch_position);
+        // Randomized root_epoch_position for more robust test
+        let root_epoch_position = base_root_epoch_position;
         let (_, root_epoch_length) = root_epoch_position;
 
-        let length_till_curr_epoch = a.body.consensus_state.staking_epoch_data.epoch_length.0
+        let length_till_curr_epoch = root_epoch_length
+            + a.body.consensus_state.staking_epoch_data.epoch_length.0
             + a.body.consensus_state.next_epoch_data.epoch_length.0;
         let a_curr_epoch_length = length_till_curr_epoch;
 
