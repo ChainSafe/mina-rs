@@ -26,20 +26,7 @@ impl PrivateKey {
         let scalar: Fq = self.try_to_fq()?;
         let prime = pallas::Affine::prime_subgroup_generator();
         let public_key_projective = prime.mul(scalar);
-        let public_key_affine = public_key_projective.into_affine();
-        let x = public_key_affine.x;
-        let y = public_key_affine.y;
-        let x_big: BigInteger256 = x.into();
-        let y_big: BigInteger256 = y.into();
-        let x_bytes_vec = x_big.to_bytes_le();
-        let mut x_bytes = [0; 32];
-        x_bytes.copy_from_slice(x_bytes_vec.as_slice());
-        Ok(PublicKey {
-            poly: CompressedCurvePoint {
-                x: x_bytes,
-                is_odd: y_big.get_bit(0),
-            },
-        })
+        Ok(public_key_projective.into())
     }
 
     pub fn validate(&self, public_key: &PublicKey) -> Result<bool, Error> {
@@ -53,36 +40,6 @@ impl PrivateKey {
     pub fn try_to_fq(&self) -> Result<Fq, Error> {
         let i: BigInteger256 = self.try_to_bigint()?;
         Ok(i.into())
-    }
-}
-
-impl TryInto<BigInteger256> for PrivateKey {
-    type Error = Error;
-    fn try_into(self) -> Result<BigInteger256, Self::Error> {
-        self.try_to_bigint()
-    }
-}
-
-impl TryInto<Fq> for PrivateKey {
-    type Error = Error;
-    fn try_into(self) -> Result<Fq, Self::Error> {
-        self.try_to_fq()
-    }
-}
-
-impl From<BigInteger256> for PrivateKey {
-    fn from(i: BigInteger256) -> Self {
-        let v = i.to_bytes_le();
-        let mut bytes = [0; 32];
-        bytes.copy_from_slice(v.as_slice());
-        Self(bytes)
-    }
-}
-
-impl From<Fq> for PrivateKey {
-    fn from(scalar: Fq) -> Self {
-        let i: BigInteger256 = scalar.into();
-        i.into()
     }
 }
 
@@ -103,6 +60,30 @@ pub struct PublicKey {
 
 impl Base58Encodable for PublicKey {
     const VERSION_BYTE: u8 = crate::base58::version_bytes::NON_ZERO_CURVE_POINT_COMPRESSED;
+}
+
+impl From<pallas::Affine> for PublicKey {
+    fn from(p: pallas::Affine) -> Self {
+        let x = p.x;
+        let y = p.y;
+        let x_big: BigInteger256 = x.into();
+        let y_big: BigInteger256 = y.into();
+        let x_bytes_vec = x_big.to_bytes_le();
+        let mut x_bytes = [0; 32];
+        x_bytes.copy_from_slice(x_bytes_vec.as_slice());
+        Self {
+            poly: CompressedCurvePoint {
+                x: x_bytes,
+                is_odd: y_big.get_bit(0),
+            },
+        }
+    }
+}
+
+impl From<pallas::Projective> for PublicKey {
+    fn from(p: pallas::Projective) -> Self {
+        p.into_affine().into()
+    }
 }
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize, Deref, WireType)]
