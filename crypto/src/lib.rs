@@ -16,5 +16,11 @@
 // attribute macro and an order of operations well defined
 
 pub mod base58;
+pub mod error;
 pub mod hash;
 pub mod signature;
+
+// re-exports
+pub use ark_ec;
+pub use ark_ff;
+pub use mina_curves;

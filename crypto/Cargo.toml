@@ -10,8 +10,13 @@ license = "Apache-2.0"
 bin-prot = {path = "../protocol/bin-prot"}
 wire-type = {path = "../protocol/wire-type"}
 
+mina-curves = {git = "https://github.com/o1-labs/proof-systems", rev = "6af257b793d80f900675acc01b16fd4bf6375268"}
+
+ark-ec = "0.3"
+ark-ff = "0.3"
 blake2 = "0.10"
 bs58 = {version = "0.4", features = ["check"]}
 derive_deref = "1.1"
+derive_more = "0.99"
 serde = {version = "1", features = ["derive"]}
 thiserror = "1"
