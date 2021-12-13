@@ -291,6 +291,15 @@ mod tests {
         gen_spot(&mut a);
         gen_spot(&mut b);
 
+        // Compute the root epoch position of `b`. This needs to be one epoch ahead of a
+        let default_slot_fill_rate = 0.65;
+        let default_slot_fill_rate_delta = 0.15;
+        let added_blocks =
+            gen_num_blocks_in_slots(default_slot_fill_rate, default_slot_fill_rate_delta, 1.0);
+
+        b.body.consensus_state.blockchain_length.0 =
+            a.body.consensus_state.blockchain_length.0 + added_blocks as u32;
+
         // Constrain first state to be within last 1/3rd of its epoch (ensuring it's checkpoints and seed are fixed)
         let protocol_constants = ProtocolConstants::new();
         let min_a_curr_epoch_slot = 2 * (protocol_constants.slots_per_epoch.0 / 3) + 1;
