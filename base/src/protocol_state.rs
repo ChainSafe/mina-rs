@@ -34,6 +34,7 @@ pub struct ProtocolConstants {
 }
 
 impl ProtocolConstants {
+    // TODO: read from config
     pub fn new() -> Self {
         Self {
             k: Length(290),

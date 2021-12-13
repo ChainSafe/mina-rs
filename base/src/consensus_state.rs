@@ -73,6 +73,7 @@ pub struct ConsensusState {
 }
 
 impl ConsensusState {
+    // TODO: read from config
     pub fn new() -> Self {
         let total_currency = Amount(805385692840039233);
         let staking_epoch_data = {
