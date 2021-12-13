@@ -152,7 +152,7 @@ mod tests {
     }
 
     fn gen_spot(block: &mut ProtocolState) {
-        // New default consensus state and Protocol constant
+        // New default consensus state
         // Generate blockchain position and epoch lengths.
         // staking_epoch == root_epoch, next_staking_epoch == root_epoch + 1
         // New state slot and length.
