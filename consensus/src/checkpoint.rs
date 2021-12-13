@@ -124,7 +124,6 @@ mod tests {
             slot_fill_rate_delta,
             n * protocol_constants.slots_per_epoch.0 as f64,
         );
-        println!("n {}", n * protocol_constants.slots_per_epoch.0 as f64);
         nums
     }
 
@@ -135,7 +134,6 @@ mod tests {
         //  staking epoch starts at (the simulation of all blocks preceeding the
         //  staking epoch
         let root_epoch_int = thread_rng().gen_range(0..100);
-        println!("root_epoch_int {}", root_epoch_int);
         let root_block_height =
             gen_num_blocks_in_epochs(slot_fill_rate, slot_fill_rate_delta, root_epoch_int as f64);
         return (root_epoch_int, root_block_height as u32);
