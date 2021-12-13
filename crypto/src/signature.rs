@@ -38,8 +38,7 @@ impl PrivateKey {
     }
 
     pub fn try_to_fq(&self) -> Result<Fq, Error> {
-        let i: BigInteger256 = self.try_to_bigint()?;
-        Ok(i.into())
+        Ok(self.try_to_bigint()?.into())
     }
 }
 
@@ -62,12 +61,6 @@ impl From<pallas::Affine> for CompressedCurvePoint {
             x: x_bytes,
             is_odd: y.get_bit(0),
         }
-    }
-}
-
-impl From<pallas::Projective> for CompressedCurvePoint {
-    fn from(p: pallas::Projective) -> Self {
-        p.into_affine().into()
     }
 }
 
