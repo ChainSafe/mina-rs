@@ -10,6 +10,7 @@ use serde::Deserialize;
 
 mod enum_data;
 mod index;
+#[cfg(feature = "layout")]
 pub mod layout;
 pub mod ser;
 mod visitor;
