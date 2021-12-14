@@ -13,7 +13,7 @@
 use super::prefixes::*;
 use crate::base58::{version_bytes, Base58Encodable};
 use crate::hash::Hash;
-use crate::impl_bs58_for_hash;
+use crate::impl_bs58;
 use derive_more::From;
 use serde::{Deserialize, Serialize};
 use wire_type::WireType;
@@ -58,7 +58,7 @@ impl AsRef<[u8; 32]> for BaseHash {
 #[serde(into = "<Self as WireType>::WireType")]
 pub struct StateHash(BaseHash);
 
-impl_bs58_for_hash!(StateHash, version_bytes::STATE_HASH);
+impl_bs58!(StateHash, version_bytes::STATE_HASH);
 
 impl From<HashBytes> for StateHash {
     fn from(b: HashBytes) -> Self {
@@ -77,7 +77,7 @@ impl Hash for StateHash {
 #[serde(into = "<Self as WireType>::WireType")]
 pub struct LedgerHash(BaseHash);
 
-impl_bs58_for_hash!(LedgerHash, version_bytes::LEDGER_HASH);
+impl_bs58!(LedgerHash, version_bytes::LEDGER_HASH);
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize, WireType)]
 #[serde(from = "<Self as WireType>::WireType")]
@@ -85,7 +85,7 @@ impl_bs58_for_hash!(LedgerHash, version_bytes::LEDGER_HASH);
 #[wire_type(recurse = 2)]
 pub struct CoinBaseHash(BaseHash);
 
-impl_bs58_for_hash!(CoinBaseHash, 12);
+impl_bs58!(CoinBaseHash, 12);
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -94,7 +94,7 @@ impl_bs58_for_hash!(CoinBaseHash, 12);
 #[serde(into = "<Self as WireType>::WireType")]
 pub struct EpochSeed(BaseHash);
 
-impl_bs58_for_hash!(EpochSeed, version_bytes::EPOCH_SEED);
+impl_bs58!(EpochSeed, version_bytes::EPOCH_SEED);
 
 impl From<HashBytes> for EpochSeed {
     fn from(b: HashBytes) -> Self {
@@ -113,7 +113,7 @@ impl Hash for EpochSeed {
 #[serde(into = "<Self as WireType>::WireType")]
 pub struct SnarkedLedgerHash(BaseHash);
 
-impl_bs58_for_hash!(SnarkedLedgerHash, version_bytes::LEDGER_HASH);
+impl_bs58!(SnarkedLedgerHash, version_bytes::LEDGER_HASH);
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -188,7 +188,7 @@ impl AsRef<[u8]> for AuxHash {
 #[serde(into = "<Self as WireType>::WireType")]
 pub struct VrfOutputHash(BaseHash);
 
-impl_bs58_for_hash!(VrfOutputHash, version_bytes::VRF_TRUNCATED_OUTPUT);
+impl_bs58!(VrfOutputHash, version_bytes::VRF_TRUNCATED_OUTPUT);
 
 impl From<HashBytes> for VrfOutputHash {
     fn from(b: HashBytes) -> Self {

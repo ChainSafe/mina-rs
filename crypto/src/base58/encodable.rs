@@ -73,7 +73,7 @@ macro_rules! impl_bs58_for_binprot {
 }
 
 #[macro_export]
-macro_rules! impl_bs58_for_hash_full {
+macro_rules! impl_bs58_full {
     ($ty:ty, $expr:expr, $expr2:expr) => {
         impl Base58Encodable for $ty {
             const VERSION_BYTE: u8 = $expr;
@@ -101,8 +101,8 @@ macro_rules! impl_bs58_for_hash_full {
 }
 
 #[macro_export]
-macro_rules! impl_bs58_for_hash {
+macro_rules! impl_bs58 {
     ($ty:ty, $expr:expr) => {
-        crate::impl_bs58_for_hash_full!($ty, $expr, 1);
+        crate::impl_bs58_full!($ty, $expr, 1);
     };
 }
