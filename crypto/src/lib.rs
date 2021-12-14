@@ -26,7 +26,5 @@ pub mod prelude {
     pub use crate::base58::Base58Encodable;
     pub use crate::base64::Base64Encodable;
     pub use crate::binprot::BinProtEncodable;
-    pub use crate::hash::*;
     pub use crate::hex::HexEncodable;
-    pub use crate::signature::*;
 }

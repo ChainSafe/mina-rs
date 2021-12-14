@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::common::{Chain, ProtocolStateChain};
-use mina_crypto::prelude::*;
+use mina_crypto::{hash::*, prelude::*};
 use mina_rs_base::protocol_state::ProtocolState;
 
 pub const SLOTS_PER_EPOCH: u32 = 7140;

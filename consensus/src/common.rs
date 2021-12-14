@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use hex::ToHex;
-use mina_crypto::prelude::*;
+use mina_crypto::hash::*;
 use mina_rs_base::types::*;
 use thiserror::Error;
 

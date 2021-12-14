@@ -5,7 +5,7 @@
 mod tests {
     use hex::ToHex;
     use mina_consensus::common::*;
-    use mina_crypto::prelude::*;
+    use mina_crypto::hash::*;
     use mina_rs_base::types::*;
     use wasm_bindgen_test::*;
 

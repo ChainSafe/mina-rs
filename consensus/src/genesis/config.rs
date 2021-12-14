@@ -1,7 +1,7 @@
 // Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
-use mina_crypto::prelude::*;
+use mina_crypto::{hash::*, prelude::*, signature::*};
 use mina_rs_base::{
     finite_ec_point, finite_ec_point_pair,
     types::{proof_messages::ProofMessageWithoutDegreeBoundList, *},

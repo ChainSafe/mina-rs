@@ -4,7 +4,7 @@
 #[cfg(test)]
 mod tests {
     use mina_consensus::{checkpoint::*, common::*};
-    use mina_crypto::prelude::*;
+    use mina_crypto::{hash::*, prelude::*};
     use mina_rs_base::types::*;
     use wasm_bindgen_test::*;
 

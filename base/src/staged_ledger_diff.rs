@@ -1,7 +1,7 @@
 // Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
-use mina_crypto::prelude::*;
+use mina_crypto::signature::*;
 use serde::{Deserialize, Serialize};
 use thiserror::Error;
 use wire_type::WireType;

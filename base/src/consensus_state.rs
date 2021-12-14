@@ -7,7 +7,7 @@ use crate::{
     numbers::{Amount, GlobalSlotNumber, Length},
 };
 use derive_more::From;
-use mina_crypto::prelude::*;
+use mina_crypto::{hash::*, prelude::*, signature::*};
 use serde::{Deserialize, Serialize};
 use wire_type::WireType;
 

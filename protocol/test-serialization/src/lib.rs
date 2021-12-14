@@ -12,7 +12,7 @@ mod test_3NKaBJsN1SehD6iJwRwJSFmVzJg5DXSUQVgnMxtH4eer4aF5BrDK;
 mod tests {
     use super::{block_path_test, block_path_test_batch};
     use bin_prot::{from_reader, to_writer, Value};
-    use mina_crypto::prelude::*;
+    use mina_crypto::{hash::*, prelude::*, signature::*};
     use mina_rs_base::protocol_state_proof::proof_messages::{
         ProofMessageWithDegreeBound, ProofMessageWithoutDegreeBoundList,
     };
