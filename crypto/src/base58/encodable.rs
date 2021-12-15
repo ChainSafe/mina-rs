@@ -16,7 +16,7 @@ pub trait Base58Encodable {
         for _i in 0..Self::MINA_VERSION_BYTE_COUNT {
             buf.push(Self::MINA_VERSION_BYTE);
         }
-        buf.extend(self.to_bytes());
+        self.write_encodable_bytes(&mut buf);
         bs58::encode(buf).with_check_version(Self::VERSION_BYTE)
     }
 
@@ -44,8 +44,7 @@ pub trait Base58Encodable {
             .map_err(|e| Error::OtherError(format!("{:?}", e)))
     }
 
-    // Have to sacrifice perf here in order to share the trait between bin-prot and hash
-    fn to_bytes(&self) -> Vec<u8>;
+    fn write_encodable_bytes(&self, output: &mut Vec<u8>);
 }
 
 #[macro_export]
@@ -55,11 +54,9 @@ macro_rules! impl_bs58_for_binprot {
             const VERSION_BYTE: u8 = $expr;
             const MINA_VERSION_BYTE_COUNT: usize = 0;
 
-            fn to_bytes(&self) -> Vec<u8> {
-                let mut buf = Vec::<u8>::new();
-                bin_prot::to_writer(&mut buf, self)
+            fn write_encodable_bytes(&self, output: &mut Vec<u8>) {
+                bin_prot::to_writer(output, self)
                     .expect("Failed to serialize struct into binprot format");
-                buf
             }
         }
 
@@ -79,8 +76,8 @@ macro_rules! impl_bs58_full {
             const VERSION_BYTE: u8 = $expr;
             const MINA_VERSION_BYTE_COUNT: usize = $expr2;
 
-            fn to_bytes(&self) -> Vec<u8> {
-                self.0 .0.into_iter().collect()
+            fn write_encodable_bytes(&self, output: &mut Vec<u8>) {
+                output.extend(self.as_ref());
             }
         }
 

@@ -144,8 +144,8 @@ impl Base58Encodable for AuxHash {
     const VERSION_BYTE: u8 = version_bytes::STAGED_LEDGER_HASH_AUX_HASH;
     const MINA_VERSION_BYTE_COUNT: usize = 0;
 
-    fn to_bytes(&self) -> Vec<u8> {
-        self.0.clone()
+    fn write_encodable_bytes(&self, output: &mut Vec<u8>) {
+        output.extend(self.0.as_slice());
     }
 }
 
@@ -164,8 +164,8 @@ impl Base58Encodable for PendingCoinbaseAuxHash {
     const VERSION_BYTE: u8 = version_bytes::STAGED_LEDGER_HASH_PENDING_COINBASE_AUX;
     const MINA_VERSION_BYTE_COUNT: usize = 0;
 
-    fn to_bytes(&self) -> Vec<u8> {
-        self.0.clone()
+    fn write_encodable_bytes(&self, output: &mut Vec<u8>) {
+        output.extend(self.0.as_slice());
     }
 }
 

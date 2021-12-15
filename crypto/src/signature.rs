@@ -61,13 +61,11 @@ impl Base58Encodable for Signature {
     const MINA_VERSION_BYTE: u8 = 1;
     const MINA_VERSION_BYTE_COUNT: usize = 1;
 
-    fn to_bytes(&self) -> Vec<u8> {
-        let mut buf = Vec::with_capacity(64);
+    fn write_encodable_bytes(&self, output: &mut Vec<u8>) {
         let field_point_bytes: &[u8; 32] = self.0 .0 .0.as_ref();
-        buf.extend(field_point_bytes);
+        output.extend(field_point_bytes);
         let inner_curve_scalar_bytes: &[u8; 32] = self.0 .1 .0.as_ref();
-        buf.extend(inner_curve_scalar_bytes);
-        buf
+        output.extend(inner_curve_scalar_bytes);
     }
 }
 
