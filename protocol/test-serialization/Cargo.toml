@@ -24,6 +24,7 @@ base64 = "0.13"
 bs58 = {version = "0.4", features = ["check"]}
 criterion = {version = "0.3", features = ["html_reports"]}
 pretty_assertions = "1"
+rand = "0.8"
 serde = {version = "1", features = ["derive"]}
 time = {version = "0.3", features = ["macros"]}
 wasm-bindgen-test = "0.3"

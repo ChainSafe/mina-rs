@@ -1638,6 +1638,7 @@ dependencies = [
  "mina-crypto",
  "mina-rs-base",
  "pretty_assertions",
+ "rand",
  "serde",
  "test-fixtures",
  "time",
