@@ -4,28 +4,27 @@
 #[cfg(all(test, feature = "browser"))]
 wasm_bindgen_test::wasm_bindgen_test_configure!(run_in_browser);
 
+mod fuzz;
 #[allow(non_snake_case)]
 mod test_3NKaBJsN1SehD6iJwRwJSFmVzJg5DXSUQVgnMxtH4eer4aF5BrDK;
 
 #[cfg(test)]
 mod tests {
     use super::{block_path_test, block_path_test_batch};
-    use bin_prot::{from_reader, to_writer, Deserializer, Value};
+    use bin_prot::{from_reader, to_writer, Value};
     use mina_crypto::hash::*;
     use mina_crypto::signature::{
         FieldPoint, InnerCurveScalar, PublicKey, PublicKey2, PublicKey3, Signature,
     };
+    use mina_rs_base::protocol_state_proof::proof_messages::{
+        ProofMessageWithDegreeBound, ProofMessageWithoutDegreeBoundList,
+    };
     use mina_rs_base::types::*;
     use pretty_assertions::assert_eq;
-    use rand::prelude::*;
     use serde::{Deserialize, Serialize};
     use std::str::FromStr;
     use test_fixtures::*;
     use wasm_bindgen_test::*;
-
-    use mina_rs_base::protocol_state_proof::proof_messages::{
-        ProofMessageWithDegreeBound, ProofMessageWithoutDegreeBoundList,
-    };
 
     #[test]
     #[wasm_bindgen_test]
@@ -499,22 +498,6 @@ mod tests {
 
         // check roundtrip
         test_roundtrip(&block.value, block.bytes.as_slice());
-    }
-
-    #[test]
-    #[wasm_bindgen_test]
-    fn test_corrupted_deserialization() {
-        let mut rng = rand::thread_rng();
-        for _i in 0..100 {
-            let mut bytes = vec![0; rng.gen_range((1024 * 1024)..(100 * 1024 * 1024))];
-            rng.try_fill_bytes(&mut bytes).unwrap();
-            let et: anyhow::Result<ExternalTransition> = (|| {
-                let mut de = Deserializer::from_reader(bytes.as_slice());
-                let et: ExternalTransition = Deserialize::deserialize(&mut de)?;
-                Ok(et)
-            })();
-            et.unwrap_err();
-        }
     }
 
     #[test]
