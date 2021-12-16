@@ -1,8 +1,7 @@
 // Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
-#![allow(legacy_derive_helpers)]
-#![deny(rustdoc::all)]
+#![deny(missing_docs)]
 
 //!
 //! Contains definitions of common simple crypto primitives used in the Mina protocol

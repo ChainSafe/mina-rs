@@ -1,7 +1,7 @@
 // Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
-#![deny(rustdoc::all)]
+#![deny(missing_docs)]
 
 //!
 //! This crate contains procedural macro for for deriving WireType trait
