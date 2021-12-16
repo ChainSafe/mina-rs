@@ -144,7 +144,7 @@ fn test_list() {
 #[test]
 fn test_array() {
     bin_prot_test! {
-        .. .. .. .. .. .. .. .. .. .. 0x00 -> (bin_prot::OcamlArray::<i32>::new()),
+        .. .. .. .. .. .. .. .. .. .. 0x00 -> (Vec::<i32>::new()),
         .. .. .. .. .. .. .. .. .. 0x00 0x01 -> (array![0i32;1]),
         .. .. .. .. .. .. .. .. 0x01 0x00 0x02 -> (array![0i32, 1]),
         .. .. .. .. .. .. .. 0xff 0xff 0x01 0x02 -> (array![1i32, -1]),

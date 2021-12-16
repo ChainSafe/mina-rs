@@ -4,11 +4,7 @@
 #![deny(missing_docs)]
 #![doc = include_str!("../README.md")]
 
-//!
-//! This crate implements <https://github.com/janestreet/bin_prot> in rust
-//!
-
-mod array;
+// mod array;
 mod consts;
 mod de;
 pub mod error;
@@ -19,7 +15,7 @@ mod ser;
 pub mod value;
 mod write_ext;
 
-pub use array::OcamlArray;
+// pub use array::OcamlArray;
 pub use de::{from_reader, Deserializer};
 pub use read_ext::ReadBinProtExt;
 pub use ser::{to_writer, Serializer};

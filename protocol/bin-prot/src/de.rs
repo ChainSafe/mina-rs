@@ -1,6 +1,8 @@
 // Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
+//! Deserialization for BinProt following the standard serde module layout
+
 use std::io::{BufReader, Read};
 
 use crate::error::{Error, Result};
@@ -11,18 +13,22 @@ use duplicate::duplicate;
 use serde::de::{self, value::U8Deserializer, EnumAccess, IntoDeserializer, Visitor};
 use serde::Deserialize;
 
-// the modes of operation for the deserializer
+/// the modes of operation for the deserializer
 pub struct StronglyTyped;
 pub struct LooselyTyped {
-    pub layout_iter: BinProtRuleIterator,
+    pub(crate) layout_iter: BinProtRuleIterator,
 }
 
+/// A BinProt deserializer that reads from a BufReader
+/// Can operate in strong or loose deserialization mode
 pub struct Deserializer<R: Read, Mode> {
+    /// BufReader to read the bytes from
     pub rdr: BufReader<R>,
     pub(crate) mode: Mode,
 }
 
 impl<R: Read> Deserializer<R, StronglyTyped> {
+    /// Create a BinProt deserializer from a reader
     pub fn from_reader(rdr: R) -> Self {
         Self {
             rdr: BufReader::new(rdr),
@@ -32,6 +38,8 @@ impl<R: Read> Deserializer<R, StronglyTyped> {
 }
 
 impl<R: Read> Deserializer<R, StronglyTyped> {
+    /// Converts a strong type deserializer into a loose type deserializer by providing a 
+    /// BinProt type layout
     pub fn with_layout(self, layout: &BinProtRule) -> Deserializer<R, LooselyTyped> {
         Deserializer {
             rdr: self.rdr,
@@ -42,6 +50,8 @@ impl<R: Read> Deserializer<R, StronglyTyped> {
     }
 }
 
+/// Convenience method, create a BinProt deserializer from the given reader and then
+/// read from it
 pub fn from_reader<'de, R: Read, T: Deserialize<'de>>(rdr: R) -> Result<T> {
     let mut de = Deserializer::from_reader(rdr);
     let value = Deserialize::deserialize(&mut de)?;

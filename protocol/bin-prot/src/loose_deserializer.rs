@@ -17,6 +17,8 @@ use serde::{Deserialize, Serialize};
 use byteorder::ReadBytesExt;
 
 impl<'de, 'a, R: Read> DS<R, LooselyTyped> {
+    /// The loose deserializer version of deserialize
+    /// Only implemented on the LooselyTyped variant of the Deserializer
     pub fn deserialize_loose<V>(&mut self, visitor: V) -> Result<V::Value>
     where
         V: Visitor<'de>,
