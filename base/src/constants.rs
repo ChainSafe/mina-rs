@@ -1,0 +1,1 @@
+pub const MINA_PRECISION: u64 = 1000000000;

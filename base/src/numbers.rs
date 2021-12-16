@@ -9,6 +9,8 @@ use serde::{Deserialize, Serialize};
 use time::Duration;
 use wire_type::WireType;
 
+use crate::constants::MINA_PRECISION;
+
 #[derive(
     Clone,
     Serialize,
@@ -75,8 +77,6 @@ pub struct ExtendedU64_2(pub u64);
 #[serde(into = "<Self as WireType>::WireType")]
 #[wire_type(recurse = 2)]
 pub struct Amount(pub u64);
-
-pub const MINA_PRECISION: u64 = 1000000000;
 
 impl fmt::Display for Amount {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
