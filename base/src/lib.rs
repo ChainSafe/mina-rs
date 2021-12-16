@@ -7,7 +7,7 @@
 //! All types are versioned where required.
 //!
 
-#![deny(missing_docs)]
+// #![deny(missing_docs)]
 
 pub mod blockchain_state;
 pub mod consensus_state;
