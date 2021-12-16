@@ -76,9 +76,11 @@ pub fn derive(input: TokenStream) -> TokenStream {
 
     let output = quote! {
 
+        #[allow(missing_docs)]
         #shadow
 
         #[allow(non_camel_case_types)]
+        #[allow(missing_docs)]
         #[derive(Debug, PartialEq, serde::Serialize, serde::Deserialize)]
         #recurse_attr
         pub struct #wire_ident {

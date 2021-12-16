@@ -7,7 +7,7 @@
 //! All types are versioned where required.
 //!
 
-// #![deny(missing_docs)]
+#![deny(missing_docs)]
 
 pub mod blockchain_state;
 pub mod consensus_state;
@@ -24,6 +24,7 @@ pub mod staged_ledger_diff;
 pub mod token_id;
 pub mod verification_key;
 
+/// Re-export all the public types under this module for convenience
 pub mod types {
     pub use super::blockchain_state::*;
     pub use super::consensus_state::*;

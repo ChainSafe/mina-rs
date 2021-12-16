@@ -1,6 +1,8 @@
 // Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
+//! Newtypes for different numeric types used throughout Mina
+
 use std::fmt;
 
 use derive_deref::Deref;
@@ -27,6 +29,7 @@ use crate::constants::MINA_PRECISION;
 #[serde(from = "<Self as WireType>::WireType")]
 #[serde(into = "<Self as WireType>::WireType")]
 #[wire_type(recurse = 2)]
+/// Represents the length of something (e.g. an epoch or window)
 pub struct Length(pub u32);
 
 #[derive(
@@ -35,6 +38,7 @@ pub struct Length(pub u32);
 #[serde(from = "<Self as WireType>::WireType")]
 #[serde(into = "<Self as WireType>::WireType")]
 #[wire_type(recurse = 2)]
+/// Represents a difference between two lengths
 pub struct Delta(pub u32);
 
 #[derive(
@@ -46,7 +50,7 @@ pub struct Delta(pub u32);
 // FIXME: 255 255 cannot be deserialized to u32, use i32 for now
 // Note: Extended_Uint32 is not defined in bin_prot, but comes from mina
 // Block path: t/staged_ledger_diff/t/diff/t/0/t/t/commands/0/t/data/t/t/t/t/payload/t/t/common/t/t/t/valid_until
-pub struct ExtendedU32(pub i32);
+pub(crate) struct ExtendedU32(pub i32);
 
 #[derive(
     Clone, Serialize, Deserialize, PartialEq, PartialOrd, Debug, Hash, Copy, Default, WireType,
@@ -54,7 +58,7 @@ pub struct ExtendedU32(pub i32);
 #[serde(from = "<Self as WireType>::WireType")]
 #[serde(into = "<Self as WireType>::WireType")]
 #[wire_type(recurse = 3)]
-pub struct ExtendedU64_3(pub u64);
+pub(crate) struct ExtendedU64_3(pub u64);
 
 #[derive(
     Clone, Serialize, Deserialize, PartialEq, PartialOrd, Debug, Hash, Copy, Default, WireType,
@@ -62,9 +66,10 @@ pub struct ExtendedU64_3(pub u64);
 #[serde(from = "<Self as WireType>::WireType")]
 #[serde(into = "<Self as WireType>::WireType")]
 #[wire_type(recurse = 2)]
-pub struct ExtendedU64_2(pub u64);
+pub(crate) struct ExtendedU64_2(pub u64);
 
-/// This structure represents float numbers
+/// This structure represents fixed point numbers
+/// typically amounts of Mina currency
 /// # Example
 /// ```
 /// use mina_rs_base::numbers::*;
@@ -90,23 +95,26 @@ impl fmt::Display for Amount {
 #[derive(Clone, Serialize, Deserialize, PartialEq, Debug, Hash, Default, WireType)]
 #[serde(from = "<Self as WireType>::WireType")]
 #[serde(into = "<Self as WireType>::WireType")]
-pub struct Hex64(i64);
+pub(crate) struct Hex64(i64);
 
 #[derive(Clone, Serialize, Deserialize, PartialEq, Debug, Hash, Default, WireType)]
 #[serde(from = "<Self as WireType>::WireType")]
 #[serde(into = "<Self as WireType>::WireType")]
+/// A single char defined by a single byte (e.g. not variable length like a Rust char)
 pub struct Char(u8);
 
 #[derive(Clone, Serialize, Deserialize, PartialEq, Debug, Hash, Default, Deref, WireType)]
 #[serde(from = "<Self as WireType>::WireType")]
 #[serde(into = "<Self as WireType>::WireType")]
 #[wire_type(recurse = 2)]
+/// A global slot number
 pub struct GlobalSlotNumber(pub u32);
 
 #[derive(Clone, Serialize, Deserialize, PartialEq, Debug, Hash, Default, WireType)]
 #[serde(from = "<Self as WireType>::WireType")]
 #[serde(into = "<Self as WireType>::WireType")]
 #[wire_type(recurse = 2)]
+/// Block time numeric type
 pub struct BlockTime(u64);
 
 impl BlockTime {
@@ -129,9 +137,11 @@ impl BlockTime {
 }
 
 #[derive(Clone, Serialize, Deserialize, PartialEq, Debug, Hash, Default)]
+/// Time span between two block time instants
 pub struct BlockTimeSpan(pub u64);
 
 #[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug)]
+/// Mina 256 bit Bit Integer type
 pub struct BigInt256(pub [u8; 32]);
 
 impl From<BigInt256> for ark_ff::BigInteger256 {
