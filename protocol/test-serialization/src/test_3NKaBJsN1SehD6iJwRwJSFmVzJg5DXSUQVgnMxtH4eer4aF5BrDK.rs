@@ -107,7 +107,7 @@ mod tests {
         assert_eq!(consensus_state.last_vrf_output.as_ref(), &bytes[..]);
 
         assert_eq!(
-            consensus_state.total_currency.to_formatted_string(),
+            consensus_state.total_currency.to_string(),
             "867667132.840039233"
         );
         assert_eq!(*consensus_state.curr_global_slot.slot_number, 111965);
@@ -123,7 +123,7 @@ mod tests {
             staking_epoch_data
                 .ledger
                 .total_currency
-                .to_formatted_string(),
+                .to_string(),
             "861208012.840039233"
         );
         assert_eq!(
@@ -149,7 +149,7 @@ mod tests {
             "jwAXd4GZgxE3YCwqs99g4MpLNiEV2ZfZPstyah4jxo753AVgL6R"
         );
         assert_eq!(
-            next_epoch_data.ledger.total_currency.to_formatted_string(),
+            next_epoch_data.ledger.total_currency.to_string(),
             "864998092.840039233"
         );
         assert_eq!(
@@ -188,7 +188,7 @@ mod tests {
         assert_eq!(consensus_state.block_creator.poly.x[..], bytes[3..35]);
 
         assert_eq!(
-            consensus_state.total_currency.to_formatted_string(),
+            consensus_state.total_currency.to_string(),
             "867667132.840039233"
         );
 
@@ -231,7 +231,7 @@ mod tests {
                     SignedCommandMemo::try_from("FPayment").unwrap().0,
                 );
                 assert_eq!(
-                    command.payload.common.fee.to_formatted_string(),
+                    command.payload.common.fee.to_string(),
                     "0.010000000"
                 );
                 assert_eq!(command.payload.common.fee_token.0, 1);
@@ -239,7 +239,7 @@ mod tests {
                 // assert_eq!(command.payload.common.valid_until.0, 4294967295);
                 match &command.payload.body {
                     SignedCommandPayloadBody::PaymentPayload(body) => {
-                        assert_eq!(body.amount.to_formatted_string(), "0.027370000");
+                        assert_eq!(body.amount.to_string(), "0.027370000");
                         let bytes =
                             bs58::decode("B62qoSuxNqwogusxxZbs3gpJUxCCN4GZEv21FX8S2DtNpToLgKnrexM")
                                 .into_vec()
