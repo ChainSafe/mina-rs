@@ -39,7 +39,7 @@ pub enum Value {
     /// Option
     Option(Option<Box<Value>>),
     /// records/structs
-    Record(Vec<(String, Value)>), 
+    Record(Vec<(String, Value)>),
     /// Tuples (fixed length list)
     Tuple(Vec<Value>),
     /// Sum/enum types

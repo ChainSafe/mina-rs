@@ -50,10 +50,10 @@ pub use wire_type_derive::*;
 pub type Version = u16;
 
 /// Types implementing WireType provide an ascociated wire type and implementations to convert
-/// to and from this type. 
-/// 
+/// to and from this type.
+///
 /// This is typically produced by the derive macro but can also be implemented manually
-/// 
+///
 pub trait WireType<'a>:
     Debug + PartialEq + Serialize + Deserialize<'a> + From<Self::WireType>
 {

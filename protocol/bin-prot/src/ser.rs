@@ -253,7 +253,8 @@ where
         variant_index: u32,
         _variant: &'static str,
     ) -> Result<()> {
-        self.writer.bin_write_variant_index(check_variant_index(variant_index)?)?;
+        self.writer
+            .bin_write_variant_index(check_variant_index(variant_index)?)?;
         Ok(())
     }
 
@@ -264,7 +265,8 @@ where
         _variant: &'static str,
         _len: usize,
     ) -> Result<Self::SerializeTupleVariant> {
-        self.writer.bin_write_variant_index(check_variant_index(variant_index)?)?;
+        self.writer
+            .bin_write_variant_index(check_variant_index(variant_index)?)?;
         Ok(self)
     }
 
@@ -275,7 +277,8 @@ where
         _variant: &'static str,
         _len: usize,
     ) -> Result<Self::SerializeStructVariant> {
-        self.writer.bin_write_variant_index(check_variant_index(variant_index)?)?;
+        self.writer
+            .bin_write_variant_index(check_variant_index(variant_index)?)?;
         Ok(self)
     }
 
@@ -290,7 +293,8 @@ where
     where
         T: ?Sized + Serialize,
     {
-        self.writer.bin_write_variant_index(check_variant_index(variant_index)?)?;
+        self.writer
+            .bin_write_variant_index(check_variant_index(variant_index)?)?;
         value.serialize(self)
     }
 }
@@ -457,5 +461,7 @@ where
 }
 
 fn check_variant_index(index: u32) -> Result<u8> {
-    index.try_into().map_err(|_| Error::VariantIndexTooLarge{ index: index })
+    index
+        .try_into()
+        .map_err(|_| Error::VariantIndexTooLarge { index })
 }

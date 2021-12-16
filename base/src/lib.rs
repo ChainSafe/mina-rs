@@ -11,6 +11,7 @@
 
 pub mod blockchain_state;
 pub mod consensus_state;
+mod constants;
 pub mod delta_transition_chain_proof;
 pub mod epoch_data;
 pub mod external_transition;
@@ -22,7 +23,6 @@ pub mod protocol_version;
 pub mod staged_ledger_diff;
 pub mod token_id;
 pub mod verification_key;
-mod constants;
 
 pub mod types {
     pub use super::blockchain_state::*;

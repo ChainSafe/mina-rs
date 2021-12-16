@@ -120,10 +120,7 @@ mod tests {
             "jxn15ATGoe4WGgYpbssxJH9XW8NXRDy22WvSsBqvMqcnLPgPAwN"
         );
         assert_eq!(
-            staking_epoch_data
-                .ledger
-                .total_currency
-                .to_string(),
+            staking_epoch_data.ledger.total_currency.to_string(),
             "861208012.840039233"
         );
         assert_eq!(
@@ -230,10 +227,7 @@ mod tests {
                     command.payload.common.memo.0,
                     SignedCommandMemo::try_from("FPayment").unwrap().0,
                 );
-                assert_eq!(
-                    command.payload.common.fee.to_string(),
-                    "0.010000000"
-                );
+                assert_eq!(command.payload.common.fee.to_string(), "0.010000000");
                 assert_eq!(command.payload.common.fee_token.0, 1);
                 // FIXME: Fix valid_util (Extended_U32)
                 // assert_eq!(command.payload.common.valid_until.0, 4294967295);

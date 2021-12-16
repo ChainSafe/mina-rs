@@ -38,7 +38,7 @@ impl<R: Read> Deserializer<R, StronglyTyped> {
 }
 
 impl<R: Read> Deserializer<R, StronglyTyped> {
-    /// Converts a strong type deserializer into a loose type deserializer by providing a 
+    /// Converts a strong type deserializer into a loose type deserializer by providing a
     /// BinProt type layout
     pub fn with_layout(self, layout: &BinProtRule) -> Deserializer<R, LooselyTyped> {
         Deserializer {

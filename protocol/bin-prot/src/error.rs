@@ -14,7 +14,7 @@ use thiserror::Error;
 pub type Result<A> = result::Result<A, Error>;
 
 #[derive(Debug, Error)]
-/// Error type for BinProt serialization and deserialization 
+/// Error type for BinProt serialization and deserialization
 pub enum Error {
     /// Error in underlying IO
     #[error("io error")]
@@ -49,28 +49,28 @@ pub enum Error {
     #[error("Invalid byte sequence when attempting to deserialize utf-8 char: {bytes:?}")]
     InvalidUtf8 {
         /// Invalid byte sequence encountered
-        bytes: Vec<u8>
+        bytes: Vec<u8>,
     },
 
     /// Invalid byte encountered deserializing option
     #[error("Invalid byte when deserializing option. First byte must be 0 or 1, got {got}")]
     InvalidOptionByte {
         /// Invalid byte encountered
-        got: u8
+        got: u8,
     },
 
     /// Invalid integer prefix byte
     #[error("Invalid byte when deserializing an integer. First byte must be a size flag or a value < 0x80")]
     InvalidIntegerByte {
         /// Invalid byte encountered
-        byte: u8
+        byte: u8,
     },
 
     /// Encountered a variant index larger than allowed
     #[error("Invalid variant index detected. Currently only supports enums with < 256 variants")]
     VariantIndexTooLarge {
         /// Invalid index encountered
-        index: u32
+        index: u32,
     },
 
     /// Destination integer type too small
@@ -100,7 +100,7 @@ pub enum Error {
     #[error("Unknown custom type {typ}")]
     UnknownCustomType {
         /// The custom type identifier
-        typ: String
+        typ: String,
     },
 
     /// There is no logic implemented to deserialize this rule yet

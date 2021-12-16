@@ -56,11 +56,11 @@ pub enum BinProtRule {
     /// OCaml option
     Option(Box<BinProtRule>),
     /// records/structs
-    Record(Vec<RecordField>), 
+    Record(Vec<RecordField>),
     /// tuple
     Tuple(Vec<BinProtRule>),
     /// sum types/enums
-    Sum(Vec<Summand>), 
+    Sum(Vec<Summand>),
     /// ?
     Polyvar(Vec<Polyvar>),
     /// Variable length list of any BinProt type
@@ -84,7 +84,7 @@ pub enum BinProtRule {
     /// Type that does not use standard derived BinProt encoding
     Custom(Vec<BinProtRule>),
     /// does not occur in source files, used in traverse
-    CustomForPath(String, Vec<BinProtRule>), 
+    CustomForPath(String, Vec<BinProtRule>),
 }
 
 // required due to the strange enum encoding used by yojson (see list_tagged_enum.rs)
