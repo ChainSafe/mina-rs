@@ -1,6 +1,10 @@
 // Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
+//! Definitions of some signature types
+//! These are currently only used for serialization tests and will
+//! be replaced by those in the 01-labs/proof-systems repo in the future
+
 use crate::{base58::Base58Encodable, hash::BaseHash};
 use derive_deref::Deref;
 use serde::{Deserialize, Serialize};
