@@ -11,7 +11,7 @@
 //!  Types that implement WireType have a version number and can be converted into the associated WireType that
 //!  includes this version number as a field
 //!  
-//!  Using WireType is easy!
+//!  Using WireType is easy! Mostly it will be used via the derive macro
 //!  
 //!  ```ignore
 //!  #[derive(Clone, Debug, PartialEq, Serialize, Deserialize, WireType)]
@@ -46,15 +46,25 @@ use serde::{Deserialize, Serialize};
 
 pub use wire_type_derive::*;
 
+/// Wire type version type
 pub type Version = u16;
 
+/// Types implementing WireType provide an ascociated wire type and implementations to convert
+/// to and from this type. 
+/// 
+/// This is typically produced by the derive macro but can also be implemented manually
+/// 
 pub trait WireType<'a>:
     Debug + PartialEq + Serialize + Deserialize<'a> + From<Self::WireType>
 {
+    /// Associated wire type for this type
     type WireType: Serialize + Deserialize<'a>;
+    /// Version of the serialization of this type
     const VERSION: Version;
 
+    /// Convert this type to its wire format
     fn to_wire_type(self) -> Self::WireType;
+    /// Convert this type from its wire format
     fn from_wire_type(t: Self::WireType) -> Self;
 }
 
