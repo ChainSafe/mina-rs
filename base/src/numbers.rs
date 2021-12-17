@@ -8,9 +8,9 @@ use std::fmt;
 use derive_deref::Deref;
 use num::Integer;
 use serde::{Deserialize, Serialize};
+use thiserror::Error;
 use time::Duration;
 use wire_type::WireType;
-use thiserror::Error;
 
 use crate::constants::MINA_PRECISION;
 
@@ -113,9 +113,16 @@ impl std::str::FromStr for Amount {
     type Err = ParseAmountError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         let mut iter = s.split(".");
-        let q: u64 = iter.next().ok_or(Self::Err::ErrorInvalidFormat(s.to_string()))?.parse()?;
-        let r: u64 = iter.next().ok_or(Self::Err::ErrorInvalidFormat(s.to_string()))?.parse()?;
-        if iter.next().is_none() { // ensure there isn't more to parse as that is undefined
+        let q: u64 = iter
+            .next()
+            .ok_or(Self::Err::ErrorInvalidFormat(s.to_string()))?
+            .parse()?;
+        let r: u64 = iter
+            .next()
+            .ok_or(Self::Err::ErrorInvalidFormat(s.to_string()))?
+            .parse()?;
+        if iter.next().is_none() {
+            // ensure there isn't more to parse as that is undefined
             Ok(Amount(r + MINA_PRECISION * q))
         } else {
             Err(Self::Err::ErrorInvalidFormat(s.to_string()))
@@ -210,9 +217,14 @@ pub mod tests {
         assert_eq!(Amount::from_str("1.300000000").unwrap(), Amount(1300000000));
         assert_eq!(Amount::from_str("1.000000000").unwrap(), Amount(1000000000));
 
-        assert_eq!(Amount::from_str("0.000000000.0").unwrap_err(), ParseAmountError::ErrorInvalidFormat("0.000000000.0".to_string()));
-        assert_eq!(Amount::from_str("000000000").unwrap_err(), ParseAmountError::ErrorInvalidFormat("000000000".to_string()));
-
+        assert_eq!(
+            Amount::from_str("0.000000000.0").unwrap_err(),
+            ParseAmountError::ErrorInvalidFormat("0.000000000.0".to_string())
+        );
+        assert_eq!(
+            Amount::from_str("000000000").unwrap_err(),
+            ParseAmountError::ErrorInvalidFormat("000000000".to_string())
+        );
     }
 
     #[test]
