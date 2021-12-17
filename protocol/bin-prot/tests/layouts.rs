@@ -1,7 +1,7 @@
 // Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
-#[cfg(feature = "layout")]
+#[cfg(feature = "loose_deserialization")]
 mod tests {
     use bin_prot::value::layout::BinProtRule;
     use bin_prot::value::Value;

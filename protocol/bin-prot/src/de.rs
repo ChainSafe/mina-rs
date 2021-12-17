@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::error::{Error, Result};
-#[cfg(feature = "layout")]
+#[cfg(feature = "loose_deserialization")]
 use crate::value::layout::*;
 use crate::ReadBinProtExt;
 use byteorder::{LittleEndian, ReadBytesExt};
@@ -13,7 +13,7 @@ use std::io::{BufReader, Read};
 // the modes of operation for the deserializer
 pub struct StronglyTyped;
 
-#[cfg(feature = "layout")]
+#[cfg(feature = "loose_deserialization")]
 pub struct LooselyTyped {
     pub layout_iter: BinProtRuleIterator,
 }
@@ -32,7 +32,7 @@ impl<R: Read> Deserializer<R, StronglyTyped> {
     }
 }
 
-#[cfg(feature = "layout")]
+#[cfg(feature = "loose_deserialization")]
 impl<R: Read> Deserializer<R, StronglyTyped> {
     pub fn with_layout(self, layout: &BinProtRule) -> Deserializer<R, LooselyTyped> {
         Deserializer {
@@ -52,7 +52,7 @@ pub fn from_reader<'de, R: Read, T: Deserialize<'de>>(rdr: R) -> Result<T> {
 
 // In the loosely typed case we want to use deserialize_any for every field
 // This includes the hybrid strong/loose case
-#[cfg(feature = "layout")]
+#[cfg(feature = "loose_deserialization")]
 impl<'de, 'a, R: Read> de::Deserializer<'de> for &'a mut Deserializer<R, LooselyTyped> {
     type Error = Error;
     fn deserialize_any<V>(self, visitor: V) -> Result<V::Value>
@@ -366,7 +366,7 @@ macro_rules! impl_enum_access {
 
 impl_enum_access!(StronglyTyped);
 
-#[cfg(feature = "layout")]
+#[cfg(feature = "loose_deserialization")]
 impl_enum_access!(LooselyTyped);
 
 // `VariantAccess` is provided to the `Visitor` to give it the ability to see
@@ -410,7 +410,7 @@ macro_rules! impl_variant_access {
 
 impl_variant_access!(StronglyTyped);
 
-#[cfg(feature = "layout")]
+#[cfg(feature = "loose_deserialization")]
 impl_variant_access!(LooselyTyped);
 
 pub(crate) struct MapAccess<'a, R: Read + 'a, Mode> {
@@ -458,7 +458,7 @@ macro_rules! impl_map_access {
 
 impl_map_access!(StronglyTyped);
 
-#[cfg(feature = "layout")]
+#[cfg(feature = "loose_deserialization")]
 impl_map_access!(LooselyTyped);
 
 pub(crate) struct SeqAccess<'a, R: Read + 'a, Mode> {
@@ -518,5 +518,5 @@ macro_rules! impl_seq_access {
 
 impl_seq_access!(StronglyTyped);
 
-#[cfg(feature = "layout")]
+#[cfg(feature = "loose_deserialization")]
 impl_seq_access!(LooselyTyped);

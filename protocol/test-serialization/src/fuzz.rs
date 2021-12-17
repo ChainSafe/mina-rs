@@ -40,11 +40,22 @@ mod tests {
         );
     }
 
+    #[test]
+    #[wasm_bindgen_test]
+    fn ensure_non_exhaustive_deserialization() {
+        let mut rng = StdRng::from_seed([0; 32]);
+        let mut bytes = vec![0; rng.gen_range((1024 * 1024)..(50 * 1024 * 1024))];
+
+        bytes[0] = 1;
+        let mut de = Deserializer::from_reader(bytes.as_slice());
+        let _et: ProtocolVersion = Deserialize::deserialize(&mut de).unwrap();
+    }
+
     #[macro_export]
     macro_rules! fuzz_test {
         ($($ty: ty) *) => {
             $(
-                let mut rng = rand::thread_rng();
+                let mut rng = StdRng::from_seed([0; 32]);
                 for _i in 0..5 {
                     let mut bytes = vec![0; rng.gen_range((1024 * 1024)..(50 * 1024 * 1024))];
                     rng.try_fill_bytes(&mut bytes).unwrap();

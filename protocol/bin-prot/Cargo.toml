@@ -9,7 +9,7 @@ license = "Apache-2.0"
 [features]
 default = []
 
-layout = [
+loose_deserialization = [
   "serde_json",
 ]
 
