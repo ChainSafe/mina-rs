@@ -99,7 +99,7 @@ impl<'de, 'a, R: Read> DS<R, LooselyTyped> {
                         // here is where custom deser methods can be looked up by path
                         match path.as_str() {
                             // These vector types will be handled like any other sequence
-                            "Pickles_type.Vector.Vector2" // the missing 's' on 'types' here is intention due to a big in layout producing code
+                            "Pickles_type.Vector.Vector2" // the missing 's' on 'types' here is intention due to a bug in layout producing code
                             | "Pickles_types.Vector.Vector2" // in case it gets fixed :P
                             | "Pickles_types.Vector.Vector4"
                             | "Pickles_types.Vector.Vector8"
