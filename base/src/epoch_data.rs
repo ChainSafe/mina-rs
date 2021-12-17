@@ -29,7 +29,7 @@ pub struct EpochLedger {
 pub struct EpochData {
     /// Epoch Ledger, contains ledger related data for the epoch
     pub ledger: EpochLedger,
-    /// ?
+    ///  Initialize the random number generator
     pub seed: EpochSeed,
     /// State hash of first block of epoch
     pub start_checkpoint: StateHash,
