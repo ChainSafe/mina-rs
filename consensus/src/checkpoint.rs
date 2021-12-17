@@ -79,7 +79,7 @@ mod tests {
     #[test]
     fn test_init_checkpoints() {
         let mut genesis: ProtocolState = Default::default();
-        init_checkpoints(&mut genesis);
+        init_checkpoints(&mut genesis).unwrap();
         assert_eq!(
             genesis
                 .body
@@ -114,7 +114,7 @@ mod tests {
     #[test]
     fn test_is_short_range() {
         let mut genesis: ProtocolState = Default::default();
-        init_checkpoints(&mut genesis);
+        init_checkpoints(&mut genesis).unwrap();
         let mut c0: ProtocolStateChain = ProtocolStateChain(vec![]);
         let mut c1: ProtocolStateChain = ProtocolStateChain(vec![]);
         let mut c3: ProtocolStateChain = ProtocolStateChain(vec![]);
@@ -136,7 +136,7 @@ mod tests {
         assert_eq!(is_short_range(&c0, &c1).unwrap(), true);
         assert_eq!(is_short_range(&c1, &c0).unwrap(), true);
 
-        init_checkpoints(&mut genesis);
+        init_checkpoints(&mut genesis).unwrap();
         let mut b1: ProtocolState = Default::default();
         b1.body.consensus_state.blockchain_length = Length(2);
         b1.body.consensus_state.curr_global_slot = GlobalSlot {

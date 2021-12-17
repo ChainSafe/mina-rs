@@ -100,7 +100,7 @@ impl<'de, 'a, R: Read> DS<R, LooselyTyped> {
                         match path.as_str() {
                             // These vector types will be handled like any other sequence
                             "Pickles_type.Vector.Vector2" // the missing 's' on 'types' here is intention due to a big in layout producing code
-                            |"Pickles_types.Vector.Vector2" // in case it gets fixed :P
+                            | "Pickles_types.Vector.Vector2" // in case it gets fixed :P
                             | "Pickles_types.Vector.Vector4"
                             | "Pickles_types.Vector.Vector8"
                             | "Pickles_types.Vector.Vector17"
@@ -130,9 +130,8 @@ impl<'de, 'a, R: Read> DS<R, LooselyTyped> {
                             | "Zexe_backend.Zexe_backend_common.Stable.Field"
                             | "Pending_coinbase.Coinbase_stack" => {
                                 // force it to read a 32 element long tuple of u8/chars
-                                let len = 32;
-                                self.mode.layout_iter.push_n(BinProtRule::Char, len);
-                                visitor.visit_seq(SeqAccess::new(self, len))
+                                self.mode.layout_iter.push_n(BinProtRule::Char, 32);
+                                visitor.visit_seq(SeqAccess::new(self, 32))
                             }
                             _ => Err(Error::UnknownCustomType{ typ: path })
                         }

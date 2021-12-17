@@ -33,11 +33,6 @@ impl<'de> Visitor<'de> for ValueVisitor {
         Ok(Value::Int(value))
     }
 
-    // #[inline]
-    // fn visit_u64<E>(self, value: u64) -> Result<Value, E> {
-    //     Ok(Value::Int(value.into()))
-    // }
-
     #[inline]
     fn visit_f64<E>(self, value: f64) -> Result<Value, E> {
         Ok(Value::Float(value))
