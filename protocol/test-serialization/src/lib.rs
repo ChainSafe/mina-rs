@@ -4,6 +4,7 @@
 #[cfg(all(test, feature = "browser"))]
 wasm_bindgen_test::wasm_bindgen_test_configure!(run_in_browser);
 
+mod fuzz;
 #[allow(non_snake_case)]
 mod test_3NKaBJsN1SehD6iJwRwJSFmVzJg5DXSUQVgnMxtH4eer4aF5BrDK;
 
@@ -15,16 +16,15 @@ mod tests {
     use mina_crypto::signature::{
         FieldPoint, InnerCurveScalar, PublicKey, PublicKey2, PublicKey3, Signature,
     };
+    use mina_rs_base::protocol_state_proof::proof_messages::{
+        ProofMessageWithDegreeBound, ProofMessageWithoutDegreeBoundList,
+    };
     use mina_rs_base::types::*;
     use pretty_assertions::assert_eq;
     use serde::{Deserialize, Serialize};
     use std::str::FromStr;
     use test_fixtures::*;
     use wasm_bindgen_test::*;
-
-    use mina_rs_base::protocol_state_proof::proof_messages::{
-        ProofMessageWithDegreeBound, ProofMessageWithoutDegreeBoundList,
-    };
 
     #[test]
     #[wasm_bindgen_test]
