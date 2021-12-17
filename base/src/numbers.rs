@@ -112,14 +112,14 @@ pub enum ParseAmountError {
 impl std::str::FromStr for Amount {
     type Err = ParseAmountError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        let mut iter = s.split(".");
+        let mut iter = s.split('.');
         let q: u64 = iter
             .next()
-            .ok_or(Self::Err::ErrorInvalidFormat(s.to_string()))?
+            .ok_or_else(|| Self::Err::ErrorInvalidFormat(s.to_string()))?
             .parse()?;
         let r: u64 = iter
             .next()
-            .ok_or(Self::Err::ErrorInvalidFormat(s.to_string()))?
+            .ok_or_else(|| Self::Err::ErrorInvalidFormat(s.to_string()))?
             .parse()?;
         if iter.next().is_none() {
             // ensure there isn't more to parse as that is undefined
