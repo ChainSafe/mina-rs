@@ -20,8 +20,8 @@ pub struct BlockchainState {
     pub snarked_ledger_hash: SnarkedLedgerHash,
     /// Hash of the genesis state
     pub genesis_ledger_hash: SnarkedLedgerHash,
-    /// ?
+    /// Check whether the change of the next token ID is consistent.
     pub snarked_next_available_token: TokenId,
-    /// ?
+    /// Timestamps for blocks 
     pub timestamp: BlockTime,
 }
