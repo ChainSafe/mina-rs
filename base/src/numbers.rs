@@ -10,6 +10,7 @@ use num::Integer;
 use serde::{Deserialize, Serialize};
 use time::Duration;
 use wire_type::WireType;
+use thiserror::Error;
 
 use crate::constants::MINA_PRECISION;
 
@@ -96,7 +97,31 @@ impl fmt::Display for Amount {
     }
 }
 
-// TODO: Impl From<String> for Amount {}
+#[derive(Debug, Error, PartialEq)]
+/// Error that can be returned when parsing an Amount from string
+pub enum ParseAmountError {
+    /// Error occurs when parsing the integer components
+    #[error("Error parsing integer in Amount")]
+    ErrorParsingInteger(#[from] std::num::ParseIntError),
+
+    /// Unable to split the string on a '.' into to integer parts
+    #[error("Unexpected formatting, does not contain two integers seperated by a '.'. Got: {0}")]
+    ErrorInvalidFormat(String),
+}
+
+impl std::str::FromStr for Amount {
+    type Err = ParseAmountError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        let mut iter = s.split(".");
+        let q: u64 = iter.next().ok_or(Self::Err::ErrorInvalidFormat(s.to_string()))?.parse()?;
+        let r: u64 = iter.next().ok_or(Self::Err::ErrorInvalidFormat(s.to_string()))?.parse()?;
+        if iter.next().is_none() { // ensure there isn't more to parse as that is undefined
+            Ok(Amount(r + MINA_PRECISION * q))
+        } else {
+            Err(Self::Err::ErrorInvalidFormat(s.to_string()))
+        }
+    }
+}
 
 #[derive(Clone, Serialize, Deserialize, PartialEq, Debug, Hash, Default, WireType)]
 #[serde(from = "<Self as WireType>::WireType")]
@@ -163,15 +188,31 @@ impl From<BigInt256> for ark_ff::BigInteger256 {
 pub mod tests {
     use crate::numbers::Amount;
     use crate::numbers::BigInt256;
+    use crate::types::ParseAmountError;
+    use std::str::FromStr;
 
     #[test]
-    pub fn test_amount_to_formatted_string() {
+    pub fn test_amount_to_string() {
         assert_eq!(Amount(0).to_string(), "0.000000000");
         assert_eq!(Amount(3).to_string(), "0.000000003");
         assert_eq!(Amount(1000000003).to_string(), "1.000000003");
         assert_eq!(Amount(1000000030).to_string(), "1.000000030");
         assert_eq!(Amount(1300000000).to_string(), "1.300000000");
         assert_eq!(Amount(1000000000).to_string(), "1.000000000");
+    }
+
+    #[test]
+    pub fn test_amount_from_string() {
+        assert_eq!(Amount::from_str("0.000000000").unwrap(), Amount(0));
+        assert_eq!(Amount::from_str("0.000000003").unwrap(), Amount(3));
+        assert_eq!(Amount::from_str("1.000000003").unwrap(), Amount(1000000003));
+        assert_eq!(Amount::from_str("1.000000030").unwrap(), Amount(1000000030));
+        assert_eq!(Amount::from_str("1.300000000").unwrap(), Amount(1300000000));
+        assert_eq!(Amount::from_str("1.000000000").unwrap(), Amount(1000000000));
+
+        assert_eq!(Amount::from_str("0.000000000.0").unwrap_err(), ParseAmountError::ErrorInvalidFormat("0.000000000.0".to_string()));
+        assert_eq!(Amount::from_str("000000000").unwrap_err(), ParseAmountError::ErrorInvalidFormat("000000000".to_string()));
+
     }
 
     #[test]
