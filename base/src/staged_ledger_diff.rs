@@ -4,6 +4,9 @@
 //! In this context a diff refers to a difference between two states of the blockchain.
 //! In this case it is between the current state and the proposed next state.
 
+// TODO: Get clarification on all the fields of this type before documenting
+#![allow(missing_docs)]
+
 use mina_crypto::signature::{PublicKey2, PublicKey3, Signature};
 use serde::{Deserialize, Serialize};
 use thiserror::Error;
@@ -22,7 +25,6 @@ pub struct StagedLedgerDiff {
 #[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, WireType)]
 #[serde(from = "<Self as WireType>::WireType")]
 #[serde(into = "<Self as WireType>::WireType")]
-
 pub struct StagedLedgerDiffTuple((StagedLedgerPreDiffTwo, Option<StagedLedgerPreDiffOne>));
 
 impl StagedLedgerDiffTuple {

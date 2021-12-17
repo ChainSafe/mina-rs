@@ -50,7 +50,9 @@ pub struct Delta(pub u32);
 // FIXME: 255 255 cannot be deserialized to u32, use i32 for now
 // Note: Extended_Uint32 is not defined in bin_prot, but comes from mina
 // Block path: t/staged_ledger_diff/t/diff/t/0/t/t/commands/0/t/data/t/t/t/t/payload/t/t/common/t/t/t/valid_until
-pub(crate) struct ExtendedU32(pub i32);
+/// u32 wrapped in 1 version byte
+/// This will not be part of the public API once the deserialization refactor is complete
+pub struct ExtendedU32(pub i32);
 
 #[derive(
     Clone, Serialize, Deserialize, PartialEq, PartialOrd, Debug, Hash, Copy, Default, WireType,
@@ -58,7 +60,9 @@ pub(crate) struct ExtendedU32(pub i32);
 #[serde(from = "<Self as WireType>::WireType")]
 #[serde(into = "<Self as WireType>::WireType")]
 #[wire_type(recurse = 3)]
-pub(crate) struct ExtendedU64_3(pub u64);
+/// u64 wrapped in 3 version bytes
+/// This will not be part of the public API once the deserialization refactor is complete
+pub struct ExtendedU64_3(pub u64);
 
 #[derive(
     Clone, Serialize, Deserialize, PartialEq, PartialOrd, Debug, Hash, Copy, Default, WireType,
@@ -66,7 +70,9 @@ pub(crate) struct ExtendedU64_3(pub u64);
 #[serde(from = "<Self as WireType>::WireType")]
 #[serde(into = "<Self as WireType>::WireType")]
 #[wire_type(recurse = 2)]
-pub(crate) struct ExtendedU64_2(pub u64);
+/// u64 wrapped in 2 version bytes
+/// This will not be part of the public API once the deserialization refactor is complete
+pub struct ExtendedU64_2(pub u64);
 
 /// This structure represents fixed point numbers
 /// typically amounts of Mina currency
@@ -95,12 +101,14 @@ impl fmt::Display for Amount {
 #[derive(Clone, Serialize, Deserialize, PartialEq, Debug, Hash, Default, WireType)]
 #[serde(from = "<Self as WireType>::WireType")]
 #[serde(into = "<Self as WireType>::WireType")]
-pub(crate) struct Hex64(i64);
+/// 4 bytes wrapped by a version
+/// Will not form part of the public API when deserialization refactor is complete
+pub struct Hex64(i64);
 
 #[derive(Clone, Serialize, Deserialize, PartialEq, Debug, Hash, Default, WireType)]
 #[serde(from = "<Self as WireType>::WireType")]
 #[serde(into = "<Self as WireType>::WireType")]
-/// A single char defined by a single byte (e.g. not variable length like a Rust char)
+/// A single char defined by a single byte (not variable length like a Rust char)
 pub struct Char(u8);
 
 #[derive(Clone, Serialize, Deserialize, PartialEq, Debug, Hash, Default, Deref, WireType)]
