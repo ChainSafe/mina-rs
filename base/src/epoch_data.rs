@@ -15,9 +15,9 @@ use wire_type::WireType;
 #[wire_type(recurse = 2)]
 /// Epoch Ledger
 pub struct EpochLedger {
-    /// ?
+    /// A unique identifier of the EpochLedger
     pub hash: LedgerHash,
-    /// ?
+    /// The total currency in circulation after the block was produced. New issuance is via the coinbase reward and new account fees can reduce the total issuance.
     pub total_currency: Amount,
 }
 
