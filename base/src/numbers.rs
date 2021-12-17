@@ -3,7 +3,7 @@
 
 use derive_deref::Deref;
 use derive_more::From;
-use mina_crypto::prelude::*;
+use mina_crypto::{hex::skip_0x_prefix_when_needed, prelude::*};
 use num::Integer;
 use serde::{Deserialize, Serialize};
 use time::Duration;
@@ -171,14 +171,10 @@ impl HexEncodable for BigInt256 {
     }
 
     fn try_from_hex(s: impl AsRef<[u8]>) -> Result<Self, Self::Error> {
-        let mut s = s.as_ref();
-        if s[1] == b'x' && (s[0] == b'0' || s[0] == b'\\') {
-            s = &s[2..];
-        }
+        let s = skip_0x_prefix_when_needed(s.as_ref());
         let bytes = hex::decode(s)?;
         let mut b32 = [0; 32];
         b32.copy_from_slice(&bytes);
-
         Ok(Self(b32))
     }
 }

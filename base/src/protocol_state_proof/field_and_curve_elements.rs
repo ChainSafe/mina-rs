@@ -3,7 +3,7 @@
 
 use ark_ec::models::ModelParameters;
 use ark_ec::short_weierstrass_jacobian::GroupAffine;
-use mina_crypto::prelude::*;
+use mina_crypto::{hex::skip_0x_prefix_when_needed, prelude::*};
 use num::Integer;
 use serde::{Deserialize, Serialize};
 use wire_type::WireType;
@@ -32,10 +32,7 @@ impl HexEncodable for FieldElementVec {
     }
 
     fn try_from_hex(s: impl AsRef<[u8]>) -> Result<Self, Self::Error> {
-        let mut s = s.as_ref();
-        if s[1] == b'x' && (s[0] == b'0' || s[0] == b'\\') {
-            s = &s[2..];
-        }
+        let s = skip_0x_prefix_when_needed(s.as_ref());
         let (q, r) = s.len().div_rem(&64);
         let mut vec = Vec::with_capacity(match r > 0 {
             true => q + 1,
