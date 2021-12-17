@@ -1,18 +1,19 @@
 // Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
-use std::io::{BufReader, Read};
-
 use crate::error::{Error, Result};
-use crate::value::layout::{BinProtRule, BinProtRuleIterator};
+#[cfg(feature = "loose_deserialization")]
+use crate::value::layout::*;
 use crate::ReadBinProtExt;
 use byteorder::{LittleEndian, ReadBytesExt};
-use duplicate::duplicate;
 use serde::de::{self, value::U8Deserializer, EnumAccess, IntoDeserializer, Visitor};
 use serde::Deserialize;
+use std::io::{BufReader, Read};
 
 // the modes of operation for the deserializer
 pub struct StronglyTyped;
+
+#[cfg(feature = "loose_deserialization")]
 pub struct LooselyTyped {
     pub layout_iter: BinProtRuleIterator,
 }
@@ -31,6 +32,7 @@ impl<R: Read> Deserializer<R, StronglyTyped> {
     }
 }
 
+#[cfg(feature = "loose_deserialization")]
 impl<R: Read> Deserializer<R, StronglyTyped> {
     pub fn with_layout(self, layout: &BinProtRule) -> Deserializer<R, LooselyTyped> {
         Deserializer {
@@ -50,6 +52,7 @@ pub fn from_reader<'de, R: Read, T: Deserialize<'de>>(rdr: R) -> Result<T> {
 
 // In the loosely typed case we want to use deserialize_any for every field
 // This includes the hybrid strong/loose case
+#[cfg(feature = "loose_deserialization")]
 impl<'de, 'a, R: Read> de::Deserializer<'de> for &'a mut Deserializer<R, LooselyTyped> {
     type Error = Error;
     fn deserialize_any<V>(self, visitor: V) -> Result<V::Value>
@@ -343,52 +346,72 @@ impl<'a, 'de, R: Read, Mode> Enum<'a, R, Mode> {
 
 // `EnumAccess` is provided to the `Visitor` to give it the ability to determine
 // which variant of the enum is supposed to be deserialized.
-#[duplicate(Mode; [StronglyTyped]; [LooselyTyped])]
-impl<'de, 'a, R: Read> EnumAccess<'de> for Enum<'a, R, Mode> {
-    type Error = Error;
-    type Variant = Self;
+macro_rules! impl_enum_access {
+    ($ty: ty) => {
+        impl<'de, 'a, R: Read> EnumAccess<'de> for Enum<'a, R, $ty> {
+            type Error = Error;
+            type Variant = Self;
 
-    fn variant_seed<V>(self, seed: V) -> Result<(V::Value, Self::Variant)>
-    where
-        V: de::DeserializeSeed<'de>,
-    {
-        let de: U8Deserializer<Self::Error> = (self.index as u8).into_deserializer();
-        let v = seed.deserialize(de)?;
-        Ok((v, self))
-    }
+            fn variant_seed<V>(self, seed: V) -> Result<(V::Value, Self::Variant)>
+            where
+                V: de::DeserializeSeed<'de>,
+            {
+                let de: U8Deserializer<Self::Error> = (self.index as u8).into_deserializer();
+                let v = seed.deserialize(de)?;
+                Ok((v, self))
+            }
+        }
+    };
 }
+
+impl_enum_access!(StronglyTyped);
+
+#[cfg(feature = "loose_deserialization")]
+impl_enum_access!(LooselyTyped);
 
 // `VariantAccess` is provided to the `Visitor` to give it the ability to see
 // the content of the single variant that it decided to deserialize.
-#[duplicate(Mode; [StronglyTyped]; [LooselyTyped])]
-impl<'de, 'a, R: Read> de::VariantAccess<'de> for Enum<'a, R, Mode> {
-    type Error = Error;
+macro_rules! impl_variant_access {
+    ($ty: ty) => {
+        impl<'de, 'a, R: Read> de::VariantAccess<'de> for Enum<'a, R, $ty> {
+            type Error = Error;
 
-    fn unit_variant(self) -> Result<()> {
-        Ok(())
-    }
+            fn unit_variant(self) -> Result<()> {
+                Ok(())
+            }
 
-    fn newtype_variant_seed<T>(self, seed: T) -> Result<T::Value>
-    where
-        T: de::DeserializeSeed<'de>,
-    {
-        seed.deserialize(self.de)
-    }
+            fn newtype_variant_seed<T>(self, seed: T) -> Result<T::Value>
+            where
+                T: de::DeserializeSeed<'de>,
+            {
+                seed.deserialize(self.de)
+            }
 
-    fn tuple_variant<V>(self, len: usize, visitor: V) -> Result<V::Value>
-    where
-        V: Visitor<'de>,
-    {
-        de::Deserializer::deserialize_tuple(self.de, len, visitor)
-    }
+            fn tuple_variant<V>(self, len: usize, visitor: V) -> Result<V::Value>
+            where
+                V: Visitor<'de>,
+            {
+                de::Deserializer::deserialize_tuple(self.de, len, visitor)
+            }
 
-    fn struct_variant<V>(self, fields: &'static [&'static str], visitor: V) -> Result<V::Value>
-    where
-        V: Visitor<'de>,
-    {
-        de::Deserializer::deserialize_struct(self.de, "", fields, visitor)
-    }
+            fn struct_variant<V>(
+                self,
+                fields: &'static [&'static str],
+                visitor: V,
+            ) -> Result<V::Value>
+            where
+                V: Visitor<'de>,
+            {
+                de::Deserializer::deserialize_struct(self.de, "", fields, visitor)
+            }
+        }
+    };
 }
+
+impl_variant_access!(StronglyTyped);
+
+#[cfg(feature = "loose_deserialization")]
+impl_variant_access!(LooselyTyped);
 
 pub(crate) struct MapAccess<'a, R: Read + 'a, Mode> {
     de: &'a mut Deserializer<R, Mode>,
@@ -401,28 +424,42 @@ impl<'a, R: Read + 'a, Mode> MapAccess<'a, R, Mode> {
     }
 }
 
-#[duplicate(Mode; [StronglyTyped]; [LooselyTyped])]
-impl<'de: 'a, 'a, R: Read> de::MapAccess<'de> for MapAccess<'a, R, Mode> {
-    type Error = Error;
+macro_rules! impl_map_access {
+    ($ty: ty) => {
+        impl<'de: 'a, 'a, R: Read> de::MapAccess<'de> for MapAccess<'a, R, $ty> {
+            type Error = Error;
 
-    fn next_key_seed<T: de::DeserializeSeed<'de>>(&mut self, seed: T) -> Result<Option<T::Value>> {
-        if let Some(name) = self.field_names.pop() {
-            // create a new deserializer to read the name from memory
-            // as it isn't present in the serialized output
-            seed.deserialize(name.into_deserializer()).map(Some)
-        } else {
-            Ok(None)
+            fn next_key_seed<T: de::DeserializeSeed<'de>>(
+                &mut self,
+                seed: T,
+            ) -> Result<Option<T::Value>> {
+                if let Some(name) = self.field_names.pop() {
+                    // create a new deserializer to read the name from memory
+                    // as it isn't present in the serialized output
+                    seed.deserialize(name.into_deserializer()).map(Some)
+                } else {
+                    Ok(None)
+                }
+            }
+
+            fn next_value_seed<T: de::DeserializeSeed<'de>>(
+                &mut self,
+                seed: T,
+            ) -> Result<T::Value> {
+                seed.deserialize(&mut *self.de)
+            }
+
+            fn size_hint(&self) -> Option<usize> {
+                Some(self.field_names.len())
+            }
         }
-    }
-
-    fn next_value_seed<T: de::DeserializeSeed<'de>>(&mut self, seed: T) -> Result<T::Value> {
-        seed.deserialize(&mut *self.de)
-    }
-
-    fn size_hint(&self) -> Option<usize> {
-        Some(self.field_names.len())
-    }
+    };
 }
+
+impl_map_access!(StronglyTyped);
+
+#[cfg(feature = "loose_deserialization")]
+impl_map_access!(LooselyTyped);
 
 pub(crate) struct SeqAccess<'a, R: Read + 'a, Mode> {
     de: &'a mut Deserializer<R, Mode>,
@@ -451,27 +488,35 @@ impl<'a, R: Read + 'a, Mode> SeqAccess<'a, R, Mode> {
     }
 }
 
-#[duplicate(Mode; [StronglyTyped]; [LooselyTyped])]
-impl<'de: 'a, 'a, R: Read> de::SeqAccess<'de> for SeqAccess<'a, R, Mode> {
-    type Error = Error;
+macro_rules! impl_seq_access {
+    ($ty: ty) => {
+        impl<'de: 'a, 'a, R: Read> de::SeqAccess<'de> for SeqAccess<'a, R, $ty> {
+            type Error = Error;
 
-    fn next_element_seed<T: de::DeserializeSeed<'de>>(
-        &mut self,
-        seed: T,
-    ) -> Result<Option<T::Value>> {
-        if self.len > 0 {
-            self.len -= 1;
-            seed.deserialize(&mut *self.de).map(Some)
-        } else {
-            Ok(None)
-        }
-    }
+            fn next_element_seed<T: de::DeserializeSeed<'de>>(
+                &mut self,
+                seed: T,
+            ) -> Result<Option<T::Value>> {
+                if self.len > 0 {
+                    self.len -= 1;
+                    seed.deserialize(&mut *self.de).map(Some)
+                } else {
+                    Ok(None)
+                }
+            }
 
-    fn size_hint(&self) -> Option<usize> {
-        if self.is_list {
-            Some(self.total_len)
-        } else {
-            None
+            fn size_hint(&self) -> Option<usize> {
+                if self.is_list {
+                    Some(self.total_len)
+                } else {
+                    None
+                }
+            }
         }
-    }
+    };
 }
+
+impl_seq_access!(StronglyTyped);
+
+#[cfg(feature = "loose_deserialization")]
+impl_seq_access!(LooselyTyped);

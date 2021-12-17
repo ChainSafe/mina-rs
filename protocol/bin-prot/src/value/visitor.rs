@@ -1,11 +1,13 @@
 // Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
+#[cfg(feature = "loose_deserialization")]
 use crate::loose_deserializer::EnumData;
 use crate::value::Value;
 use serde::de::MapAccess;
 use serde::de::SeqAccess;
 use serde::de::Visitor;
+#[cfg(feature = "loose_deserialization")]
 use serde::de::{EnumAccess, VariantAccess};
 use serde::Deserialize;
 
@@ -104,6 +106,7 @@ impl<'de> Visitor<'de> for ValueVisitor {
         Ok(Value::Record(values))
     }
 
+    #[cfg(feature = "loose_deserialization")]
     fn visit_enum<A>(self, data: A) -> Result<Self::Value, A::Error>
     where
         A: EnumAccess<'de>,
