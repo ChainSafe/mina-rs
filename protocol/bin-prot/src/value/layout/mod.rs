@@ -61,7 +61,7 @@ pub enum BinProtRule {
     Tuple(Vec<BinProtRule>),
     /// sum types/enums
     Sum(Vec<Summand>),
-    /// ?
+    /// τ ≤ Γ(a), τ is an instance of Γ(a) and (Γ(a) a type scheme
     Polyvar(Vec<Polyvar>),
     /// Variable length list of any BinProt type
     List(Box<BinProtRule>),
@@ -69,11 +69,11 @@ pub enum BinProtRule {
     Hashtable(HashTblEntry),
     /// fixed length of BinProt types
     Vec(usize, Box<BinProtRule>),
-    /// ?
+    /// A set of utils for dealing with `bigarrays` of `char`
     Bigstring,
     ///  track indirections for debugging
     Reference(RuleRef),
-    /// ?
+    /// your type
     TypeVar(String),
     ///  inside a recursive type, list of type parameters
     SelfReference(Vec<BinProtRule>),
@@ -183,16 +183,16 @@ pub struct HashTblEntry {
 
 #[derive(Clone, Serialize, Deserialize, Debug)]
 #[serde(try_from = "ListTaggedEnum")]
-/// ?
+/// τ ≤ Γ(a), τ is an instance of Γ(a) and (Γ(a) a type scheme
 pub enum Polyvar {
-    /// ?
+    /// An instance of Γ(a)
     Tagged(TaggedPolyvar),
-    /// ?
+    /// An instance of Γ(a)
     Inherited(BinProtRule),
 }
 
 #[derive(Clone, Serialize, Deserialize, Debug)]
-/// ?
+/// τ ≤ Γ(a), τ is an instance of Γ(a) and (Γ(a) a type scheme
 pub struct TaggedPolyvar {
     polyvar_name: String,
     hash: i32,
@@ -217,23 +217,23 @@ impl TryFrom<ListTaggedEnum> for Polyvar {
 
 #[derive(Clone, Serialize, Deserialize, Debug)]
 #[serde(try_from = "ListTaggedEnum")]
-/// ?
+/// Define rule reference into Resolved and Unresolved Payload
 pub enum RuleRef {
-    /// ?
+    /// Unresolved Payload
     Unresolved(UnresolvedPayload),
-    /// ?
+    /// Resolved Payload
     Resolved(ResolvedPayload),
 }
 
 #[derive(Clone, Serialize, Deserialize, Debug)]
-/// ?
+/// Unable to resolve reference of payload
 pub struct UnresolvedPayload {
     params: Vec<BinProtRule>,
     layout_id: String, // what is longident?
 }
 
 #[derive(Clone, Serialize, Deserialize, Debug)]
-/// ?
+/// Resolved reference of payload
 pub struct ResolvedPayload {
     source_type_decl: String,
     #[serde(default)]
