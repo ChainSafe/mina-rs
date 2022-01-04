@@ -8,7 +8,7 @@ use wire_type::WireType;
 use crate::{
     blockchain_state::BlockchainState,
     consensus_state::ConsensusState,
-    numbers::{BlockTime, Length},
+    numbers::{BlockTime, Delta, Length},
 };
 use mina_crypto::hash::StateHash;
 
@@ -17,6 +17,14 @@ use mina_crypto::hash::StateHash;
 #[serde(into = "<Self as WireType>::WireType")]
 #[wire_type(recurse = 2)]
 pub struct ProtocolConstants {
+    pub k: Length,
+    pub slots_per_epoch: Length,
+    pub slots_per_sub_window: Length,
+    pub delta: Delta,
+    pub genesis_state_timestamp: BlockTime,
+}
+
+pub struct ProtocolConstantsTemp {
     /// Point of finality (number of confirmations)
     pub k: Length,
     /// Number of slots per epoch
@@ -33,7 +41,7 @@ pub struct ProtocolConstants {
     pub grace_period_end: Length,
 }
 
-impl ProtocolConstants {
+impl ProtocolConstantsTemp {
     // TODO: read from config
     pub fn new() -> Self {
         Self {
