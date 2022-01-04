@@ -875,7 +875,6 @@ dependencies = [
 name = "mina-consensus"
 version = "0.1.0"
 dependencies = [
- "base64",
  "hex",
  "mina-crypto",
  "mina-rs-base",
