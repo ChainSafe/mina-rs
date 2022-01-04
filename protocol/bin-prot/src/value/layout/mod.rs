@@ -61,7 +61,7 @@ pub enum BinProtRule {
     Tuple(Vec<BinProtRule>),
     /// sum types/enums
     Sum(Vec<Summand>),
-    /// τ ≤ Γ(a), τ is an instance of Γ(a), 
+    /// τ ≤ Γ(a), τ is an instance of Γ(a),
     Polyvar(Vec<Polyvar>),
     /// Variable length list of any BinProt type
     List(Box<BinProtRule>),
@@ -73,7 +73,7 @@ pub enum BinProtRule {
     Bigstring,
     ///  track indirections for debugging
     Reference(RuleRef),
-    /// your type 
+    /// your type
     TypeVar(String),
     ///  inside a recursive type, list of type parameters
     SelfReference(Vec<BinProtRule>),
