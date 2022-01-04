@@ -217,23 +217,23 @@ impl TryFrom<ListTaggedEnum> for Polyvar {
 
 #[derive(Clone, Serialize, Deserialize, Debug)]
 #[serde(try_from = "ListTaggedEnum")]
-/// ?
+/// Define rule reference into Resolved and Unresolved Payload
 pub enum RuleRef {
-    /// ?
+    /// Unresolved Payload
     Unresolved(UnresolvedPayload),
-    /// ?
+    /// Resolved Payload
     Resolved(ResolvedPayload),
 }
 
 #[derive(Clone, Serialize, Deserialize, Debug)]
-/// ?
+/// Unable to resolve reference of payload
 pub struct UnresolvedPayload {
     params: Vec<BinProtRule>,
     layout_id: String, // what is longident?
 }
 
 #[derive(Clone, Serialize, Deserialize, Debug)]
-/// ?
+/// Resolved reference of payload
 pub struct ResolvedPayload {
     source_type_decl: String,
     #[serde(default)]
