@@ -12,8 +12,8 @@ const BLOCK_BYTES: &[u8] = include_bytes!("../../../../protocol/test-fixtures/sr
 fn main() -> anyhow::Result<()> {
     let matches = App::new("block-serde-app")
         .arg(
-            Arg::with_name("mode")
-                .short("m")
+            Arg::new("mode")
+                .short('m')
                 .long("mode")
                 .value_name("MODE")
                 .possible_values(&["cpu", "heap"])
