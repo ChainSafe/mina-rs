@@ -42,9 +42,9 @@ pub struct ProtocolConstantsTemp {
 }
 
 impl Default for ProtocolConstantsTemp {
-    fn default() -> Self { 
-    // TODO: read from config
-        Self{
+    fn default() -> Self {
+        // TODO: read from config
+        Self {
             k: Length(290),
             slots_per_epoch: 7140.into(),
             slots_per_sub_window: 7.into(),
