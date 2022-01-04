@@ -2,9 +2,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
 //! Deserialization for BinProt following the standard serde module layout
-
-use std::io::{BufReader, Read};
-
 use crate::error::{Error, Result};
 use crate::value::layout::{BinProtRule, BinProtRuleIterator};
 use crate::ReadBinProtExt;
@@ -12,6 +9,7 @@ use byteorder::{LittleEndian, ReadBytesExt};
 use duplicate::duplicate;
 use serde::de::{self, value::U8Deserializer, EnumAccess, IntoDeserializer, Visitor};
 use serde::Deserialize;
+use std::io::{BufReader, Read};
 
 /// the modes of operation for the deserializer
 pub struct StronglyTyped;
