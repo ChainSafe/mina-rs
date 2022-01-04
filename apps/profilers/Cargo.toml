@@ -12,7 +12,7 @@ mina-crypto = {path = "../../crypto"}
 mina-rs-base = {path = "../../base"}
 
 anyhow = "1"
-clap = "2"
+clap = "3"
 dhat = "0.2"
 serde = {version = "1", features = ["derive"]}
 
