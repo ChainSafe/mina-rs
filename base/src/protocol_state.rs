@@ -41,10 +41,10 @@ pub struct ProtocolConstantsTemp {
     pub grace_period_end: Length,
 }
 
-impl ProtocolConstantsTemp {
+impl Default for ProtocolConstantsTemp {
+    fn default() -> Self { 
     // TODO: read from config
-    pub fn new() -> Self {
-        Self {
+        Self{
             k: Length(290),
             slots_per_epoch: 7140.into(),
             slots_per_sub_window: 7.into(),
