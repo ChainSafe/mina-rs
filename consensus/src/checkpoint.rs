@@ -81,6 +81,8 @@ mod tests {
     use proptest::prelude::*;
     use quickcheck::QuickCheck;
     use wasm_bindgen_test::*;
+    const default_slot_fill_rate: f64 = 0.65;
+    const default_slot_fill_rate_delta: f64 = 0.15;
 
     #[test]
     fn test_init_checkpoints() {
@@ -172,8 +174,6 @@ mod tests {
         // that are generated can be configured independently so that this function
         // can be used in other generators that wish to generates pairs of spot blocks
         // with specific constraints.
-        let default_slot_fill_rate = 0.65;
-        let default_slot_fill_rate_delta = 0.15;
         let base_root_epoch_position =
             gen_spot_root_epoch_position(default_slot_fill_rate, default_slot_fill_rate_delta);
 
@@ -290,8 +290,6 @@ mod tests {
         gen_spot(&mut b);
 
         // Compute the root epoch position of `b`. This needs to be one epoch ahead of a
-        let default_slot_fill_rate = 0.65;
-        let default_slot_fill_rate_delta = 0.15;
         let added_blocks =
             gen_num_blocks_in_slots(default_slot_fill_rate, default_slot_fill_rate_delta, 1.0);
 
