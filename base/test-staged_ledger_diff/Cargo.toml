@@ -1,0 +1,31 @@
+[package]
+authors = ["ChainSafe Systems <info@chainsafe.io>"]
+name = "test-staged_ledger_diff"
+version = "0.1.0"
+
+edition = "2021"
+license = "Apache-2.0"
+publish = false
+
+[features]
+default = []
+
+# browser feature is used to run wasm tests in headless browser context
+browser = []
+
+[dev-dependencies]
+# bin-prot = {path = "../../bin-prot"}
+mina-crypto = {path = "../../crypto"}
+mina-rs-base = {path = "../../base"}
+
+anyhow = "1"
+base64 = "0.13"
+bs58 = {version = "0.4", features = ["check"]}
+criterion = {version = "0.3", features = ["html_reports"]}
+pretty_assertions = "1"
+serde = {version = "1", features = ["derive"]}
+time = {version = "0.3", features = ["macros"]}
+wasm-bindgen-test = "0.3"
+
+[lib]
+crate-type = ["dylib", "lib"]

@@ -4,6 +4,7 @@ members = [
 	"consensus",
 	"crypto",
 	"snark-keys",
+	"base/test-staged_ledger_diff",
 	# All crates related to bin prot wire protocol
 	"protocol/bin-prot",
 	"protocol/wire-type",
@@ -11,7 +12,6 @@ members = [
 	"protocol/wire-type-derive",
 	"protocol/test-fixtures",
 	"protocol/test-serialization",
-
 	# All apps
 	"apps/profilers"
 ]
