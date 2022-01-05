@@ -245,11 +245,9 @@ mod tests {
         gen_spot(&mut a);
         gen_spot(&mut b);
 
-        let mut c0: ProtocolStateChain = ProtocolStateChain(vec![]);
-        let mut c1: ProtocolStateChain = ProtocolStateChain(vec![]);
+        let mut c0: ProtocolStateChain = ProtocolStateChain(vec![a]);
+        let mut c1: ProtocolStateChain = ProtocolStateChain(vec![b]);
 
-        c0.push(a).unwrap();
-        c1.push(b).unwrap();
         assert_eq!(is_short_range(&c0, &c1).unwrap(), true);
         assert_eq!(is_short_range(&c1, &c0).unwrap(), true);
     }
@@ -268,11 +266,9 @@ mod tests {
         gen_spot(&mut b);
         gen_spot_pair_common_checkpoints(&mut a, &mut b, 0);
 
-        let mut c0: ProtocolStateChain = ProtocolStateChain(vec![]);
-        let mut c1: ProtocolStateChain = ProtocolStateChain(vec![]);
+        let mut c0: ProtocolStateChain = ProtocolStateChain(vec![a]);
+        let mut c1: ProtocolStateChain = ProtocolStateChain(vec![b]);
 
-        c0.push(a).unwrap();
-        c1.push(b).unwrap();
         assert_eq!(is_short_range(&c0, &c1).unwrap(), true);
         assert_eq!(is_short_range(&c1, &c0).unwrap(), true);
     }
@@ -301,11 +297,9 @@ mod tests {
         let min_a_curr_epoch_slot = 2 * (protocol_constants.slots_per_epoch.0 / 3) + 1;
         gen_spot_pair_common_checkpoints(&mut a, &mut b, min_a_curr_epoch_slot);
 
-        let mut c0: ProtocolStateChain = ProtocolStateChain(vec![]);
-        let mut c1: ProtocolStateChain = ProtocolStateChain(vec![]);
+        let mut c0: ProtocolStateChain = ProtocolStateChain(vec![a]);
+        let mut c1: ProtocolStateChain = ProtocolStateChain(vec![b]);
 
-        c0.push(a).unwrap();
-        c1.push(b).unwrap();
         assert_eq!(is_short_range(&c0, &c1).unwrap(), true);
         assert_eq!(is_short_range(&c1, &c0).unwrap(), true);
     }
@@ -323,11 +317,9 @@ mod tests {
         gen_spot(&mut b);
         a.body.consensus_state.epoch_count = Length(14);
         b.body.consensus_state.epoch_count = Length(15);
-        let mut c0: ProtocolStateChain = ProtocolStateChain(vec![]);
-        let mut c1: ProtocolStateChain = ProtocolStateChain(vec![]);
+        let mut c0: ProtocolStateChain = ProtocolStateChain(vec![a]);
+        let mut c1: ProtocolStateChain = ProtocolStateChain(vec![b]);
 
-        c0.push(a).unwrap();
-        c1.push(b).unwrap();
         assert_eq!(is_short_range(&c0, &c1).unwrap(), false);
         assert_eq!(is_short_range(&c1, &c0).unwrap(), false);
     }
