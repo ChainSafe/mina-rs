@@ -11,7 +11,4 @@ members = [
 	"protocol/wire-type-derive",
 	"protocol/test-fixtures",
 	"protocol/test-serialization",
-
-	# All apps
-	"apps/profilers"
 ]
