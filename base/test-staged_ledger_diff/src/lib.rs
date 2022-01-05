@@ -6,12 +6,19 @@ mod tests {
     use anyhow::bail;
     use mina_crypto::base58::Base58Encodable;
     use mina_rs_base::staged_ledger_diff::{
-        CoinBase, InternalCommandBalanceData, SignedCommandMemo, SignedCommandPayloadBody,
-        TransactionStatus, UserCommand,
+        CoinBase, CoinBaseBalanceData, CoinBaseFeeTransfer, FeeTransferBalanceData, SnappCommand,
+        TransactionStatus,
     };
     use time::macros::*;
     use wasm_bindgen_test::*;
 
-    // #[test]
-    // fn
+    #[test]
+    #[wasm_bindgen_test]
+    fn test_CoinBaseFeeTransfer() {}
+
+    fn test_CoinBaseBalanceData() {}
+    fn test_FeeTransferBalanceData() {}
+    fn test_CoinBase() {}
+    fn test_TransactionStatus() {}
+    fn test_SnappCommand() {}
 }
