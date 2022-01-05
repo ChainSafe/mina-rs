@@ -144,7 +144,7 @@ mod tests {
         #[serde(into = "<Self as WireType>::WireType")] // will be serialized to its wire type
         struct X {
             a: u32,
-            b: u32,
+            pub b: u32,
         }
 
         let x = X { a: 123, b: 321 };
@@ -200,7 +200,7 @@ mod tests {
         #[serde(from = "<Self as WireType>::WireType")] // can be deserialized from its wire type
         #[serde(into = "<Self as WireType>::WireType")] // will be serialized to its wire type
         struct X {
-            a: u32,
+            pub a: u32,
             b: u32,
         }
 
