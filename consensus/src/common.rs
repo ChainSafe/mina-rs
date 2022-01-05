@@ -88,6 +88,7 @@ mod tests {
 
     #[test]
     fn test_protocol_state_chain_push() {
+        // Test push functionality into ProtocolStateChain
         let mut c: ProtocolStateChain = ProtocolStateChain(vec![]);
         assert_eq!(c.length(), 0);
 
@@ -113,6 +114,7 @@ mod tests {
 
     #[test]
     fn test_protocol_state_chain_top() {
+        // Test top functionality in ProtocolStateChain
         let mut c: ProtocolStateChain = ProtocolStateChain(vec![]);
         assert_eq!(c.length(), 0);
         assert_eq!(c.top(), None);
@@ -134,6 +136,7 @@ mod tests {
 
     #[test]
     fn test_protocol_state_chain_epoch_slot() {
+        // Test protocol state chain epoch slot functionality in ProtocolStateChain
         let mut c: ProtocolStateChain = ProtocolStateChain(vec![]);
 
         let mut b0: ProtocolState = Default::default();
@@ -169,6 +172,7 @@ mod tests {
 
     #[test]
     fn test_protocol_state_chain_state_hash() {
+        // Test state_hash functionality in ProtocolStateChain
         let mut c: ProtocolStateChain = ProtocolStateChain(vec![]);
 
         let mut b0: ProtocolState = Default::default();
@@ -181,6 +185,7 @@ mod tests {
 
     #[test]
     fn test_protocol_state_chain_last_vrf() {
+        // Test last vrf functionality in ProtocolStateChain
         let mut c: ProtocolStateChain = ProtocolStateChain(vec![]);
         assert_eq!(None, c.last_vrf());
 
