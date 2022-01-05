@@ -159,8 +159,7 @@ mod tests {
         // New total currency for state.
         // New epoch data for staking and next epochs.
         // New block reward information (unused in chain selection).
-        let consensus_state = ConsensusState::new();
-        block.body.consensus_state = consensus_state;
+        block.body.consensus_state = ConsensusState::new();
     }
 
     fn gen_spot_pair_common_checkpoints(
