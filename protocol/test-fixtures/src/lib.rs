@@ -3,6 +3,7 @@
 
 use bin_prot::{BinProtRule, Deserializer};
 use lazy_static::lazy_static;
+use mina_crypto::prelude::*;
 use mina_rs_base::external_transition::ExternalTransition;
 use serde::Deserialize;
 use std::{borrow::Borrow, collections::HashMap};
@@ -19,10 +20,10 @@ lazy_static! {
             .unwrap()
             .bin_prot_rule
     };
-    // FIXME: Update this with real genesis block
-    pub static ref GENESIS_BLOCK: BlockFixture = load_test_block(include_bytes!("data/block1"));
+    pub static ref GENESIS_BLOCK_MAINNET: BlockFixture = load_test_block_hex(include_str!("data/genesis-3NKeMoncuHab5ScarV5ViyF16cJPT4taWNSaTLS64Dp67wuXigPZ.hex"));
+    // FIXME: Update this with real devnet genesis block
+    pub static ref GENESIS_BLOCK_DEVNET: BlockFixture = load_test_block_hex(include_str!("data/genesis-3NKeMoncuHab5ScarV5ViyF16cJPT4taWNSaTLS64Dp67wuXigPZ.hex"));
     pub static ref TEST_BLOCKS: HashMap<String, BlockFixture> = load_test_blocks!(
-        // "data/genesis_block"
         "data/block1"
         "data/3NK3P5bJHhqR7xkZBquGGfq3sERUeXNYNma5YXRMjgCNsTJRZpgL.hex"
         "data/3NK6nkk9t23KNHTZ92M77ebpv1nzvFwQLow1DHS4eDNa2bRhtsPd.hex"
@@ -51,8 +52,9 @@ pub struct BlockFixture {
 
 impl BlockFixture {
     pub fn external_transition(&self) -> anyhow::Result<ExternalTransition> {
-        let mut de = Deserializer::from_reader(self.bytes.as_slice());
-        Ok(Deserialize::deserialize(&mut de)?)
+        Ok(ExternalTransition::try_decode_binprot(
+            self.bytes.as_slice(),
+        )?)
     }
 }
 

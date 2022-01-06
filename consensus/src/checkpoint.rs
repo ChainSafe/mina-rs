@@ -2,8 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::common::{Chain, ProtocolStateChain};
-use mina_crypto::base58::Base58Encodable;
-use mina_crypto::hash::{EpochSeed, StateHash};
+use mina_crypto::{hash::*, prelude::*};
 use mina_rs_base::protocol_state::ProtocolState;
 
 pub const SLOTS_PER_EPOCH: u32 = 7140;
@@ -31,7 +30,7 @@ pub fn init_checkpoints(genesis: &mut ProtocolState) -> Result<(), ConsensusErrT
         .epoch_length
         .0 = 1;
     genesis.body.consensus_state.next_epoch_data.seed =
-        Base58Encodable::from_base58("2vaRh7FQ5wSzmpFReF9gcRKjv48CcJvHs25aqb3SSZiPgHQBy5Dt")
+        EpochSeed::from_base58("2vaRh7FQ5wSzmpFReF9gcRKjv48CcJvHs25aqb3SSZiPgHQBy5Dt")
             .map_err(|_| ConsensusErrTyp::ConsensusInitFail)?;
     genesis
         .body
@@ -39,7 +38,7 @@ pub fn init_checkpoints(genesis: &mut ProtocolState) -> Result<(), ConsensusErrT
         .next_epoch_data
         .start_checkpoint = StateHash::default();
     genesis.body.consensus_state.next_epoch_data.lock_checkpoint =
-        Base58Encodable::from_base58("3NLoKn22eMnyQ7rxh5pxB6vBA3XhSAhhrf7akdqS6HbAKD14Dh1d")
+        StateHash::from_base58("3NLoKn22eMnyQ7rxh5pxB6vBA3XhSAhhrf7akdqS6HbAKD14Dh1d")
             .map_err(|_| ConsensusErrTyp::ConsensusInitFail)?;
     genesis.body.consensus_state.next_epoch_data.epoch_length.0 = 2;
     Ok(())

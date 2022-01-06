@@ -10,13 +10,17 @@ use crate::{
 use mina_crypto::{base58::Base58Encodable, hash::*, signature::PublicKey};
 
 use mina_crypto::hash::{Hashable, VrfOutputHash};
+use derive_more::From;
+use mina_crypto::{hash::*, prelude::*, signature::*};
 use serde::{Deserialize, Serialize};
 use wire_type::WireType;
 
-#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, WireType)]
+#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, WireType, From)]
 #[serde(from = "<Self as WireType>::WireType")]
 #[serde(into = "<Self as WireType>::WireType")]
-pub struct VrfOutputTruncated(Vec<u8>);
+pub struct VrfOutputTruncated(pub Vec<u8>);
+
+impl Base64Encodable for VrfOutputTruncated {}
 
 const ERR_FAIL_TO_DECODE_B58: &str = "Failed to decode hash from base58";
 impl Hashable<VrfOutputHash> for VrfOutputTruncated {}
@@ -48,7 +52,7 @@ pub struct ConsensusState {
     /// Minimum odnws density oberved on the chain
     pub min_window_density: Length,
     /// Current sliding window of densities
-    sub_window_densities: Vec<Length>,
+    pub sub_window_densities: Vec<Length>,
     /// Additional VRS output from leader (for seeding Random Oracle)
     pub last_vrf_output: VrfOutputTruncated,
     /// Total supply of currency

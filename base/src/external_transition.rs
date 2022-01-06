@@ -1,13 +1,14 @@
 // Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
+use mina_crypto::prelude::*;
 use serde::{Deserialize, Serialize};
 use wire_type::WireType;
 
 use crate::types::*;
 
 /// This structure represents a mina block
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, WireType)]
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize, WireType)]
 #[serde(from = "<Self as WireType>::WireType")]
 #[serde(into = "<Self as WireType>::WireType")]
 pub struct ExternalTransition {
@@ -18,4 +19,8 @@ pub struct ExternalTransition {
     pub current_protocol_version: ProtocolVersion,
     pub proposed_protocol_version_opt: Option<ProtocolVersion>,
     pub validation_callback: (),
+}
+
+impl BinProtEncodable for ExternalTransition {
+    const PREALLOCATE_BUFFER_BYTES: usize = 13 * 1024;
 }
