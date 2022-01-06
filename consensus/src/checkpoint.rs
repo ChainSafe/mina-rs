@@ -83,6 +83,7 @@ pub fn is_short_range(
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::common;
     use mina_rs_base::numbers::Length;
     use mina_rs_base::{consensus_state::ConsensusState, protocol_state::ProtocolConstantsTemp};
     use rand::{thread_rng, Rng};
@@ -160,17 +161,6 @@ mod tests {
         let num_blocks_in_slots = thread_rng().gen_range(min_blocks..max_blocks);
         let num = convert(num_blocks_in_slots);
         return num;
-    }
-
-    fn gen_spot(block: &mut ProtocolState) {
-        // New default consensus state
-        // Generate blockchain position and epoch lengths.
-        // staking_epoch == root_epoch, next_staking_epoch == root_epoch + 1
-        // New state slot and length.
-        // New total currency for state.
-        // New epoch data for staking and next epochs.
-        // New block reward information (unused in chain selection).
-        block.body.consensus_state = ConsensusState::new();
     }
 
     fn gen_spot_pair_common_checkpoints(
@@ -251,8 +241,8 @@ mod tests {
         let mut a: ProtocolState = Default::default();
         let mut b: ProtocolState = Default::default();
 
-        gen_spot(&mut a);
-        gen_spot(&mut b);
+        common::gen_spot(&mut a);
+        common::gen_spot(&mut b);
 
         let c0: ProtocolStateChain = ProtocolStateChain(vec![a]);
         let c1: ProtocolStateChain = ProtocolStateChain(vec![b]);
@@ -270,8 +260,8 @@ mod tests {
         let mut a: ProtocolState = Default::default();
         let mut b: ProtocolState = Default::default();
 
-        gen_spot(&mut a);
-        gen_spot(&mut b);
+        common::gen_spot(&mut a);
+        common::gen_spot(&mut b);
         gen_spot_pair_common_checkpoints(&mut a, &mut b, 0);
 
         let c0: ProtocolStateChain = ProtocolStateChain(vec![a]);
@@ -289,8 +279,8 @@ mod tests {
         let mut a: ProtocolState = Default::default();
         let mut b: ProtocolState = Default::default();
 
-        gen_spot(&mut a);
-        gen_spot(&mut b);
+        common::gen_spot(&mut a);
+        common::gen_spot(&mut b);
 
         // Compute the root epoch position of `b`. This needs to be one epoch ahead of a
         let added_blocks =
@@ -319,8 +309,8 @@ mod tests {
         let mut a: ProtocolState = Default::default();
         let mut b: ProtocolState = Default::default();
 
-        gen_spot(&mut a);
-        gen_spot(&mut b);
+        common::gen_spot(&mut a);
+        common::gen_spot(&mut b);
         a.body.consensus_state.epoch_count = Length(14);
         b.body.consensus_state.epoch_count = Length(15);
         let c0: ProtocolStateChain = ProtocolStateChain(vec![a]);

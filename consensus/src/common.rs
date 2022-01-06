@@ -81,6 +81,17 @@ impl Chain<ProtocolState> for ProtocolStateChain {
     }
 }
 
+pub fn gen_spot(block: &mut ProtocolState) {
+    // New default consensus state
+    // Generate blockchain position and epoch lengths.
+    // staking_epoch == root_epoch, next_staking_epoch == root_epoch + 1
+    // New state slot and length.
+    // New total currency for state.
+    // New epoch data for staking and next epochs.
+    // New block reward information (unused in chain selection).
+    block.body.consensus_state = ConsensusState::new();
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
