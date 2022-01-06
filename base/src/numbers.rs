@@ -2,6 +2,8 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use derive_deref::Deref;
+use derive_more::From;
+use mina_crypto::{hex::skip_0x_prefix_when_needed, prelude::*};
 use num::Integer;
 use serde::{Deserialize, Serialize};
 use time::Duration;
@@ -19,6 +21,7 @@ use wire_type::WireType;
     Default,
     Deref,
     WireType,
+    From,
 )]
 #[serde(from = "<Self as WireType>::WireType")]
 #[serde(into = "<Self as WireType>::WireType")]
@@ -26,7 +29,7 @@ use wire_type::WireType;
 pub struct Length(pub u32);
 
 #[derive(
-    Clone, Serialize, Deserialize, PartialEq, PartialOrd, Debug, Hash, Copy, Default, WireType,
+    Clone, Serialize, Deserialize, PartialEq, PartialOrd, Debug, Hash, Copy, Default, WireType, From,
 )]
 #[serde(from = "<Self as WireType>::WireType")]
 #[serde(into = "<Self as WireType>::WireType")]
@@ -68,7 +71,7 @@ pub struct ExtendedU64_2(pub u64);
 /// let amount = Amount(1000000030);
 /// assert_eq!(amount.to_formatted_string(), "1.000000030");
 /// ```
-#[derive(Clone, Serialize, Deserialize, PartialEq, Debug, Hash, Default, WireType)]
+#[derive(Copy, Clone, Serialize, Deserialize, PartialEq, Debug, Hash, Default, WireType)]
 #[serde(from = "<Self as WireType>::WireType")]
 #[serde(into = "<Self as WireType>::WireType")]
 #[wire_type(recurse = 2)]
@@ -96,7 +99,7 @@ impl Amount {
 
 // TODO: Impl From<String> for Amount {}
 
-#[derive(Clone, Serialize, Deserialize, PartialEq, Debug, Hash, Default, WireType)]
+#[derive(Clone, Serialize, Deserialize, PartialEq, Debug, Hash, Default, WireType, From)]
 #[serde(from = "<Self as WireType>::WireType")]
 #[serde(into = "<Self as WireType>::WireType")]
 pub struct Hex64(i64);
@@ -104,9 +107,9 @@ pub struct Hex64(i64);
 #[derive(Clone, Serialize, Deserialize, PartialEq, Debug, Hash, Default, WireType)]
 #[serde(from = "<Self as WireType>::WireType")]
 #[serde(into = "<Self as WireType>::WireType")]
-pub struct Char(u8);
+pub struct Char(pub u8);
 
-#[derive(Clone, Serialize, Deserialize, PartialEq, Debug, Hash, Default, Deref, WireType)]
+#[derive(Clone, Serialize, Deserialize, PartialEq, Debug, Hash, Default, Deref, WireType, From)]
 #[serde(from = "<Self as WireType>::WireType")]
 #[serde(into = "<Self as WireType>::WireType")]
 #[wire_type(recurse = 2)]
@@ -119,6 +122,14 @@ pub struct GlobalSlotNumber(pub u32);
 pub struct BlockTime(u64);
 
 impl BlockTime {
+    pub fn from_unix_epoch(ts: u64) -> Self {
+        Self::from_unix_epoch_millis(ts * 1000)
+    }
+
+    pub fn from_unix_epoch_millis(ts: u64) -> Self {
+        Self(ts)
+    }
+
     /// Gets unix timestamp in milliseconds
     pub fn epoch_millis(&self) -> u64 {
         self.0
@@ -143,33 +154,34 @@ pub struct BlockTimeSpan(pub u64);
 #[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug)]
 pub struct BigInt256(pub [u8; 32]);
 
+impl AsRef<[u8]> for BigInt256 {
+    fn as_ref(&self) -> &[u8] {
+        self.0.as_ref()
+    }
+}
+
+impl HexEncodable for BigInt256 {
+    type Error = hex::FromHexError;
+
+    fn to_hex_string(&self) -> String
+    where
+        Self: AsRef<[u8]>,
+    {
+        hex::encode(self)
+    }
+
+    fn try_from_hex(s: impl AsRef<[u8]>) -> Result<Self, Self::Error> {
+        let s = skip_0x_prefix_when_needed(s.as_ref());
+        let bytes = hex::decode(s)?;
+        let mut b32 = [0; 32];
+        b32.copy_from_slice(&bytes);
+        Ok(Self(b32))
+    }
+}
+
 impl From<BigInt256> for ark_ff::BigInteger256 {
     fn from(i: BigInt256) -> Self {
         use ark_ff::bytes::FromBytes;
         Self::read(&i.0[..]).unwrap()
-    }
-}
-
-#[cfg(test)]
-pub mod tests {
-    use crate::numbers::Amount;
-    use crate::numbers::BigInt256;
-
-    #[test]
-    pub fn test_amount_to_formatted_string() {
-        assert_eq!(Amount(0).to_formatted_string(), "0.000000000");
-        assert_eq!(Amount(3).to_formatted_string(), "0.000000003");
-        assert_eq!(Amount(1000000003).to_formatted_string(), "1.000000003");
-        assert_eq!(Amount(1000000030).to_formatted_string(), "1.000000030");
-        assert_eq!(Amount(1300000000).to_formatted_string(), "1.300000000");
-        assert_eq!(Amount(1000000000).to_formatted_string(), "1.000000000");
-    }
-
-    #[test]
-    fn test_convert_bigint_to_arkworks_zero() {
-        use ark_ff::BigInteger256;
-        let i = BigInt256([0; 32]);
-        let ark_i: BigInteger256 = i.into();
-        assert_eq!(ark_i, BigInteger256::default())
     }
 }

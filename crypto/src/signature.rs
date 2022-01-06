@@ -1,7 +1,11 @@
 // Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
-use crate::{base58::Base58Encodable, hash::BaseHash};
+use crate::{
+    base58::{version_bytes, Base58Encodable},
+    hash::BaseHash,
+    impl_bs58_for_binprot,
+};
 use derive_deref::Deref;
 use serde::{Deserialize, Serialize};
 use wire_type::WireType;
@@ -21,9 +25,7 @@ pub struct PublicKey {
     pub poly: CompressedCurvePoint,
 }
 
-impl Base58Encodable for PublicKey {
-    const VERSION_BYTE: u8 = crate::base58::version_bytes::NON_ZERO_CURVE_POINT_COMPRESSED;
-}
+impl_bs58_for_binprot!(PublicKey, version_bytes::NON_ZERO_CURVE_POINT_COMPRESSED);
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize, Deref, WireType)]
 #[serde(from = "<Self as WireType>::WireType")]
@@ -54,6 +56,31 @@ impl Signature {
     }
 }
 
+impl Base58Encodable for Signature {
+    const VERSION_BYTE: u8 = version_bytes::SIGNATURE;
+    const MINA_VERSION_BYTE: u8 = 1;
+    const MINA_VERSION_BYTE_COUNT: usize = 1;
+
+    fn write_encodable_bytes(&self, output: &mut Vec<u8>) {
+        let field_point_bytes: &[u8; 32] = self.0 .0 .0.as_ref();
+        output.extend(field_point_bytes);
+        let inner_curve_scalar_bytes: &[u8; 32] = self.0 .1 .0.as_ref();
+        output.extend(inner_curve_scalar_bytes);
+    }
+}
+
+impl From<Vec<u8>> for Signature {
+    fn from(bytes: Vec<u8>) -> Self {
+        // skip the bs58 version byte and mina bin_prot version byte
+        let mut b32 = [0; 32];
+        b32.copy_from_slice(&bytes[..32]);
+        let field_point = FieldPoint(b32.into());
+        b32.copy_from_slice(&bytes[32..]);
+        let inner_curve_scalar = InnerCurveScalar(b32.into());
+        Self((field_point, inner_curve_scalar))
+    }
+}
+
 #[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug)]
 pub struct FieldPoint(BaseHash);
 
@@ -74,7 +101,6 @@ impl AsRef<[u8]> for InnerCurveScalar {
 
 #[cfg(test)]
 pub mod tests {
-
     use super::*;
     use bin_prot::to_writer;
 
@@ -86,9 +112,16 @@ pub mod tests {
     }
 
     #[test]
-    fn from_base58_roundtrip() {
+    fn public_key_from_base58_roundtrip() {
         let s = "B62qonDZEKYULNkfq7WGu1Z881YBRnMSuBGGX5DhnTv26mUyvN99mpo";
         let k = PublicKey::from_base58(s).unwrap();
-        assert_eq!(s, k.to_base58().into_string())
+        assert_eq!(s, k.to_base58_string())
+    }
+
+    #[test]
+    fn signature_from_base58_roundtrip() {
+        let s = "7mXTB1bcHYLJTmTfMtTboo4FSGStvera3z2wd6qjSxhpz1hZFMZZjcyaWAFEmZhgbq6DqVqGsNodnYKsCbMAq7D8yWo5bRSd";
+        let k = Signature::from_base58(s).unwrap();
+        assert_eq!(s, k.to_base58_string())
     }
 }

@@ -404,6 +404,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "convert_case"
+version = "0.4.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "6245d59a3e82a7fc217c5828a6692dbc6dfb63a0c8c90495621f7b9d79704a0e"
+
+[[package]]
 name = "cpufeatures"
 version = "0.2.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -597,6 +603,19 @@ checksum = "dcdbcee2d9941369faba772587a565f4f534e42cb8d17e5295871de730163b2b"
 dependencies = [
  "proc-macro2",
  "quote",
+ "syn",
+]
+
+[[package]]
+name = "derive_more"
+version = "0.99.17"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "4fb810d30a7c1953f91334de7244731fc3f3c10d7fe163338a35b9f640960321"
+dependencies = [
+ "convert_case",
+ "proc-macro2",
+ "quote",
+ "rustc_version 0.4.0",
  "syn",
 ]
 
@@ -841,20 +860,27 @@ dependencies = [
 name = "mina-consensus"
 version = "0.1.0"
 dependencies = [
+ "base64",
+ "bs58",
  "hex",
+ "lazy_static",
  "mina-crypto",
  "mina-rs-base",
  "thiserror",
+ "time",
+ "wasm-bindgen-test",
 ]
 
 [[package]]
 name = "mina-crypto"
 version = "0.1.0"
 dependencies = [
+ "base64",
  "bin-prot",
  "blake2 0.10.0",
  "bs58",
  "derive_deref",
+ "derive_more",
  "serde",
  "thiserror",
  "wire-type",
@@ -875,9 +901,12 @@ version = "0.1.0"
 dependencies = [
  "ark-ec",
  "ark-ff",
+ "base64",
  "commitment_dlog",
  "derive_deref",
+ "derive_more",
  "getrandom",
+ "hex",
  "mina-crypto",
  "mina-curves",
  "num",
@@ -1663,6 +1692,7 @@ dependencies = [
  "bin-prot",
  "hex",
  "lazy_static",
+ "mina-crypto",
  "mina-rs-base",
  "serde",
  "serde_json",
@@ -1678,6 +1708,7 @@ dependencies = [
  "bin-prot",
  "bs58",
  "criterion",
+ "mina-consensus",
  "mina-crypto",
  "mina-rs-base",
  "pretty_assertions",

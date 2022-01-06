@@ -19,7 +19,7 @@ jobs:
             ~/.cargo/registry/cache/
             ~/.cargo/git/db/
             target/
-          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+          key: ${{ runner.os }}-checks-cargo-${{ hashFiles('**/Cargo.lock') }}
       - uses: actions-rs/toolchain@v1
         with:
           profile: minimal
@@ -95,6 +95,11 @@ jobs:
       - name: wasm-pack tests for test-serialization
         run: |
           cd protocol/test-serialization
+          wasm-pack test --node --release
+          wasm-pack test --headless --chrome --release --features browser
+      - name: wasm-pack tests for consensus
+        run: |
+          cd consensus
           wasm-pack test --node --release
           wasm-pack test --headless --chrome --release --features browser
   codecov-x86_64:
