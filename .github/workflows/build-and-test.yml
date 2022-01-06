@@ -8,8 +8,9 @@ name: CI
 jobs:
   checks:
     runs-on: ubuntu-latest
-    steps:
+    steps:      
       - uses: actions/checkout@v2
+      - run: cat .github/cargo-config > $HOME/.cargo/config
       - uses: actions/cache@v2
         with:
           path: |
@@ -40,13 +41,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - run: cat .github/cargo-config > $HOME/.cargo/config      
       - uses: actions-rs/toolchain@v1
         with:
           profile: minimal
           toolchain: stable
           components: clippy
           override: true
-      - run: cargo build --release --all-features
+      - run: cargo build --release --all-features -v
       - run: cargo test --release --all-features
       - run: cargo bench --all-features
       - run: cargo doc --no-deps --release --all-features
@@ -76,6 +78,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - run: cat .github/cargo-config > $HOME/.cargo/config      
       - uses: actions-rs/toolchain@v1
         with:
           profile: minimal
@@ -98,6 +101,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - run: cat .github/cargo-config > $HOME/.cargo/config      
       - uses: actions-rs/toolchain@v1
         with:
           profile: minimal
