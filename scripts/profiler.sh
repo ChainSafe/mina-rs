@@ -1,6 +1,6 @@
 #! /bin/bash
 
-pushd "$(dirname $0)/../target/release"
+pushd "$(dirname $0)/../apps/target/release"
 mkdir profiler-reports || echo 'dir exists'
 mkdir profiler-reports/block-serde-profiler || echo 'dir exists'
 pushd profiler-reports/block-serde-profiler
