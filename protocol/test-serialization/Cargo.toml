@@ -15,6 +15,7 @@ browser = []
 
 [dev-dependencies]
 bin-prot = {path = "../bin-prot"}
+mina-consensus = {path = "../../consensus"}
 mina-crypto = {path = "../../crypto"}
 mina-rs-base = {path = "../../base"}
 test-fixtures = {path = "../test-fixtures"}

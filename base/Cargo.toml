@@ -10,7 +10,10 @@ license = "Apache-2.0"
 mina-crypto = {path = "../crypto"}
 wire-type = {path = "../protocol/wire-type"}
 
+base64 = "0.13"
 derive_deref = "1.1"
+derive_more = "0.99"
+hex = "0.4"
 num = "0.4"
 serde = {version = "1", features = ["derive"]}
 thiserror = "1"

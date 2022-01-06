@@ -1,7 +1,7 @@
 // Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
-use mina_crypto::hash::Hashable;
+use mina_crypto::hash::*;
 use serde::{Deserialize, Serialize};
 use wire_type::WireType;
 
@@ -10,7 +10,6 @@ use crate::{
     consensus_state::ConsensusState,
     numbers::{BlockTime, Delta, Length},
 };
-use mina_crypto::hash::StateHash;
 
 #[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, WireType)]
 #[serde(from = "<Self as WireType>::WireType")]
