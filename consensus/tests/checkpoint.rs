@@ -48,8 +48,7 @@ mod tests {
         );
         assert_eq!(
             genesis.body.consensus_state.next_epoch_data.lock_checkpoint,
-            Base58Encodable::from_base58("3NLoKn22eMnyQ7rxh5pxB6vBA3XhSAhhrf7akdqS6HbAKD14Dh1d")
-                .unwrap()
+            StateHash::from_base58("3NLoKn22eMnyQ7rxh5pxB6vBA3XhSAhhrf7akdqS6HbAKD14Dh1d").unwrap()
         );
     }
 
