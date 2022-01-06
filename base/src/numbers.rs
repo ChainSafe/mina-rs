@@ -28,12 +28,6 @@ use wire_type::WireType;
 #[wire_type(recurse = 2)]
 pub struct Length(pub u32);
 
-impl From<u32> for Length {
-    fn from(v: u32) -> Self {
-        Self(v)
-    }
-}
-
 #[derive(
     Clone, Serialize, Deserialize, PartialEq, PartialOrd, Debug, Hash, Copy, Default, WireType, From,
 )]
