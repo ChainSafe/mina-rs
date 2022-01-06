@@ -72,7 +72,7 @@ pub fn is_short_range(
 
     if s0.epoch_count == s1.epoch_count {
         // Simple case: blocks have same previous epoch, so compare previous epochs' lock_checkpoints
-        return Ok(s0_lock_checkpoint == s1_lock_checkpoint);
+        Ok(s0_lock_checkpoint == s1_lock_checkpoint)
     } else {
         // Check for previous epoch case using both orientations
         Ok(check(s0_lock_checkpoint, s1_next_epoch_lock_checkpoint)
