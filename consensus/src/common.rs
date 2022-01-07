@@ -4,13 +4,10 @@
 //! Implements common APIs for the blockchain in the context of consensus.
 
 use hex::ToHex;
-use mina_crypto::hash::*;
 use mina_crypto::hash::{Hashable, StateHash};
 use mina_rs_base::consensus_state::ConsensusState;
 use mina_rs_base::global_slot::GlobalSlot;
 use mina_rs_base::protocol_state::{Header, ProtocolState};
-use mina_rs_base::types::*;
-use thiserror::Error;
 
 use crate::density::{relative_min_window_density, ConsensusConstants};
 use crate::error::ConsensusError;
@@ -113,9 +110,10 @@ impl Chain<ProtocolState> for ProtocolStateChain {
 }
 
 trait Consensus {
+    type Chain;
     fn select_secure_chain(
         &self,
-        candidates: &Vec<ProtocolStateChain>,
+        candidates: &Vec<Self::Chain>,
         constants: &ConsensusConstants,
     ) -> Result<ProtocolStateChain, ConsensusError>;
 
@@ -126,14 +124,15 @@ trait Consensus {
 }
 
 // TODO: replace from checkpoint.rs
-fn is_short_range(cs: &ProtocolStateChain) -> bool {
+fn is_short_range(_cs: &ProtocolStateChain) -> bool {
     false
 }
 
 impl Consensus for ProtocolStateChain {
+    type Chain = ProtocolStateChain;
     fn select_secure_chain(
         &self,
-        candidates: &Vec<ProtocolStateChain>,
+        candidates: &Vec<Self::Chain>,
         constants: &ConsensusConstants,
     ) -> Result<ProtocolStateChain, ConsensusError> {
         let mut tip = self;
@@ -197,7 +196,7 @@ impl Consensus for ProtocolStateChain {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use mina_rs_base::numbers::Length;
+    use mina_rs_base::{numbers::Length, types::GlobalSlotNumber};
 
     #[test]
     fn test_protocol_state_chain_push() {

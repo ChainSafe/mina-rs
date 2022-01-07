@@ -4,13 +4,10 @@
 //! This module implements window density APIs to aid in long range fork
 //! selection rule during chain selection in the mina consensus algorithm.
 
+use crate::error::ConsensusError;
 use mina_rs_base::consensus_state::ConsensusState;
 use mina_rs_base::numbers::BlockTime;
-use mina_rs_base::protocol_state::ProtocolConstants;
-use mina_rs_base::{global_slot::GlobalSlot, numbers::Length};
-
-use crate::common::{Chain, ProtocolStateChain};
-use crate::error::ConsensusError;
+use mina_rs_base::numbers::Length;
 
 // TODO: derive from protocol constants
 pub struct ConsensusConstants {

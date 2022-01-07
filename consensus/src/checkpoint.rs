@@ -79,7 +79,7 @@ mod tests {
     #[test]
     fn test_init_checkpoints() {
         let mut genesis: ProtocolState = Default::default();
-        init_checkpoints(&mut genesis);
+        init_checkpoints(&mut genesis).unwrap();
         assert_eq!(
             genesis
                 .body
