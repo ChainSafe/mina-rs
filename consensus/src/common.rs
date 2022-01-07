@@ -111,11 +111,11 @@ impl Chain<ProtocolState> for ProtocolStateChain {
 
 trait Consensus {
     type Chain;
-    fn select_secure_chain(
-        &self,
-        candidates: &Vec<Self::Chain>,
+    fn select_secure_chain<'a>(
+        &'a self,
+        candidates: &'a Vec<Self::Chain>,
         constants: &ConsensusConstants,
-    ) -> Result<ProtocolStateChain, ConsensusError>;
+    ) -> Result<&'a ProtocolStateChain, ConsensusError>;
 
     fn select_longer_chain<'a>(
         &'a self,
@@ -130,11 +130,11 @@ fn is_short_range(_cs: &ProtocolStateChain) -> bool {
 
 impl Consensus for ProtocolStateChain {
     type Chain = ProtocolStateChain;
-    fn select_secure_chain(
-        &self,
-        candidates: &Vec<Self::Chain>,
+    fn select_secure_chain<'a>(
+        &'a self,
+        candidates: &'a Vec<Self::Chain>,
         constants: &ConsensusConstants,
-    ) -> Result<ProtocolStateChain, ConsensusError> {
+    ) -> Result<&'a ProtocolStateChain, ConsensusError> {
         let mut tip = self;
 
         for c in candidates {
@@ -162,7 +162,7 @@ impl Consensus for ProtocolStateChain {
             }
         }
 
-        Ok(tip.clone())
+        Ok(tip)
     }
 
     fn select_longer_chain<'a>(
@@ -362,10 +362,10 @@ mod tests {
 
         let mut chains = vec![];
         chains.push(chain_at_5001);
-        let mut select_result = genesis_chain
+        let select_result = genesis_chain
             .select_secure_chain(&chains, &constants)
             .unwrap();
-        let a = select_result.0.get_mut(0).unwrap();
+        let a = select_result.0.get(0).unwrap();
         assert_eq!(a.body.consensus_state.min_window_density, Length(43));
         assert_eq!(a.body.consensus_state.sub_window_densities, densities);
     }

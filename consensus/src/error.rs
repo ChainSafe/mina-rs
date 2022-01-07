@@ -11,6 +11,8 @@ pub enum ConsensusError {
     GlobalSlotNotFound,
     #[error("Consensus state not found")]
     ConsensusStateNotFound,
+    #[error("candidates not found")]
+    CandidatesNotFound,
     #[error("Unknown error")]
     Unknown,
 }
