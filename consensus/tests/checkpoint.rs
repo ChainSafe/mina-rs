@@ -16,6 +16,7 @@ mod tests {
     use wasm_bindgen_test::*;
     const DEFAULT_SLOT_FILL_RATE: f64 = 0.65;
     const DEFAULT_SLOT_FILL_RATE_DELTA: f64 = 0.15;
+    const TRANS: f64 = 4294967296_f64;
 
     #[test]
     #[wasm_bindgen_test]
@@ -75,7 +76,7 @@ mod tests {
     }
 
     fn convert(x: f64) -> i32 {
-        x.round().rem_euclid(2f64.powi(32)) as u32 as i32
+        x.round().rem_euclid(TRANS) as u32 as i32
     }
 
     fn gen_num_blocks_in_slots(slot_fill_rate: f64, slot_fill_rate_delta: f64, n: f64) -> i32 {
