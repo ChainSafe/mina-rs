@@ -1650,22 +1650,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "test-staged_ledger_diff"
-version = "0.1.0"
-dependencies = [
- "anyhow",
- "base64",
- "bs58",
- "criterion",
- "mina-crypto",
- "mina-rs-base",
- "pretty_assertions",
- "serde",
- "time",
- "wasm-bindgen-test",
-]
-
-[[package]]
 name = "textwrap"
 version = "0.11.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
