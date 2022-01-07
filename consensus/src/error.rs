@@ -9,6 +9,8 @@ pub enum ConsensusError {
     TopBlockNotFound,
     #[error("Global slot not found")]
     GlobalSlotNotFound,
+    #[error("Consensus state not found")]
+    ConsensusStateNotFound,
     #[error("Unknown error")]
     Unknown,
 }

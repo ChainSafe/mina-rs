@@ -144,8 +144,12 @@ impl Consensus for ProtocolStateChain {
                 tip = self.select_longer_chain(c)?;
             } else {
                 // long-range fork, compare relative minimum window densities
-                let tip_state = self.consensus_state().ok_or(ConsensusError::Unknown)?;
-                let candidate_state = c.consensus_state().ok_or(ConsensusError::Unknown)?;
+                let tip_state = self
+                    .consensus_state()
+                    .ok_or(ConsensusError::ConsensusStateNotFound)?;
+                let candidate_state = c
+                    .consensus_state()
+                    .ok_or(ConsensusError::ConsensusStateNotFound)?;
                 let tip_density =
                     relative_min_window_density(tip_state, &candidate_state, constants)?;
                 let candidate_density =
@@ -166,8 +170,12 @@ impl Consensus for ProtocolStateChain {
         &'a self,
         candidate: &'a ProtocolStateChain,
     ) -> Result<&'a ProtocolStateChain, ConsensusError> {
-        let top_state = self.consensus_state().ok_or(ConsensusError::Unknown)?;
-        let candidate_state = candidate.consensus_state().ok_or(ConsensusError::Unknown)?;
+        let top_state = self
+            .consensus_state()
+            .ok_or(ConsensusError::ConsensusStateNotFound)?;
+        let candidate_state = candidate
+            .consensus_state()
+            .ok_or(ConsensusError::ConsensusStateNotFound)?;
         if top_state.blockchain_length < candidate_state.blockchain_length {
             return Ok(candidate);
         } else if top_state.blockchain_length == candidate_state.blockchain_length {
