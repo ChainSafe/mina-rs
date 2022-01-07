@@ -9,6 +9,7 @@ mod tests {
     use mina_rs_base::protocol_state::ProtocolConstantsTemp;
     use mina_rs_base::types::*;
     use rand::{thread_rng, Rng};
+    use snark_keys::ConstraintConstants;
     use wasm_bindgen_test::*;
     extern crate quickcheck;
     use proptest::prelude::*;
@@ -61,6 +62,14 @@ mod tests {
             n * protocol_constants.slots_per_epoch.0 as f64,
         );
         nums
+    }
+
+    // Computes currency at height(blockchain length), assuming every block contains coinbase (ignoring inflation scheduling)
+    fn currency_at_height(genesis_currency: u64, height: u64) -> Amount {
+        let constraint_constants = ConstraintConstants::default();
+        let coinbase_amount: i32 = (constraint_constants.coinbase_amount).parse().unwrap();
+        let total_currency = Amount(genesis_currency + (height * coinbase_amount as u64));
+        total_currency
     }
 
     fn gen_spot_root_epoch_position(slot_fill_rate: f64, slot_fill_rate_delta: f64) -> (u32, u32) {
