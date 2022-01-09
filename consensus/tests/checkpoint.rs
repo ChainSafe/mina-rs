@@ -11,10 +11,6 @@ mod tests {
     use rand::{thread_rng, Rng};
     use snark_keys::ConstraintConstants;
     use wasm_bindgen_test::*;
-    extern crate quickcheck;
-    use proptest::prelude::*;
-    use quickcheck::QuickCheck;
-    use wasm_bindgen_test::*;
     const DEFAULT_SLOT_FILL_RATE: f64 = 0.65;
     const DEFAULT_SLOT_FILL_RATE_DELTA: f64 = 0.15;
     const TRANS: f64 = 4294967296_f64;
