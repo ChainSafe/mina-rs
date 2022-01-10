@@ -3,6 +3,7 @@ members = [
 	"base",
 	"consensus",
 	"crypto",
+	"network",
 	"snark-keys",
 	# All crates related to bin prot wire protocol
 	"protocol/bin-prot",
