@@ -6,7 +6,6 @@ mod tests {
     use mina_consensus::{checkpoint::*, common::*};
     use mina_crypto::{hash::*, prelude::*};
     use mina_rs_base::numbers::Length;
-    use mina_rs_base::protocol_state::ProtocolConstantsTemp;
     use mina_rs_base::types::*;
     use rand::{thread_rng, Rng};
     use snark_keys::ConstraintConstants;
@@ -51,7 +50,7 @@ mod tests {
     }
 
     fn gen_num_blocks_in_epochs(slot_fill_rate: f64, slot_fill_rate_delta: f64, n: f64) -> i32 {
-        let protocol_constants = ProtocolConstantsTemp::default();
+        let protocol_constants = ConsensusConstants::default();
         let nums = gen_num_blocks_in_slots(
             slot_fill_rate,
             slot_fill_rate_delta,
@@ -141,7 +140,7 @@ mod tests {
         let a_curr_epoch_slot = &a.body.consensus_state.curr_global_slot.slot_number;
 
         // Generate second state position by extending the first state's position
-        let protocol_constants = ProtocolConstantsTemp::default();
+        let protocol_constants = ConsensusConstants::default();
         let max_epoch_slot = protocol_constants.slots_per_epoch.0 - 1;
 
         // This invariant needs to be held for the position of `a`
@@ -219,7 +218,7 @@ mod tests {
             a.body.consensus_state.blockchain_length.0 + added_blocks as u32;
 
         // Constrain first state to be within last 1/3rd of its epoch (ensuring it's checkpoints and seed are fixed)
-        let protocol_constants = ProtocolConstantsTemp::default();
+        let protocol_constants = ConsensusConstants::default();
         let min_a_curr_epoch_slot = 2 * (protocol_constants.slots_per_epoch.0 / 3) + 1;
         gen_spot_pair_common_checkpoints(&mut a, &mut b, min_a_curr_epoch_slot);
 

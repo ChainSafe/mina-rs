@@ -23,38 +23,6 @@ pub struct ProtocolConstants {
     pub genesis_state_timestamp: BlockTime,
 }
 
-pub struct ProtocolConstantsTemp {
-    /// Point of finality (number of confirmations)
-    pub k: Length,
-    /// Number of slots per epoch
-    pub slots_per_epoch: Length,
-    /// No of slots in a sub-window = 7
-    pub slots_per_sub_window: Length,
-    /// Maximum permissable delay of packets (in slots after the current)
-    pub delta: Length,
-    /// Timestamp of genesis block in unixtime
-    pub genesis_state_timestamp: BlockTime,
-    /// Sub windows within a window
-    pub sub_windows_per_window: Length,
-    /// Number of slots before minimum density is used in chain selection
-    pub grace_period_end: Length,
-}
-
-impl Default for ProtocolConstantsTemp {
-    fn default() -> Self {
-        // TODO: read from config
-        Self {
-            k: Length(290),
-            slots_per_epoch: 7140.into(),
-            slots_per_sub_window: 7.into(),
-            delta: 0.into(),
-            genesis_state_timestamp: BlockTime(1615939200000),
-            sub_windows_per_window: 11.into(),
-            grace_period_end: Length(1440),
-        }
-    }
-}
-
 /// This structure can be thought of like the block header. It contains the most essential information of a block.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize, WireType)]
 #[serde(from = "<Self as WireType>::WireType")]
