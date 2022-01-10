@@ -107,7 +107,7 @@ trait Consensus {
     type Chain;
     fn select_secure_chain<'a>(
         &'a self,
-        candidates: &'a Vec<Self::Chain>,
+        candidates: &'a [Self::Chain],
         constants: &ConsensusConstants,
     ) -> Result<&'a ProtocolStateChain, ConsensusError>;
 
@@ -126,13 +126,13 @@ impl Consensus for ProtocolStateChain {
     type Chain = ProtocolStateChain;
     fn select_secure_chain<'a>(
         &'a self,
-        candidates: &'a Vec<Self::Chain>,
+        candidates: &'a [Self::Chain],
         constants: &ConsensusConstants,
     ) -> Result<&'a ProtocolStateChain, ConsensusError> {
         let mut tip = self;
 
         for c in candidates {
-            if is_short_range(&c) {
+            if is_short_range(c) {
                 // short-range fork, select longer chain
                 tip = self.select_longer_chain(c)?;
             } else {
@@ -172,13 +172,14 @@ impl Consensus for ProtocolStateChain {
             return Ok(candidate);
         } else if top_state.blockchain_length == candidate_state.blockchain_length {
             // tiebreak logic
-            if candidate.last_vrf_hash() > self.last_vrf_hash() {
-                return Ok(candidate);
-            } else if candidate.last_vrf_hash() == self.last_vrf_hash() {
-                // compare
-                if candidate.state_hash() > self.state_hash() {
-                    return Ok(candidate);
+            match candidate.last_vrf_hash().cmp(&self.last_vrf_hash()) {
+                std::cmp::Ordering::Greater => return Ok(candidate),
+                std::cmp::Ordering::Equal => {
+                    if candidate.state_hash() > self.state_hash() {
+                        return Ok(candidate);
+                    }
                 }
+                _ => {}
             }
         }
 
