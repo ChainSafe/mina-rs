@@ -1,15 +1,17 @@
 [workspace]
 members = [
-	"base",
-	"consensus",
-	"crypto",
-	"network",
-	"snark-keys",
-	# All crates related to bin prot wire protocol
-	"protocol/bin-prot",
-	"protocol/wire-type",
-	"protocol/bin_prot_checker",
-	"protocol/wire-type-derive",
-	"protocol/test-fixtures",
-	"protocol/test-serialization",
+  "base",
+  "consensus",
+  "crypto",
+  "network",
+  "snark-keys",
+  "protocol/bin-prot",
+  "protocol/wire-type",
+  "protocol/bin_prot_checker",
+  "protocol/wire-type-derive",
+  "protocol/test-fixtures",
+  "protocol/test-serialization",
 ]
+# This is still needed for virtual workspaces 
+# per https://doc.rust-lang.org/edition-guide/rust-2021/default-cargo-resolver.html#details
+resolver = "2"
