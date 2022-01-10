@@ -12,15 +12,9 @@ use mina_rs_base::protocol_state::{Header, ProtocolState};
 use crate::density::{relative_min_window_density, ConsensusConstants};
 use crate::error::ConsensusError;
 
-#[derive(Clone, Debug)] // FIXME: remove clone here.
-                        // TODO: replace vec element with ExternalTransition
+#[derive(Clone, Debug, Default)] // FIXME: remove clone here.
+                                 // TODO: replace vec element with ExternalTransition
 pub struct ProtocolStateChain(pub Vec<ProtocolState>);
-
-impl ProtocolStateChain {
-    pub fn new() -> Self {
-        Self(vec![])
-    }
-}
 
 pub trait Chain<T>
 where
@@ -150,14 +144,13 @@ impl Consensus for ProtocolStateChain {
                     .consensus_state()
                     .ok_or(ConsensusError::ConsensusStateNotFound)?;
                 let tip_density =
-                    relative_min_window_density(tip_state, &candidate_state, constants)?;
+                    relative_min_window_density(tip_state, candidate_state, constants)?;
                 let candidate_density =
-                    relative_min_window_density(&candidate_state, tip_state, constants)?;
-                if candidate_density > tip_density {
-                    tip = &c;
-                } else if candidate_density == tip_density {
-                    // tiebreak logic with short range rule
-                    tip = self.select_longer_chain(&c)?;
+                    relative_min_window_density(candidate_state, tip_state, constants)?;
+                match candidate_density.cmp(&tip_density) {
+                    std::cmp::Ordering::Greater => tip = c,
+                    std::cmp::Ordering::Equal => tip = self.select_longer_chain(c)?,
+                    _ => {}
                 }
             }
         }
@@ -307,7 +300,7 @@ mod tests {
     #[test]
     fn selects_longer_chain() {
         let constants = ConsensusConstants::from_genesis();
-        let mut genesis_chain = ProtocolStateChain::new();
+        let mut genesis_chain = ProtocolStateChain::default();
         let mut consensus_state = ConsensusState::default();
         consensus_state.min_window_density = Length(77);
         consensus_state.sub_window_densities = vec![
@@ -333,7 +326,7 @@ mod tests {
         prot_state.body.consensus_state = consensus_state;
         genesis_chain.push(prot_state).unwrap();
 
-        let mut chain_at_5001 = ProtocolStateChain::new();
+        let mut chain_at_5001 = ProtocolStateChain::default();
         let mut consensus_state = ConsensusState::default();
         consensus_state.min_window_density = Length(43);
         let densities = vec![
