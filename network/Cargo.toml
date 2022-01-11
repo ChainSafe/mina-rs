@@ -19,4 +19,3 @@ signature = "~1.4"
 
 [dev-dependencies]
 async-std = "1"
-retry = "1"
