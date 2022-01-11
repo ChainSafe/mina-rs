@@ -39,7 +39,7 @@ pub mod tests {
     ) {
         async_std::task::block_on(async move {
             let (transport, peer_id) = {
-                let builder = MinaTransportBuilder::new()
+                let builder = MinaTransportBuilder::default()
                     .with_config(config)
                     .with_timeout(Duration::from_secs(timeout_secs));
                 let tcp = TcpConfig::new().nodelay(true);
