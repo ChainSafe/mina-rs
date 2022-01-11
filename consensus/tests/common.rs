@@ -46,7 +46,8 @@ mod tests {
         b0.body.consensus_state.blockchain_length = Length(0);
         c.push(b0).unwrap();
         assert_eq!(c.length(), 1);
-        let expected: ProtocolState = Default::default();
+        let mut expected: ProtocolState = Default::default();
+        expected.body.consensus_state.blockchain_length = Length(0);
         assert_eq!(c.top(), Some(&expected));
 
         let mut b1: ProtocolState = Default::default();

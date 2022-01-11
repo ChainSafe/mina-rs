@@ -88,5 +88,5 @@ pub fn gen_spot(block: &mut ProtocolState) {
     // New total currency for state.
     // New epoch data for staking and next epochs.
     // New block reward information (unused in chain selection).
-    block.body.consensus_state = ConsensusState::new();
+    block.body.consensus_state = ConsensusState::default();
 }

@@ -40,7 +40,7 @@ impl AsRef<[u8]> for VrfOutputTruncated {
 /// approach where the future stake distribution snapshot is prepared by the current consensus epoch.
 ///
 /// Samasika prepares the past for the future! This future state is stored in the next_epoch_data field.
-#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize, WireType)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, WireType)]
 #[serde(from = "<Self as WireType>::WireType")]
 #[serde(into = "<Self as WireType>::WireType")]
 #[wire_type(recurse = 2)]
@@ -109,8 +109,14 @@ impl Default for ConsensusConstants {
 }
 
 impl ConsensusState {
+    pub fn sub_window_densities(&self) -> Vec<u32> {
+        self.sub_window_densities.iter().map(|i| i.0).collect()
+    }
+}
+
+impl Default for ConsensusState {
     // TODO: read from config
-    pub fn new() -> Self {
+    fn default() -> Self {
         let total_currency = Amount(805385692840039233);
         let staking_epoch_data = {
             let mut data = EpochData::default();
@@ -192,9 +198,5 @@ impl ConsensusState {
             .expect(ERR_FAIL_TO_DECODE_B58),
             supercharge_coinbase: true,
         }
-    }
-
-    pub fn sub_window_densities(&self) -> Vec<u32> {
-        self.sub_window_densities.iter().map(|i| i.0).collect()
     }
 }
