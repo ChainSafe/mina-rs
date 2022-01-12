@@ -30,3 +30,7 @@ plonk_protocol_dlog = {git = "https://github.com/o1-labs/proof-systems", rev = "
 # This features must be enable to build with WASM support
 # It has no effect for normal builds
 getrandom = {version = "0.2", features = ["js"]}
+
+[dev-dependencies]
+time = {version = "0.3", features = ["macros"]}
+wasm-bindgen-test = "0.3"
