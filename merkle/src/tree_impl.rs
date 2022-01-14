@@ -107,7 +107,8 @@ where
             self.depth = new_depth;
             self.nodes = vec![None; new_node_count];
         } else {
-            for i in self.nodes.len()..(self.nodes.len() + items.len()) {
+            let start = self.nodes.len() + self.leafs.len();
+            for i in start..(start + items.len()) {
                 self.clear_dirty_hashes(i);
             }
         }
