@@ -6,7 +6,7 @@
 use serde::{Deserialize, Serialize};
 
 use crate::numbers::{Amount, Length};
-use mina_crypto::hash::{EpochSeed, LedgerHash, StateHash};
+use mina_crypto::hash::*;
 use wire_type::WireType;
 
 #[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, WireType)]

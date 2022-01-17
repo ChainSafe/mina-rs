@@ -3,12 +3,14 @@
 
 //! Mina ExternalTransition
 
+use mina_crypto::prelude::*;
 use serde::{Deserialize, Serialize};
 use wire_type::WireType;
 
 use crate::types::*;
 
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, WireType)]
+/// This structure represents a mina block
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize, WireType)]
 #[serde(from = "<Self as WireType>::WireType")]
 #[serde(into = "<Self as WireType>::WireType")]
 /// This structure represents a mina block received from an external block producer
@@ -27,4 +29,8 @@ pub struct ExternalTransition {
     pub proposed_protocol_version_opt: Option<ProtocolVersion>,
     /// Validate_content
     pub validation_callback: (),
+}
+
+impl BinProtEncodable for ExternalTransition {
+    const PREALLOCATE_BUFFER_BYTES: usize = 13 * 1024;
 }

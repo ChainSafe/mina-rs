@@ -8,7 +8,9 @@ license = "Apache-2.0"
 publish = false
 
 [dependencies]
-bin-prot = {path = "../bin-prot"}
+# layout support should only be used in tests
+bin-prot = {path = "../bin-prot", features = ["loose_deserialization"]}
+mina-crypto = {path = "../../crypto"}
 mina-rs-base = {path = "../../base"}
 
 anyhow = "1"

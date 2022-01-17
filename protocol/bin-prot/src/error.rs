@@ -4,6 +4,7 @@
 //! Error objects and codes
 
 use std::fmt;
+use std::fmt::Debug;
 use std::io;
 use std::result;
 

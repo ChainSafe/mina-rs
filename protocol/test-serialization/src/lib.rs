@@ -4,6 +4,8 @@
 #[cfg(all(test, feature = "browser"))]
 wasm_bindgen_test::wasm_bindgen_test_configure!(run_in_browser);
 
+mod fuzz;
+mod genesis;
 #[allow(non_snake_case)]
 mod test_3NKaBJsN1SehD6iJwRwJSFmVzJg5DXSUQVgnMxtH4eer4aF5BrDK;
 
@@ -11,20 +13,16 @@ mod test_3NKaBJsN1SehD6iJwRwJSFmVzJg5DXSUQVgnMxtH4eer4aF5BrDK;
 mod tests {
     use super::{block_path_test, block_path_test_batch};
     use bin_prot::{from_reader, to_writer, Value};
-    use mina_crypto::hash::*;
-    use mina_crypto::signature::{
-        FieldPoint, InnerCurveScalar, PublicKey, PublicKey2, PublicKey3, Signature,
+    use mina_crypto::{hash::*, prelude::*, signature::*};
+    use mina_rs_base::types::{
+        proof_messages::{ProofMessageWithDegreeBound, ProofMessageWithoutDegreeBoundList},
+        *,
     };
-    use mina_rs_base::types::*;
     use pretty_assertions::assert_eq;
     use serde::{Deserialize, Serialize};
     use std::str::FromStr;
     use test_fixtures::*;
     use wasm_bindgen_test::*;
-
-    use mina_rs_base::protocol_state_proof::proof_messages::{
-        ProofMessageWithDegreeBound, ProofMessageWithoutDegreeBoundList,
-    };
 
     #[test]
     #[wasm_bindgen_test]
@@ -32,6 +30,26 @@ mod tests {
         block_path_test_batch! {
             ExternalTransition => ""
         }
+    }
+
+    #[test]
+    #[wasm_bindgen_test]
+    fn test_external_transition_preallocate_buffer_bytes() {
+        let max_bytes = TEST_BLOCKS
+            .values()
+            .map(|v| v.bytes.len())
+            .max()
+            .unwrap_or_default();
+        assert!(
+            max_bytes <= ExternalTransition::PREALLOCATE_BUFFER_BYTES,
+            "max_bytes:{}",
+            max_bytes
+        );
+        assert!(
+            max_bytes * 12 / 10 > ExternalTransition::PREALLOCATE_BUFFER_BYTES,
+            "max_bytes:{}",
+            max_bytes
+        );
     }
 
     #[test]
@@ -517,7 +535,10 @@ mod tests {
         }
     }
 
-    fn select_path<'a>(block: &'a bin_prot::Value, path: impl AsRef<str>) -> &'a bin_prot::Value {
+    pub(crate) fn select_path<'a>(
+        block: &'a bin_prot::Value,
+        path: impl AsRef<str>,
+    ) -> &'a bin_prot::Value {
         // pull out the bin_prot::Value corresponding to the path
         // will panic if the path is invalid
         let path_ref = path.as_ref();

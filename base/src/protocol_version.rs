@@ -18,3 +18,13 @@ pub struct ProtocolVersion {
     /// Patch version number
     patch: u32,
 }
+
+impl Default for ProtocolVersion {
+    fn default() -> Self {
+        ProtocolVersion {
+            major: 2,
+            minor: 0,
+            patch: 0,
+        }
+    }
+}

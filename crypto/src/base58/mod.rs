@@ -2,6 +2,9 @@
 // SPDX-License-Identifier: Apache-2.0
 
 mod encodable;
+mod error;
 pub mod version_bytes;
 
-pub use encodable::Base58Encodable;
+pub use bs58::{decode, encode};
+pub use encodable::*;
+pub use error::*;

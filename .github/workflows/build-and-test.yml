@@ -8,8 +8,9 @@ name: CI
 jobs:
   checks:
     runs-on: ubuntu-latest
-    steps:
+    steps:      
       - uses: actions/checkout@v2
+      - run: cat .github/cargo-config > $HOME/.cargo/config
       - uses: actions/cache@v2
         with:
           path: |
@@ -18,7 +19,7 @@ jobs:
             ~/.cargo/registry/cache/
             ~/.cargo/git/db/
             target/
-          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+          key: ${{ runner.os }}-checks-cargo-${{ hashFiles('**/Cargo.lock') }}
       - uses: actions-rs/toolchain@v1
         with:
           profile: minimal
@@ -26,32 +27,39 @@ jobs:
           components: rustfmt
           override: true
       - run: cargo fmt --all -- --check
+      - run: cargo fmt --all --manifest-path apps/Cargo.toml -- --check
       - name: Check license
         run: ./scripts/add_license.sh
       - run: cargo install cargo-udeps || echo 'already installed'
       - run: rustup install nightly
       - run: cargo +nightly udeps --all-targets --all-features
+      - run: cargo +nightly udeps --all-targets --all-features --manifest-path apps/Cargo.toml
       - run: cargo install cargo-deny || echo 'already installed'
-      - run: cargo deny check Ban -s
-      - run: cargo deny check License -s
-      - run: cargo deny check Sources -s
-      - run: cargo deny check Advisories -s
+      - run: cargo deny check All -s
+      - run: |
+          cd apps
+          cargo deny check All -s
   x86_64:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - run: cat .github/cargo-config > $HOME/.cargo/config      
       - uses: actions-rs/toolchain@v1
         with:
           profile: minimal
           toolchain: stable
           components: clippy
           override: true
-      - run: cargo build --release --all-features
+      - run: cargo build --release --all-features -v
+      - run: cargo build --release --all-features --manifest-path apps/Cargo.toml
       - run: cargo test --release --all-features
+      - run: cargo test --release --all-features --manifest-path apps/Cargo.toml
       - run: cargo bench --all-features
+      - run: cargo bench --all-features --manifest-path apps/Cargo.toml
       - run: cargo doc --no-deps --release --all-features
-      - run: cargo test --release --all-features --doc
+      - run: cargo doc --no-deps --release --all-features --manifest-path apps/Cargo.toml
       - run: cargo clippy --release --all-features -- --deny warnings
+      - run: cargo clippy --release --all-features --manifest-path apps/Cargo.toml -- --deny warnings
       - name: Run profilers
         run: |
           sudo apt-get install -y valgrind graphviz
@@ -60,22 +68,27 @@ jobs:
       - uses: actions/upload-artifact@v2
         with:
           name: doc
-          path: target/doc/**/*
+          path: |
+            target/doc/**/*
+            apps/target/doc/**/*
           if-no-files-found: error
       - uses: actions/upload-artifact@v2
         with:
           name: criterion
-          path: target/criterion/**/*
+          path: |
+            target/criterion/**/*
+            apps/target/criterion/**/*
           if-no-files-found: error
       - uses: actions/upload-artifact@v2
         with:
           name: profiler-reports
-          path: target/release/profiler-reports/**/*
+          path: apps/target/release/profiler-reports/**/*
           if-no-files-found: error
   wasm:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - run: cat .github/cargo-config > $HOME/.cargo/config      
       - uses: actions-rs/toolchain@v1
         with:
           profile: minimal
@@ -85,19 +98,26 @@ jobs:
           override: true
       # clippy includes cargo check
       - run: cargo clippy --release --all-features --target wasm32-unknown-unknown -- --deny warnings
+      - run: cargo clippy --release --all-features --target wasm32-unknown-unknown --manifest-path apps/Cargo.toml -- --deny warnings
       - run: cargo doc --no-deps --release --all-features --target wasm32-unknown-unknown
+      - run: cargo doc --no-deps --release --all-features --target wasm32-unknown-unknown --manifest-path apps/Cargo.toml
       - name: Install wasm-pack
-        # run: cargo install wasm-pack
         run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
       - name: wasm-pack tests for test-serialization
         run: |
           cd protocol/test-serialization
           wasm-pack test --node --release
           wasm-pack test --headless --chrome --release --features browser
+      - name: wasm-pack tests for consensus
+        run: |
+          cd consensus
+          wasm-pack test --node --release
+          wasm-pack test --headless --chrome --release --features browser
   codecov-x86_64:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - run: cat .github/cargo-config > $HOME/.cargo/config      
       - uses: actions-rs/toolchain@v1
         with:
           profile: minimal

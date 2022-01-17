@@ -6,6 +6,8 @@
 use std::fmt;
 
 use derive_deref::Deref;
+use derive_more::From;
+use mina_crypto::{hex::skip_0x_prefix_when_needed, prelude::*};
 use num::Integer;
 use serde::{Deserialize, Serialize};
 use thiserror::Error;
@@ -26,6 +28,7 @@ use crate::constants::MINA_PRECISION;
     Default,
     Deref,
     WireType,
+    From,
 )]
 #[serde(from = "<Self as WireType>::WireType")]
 #[serde(into = "<Self as WireType>::WireType")]
@@ -34,7 +37,7 @@ use crate::constants::MINA_PRECISION;
 pub struct Length(pub u32);
 
 #[derive(
-    Clone, Serialize, Deserialize, PartialEq, PartialOrd, Debug, Hash, Copy, Default, WireType,
+    Clone, Serialize, Deserialize, PartialEq, PartialOrd, Debug, Hash, Copy, Default, WireType, From,
 )]
 #[serde(from = "<Self as WireType>::WireType")]
 #[serde(into = "<Self as WireType>::WireType")]
@@ -84,7 +87,7 @@ pub struct ExtendedU64_2(pub u64);
 /// let amount = Amount(1000000030);
 /// assert_eq!(amount.to_string(), "1.000000030");
 /// ```
-#[derive(Clone, Serialize, Deserialize, PartialEq, Debug, Hash, Default, WireType)]
+#[derive(Copy, Clone, Serialize, Deserialize, PartialEq, Debug, Hash, Default, WireType)]
 #[serde(from = "<Self as WireType>::WireType")]
 #[serde(into = "<Self as WireType>::WireType")]
 #[wire_type(recurse = 2)]
@@ -141,9 +144,9 @@ pub struct Hex64(i64);
 #[serde(from = "<Self as WireType>::WireType")]
 #[serde(into = "<Self as WireType>::WireType")]
 /// A single char defined by a single byte (not variable length like a Rust char)
-pub struct Char(u8);
+pub struct Char(pub u8);
 
-#[derive(Clone, Serialize, Deserialize, PartialEq, Debug, Hash, Default, Deref, WireType)]
+#[derive(Clone, Serialize, Deserialize, PartialEq, Debug, Hash, Default, Deref, WireType, From)]
 #[serde(from = "<Self as WireType>::WireType")]
 #[serde(into = "<Self as WireType>::WireType")]
 #[wire_type(recurse = 2)]
@@ -158,6 +161,14 @@ pub struct GlobalSlotNumber(pub u32);
 pub struct BlockTime(u64);
 
 impl BlockTime {
+    pub fn from_unix_epoch(ts: u64) -> Self {
+        Self::from_unix_epoch_millis(ts * 1000)
+    }
+
+    pub fn from_unix_epoch_millis(ts: u64) -> Self {
+        Self(ts)
+    }
+
     /// Gets unix timestamp in milliseconds
     pub fn epoch_millis(&self) -> u64 {
         self.0
@@ -183,6 +194,31 @@ pub struct BlockTimeSpan(pub u64);
 #[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug)]
 /// Mina 256 bit Bit Integer type
 pub struct BigInt256(pub [u8; 32]);
+
+impl AsRef<[u8]> for BigInt256 {
+    fn as_ref(&self) -> &[u8] {
+        self.0.as_ref()
+    }
+}
+
+impl HexEncodable for BigInt256 {
+    type Error = hex::FromHexError;
+
+    fn to_hex_string(&self) -> String
+    where
+        Self: AsRef<[u8]>,
+    {
+        hex::encode(self)
+    }
+
+    fn try_from_hex(s: impl AsRef<[u8]>) -> Result<Self, Self::Error> {
+        let s = skip_0x_prefix_when_needed(s.as_ref());
+        let bytes = hex::decode(s)?;
+        let mut b32 = [0; 32];
+        b32.copy_from_slice(&bytes);
+        Ok(Self(b32))
+    }
+}
 
 impl From<BigInt256> for ark_ff::BigInteger256 {
     fn from(i: BigInt256) -> Self {
@@ -225,13 +261,5 @@ pub mod tests {
             Amount::from_str("000000000").unwrap_err(),
             ParseAmountError::ErrorInvalidFormat("000000000".to_string())
         );
-    }
-
-    #[test]
-    fn test_convert_bigint_to_arkworks_zero() {
-        use ark_ff::BigInteger256;
-        let i = BigInt256([0; 32]);
-        let ark_i: BigInteger256 = i.into();
-        assert_eq!(ark_i, BigInteger256::default())
     }
 }

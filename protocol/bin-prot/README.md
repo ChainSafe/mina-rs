@@ -27,7 +27,7 @@ fn main() {
 
   // Read back into a typed value
   let de_val: Vec<i64> = from_reader(output.as_slice()).unwrap();
-  
+
   assert!(val == de_val)
 }
 
@@ -35,8 +35,15 @@ fn main() {
 
 ### Loosely Typed
 
-Despite bin_prot being a non-self-describing format it is possible to deserialize into a loosely typed value if a layout descriptor file is provided. The layout files are typically written in JSON and describe the nested data structure that 
+Despite bin_prot being a non-self-describing format it is possible to deserialize into a loosely typed value if a layout descriptor file is provided. The layout files are typically written in JSON and describe the nested data structure that
 is to be deserialized. For the specification of the BinProtRule type see src/value/layout/mod.rs.
+
+Note that, Loosely-typed deserialization is behind feature `loose_deserialization` which is disabled by default. Use below config snippet to turn it on.
+
+```toml
+# in Cargo.toml
+bin-prot = {version="$version", features = ["loose_deserialization"]}
+```
 
 These are created using the `Deserializer::from_reader_with_layout` constructor.
 

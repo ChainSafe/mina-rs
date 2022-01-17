@@ -12,7 +12,6 @@ use crate::{
     consensus_state::ConsensusState,
     numbers::{BlockTime, Delta, Length},
 };
-use mina_crypto::hash::StateHash;
 
 #[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, WireType)]
 #[serde(from = "<Self as WireType>::WireType")]
