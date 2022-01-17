@@ -13,3 +13,5 @@ mod merger;
 pub use merger::*;
 mod hasher;
 pub use hasher::*;
+mod metadata;
+pub use metadata::*;

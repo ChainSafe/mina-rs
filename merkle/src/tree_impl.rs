@@ -53,10 +53,13 @@ where
         }
     }
 
-    fn calculate_hash_if_needed(&mut self, index: usize) -> Option<THash> {
+    fn calculate_hash_if_needed(
+        &mut self,
+        index: usize,
+    ) -> Option<(THash, MerkleTreeNodeMetadata)> {
         if index < self.nodes.len() {
             if let Some(hash) = &self.nodes[index] {
-                Some(hash.clone())
+                Some((hash.clone(), MerkleTreeNodeMetadata::new(index)))
             } else {
                 let left = index * 2 + 1;
                 let right = index * 2 + 2;
@@ -64,13 +67,13 @@ where
                 let right_hash = self.calculate_hash_if_needed(right);
                 let hash = TMerger::merge(&left_hash, &right_hash);
                 self.nodes[index] = hash.clone();
-                hash
+                hash.map(|hash| (hash, MerkleTreeNodeMetadata::new(index)))
             }
         } else {
-            let index = index - self.nodes.len();
-            if index < self.leafs.len() {
-                let (hash, _) = &self.leafs[index];
-                Some(hash.clone())
+            let leaf_index = index - self.nodes.len();
+            if leaf_index < self.leafs.len() {
+                let (hash, _) = &self.leafs[leaf_index];
+                Some((hash.clone(), MerkleTreeNodeMetadata::new(index)))
             } else {
                 None
             }
@@ -96,7 +99,7 @@ where
     }
 
     fn root(&mut self) -> Option<Self::Hash> {
-        self.calculate_hash_if_needed(0)
+        self.calculate_hash_if_needed(0).map(|(hash, _)| hash)
     }
 
     fn add_batch(&mut self, items: Vec<Self::Item>) {
@@ -112,7 +115,11 @@ where
                 self.clear_dirty_hashes(i);
             }
         }
-        for leaf in items.into_iter().map(|i| (THasher::hash(&i), i)) {
+        for leaf in items
+            .into_iter()
+            .enumerate()
+            .map(|(i, item)| (THasher::hash(&item, MerkleTreeNodeMetadata::new(i)), item))
+        {
             self.leafs.push(leaf);
         }
     }
@@ -139,7 +146,7 @@ where
     }
 }
 
-fn calculate_depth(size: usize) -> u32 {
+pub fn calculate_depth(size: usize) -> u32 {
     if size < 2 {
         0
     } else {

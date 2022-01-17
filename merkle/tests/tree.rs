@@ -28,7 +28,7 @@ mod tests {
     impl MerkleHasher for TestHasher {
         type Item = i64;
         type Hash = i64;
-        fn hash(item: &Self::Item) -> Self::Hash {
+        fn hash(item: &Self::Item, _: MerkleTreeNodeMetadata) -> Self::Hash {
             *item
         }
     }
@@ -37,9 +37,12 @@ mod tests {
 
     impl MerkleMerger for TestMerger {
         type Hash = i64;
-        fn merge(left: &Option<Self::Hash>, right: &Option<Self::Hash>) -> Option<Self::Hash> {
-            if let Some(left) = left {
-                if let Some(right) = right {
+        fn merge(
+            left: &Option<(Self::Hash, MerkleTreeNodeMetadata)>,
+            right: &Option<(Self::Hash, MerkleTreeNodeMetadata)>,
+        ) -> Option<Self::Hash> {
+            if let Some((left, _)) = left {
+                if let Some((right, _)) = right {
                     Some(left + right)
                 } else {
                     Some(*left)
