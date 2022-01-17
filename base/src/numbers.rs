@@ -133,7 +133,7 @@ impl std::str::FromStr for Amount {
     }
 }
 
-#[derive(Clone, Serialize, Deserialize, PartialEq, Debug, Hash, Default, WireType)]
+#[derive(Clone, Serialize, Deserialize, PartialEq, Debug, Hash, Default, WireType, From)]
 #[serde(from = "<Self as WireType>::WireType")]
 #[serde(into = "<Self as WireType>::WireType")]
 /// 4 bytes wrapped by a version
@@ -161,10 +161,12 @@ pub struct GlobalSlotNumber(pub u32);
 pub struct BlockTime(u64);
 
 impl BlockTime {
+    /// Unix timestamp conversion (seconds since the unix epoch)
     pub fn from_unix_epoch(ts: u64) -> Self {
         Self::from_unix_epoch_millis(ts * 1000)
     }
 
+    /// Unix timestamp conversion (milliseconds since the unix epoch)
     pub fn from_unix_epoch_millis(ts: u64) -> Self {
         Self(ts)
     }

@@ -12,11 +12,11 @@ use wire_type::WireType;
 /// Defines a version of the Mina protocol in semver format
 pub struct ProtocolVersion {
     /// Major version number
-    major: u32,
+    pub major: u32,
     /// Minor version number
-    minor: u32,
+    pub minor: u32,
     /// Patch version number
-    patch: u32,
+    pub patch: u32,
 }
 
 impl Default for ProtocolVersion {

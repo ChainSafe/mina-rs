@@ -3,7 +3,7 @@
 
 //! Types related to the Mina protocol state
 
-use mina_crypto::hash::Hashable;
+use mina_crypto::hash::{StateHash, Hashable};
 use serde::{Deserialize, Serialize};
 use wire_type::WireType;
 

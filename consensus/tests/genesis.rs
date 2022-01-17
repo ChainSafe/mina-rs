@@ -54,7 +54,7 @@ mod tests {
             base64::decode("NfThG1r1GxQuhaGLSJWGxcpv24SudtXG4etB0TnGqwg=").unwrap()
         );
         assert_eq!(
-            cs.total_currency.to_formatted_string(),
+            cs.total_currency.to_string(),
             "805385692.840039233"
         );
         assert_eq!(cs.curr_global_slot.slot_number, 0.into());

@@ -13,6 +13,7 @@ use mina_crypto::{hash::*, prelude::*, signature::*};
 use serde::{Deserialize, Serialize};
 use wire_type::WireType;
 
+/// Wrapper struct for the output for a VRF
 #[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, WireType, From)]
 #[serde(from = "<Self as WireType>::WireType")]
 #[serde(into = "<Self as WireType>::WireType")]
