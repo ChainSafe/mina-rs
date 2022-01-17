@@ -169,8 +169,8 @@ mod tests {
         let mut a: ProtocolState = Default::default();
         let mut b: ProtocolState = Default::default();
 
-        gen_spot(&mut a);
-        gen_spot(&mut b);
+        a.body.consensus_state = ConsensusState::default();
+        b.body.consensus_state = ConsensusState::default();
 
         let c0: ProtocolStateChain = ProtocolStateChain(vec![a]);
         let c1: ProtocolStateChain = ProtocolStateChain(vec![b]);
@@ -188,8 +188,8 @@ mod tests {
         let mut a: ProtocolState = Default::default();
         let mut b: ProtocolState = Default::default();
 
-        gen_spot(&mut a);
-        gen_spot(&mut b);
+        a.body.consensus_state = ConsensusState::default();
+        b.body.consensus_state = ConsensusState::default();
         gen_spot_pair_common_checkpoints(&mut a, &mut b, 0);
 
         let c0: ProtocolStateChain = ProtocolStateChain(vec![a]);
@@ -207,8 +207,8 @@ mod tests {
         let mut a: ProtocolState = Default::default();
         let mut b: ProtocolState = Default::default();
 
-        gen_spot(&mut a);
-        gen_spot(&mut b);
+        a.body.consensus_state = ConsensusState::default();
+        b.body.consensus_state = ConsensusState::default();
 
         // Compute the root epoch position of `b`. This needs to be one epoch ahead of a
         let added_blocks =
@@ -237,8 +237,9 @@ mod tests {
         let mut a: ProtocolState = Default::default();
         let mut b: ProtocolState = Default::default();
 
-        gen_spot(&mut a);
-        gen_spot(&mut b);
+        a.body.consensus_state = ConsensusState::default();
+        b.body.consensus_state = ConsensusState::default();
+
         a.body.consensus_state.epoch_count = Length(14);
         b.body.consensus_state.epoch_count = Length(15);
         let c0: ProtocolStateChain = ProtocolStateChain(vec![a]);
