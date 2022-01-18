@@ -4,3 +4,4 @@
 members = [
   "profilers",
 ]
+resolver = "2"

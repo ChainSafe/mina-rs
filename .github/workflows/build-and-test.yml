@@ -121,7 +121,8 @@ jobs:
       - uses: actions-rs/toolchain@v1
         with:
           profile: minimal
-          # Pin to nightly-2022-01-14 until https://github.com/taiki-e/cargo-llvm-cov/issues/128 is resolved
+          # Pin rust toolchain to nightly-2022-01-14 until https://github.com/taiki-e/cargo-llvm-cov/issues/128 
+          # is resolved
           toolchain: nightly-2022-01-14
           override: true
           components: llvm-tools-preview      
