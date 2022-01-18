@@ -35,11 +35,6 @@ impl<'de> Visitor<'de> for ValueVisitor {
         Ok(Value::Int(value))
     }
 
-    // #[inline]
-    // fn visit_u64<E>(self, value: u64) -> Result<Value, E> {
-    //     Ok(Value::Int(value.into()))
-    // }
-
     #[inline]
     fn visit_f64<E>(self, value: f64) -> Result<Value, E> {
         Ok(Value::Float(value))
@@ -55,7 +50,10 @@ impl<'de> Visitor<'de> for ValueVisitor {
 
     #[inline]
     fn visit_bytes<E>(self, value: &[u8]) -> Result<Value, E> {
-        Ok(Value::String(value.to_vec()))
+        // Represent bytes as a list of chars
+        // Chars are always 1 byte in BinProt so this fits
+        let bytes = value.iter().map(|x| Value::Char(*x)).collect();
+        Ok(Value::List(bytes))
     }
 
     #[inline]

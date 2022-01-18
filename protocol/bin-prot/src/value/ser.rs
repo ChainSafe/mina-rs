@@ -1,6 +1,8 @@
 // Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
+//! Serialization implementation for a BinProt loosely typed Value
+
 use crate::Value;
 
 use serde::ser::{SerializeStruct, SerializeTuple};

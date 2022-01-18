@@ -1,6 +1,8 @@
 // Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
+//! Implements serializer and deserializer for BinProt variable length integer
+
 use core::marker::PhantomData;
 use num::FromPrimitive;
 use std::io::Cursor;
@@ -9,6 +11,7 @@ use crate::{ReadBinProtExt, WriteBinProtExt};
 use serde::de::{self, Deserializer, Visitor};
 use serde::ser::Serializer;
 
+/// Serializer for variable length integer
 pub fn serialize<T, S>(n: &T, s: S) -> Result<S::Ok, S::Error>
 where
     S: Serializer,
@@ -47,6 +50,7 @@ where
     }
 }
 
+/// Deserializer for variable length integer
 pub fn deserialize<'de, D, T>(d: D) -> Result<T, D::Error>
 where
     D: Deserializer<'de>,

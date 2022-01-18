@@ -1,16 +1,20 @@
 // Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
+//! Serialization for BinProt following the standard serde module layout
+
 use crate::error::{Error, Result};
 use crate::WriteBinProtExt;
 use serde::ser;
 use serde::Serialize;
 
+/// Serializer for writing BinProt bytes to a writer
 pub struct Serializer<W> {
     writer: W,
 }
 
 impl<W> Serializer<W> {
+    /// Create a new serializer given a writer
     pub fn new(writer: W) -> Self {
         Self { writer }
     }
@@ -30,6 +34,8 @@ where
     }
 }
 
+/// Convenience function, creates  serializer and uses it to write the given value
+/// to the writer
 pub fn to_writer<W, T>(writer: &mut W, value: &T) -> Result<()>
 where
     W: std::io::Write,
@@ -247,7 +253,8 @@ where
         variant_index: u32,
         _variant: &'static str,
     ) -> Result<()> {
-        self.writer.bin_write_variant_index(variant_index)?;
+        self.writer
+            .bin_write_variant_index(check_variant_index(variant_index)?)?;
         Ok(())
     }
 
@@ -258,7 +265,8 @@ where
         _variant: &'static str,
         _len: usize,
     ) -> Result<Self::SerializeTupleVariant> {
-        self.writer.bin_write_variant_index(variant_index)?;
+        self.writer
+            .bin_write_variant_index(check_variant_index(variant_index)?)?;
         Ok(self)
     }
 
@@ -269,7 +277,8 @@ where
         _variant: &'static str,
         _len: usize,
     ) -> Result<Self::SerializeStructVariant> {
-        self.writer.bin_write_variant_index(variant_index)?;
+        self.writer
+            .bin_write_variant_index(check_variant_index(variant_index)?)?;
         Ok(self)
     }
 
@@ -284,7 +293,8 @@ where
     where
         T: ?Sized + Serialize,
     {
-        self.writer.bin_write_variant_index(variant_index)?;
+        self.writer
+            .bin_write_variant_index(check_variant_index(variant_index)?)?;
         value.serialize(self)
     }
 }
@@ -448,4 +458,10 @@ where
     fn end(self) -> Result<()> {
         Ok(())
     }
+}
+
+fn check_variant_index(index: u32) -> Result<u8> {
+    index
+        .try_into()
+        .map_err(|_| Error::VariantIndexTooLarge { index })
 }

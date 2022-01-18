@@ -2,10 +2,10 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::common::{Chain, ProtocolStateChain};
-use mina_crypto::{hash::*, prelude::*};
+use crate::constants::SLOTS_PER_EPOCH;
+use mina_crypto::base58::Base58Encodable;
+use mina_crypto::hash::{EpochSeed, StateHash};
 use mina_rs_base::protocol_state::ProtocolState;
-
-pub const SLOTS_PER_EPOCH: u32 = 7140;
 
 #[derive(Debug)]
 pub enum ConsensusErrTyp {

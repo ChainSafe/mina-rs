@@ -1,6 +1,12 @@
 // Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
+//! Module containing the components of a protocol state proof
+
+// Much of this crate will be replaced by arkworks and 01-proof-systems types
+// so full documentation will not be included
+#![allow(missing_docs)]
+
 use serde::{Deserialize, Serialize};
 use wire_type::WireType;
 
@@ -32,6 +38,7 @@ pub use field_and_curve_elements::{
 #[serde(from = "<Self as WireType>::WireType")]
 #[serde(into = "<Self as WireType>::WireType")]
 #[wire_type(recurse = 4)]
+/// SNARK proof of the protocol state at some point in time
 pub struct ProtocolStateProof {
     pub statement: ProofStatement,
     pub prev_evals: PrevEvals,
