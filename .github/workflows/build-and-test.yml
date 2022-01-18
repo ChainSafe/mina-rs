@@ -141,17 +141,13 @@ jobs:
       - uses: actions-rs/toolchain@v1
         with:
           profile: minimal
-          toolchain: nightly
+          # Pin rust toolchain to nightly-2022-01-14 until https://github.com/taiki-e/cargo-llvm-cov/issues/128 
+          # is resolved
+          toolchain: nightly-2022-01-14
           override: true
-          components: llvm-tools-preview
-      - run: curl -L https://github.com/mozilla/grcov/releases/latest/download/grcov-linux-x86_64.tar.bz2 | tar jxf -
-      - name: Run code coverage
-        env:
-          RUSTFLAGS: -Zinstrument-coverage
-          LLVM_PROFILE_FILE: coverage-%p-%m.profraw
-        run: |
-          cargo test --all-features
-          ./grcov . --binary-path ./target/debug/ -s . -t lcov --branch --ignore-not-existing --ignore "/*" -o lcov.info
+          components: llvm-tools-preview      
+      - uses: taiki-e/install-action@cargo-llvm-cov
+      - run: cargo llvm-cov --all-features --lcov --output-path lcov.info
       - uses: actions/upload-artifact@v2
         with:
           name: lcov.info
