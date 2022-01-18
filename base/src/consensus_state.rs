@@ -80,6 +80,7 @@ pub struct ConsensusState {
     pub supercharge_coinbase: bool,
 }
 
+/// For ConsensusConstants Default
 pub struct ConsensusConstants {
     /// Point of finality (number of confirmations)
     pub k: Length,
