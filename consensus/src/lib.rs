@@ -7,8 +7,10 @@
 //!
 //! Contains definitions of data structures for mina consensus
 //!
+
 pub mod checkpoint;
 pub mod common;
+mod constants;
 pub mod genesis;
 
 #[cfg(all(test, feature = "browser"))]

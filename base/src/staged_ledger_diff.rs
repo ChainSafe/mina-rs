@@ -1,7 +1,13 @@
 // Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
-use mina_crypto::signature::*;
+//! In this context a diff refers to a difference between two states of the blockchain.
+//! In this case it is between the current state and the proposed next state.
+
+// TODO: Get clarification on all the fields of this type before documenting
+#![allow(missing_docs)]
+
+use mina_crypto::signature::{PublicKey2, PublicKey3, Signature};
 use serde::{Deserialize, Serialize};
 use thiserror::Error;
 use wire_type::WireType;
@@ -11,6 +17,7 @@ use crate::numbers::{Amount, ExtendedU32, ExtendedU64_2, ExtendedU64_3};
 #[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, WireType)]
 #[serde(from = "<Self as WireType>::WireType")]
 #[serde(into = "<Self as WireType>::WireType")]
+/// Top level wrapper type for a StagedLedgerDiff
 pub struct StagedLedgerDiff {
     pub diff: StagedLedgerDiffTuple,
 }
