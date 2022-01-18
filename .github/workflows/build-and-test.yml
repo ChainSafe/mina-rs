@@ -71,8 +71,8 @@ jobs:
             fail-threshold: 400%
             auto-push: false
             # GitHub API token needs to be given to enable comment-on-alert feature.
-            # github-token: ${{ secrets.GITHUB_TOKEN }}
-            comment-on-alert: false
+            github-token: ${{ secrets.GITHUB_TOKEN }}
+            comment-on-alert: true
             # fail-on-alert: true
       - run: cat ./.cache/benchmark-data.json
       - run: cargo bench --all-features --manifest-path apps/Cargo.toml
