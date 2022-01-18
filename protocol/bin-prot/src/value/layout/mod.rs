@@ -1,6 +1,10 @@
 // Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
+//! Defines a BinProt layout
+//! A layout is a data structure that defines a BinProt type.
+//! This is essentially moving the type information from compile time to runtime.
+
 use core::convert::TryFrom;
 
 use serde::{Deserialize, Serialize};
@@ -9,7 +13,7 @@ use serde_json::from_value;
 mod list_tagged_enum;
 pub(crate) mod traverse;
 
-pub use traverse::BinProtRuleIterator;
+pub(crate) use traverse::BinProtRuleIterator;
 
 use list_tagged_enum::ListTaggedEnum;
 
@@ -17,10 +21,11 @@ use list_tagged_enum::ListTaggedEnum;
 /// Parse into this from json
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Layout {
-    pub layout_loc: String,
-    pub version_opt: Option<i32>,
-    pub type_decl: String,
-    pub bin_io_derived: bool,
+    layout_loc: String,
+    version_opt: Option<i32>,
+    type_decl: String,
+    bin_io_derived: bool,
+    /// Rule defining this layout
     pub bin_prot_rule: BinProtRule,
 }
 
@@ -28,36 +33,58 @@ pub struct Layout {
 #[derive(Clone, Serialize, Deserialize, Debug)]
 #[serde(try_from = "ListTaggedEnum")]
 pub enum BinProtRule {
+    /// Variable length natural Integer
     Nat0,
+    /// Unit type
     Unit,
+    /// Boolean
     Bool,
+    /// OCaml string type (different to a rust string)
     String,
+    /// OCaml char type
     Char,
+    /// Variable length integer
     Int,
+    /// 32 bit Integer
     Int32,
+    /// 64 bit Integer
     Int64,
+    /// OS Native integer
     NativeInt,
+    /// Floating point number
     Float,
+    /// OCaml option
     Option(Box<BinProtRule>),
-    Record(Vec<RecordField>), // records/structs
+    /// records/structs
+    Record(Vec<RecordField>),
+    /// tuple
     Tuple(Vec<BinProtRule>),
-    Sum(Vec<Summand>), // sum types/enums
+    /// sum types/enums
+    Sum(Vec<Summand>),
+    /// τ ≤ Γ(a), τ is an instance of Γ(a) and (Γ(a) a type scheme
     Polyvar(Vec<Polyvar>),
+    /// Variable length list of any BinProt type
     List(Box<BinProtRule>),
+    /// Hash table of BinProt types
     Hashtable(HashTblEntry),
+    /// fixed length of BinProt types
     Vec(usize, Box<BinProtRule>),
+    /// A set of utils for dealing with `bigarrays` of `char`
     Bigstring,
-    // //  track indirections for debugging *),
+    ///  track indirections for debugging
     Reference(RuleRef),
+    /// your type
     TypeVar(String),
-    // //  inside a recursive type, list of type parameters *),
+    ///  inside a recursive type, list of type parameters
     SelfReference(Vec<BinProtRule>),
-    // //  parameterized type: 'a t = ... *),
+    ///  parameterized type: 'a t = ...
     TypeAbstraction(Vec<String>, Box<BinProtRule>),
-    // //  recursive parameterized type with bindings *),
+    ///  recursive parameterized type with bindings
     TypeClosure(Vec<(String, BinProtRule)>, Box<BinProtRule>),
+    /// Type that does not use standard derived BinProt encoding
     Custom(Vec<BinProtRule>),
-    CustomForPath(String, Vec<BinProtRule>), // does not occur in source files, used in traverse
+    /// does not occur in source files, used in traverse
+    CustomForPath(String, Vec<BinProtRule>),
 }
 
 // required due to the strange enum encoding used by yojson (see list_tagged_enum.rs)
@@ -131,37 +158,24 @@ impl TryFrom<ListTaggedEnum> for BinProtRule {
 }
 
 #[derive(Clone, Serialize, Deserialize, Debug)]
+/// Field of a BinProt record with a name and a value
 pub struct RecordField {
-    pub field_name: String,
-    pub field_rule: BinProtRule,
+    pub(crate) field_name: String,
+    field_rule: BinProtRule,
 }
 
 #[derive(Clone, Serialize, Deserialize, Debug)]
+/// Variant of a BinProt sum type (enum)
+/// has a name, index and zero-or-more BinProt values
 pub struct Summand {
-    pub ctor_name: String,
-    pub index: i32,
-    pub ctor_args: Vec<BinProtRule>,
-}
-
-impl Summand {
-    pub fn new(name: &str, index: i32, args: Vec<BinProtRule>) -> Self {
-        Self {
-            ctor_name: name.to_string(),
-            index,
-            ctor_args: args,
-        }
-    }
-
-    pub fn new_none() -> Self {
-        Self::new("none", 0, vec![])
-    }
-
-    pub fn new_some(rule: BinProtRule) -> Self {
-        Self::new("some", 1, vec![rule])
-    }
+    pub(crate) ctor_name: String,
+    pub(crate) index: i32,
+    pub(crate) ctor_args: Vec<BinProtRule>,
 }
 
 #[derive(Clone, Serialize, Deserialize, Debug)]
+/// Entry in a BinProt hash table
+/// hash types for the key and value
 pub struct HashTblEntry {
     key_rule: Box<BinProtRule>,
     value_rule: Box<BinProtRule>,
@@ -169,12 +183,16 @@ pub struct HashTblEntry {
 
 #[derive(Clone, Serialize, Deserialize, Debug)]
 #[serde(try_from = "ListTaggedEnum")]
+/// τ ≤ Γ(a), τ is an instance of Γ(a) and (Γ(a) a type scheme
 pub enum Polyvar {
+    /// An instance of Γ(a)
     Tagged(TaggedPolyvar),
+    /// An instance of Γ(a)
     Inherited(BinProtRule),
 }
 
 #[derive(Clone, Serialize, Deserialize, Debug)]
+/// τ ≤ Γ(a), τ is an instance of Γ(a) and (Γ(a) a type scheme
 pub struct TaggedPolyvar {
     polyvar_name: String,
     hash: i32,
@@ -199,18 +217,23 @@ impl TryFrom<ListTaggedEnum> for Polyvar {
 
 #[derive(Clone, Serialize, Deserialize, Debug)]
 #[serde(try_from = "ListTaggedEnum")]
+/// Define rule reference into Resolved and Unresolved Payload
 pub enum RuleRef {
+    /// Unresolved Payload
     Unresolved(UnresolvedPayload),
+    /// Resolved Payload
     Resolved(ResolvedPayload),
 }
 
 #[derive(Clone, Serialize, Deserialize, Debug)]
+/// Unable to resolve reference of payload
 pub struct UnresolvedPayload {
     params: Vec<BinProtRule>,
     layout_id: String, // what is longident?
 }
 
 #[derive(Clone, Serialize, Deserialize, Debug)]
+/// Resolved reference of payload
 pub struct ResolvedPayload {
     source_type_decl: String,
     #[serde(default)]
