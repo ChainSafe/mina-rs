@@ -8,6 +8,8 @@ use serde::{Deserialize, Serialize};
 /// its variant name and index as described in the layout
 #[derive(Serialize, Deserialize)]
 pub struct EnumData {
+    /// Index of variant
     pub index: u8,
+    /// Name of variant
     pub name: String,
 }

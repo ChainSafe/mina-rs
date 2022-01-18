@@ -79,11 +79,16 @@ pub(crate) enum CInner {
     V1(CInner2),
 }
 
+// The following types and functions ARE used within the test
+// code but this is not properly detected and produces incorrect warnings
+
+#[allow(dead_code)]
 pub(crate) struct Outer {
     pub(crate) y: Inner,
     pub(crate) z: Option<i64>,
 }
 
+#[allow(dead_code)]
 pub(crate) struct Inner {
     pub(crate) w: i64,
     pub(crate) x: i64,
@@ -92,7 +97,8 @@ pub(crate) struct Inner {
 /// Prints a byte array according to the style used in the Jane Street
 /// bin_prot tests. Byte array is reversed and padded up to max length with ..
 /// Bytes are written in hex with lowercase letters and no 0x prefix
-pub fn print_byte_array<W: Write>(w: &mut W, bytes: &[u8], max_len: usize) {
+#[allow(dead_code)]
+pub fn print_janestreet_byte_array<W: Write>(w: &mut W, bytes: &[u8], max_len: usize) {
     let padding = max_len - bytes.len();
     for _ in 0..padding {
         write!(w, ".. ").unwrap();
@@ -103,6 +109,7 @@ pub fn print_byte_array<W: Write>(w: &mut W, bytes: &[u8], max_len: usize) {
     }
 }
 
+#[allow(dead_code)]
 pub fn roundtrip_test<'a, T: Serialize + Deserialize<'a> + PartialEq + Debug>(val: T) {
     let mut output = Vec::<u8>::new();
     to_writer(&mut output, &val).unwrap();

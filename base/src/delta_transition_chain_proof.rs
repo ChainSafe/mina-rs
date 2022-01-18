@@ -1,6 +1,9 @@
 // Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
-use mina_crypto::hash::*;
+//! Delta transition chain proof structures and functions
 
+use mina_crypto::hash::StateHash;
+
+/// Proof that the block was produced within the allotted slot time
 pub type DeltaTransitionChainProof = (StateHash, Vec<StateHash>);

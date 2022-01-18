@@ -1,6 +1,8 @@
 // Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
+//! types and functions related to Mina verificiation keys
+
 use serde::{Deserialize, Serialize};
 use wire_type::WireType;
 
@@ -10,9 +12,11 @@ use crate::protocol_state_proof::field_and_curve_elements::FiniteECPoint;
 #[serde(from = "<Self as WireType>::WireType")]
 #[serde(into = "<Self as WireType>::WireType")]
 #[wire_type(recurse = 2)]
+/// Public data required to verify a Mina snark
 pub struct VerificationKey {
     commitments: VerificationKeyEvals,
     step_domains: Vec<Domains>,
+    /// Associated data
     pub data: Data,
 }
 
@@ -42,6 +46,7 @@ impl Default for Domain {
 #[serde(from = "<Self as WireType>::WireType")]
 #[serde(into = "<Self as WireType>::WireType")]
 pub struct Data {
+    /// Number of constaints
     pub constraints: usize,
 }
 
