@@ -231,8 +231,7 @@ impl From<BigInt256> for ark_ff::BigInteger256 {
 
 #[cfg(test)]
 pub mod tests {
-    use crate::numbers::Amount;
-    use crate::numbers::BigInt256;
+    use crate::numbers::*;
     use crate::types::ParseAmountError;
     use std::str::FromStr;
 

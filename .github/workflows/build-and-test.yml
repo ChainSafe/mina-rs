@@ -50,31 +50,13 @@ jobs:
           toolchain: stable
           components: clippy
           override: true
-      - run: cargo build --release --all-features -v
+      - run: cargo build --release --no-default-features
+      - run: cargo build --release
+      - run: cargo build --release --all-features
       - run: cargo build --release --all-features --manifest-path apps/Cargo.toml
       - run: cargo test --release --all-features
       - run: cargo test --release --all-features --manifest-path apps/Cargo.toml
-      # https://github.com/benchmark-action/github-action-benchmark#how-to-use
-      # https://github.com/benchmark-action/github-action-benchmark/tree/master/examples/criterion-rs
-      - run: (cargo bench --all-features --no-fail-fast -- --output-format bencher > bencher.log) || echo ''
-      - name: Download previous benchmark data
-        uses: actions/cache@v1
-        with:
-          path: ./.cache
-          key: ${{ runner.os }}-benchmark
-      - uses: benchmark-action/github-action-benchmark@v1
-        with:
-            tool: cargo
-            output-file-path: bencher.log
-            external-data-json-path: ./.cache/benchmark-data.json
-            alert-threshold: 200%
-            fail-threshold: 400%
-            auto-push: false
-            # GitHub API token needs to be given to enable comment-on-alert feature.
-            # github-token: ${{ secrets.GITHUB_TOKEN }}
-            comment-on-alert: false
-            # fail-on-alert: true
-      - run: cat ./.cache/benchmark-data.json
+      - run: cargo bench --all-features
       - run: cargo bench --all-features --manifest-path apps/Cargo.toml
       - run: cargo doc --no-deps --release --all-features
       - run: cargo doc --no-deps --release --all-features --manifest-path apps/Cargo.toml
