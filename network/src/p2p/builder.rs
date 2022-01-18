@@ -13,6 +13,7 @@ use libp2p::{
 use libp2p_mplex::MplexConfig;
 use std::{borrow::Borrow, time::Duration};
 
+/// Builds libp2p transport for mina with various configurations
 #[derive(Clone)]
 pub struct MinaTransportBuilder {
     pnet_config: PnetConfig,
@@ -23,15 +24,18 @@ pub struct MinaTransportBuilder {
 }
 
 impl MinaTransportBuilder {
+    /// Creates a new instance of [MinaTransportBuilder] with random keypair and empty config
     pub fn new() -> Self {
         let keypair = identity::Keypair::generate_ed25519();
         Self::new_with_key(keypair)
     }
 
+    /// Creates a new instance of [MinaTransportBuilder] with given keypair and empty config
     pub fn new_with_key(keypair: identity::Keypair) -> Self {
         Self::new_with_key_and_config(keypair, MinaTransportConfig::default().borrow())
     }
 
+    /// Creates a new instance of [MinaTransportBuilder] with given keypair and config
     pub fn new_with_key_and_config(
         keypair: identity::Keypair,
         config: &MinaTransportConfig,
@@ -52,6 +56,7 @@ impl MinaTransportBuilder {
         }
     }
 
+    /// Updates config for the [MinaTransportBuilder] instance
     pub fn with_config(mut self, config: &MinaTransportConfig) -> Self {
         let shared_key = config.get_shared_key();
         self.pnet_config = PnetConfig::new(shared_key);
@@ -59,15 +64,18 @@ impl MinaTransportBuilder {
         self
     }
 
+    /// Uses mainnet config for the [MinaTransportBuilder] instance
     pub fn with_mainnet_config(self) -> Self {
         self.with_config(&MAINNET_CONFIG)
     }
 
+    /// Sets timeout duration for the [MinaTransportBuilder] instance
     pub fn with_timeout(mut self, timeout: Duration) -> Self {
         self.timeout = timeout;
         self
     }
 
+    /// Builds libp2p transport
     pub fn build<TTransport>(
         self,
         transport: TTransport,

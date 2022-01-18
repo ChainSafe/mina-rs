@@ -12,10 +12,8 @@ lazy_static = "1"
 multihash = "0.15"
 
 # switch back to published versions once libp2p-mplex 0.30.1 or above is published
-libp2p = {git = "https://github.com/libp2p/rust-libp2p", version = "0.42", rev = "71a54d8227a0043c26f83c61bceb68b174a343b3"}
-libp2p-mplex = {git = "https://github.com/libp2p/rust-libp2p", version = "0.31", rev = "71a54d8227a0043c26f83c61bceb68b174a343b3"}
-# temp dependency to resolve conflict
-signature = "~1.4"
+libp2p = {git = "https://github.com/libp2p/rust-libp2p", version = "0.42", rev = "30fc8820373ddbaa44568cdd780bc82e8fdc4f76"}
+libp2p-mplex = {git = "https://github.com/libp2p/rust-libp2p", version = "0.31", rev = "30fc8820373ddbaa44568cdd780bc82e8fdc4f76"}
 
 [dev-dependencies]
 async-std = "1"
