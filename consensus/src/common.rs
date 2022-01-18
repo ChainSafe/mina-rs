@@ -31,16 +31,16 @@ where
     /// The function returns the global slot number of a chain or block.
     /// The input X is either a chain or block and the output is the global slot number.
     fn global_slot(&self) -> Option<&GlobalSlot>;
-    // The function computes the epoch slot number of a block.
-    // The output is the epoch slot number in [0, slots_per_epoch].
+    /// The function computes the epoch slot number of a block.
+    /// The output is the epoch slot number in [0, slots_per_epoch].
     fn epoch_slot(&self) -> Option<u32>;
-    // The function the length of a chain. The output is the length of the chain in blocks.
+    /// The function the length of a chain. The output is the length of the chain in blocks.
     fn length(&self) -> usize;
-    // This function returns the hex digest of the hash of the last VRF output
-    //  of a given chain. The input is a chain C and the output is the hash digest.
+    /// This function returns the hex digest of the hash of the last VRF output
+    ///  of a given chain. The input is a chain C and the output is the hash digest.
     fn last_vrf_hash(&self) -> Option<String>;
-    // This function returns hash of the top block's protocol state for a given chain.
-    // The input is a chain C and the output is the hash.
+    /// This function returns hash of the top block's protocol state for a given chain.
+    /// The input is a chain C and the output is the hash.
     fn state_hash(&self) -> Option<StateHash>;
     fn genesis_block(&self) -> Option<&ProtocolState>;
 }
