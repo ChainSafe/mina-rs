@@ -4,7 +4,7 @@
 #[cfg(test)]
 mod tests {
     use hex::ToHex;
-    use mina_consensus::common::*;
+    use mina_consensus::{common::*, density::ConsensusConstants, error::ConsensusError};
     use mina_crypto::hash::*;
     use mina_rs_base::types::*;
     use wasm_bindgen_test::*;
@@ -32,7 +32,7 @@ mod tests {
 
         let mut b1: ProtocolState = Default::default();
         b1.body.consensus_state.blockchain_length = Length(1);
-        assert_eq!(c.push(b1).unwrap_err(), ChainError::InvalidHeight,);
+        assert_eq!(c.push(b1).unwrap_err(), ConsensusError::InvalidHeight,);
     }
 
     #[test]
@@ -110,7 +110,7 @@ mod tests {
     #[wasm_bindgen_test]
     fn test_protocol_state_chain_last_vrf() {
         let mut c: ProtocolStateChain = ProtocolStateChain(vec![]);
-        assert_eq!(None, c.last_vrf());
+        assert_eq!(None, c.last_vrf_hash());
 
         let mut b0: ProtocolState = Default::default();
         b0.body.consensus_state.blockchain_length = Length(0);
@@ -124,6 +124,74 @@ mod tests {
                 .as_ref()
                 .encode_hex(),
         );
-        assert_eq!(expected, c.last_vrf());
+        assert_eq!(expected, c.last_vrf_hash());
+    }
+
+    #[test]
+    #[wasm_bindgen_test]
+    fn selects_longer_chain() {
+        let constants = ConsensusConstants::from_genesis();
+        let mut genesis_chain = ProtocolStateChain::default();
+        let mut consensus_state = ConsensusState::default();
+        consensus_state.min_window_density = Length(77);
+        consensus_state.sub_window_densities = vec![
+            Length(1),
+            Length(7),
+            Length(7),
+            Length(7),
+            Length(7),
+            Length(7),
+            Length(7),
+            Length(7),
+            Length(7),
+            Length(7),
+            Length(7),
+        ];
+
+        consensus_state.curr_global_slot = GlobalSlot {
+            slot_number: GlobalSlotNumber(0),
+            slots_per_epoch: Length(7140),
+        };
+
+        let mut prot_state = ProtocolState::default();
+        prot_state.body.consensus_state = consensus_state;
+        genesis_chain.push(prot_state).unwrap();
+
+        let mut chain_at_5001 = ProtocolStateChain::default();
+        let mut consensus_state = ConsensusState::default();
+        consensus_state.min_window_density = Length(43);
+        let densities = vec![
+            Length(5),
+            Length(5),
+            Length(2),
+            Length(5),
+            Length(3),
+            Length(1),
+            Length(5),
+            Length(3),
+            Length(7),
+            Length(6),
+            Length(5),
+        ];
+
+        consensus_state.sub_window_densities = densities.clone();
+
+        consensus_state.curr_global_slot = GlobalSlot {
+            slot_number: GlobalSlotNumber(7042),
+            slots_per_epoch: Length(7140),
+        };
+
+        let mut prot_state = ProtocolState::default();
+        prot_state.body.consensus_state = consensus_state;
+        chain_at_5001.push(prot_state).unwrap();
+
+        let mut chains = vec![];
+        chains.push(chain_at_5001);
+        let select_result = genesis_chain
+            .select_secure_chain(&chains, &constants)
+            .unwrap();
+        let a = select_result.0.get(0).unwrap();
+        assert_eq!(a.body.consensus_state.min_window_density, Length(43));
+        assert_eq!(a.body.consensus_state.sub_window_densities, densities);
     }
 }

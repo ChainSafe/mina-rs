@@ -13,5 +13,5 @@ members = [
   "protocol/test-serialization",
 ]
 # This is still needed for virtual workspaces 
-# per https://doc.rust-lang.org/edition-guide/rust-2021/default-cargo-resolver.html#details
+# per <https://doc.rust-lang.org/edition-guide/rust-2021/default-cargo-resolver.html#details>
 resolver = "2"
