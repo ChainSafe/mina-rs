@@ -129,12 +129,10 @@ impl Consensus for ProtocolStateChain {
         candidates: &'a [Self::Chain],
         constants: &ConsensusConstants,
     ) -> Result<&'a ProtocolStateChain, ConsensusError> {
-        let mut tip = self;
-
-        for c in candidates {
+        let tip = candidates.iter().fold(Ok(self), |tip, c| {
             if is_short_range(c) {
                 // short-range fork, select longer chain
-                tip = self.select_longer_chain(c)?;
+                self.select_longer_chain(c)
             } else {
                 // long-range fork, compare relative minimum window densities
                 let tip_state = self
@@ -148,14 +146,14 @@ impl Consensus for ProtocolStateChain {
                 let candidate_density =
                     relative_min_window_density(candidate_state, tip_state, constants)?;
                 match candidate_density.cmp(&tip_density) {
-                    std::cmp::Ordering::Greater => tip = c,
-                    std::cmp::Ordering::Equal => tip = self.select_longer_chain(c)?,
-                    _ => {}
+                    std::cmp::Ordering::Greater => Ok(c),
+                    std::cmp::Ordering::Equal => self.select_longer_chain(c),
+                    _ => tip, // no change
                 }
             }
-        }
+        });
 
-        Ok(tip)
+        tip
     }
 
     fn select_longer_chain<'a>(
