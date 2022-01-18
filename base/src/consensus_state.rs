@@ -21,6 +21,12 @@ pub struct VrfOutputTruncated(pub Vec<u8>);
 
 impl Base64Encodable for VrfOutputTruncated {}
 
+impl From<&str> for VrfOutputTruncated {
+    fn from(s: &str) -> Self {
+        VrfOutputTruncated(s.as_bytes().to_vec())
+    }
+}
+
 impl Hashable<VrfOutputHash> for VrfOutputTruncated {}
 
 impl AsRef<[u8]> for VrfOutputTruncated {
@@ -47,7 +53,7 @@ pub struct ConsensusState {
     pub blockchain_length: Length,
     /// Epoch number
     pub epoch_count: Length,
-    /// Minimum windows density oberved on the chain
+    /// Minimum window density oberved on the chain
     pub min_window_density: Length,
     /// Current sliding window of densities
     pub sub_window_densities: Vec<Length>,
