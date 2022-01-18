@@ -44,6 +44,9 @@ pub fn init_checkpoints(genesis: &mut ProtocolState) -> Result<(), ConsensusErrT
     Ok(())
 }
 
+/// A fork is considered short-range if either
+/// the fork point of the candidate chains are in the same epoch
+/// or the fork point is in the previous epoch with the same lock_checkpoint
 pub fn is_short_range(
     c0: &ProtocolStateChain,
     c1: &ProtocolStateChain,
