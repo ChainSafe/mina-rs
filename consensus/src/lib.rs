@@ -5,13 +5,12 @@
 #![allow(rustdoc::private_doc_tests)]
 
 //!
-//! Contains definitions of data structures for mina consensus
+//! Contains definitions of data structures and APIs for mina consensus
 //!
 
 pub mod checkpoint;
 pub mod common;
 mod constants;
+pub mod density;
+pub mod error;
 pub mod genesis;
-
-#[cfg(all(test, feature = "browser"))]
-wasm_bindgen_test::wasm_bindgen_test_configure!(run_in_browser);

@@ -85,7 +85,7 @@ impl From<Vec<u8>> for Signature {
     }
 }
 
-#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug)]
+#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, WireType)]
 pub struct FieldPoint(BaseHash);
 
 impl AsRef<[u8]> for FieldPoint {
