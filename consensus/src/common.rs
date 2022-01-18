@@ -343,6 +343,7 @@ mod tests {
             Length(6),
             Length(5),
         ];
+
         consensus_state.sub_window_densities = densities.clone();
 
         consensus_state.curr_global_slot = GlobalSlot {

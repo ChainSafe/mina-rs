@@ -49,6 +49,11 @@ fn max(a: u32, b: u32) -> u32 {
     a.max(b)
 }
 
+/// Computes the relative minimum window density of the given chains.
+/// The minimum density value is used in the case of a long range fork
+/// and the chain with the higher minimum window density is chosen as the canonical chain.
+/// The need for relative density is explained here:
+/// https://github.com/MinaProtocol/mina/blob/02dfc3ff0160ba3c1bbc732baa07502fe4312b04/docs/specs/consensus/README.md#5412-relative-minimum-window-density
 pub fn relative_min_window_density(
     chain_a: &ConsensusState,
     chain_b: &ConsensusState,
