@@ -28,7 +28,7 @@ use crate::constants::MINA_PRECISION;
     Default,
     Deref,
     WireType,
-    From,
+    derive_more::From,
 )]
 #[serde(from = "<Self as WireType>::WireType")]
 #[serde(into = "<Self as WireType>::WireType")]
@@ -146,7 +146,18 @@ pub struct Hex64(i64);
 /// A single char defined by a single byte (not variable length like a Rust char)
 pub struct Char(pub u8);
 
-#[derive(Clone, Serialize, Deserialize, PartialEq, Debug, Hash, Default, Deref, WireType, From)]
+#[derive(
+    Clone,
+    Serialize,
+    Deserialize,
+    PartialEq,
+    Debug,
+    Hash,
+    Default,
+    Deref,
+    WireType,
+    derive_more::From,
+)]
 #[serde(from = "<Self as WireType>::WireType")]
 #[serde(into = "<Self as WireType>::WireType")]
 #[wire_type(recurse = 2)]
@@ -158,7 +169,7 @@ pub struct GlobalSlotNumber(pub u32);
 #[serde(into = "<Self as WireType>::WireType")]
 #[wire_type(recurse = 2)]
 /// Block time numeric type
-pub struct BlockTime(u64);
+pub struct BlockTime(pub u64);
 
 impl BlockTime {
     /// Unix timestamp conversion (seconds since the unix epoch)
