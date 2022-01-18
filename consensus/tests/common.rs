@@ -128,6 +128,7 @@ mod tests {
     }
 
     #[test]
+    #[wasm_bindgen_test]
     fn selects_longer_chain() {
         let constants = ConsensusConstants::from_genesis();
         let mut genesis_chain = ProtocolStateChain::default();
