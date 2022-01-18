@@ -27,10 +27,12 @@ where
     TMerger: MerkleMerger<Hash = THash>,
     THash: Clone,
 {
+    /// Creates a new instance of [MinaMerkleTree]
     pub fn new() -> Self {
         Default::default()
     }
 
+    /// Creates a new instance of [MinaMerkleTree] with estimated capacity of leaves
     pub fn with_capacity(capacity: usize) -> Self {
         let protential_depth = calculate_depth(capacity);
         let protential_node_count = calculate_node_count(protential_depth);
@@ -146,7 +148,7 @@ where
     }
 }
 
-pub fn calculate_depth(size: usize) -> u32 {
+fn calculate_depth(size: usize) -> u32 {
     if size < 2 {
         0
     } else {
