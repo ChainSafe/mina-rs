@@ -5,12 +5,9 @@ use bin_prot::to_writer;
 use std::fmt::Write;
 
 mod common;
-use common::print_byte_array;
+use common::print_janestreet_byte_array;
 
 const MAX_BYTES: usize = 11;
-
-// TODO: Move towards macro based test suit once array serialization is fixed.
-// See: https://github.com/ChainSafe/serde-bin-prot/issues/31
 
 const EXPECTED: &str = r#"
 .. .. .. .. .. .. .. .. .. .. 00 -> []
@@ -39,7 +36,7 @@ fn test_serialize_arrays() {
     for val in test_cases() {
         let mut output = Vec::<u8>::new();
         to_writer(&mut output, &val).unwrap();
-        print_byte_array(&mut buf, &output, MAX_BYTES);
+        print_janestreet_byte_array(&mut buf, &output, MAX_BYTES);
         writeln!(&mut buf, "-> {:?}", val).expect("its cooked");
     }
 

@@ -62,7 +62,7 @@ pub const SNAPP_COMMAND: u8 = 0x1A;
 
 pub const PRIVATE_KEY: u8 = 0x5A;
 
-pub const NON_ZERO_CURVE_POINT: u8 = 0xCE;
+pub const PUBLIC_KEY: u8 = 0xCE;
 
 pub const NON_ZERO_CURVE_POINT_COMPRESSED: u8 = 0xCB;
 

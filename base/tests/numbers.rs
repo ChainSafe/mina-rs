@@ -7,12 +7,12 @@ pub mod tests {
 
     #[test]
     pub fn test_amount_to_formatted_string() {
-        assert_eq!(Amount(0).to_formatted_string(), "0.000000000");
-        assert_eq!(Amount(3).to_formatted_string(), "0.000000003");
-        assert_eq!(Amount(1000000003).to_formatted_string(), "1.000000003");
-        assert_eq!(Amount(1000000030).to_formatted_string(), "1.000000030");
-        assert_eq!(Amount(1300000000).to_formatted_string(), "1.300000000");
-        assert_eq!(Amount(1000000000).to_formatted_string(), "1.000000000");
+        assert_eq!(Amount(0).to_string(), "0.000000000");
+        assert_eq!(Amount(3).to_string(), "0.000000003");
+        assert_eq!(Amount(1000000003).to_string(), "1.000000003");
+        assert_eq!(Amount(1000000030).to_string(), "1.000000030");
+        assert_eq!(Amount(1300000000).to_string(), "1.300000000");
+        assert_eq!(Amount(1000000000).to_string(), "1.000000000");
     }
 
     #[test]
