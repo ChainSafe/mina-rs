@@ -27,7 +27,7 @@ pub struct ExternalTransition {
     pub current_protocol_version: ProtocolVersion,
     /// Proposed protocol version
     pub proposed_protocol_version_opt: Option<ProtocolVersion>,
-    /// Validate_content
+    /// Callback used for validating external transition received over the network.
     pub validation_callback: (),
 }
 
