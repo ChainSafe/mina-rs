@@ -7,7 +7,6 @@ mod tests {
     use mina_crypto::{hash::*, prelude::*};
     use mina_rs_base::numbers::Length;
     use mina_rs_base::types::*;
-    use rand::{thread_rng, Rng};
     use wasm_bindgen_test::*;
     const DEFAULT_SLOT_FILL_RATE: f64 = 0.65;
     const DEFAULT_SLOT_FILL_RATE_DELTA: f64 = 0.15;
@@ -64,7 +63,7 @@ mod tests {
         //   is the epoch number of the staking epoch and the block height the
         //  staking epoch starts at (the simulation of all blocks preceeding the
         //  staking epoch
-        let root_epoch_int = thread_rng().gen_range(0..100);
+        let root_epoch_int = 50;
         let root_block_height =
             gen_num_blocks_in_epochs(slot_fill_rate, slot_fill_rate_delta, root_epoch_int as f64);
         return (root_epoch_int, root_block_height as u32);
@@ -77,7 +76,7 @@ mod tests {
     fn gen_num_blocks_in_slots(slot_fill_rate: f64, slot_fill_rate_delta: f64, n: f64) -> i32 {
         let min_blocks = n * f64::max(slot_fill_rate - slot_fill_rate_delta, 0.0);
         let max_blocks = n * f64::min(slot_fill_rate + slot_fill_rate_delta, 1.0);
-        let num_blocks_in_slots = thread_rng().gen_range(min_blocks..max_blocks);
+        let num_blocks_in_slots = (min_blocks + max_blocks) / 2.0;
         let num = convert(num_blocks_in_slots);
         return num;
     }
@@ -108,7 +107,7 @@ mod tests {
 
         let min_a_curr_epoch_slot_defaut = 0;
         let min_a_curr_epoch_slot_sum = min_a_curr_epoch_slot_defaut + min_a_curr_epoch_slot;
-        let slot = thread_rng().gen_range(min_a_curr_epoch_slot_sum..max_epoch_slot);
+        let slot = (min_a_curr_epoch_slot_sum + max_epoch_slot) / 2;
         let length = gen_num_blocks_in_slots(
             DEFAULT_SLOT_FILL_RATE,
             DEFAULT_SLOT_FILL_RATE_DELTA,
@@ -138,7 +137,7 @@ mod tests {
         assert!(max_epoch_slot > a_curr_epoch_slot.0 + 2);
 
         // Assume there is a next block in the slot directly preceeding the block for `a`
-        let added_slots = thread_rng().gen_range(a_curr_epoch_slot.0 + 2..max_epoch_slot);
+        let added_slots = (a_curr_epoch_slot.0 + 2 + max_epoch_slot) / 2;
 
         let added_blocks = gen_num_blocks_in_slots(
             DEFAULT_SLOT_FILL_RATE,

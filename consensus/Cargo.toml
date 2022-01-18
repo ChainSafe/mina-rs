@@ -22,6 +22,5 @@ thiserror = "1"
 
 [dev-dependencies]
 wasm-bindgen-test = "0.3"
-rand = "0.8.4"
 base64 = "0.13"
 time = {version = "0.3", features = ["macros"]}
