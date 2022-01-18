@@ -15,7 +15,6 @@ browser = []
 [dependencies]
 mina-crypto = {version = "0.1.0", path = "../crypto"}
 mina-rs-base = {version = "0.1.0", path = "../base"}
-snark-keys = {version = "0.1.0", path = "../snark-keys"}
 bs58 = {version = "0.4", features = ["check"]}
 hex = "0.4"
 lazy_static = "1"

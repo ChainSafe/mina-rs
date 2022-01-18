@@ -45,12 +45,12 @@ pub enum KeyIdentifier {
     TransactionSnark,
 }
 
-#[derive(Debug, Default, Deserialize)]
+#[derive(Debug, Deserialize)]
 pub struct TransactionCapacity {
     pub two_to_the: u64,
 }
 
-#[derive(Debug, Default, Deserialize)]
+#[derive(Debug, Deserialize)]
 pub struct ConstraintConstants {
     pub sub_windows_per_window: u64,
     pub ledger_depth: u64,
@@ -64,7 +64,7 @@ pub struct ConstraintConstants {
     pub fork: Fork,
 }
 
-#[derive(Debug, Default, Deserialize)]
+#[derive(Debug, Deserialize)]
 pub struct Fork {
     pub previous_state_hash: Option<String>,
     pub previous_length: Option<u64>,
