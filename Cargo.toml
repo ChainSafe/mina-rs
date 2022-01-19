@@ -6,10 +6,12 @@ members = [
   "snark-keys",
   "protocol/bin-prot",
   "protocol/wire-type",
+  "protocol/wire-type-2",
   "protocol/bin_prot_checker",
   "protocol/wire-type-derive",
   "protocol/test-fixtures",
   "protocol/test-serialization",
+  "protocol/versioned",
 ]
 # This is still needed for virtual workspaces 
 # per <https://doc.rust-lang.org/edition-guide/rust-2021/default-cargo-resolver.html#details>

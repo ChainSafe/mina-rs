@@ -9,6 +9,9 @@ license = "Apache-2.0"
 [dependencies]
 mina-crypto = {path = "../crypto"}
 wire-type = {path = "../protocol/wire-type"}
+wire-type-2 = {path = "../protocol/wire-type-2"}
+versioned = {path = "../protocol/versioned"}
+
 
 base64 = "0.13"
 derive_deref = "1.1"
