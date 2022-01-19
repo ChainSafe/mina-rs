@@ -104,6 +104,7 @@ pub struct ConsensusConstants {
     pub grace_period_end: Length,
 }
 
+/// Default values from JSON https://github.com/MinaProtocol/mina/blob/32f529d8d8d712a44ee75be66061ce08cbdc8924/docs/specs/consensus/README.md#61-initialize-consensus
 impl Default for ConsensusConstants {
     fn default() -> Self {
         // TODO: read from config
@@ -126,6 +127,7 @@ impl ConsensusState {
     }
 }
 
+/// Default values from JSON https://github.com/MinaProtocol/mina/blob/32f529d8d8d712a44ee75be66061ce08cbdc8924/docs/specs/consensus/README.md#61-initialize-consensus
 impl Default for ConsensusState {
     // TODO: read from config
     fn default() -> Self {
