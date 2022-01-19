@@ -13,6 +13,4 @@ pub enum ConsensusError {
     ConsensusStateNotFound,
     #[error("candidates not found")]
     CandidatesNotFound,
-    #[error("Unknown error")]
-    Unknown,
 }
