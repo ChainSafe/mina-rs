@@ -6,6 +6,7 @@
 use mina_crypto::prelude::*;
 use serde::{Deserialize, Serialize};
 use wire_type_2::WireType;
+use versioned::Versioned;
 
 use crate::types::*;
 use crate::network_types;
@@ -49,7 +50,17 @@ impl From<network_types::ExternalTransitionV1> for ExternalTransition {
 
 impl Into<network_types::ExternalTransitionV1> for ExternalTransition {
     fn into(self) -> network_types::ExternalTransitionV1 {
-        unimplemented!()
+        network_types::ExternalTransitionV1(
+            Versioned::new(network_types::external_transition::ExternalTransition {
+                protocol_state: self.protocol_state,
+                protocol_state_proof: self.protocol_state_proof,
+                staged_ledger_diff: self.staged_ledger_diff,
+                delta_transition_chain_proof: self.delta_transition_chain_proof,
+                current_protocol_version: self.current_protocol_version,
+                proposed_protocol_version_opt: self.proposed_protocol_version_opt,
+                validation_callback: self.validation_callback,                
+            })
+        )
     }
 }
 
