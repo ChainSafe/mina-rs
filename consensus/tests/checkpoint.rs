@@ -8,8 +8,12 @@ mod tests {
     use mina_rs_base::numbers::Length;
     use mina_rs_base::types::*;
     use wasm_bindgen_test::*;
+    /// https://github.com/MinaProtocol/mina/blob/af76cb7980d5e81e704120290a850ea9c6f8522e/src/lib/consensus/proof_of_stake.ml#L3948
+    /// The default slot fill rate
     const DEFAULT_SLOT_FILL_RATE: f64 = 0.65;
+    /// The changes of default slot fill rate
     const DEFAULT_SLOT_FILL_RATE_DELTA: f64 = 0.15;
+    /// Define constant for 2f64.powi(32)
     const TRANS: f64 = 4294967296_f64;
 
     #[test]
