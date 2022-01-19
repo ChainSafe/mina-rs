@@ -6,7 +6,8 @@ mod tests {
     use super::super::tests::select_path;
     use mina_consensus::genesis::*;
     use mina_crypto::prelude::*;
-    use mina_rs_base::types::*;
+    use mina_rs_base::network_types::ExternalTransitionV1;
+    use mina_rs_base::types::ExternalTransition;
     use pretty_assertions::assert_eq;
     use serde::Serialize;
     use test_fixtures::*;
@@ -35,7 +36,7 @@ mod tests {
     fn test_genesis_protocol_state_proof() {
         for et in [
             ExternalTransition::from_genesis_config(&MAINNET_CONFIG),
-            GENESIS_BLOCK_MAINNET.external_transition().unwrap(),
+            GENESIS_BLOCK_MAINNET.external_transition().unwrap().into(),
         ] {
             let protocol_state_proof = &et.protocol_state_proof;
             let ev0 = &protocol_state_proof.proof.openings.evals.0;
@@ -93,156 +94,152 @@ mod tests {
     }
 
     fn test_genesis_path(genesis_init_config: &GenesisInitConfig, fixture: &BlockFixture) {
-        let genesis = ExternalTransition::from_genesis_config(genesis_init_config);
+        let genesis = ExternalTransitionV1::from_genesis_config(genesis_init_config);
 
         test_path(
             &genesis,
             &fixture,
             "t/protocol_state/t/t/previous_state_hash",
-            |b| &b.protocol_state.previous_state_hash,
+            |b| &b.0.t.protocol_state.0.t.t.previous_state_hash,
         );
         test_path(
             &genesis,
             &fixture,
             "t/protocol_state/t/t/body/t/t/genesis_state_hash",
-            |b| &b.protocol_state.body.genesis_state_hash,
+            |b| &b.0.t.protocol_state.0.t.t.body.0.t.t.genesis_state_hash,
         );
         test_path(
             &genesis,
             &fixture,
             "t/protocol_state/t/t/body/t/t/blockchain_state",
-            |b| &b.protocol_state.body.blockchain_state,
+            |b| &b.0.t.protocol_state.0.t.t.body.0.t.t.blockchain_state,
         );
         test_path(
             &genesis,
             &fixture,
             "t/protocol_state/t/t/body/t/t/consensus_state",
-            |b| &b.protocol_state.body.consensus_state,
+            |b| &b.0.t.protocol_state.0.t.t.body.0.t.t.consensus_state,
         );
         test_path(
             &genesis,
             &fixture,
             "t/protocol_state/t/t/body/t/t/constants",
-            |b| &b.protocol_state.body.constants,
+            |b| &b.0.t.protocol_state.0.t.t.body.0.t.t.constants,
         );
         test_path(&genesis, &fixture, "t/protocol_state", |b| {
-            &b.protocol_state
+            &b.0.t.protocol_state
         });
 
         test_path(
             &genesis,
             &fixture,
             "t/protocol_state_proof/t/t/t/t/statement/t/t/proof_state/t/deferred_values",
-            |b| &b.protocol_state_proof.statement.proof_state.deferred_values,
+            |b| &b.0.t.protocol_state_proof.statement.proof_state.deferred_values,
         );
         test_path(
             &genesis,
             &fixture,
             "t/protocol_state_proof/t/t/t/t/statement/t/t/proof_state/t/sponge_digest_before_evaluations",
-            |b| &b.protocol_state_proof.statement.proof_state.sponge_digest_before_evaluations,
+            |b| &b.0.t.protocol_state_proof.statement.proof_state.sponge_digest_before_evaluations,
         );
         test_path(
             &genesis,
             &fixture,
             "t/protocol_state_proof/t/t/t/t/statement/t/t/proof_state/t/me_only",
-            |b| &b.protocol_state_proof.statement.proof_state.me_only,
+            |b| &b.0.t.protocol_state_proof.statement.proof_state.me_only,
         );
         test_path(
             &genesis,
             &fixture,
             "t/protocol_state_proof/t/t/t/t/statement/t/t/proof_state",
-            |b| &b.protocol_state_proof.statement.proof_state,
+            |b| &b.0.t.protocol_state_proof.statement.proof_state,
         );
         test_path(
             &genesis,
             &fixture,
             "t/protocol_state_proof/t/t/t/t/statement/t/t/pass_through",
-            |b| &b.protocol_state_proof.statement.pass_through,
+            |b| &b.0.t.protocol_state_proof.statement.pass_through,
         );
         test_path(
             &genesis,
             &fixture,
             "t/protocol_state_proof/t/t/t/t/statement",
-            |b| &b.protocol_state_proof.statement,
+            |b| &b.0.t.protocol_state_proof.statement,
         );
         test_path(
             &genesis,
             &fixture,
             "t/protocol_state_proof/t/t/t/t/prev_evals",
-            |b| &b.protocol_state_proof.prev_evals,
+            |b| &b.0.t.protocol_state_proof.prev_evals,
         );
         test_path(
             &genesis,
             &fixture,
             "t/protocol_state_proof/t/t/t/t/prev_x_hat",
-            |b| &b.protocol_state_proof.prev_x_hat,
+            |b| &b.0.t.protocol_state_proof.prev_x_hat,
         );
         test_path(
             &genesis,
             &fixture,
             "t/protocol_state_proof/t/t/t/t/proof/t/t/messages",
-            |b| &b.protocol_state_proof.proof.messages,
+            |b| &b.0.t.protocol_state_proof.proof.messages,
         );
         test_path(
             &genesis,
             &fixture,
             "t/protocol_state_proof/t/t/t/t/proof/t/t/openings/t/proof/t/lr",
-            |b| &b.protocol_state_proof.proof.openings.proof.lr,
+            |b| &b.0.t.protocol_state_proof.proof.openings.proof.lr,
         );
         test_path(
             &genesis,
             &fixture,
             "t/protocol_state_proof/t/t/t/t/proof/t/t/openings/t/proof",
-            |b| &b.protocol_state_proof.proof.openings.proof,
+            |b| &b.0.t.protocol_state_proof.proof.openings.proof,
         );
         test_path(
             &genesis,
             &fixture,
             "t/protocol_state_proof/t/t/t/t/proof/t/t/openings/t/evals",
-            |b| &b.protocol_state_proof.proof.openings.evals,
+            |b| &b.0.t.protocol_state_proof.proof.openings.evals,
         );
         test_path(
             &genesis,
             &fixture,
             "t/protocol_state_proof/t/t/t/t/proof/t/t/openings",
-            |b| &b.protocol_state_proof.proof.openings,
+            |b| &b.0.t.protocol_state_proof.proof.openings,
         );
         test_path(
             &genesis,
             &fixture,
             "t/protocol_state_proof/t/t/t/t/proof",
-            |b| &b.protocol_state_proof.proof,
+            |b| &b.0.t.protocol_state_proof.proof,
         );
         test_path(&genesis, &fixture, "t/protocol_state_proof", |b| {
-            &b.protocol_state_proof
+            &b.0.t.protocol_state_proof
         });
 
         test_path(&genesis, &fixture, "t/staged_ledger_diff", |b| {
-            &b.staged_ledger_diff
+            &b.0.t.staged_ledger_diff
         });
 
         test_path(&genesis, &fixture, "t/delta_transition_chain_proof", |b| {
-            &b.delta_transition_chain_proof
+            &b.0.t.delta_transition_chain_proof
         });
 
         test_path(&genesis, &fixture, "t/current_protocol_version", |b| {
-            &b.current_protocol_version
+            &b.0.t.current_protocol_version
         });
 
         test_path(&genesis, &fixture, "t/proposed_protocol_version_opt", |b| {
-            &b.proposed_protocol_version_opt
-        });
-
-        test_path(&genesis, &fixture, "t/validation_callback", |b| {
-            &b.validation_callback
+            &b.0.t.proposed_protocol_version_opt
         });
     }
 
     fn test_path<T>(
-        et: &ExternalTransition,
+        et: &ExternalTransitionV1,
         block_fixture: &BlockFixture,
         path: impl AsRef<str>,
-        select: fn(et: &ExternalTransition) -> &T,
+        select: fn(et: &ExternalTransitionV1) -> &T,
     ) where
         T: std::fmt::Debug + PartialEq + Serialize,
     {
@@ -261,9 +258,9 @@ mod tests {
     }
 
     fn test_path_typed<'a, T>(
-        a: &'a ExternalTransition,
-        b: &'a ExternalTransition,
-        select: fn(et: &'a ExternalTransition) -> &'a T,
+        a: &'a ExternalTransitionV1,
+        b: &'a ExternalTransitionV1,
+        select: fn(et: &'a ExternalTransitionV1) -> &'a T,
     ) where
         T: std::fmt::Debug + PartialEq,
     {

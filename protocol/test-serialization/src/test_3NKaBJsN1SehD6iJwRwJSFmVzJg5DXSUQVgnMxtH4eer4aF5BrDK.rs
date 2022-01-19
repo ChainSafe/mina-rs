@@ -20,10 +20,10 @@ mod tests {
     // https://storage.googleapis.com/mina_network_block_data/mainnet-77748-3NKaBJsN1SehD6iJwRwJSFmVzJg5DXSUQVgnMxtH4eer4aF5BrDK.json
     #[test]
     fn test_block() -> anyhow::Result<()> {
-        let et = TEST_BLOCKS
+        let et: ExternalTransition = TEST_BLOCKS
             .get("3NKaBJsN1SehD6iJwRwJSFmVzJg5DXSUQVgnMxtH4eer4aF5BrDK.hex")
             .unwrap()
-            .external_transition()?;
+            .external_transition()?.into();
 
         let protocol_state = &et.protocol_state;
         assert_eq!(

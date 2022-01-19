@@ -4,7 +4,7 @@
 use bin_prot::{BinProtRule, Deserializer};
 use lazy_static::lazy_static;
 use mina_crypto::prelude::*;
-use mina_rs_base::external_transition::ExternalTransition;
+use mina_rs_base::network_types::external_transition::ExternalTransitionV1;
 use serde::Deserialize;
 use std::{borrow::Borrow, collections::HashMap};
 
@@ -51,8 +51,8 @@ pub struct BlockFixture {
 }
 
 impl BlockFixture {
-    pub fn external_transition(&self) -> anyhow::Result<ExternalTransition> {
-        Ok(ExternalTransition::try_decode_binprot(
+    pub fn external_transition(&self) -> anyhow::Result<ExternalTransitionV1> {
+        Ok(ExternalTransitionV1::try_decode_binprot(
             self.bytes.as_slice(),
         )?)
     }

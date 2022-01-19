@@ -15,5 +15,5 @@ mod genesis_impl;
 /// let genesis_devnet = ExternalTransition::from_genesis_config(&DEVNET_CONFIG);
 /// ```
 pub trait Genesis {
-    fn from_genesis_config(config: &GenesisInitConfig) -> ExternalTransition;
+    fn from_genesis_config(config: &GenesisInitConfig) -> Self;
 }

@@ -10,6 +10,7 @@ use versioned::Versioned;
 
 use crate::types::*;
 use crate::network_types;
+use crate::network_types::*;
 
 /// This structure represents a mina block
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
@@ -18,7 +19,7 @@ use crate::network_types;
 /// This structure represents a mina block received from an external block producer
 pub struct ExternalTransition {
     /// The blockchain state, including consensus and the ledger
-    pub protocol_state: ProtocolState,
+    pub protocol_state: crate::types::ProtocolState,
     /// Proof that the protocol state and entire history of the chain is valid
     pub protocol_state_proof: ProtocolStateProof,
     /// Diff of the proposed next state of the blockchain
@@ -29,43 +30,40 @@ pub struct ExternalTransition {
     pub current_protocol_version: ProtocolVersion,
     /// Proposed protocol version
     pub proposed_protocol_version_opt: Option<ProtocolVersion>,
-    /// Callback used for validating external transition received over the network.
-    pub validation_callback: (),
 }
 
-impl From<network_types::ExternalTransitionV1> for ExternalTransition {
-    fn from(t: network_types::ExternalTransitionV1) -> Self {
+impl From<ExternalTransitionV1> for ExternalTransition {
+    fn from(t: ExternalTransitionV1) -> Self {
         let t = t.0.inner();
         Self {
-            protocol_state: t.protocol_state,
+            protocol_state: t.protocol_state.into(),
             protocol_state_proof: t.protocol_state_proof,
             staged_ledger_diff: t.staged_ledger_diff,
             delta_transition_chain_proof: t.delta_transition_chain_proof,
             current_protocol_version: t.current_protocol_version,
             proposed_protocol_version_opt: t.proposed_protocol_version_opt,
-            validation_callback: t.validation_callback,
         }
     }
 }
 
-impl Into<network_types::ExternalTransitionV1> for ExternalTransition {
-    fn into(self) -> network_types::ExternalTransitionV1 {
-        network_types::ExternalTransitionV1(
+impl Into<ExternalTransitionV1> for ExternalTransition {
+    fn into(self) -> ExternalTransitionV1 {
+        ExternalTransitionV1(
             Versioned::new(network_types::external_transition::ExternalTransition {
-                protocol_state: self.protocol_state,
+                protocol_state: self.protocol_state.into(),
                 protocol_state_proof: self.protocol_state_proof,
                 staged_ledger_diff: self.staged_ledger_diff,
                 delta_transition_chain_proof: self.delta_transition_chain_proof,
                 current_protocol_version: self.current_protocol_version,
                 proposed_protocol_version_opt: self.proposed_protocol_version_opt,
-                validation_callback: self.validation_callback,                
+                validation_callback: (),                
             })
         )
     }
 }
 
 impl<'a> WireType<'a> for ExternalTransition {
-    type WireType = network_types::ExternalTransitionV1;
+    type WireType = ExternalTransitionV1;
 }
 
 impl BinProtEncodable for ExternalTransition {

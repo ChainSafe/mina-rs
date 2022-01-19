@@ -1,12 +1,14 @@
 // Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
+use mina_rs_base::network_types::ExternalTransitionV1;
+
 use super::*;
 
 impl Genesis for ExternalTransition {
     /// Initialize genesis block
     /// <https://github.com/MinaProtocol/mina/tree/feature/9665-spec-ouroboros-samasika-checkpointing/docs/specs/consensus#611-genesis-block>
-    fn from_genesis_config(config: &GenesisInitConfig) -> ExternalTransition {
+    fn from_genesis_config(config: &GenesisInitConfig) -> Self {
         let mut et = ExternalTransition::default();
 
         et.protocol_state.body.blockchain_state = config.blockchain_state.clone();
@@ -43,5 +45,11 @@ impl Genesis for ExternalTransition {
         et.proposed_protocol_version_opt = None;
 
         et
+    }
+}
+
+impl Genesis for ExternalTransitionV1 {
+    fn from_genesis_config(config: &GenesisInitConfig) -> Self {
+        ExternalTransition::from_genesis_config(config).into()
     }
 }

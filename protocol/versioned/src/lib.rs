@@ -8,10 +8,10 @@
 
 use::serde::{Serialize, Deserialize};
 
-#[derive(Serialize, Deserialize)]
+#[derive(Debug, Default, PartialEq, Serialize, Deserialize)]
 pub struct Versioned<T, const V: u16> {
-    version: u16,
-    t: T,
+    pub version: u16,
+    pub t: T,
 }
 
 impl<T, const V: u16> Versioned<T, V> {

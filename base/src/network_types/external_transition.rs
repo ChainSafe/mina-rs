@@ -5,14 +5,16 @@
 
 use serde::{Deserialize, Serialize};
 
-use crate::types::*; // TODO: aim to remove this dep
+use crate::network_types::*; // TODO: aim to remove this dep
+use crate::types::*;
+use mina_crypto::prelude::*;
 use versioned::Versioned;
 
 /// This structure represents a mina block received from an external block producer
-#[derive(Serialize, Deserialize)]
+#[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct ExternalTransition {
     /// The blockchain state, including consensus and the ledger
-    pub protocol_state: ProtocolState,
+    pub protocol_state: ProtocolStateV1,
     /// Proof that the protocol state and entire history of the chain is valid
     pub protocol_state_proof: ProtocolStateProof,
     /// Diff of the proposed next state of the blockchain
@@ -30,5 +32,9 @@ pub struct ExternalTransition {
 }
 
 /// Versioned structure to use externally
-#[derive(Serialize, Deserialize)]
+#[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct ExternalTransitionV1(pub Versioned<ExternalTransition, 1>);
+
+impl BinProtEncodable for ExternalTransitionV1 {
+    const PREALLOCATE_BUFFER_BYTES: usize = 13 * 1024;
+}

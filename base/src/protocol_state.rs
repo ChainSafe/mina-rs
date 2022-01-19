@@ -5,19 +5,18 @@
 
 use mina_crypto::hash::{Hashable, StateHash};
 use serde::{Deserialize, Serialize};
-use wire_type::WireType;
+use versioned::Versioned;
 
 use crate::{
     blockchain_state::BlockchainState,
     consensus_state::ConsensusState,
     global_slot::GlobalSlot,
     numbers::{BlockTime, Length},
+    network_types::{ProtocolStateV1, ProtocolStateBodyV1, ProtocolConstantsV1},
+    network_types,
 };
 
-#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, WireType)]
-#[serde(from = "<Self as WireType>::WireType")]
-#[serde(into = "<Self as WireType>::WireType")]
-#[wire_type(recurse = 2)]
+#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug)]
 /// Constants that define the consensus parameters
 pub struct ProtocolConstants {
     /// Point of finality (number of confirmations)
@@ -32,10 +31,38 @@ pub struct ProtocolConstants {
     pub genesis_state_timestamp: BlockTime,
 }
 
-#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize, WireType)]
-#[serde(from = "<Self as WireType>::WireType")]
-#[serde(into = "<Self as WireType>::WireType")]
-#[wire_type(recurse = 2)]
+impl From<ProtocolConstantsV1> for ProtocolConstants {
+    fn from(t: ProtocolConstantsV1) -> Self {
+        let t = t.0.inner().inner();
+        Self {
+            k: t.k,
+            slots_per_epoch: t.slots_per_epoch,
+            slots_per_sub_window: t.slots_per_sub_window,
+            delta: t.delta,
+            genesis_state_timestamp: t.genesis_state_timestamp,
+        }
+    }
+}
+
+impl Into<ProtocolConstantsV1> for ProtocolConstants {
+    fn into(self) -> ProtocolConstantsV1 {
+        ProtocolConstantsV1(
+            Versioned::new(
+                Versioned::new(
+                    network_types::protocol_constants::ProtocolConstants {
+                        k: self.k,
+                        slots_per_epoch: self.slots_per_epoch,
+                        slots_per_sub_window: self.slots_per_sub_window,
+                        delta: self.delta,
+                        genesis_state_timestamp: self.genesis_state_timestamp,
+                    }
+                )
+            )
+        )
+    }
+}
+
+#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 /// This structure can be thought of like the block header. It contains the most essential information of a block.
 pub struct ProtocolState {
     /// Commitment to previous block (hash of previous protocol state hash and body hash)
@@ -51,13 +78,35 @@ impl ProtocolState {
     }
 }
 
+impl From<ProtocolStateV1> for ProtocolState {
+    fn from(t: ProtocolStateV1) -> Self {
+        let t = t.0.inner().inner();
+        Self {
+            previous_state_hash: t.previous_state_hash,
+            body: t.body.into(),
+        }
+    }
+}
+
+impl Into<ProtocolStateV1> for ProtocolState {
+    fn into(self) -> ProtocolStateV1 {
+        ProtocolStateV1(
+            Versioned::new(
+                Versioned::new(
+                    network_types::protocol_state::ProtocolState {
+                      previous_state_hash: self.previous_state_hash,
+                      body: self.body.into(),
+                    }
+                )
+            )
+        )
+    }
+}
+
 // Protocol state hashes into a StateHash type
 impl Hashable<StateHash> for ProtocolState {}
 
-#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize, WireType)]
-#[serde(from = "<Self as WireType>::WireType")]
-#[serde(into = "<Self as WireType>::WireType")]
-#[wire_type(recurse = 2)]
+#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 /// Body of the protocol state
 pub struct ProtocolStateBody {
     /// Genesis protocol state hash (used for hardforks)
@@ -68,6 +117,35 @@ pub struct ProtocolStateBody {
     pub consensus_state: ConsensusState,
     /// Consensus constants
     pub constants: ProtocolConstants,
+}
+
+impl From<ProtocolStateBodyV1> for ProtocolStateBody {
+    fn from(t: ProtocolStateBodyV1) -> Self {
+        let t = t.0.inner().inner();
+        Self {
+            genesis_state_hash: t.genesis_state_hash,
+            blockchain_state: t.blockchain_state,
+            consensus_state: t.consensus_state,
+            constants: t.constants.into(),
+        }
+    }
+}
+
+impl Into<ProtocolStateBodyV1> for ProtocolStateBody {
+    fn into(self) -> ProtocolStateBodyV1 {
+        ProtocolStateBodyV1(
+            Versioned::new(
+                Versioned::new(
+                    network_types::protocol_state_body::ProtocolStateBody {
+                        genesis_state_hash: self.genesis_state_hash,
+                        blockchain_state: self.blockchain_state,
+                        consensus_state: self.consensus_state,
+                        constants: self.constants.into(),
+                    }
+                )
+            )
+        )
+    }
 }
 
 /// Implementing types have some notion of height and can return it

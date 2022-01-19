@@ -18,6 +18,7 @@ mod tests {
         proof_messages::{ProofMessageWithDegreeBound, ProofMessageWithoutDegreeBoundList},
         *,
     };
+    use mina_rs_base::network_types::{ProtocolStateV1, ProtocolConstantsV1, ProtocolStateBodyV1};
     use pretty_assertions::assert_eq;
     use serde::{Deserialize, Serialize};
     use std::str::FromStr;
@@ -56,7 +57,7 @@ mod tests {
     #[wasm_bindgen_test]
     fn test_protocol_state() {
         block_path_test_batch! {
-            ProtocolState => "t/protocol_state"
+            ProtocolStateV1 => "t/protocol_state"
         }
     }
 
@@ -72,7 +73,7 @@ mod tests {
     #[wasm_bindgen_test]
     fn test_protocol_state_body() {
         block_path_test_batch! {
-            ProtocolStateBody => "t/protocol_state/t/t/body"
+            ProtocolStateBodyV1 => "t/protocol_state/t/t/body"
         }
     }
 
@@ -148,7 +149,7 @@ mod tests {
             Length => "t/protocol_state/t/t/body/t/t/constants/t/t/slots_per_sub_window"
             Delta => "t/protocol_state/t/t/body/t/t/constants/t/t/delta"
             BlockTime => "t/protocol_state/t/t/body/t/t/constants/t/t/genesis_state_timestamp"
-            ProtocolConstants => "t/protocol_state/t/t/body/t/t/constants"
+            ProtocolConstantsV1 => "t/protocol_state/t/t/body/t/t/constants"
         }
     }
 
@@ -525,7 +526,7 @@ mod tests {
         for (name, block) in TEST_BLOCKS.iter() {
             let et: ExternalTransition = block
                 .external_transition()
-                .expect("Failed to deserialize block");
+                .expect("Failed to deserialize block").into();
 
             // TODO: Validate state hash
             if name.ends_with(".hex") {}
