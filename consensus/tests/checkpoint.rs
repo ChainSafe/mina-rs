@@ -47,6 +47,7 @@ mod tests {
         );
     }
 
+    /// https://github.com/MinaProtocol/mina/blob/af76cb7980d5e81e704120290a850ea9c6f8522e/src/lib/consensus/proof_of_stake.ml#L3881
     fn gen_num_blocks_in_epochs(slot_fill_rate: f64, slot_fill_rate_delta: f64, n: f64) -> i32 {
         let protocol_constants = ConsensusConstants::default();
         let nums = gen_num_blocks_in_slots(
@@ -57,6 +58,7 @@ mod tests {
         nums
     }
 
+    /// https://github.com/MinaProtocol/mina/blob/af76cb7980d5e81e704120290a850ea9c6f8522e/src/lib/consensus/proof_of_stake.ml#L3960
     fn gen_spot_root_epoch_position(slot_fill_rate: f64, slot_fill_rate_delta: f64) -> (u32, u32) {
         //  We need to simulate both the staking epoch and the next staking epoch,
         //  the root epoch is the staking epoch. The root epoch position this function generates
@@ -73,6 +75,7 @@ mod tests {
         x.round().rem_euclid(TRANS) as u32 as i32
     }
 
+    /// https://github.com/MinaProtocol/mina/blob/af76cb7980d5e81e704120290a850ea9c6f8522e/src/lib/consensus/proof_of_stake.ml#L3867
     fn gen_num_blocks_in_slots(slot_fill_rate: f64, slot_fill_rate_delta: f64, n: f64) -> i32 {
         let min_blocks = n * f64::max(slot_fill_rate - slot_fill_rate_delta, 0.0);
         let max_blocks = n * f64::min(slot_fill_rate + slot_fill_rate_delta, 1.0);
@@ -81,6 +84,7 @@ mod tests {
         return num;
     }
 
+    /// https://github.com/MinaProtocol/mina/blob/af76cb7980d5e81e704120290a850ea9c6f8522e/src/lib/consensus/proof_of_stake.ml#L4111
     fn gen_spot_pair_common_checkpoints(
         a: &mut ProtocolState,
         b: &mut ProtocolState,
@@ -152,6 +156,7 @@ mod tests {
 
     #[test]
     #[wasm_bindgen_test]
+    /// https://github.com/MinaProtocol/mina/blob/af76cb7980d5e81e704120290a850ea9c6f8522e/src/lib/consensus/proof_of_stake.ml#L4394    
     fn equal_state_in_short_fork_range() {
         let mut genesis: ProtocolState = Default::default();
         init_checkpoints(&mut genesis).unwrap();
@@ -170,6 +175,7 @@ mod tests {
 
     #[test]
     #[wasm_bindgen_test]
+    /// https://github.com/MinaProtocol/mina/blob/af76cb7980d5e81e704120290a850ea9c6f8522e/src/lib/consensus/proof_of_stake.ml#L4258
     fn gen_spot_pair_short_aligned_generates_pairs_of_states_in_short_fork_range() {
         // Both states will share their staking epoch checkpoints.
         let mut genesis: ProtocolState = Default::default();
@@ -190,6 +196,7 @@ mod tests {
 
     #[test]
     #[wasm_bindgen_test]
+    /// https://github.com/MinaProtocol/mina/blob/af76cb7980d5e81e704120290a850ea9c6f8522e/src/lib/consensus/proof_of_stake.ml#L4266
     fn gen_spot_pair_short_misaligned_generates_pairs_of_states_in_short_fork_range() {
         let mut genesis: ProtocolState = Default::default();
         init_checkpoints(&mut genesis).unwrap();
@@ -220,6 +227,8 @@ mod tests {
 
     #[test]
     #[wasm_bindgen_test]
+
+    /// https://github.com/MinaProtocol/mina/blob/af76cb7980d5e81e704120290a850ea9c6f8522e/src/lib/consensus/proof_of_stake.ml#L4291
     fn gen_spot_pair_long_generates_pairs_of_states_in_long_fork_range() {
         let mut genesis: ProtocolState = Default::default();
         init_checkpoints(&mut genesis).unwrap();
