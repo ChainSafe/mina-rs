@@ -4,9 +4,6 @@
 use crate::common::{Chain, ProtocolStateChain};
 use crate::constants::SLOTS_PER_EPOCH;
 use crate::error::ConsensusError;
-use mina_crypto::base58::Base58Encodable;
-use mina_crypto::hash::{EpochSeed, StateHash};
-use mina_rs_base::protocol_state::ProtocolState;
 
 pub fn is_short_range(
     c0: &ProtocolStateChain,
