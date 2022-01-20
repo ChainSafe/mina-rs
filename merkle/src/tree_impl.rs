@@ -161,6 +161,7 @@ fn calculate_node_count(depth: u32) -> usize {
 }
 
 fn calculate_parent_index(index: usize) -> usize {
+    debug_assert!(index > 0);
     (index - 1) / 2
 }
 
