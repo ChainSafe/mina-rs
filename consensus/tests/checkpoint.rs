@@ -3,10 +3,43 @@
 
 #[cfg(test)]
 mod tests {
-    use mina_consensus::{checkpoint::*, common::*};
+    use mina_consensus::{checkpoint::*, common::*, error::ConsensusError};
     use mina_crypto::{hash::*, prelude::*};
     use mina_rs_base::types::*;
     use wasm_bindgen_test::*;
+
+    pub fn init_checkpoints(genesis: &mut ProtocolState) -> Result<(), ConsensusError> {
+        genesis.body.consensus_state.staking_epoch_data.seed = EpochSeed::default();
+        genesis
+            .body
+            .consensus_state
+            .staking_epoch_data
+            .start_checkpoint = StateHash::default();
+        genesis
+            .body
+            .consensus_state
+            .staking_epoch_data
+            .lock_checkpoint = StateHash::default();
+        genesis
+            .body
+            .consensus_state
+            .staking_epoch_data
+            .epoch_length
+            .0 = 1;
+        genesis.body.consensus_state.next_epoch_data.seed =
+            EpochSeed::from_base58("2vaRh7FQ5wSzmpFReF9gcRKjv48CcJvHs25aqb3SSZiPgHQBy5Dt")
+                .map_err(|_| ConsensusError::ConsensusStateNotFound)?;
+        genesis
+            .body
+            .consensus_state
+            .next_epoch_data
+            .start_checkpoint = StateHash::default();
+        genesis.body.consensus_state.next_epoch_data.lock_checkpoint =
+            StateHash::from_base58("3NLoKn22eMnyQ7rxh5pxB6vBA3XhSAhhrf7akdqS6HbAKD14Dh1d")
+                .map_err(|_| ConsensusError::ConsensusStateNotFound)?;
+        genesis.body.consensus_state.next_epoch_data.epoch_length.0 = 2;
+        Ok(())
+    }
 
     #[test]
     #[wasm_bindgen_test]

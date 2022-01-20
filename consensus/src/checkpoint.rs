@@ -8,39 +8,6 @@ use mina_crypto::base58::Base58Encodable;
 use mina_crypto::hash::{EpochSeed, StateHash};
 use mina_rs_base::protocol_state::ProtocolState;
 
-pub fn init_checkpoints(genesis: &mut ProtocolState) -> Result<(), ConsensusError> {
-    genesis.body.consensus_state.staking_epoch_data.seed = EpochSeed::default();
-    genesis
-        .body
-        .consensus_state
-        .staking_epoch_data
-        .start_checkpoint = StateHash::default();
-    genesis
-        .body
-        .consensus_state
-        .staking_epoch_data
-        .lock_checkpoint = StateHash::default();
-    genesis
-        .body
-        .consensus_state
-        .staking_epoch_data
-        .epoch_length
-        .0 = 1;
-    genesis.body.consensus_state.next_epoch_data.seed =
-        EpochSeed::from_base58("2vaRh7FQ5wSzmpFReF9gcRKjv48CcJvHs25aqb3SSZiPgHQBy5Dt")
-            .map_err(|_| ConsensusError::ConsensusStateNotFound)?;
-    genesis
-        .body
-        .consensus_state
-        .next_epoch_data
-        .start_checkpoint = StateHash::default();
-    genesis.body.consensus_state.next_epoch_data.lock_checkpoint =
-        StateHash::from_base58("3NLoKn22eMnyQ7rxh5pxB6vBA3XhSAhhrf7akdqS6HbAKD14Dh1d")
-            .map_err(|_| ConsensusError::ConsensusStateNotFound)?;
-    genesis.body.consensus_state.next_epoch_data.epoch_length.0 = 2;
-    Ok(())
-}
-
 pub fn is_short_range(
     c0: &ProtocolStateChain,
     c1: &ProtocolStateChain,
