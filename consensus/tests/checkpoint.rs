@@ -105,14 +105,7 @@ mod tests {
         // Constraining the second state to have a greater blockchain length than the
         // first, we need to constrain the first blockchain length such that there is some room
         // leftover in the epoch for at least 1 more block to be generated.
-        let _blockchain_length_relativity = Some(&a);
-        let max_epoch_slot = match _blockchain_length_relativity {
-            Some(_blockchain_length_relativity) => {
-                a.body.consensus_state.curr_global_slot.slots_per_epoch.0 - 4
-            } // -1 to bring into inclusive range, -3 to provide 2 slots of fudge room
-            None => a.body.consensus_state.curr_global_slot.slots_per_epoch.0 - 1, // -1 to bring into inclusive range
-        };
-
+        let max_epoch_slot = a.body.consensus_state.curr_global_slot.slots_per_epoch.0 - 1; // -1 to bring into inclusive range
         let min_a_curr_epoch_slot_defaut = 0;
         let min_a_curr_epoch_slot_sum = min_a_curr_epoch_slot_defaut + min_a_curr_epoch_slot;
         let slot = (min_a_curr_epoch_slot_sum + max_epoch_slot) / 2;
