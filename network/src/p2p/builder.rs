@@ -24,18 +24,18 @@ pub struct TransportBuilder {
 }
 
 impl TransportBuilder {
-    /// Creates a new instance of [MinaTransportBuilder] with random keypair and empty config
+    /// Creates a new instance of [TransportBuilder] with random keypair and empty config
     pub fn new() -> Self {
         let keypair = identity::Keypair::generate_ed25519();
         Self::new_with_key(keypair)
     }
 
-    /// Creates a new instance of [MinaTransportBuilder] with given keypair and empty config
+    /// Creates a new instance of [TransportBuilder] with given keypair and empty config
     pub fn new_with_key(keypair: identity::Keypair) -> Self {
         Self::new_with_key_and_config(keypair, TransportConfig::default().borrow())
     }
 
-    /// Creates a new instance of [MinaTransportBuilder] with given keypair and config
+    /// Creates a new instance of [TransportBuilder] with given keypair and config
     pub fn new_with_key_and_config(keypair: identity::Keypair, config: &TransportConfig) -> Self {
         let peer_id = PeerId::from(keypair.public());
         let shared_key = config.get_shared_key();
@@ -53,7 +53,7 @@ impl TransportBuilder {
         }
     }
 
-    /// Updates config for the [MinaTransportBuilder] instance
+    /// Updates config for the [TransportBuilder] instance
     pub fn with_config(mut self, config: &TransportConfig) -> Self {
         let shared_key = config.get_shared_key();
         self.pnet_config = PnetConfig::new(shared_key);
@@ -61,12 +61,12 @@ impl TransportBuilder {
         self
     }
 
-    /// Uses mainnet config for the [MinaTransportBuilder] instance
+    /// Uses mainnet config for the [TransportBuilder] instance
     pub fn with_mainnet_config(self) -> Self {
         self.with_config(&MAINNET_CONFIG)
     }
 
-    /// Sets timeout duration for the [MinaTransportBuilder] instance
+    /// Sets timeout duration for the [TransportBuilder] instance
     pub fn with_timeout(mut self, timeout: Duration) -> Self {
         self.timeout = timeout;
         self

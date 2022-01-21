@@ -14,7 +14,7 @@ lazy_static::lazy_static! {
     };
 }
 
-/// Configuration type for [super::MinaTransportBuilder]
+/// Configuration type for [super::TransportBuilder]
 #[derive(Clone, Debug)]
 pub struct TransportConfig<'a> {
     /// Rendezvous string for configuring private network
@@ -24,7 +24,7 @@ pub struct TransportConfig<'a> {
 }
 
 impl<'a> TransportConfig<'a> {
-    /// Gets [PreSharedKey] from the [MinaTransportConfig] instance
+    /// Gets [PreSharedKey] from the [TransportConfig] instance
     pub fn get_shared_key(&self) -> PreSharedKey {
         let mut hasher = Blake2b256::default();
         hasher.update(self.rendezvous_string);
@@ -34,7 +34,7 @@ impl<'a> TransportConfig<'a> {
         PreSharedKey::new(psk_fixed)
     }
 
-    /// Gets [MplexConfig] from the [MinaTransportConfig] instance
+    /// Gets [MplexConfig] from the [TransportConfig] instance
     pub fn get_mplex_config(&self) -> MplexConfig {
         let mut config = MplexConfig::new();
         config.set_protocol_name(self.mplex_protocol_name);
