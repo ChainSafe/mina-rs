@@ -43,6 +43,8 @@ where
         }
     }
 
+    /// Clears cached hashes of all ancester nodes of the give leaf
+    /// because the values become invaid once the leaf is updated
     fn clear_dirty_hashes(&mut self, leaf_index: usize) {
         let mut parent = leaf_index;
         while parent > 0 {
@@ -55,6 +57,10 @@ where
         }
     }
 
+    /// Calucates hash of a node if it's not available in the node cache
+    /// either apply hash algorithm if it's a leaf node
+    /// or apply merge algorithm if it's a non-leaf node
+    /// update the cache once calculated
     fn calculate_hash_if_needed(
         &mut self,
         index: usize,
