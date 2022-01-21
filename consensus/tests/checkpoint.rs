@@ -145,7 +145,7 @@ mod tests {
             // This invariant needs to be held for the position of `a`
             assert!(max_epoch_slot > a_curr_epoch_slot.0 + 2);
 
-            // Assume mix ascending there is a next block in the slot directly preceeding the block for `a`
+            // Assume there is a next block in the slot directly preceeding the block for `a`
             let added_slots = (a_curr_epoch_slot.0 + 2 + max_epoch_slot) / 2;
 
             let added_blocks = gen_num_blocks_in_slots(
