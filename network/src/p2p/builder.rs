@@ -15,7 +15,7 @@ use std::{borrow::Borrow, time::Duration};
 
 /// Builds libp2p transport for mina with various configurations
 #[derive(Clone)]
-pub struct MinaTransportBuilder {
+pub struct TransportBuilder {
     pnet_config: PnetConfig,
     mplex_config: MplexConfig,
     noise_keys: AuthenticKeypair<X25519Spec>,
@@ -23,7 +23,7 @@ pub struct MinaTransportBuilder {
     peer_id: PeerId,
 }
 
-impl MinaTransportBuilder {
+impl TransportBuilder {
     /// Creates a new instance of [MinaTransportBuilder] with random keypair and empty config
     pub fn new() -> Self {
         let keypair = identity::Keypair::generate_ed25519();
@@ -32,14 +32,11 @@ impl MinaTransportBuilder {
 
     /// Creates a new instance of [MinaTransportBuilder] with given keypair and empty config
     pub fn new_with_key(keypair: identity::Keypair) -> Self {
-        Self::new_with_key_and_config(keypair, MinaTransportConfig::default().borrow())
+        Self::new_with_key_and_config(keypair, TransportConfig::default().borrow())
     }
 
     /// Creates a new instance of [MinaTransportBuilder] with given keypair and config
-    pub fn new_with_key_and_config(
-        keypair: identity::Keypair,
-        config: &MinaTransportConfig,
-    ) -> Self {
+    pub fn new_with_key_and_config(keypair: identity::Keypair, config: &TransportConfig) -> Self {
         let peer_id = PeerId::from(keypair.public());
         let shared_key = config.get_shared_key();
         let pnet_config = PnetConfig::new(shared_key);
@@ -57,7 +54,7 @@ impl MinaTransportBuilder {
     }
 
     /// Updates config for the [MinaTransportBuilder] instance
-    pub fn with_config(mut self, config: &MinaTransportConfig) -> Self {
+    pub fn with_config(mut self, config: &TransportConfig) -> Self {
         let shared_key = config.get_shared_key();
         self.pnet_config = PnetConfig::new(shared_key);
         self.mplex_config = config.get_mplex_config();
@@ -101,7 +98,7 @@ impl MinaTransportBuilder {
     }
 }
 
-impl Default for MinaTransportBuilder {
+impl Default for TransportBuilder {
     fn default() -> Self {
         Self::new()
     }

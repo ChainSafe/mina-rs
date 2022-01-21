@@ -6,7 +6,7 @@ pub mod tests {
     use std::time::Duration;
 
     use libp2p::{futures::StreamExt, ping, swarm::SwarmEvent, tcp::TcpConfig, Multiaddr, Swarm};
-    use mina_network::p2p::{MinaTransportBuilder, MinaTransportConfig, MAINNET_CONFIG};
+    use mina_network::p2p::{TransportBuilder, TransportConfig, MAINNET_CONFIG};
 
     const DEST: &str =
         "/ip4/95.217.106.189/tcp/8302/p2p/12D3KooWSxxCtzRLfUzoxgRYW9fTKWPUujdvStuwCPSPUN3629mb";
@@ -27,19 +27,15 @@ pub mod tests {
 
     #[test]
     pub fn dummy_rendezvous() {
-        let mut config: MinaTransportConfig = Default::default();
+        let mut config: TransportConfig = Default::default();
         config.rendezvous_string = b"dummy";
         test_with_config(&config, 5, false);
     }
 
-    pub fn test_with_config(
-        config: &MinaTransportConfig,
-        timeout_secs: u64,
-        success_expected: bool,
-    ) {
+    pub fn test_with_config(config: &TransportConfig, timeout_secs: u64, success_expected: bool) {
         async_std::task::block_on(async move {
             let (transport, peer_id) = {
-                let builder = MinaTransportBuilder::default()
+                let builder = TransportBuilder::default()
                     .with_config(config)
                     .with_timeout(Duration::from_secs(timeout_secs));
                 let tcp = TcpConfig::new().nodelay(true);
