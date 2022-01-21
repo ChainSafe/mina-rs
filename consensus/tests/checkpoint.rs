@@ -136,9 +136,8 @@ mod tests {
 
         // Handle relativity constriants for second state.
         let a_curr_epoch_slot = &a.body.consensus_state.curr_global_slot.slot_number;
-       
+
         if _blockchain_length_relativity == "Ascending" {
-            
             // Generate second state position by extending the first state's position
             let protocol_constants = ConsensusConstants::default();
             let max_epoch_slot = protocol_constants.slots_per_epoch.0 - 1;
