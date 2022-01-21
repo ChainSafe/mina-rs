@@ -27,7 +27,4 @@ pub struct ProtocolConstants {
 }
 
 /// versioned wrapper
-#[derive(Debug, PartialEq, Serialize, Deserialize)]
-pub struct ProtocolConstantsV1(
-    pub Versioned<Versioned<ProtocolConstants, 1>, 1>
-);
+pub type ProtocolConstantsV1 = Versioned<Versioned<ProtocolConstants, 1>, 1>;

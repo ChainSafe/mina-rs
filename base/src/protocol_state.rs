@@ -12,7 +12,7 @@ use crate::{
     consensus_state::ConsensusState,
     global_slot::GlobalSlot,
     numbers::{BlockTime, Length},
-    network_types::{ProtocolStateV1, ProtocolStateBodyV1, ProtocolConstantsV1},
+    network_types::v1::{ProtocolStateV1, ProtocolStateBodyV1, ProtocolConstantsV1},
     network_types,
 };
 
@@ -33,7 +33,7 @@ pub struct ProtocolConstants {
 
 impl From<ProtocolConstantsV1> for ProtocolConstants {
     fn from(t: ProtocolConstantsV1) -> Self {
-        let t = t.0.inner().inner();
+        let t = t.inner().inner();
         Self {
             k: t.k,
             slots_per_epoch: t.slots_per_epoch,
@@ -46,17 +46,15 @@ impl From<ProtocolConstantsV1> for ProtocolConstants {
 
 impl Into<ProtocolConstantsV1> for ProtocolConstants {
     fn into(self) -> ProtocolConstantsV1 {
-        ProtocolConstantsV1(
+        Versioned::new(
             Versioned::new(
-                Versioned::new(
-                    network_types::protocol_constants::ProtocolConstants {
-                        k: self.k,
-                        slots_per_epoch: self.slots_per_epoch,
-                        slots_per_sub_window: self.slots_per_sub_window,
-                        delta: self.delta,
-                        genesis_state_timestamp: self.genesis_state_timestamp,
-                    }
-                )
+                network_types::protocol_constants::ProtocolConstants {
+                    k: self.k,
+                    slots_per_epoch: self.slots_per_epoch,
+                    slots_per_sub_window: self.slots_per_sub_window,
+                    delta: self.delta,
+                    genesis_state_timestamp: self.genesis_state_timestamp,
+                }
             )
         )
     }
@@ -80,7 +78,7 @@ impl ProtocolState {
 
 impl From<ProtocolStateV1> for ProtocolState {
     fn from(t: ProtocolStateV1) -> Self {
-        let t = t.0.inner().inner();
+        let t = t.inner().inner();
         Self {
             previous_state_hash: t.previous_state_hash,
             body: t.body.into(),
@@ -90,14 +88,12 @@ impl From<ProtocolStateV1> for ProtocolState {
 
 impl Into<ProtocolStateV1> for ProtocolState {
     fn into(self) -> ProtocolStateV1 {
-        ProtocolStateV1(
+        Versioned::new(
             Versioned::new(
-                Versioned::new(
-                    network_types::protocol_state::ProtocolState {
-                      previous_state_hash: self.previous_state_hash,
-                      body: self.body.into(),
-                    }
-                )
+                network_types::protocol_state::ProtocolState {
+                  previous_state_hash: self.previous_state_hash,
+                  body: self.body.into(),
+                }
             )
         )
     }
@@ -121,7 +117,7 @@ pub struct ProtocolStateBody {
 
 impl From<ProtocolStateBodyV1> for ProtocolStateBody {
     fn from(t: ProtocolStateBodyV1) -> Self {
-        let t = t.0.inner().inner();
+        let t = t.inner().inner();
         Self {
             genesis_state_hash: t.genesis_state_hash,
             blockchain_state: t.blockchain_state,
@@ -133,16 +129,14 @@ impl From<ProtocolStateBodyV1> for ProtocolStateBody {
 
 impl Into<ProtocolStateBodyV1> for ProtocolStateBody {
     fn into(self) -> ProtocolStateBodyV1 {
-        ProtocolStateBodyV1(
+        Versioned::new(
             Versioned::new(
-                Versioned::new(
-                    network_types::protocol_state_body::ProtocolStateBody {
-                        genesis_state_hash: self.genesis_state_hash,
-                        blockchain_state: self.blockchain_state,
-                        consensus_state: self.consensus_state,
-                        constants: self.constants.into(),
-                    }
-                )
+                network_types::protocol_state_body::ProtocolStateBody {
+                    genesis_state_hash: self.genesis_state_hash,
+                    blockchain_state: self.blockchain_state,
+                    consensus_state: self.consensus_state,
+                    constants: self.constants.into(),
+                }
             )
         )
     }

@@ -10,21 +10,36 @@
 use mina_crypto::signature::{PublicKey2, PublicKey3, Signature};
 use serde::{Deserialize, Serialize};
 use thiserror::Error;
-use wire_type::WireType;
+use versioned::Versioned;
 
 use crate::numbers::{Amount, ExtendedU32, ExtendedU64_2, ExtendedU64_3};
 
-#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, WireType)]
-#[serde(from = "<Self as WireType>::WireType")]
-#[serde(into = "<Self as WireType>::WireType")]
+#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug)]
 /// Top level wrapper type for a StagedLedgerDiff
 pub struct StagedLedgerDiff {
-    pub diff: StagedLedgerDiffTuple,
+    pub diff: (),
 }
 
-#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, WireType)]
-#[serde(from = "<Self as WireType>::WireType")]
-#[serde(into = "<Self as WireType>::WireType")]
+
+use crate::network_types::v1::StagedLedgerDiffV1;
+
+impl From<StagedLedgerDiffV1> for StagedLedgerDiff {
+    fn from(t: StagedLedgerDiffV1) -> Self {
+        // let t = t.inner();
+        Self {
+            diff: (),
+        }
+    }
+}
+
+impl Into<StagedLedgerDiffV1> for StagedLedgerDiff {
+    fn into(self) -> StagedLedgerDiffV1 {
+        Default::default()
+    }
+}
+
+
+#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug)]
 pub struct StagedLedgerDiffTuple((StagedLedgerPreDiffTwo, Option<StagedLedgerPreDiffOne>));
 
 impl StagedLedgerDiffTuple {
@@ -40,10 +55,7 @@ impl StagedLedgerDiffTuple {
 // FIXME: No test coverage yet
 pub type StagedLedgerPreDiffOne = ();
 
-#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, WireType)]
-#[serde(from = "<Self as WireType>::WireType")]
-#[serde(into = "<Self as WireType>::WireType")]
-#[wire_type(recurse = 2)]
+#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug)]
 pub struct StagedLedgerPreDiffTwo {
     pub completed_works: Vec<TransactionSnarkWork>,
     pub commands: Vec<UserCommandWithStatus>,
@@ -53,18 +65,13 @@ pub struct StagedLedgerPreDiffTwo {
 
 pub type TransactionSnarkWork = ();
 
-#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, WireType)]
-#[serde(from = "<Self as WireType>::WireType")]
-#[serde(into = "<Self as WireType>::WireType")]
+#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug)]
 pub struct UserCommandWithStatus {
     pub data: UserCommand,
     pub status: TransactionStatus,
 }
 
-#[derive(Clone, Serialize, Deserialize, PartialEq, Debug, WireType)]
-#[serde(from = "<Self as WireType>::WireType")]
-#[serde(into = "<Self as WireType>::WireType")]
-#[wire_type(recurse = 2)]
+#[derive(Clone, Serialize, Deserialize, PartialEq, Debug)]
 #[non_exhaustive]
 pub enum UserCommand {
     SignedCommand(SignedCommand),
@@ -77,29 +84,20 @@ impl Default for UserCommand {
     }
 }
 
-#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, WireType)]
-#[serde(from = "<Self as WireType>::WireType")]
-#[serde(into = "<Self as WireType>::WireType")]
-#[wire_type(recurse = 2)]
+#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug)]
 pub struct SignedCommand {
     pub payload: SignedCommandPayload,
     pub signer: PublicKey3,
     pub signature: Signature,
 }
 
-#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, WireType)]
-#[serde(from = "<Self as WireType>::WireType")]
-#[serde(into = "<Self as WireType>::WireType")]
-#[wire_type(recurse = 2)]
+#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug)]
 pub struct SignedCommandPayload {
     pub common: SignedCommandPayloadCommon,
     pub body: SignedCommandPayloadBody,
 }
 
-#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, WireType)]
-#[serde(from = "<Self as WireType>::WireType")]
-#[serde(into = "<Self as WireType>::WireType")]
-#[wire_type(recurse = 3)]
+#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug)]
 pub struct SignedCommandPayloadCommon {
     pub fee: Amount,
     pub fee_token: SignedCommandFeeToken,
@@ -109,10 +107,7 @@ pub struct SignedCommandPayloadCommon {
     pub memo: SignedCommandMemo,
 }
 
-#[derive(Clone, Serialize, Deserialize, PartialEq, Debug, WireType)]
-#[serde(from = "<Self as WireType>::WireType")]
-#[serde(into = "<Self as WireType>::WireType")]
-#[wire_type(recurse = 2)]
+#[derive(Clone, Serialize, Deserialize, PartialEq, Debug)]
 #[non_exhaustive]
 pub enum SignedCommandPayloadBody {
     PaymentPayload(PaymentPayload),
@@ -125,10 +120,7 @@ impl Default for SignedCommandPayloadBody {
     }
 }
 
-#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, WireType)]
-#[serde(from = "<Self as WireType>::WireType")]
-#[serde(into = "<Self as WireType>::WireType")]
-#[wire_type(recurse = 2)]
+#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug)]
 pub struct PaymentPayload {
     pub source_pk: PublicKey2,
     pub receiver_pk: PublicKey2,
@@ -136,15 +128,10 @@ pub struct PaymentPayload {
     pub amount: Amount,
 }
 
-#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, WireType)]
-#[serde(from = "<Self as WireType>::WireType")]
-#[serde(into = "<Self as WireType>::WireType")]
-#[wire_type(recurse = 3)]
+#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug)]
 pub struct SignedCommandFeeToken(pub u64);
 
-#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, WireType)]
-#[serde(from = "<Self as WireType>::WireType")]
-#[serde(into = "<Self as WireType>::WireType")]
+#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug)]
 pub struct SignedCommandMemo(pub Vec<u8>);
 
 impl TryFrom<&str> for SignedCommandMemo {
@@ -185,16 +172,11 @@ pub enum SignedCommandMemoError {
     StringTooLong,
 }
 
-#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, WireType)]
-#[serde(from = "<Self as WireType>::WireType")]
-#[serde(into = "<Self as WireType>::WireType")]
-#[wire_type(recurse = 2)]
+#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug)]
 // FIXME: No test coverage yet
 pub struct SnappCommand;
 
-#[derive(Clone, Serialize, Deserialize, PartialEq, Debug, WireType)]
-#[serde(from = "<Self as WireType>::WireType")]
-#[serde(into = "<Self as WireType>::WireType")]
+#[derive(Clone, Serialize, Deserialize, PartialEq, Debug)]
 #[non_exhaustive]
 pub enum TransactionStatus {
     Applied(TransactionStatusApplied),
@@ -220,27 +202,21 @@ impl TransactionStatusApplied {
     }
 }
 
-#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, WireType)]
-#[serde(from = "<Self as WireType>::WireType")]
-#[serde(into = "<Self as WireType>::WireType")]
+#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug)]
 pub struct TransactionStatusAuxiliaryData {
     pub fee_payer_account_creation_fee_paid: Option<Amount>,
     pub receiver_account_creation_fee_paid: Option<Amount>,
     pub created_token: Option<ExtendedU64_3>,
 }
 
-#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, WireType)]
-#[serde(from = "<Self as WireType>::WireType")]
-#[serde(into = "<Self as WireType>::WireType")]
+#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug)]
 pub struct TransactionStatusBalanceData {
     pub fee_payer_balance: Option<ExtendedU64_3>,
     pub source_balance: Option<ExtendedU64_3>,
     pub receiver_balance: Option<ExtendedU64_3>,
 }
 
-#[derive(Clone, Serialize, Deserialize, PartialEq, Debug, WireType)]
-#[serde(from = "<Self as WireType>::WireType")]
-#[serde(into = "<Self as WireType>::WireType")]
+#[derive(Clone, Serialize, Deserialize, PartialEq, Debug)]
 #[non_exhaustive]
 pub enum CoinBase {
     Zero,
@@ -255,37 +231,28 @@ impl Default for CoinBase {
     }
 }
 
-#[derive(Clone, Serialize, Deserialize, PartialEq, Debug, WireType)]
-#[serde(from = "<Self as WireType>::WireType")]
-#[serde(into = "<Self as WireType>::WireType")]
-#[wire_type(recurse = 2)]
+#[derive(Clone, Serialize, Deserialize, PartialEq, Debug)]
 // FIXME: No test coverage yet
 pub struct CoinBaseFeeTransfer {
     pub receiver_pk: PublicKey2,
     pub fee: ExtendedU64_2,
 }
 
-#[derive(Clone, Serialize, Deserialize, PartialEq, Debug, WireType)]
-#[serde(from = "<Self as WireType>::WireType")]
-#[serde(into = "<Self as WireType>::WireType")]
+#[derive(Clone, Serialize, Deserialize, PartialEq, Debug)]
 #[non_exhaustive]
 pub enum InternalCommandBalanceData {
     CoinBase(CoinBaseBalanceData),
     FeeTransfer(FeeTransferBalanceData),
 }
 
-#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, WireType)]
-#[serde(from = "<Self as WireType>::WireType")]
-#[serde(into = "<Self as WireType>::WireType")]
+#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug)]
 pub struct CoinBaseBalanceData {
     pub coinbase_receiver_balance: ExtendedU64_3,
     // FIXME: No test coverage yet
     pub fee_transfer_receiver_balance: Option<ExtendedU64_3>,
 }
 
-#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, WireType)]
-#[serde(from = "<Self as WireType>::WireType")]
-#[serde(into = "<Self as WireType>::WireType")]
+#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug)]
 pub struct FeeTransferBalanceData {
     pub receiver1_balance: ExtendedU64_3,
     // FIXME: No test coverage yet

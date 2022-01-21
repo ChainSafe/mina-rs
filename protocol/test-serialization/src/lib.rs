@@ -18,7 +18,7 @@ mod tests {
         proof_messages::{ProofMessageWithDegreeBound, ProofMessageWithoutDegreeBoundList},
         *,
     };
-    use mina_rs_base::network_types::{ProtocolStateV1, ProtocolConstantsV1, ProtocolStateBodyV1};
+    use mina_rs_base::network_types::v1::{ProtocolStateV1, ProtocolConstantsV1, ProtocolStateBodyV1};
     use pretty_assertions::assert_eq;
     use serde::{Deserialize, Serialize};
     use std::str::FromStr;

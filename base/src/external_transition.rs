@@ -9,8 +9,6 @@ use wire_type_2::WireType;
 use versioned::Versioned;
 
 use crate::types::*;
-use crate::network_types;
-use crate::network_types::*;
 
 /// This structure represents a mina block
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
@@ -32,13 +30,15 @@ pub struct ExternalTransition {
     pub proposed_protocol_version_opt: Option<ProtocolVersion>,
 }
 
+use crate::network_types::v1::ExternalTransitionV1;
+
 impl From<ExternalTransitionV1> for ExternalTransition {
     fn from(t: ExternalTransitionV1) -> Self {
         let t = t.0.inner();
         Self {
             protocol_state: t.protocol_state.into(),
             protocol_state_proof: t.protocol_state_proof,
-            staged_ledger_diff: t.staged_ledger_diff,
+            staged_ledger_diff: t.staged_ledger_diff.into(),
             delta_transition_chain_proof: t.delta_transition_chain_proof,
             current_protocol_version: t.current_protocol_version,
             proposed_protocol_version_opt: t.proposed_protocol_version_opt,
@@ -49,10 +49,10 @@ impl From<ExternalTransitionV1> for ExternalTransition {
 impl Into<ExternalTransitionV1> for ExternalTransition {
     fn into(self) -> ExternalTransitionV1 {
         ExternalTransitionV1(
-            Versioned::new(network_types::external_transition::ExternalTransition {
+            Versioned::new(crate::network_types::external_transition::ExternalTransition {
                 protocol_state: self.protocol_state.into(),
                 protocol_state_proof: self.protocol_state_proof,
-                staged_ledger_diff: self.staged_ledger_diff,
+                staged_ledger_diff: self.staged_ledger_diff.into(),
                 delta_transition_chain_proof: self.delta_transition_chain_proof,
                 current_protocol_version: self.current_protocol_version,
                 proposed_protocol_version_opt: self.proposed_protocol_version_opt,

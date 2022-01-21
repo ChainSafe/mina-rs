@@ -3,11 +3,11 @@
 
 //! Mina ExternalTransition
 
+use mina_crypto::prelude::BinProtEncodable;
 use serde::{Deserialize, Serialize};
 
-use crate::network_types::*; // TODO: aim to remove this dep
-use crate::types::*;
-use mina_crypto::prelude::*;
+use crate::types::{ProtocolStateProof, DeltaTransitionChainProof, ProtocolVersion};
+use crate::network_types::v1::{ProtocolStateV1, StagedLedgerDiffV1}; // TODO: aim to remove this dep
 use versioned::Versioned;
 
 /// This structure represents a mina block received from an external block producer
@@ -18,7 +18,7 @@ pub struct ExternalTransition {
     /// Proof that the protocol state and entire history of the chain is valid
     pub protocol_state_proof: ProtocolStateProof,
     /// Diff of the proposed next state of the blockchain
-    pub staged_ledger_diff: StagedLedgerDiff,
+    pub staged_ledger_diff: StagedLedgerDiffV1,
     /// Proof that the block was produced within the allotted slot time
     pub delta_transition_chain_proof: DeltaTransitionChainProof,
     /// Current protocol version

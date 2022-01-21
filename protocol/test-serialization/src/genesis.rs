@@ -6,7 +6,7 @@ mod tests {
     use super::super::tests::select_path;
     use mina_consensus::genesis::*;
     use mina_crypto::prelude::*;
-    use mina_rs_base::network_types::ExternalTransitionV1;
+    use mina_rs_base::network_types::v1::ExternalTransitionV1;
     use mina_rs_base::types::ExternalTransition;
     use pretty_assertions::assert_eq;
     use serde::Serialize;
@@ -100,31 +100,31 @@ mod tests {
             &genesis,
             &fixture,
             "t/protocol_state/t/t/previous_state_hash",
-            |b| &b.0.t.protocol_state.0.t.t.previous_state_hash,
+            |b| &b.0.t.protocol_state.t.t.previous_state_hash,
         );
         test_path(
             &genesis,
             &fixture,
             "t/protocol_state/t/t/body/t/t/genesis_state_hash",
-            |b| &b.0.t.protocol_state.0.t.t.body.0.t.t.genesis_state_hash,
+            |b| &b.0.t.protocol_state.t.t.body.t.t.genesis_state_hash,
         );
         test_path(
             &genesis,
             &fixture,
             "t/protocol_state/t/t/body/t/t/blockchain_state",
-            |b| &b.0.t.protocol_state.0.t.t.body.0.t.t.blockchain_state,
+            |b| &b.0.t.protocol_state.t.t.body.t.t.blockchain_state,
         );
         test_path(
             &genesis,
             &fixture,
             "t/protocol_state/t/t/body/t/t/consensus_state",
-            |b| &b.0.t.protocol_state.0.t.t.body.0.t.t.consensus_state,
+            |b| &b.0.t.protocol_state.t.t.body.t.t.consensus_state,
         );
         test_path(
             &genesis,
             &fixture,
             "t/protocol_state/t/t/body/t/t/constants",
-            |b| &b.0.t.protocol_state.0.t.t.body.0.t.t.constants,
+            |b| &b.0.t.protocol_state.t.t.body.t.t.constants,
         );
         test_path(&genesis, &fixture, "t/protocol_state", |b| {
             &b.0.t.protocol_state

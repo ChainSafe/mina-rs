@@ -12,7 +12,7 @@ use crate::{
     blockchain_state::BlockchainState,
     consensus_state::ConsensusState,
 };
-use crate::network_types::ProtocolConstantsV1;
+use crate::network_types::v1::ProtocolConstantsV1;
 
 /// Body of the protocol state
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
@@ -28,7 +28,4 @@ pub struct ProtocolStateBody {
 }
 
 /// versioned wrapper
-#[derive(Debug, PartialEq, Serialize, Deserialize)]
-pub struct ProtocolStateBodyV1(
-    pub Versioned<Versioned<ProtocolStateBody, 1>, 1>
-);
+pub type ProtocolStateBodyV1 = Versioned<Versioned<ProtocolStateBody, 1>, 1>;

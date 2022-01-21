@@ -8,7 +8,7 @@ use serde::{Deserialize, Serialize};
 use versioned::Versioned;
 
 use mina_crypto::hash::{StateHash};
-use crate::network_types::ProtocolStateBodyV1;
+use crate::network_types::v1::ProtocolStateBodyV1;
 
 /// This structure can be thought of like the block header. It contains the most essential information of a block.
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
@@ -20,7 +20,4 @@ pub struct ProtocolState {
 }
 
 /// versioned wrapper
-#[derive(Debug, PartialEq, Serialize, Deserialize)]
-pub struct ProtocolStateV1(
-    pub Versioned<Versioned<ProtocolState, 1>, 1>
-);
+pub type ProtocolStateV1 = Versioned<Versioned<ProtocolState, 1>, 1>;

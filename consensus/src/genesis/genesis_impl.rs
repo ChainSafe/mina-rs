@@ -1,7 +1,7 @@
 // Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
-use mina_rs_base::network_types::ExternalTransitionV1;
+use mina_rs_base::network_types::v1::ExternalTransitionV1;
 
 use super::*;
 
