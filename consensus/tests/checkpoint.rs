@@ -136,26 +136,30 @@ mod tests {
 
         // Handle relativity constriants for second state.
         let a_curr_epoch_slot = &a.body.consensus_state.curr_global_slot.slot_number;
+       
+        if _blockchain_length_relativity == "Ascending" {
+            
+            // Generate second state position by extending the first state's position
+            let protocol_constants = ConsensusConstants::default();
+            let max_epoch_slot = protocol_constants.slots_per_epoch.0 - 1;
 
-        // Generate second state position by extending the first state's position
-        let protocol_constants = ConsensusConstants::default();
-        let max_epoch_slot = protocol_constants.slots_per_epoch.0 - 1;
+            // This invariant needs to be held for the position of `a`
+            assert!(max_epoch_slot > a_curr_epoch_slot.0 + 2);
 
-        // This invariant needs to be held for the position of `a`
-        assert!(max_epoch_slot > a_curr_epoch_slot.0 + 2);
+            // Assume mix ascending there is a next block in the slot directly preceeding the block for `a`
+            let added_slots = (a_curr_epoch_slot.0 + 2 + max_epoch_slot) / 2;
 
-        // Assume mix ascending there is a next block in the slot directly preceeding the block for `a`
-        let added_slots = (a_curr_epoch_slot.0 + 2 + max_epoch_slot) / 2;
+            let added_blocks = gen_num_blocks_in_slots(
+                DEFAULT_SLOT_FILL_RATE,
+                DEFAULT_SLOT_FILL_RATE_DELTA,
+                added_slots as f64,
+            );
 
-        let added_blocks = gen_num_blocks_in_slots(
-            DEFAULT_SLOT_FILL_RATE,
-            DEFAULT_SLOT_FILL_RATE_DELTA,
-            added_slots as f64,
-        );
-
-        b.body.consensus_state.curr_global_slot.slot_number.0 =
-            a_curr_epoch_slot.0 + added_slots + 1;
-        b.body.consensus_state.blockchain_length.0 = a_curr_epoch_length + added_blocks as u32 + 1;
+            b.body.consensus_state.curr_global_slot.slot_number.0 =
+                a_curr_epoch_slot.0 + added_slots + 1;
+            b.body.consensus_state.blockchain_length.0 =
+                a_curr_epoch_length + added_blocks as u32 + 1;
+        }
     }
 
     #[test]
