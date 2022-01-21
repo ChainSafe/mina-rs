@@ -93,6 +93,7 @@ mod tests {
         a: &mut ProtocolState,
         b: &mut ProtocolState,
         min_a_curr_epoch_slot: u32,
+        _blockchain_length_relativity: String,
     ) {
         // New pairs of spot blocks that share common checkpoints.
         // The overlap of the checkpoints and the root epoch positions of the blocks
@@ -105,7 +106,11 @@ mod tests {
         // Constraining the second state to have a greater blockchain length than the
         // first, we need to constrain the first blockchain length such that there is some room
         // leftover in the epoch for at least 1 more block to be generated.
-        let max_epoch_slot = a.body.consensus_state.curr_global_slot.slots_per_epoch.0 - 1; // -1 to bring into inclusive range
+        let max_epoch_slot = match &_blockchain_length_relativity[..] {
+            "Ascending" => a.body.consensus_state.curr_global_slot.slots_per_epoch.0 - 4, // -1 to bring into inclusive range, -3 to provide 2 slots of fudge room
+            _ => a.body.consensus_state.curr_global_slot.slots_per_epoch.0 - 1, // -1 to bring into inclusive range
+        };
+
         let min_a_curr_epoch_slot_defaut = 0;
         let min_a_curr_epoch_slot_sum = min_a_curr_epoch_slot_defaut + min_a_curr_epoch_slot;
         let slot = (min_a_curr_epoch_slot_sum + max_epoch_slot) / 2;
@@ -137,7 +142,7 @@ mod tests {
         // This invariant needs to be held for the position of `a`
         assert!(max_epoch_slot > a_curr_epoch_slot.0 + 2);
 
-        // Assume there is a next block in the slot directly preceeding the block for `a`
+        // Assume mix ascending there is a next block in the slot directly preceeding the block for `a`
         let added_slots = (a_curr_epoch_slot.0 + 2 + max_epoch_slot) / 2;
 
         let added_blocks = gen_num_blocks_in_slots(
@@ -183,7 +188,7 @@ mod tests {
 
         a.body.consensus_state = ConsensusState::default();
         b.body.consensus_state = ConsensusState::default();
-        gen_spot_pair_common_checkpoints(&mut a, &mut b, 0);
+        gen_spot_pair_common_checkpoints(&mut a, &mut b, 0, "None".to_string());
 
         let c0: ProtocolStateChain = ProtocolStateChain(vec![a]);
         let c1: ProtocolStateChain = ProtocolStateChain(vec![b]);
@@ -214,7 +219,7 @@ mod tests {
         // Constrain first state to be within last 1/3rd of its epoch (ensuring it's checkpoints and seed are fixed)
         let protocol_constants = ConsensusConstants::default();
         let min_a_curr_epoch_slot = 2 * (protocol_constants.slots_per_epoch.0 / 3) + 1;
-        gen_spot_pair_common_checkpoints(&mut a, &mut b, min_a_curr_epoch_slot);
+        gen_spot_pair_common_checkpoints(&mut a, &mut b, min_a_curr_epoch_slot, "None".to_string());
 
         let c0: ProtocolStateChain = ProtocolStateChain(vec![a]);
         let c1: ProtocolStateChain = ProtocolStateChain(vec![b]);
