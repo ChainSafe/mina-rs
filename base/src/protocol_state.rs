@@ -11,9 +11,9 @@ use crate::{
     blockchain_state::BlockchainState,
     consensus_state::ConsensusState,
     global_slot::GlobalSlot,
-    numbers::{BlockTime, Length},
-    network_types::v1::{ProtocolStateV1, ProtocolStateBodyV1, ProtocolConstantsV1},
     network_types,
+    network_types::v1::{ProtocolConstantsV1, ProtocolStateBodyV1, ProtocolStateV1},
+    numbers::{BlockTime, Length},
 };
 
 #[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug)]
@@ -46,17 +46,15 @@ impl From<ProtocolConstantsV1> for ProtocolConstants {
 
 impl Into<ProtocolConstantsV1> for ProtocolConstants {
     fn into(self) -> ProtocolConstantsV1 {
-        Versioned::new(
-            Versioned::new(
-                network_types::protocol_constants::ProtocolConstants {
-                    k: self.k,
-                    slots_per_epoch: self.slots_per_epoch,
-                    slots_per_sub_window: self.slots_per_sub_window,
-                    delta: self.delta,
-                    genesis_state_timestamp: self.genesis_state_timestamp,
-                }
-            )
-        )
+        Versioned::new(Versioned::new(
+            network_types::protocol_constants::ProtocolConstants {
+                k: self.k,
+                slots_per_epoch: self.slots_per_epoch,
+                slots_per_sub_window: self.slots_per_sub_window,
+                delta: self.delta,
+                genesis_state_timestamp: self.genesis_state_timestamp,
+            },
+        ))
     }
 }
 
@@ -88,14 +86,12 @@ impl From<ProtocolStateV1> for ProtocolState {
 
 impl Into<ProtocolStateV1> for ProtocolState {
     fn into(self) -> ProtocolStateV1 {
-        Versioned::new(
-            Versioned::new(
-                network_types::protocol_state::ProtocolState {
-                  previous_state_hash: self.previous_state_hash,
-                  body: self.body.into(),
-                }
-            )
-        )
+        Versioned::new(Versioned::new(
+            network_types::protocol_state::ProtocolState {
+                previous_state_hash: self.previous_state_hash,
+                body: self.body.into(),
+            },
+        ))
     }
 }
 
@@ -129,16 +125,14 @@ impl From<ProtocolStateBodyV1> for ProtocolStateBody {
 
 impl Into<ProtocolStateBodyV1> for ProtocolStateBody {
     fn into(self) -> ProtocolStateBodyV1 {
-        Versioned::new(
-            Versioned::new(
-                network_types::protocol_state_body::ProtocolStateBody {
-                    genesis_state_hash: self.genesis_state_hash,
-                    blockchain_state: self.blockchain_state,
-                    consensus_state: self.consensus_state,
-                    constants: self.constants.into(),
-                }
-            )
-        )
+        Versioned::new(Versioned::new(
+            network_types::protocol_state_body::ProtocolStateBody {
+                genesis_state_hash: self.genesis_state_hash,
+                blockchain_state: self.blockchain_state,
+                consensus_state: self.consensus_state,
+                constants: self.constants.into(),
+            },
+        ))
     }
 }
 

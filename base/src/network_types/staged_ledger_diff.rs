@@ -21,21 +21,21 @@ pub struct StagedLedgerDiff {
 
 pub type StagedLedgerDiffV1 = Versioned<StagedLedgerDiff, 1>;
 
-pub type StagedLedgerDiffTupleV1 = Versioned<(StagedLedgerPreDiffTwoV1, Option<StagedLedgerPreDiffOneV1>), 1>;
+pub type StagedLedgerDiffTupleV1 =
+    Versioned<(StagedLedgerPreDiffTwoV1, Option<StagedLedgerPreDiffOneV1>), 1>;
 
 // FIXME: No test coverage yet
 pub type StagedLedgerPreDiffOneV1 = ();
 
 #[derive(Serialize, Deserialize, Default, PartialEq, Debug)]
 pub struct StagedLedgerPreDiffTwo {
-    pub completed_works: Vec<()>, 
+    pub completed_works: Vec<()>,
     pub commands: Vec<UserCommandWithStatusV1>,
     pub coinbase: CoinBaseV1,
     pub internal_command_balances: Vec<InternalCommandBalanceDataV1>,
 }
 
 pub type StagedLedgerPreDiffTwoV1 = Versioned<Versioned<StagedLedgerPreDiffTwo, 1>, 1>;
-
 
 #[derive(Serialize, Deserialize, Default, PartialEq, Debug)]
 pub struct UserCommandWithStatus {
@@ -44,7 +44,6 @@ pub struct UserCommandWithStatus {
 }
 
 pub type UserCommandWithStatusV1 = Versioned<UserCommandWithStatus, 1>;
-
 
 #[derive(Serialize, Deserialize, PartialEq, Debug)]
 #[non_exhaustive]
@@ -70,7 +69,6 @@ pub struct SignedCommand {
 
 pub type SignedCommandV1 = Versioned<Versioned<SignedCommand, 1>, 1>;
 
-
 #[derive(Serialize, Deserialize, Default, PartialEq, Debug)]
 pub struct SignedCommandPayload {
     pub common: SignedCommandPayloadCommonV1,
@@ -78,7 +76,6 @@ pub struct SignedCommandPayload {
 }
 
 pub type SignedCommandPayloadV1 = Versioned<Versioned<SignedCommandPayload, 1>, 1>;
-
 
 #[derive(Serialize, Deserialize, Default, PartialEq, Debug)]
 pub struct SignedCommandPayloadCommon {
@@ -90,8 +87,8 @@ pub struct SignedCommandPayloadCommon {
     pub memo: SignedCommandMemoV1,
 }
 
-pub type SignedCommandPayloadCommonV1 = Versioned<Versioned<Versioned<SignedCommandPayloadCommon, 1>, 1>, 1>;
-
+pub type SignedCommandPayloadCommonV1 =
+    Versioned<Versioned<Versioned<SignedCommandPayloadCommon, 1>, 1>, 1>;
 
 #[derive(Serialize, Deserialize, PartialEq, Debug)]
 #[non_exhaustive]
@@ -101,7 +98,6 @@ pub enum SignedCommandPayloadBody {
 }
 
 pub type SignedCommandPayloadBodyV1 = Versioned<Versioned<SignedCommandPayloadBody, 1>, 1>;
-
 
 impl Default for SignedCommandPayloadBody {
     fn default() -> Self {
@@ -126,25 +122,28 @@ pub type SignedCommandMemoV1 = Versioned<Vec<u8>, 1>;
 // FIXME: No test coverage yet
 pub type SnappCommand = Versioned<Versioned<(), 1>, 1>;
 
-
 #[derive(Serialize, Deserialize, PartialEq, Debug)]
 #[non_exhaustive]
 pub enum TransactionStatus {
-    Applied(TransactionStatusApplied),
+    Applied(TransactionStatusAppliedV1),
     // FIXME: other variants are not covered by current test block
 }
 
 impl Default for TransactionStatus {
     fn default() -> Self {
-        Self::Applied(TransactionStatusApplied::default())
+        Self::Applied(TransactionStatusAppliedV1::default())
     }
 }
 
 pub type TransactionStatusV1 = Versioned<TransactionStatus, 1>;
 
 #[derive(Serialize, Deserialize, Default, PartialEq, Debug)]
-pub struct TransactionStatusApplied(pub (TransactionStatusAuxiliaryDataV1, TransactionStatusBalanceDataV1));
-
+pub struct TransactionStatusAppliedV1(
+    pub  (
+        TransactionStatusAuxiliaryDataV1,
+        TransactionStatusBalanceDataV1,
+    ),
+);
 
 #[derive(Serialize, Deserialize, Default, PartialEq, Debug)]
 pub struct TransactionStatusAuxiliaryData {
@@ -193,8 +192,8 @@ pub type CoinBaseFeeTransferV1 = Versioned<Versioned<CoinBaseFeeTransfer, 1>, 1>
 #[derive(Serialize, Deserialize, PartialEq, Debug)]
 #[non_exhaustive]
 pub enum InternalCommandBalanceData {
-    CoinBase(CoinBaseBalanceData),
-    FeeTransfer(FeeTransferBalanceData),
+    CoinBase(CoinBaseBalanceDataV1),
+    FeeTransfer(FeeTransferBalanceDataV1),
 }
 
 pub type InternalCommandBalanceDataV1 = Versioned<InternalCommandBalanceData, 1>;

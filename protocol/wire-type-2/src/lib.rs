@@ -19,9 +19,7 @@
 use serde::{Deserialize, Serialize};
 
 /// Types implementing WireType provide an ascociated wire type. Conversions are automatically implemented from To/From impls
-pub trait WireType<'a>:
-    Into<Self::WireType>
-{
+pub trait WireType<'a>: Into<Self::WireType> {
     /// Associated wire type for this type
     type WireType: Serialize + Deserialize<'a> + Into<Self>;
 

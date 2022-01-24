@@ -10,7 +10,6 @@
 use mina_crypto::signature::{PublicKey2, PublicKey3, Signature};
 use serde::{Deserialize, Serialize};
 use thiserror::Error;
-use versioned::Versioned;
 
 use crate::numbers::{Amount, ExtendedU32, ExtendedU64_2, ExtendedU64_3};
 
@@ -20,15 +19,12 @@ pub struct StagedLedgerDiff {
     pub diff: (),
 }
 
-
 use crate::network_types::v1::StagedLedgerDiffV1;
 
 impl From<StagedLedgerDiffV1> for StagedLedgerDiff {
-    fn from(t: StagedLedgerDiffV1) -> Self {
+    fn from(_t: StagedLedgerDiffV1) -> Self {
         // let t = t.inner();
-        Self {
-            diff: (),
-        }
+        Self { diff: () }
     }
 }
 
@@ -37,7 +33,6 @@ impl Into<StagedLedgerDiffV1> for StagedLedgerDiff {
         Default::default()
     }
 }
-
 
 #[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug)]
 pub struct StagedLedgerDiffTuple((StagedLedgerPreDiffTwo, Option<StagedLedgerPreDiffOne>));

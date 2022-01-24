@@ -3,16 +3,13 @@
 
 //! Types related to the Mina protocol state
 
-use mina_crypto::hash::{StateHash};
+use mina_crypto::hash::StateHash;
 use serde::{Deserialize, Serialize};
 
 use versioned::Versioned;
 
-use crate::{
-    blockchain_state::BlockchainState,
-    consensus_state::ConsensusState,
-};
 use crate::network_types::v1::ProtocolConstantsV1;
+use crate::{blockchain_state::BlockchainState, consensus_state::ConsensusState};
 
 /// Body of the protocol state
 #[derive(Debug, PartialEq, Serialize, Deserialize)]

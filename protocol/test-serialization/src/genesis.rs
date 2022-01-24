@@ -7,7 +7,6 @@ mod tests {
     use mina_consensus::genesis::*;
     use mina_crypto::prelude::*;
     use mina_rs_base::network_types::v1::ExternalTransitionV1;
-    use mina_rs_base::types::ExternalTransition;
     use pretty_assertions::assert_eq;
     use serde::Serialize;
     use test_fixtures::*;
@@ -35,10 +34,10 @@ mod tests {
     #[wasm_bindgen_test]
     fn test_genesis_protocol_state_proof() {
         for et in [
-            ExternalTransition::from_genesis_config(&MAINNET_CONFIG),
+            ExternalTransitionV1::from_genesis_config(&MAINNET_CONFIG),
             GENESIS_BLOCK_MAINNET.external_transition().unwrap().into(),
         ] {
-            let protocol_state_proof = &et.protocol_state_proof;
+            let protocol_state_proof = &et.0.t.protocol_state_proof;
             let ev0 = &protocol_state_proof.proof.openings.evals.0;
             assert_eq!(
                 ev0.l.to_hex_string(),
@@ -76,7 +75,7 @@ mod tests {
         genesis_fixture: &BlockFixture,
         genesis_init_config: &GenesisInitConfig,
     ) {
-        let genesis = ExternalTransition::from_genesis_config(genesis_init_config);
+        let genesis = ExternalTransitionV1::from_genesis_config(genesis_init_config);
         let output = genesis.try_encode_binprot().unwrap();
         assert_eq!(genesis_fixture.bytes, output)
     }
@@ -134,7 +133,13 @@ mod tests {
             &genesis,
             &fixture,
             "t/protocol_state_proof/t/t/t/t/statement/t/t/proof_state/t/deferred_values",
-            |b| &b.0.t.protocol_state_proof.statement.proof_state.deferred_values,
+            |b| {
+                &b.0.t
+                    .protocol_state_proof
+                    .statement
+                    .proof_state
+                    .deferred_values
+            },
         );
         test_path(
             &genesis,

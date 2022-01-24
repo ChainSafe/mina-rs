@@ -5,8 +5,8 @@
 mod tests {
     use anyhow::bail;
     use mina_crypto::prelude::*;
-    use mina_rs_base::types::*;
     use mina_rs_base::network_types::v1::ExternalTransitionV1;
+    use mina_rs_base::types::*;
     use pretty_assertions::assert_eq;
     use test_fixtures::*;
     use time::macros::*;
@@ -199,7 +199,9 @@ mod tests {
         assert_eq!(commands.len(), 3);
 
         match &commands[0].t.data.t.t {
-            mina_rs_base::network_types::staged_ledger_diff::UserCommand::SignedCommand(command) => {
+            mina_rs_base::network_types::staged_ledger_diff::UserCommand::SignedCommand(
+                command,
+            ) => {
                 let bytes = bs58::decode("B62qoSuxNqwogusxxZbs3gpJUxCCN4GZEv21FX8S2DtNpToLgKnrexM")
                     .into_vec()
                     .unwrap();
@@ -220,7 +222,10 @@ mod tests {
                     command.t.t.payload.t.t.common.t.t.t.memo.t,
                     SignedCommandMemo::try_from("FPayment").unwrap().0,
                 );
-                assert_eq!(command.t.t.payload.t.t.common.t.t.t.fee.to_string(), "0.010000000");
+                assert_eq!(
+                    command.t.t.payload.t.t.common.t.t.t.fee.to_string(),
+                    "0.010000000"
+                );
                 assert_eq!(command.t.t.payload.t.t.common.t.t.t.fee_token.t.t.t, 1);
                 // FIXME: Fix valid_util (Extended_U32)
                 // assert_eq!(command.payload.common.valid_until.0, 4294967295);
@@ -247,17 +252,22 @@ mod tests {
                     ),
                 };
             }
-            _ => bail!("SignedCommand expected, but found: {:#?}", commands[0].t.data),
+            _ => bail!(
+                "SignedCommand expected, but found: {:#?}",
+                commands[0].t.data
+            ),
         }
 
         match &commands[0].t.status.t {
-            mina_rs_base::network_types::staged_ledger_diff::TransactionStatus::Applied(applied) => {
-                let auxiliary_data = &applied.0.0.t;
+            mina_rs_base::network_types::staged_ledger_diff::TransactionStatus::Applied(
+                applied,
+            ) => {
+                let auxiliary_data = &applied.0 .0.t;
                 assert!(auxiliary_data.fee_payer_account_creation_fee_paid.is_none());
                 assert!(auxiliary_data.receiver_account_creation_fee_paid.is_none());
                 assert!(auxiliary_data.created_token.is_none());
 
-                let balance_data = &applied.0.1.t;
+                let balance_data = &applied.0 .1.t;
                 assert!(balance_data.fee_payer_balance.is_some());
                 assert_eq!(balance_data.fee_payer_balance.unwrap().0, 59778375293571);
                 assert!(balance_data.source_balance.is_some());
@@ -278,15 +288,19 @@ mod tests {
         };
 
         let internal_commands = &et
-            .staged_ledger_diff.t
+            .staged_ledger_diff
+            .t
             .diff
-            .t.0.t.t
+            .t
+            .0
+            .t
+            .t
             .internal_command_balances;
         assert_eq!(internal_commands.len(), 2);
         match &internal_commands[0].t {
             mina_rs_base::network_types::staged_ledger_diff::InternalCommandBalanceData::CoinBase(cb) => {
-                assert!(cb.fee_transfer_receiver_balance.is_none());
-                assert_eq!(cb.coinbase_receiver_balance.0, 20203793056339);
+                assert!(cb.t.fee_transfer_receiver_balance.is_none());
+                assert_eq!(cb.t.coinbase_receiver_balance.0, 20203793056339);
             }
             _ => {
                 bail!("CoinBase expected, but found: {:#?}", internal_commands[0])
@@ -295,8 +309,8 @@ mod tests {
 
         match &internal_commands[1].t {
             mina_rs_base::network_types::staged_ledger_diff::InternalCommandBalanceData::FeeTransfer(ft) => {
-                assert_eq!(ft.receiver1_balance.0, 20203805056339);
-                assert!(ft.receiver2_balance.is_none());
+                assert_eq!(ft.t.receiver1_balance.0, 20203805056339);
+                assert!(ft.t.receiver2_balance.is_none());
             }
             _ => {
                 bail!(

@@ -6,8 +6,8 @@
 use mina_crypto::prelude::BinProtEncodable;
 use serde::{Deserialize, Serialize};
 
-use crate::types::{ProtocolStateProof, DeltaTransitionChainProof, ProtocolVersion};
 use crate::network_types::v1::{ProtocolStateV1, StagedLedgerDiffV1}; // TODO: aim to remove this dep
+use crate::types::{DeltaTransitionChainProof, ProtocolStateProof, ProtocolVersion};
 use versioned::Versioned;
 
 /// This structure represents a mina block received from an external block producer

@@ -14,11 +14,12 @@ mod tests {
     use super::{block_path_test, block_path_test_batch};
     use bin_prot::{from_reader, to_writer, Value};
     use mina_crypto::{hash::*, prelude::*, signature::*};
+    use mina_rs_base::network_types::v1::*;
     use mina_rs_base::types::{
+        // TODO: aim is to remove this import
         proof_messages::{ProofMessageWithDegreeBound, ProofMessageWithoutDegreeBoundList},
         *,
     };
-    use mina_rs_base::network_types::v1::{ProtocolStateV1, ProtocolConstantsV1, ProtocolStateBodyV1};
     use pretty_assertions::assert_eq;
     use serde::{Deserialize, Serialize};
     use std::str::FromStr;
@@ -29,7 +30,7 @@ mod tests {
     #[wasm_bindgen_test]
     fn test_external_transition() {
         block_path_test_batch! {
-            ExternalTransition => ""
+            ExternalTransitionV1 => ""
         }
     }
 
@@ -331,7 +332,7 @@ mod tests {
     #[wasm_bindgen_test]
     fn test_staged_ledger_diff() {
         block_path_test_batch! {
-            StagedLedgerDiff => "t/staged_ledger_diff"
+            StagedLedgerDiffV1 => "t/staged_ledger_diff"
         }
     }
 
@@ -339,7 +340,7 @@ mod tests {
     #[wasm_bindgen_test]
     fn test_staged_ledger_diff_diff() {
         block_path_test_batch! {
-            StagedLedgerDiffTuple => "t/staged_ledger_diff/t/diff"
+            StagedLedgerDiffTupleV1 => "t/staged_ledger_diff/t/diff"
         }
     }
 
@@ -347,7 +348,7 @@ mod tests {
     #[wasm_bindgen_test]
     fn test_staged_ledger_diff_one() {
         block_path_test_batch! {
-            Option<StagedLedgerPreDiffOne> => "t/staged_ledger_diff/t/diff/t/1"
+            Option<StagedLedgerPreDiffOneV1> => "t/staged_ledger_diff/t/diff/t/1"
         }
     }
 
@@ -355,7 +356,7 @@ mod tests {
     #[wasm_bindgen_test]
     fn test_staged_ledger_diff_diff_two() {
         block_path_test_batch! {
-            StagedLedgerPreDiffTwo => "t/staged_ledger_diff/t/diff/t/0"
+            StagedLedgerPreDiffTwoV1 => "t/staged_ledger_diff/t/diff/t/0"
         }
     }
 
@@ -371,8 +372,8 @@ mod tests {
     #[wasm_bindgen_test]
     fn test_staged_ledger_diff_diff_commands() {
         block_path_test_batch! {
-            UserCommandWithStatus => "t/staged_ledger_diff/t/diff/t/0/t/t/commands/0"
-            Vec<UserCommandWithStatus> => "t/staged_ledger_diff/t/diff/t/0/t/t/commands"
+            UserCommandWithStatusV1 => "t/staged_ledger_diff/t/diff/t/0/t/t/commands/0"
+            Vec<UserCommandWithStatusV1> => "t/staged_ledger_diff/t/diff/t/0/t/t/commands"
         }
     }
 
@@ -380,8 +381,8 @@ mod tests {
     #[wasm_bindgen_test]
     fn test_staged_ledger_diff_diff_commands_data() {
         block_path_test_batch! {
-            SignedCommand => "t/staged_ledger_diff/t/diff/t/0/t/t/commands/0/t/data/t/t/[sum]"
-            UserCommand => "t/staged_ledger_diff/t/diff/t/0/t/t/commands/0/t/data"
+            SignedCommandV1 => "t/staged_ledger_diff/t/diff/t/0/t/t/commands/0/t/data/t/t/[sum]"
+            UserCommandV1 => "t/staged_ledger_diff/t/diff/t/0/t/t/commands/0/t/data"
         }
     }
 
@@ -390,13 +391,13 @@ mod tests {
     fn test_staged_ledger_diff_diff_commands_data_payload_common() {
         block_path_test_batch! {
             Amount => "t/staged_ledger_diff/t/diff/t/0/t/t/commands/0/t/data/t/t/0/t/t/payload/t/t/common/t/t/t/fee"
-            SignedCommandFeeToken => "t/staged_ledger_diff/t/diff/t/0/t/t/commands/0/t/data/t/t/0/t/t/payload/t/t/common/t/t/t/fee_token"
+            SignedCommandFeeTokenV1 => "t/staged_ledger_diff/t/diff/t/0/t/t/commands/0/t/data/t/t/0/t/t/payload/t/t/common/t/t/t/fee_token"
             PublicKey2 => "t/staged_ledger_diff/t/diff/t/0/t/t/commands/0/t/data/t/t/0/t/t/payload/t/t/common/t/t/t/fee_payer_pk"
             ExtendedU32 => "t/staged_ledger_diff/t/diff/t/0/t/t/commands/0/t/data/t/t/0/t/t/payload/t/t/common/t/t/t/nonce"
             i32 => "t/staged_ledger_diff/t/diff/t/0/t/t/commands/0/t/data/t/t/0/t/t/payload/t/t/common/t/t/t/valid_until/t/t"
             ExtendedU32 => "t/staged_ledger_diff/t/diff/t/0/t/t/commands/0/t/data/t/t/0/t/t/payload/t/t/common/t/t/t/valid_until"
-            SignedCommandMemo => "t/staged_ledger_diff/t/diff/t/0/t/t/commands/0/t/data/t/t/0/t/t/payload/t/t/common/t/t/t/memo"
-            SignedCommandPayloadCommon => "t/staged_ledger_diff/t/diff/t/0/t/t/commands/0/t/data/t/t/0/t/t/payload/t/t/common"
+            SignedCommandMemoV1 => "t/staged_ledger_diff/t/diff/t/0/t/t/commands/0/t/data/t/t/0/t/t/payload/t/t/common/t/t/t/memo"
+            SignedCommandPayloadCommonV1 => "t/staged_ledger_diff/t/diff/t/0/t/t/commands/0/t/data/t/t/0/t/t/payload/t/t/common"
         }
     }
 
@@ -409,8 +410,8 @@ mod tests {
            u64 => "t/staged_ledger_diff/t/diff/t/0/t/t/commands/0/t/data/t/t/0/t/t/payload/t/t/body/t/t/0/t/t/token_id/t/t/t"
            ExtendedU64_3 => "t/staged_ledger_diff/t/diff/t/0/t/t/commands/0/t/data/t/t/0/t/t/payload/t/t/body/t/t/0/t/t/token_id"
            Amount => "t/staged_ledger_diff/t/diff/t/0/t/t/commands/0/t/data/t/t/0/t/t/payload/t/t/body/t/t/0/t/t/amount"
-           PaymentPayload => "t/staged_ledger_diff/t/diff/t/0/t/t/commands/0/t/data/t/t/0/t/t/payload/t/t/body/t/t/0"
-           SignedCommandPayloadBody => "t/staged_ledger_diff/t/diff/t/0/t/t/commands/0/t/data/t/t/0/t/t/payload/t/t/body"
+           PaymentPayloadV1 => "t/staged_ledger_diff/t/diff/t/0/t/t/commands/0/t/data/t/t/0/t/t/payload/t/t/body/t/t/0"
+           SignedCommandPayloadBodyV1 => "t/staged_ledger_diff/t/diff/t/0/t/t/commands/0/t/data/t/t/0/t/t/payload/t/t/body"
         }
     }
 
@@ -440,10 +441,10 @@ mod tests {
     #[wasm_bindgen_test]
     fn test_staged_ledger_diff_diff_commands_status() {
         block_path_test_batch! {
-            TransactionStatusAuxiliaryData => "t/staged_ledger_diff/t/diff/t/0/t/t/commands/0/t/status/t/0"
-            TransactionStatusBalanceData => "t/staged_ledger_diff/t/diff/t/0/t/t/commands/0/t/status/t/1"
-            TransactionStatusApplied => "t/staged_ledger_diff/t/diff/t/0/t/t/commands/0/t/status/t/[sum]"
-            TransactionStatus => "t/staged_ledger_diff/t/diff/t/0/t/t/commands/0/t/status"
+            TransactionStatusAuxiliaryDataV1 => "t/staged_ledger_diff/t/diff/t/0/t/t/commands/0/t/status/t/0"
+            TransactionStatusBalanceDataV1 => "t/staged_ledger_diff/t/diff/t/0/t/t/commands/0/t/status/t/1"
+            TransactionStatusAppliedV1 => "t/staged_ledger_diff/t/diff/t/0/t/t/commands/0/t/status/t/[sum]"
+            TransactionStatusV1 => "t/staged_ledger_diff/t/diff/t/0/t/t/commands/0/t/status"
         }
     }
 
@@ -451,8 +452,8 @@ mod tests {
     #[wasm_bindgen_test]
     fn test_staged_ledger_diff_diff_coinbase() {
         block_path_test_batch! {
-            Option<CoinBaseFeeTransfer> => "t/staged_ledger_diff/t/diff/t/0/t/t/coinbase/t/[sum]"
-            CoinBase => "t/staged_ledger_diff/t/diff/t/0/t/t/coinbase"
+            Option<CoinBaseFeeTransferV1> => "t/staged_ledger_diff/t/diff/t/0/t/t/coinbase/t/[sum]"
+            CoinBaseV1 => "t/staged_ledger_diff/t/diff/t/0/t/t/coinbase"
         }
     }
 
@@ -460,11 +461,11 @@ mod tests {
     #[wasm_bindgen_test]
     fn test_staged_ledger_diff_diff_internal_command_balances() {
         block_path_test_batch! {
-            CoinBaseBalanceData => "t/staged_ledger_diff/t/diff/t/0/t/t/internal_command_balances/0/t/[sum]"
-            FeeTransferBalanceData => "t/staged_ledger_diff/t/diff/t/0/t/t/internal_command_balances/1/t/[sum]"
-            InternalCommandBalanceData => "t/staged_ledger_diff/t/diff/t/0/t/t/internal_command_balances/0"
-            InternalCommandBalanceData => "t/staged_ledger_diff/t/diff/t/0/t/t/internal_command_balances/1"
-            Vec<InternalCommandBalanceData> => "t/staged_ledger_diff/t/diff/t/0/t/t/internal_command_balances"
+            CoinBaseBalanceDataV1 => "t/staged_ledger_diff/t/diff/t/0/t/t/internal_command_balances/0/t/[sum]"
+            FeeTransferBalanceDataV1 => "t/staged_ledger_diff/t/diff/t/0/t/t/internal_command_balances/1/t/[sum]"
+            InternalCommandBalanceDataV1 => "t/staged_ledger_diff/t/diff/t/0/t/t/internal_command_balances/0"
+            InternalCommandBalanceDataV1 => "t/staged_ledger_diff/t/diff/t/0/t/t/internal_command_balances/1"
+            Vec<InternalCommandBalanceDataV1> => "t/staged_ledger_diff/t/diff/t/0/t/t/internal_command_balances"
         }
     }
 
@@ -524,9 +525,10 @@ mod tests {
     fn smoke_test_deserialize_block() {
         // check we can deserialize into this type without error
         for (name, block) in TEST_BLOCKS.iter() {
-            let et: ExternalTransition = block
+            let et: ExternalTransitionV1 = block
                 .external_transition()
-                .expect("Failed to deserialize block").into();
+                .expect("Failed to deserialize block")
+                .into();
 
             // TODO: Validate state hash
             if name.ends_with(".hex") {}

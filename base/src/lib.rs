@@ -23,7 +23,7 @@ pub mod protocol_version;
 pub mod staged_ledger_diff;
 pub mod token_id;
 pub mod verification_key;
- 
+
 /// todo delete this once moved to new crate
 pub mod network_types;
 

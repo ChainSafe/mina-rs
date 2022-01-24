@@ -7,9 +7,7 @@ use serde::{Deserialize, Serialize};
 
 use versioned::Versioned;
 
-use crate::{
-    numbers::{BlockTime, Length},
-};
+use crate::numbers::{BlockTime, Length};
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 /// Constants that define the consensus parameters

@@ -7,8 +7,8 @@ use serde::{Deserialize, Serialize};
 
 use versioned::Versioned;
 
-use mina_crypto::hash::{StateHash};
 use crate::network_types::v1::ProtocolStateBodyV1;
+use mina_crypto::hash::StateHash;
 
 /// This structure can be thought of like the block header. It contains the most essential information of a block.
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
