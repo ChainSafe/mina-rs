@@ -25,24 +25,23 @@ mod tests {
 
     struct TestHasher {}
 
-    impl MerkleHasher for TestHasher {
+    impl MerkleHasher<2> for TestHasher {
         type Item = i64;
         type Hash = i64;
-        fn hash(item: &Self::Item, _: MerkleTreeNodeMetadata) -> Self::Hash {
+        fn hash(item: &Self::Item, _: MerkleTreeNodeMetadata<2>) -> Self::Hash {
             *item
         }
     }
 
     struct TestMerger {}
 
-    impl MerkleMerger for TestMerger {
+    impl MerkleMerger<2> for TestMerger {
         type Hash = i64;
         fn merge(
-            left: &Option<(Self::Hash, MerkleTreeNodeMetadata)>,
-            right: &Option<(Self::Hash, MerkleTreeNodeMetadata)>,
+            items: [&Option<(Self::Hash, MerkleTreeNodeMetadata<2>)>; 2],
         ) -> Option<Self::Hash> {
-            if let Some((left, _)) = left {
-                if let Some((right, _)) = right {
+            if let Some((left, _)) = items[0] {
+                if let Some((right, _)) = items[1] {
                     Some(left + right)
                 } else {
                     Some(*left)

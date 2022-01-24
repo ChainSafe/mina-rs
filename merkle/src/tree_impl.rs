@@ -4,13 +4,15 @@
 use super::*;
 use std::marker::PhantomData;
 
+const DEGREE: usize = 2;
+
 /// Special complete binary merkle tree that is compatible with
 /// <https://github.com/o1-labs/snarky/blob/master/src/base/merkle_tree.ml>
 /// whose leaf nodes are at the same height
 pub struct MinaMerkleTree<TItem, THash, THasher, TMerger>
 where
-    THasher: MerkleHasher<Item = TItem, Hash = THash>,
-    TMerger: MerkleMerger<Hash = THash>,
+    THasher: MerkleHasher<DEGREE, Item = TItem, Hash = THash>,
+    TMerger: MerkleMerger<DEGREE, Hash = THash>,
     THash: Clone,
 {
     depth: u32,
@@ -23,8 +25,8 @@ where
 
 impl<TItem, THash, THasher, TMerger> MinaMerkleTree<TItem, THash, THasher, TMerger>
 where
-    THasher: MerkleHasher<Item = TItem, Hash = THash>,
-    TMerger: MerkleMerger<Hash = THash>,
+    THasher: MerkleHasher<DEGREE, Item = TItem, Hash = THash>,
+    TMerger: MerkleMerger<DEGREE, Hash = THash>,
     THash: Clone,
 {
     /// Creates a new instance of [MinaMerkleTree]
@@ -64,7 +66,7 @@ where
     fn calculate_hash_if_needed(
         &mut self,
         index: usize,
-    ) -> Option<(THash, MerkleTreeNodeMetadata)> {
+    ) -> Option<(THash, MerkleTreeNodeMetadata<DEGREE>)> {
         if index < self.nodes.len() {
             if let Some(hash) = &self.nodes[index] {
                 Some((hash.clone(), MerkleTreeNodeMetadata::new(index)))
@@ -73,7 +75,7 @@ where
                 let right = index * 2 + 2;
                 let left_hash = self.calculate_hash_if_needed(left);
                 let right_hash = self.calculate_hash_if_needed(right);
-                let hash = TMerger::merge(&left_hash, &right_hash);
+                let hash = TMerger::merge([&left_hash, &right_hash]);
                 self.nodes[index] = hash.clone();
                 hash.map(|hash| (hash, MerkleTreeNodeMetadata::new(index)))
             }
@@ -89,10 +91,11 @@ where
     }
 }
 
-impl<TItem, THash, THasher, TMerger> MerkleTree for MinaMerkleTree<TItem, THash, THasher, TMerger>
+impl<TItem, THash, THasher, TMerger> MerkleTree<DEGREE>
+    for MinaMerkleTree<TItem, THash, THasher, TMerger>
 where
-    THasher: MerkleHasher<Item = TItem, Hash = THash>,
-    TMerger: MerkleMerger<Hash = THash>,
+    THasher: MerkleHasher<DEGREE, Item = TItem, Hash = THash>,
+    TMerger: MerkleMerger<DEGREE, Hash = THash>,
     THash: Clone,
 {
     type Item = TItem;
@@ -139,8 +142,8 @@ where
 
 impl<TItem, THash, THasher, TMerger> Default for MinaMerkleTree<TItem, THash, THasher, TMerger>
 where
-    THasher: MerkleHasher<Item = TItem, Hash = THash>,
-    TMerger: MerkleMerger<Hash = THash>,
+    THasher: MerkleHasher<DEGREE, Item = TItem, Hash = THash>,
+    TMerger: MerkleMerger<DEGREE, Hash = THash>,
     THash: Clone,
 {
     fn default() -> Self {

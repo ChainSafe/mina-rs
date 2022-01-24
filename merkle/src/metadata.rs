@@ -5,11 +5,11 @@
 /// in the merkle tree it belongs to, which can be used for
 /// calculating hash
 #[derive(Debug, Clone, Default)]
-pub struct MerkleTreeNodeMetadata {
+pub struct MerkleTreeNodeMetadata<const DEGREE: usize> {
     index: usize,
 }
 
-impl MerkleTreeNodeMetadata {
+impl<const DEGREE: usize> MerkleTreeNodeMetadata<DEGREE> {
     /// Creates a new instance of [MerkleTreeNodeMetadata] with
     /// its index in the merkle tree
     pub fn new(index: usize) -> Self {
@@ -23,7 +23,7 @@ impl MerkleTreeNodeMetadata {
 
     /// 0-based depth of the tree node
     pub fn depth(&self) -> u32 {
-        (self.index as f64 + 2.).log2().ceil() as u32 - 1
+        ((self.index + DEGREE) as f64).log(DEGREE as f64).ceil() as u32 - 1
     }
 }
 
@@ -33,11 +33,11 @@ mod tests {
 
     #[test]
     fn test_metadata_depth() {
-        assert_eq!(MerkleTreeNodeMetadata::new(0).depth(), 0);
-        assert_eq!(MerkleTreeNodeMetadata::new(1).depth(), 1);
-        assert_eq!(MerkleTreeNodeMetadata::new(2).depth(), 1);
-        assert_eq!(MerkleTreeNodeMetadata::new(3).depth(), 2);
-        assert_eq!(MerkleTreeNodeMetadata::new(6).depth(), 2);
-        assert_eq!(MerkleTreeNodeMetadata::new(7).depth(), 3);
+        assert_eq!(MerkleTreeNodeMetadata::<2>::new(0).depth(), 0);
+        assert_eq!(MerkleTreeNodeMetadata::<2>::new(1).depth(), 1);
+        assert_eq!(MerkleTreeNodeMetadata::<2>::new(2).depth(), 1);
+        assert_eq!(MerkleTreeNodeMetadata::<2>::new(3).depth(), 2);
+        assert_eq!(MerkleTreeNodeMetadata::<2>::new(6).depth(), 2);
+        assert_eq!(MerkleTreeNodeMetadata::<2>::new(7).depth(), 3);
     }
 }

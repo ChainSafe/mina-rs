@@ -3,14 +3,13 @@
 
 use super::*;
 
-/// Trait that merges the hashes of a pair of nodes
+/// Trait that merges the hashes of child nodes
 /// and calculates the hash of their parent
-pub trait MerkleMerger {
+pub trait MerkleMerger<const DEGREE: usize> {
     /// Type that represents the hash value
     type Hash;
-    /// Merges hashes and metadata from a pair of nodes
+    /// Merges hashes and metadata from a child nodes
     fn merge(
-        left: &Option<(Self::Hash, MerkleTreeNodeMetadata)>,
-        right: &Option<(Self::Hash, MerkleTreeNodeMetadata)>,
+        items: [&Option<(Self::Hash, MerkleTreeNodeMetadata<DEGREE>)>; DEGREE],
     ) -> Option<Self::Hash>;
 }

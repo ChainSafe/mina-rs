@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 /// Trait for implementing general binary merkle tree
-pub trait MerkleTree {
+pub trait MerkleTree<const DEGREE: usize> {
     /// Type of the leaf data
     type Item;
     /// Type of the hash values
