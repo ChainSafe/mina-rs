@@ -1,3 +1,6 @@
+// Copyright 2020 ChainSafe Systems
+// SPDX-License-Identifier: Apache-2.0
+
 // TODO move to own crate once cyclic deps are gone
 
 pub mod external_transition;
