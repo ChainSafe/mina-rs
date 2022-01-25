@@ -50,7 +50,9 @@ jobs:
           toolchain: stable
           components: clippy
           override: true
-      - run: cargo build --release --all-features -v
+      - run: cargo build --release --no-default-features
+      - run: cargo build --release
+      - run: cargo build --release --all-features
       - run: cargo build --release --all-features --manifest-path apps/Cargo.toml
       - run: cargo test --release --all-features
       - run: cargo test --release --all-features --manifest-path apps/Cargo.toml
