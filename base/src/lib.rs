@@ -7,6 +7,7 @@
 //! All types are versioned where required.
 //!
 
+#![deny(warnings)]
 #![deny(missing_docs)]
 
 pub mod blockchain_state;
