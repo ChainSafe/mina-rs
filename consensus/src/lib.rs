@@ -1,6 +1,7 @@
 // Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
+#![deny(warnings)]
 #![deny(rustdoc::all)]
 #![allow(rustdoc::private_doc_tests)]
 

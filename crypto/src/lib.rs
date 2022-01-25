@@ -6,6 +6,8 @@
 //! This currently includes keys and hashes along with their encodings
 //!
 
+#![deny(warnings)]
+
 pub mod base58;
 pub mod base64;
 pub mod binprot;
