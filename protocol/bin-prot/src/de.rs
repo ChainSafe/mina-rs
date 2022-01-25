@@ -25,7 +25,8 @@ pub struct LooselyTyped {
 pub struct Deserializer<R: Read, Mode> {
     /// BufReader to read the bytes from
     pub rdr: BufReader<R>,
-    pub(crate) mode: Mode,
+    /// Deserialization mode, StronglyTyped or LooselyTyped
+    pub mode: Mode,
 }
 
 impl<R: Read> Deserializer<R, StronglyTyped> {
@@ -488,6 +489,7 @@ impl<'a, R: Read + 'a, Mode> SeqAccess<'a, R, Mode> {
         }
     }
 
+    #[cfg(feature = "loose_deserialization")]
     pub fn new_list(de: &'a mut Deserializer<R, Mode>, len: usize) -> Self {
         Self {
             de,
