@@ -9,11 +9,12 @@ use mina_rs_base::consensus_state::ConsensusState;
 use mina_rs_base::global_slot::GlobalSlot;
 use mina_rs_base::protocol_state::{Header, ProtocolState};
 
+use crate::checkpoint::is_short_range;
 use crate::density::{relative_min_window_density, ConsensusConstants};
 use crate::error::ConsensusError;
 
-#[derive(Clone, Debug, Default)] // FIXME: remove clone here.
-                                 // TODO: replace vec element with ExternalTransition
+#[derive(Debug, Default)]
+// TODO: replace vec element with ExternalTransition
 pub struct ProtocolStateChain(pub Vec<ProtocolState>);
 
 pub trait Chain<T>
@@ -117,11 +118,6 @@ pub trait Consensus {
     ) -> Result<&'a ProtocolStateChain, ConsensusError>;
 }
 
-// TODO: replace from checkpoint.rs
-fn is_short_range(_cs: &ProtocolStateChain) -> bool {
-    false
-}
-
 impl Consensus for ProtocolStateChain {
     type Chain = ProtocolStateChain;
     fn select_secure_chain<'a>(
@@ -130,7 +126,7 @@ impl Consensus for ProtocolStateChain {
         constants: &ConsensusConstants,
     ) -> Result<&'a ProtocolStateChain, ConsensusError> {
         let tip = candidates.iter().fold(Ok(self), |tip, c| {
-            if is_short_range(c) {
+            if is_short_range(self, c)? {
                 // short-range fork, select longer chain
                 self.select_longer_chain(c)
             } else {
