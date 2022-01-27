@@ -4,7 +4,6 @@
 use super::*;
 use libp2p::{
     core::{muxing::StreamMuxerBox, transport, upgrade},
-    futures::{AsyncRead, AsyncWrite},
     identity,
     noise::{self, AuthenticKeypair, X25519Spec},
     pnet::PnetConfig,
@@ -73,19 +72,34 @@ impl TransportBuilder {
     }
 
     /// Builds libp2p transport
-    pub fn build<TTransport>(
+    pub fn build(
         self,
-        transport: TTransport,
-    ) -> (transport::Boxed<(PeerId, StreamMuxerBox)>, PeerId)
-    where
-        TTransport: Transport + Sized + Clone + Send + Sync + 'static,
-        <TTransport as Transport>::Output: AsyncRead + AsyncWrite + Send + Unpin + 'static,
-        TTransport::Dial: Send + 'static,
-        TTransport::Listener: Send + 'static,
-        TTransport::ListenerUpgrade: Send + 'static,
-        TTransport::Error: Send + Sync,
-    {
-        (
+    ) -> Result<(transport::Boxed<(PeerId, StreamMuxerBox)>, PeerId), std::io::Error> {
+        let transport = {
+            cfg_if::cfg_if! {
+                if #[cfg(target_arch = "wasm32")] {
+                    use libp2p::wasm_ext;
+
+                    wasm_ext::ExtTransport::new(wasm_ext::ffi::websocket_transport())
+                } else {
+                    // Choose tokio over async-std here for 2 reasons:
+                    //  1. Tokio has better performance as an coroutine scehduler.
+                    //  2. TokioDnsConfig does not propagate async to build function's signature, while DnsConfig does.
+                    // Cons:
+                    //  1. Tokio builds more slowly.
+                    //  2. Tokio's API is slightly more complicated.
+                    //
+                    use libp2p::{dns::TokioDnsConfig as DnsConfig, tcp::TokioTcpConfig as TcpConfig, websocket::WsConfig};
+
+                    let tcp = TcpConfig::new().nodelay(true);
+                    let dns_tcp = DnsConfig::system(tcp)?;
+                    let ws_dns_tcp = WsConfig::new(dns_tcp.clone());
+                    dns_tcp.or_transport(ws_dns_tcp)
+                }
+            }
+        };
+
+        Ok((
             transport
                 .and_then(move |socket, _| self.pnet_config.handshake(socket))
                 .upgrade(upgrade::Version::V1)
@@ -94,7 +108,7 @@ impl TransportBuilder {
                 .timeout(self.timeout)
                 .boxed(),
             self.peer_id,
-        )
+        ))
     }
 }
 

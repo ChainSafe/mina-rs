@@ -29,4 +29,5 @@ plonk_protocol_dlog = {git = "https://github.com/o1-labs/proof-systems", rev = "
 # This dependency is not used by the crate, but is a subdependency of commitment_dlog
 # This features must be enable to build with WASM support
 # It has no effect for normal builds
+[target.'cfg(target_arch = "wasm32")'.dependencies]
 getrandom = {version = "0.2", features = ["js"]}
