@@ -80,6 +80,8 @@ impl TransportBuilder {
                 if #[cfg(target_arch = "wasm32")] {
                     use libp2p::wasm_ext;
 
+                    // Note that DNS has been implictly supported in the extended javascript code,
+                    // and TCP is not feasible in browsers
                     wasm_ext::ExtTransport::new(wasm_ext::ffi::websocket_transport())
                 } else {
                     // Choose tokio over async-std here for 2 reasons:

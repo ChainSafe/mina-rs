@@ -54,7 +54,7 @@ pub mod tests {
         let dest: Multiaddr = DEST.parse().unwrap();
         let behaviour = ping::Behaviour::new(ping::Config::new().with_keep_alive(true));
         let mut swarm = SwarmBuilder::new(transport, behaviour, peer_id)
-            // executor has to be set explicitly due to https://github.com/libp2p/rust-libp2p/issues/2173
+            // executor has to be explicitly set due to https://github.com/libp2p/rust-libp2p/issues/2173
             .executor(Box::new(|fut| {
                 tokio::spawn(fut);
             }))
