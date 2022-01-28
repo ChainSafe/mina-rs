@@ -62,6 +62,7 @@ pub struct UserCommandWithStatus {
 pub enum UserCommand {
     SignedCommand(SignedCommand),
     // FIXME: other variants are not covered by current test block
+    Parties,
 }
 
 impl Default for UserCommand {
@@ -110,6 +111,10 @@ pub struct SignedCommandPayloadCommon {
 pub enum SignedCommandPayloadBody {
     PaymentPayload(PaymentPayload),
     // FIXME: other variants are not covered by current test block
+    StakeDelegationPayload,
+    CreateNewTokenPayload,
+    CreateTokenAccountPayload,
+    MintTokensPayload,
 }
 
 impl Default for SignedCommandPayloadBody {
