@@ -10,8 +10,8 @@ use libp2p::{
 };
 use std::error::Error;
 
-#[async_std::main]
-async fn main() -> Result<(), Box<dyn Error>> {
+#[allow(dead_code)]
+pub async fn passsive_discovery() -> Result<(), Box<dyn Error>> {
     env_logger::init();
 
     // Create a random PeerId.
