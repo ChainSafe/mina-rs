@@ -12,6 +12,54 @@ An implementation of Mina protocol in Rust, with focus on web and Wasm compatibi
 
 ** As you can probably tell this is a WIP! Don't use for anything yet **
 
+## Building
+
+Mina builds with the latest stable version of Rust. See [installation instructions for your OS](https://www.rust-lang.org/tools/install).
+
+There isn't yet a binary to build. All of the crates can be built by running
+
+```shell
+cargo build
+```
+
+from the project root
+
+## Running Tests
+
+All crate unit tests can be run by running
+
+```shell
+cargo test
+```
+
+### Serialization tests
+
+Serialization tests only can be run by
+
+```shell
+cargo test -p test-serialization
+```
+
+It is also possible to run the serialization tests in a Wasm environment using wasm-pack. First install wasm-pack with
+```shell
+curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
+```
+
+cd to the serialization tests crate directory
+
+```shell
+cd protocol/test-serialization
+```
+
+and then run tests with either
+```shell
+wasm-pack test --node --release
+```
+or
+```shell
+wasm-pack test --headless --chrome --release --features browser
+```
+
 ## ChainSafe Security Policy
 
 ### Reporting a Security Bug

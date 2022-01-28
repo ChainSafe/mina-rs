@@ -30,6 +30,9 @@ serde = {version = "1", features = ["derive"]}
 time = {version = "0.3", features = ["macros"]}
 wasm-bindgen-test = "0.3"
 
+[profile.bench]
+lto = true
+
 [[bench]]
 harness = false
 name = "block_deserialization"

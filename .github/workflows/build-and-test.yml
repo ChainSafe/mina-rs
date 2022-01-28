@@ -50,11 +50,33 @@ jobs:
           toolchain: stable
           components: clippy
           override: true
-      - run: cargo build --release --all-features -v
+      - run: cargo build --release --no-default-features
+      - run: cargo build --release
+      - run: cargo build --release --all-features
       - run: cargo build --release --all-features --manifest-path apps/Cargo.toml
       - run: cargo test --release --all-features
       - run: cargo test --release --all-features --manifest-path apps/Cargo.toml
-      - run: cargo bench --all-features
+      # https://github.com/benchmark-action/github-action-benchmark#how-to-use
+      # https://github.com/benchmark-action/github-action-benchmark/tree/master/examples/criterion-rs
+      - run: (cargo bench --all-features --no-fail-fast -- --output-format bencher > bencher.log) || echo ''
+      - name: Download previous benchmark data
+        uses: actions/cache@v1
+        with:
+          path: ./.cache
+          key: ${{ runner.os }}-benchmark
+      - uses: benchmark-action/github-action-benchmark@v1
+        with:
+            tool: cargo
+            output-file-path: bencher.log
+            external-data-json-path: ./.cache/benchmark-data.json
+            alert-threshold: 200%
+            fail-threshold: 400%
+            auto-push: false
+            # GitHub API token needs to be given to enable comment-on-alert feature.
+            github-token: ${{ secrets.GITHUB_TOKEN }}
+            comment-on-alert: true
+            # fail-on-alert: true
+      - run: cat ./.cache/benchmark-data.json
       - run: cargo bench --all-features --manifest-path apps/Cargo.toml
       - run: cargo doc --no-deps --release --all-features
       - run: cargo doc --no-deps --release --all-features --manifest-path apps/Cargo.toml
@@ -121,17 +143,13 @@ jobs:
       - uses: actions-rs/toolchain@v1
         with:
           profile: minimal
-          toolchain: nightly
+          # Pin rust toolchain to nightly-2022-01-14 until https://github.com/taiki-e/cargo-llvm-cov/issues/128 
+          # is resolved
+          toolchain: nightly-2022-01-14
           override: true
-          components: llvm-tools-preview
-      - run: curl -L https://github.com/mozilla/grcov/releases/latest/download/grcov-linux-x86_64.tar.bz2 | tar jxf -
-      - name: Run code coverage
-        env:
-          RUSTFLAGS: -Zinstrument-coverage
-          LLVM_PROFILE_FILE: coverage-%p-%m.profraw
-        run: |
-          cargo test --all-features
-          ./grcov . --binary-path ./target/debug/ -s . -t lcov --branch --ignore-not-existing --ignore "/*" -o lcov.info
+          components: llvm-tools-preview      
+      - uses: taiki-e/install-action@cargo-llvm-cov
+      - run: cargo llvm-cov --all-features --lcov --output-path lcov.info
       - uses: actions/upload-artifact@v2
         with:
           name: lcov.info

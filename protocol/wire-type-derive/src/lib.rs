@@ -1,7 +1,8 @@
 // Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
-#![deny(rustdoc::all)]
+#![deny(warnings)]
+#![deny(missing_docs)]
 
 //!
 //! This crate contains procedural macro for for deriving WireType trait
@@ -30,6 +31,18 @@ impl std::default::Default for Opts {
 }
 
 #[proc_macro_derive(WireType, attributes(wire_type))]
+///
+/// Derive macro for WireType trait
+///
+/// This creates a new struct for the type that is annotated wraps the original type in a field `t` and adds a `version` field.
+/// The WireType trait implementation is generated such that this new struct is the wire type.
+/// This aims to produce types that are have serde serialization compatible with the types serialized from the Mina OCaml implementation.
+///
+/// By default the version is 1, this can be changed by adding the attribute `#[wire_type( version = X )]`
+///
+/// It is also possible to produce a multiple nested wire type e.g. `{"version":1,"t":{"version":1,"t":{"a":123,"b":321}}}`
+/// by adding the attribute `#[wire_type( recurse = 2 )]`
+///
 pub fn derive(input: TokenStream) -> TokenStream {
     let input = parse_macro_input!(input);
     let Opts { version, recurse } = Opts::from_derive_input(&input)
@@ -64,9 +77,11 @@ pub fn derive(input: TokenStream) -> TokenStream {
 
     let output = quote! {
 
+        #[allow(missing_docs)]
         #shadow
 
         #[allow(non_camel_case_types)]
+        #[allow(missing_docs)]
         #[derive(Debug, PartialEq, serde::Serialize, serde::Deserialize)]
         #recurse_attr
         pub struct #wire_ident {

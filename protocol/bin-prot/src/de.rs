@@ -1,6 +1,8 @@
 // Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
+//! Deserialization for BinProt following the standard serde module layout
+
 use crate::error::{Error, Result};
 #[cfg(feature = "loose_deserialization")]
 use crate::value::layout::*;
@@ -10,20 +12,25 @@ use serde::de::{self, value::U8Deserializer, EnumAccess, IntoDeserializer, Visit
 use serde::Deserialize;
 use std::io::{BufReader, Read};
 
-// the modes of operation for the deserializer
+/// the modes of operation for the deserializer
 pub struct StronglyTyped;
 
 #[cfg(feature = "loose_deserialization")]
 pub struct LooselyTyped {
-    pub layout_iter: BinProtRuleIterator,
+    pub(crate) layout_iter: BinProtRuleIterator,
 }
 
+/// A BinProt deserializer that reads from a BufReader
+/// Can operate in strong or loose deserialization mode
 pub struct Deserializer<R: Read, Mode> {
+    /// BufReader to read the bytes from
     pub rdr: BufReader<R>,
-    pub(crate) mode: Mode,
+    /// Deserialization mode, StronglyTyped or LooselyTyped
+    pub mode: Mode,
 }
 
 impl<R: Read> Deserializer<R, StronglyTyped> {
+    /// Create a BinProt deserializer from a reader
     pub fn from_reader(rdr: R) -> Self {
         Self {
             rdr: BufReader::new(rdr),
@@ -34,6 +41,8 @@ impl<R: Read> Deserializer<R, StronglyTyped> {
 
 #[cfg(feature = "loose_deserialization")]
 impl<R: Read> Deserializer<R, StronglyTyped> {
+    /// Converts a strong type deserializer into a loose type deserializer by providing a
+    /// BinProt type layout
     pub fn with_layout(self, layout: &BinProtRule) -> Deserializer<R, LooselyTyped> {
         Deserializer {
             rdr: self.rdr,
@@ -44,6 +53,8 @@ impl<R: Read> Deserializer<R, StronglyTyped> {
     }
 }
 
+/// Convenience method, create a BinProt deserializer from the given reader and then
+/// read from it
 pub fn from_reader<'de, R: Read, T: Deserialize<'de>>(rdr: R) -> Result<T> {
     let mut de = Deserializer::from_reader(rdr);
     let value = Deserialize::deserialize(&mut de)?;
@@ -478,6 +489,7 @@ impl<'a, R: Read + 'a, Mode> SeqAccess<'a, R, Mode> {
         }
     }
 
+    #[cfg(feature = "loose_deserialization")]
     pub fn new_list(de: &'a mut Deserializer<R, Mode>, len: usize) -> Self {
         Self {
             de,

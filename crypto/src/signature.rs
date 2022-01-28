@@ -1,6 +1,10 @@
 // Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
+//! Definitions of some signature types
+//! These are currently only used for serialization tests and will
+//! be replaced by those in the 01-labs/proof-systems repo in the future
+
 use crate::{
     base58::{version_bytes, Base58Encodable},
     hash::BaseHash,
@@ -81,7 +85,7 @@ impl From<Vec<u8>> for Signature {
     }
 }
 
-#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug)]
+#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, WireType)]
 pub struct FieldPoint(BaseHash);
 
 impl AsRef<[u8]> for FieldPoint {
