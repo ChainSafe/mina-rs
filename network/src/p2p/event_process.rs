@@ -23,8 +23,8 @@ struct NetworkBehaviour {
     ping: ping::Behaviour,
 }
 
+/// Called when `mdns` produces an event.
 impl NetworkBehaviourEventProcess<MdnsEvent> for NetworkBehaviour {
-    // Called when `mdns` produces an event.
     fn inject_event(&mut self, event: MdnsEvent) {
         if let MdnsEvent::Discovered(list) = event {
             for (peer_id, multiaddr) in list {
@@ -34,8 +34,8 @@ impl NetworkBehaviourEventProcess<MdnsEvent> for NetworkBehaviour {
     }
 }
 
+/// Called when `gossipsub` produces an event.
 impl NetworkBehaviourEventProcess<GossipsubEvent> for NetworkBehaviour {
-    // Called when `gossipsub` produces an event.
     fn inject_event(&mut self, event: GossipsubEvent) {
         match event {
             GossipsubEvent::Message {
@@ -53,15 +53,15 @@ impl NetworkBehaviourEventProcess<GossipsubEvent> for NetworkBehaviour {
     }
 }
 
+/// Called when `identify` produces an event.
 impl NetworkBehaviourEventProcess<IdentifyEvent> for NetworkBehaviour {
-    // Called when `identify` produces an event.
     fn inject_event(&mut self, event: IdentifyEvent) {
         println!("identify: {:?}", event);
     }
 }
 
+/// Called when `ping` produces an event.
 impl NetworkBehaviourEventProcess<ping::Event> for NetworkBehaviour {
-    // Called when `ping` produces an event.
     fn inject_event(&mut self, event: ping::Event) {
         match event {
             ping::Event {
