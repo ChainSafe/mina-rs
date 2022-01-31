@@ -8,6 +8,12 @@ pub mod protocol_constants;
 pub mod protocol_state;
 pub mod protocol_state_body;
 pub mod staged_ledger_diff;
+pub mod protocol_state_proof;
+pub mod field_and_curve_elements;
+pub mod bulletproof_challenges;
+pub mod proof_evaluations;
+pub mod proof_messages;
+pub mod opening_proof;
 
 /// Version 1 serialization types
 pub mod v1 {
@@ -24,4 +30,10 @@ pub mod v1 {
         TransactionStatusBalanceDataV1, TransactionStatusV1, UserCommandV1,
         UserCommandWithStatusV1,
     };
+    pub use super::protocol_state_proof::*;
+    pub use super::bulletproof_challenges::*;
+    pub use super::proof_evaluations::*;
+    pub use super::opening_proof::*;
+    pub use super::field_and_curve_elements::*;
+    pub use super::proof_messages::*;
 }

@@ -7,7 +7,7 @@
 //! All types are versioned where required.
 //!
 
-#![deny(missing_docs)]
+// #![deny(missing_docs)] // TODO: put this back :P
 
 pub mod blockchain_state;
 pub mod consensus_state;
