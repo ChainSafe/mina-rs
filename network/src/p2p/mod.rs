@@ -7,4 +7,8 @@ mod config;
 pub use config::*;
 mod builder;
 pub use builder::*;
-mod mdns;
+
+/// event_process
+pub mod event_process;
+pub use event_process::*;
+mod constants;
