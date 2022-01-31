@@ -7,12 +7,13 @@
 // TODO: Get clarification on all the fields of this type before documenting
 #![allow(missing_docs)]
 
+use crate::numbers::{Amount, ExtendedU32, ExtendedU64_2, ExtendedU64_3};
+use crate::party::{Signed, Stable};
+use crate::snapp_predicate::ProtocolState;
 use mina_crypto::signature::{PublicKey2, PublicKey3, Signature};
 use serde::{Deserialize, Serialize};
 use thiserror::Error;
 use wire_type::WireType;
-
-use crate::numbers::{Amount, ExtendedU32, ExtendedU64_2, ExtendedU64_3};
 
 #[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, WireType)]
 #[serde(from = "<Self as WireType>::WireType")]
@@ -68,8 +69,7 @@ pub struct UserCommandWithStatus {
 #[non_exhaustive]
 pub enum UserCommand {
     SignedCommand(SignedCommand),
-    // FIXME: other variants are not covered by current test block
-    Parties,
+    Parties(Parties),
 }
 
 impl Default for UserCommand {
@@ -86,6 +86,16 @@ pub struct SignedCommand {
     pub payload: SignedCommandPayload,
     pub signer: PublicKey3,
     pub signature: Signature,
+}
+
+#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, WireType)]
+#[serde(from = "<Self as WireType>::WireType")]
+#[serde(into = "<Self as WireType>::WireType")]
+#[wire_type(recurse = 2)]
+pub struct Parties {
+    pub fee_payer: Signed,
+    pub other_parties: Stable,
+    pub protocol_state: ProtocolState,
 }
 
 #[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, WireType)]

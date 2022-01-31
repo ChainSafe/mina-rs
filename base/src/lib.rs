@@ -18,9 +18,13 @@ pub mod epoch_data;
 pub mod external_transition;
 pub mod global_slot;
 pub mod numbers;
+///
+pub mod party;
 pub mod protocol_state;
 pub mod protocol_state_proof;
 pub mod protocol_version;
+///
+pub mod snapp_predicate;
 pub mod staged_ledger_diff;
 pub mod token_id;
 pub mod verification_key;
