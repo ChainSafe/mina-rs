@@ -258,7 +258,23 @@ pub struct TransactionStatusAuxiliaryData {
 #[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, WireType)]
 #[serde(from = "<Self as WireType>::WireType")]
 #[serde(into = "<Self as WireType>::WireType")]
-pub struct TransactionStatusFailure {}
+pub struct TransactionStatusFailure {
+    pub predicate: String,
+    pub source_not_present: String,
+    pub receiver_not_present: String,
+    pub amount_insufficient_to_create_account: String,
+    pub cannot_pay_creation_fee_in_token: String,
+    pub source_insufficient_balance: String,
+    pub source_minimum_balance_violation: String,
+    pub receiver_already_exists: String,
+    pub not_token_owner: String,
+    pub mismatched_token_permissions: String,
+    pub overflow: String,
+    pub signed_command_on_snapp_account: String,
+    pub snapp_account_not_present: String,
+    pub update_not_permitted: String,
+    pub incorrect_nonce: String,
+}
 
 #[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, WireType)]
 #[serde(from = "<Self as WireType>::WireType")]
