@@ -45,9 +45,8 @@ mod tests {
     use crate::hash::types::{BaseHash, HashBytes};
     use crate::impl_bs58_for_binprot;
     use serde::Deserialize;
-    use wire_type::WireType;
 
-    #[derive(Clone, Serialize, Deserialize, PartialEq, Debug, WireType)]
+    #[derive(Clone, Serialize, Deserialize, PartialEq, Debug)]
     struct TestHash(BaseHash);
 
     impl BinProtEncodable for TestHash {
