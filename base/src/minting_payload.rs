@@ -16,8 +16,12 @@ use wire_type::WireType;
 
 ///
 pub struct MintingPayload {
+    ///
     pub token_id: TokenId,
+    ///
     pub token_owner_pk: PublicKey,
+    ///
     pub receiver_pk: PublicKey,
+    ///
     pub amount: Amount,
 }
