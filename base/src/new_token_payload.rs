@@ -1,7 +1,7 @@
 // Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
-//! Types and funcions related to the Mina stake_delegation
+//! Types and funcions related to the Mina new_token_payload
 
 use serde::{Deserialize, Serialize};
 use wire_type::WireType;
