@@ -211,7 +211,7 @@ pub enum SignedCommandMemoError {
 #[non_exhaustive]
 pub enum TransactionStatus {
     Applied(TransactionStatusApplied),
-    // FIXME: other variants are not covered by current test block
+    Failed(TransactionStatusFailed),
 }
 
 impl Default for TransactionStatus {
@@ -233,6 +233,19 @@ impl TransactionStatusApplied {
     }
 }
 
+#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug)]
+pub struct TransactionStatusFailed((TransactionStatusFailure, TransactionStatusBalanceData));
+
+impl TransactionStatusFailed {
+    pub fn failure(&self) -> &TransactionStatusFailure {
+        &self.0 .0
+    }
+
+    pub fn balance_data(&self) -> &TransactionStatusBalanceData {
+        &self.0 .1
+    }
+}
+
 #[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, WireType)]
 #[serde(from = "<Self as WireType>::WireType")]
 #[serde(into = "<Self as WireType>::WireType")]
@@ -241,6 +254,11 @@ pub struct TransactionStatusAuxiliaryData {
     pub receiver_account_creation_fee_paid: Option<Amount>,
     pub created_token: Option<ExtendedU64_3>,
 }
+
+#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, WireType)]
+#[serde(from = "<Self as WireType>::WireType")]
+#[serde(into = "<Self as WireType>::WireType")]
+pub struct TransactionStatusFailure {}
 
 #[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, WireType)]
 #[serde(from = "<Self as WireType>::WireType")]
