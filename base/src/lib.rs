@@ -17,6 +17,9 @@ pub mod delta_transition_chain_proof;
 pub mod epoch_data;
 pub mod external_transition;
 pub mod global_slot;
+pub mod minting_payload;
+pub mod new_account_payload;
+pub mod new_token_payload;
 pub mod numbers;
 ///
 pub mod party;
@@ -27,6 +30,7 @@ pub mod snapp_command;
 ///
 pub mod snapp_predicate;
 pub mod staged_ledger_diff;
+pub mod stake_delegation;
 pub mod token_id;
 pub mod verification_key;
 

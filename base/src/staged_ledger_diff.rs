@@ -7,10 +7,14 @@
 // TODO: Get clarification on all the fields of this type before documenting
 #![allow(missing_docs)]
 
+use crate::minting_payload::MintingPayload;
+use crate::new_account_payload::NewAccountPayload;
+use crate::new_token_payload::NewTokenPayload;
 use crate::numbers::{Amount, ExtendedU32, ExtendedU64_2, ExtendedU64_3};
 use crate::party::{Signed, Stable};
 use crate::snapp_command::SnappCommand;
 use crate::snapp_predicate::ProtocolState;
+use crate::stake_delegation::StakeDelegation;
 use mina_crypto::signature::{PublicKey2, PublicKey3, Signature};
 use serde::{Deserialize, Serialize};
 use thiserror::Error;
@@ -129,11 +133,10 @@ pub struct SignedCommandPayloadCommon {
 #[non_exhaustive]
 pub enum SignedCommandPayloadBody {
     PaymentPayload(PaymentPayload),
-    // FIXME: other variants are not covered by current test block
-    StakeDelegationPayload,
-    CreateNewTokenPayload,
-    CreateTokenAccountPayload,
-    MintTokensPayload,
+    StakeDelegationPayload(StakeDelegation),
+    CreateNewTokenPayload(NewTokenPayload),
+    CreateTokenAccountPayload(NewAccountPayload),
+    MintTokensPayload(MintingPayload),
 }
 
 impl Default for SignedCommandPayloadBody {
