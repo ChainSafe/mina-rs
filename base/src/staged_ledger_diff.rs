@@ -9,6 +9,7 @@
 
 use crate::numbers::{Amount, ExtendedU32, ExtendedU64_2, ExtendedU64_3};
 use crate::party::{Signed, Stable};
+use crate::snapp_command::SnappCommand;
 use crate::snapp_predicate::ProtocolState;
 use mina_crypto::signature::{PublicKey2, PublicKey3, Signature};
 use serde::{Deserialize, Serialize};
@@ -70,6 +71,7 @@ pub struct UserCommandWithStatus {
 pub enum UserCommand {
     SignedCommand(SignedCommand),
     Parties(Parties),
+    SnappCommand(SnappCommand),
 }
 
 impl Default for UserCommand {
@@ -199,13 +201,6 @@ pub enum SignedCommandMemoError {
     #[error("Input string is too long")]
     StringTooLong,
 }
-
-#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, WireType)]
-#[serde(from = "<Self as WireType>::WireType")]
-#[serde(into = "<Self as WireType>::WireType")]
-#[wire_type(recurse = 2)]
-// FIXME: No test coverage yet
-pub struct SnappCommand;
 
 #[derive(Clone, Serialize, Deserialize, PartialEq, Debug, WireType)]
 #[serde(from = "<Self as WireType>::WireType")]
