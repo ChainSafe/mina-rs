@@ -3,6 +3,8 @@
 
 //! Proof messages used by the protocol state proof
 
+#![allow(missing_docs)] // Don't actually know what many of the types fields are for yet
+
 use crate::field_and_curve_elements::{ECPointV1, ECPointVecV1, FiniteECPoint};
 use serde::{Deserialize, Serialize};
 use versioned::Versioned;

@@ -53,4 +53,5 @@ pub struct ConsensusState {
     pub supercharge_coinbase: bool,
 }
 
+/// V1 protocol version of the consensus state
 pub type ConsensusStateV1 = Versioned<Versioned<ConsensusState, 1>, 1>;

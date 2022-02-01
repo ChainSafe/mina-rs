@@ -4,7 +4,7 @@
 //! In this context a diff refers to a difference between two states of the blockchain.
 //! In this case it is between the current state and the proposed next state.
 
-#![allow(missing_docs)]
+#![allow(missing_docs)] // Don't actually know what many of the types fields are for yet
 
 use crate::signatures::{PublicKey2V1, PublicKeyV1, SignatureV1};
 use serde::{Deserialize, Serialize};

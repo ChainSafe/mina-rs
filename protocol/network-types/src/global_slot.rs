@@ -8,8 +8,8 @@ use versioned::Versioned;
 
 use crate::v1::{GlobalSlotNumberV1, LengthV1};
 
-#[derive(Debug, Serialize, Deserialize, PartialEq)]
 /// A global slot
+#[derive(Debug, Serialize, Deserialize, PartialEq)]
 pub struct GlobalSlot {
     /// The global slot number of a chain or block
     pub slot_number: GlobalSlotNumberV1,
@@ -17,4 +17,5 @@ pub struct GlobalSlot {
     pub slots_per_epoch: LengthV1,
 }
 
+/// A global slot (v1)
 pub type GlobalSlotV1 = Versioned<Versioned<GlobalSlot, 1>, 1>;

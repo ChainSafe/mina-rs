@@ -3,9 +3,7 @@
 
 //! Module containing the components of a protocol state proof
 
-// Much of this crate will be replaced by arkworks and 01-proof-systems types
-// so full documentation will not be included
-#![allow(missing_docs)]
+#![allow(missing_docs)] // Don't actually know what many of the types fields are for yet
 
 use serde::{Deserialize, Serialize};
 use versioned::Versioned;

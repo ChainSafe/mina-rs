@@ -12,8 +12,8 @@
 //! data into strongly typed structures only.
 //!
 
-// #![deny(warnings)]
-// #![deny(missing_docs)]
+#![deny(warnings)]
+#![deny(missing_docs)]
 
 pub mod blockchain_state;
 pub mod bulletproof_challenges;

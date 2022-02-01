@@ -3,6 +3,8 @@
 
 //! Types that capture serialized bullet proof challenges and proofs
 
+#![allow(missing_docs)] // Don't actually know what many of the types fields are for yet
+
 use serde::{Deserialize, Serialize};
 use versioned::Versioned;
 
