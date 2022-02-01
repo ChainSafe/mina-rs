@@ -513,9 +513,8 @@ fn smoke_test_deserialize_block() {
     // check we can deserialize into this type without error
     for (name, block) in TEST_BLOCKS.iter() {
         let et: ExternalTransitionV1 = block
-            .external_transition()
-            .expect("Failed to deserialize block")
-            .into();
+            .external_transitionv1()
+            .expect("Failed to deserialize block");
 
         // TODO: Validate state hash
         if name.ends_with(".hex") {}

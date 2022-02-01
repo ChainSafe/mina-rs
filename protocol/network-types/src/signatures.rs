@@ -1,13 +1,15 @@
 // Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
+//! Signatures and public key types
+
 use crate::field_and_curve_elements::FieldElement;
 use serde::{Deserialize, Serialize};
 use versioned::Versioned;
 
 #[derive(Debug, Serialize, Deserialize, PartialEq)]
 pub struct CompressedCurvePoint {
-    pub x: [u8; 32],
+    pub x: FieldElement,
     pub is_odd: bool,
 }
 

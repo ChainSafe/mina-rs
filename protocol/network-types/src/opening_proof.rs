@@ -1,6 +1,8 @@
 // Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
+//! The opening proof used by the protocol state proof
+
 use crate::field_and_curve_elements::{FieldElement, FiniteECPoint, FiniteECPointPairVecV1};
 use serde::{Deserialize, Serialize};
 use versioned::Versioned;

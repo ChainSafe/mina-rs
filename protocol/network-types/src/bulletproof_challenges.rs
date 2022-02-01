@@ -1,6 +1,8 @@
 // Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
+//! Types that capture serialized bullet proof challenges and proofs
+
 use serde::{Deserialize, Serialize};
 use versioned::Versioned;
 

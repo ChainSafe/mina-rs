@@ -1,6 +1,8 @@
 // Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
+//! Some basic versioned types used throughout
+
 use versioned::Versioned;
 
 pub type HashV1 = Versioned<[u8; 32], 1>;

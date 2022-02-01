@@ -1,6 +1,8 @@
 // Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
+//! Versioned types that represent finite field and elliptic curve elements, and collections thereof
+
 use crate::v1::BigInt256;
 use serde::{Deserialize, Serialize};
 use versioned::Versioned;
