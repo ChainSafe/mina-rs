@@ -27,11 +27,5 @@ mod tests {
     fn test_FeeTransferBalanceData() {}
     #[test]
     #[wasm_bindgen_test]
-    fn test_CoinBase() {}
-    #[test]
-    #[wasm_bindgen_test]
-    fn test_TransactionStatus() {}
-    #[test]
-    #[wasm_bindgen_test]
     fn test_SnappCommand() {}
 }
