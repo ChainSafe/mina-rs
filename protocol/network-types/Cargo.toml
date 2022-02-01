@@ -1,0 +1,15 @@
+[package]
+name = "network-types"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+versioned = {path = "../versioned"}
+serde = {version = "1", features = ["derive"]}
+mina-crypto = {path = "../../crypto"} # TODO: Try and remove this dep
+
+[dev-dependencies]
+wasm-bindgen-test = "0.3"
+bin-prot = {path = "../bin-prot"}
+test-fixtures = {path = "../test-fixtures"}
+pretty_assertions = "1"
