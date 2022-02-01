@@ -3,6 +3,9 @@
 
 //! Types and funcions related to the Mina minting_payload
 
+use crate::numbers::Amount;
+use crate::token_id::TokenId;
+use mina_crypto::signature::PublicKey;
 use serde::{Deserialize, Serialize};
 use wire_type::WireType;
 
@@ -12,4 +15,9 @@ use wire_type::WireType;
 #[wire_type(recurse = 2)]
 
 ///
-pub struct MintingPayload {}
+pub struct MintingPayload {
+    pub token_id: TokenId,
+    pub token_owner_pk: PublicKey,
+    pub receiver_pk: PublicKey,
+    pub amount: Amount,
+}

@@ -3,6 +3,7 @@
 
 //! Types and funcions related to the Mina new_token_payload
 
+use mina_crypto::signature::PublicKey;
 use serde::{Deserialize, Serialize};
 use wire_type::WireType;
 
@@ -12,4 +13,9 @@ use wire_type::WireType;
 #[wire_type(recurse = 2)]
 
 ///
-pub struct NewTokenPayload {}
+pub struct NewTokenPayload {
+    ///
+    pub token_owner_pk: PublicKey,
+    ///
+    pub disable_new_accounts: bool,
+}
