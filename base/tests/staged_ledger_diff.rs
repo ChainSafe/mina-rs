@@ -18,14 +18,14 @@ mod tests {
 
     #[test]
     #[wasm_bindgen_test]
-    fn test_CoinBaseFeeTransfer() {}
+    fn test_coin_base_fee_transfer() {}
     #[test]
     #[wasm_bindgen_test]
-    fn test_CoinBaseBalanceData() {}
+    fn test_coin_base_balance_data() {}
     #[test]
     #[wasm_bindgen_test]
-    fn test_FeeTransferBalanceData() {}
+    fn test_fee_transfer_balance_data() {}
     #[test]
     #[wasm_bindgen_test]
-    fn test_SnappCommand() {}
+    fn test_snapp_command() {}
 }
