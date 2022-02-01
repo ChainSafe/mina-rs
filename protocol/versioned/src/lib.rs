@@ -9,11 +9,17 @@
 //! is included in the serialized output in an indentical way to the mina reference implementation.
 //!
 
-use ::serde::{Deserialize, Serialize};
+#![deny(warnings)] 
+#![deny(missing_docs)]
 
+use serde::{Deserialize, Serialize};
+
+/// A generic version wrapper around another type
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct Versioned<T, const V: u16> {
+    /// Version byte to be encoded first when the whole wrapper is serialized
     pub version: u16,
+    /// The wrapped type
     pub t: T,
 }
 
@@ -30,14 +36,17 @@ where
 }
 
 impl<T, const V: u16> Versioned<T, V> {
+    /// create a new version type of the given const version
     pub fn new(t: T) -> Self {
         Self { version: V, t }
     }
 
+    /// Return the inner type
     pub fn inner(self) -> T {
         self.t
     }
 
+    /// Return the version number
     pub fn version(&self) -> u16 {
         self.version
     }
