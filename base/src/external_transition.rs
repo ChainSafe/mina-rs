@@ -3,7 +3,6 @@
 
 //! Mina ExternalTransition
 
-use mina_crypto::prelude::*;
 use serde::{Deserialize, Serialize};
 
 use crate::types::*;
@@ -28,6 +27,6 @@ pub struct ExternalTransition {
     pub validation_callback: (),
 }
 
-impl BinProtEncodable for ExternalTransition {
+impl bin_prot::encodable::BinProtEncodable for ExternalTransition {
     const PREALLOCATE_BUFFER_BYTES: usize = 13 * 1024;
 }

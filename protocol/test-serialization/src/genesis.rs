@@ -11,6 +11,7 @@ mod tests {
     use serde::Serialize;
     use test_fixtures::*;
     use wasm_bindgen_test::*;
+    use bin_prot::encodable::BinProtEncodable;
 
     #[test]
     #[wasm_bindgen_test]

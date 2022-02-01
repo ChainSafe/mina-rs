@@ -1,22 +1,23 @@
-// Copyright 2020 ChainSafe Systems
-// SPDX-License-Identifier: Apache-2.0
+use serde::{Serialize, Deserialize};
+use crate::Deserializer;
+use crate::error::Error;
 
-pub use bin_prot::error::Error;
-use bin_prot::Deserializer;
-use serde::{Deserialize, Serialize};
-
+/// Trait to allow a type to give a size it will serialize to/from
 pub trait BinProtEncodable {
+    /// yep
     const PREALLOCATE_BUFFER_BYTES: usize;
 
+    /// yep
     fn try_encode_binprot(&self) -> Result<Vec<u8>, Error>
     where
         Self: Serialize,
     {
         let mut output = Vec::with_capacity(Self::PREALLOCATE_BUFFER_BYTES);
-        bin_prot::to_writer(&mut output, &self)?;
+        crate::to_writer(&mut output, &self)?;
         Ok(output)
     }
-
+    
+    /// yep
     fn try_decode_binprot<'de>(bytes: impl AsRef<[u8]>) -> Result<Self, Error>
     where
         Self: Deserialize<'de> + Sized,

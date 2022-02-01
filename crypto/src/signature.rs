@@ -12,6 +12,7 @@ use crate::{
 };
 use derive_deref::Deref;
 use serde::{Deserialize, Serialize};
+use mina_network_types::v1::PublicKeyV1;
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct CompressedCurvePoint {
@@ -20,9 +21,25 @@ pub struct CompressedCurvePoint {
 }
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
+#[serde(from = "PublicKeyV1")]
+#[serde(into = "PublicKeyV1")]
 pub struct PublicKey {
     pub poly: CompressedCurvePoint,
 }
+
+
+impl Into<PublicKeyV1> for PublicKey {
+    fn into(self) -> PublicKeyV1 {
+        todo!()
+    }
+}
+
+impl From<PublicKeyV1> for PublicKey {
+    fn from(_: PublicKeyV1) -> Self {
+        todo!()
+    }
+}
+
 
 impl_bs58_for_binprot!(PublicKey, version_bytes::NON_ZERO_CURVE_POINT_COMPRESSED);
 

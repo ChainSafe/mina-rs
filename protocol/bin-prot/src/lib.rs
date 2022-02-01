@@ -16,6 +16,8 @@ mod read_ext;
 mod ser;
 pub mod value;
 mod write_ext;
+/// sd
+pub mod encodable;
 
 // pub use array::OcamlArray;
 pub use de::{from_reader, Deserializer};

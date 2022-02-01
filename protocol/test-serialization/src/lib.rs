@@ -13,9 +13,9 @@ mod test_3NKaBJsN1SehD6iJwRwJSFmVzJg5DXSUQVgnMxtH4eer4aF5BrDK;
 
 #[cfg(test)]
 mod tests {
-    use super::{block_path_test, block_path_test_batch};
+use super::{block_path_test, block_path_test_batch};
     use bin_prot::{from_reader, to_writer, Value};
-    use mina_crypto::{hash::*, prelude::*, signature::*};
+    use mina_crypto::{hash::*, signature::*};
     use mina_rs_base::types::{
         proof_messages::{ProofMessageWithDegreeBound, ProofMessageWithoutDegreeBoundList},
         *,
@@ -25,6 +25,7 @@ mod tests {
     use std::str::FromStr;
     use test_fixtures::*;
     use wasm_bindgen_test::*;
+    use bin_prot::encodable::BinProtEncodable;
 
     #[test]
     #[wasm_bindgen_test]

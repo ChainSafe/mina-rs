@@ -40,7 +40,7 @@ where
 mod tests {
     use super::*;
     use crate::base58::{version_bytes, Base58Encodable};
-    use crate::binprot::BinProtEncodable;
+    use bin_prot::encodable::BinProtEncodable;
     use crate::hash::prefixes::PROTOCOL_STATE;
     use crate::hash::types::{BaseHash, HashBytes};
     use crate::impl_bs58_for_binprot;

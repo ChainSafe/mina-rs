@@ -10,7 +10,6 @@
 
 pub mod base58;
 pub mod base64;
-pub mod binprot;
 pub mod hash;
 pub mod hex;
 pub mod signature;
@@ -18,6 +17,5 @@ pub mod signature;
 pub mod prelude {
     pub use crate::base58::Base58Encodable;
     pub use crate::base64::Base64Encodable;
-    pub use crate::binprot::BinProtEncodable;
     pub use crate::hex::HexEncodable;
 }

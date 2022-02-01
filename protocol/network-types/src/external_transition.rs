@@ -36,6 +36,6 @@ pub struct ExternalTransition {
 #[derive(Debug, Serialize, Deserialize, PartialEq)]
 pub struct ExternalTransitionV1(pub Versioned<ExternalTransition, 1>);
 
-impl mina_crypto::binprot::BinProtEncodable for ExternalTransitionV1 {
+impl bin_prot::encodable::BinProtEncodable for ExternalTransitionV1 {
     const PREALLOCATE_BUFFER_BYTES: usize = 13 * 1024;
 }
