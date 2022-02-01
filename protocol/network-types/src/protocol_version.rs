@@ -6,8 +6,8 @@
 use serde::{Deserialize, Serialize};
 use versioned::Versioned;
 
-#[derive(Debug, Serialize, Deserialize, PartialEq)]
 /// Defines a version of the Mina protocol in semver format
+#[derive(Debug, Serialize, Deserialize, PartialEq)]
 pub struct ProtocolVersion {
     /// Major version number
     pub major: u32,
@@ -17,4 +17,5 @@ pub struct ProtocolVersion {
     pub patch: u32,
 }
 
+/// Defines a version of the Mina protocol in semver format (v1)
 pub type ProtocolVersionV1 = Versioned<ProtocolVersion, 1>;

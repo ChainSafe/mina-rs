@@ -3,12 +3,14 @@
 
 //! Types related to the Blockchain State
 
+#![allow(missing_docs)] // Don't actually know what many of the types fields are for yet
+
 use crate::v1::{BlockTimeV1, ByteVecV1, Hash2V1, HashV1, TokenIdV1};
 use serde::{Deserialize, Serialize};
 use versioned::Versioned;
 
-#[derive(Debug, Serialize, Deserialize, PartialEq)]
 /// Mina blockchain state struct
+#[derive(Debug, Serialize, Deserialize, PartialEq)]
 pub struct BlockchainState {
     /// Hash of the proposed next state of the blockchain
     pub staged_ledger_hash: StagedLedgerHashV1,
@@ -22,16 +24,20 @@ pub struct BlockchainState {
     pub timestamp: BlockTimeV1,
 }
 
+/// Mina blockchain state struct (v1)
 pub type BlockchainStateV1 = Versioned<Versioned<BlockchainState, 1>, 1>;
 
+/// Staged ledger hash structure
 #[derive(Debug, Serialize, Deserialize, PartialEq)]
 pub struct StagedLedgerHash {
     pub non_snark: NonSnarkStagedLedgerHash,
     pub pending_coinbase_hash: Hash2V1,
 }
 
+/// Staged ledger hash structure (v1)
 pub type StagedLedgerHashV1 = Versioned<Versioned<Versioned<StagedLedgerHash, 1>, 1>, 1>;
 
+/// Non-snarked ledger hash
 #[derive(Debug, Serialize, Deserialize, PartialEq)]
 pub struct NonSnarkStagedLedgerHash {
     pub ledger_hash: HashV1,
@@ -39,4 +45,5 @@ pub struct NonSnarkStagedLedgerHash {
     pub pending_coinbase_aux: ByteVecV1,
 }
 
+/// Non-snarked ledger hash (v1)
 pub type NonSnarkStagedLedgerHashV1 = Versioned<NonSnarkStagedLedgerHash, 1>;

@@ -9,8 +9,8 @@ use versioned::Versioned;
 
 use crate::v1::{BlockTimeV1, LengthV1};
 
-#[derive(Debug, Serialize, Deserialize, PartialEq)]
 /// Constants that define the consensus parameters
+#[derive(Debug, Serialize, Deserialize, PartialEq)]
 pub struct ProtocolConstants {
     /// Point of finality (number of confirmations)
     pub k: LengthV1,
@@ -24,5 +24,5 @@ pub struct ProtocolConstants {
     pub genesis_state_timestamp: BlockTimeV1,
 }
 
-/// versioned wrapper
+/// Constants that define the consensus parameters (v1)
 pub type ProtocolConstantsV1 = Versioned<Versioned<ProtocolConstants, 1>, 1>;

@@ -9,6 +9,8 @@ members = [
   "protocol/bin_prot_checker",
   "protocol/test-fixtures",
   "protocol/test-serialization",
+  "protocol/network-types",
+  "protocol/versioned",
 ]
 # This is still needed for virtual workspaces 
 # per <https://doc.rust-lang.org/edition-guide/rust-2021/default-cargo-resolver.html#details>

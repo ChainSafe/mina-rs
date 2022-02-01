@@ -22,5 +22,5 @@ pub struct ProtocolStateBody {
     pub constants: ProtocolConstantsV1,
 }
 
-/// versioned wrapper
+/// Body of the protocol state (v1)
 pub type ProtocolStateBodyV1 = Versioned<Versioned<ProtocolStateBody, 1>, 1>;

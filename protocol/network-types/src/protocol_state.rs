@@ -18,5 +18,5 @@ pub struct ProtocolState {
     pub body: ProtocolStateBodyV1,
 }
 
-/// versioned wrapper
+/// This structure can be thought of like the block header. It contains the most essential information of a block (v1)
 pub type ProtocolStateV1 = Versioned<Versioned<ProtocolState, 1>, 1>;

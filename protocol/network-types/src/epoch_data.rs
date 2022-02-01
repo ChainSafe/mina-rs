@@ -8,8 +8,8 @@ use serde::{Deserialize, Serialize};
 use crate::v1::{AmountV1, HashV1, LengthV1};
 use versioned::Versioned;
 
-#[derive(Debug, Serialize, Deserialize, PartialEq)]
 /// Epoch Ledger
+#[derive(Debug, Serialize, Deserialize, PartialEq)]
 pub struct EpochLedger {
     /// A unique identifier of the EpochLedger
     pub hash: HashV1,
@@ -17,10 +17,11 @@ pub struct EpochLedger {
     pub total_currency: AmountV1,
 }
 
+/// Epoch Ledger (v1)
 pub type EpochLedgerV1 = Versioned<Versioned<EpochLedger, 1>, 1>;
 
-#[derive(Debug, Serialize, Deserialize, PartialEq)]
 /// Epoch data
+#[derive(Debug, Serialize, Deserialize, PartialEq)]
 pub struct EpochData {
     /// Epoch Ledger, contains ledger related data for the epoch
     pub ledger: EpochLedgerV1,
@@ -34,4 +35,5 @@ pub struct EpochData {
     pub epoch_length: LengthV1,
 }
 
+/// Epoch data (v1)
 pub type EpochDataV1 = Versioned<Versioned<EpochData, 1>, 1>;
