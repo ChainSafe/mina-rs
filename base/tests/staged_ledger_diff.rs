@@ -10,8 +10,8 @@ mod tests {
     use mina_rs_base::snapp_command::SnappCommand;
     use mina_rs_base::staged_ledger_diff::{
         CoinBase, CoinBaseBalanceData, CoinBaseFeeTransfer, FeeTransferBalanceData,
-        TransactionStatus,
     };
+    use mina_rs_base::transaction_status::TransactionStatus;
     use mina_rs_base::types::*;
     use time::macros::*;
     use wasm_bindgen_test::*;

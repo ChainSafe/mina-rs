@@ -32,6 +32,7 @@ pub mod snapp_predicate;
 pub mod staged_ledger_diff;
 pub mod stake_delegation;
 pub mod token_id;
+pub mod transaction_status;
 pub mod verification_key;
 
 /// Re-export all the public types under this module for convenience
