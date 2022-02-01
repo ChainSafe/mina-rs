@@ -44,7 +44,6 @@ impl Default for ECPoint {
     }
 }
 
-
 /// Elliptic curve point that can either be the coordinates of a point on the curve
 /// OR it can be the point-at-infinity (v1)
 pub type ECPointV1 = Versioned<ECPoint, 1>;

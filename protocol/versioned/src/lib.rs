@@ -9,7 +9,7 @@
 //! is included in the serialized output in an indentical way to the mina reference implementation.
 //!
 
-#![deny(warnings)] 
+#![deny(warnings)]
 #![deny(missing_docs)]
 
 use serde::{Deserialize, Serialize};
