@@ -12,7 +12,7 @@ publish = false
 bin-prot = {path = "../bin-prot", features = ["loose_deserialization"]}
 mina-crypto = {path = "../../crypto"}
 mina-rs-base = {path = "../../base"}
-network-types = {path = "../network-types"}
+mina-network-types = {path = "../network-types"}
 
 
 anyhow = "1"
