@@ -275,9 +275,8 @@ pub struct TransactionStatusBalanceData {
 #[non_exhaustive]
 pub enum CoinBase {
     Zero,
-    // FIXME: other variants are not covered by current test block
     One(Option<CoinBaseFeeTransfer>),
-    Two,
+    Two(Option<Option<CoinBaseFeeTransfer>>),
 }
 
 impl Default for CoinBase {
