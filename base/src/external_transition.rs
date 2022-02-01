@@ -5,14 +5,11 @@
 
 use mina_crypto::prelude::*;
 use serde::{Deserialize, Serialize};
-use wire_type::WireType;
 
 use crate::types::*;
 
 /// This structure represents a mina block
-#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize, WireType)]
-#[serde(from = "<Self as WireType>::WireType")]
-#[serde(into = "<Self as WireType>::WireType")]
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
 /// This structure represents a mina block received from an external block producer
 pub struct ExternalTransition {
     /// The blockchain state, including consensus and the ledger

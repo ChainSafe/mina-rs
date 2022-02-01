@@ -4,14 +4,10 @@
 //! Structure of a global slot
 
 use serde::{Deserialize, Serialize};
-use wire_type::WireType;
 
 use crate::numbers::{self, Length};
 
-#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, WireType)]
-#[serde(from = "<Self as WireType>::WireType")]
-#[serde(into = "<Self as WireType>::WireType")]
-#[wire_type(recurse = 2)]
+#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug)]
 /// A global slot
 pub struct GlobalSlot {
     /// The global slot number of a chain or block

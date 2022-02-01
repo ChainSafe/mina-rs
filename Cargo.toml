@@ -6,9 +6,7 @@ members = [
   "network",
   "snark-keys",
   "protocol/bin-prot",
-  "protocol/wire-type",
   "protocol/bin_prot_checker",
-  "protocol/wire-type-derive",
   "protocol/test-fixtures",
   "protocol/test-serialization",
 ]

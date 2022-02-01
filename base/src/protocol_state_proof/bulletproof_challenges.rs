@@ -2,13 +2,10 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use serde::{Deserialize, Serialize};
-use wire_type::WireType;
 
 use crate::types::Hex64;
 
-#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, WireType)]
-#[serde(from = "<Self as WireType>::WireType")]
-#[serde(into = "<Self as WireType>::WireType")]
+#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug)]
 pub struct BulletproofChallenge {
     pub prechallenge: BulletproofPreChallenge,
 }
@@ -21,22 +18,15 @@ impl BulletproofChallenge {
     }
 }
 
-#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, WireType)]
-#[serde(from = "<Self as WireType>::WireType")]
-#[serde(into = "<Self as WireType>::WireType")]
+#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug)]
 pub struct BulletproofChallenges(pub Vec<BulletproofChallengeTuple18>);
 
-#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, WireType)]
-#[serde(from = "<Self as WireType>::WireType")]
-#[serde(into = "<Self as WireType>::WireType")]
+#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug)]
 pub struct ProofStateBulletproofChallenges(
     pub (BulletproofChallengeTuple17, BulletproofChallengeTuple17, ()),
 );
 
-#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, WireType)]
-#[serde(from = "<Self as WireType>::WireType")]
-#[serde(into = "<Self as WireType>::WireType")]
-#[wire_type(recurse = 3)]
+#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug)]
 pub struct BulletproofChallengeTuple17(
     BulletproofChallenge,
     BulletproofChallenge,
@@ -83,10 +73,7 @@ impl BulletproofChallengeTuple17 {
     }
 }
 
-#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, WireType)]
-#[serde(from = "<Self as WireType>::WireType")]
-#[serde(into = "<Self as WireType>::WireType")]
-#[wire_type(recurse = 2)]
+#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug)]
 pub struct BulletproofChallengeTuple18(
     BulletproofChallenge,
     BulletproofChallenge,
@@ -135,9 +122,7 @@ impl BulletproofChallengeTuple18 {
     }
 }
 
-#[derive(Clone, Serialize, Deserialize, PartialEq, Debug, WireType)]
-#[serde(from = "<Self as WireType>::WireType")]
-#[serde(into = "<Self as WireType>::WireType")]
+#[derive(Clone, Serialize, Deserialize, PartialEq, Debug)]
 #[non_exhaustive]
 pub enum BulletproofPreChallenge {
     ScalarChallenge(ScalarChallengeVector2),
@@ -149,9 +134,7 @@ impl BulletproofPreChallenge {
     }
 }
 
-#[derive(Clone, Serialize, Default, Deserialize, PartialEq, Debug, WireType)]
-#[serde(from = "<Self as WireType>::WireType")]
-#[serde(into = "<Self as WireType>::WireType")]
+#[derive(Clone, Serialize, Default, Deserialize, PartialEq, Debug)]
 pub struct ScalarChallengeVector2((Hex64, Hex64, ()));
 
 impl ScalarChallengeVector2 {

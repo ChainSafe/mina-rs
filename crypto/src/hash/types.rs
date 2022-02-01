@@ -16,7 +16,6 @@ use crate::hash::Hash;
 use crate::impl_bs58;
 use derive_more::From;
 use serde::{Deserialize, Serialize};
-use wire_type::WireType;
 
 pub(crate) type HashBytes = Box<[u8]>;
 
@@ -53,9 +52,7 @@ impl AsRef<[u8; 32]> for BaseHash {
 }
 
 //////////////////////////////////////////////////////////////////////////
-#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize, WireType, PartialOrd)]
-#[serde(from = "<Self as WireType>::WireType")]
-#[serde(into = "<Self as WireType>::WireType")]
+#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize, PartialOrd)]
 pub struct StateHash(BaseHash);
 
 impl_bs58!(StateHash, version_bytes::STATE_HASH);
@@ -72,26 +69,19 @@ impl Hash for StateHash {
 
 //////////////////////////////////////////////////////////////////////////
 
-#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize, WireType)]
-#[serde(from = "<Self as WireType>::WireType")]
-#[serde(into = "<Self as WireType>::WireType")]
+#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct LedgerHash(BaseHash);
 
 impl_bs58!(LedgerHash, version_bytes::LEDGER_HASH);
 
-#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize, WireType)]
-#[serde(from = "<Self as WireType>::WireType")]
-#[serde(into = "<Self as WireType>::WireType")]
-#[wire_type(recurse = 2)]
+#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct CoinBaseHash(BaseHash);
 
 impl_bs58!(CoinBaseHash, 12);
 
 //////////////////////////////////////////////////////////////////////////
 
-#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize, WireType)]
-#[serde(from = "<Self as WireType>::WireType")]
-#[serde(into = "<Self as WireType>::WireType")]
+#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct EpochSeed(BaseHash);
 
 impl_bs58!(EpochSeed, version_bytes::EPOCH_SEED);
@@ -108,36 +98,27 @@ impl Hash for EpochSeed {
 
 //////////////////////////////////////////////////////////////////////////
 
-#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize, WireType)]
-#[serde(from = "<Self as WireType>::WireType")]
-#[serde(into = "<Self as WireType>::WireType")]
+#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct SnarkedLedgerHash(BaseHash);
 
 impl_bs58!(SnarkedLedgerHash, version_bytes::LEDGER_HASH);
 
 //////////////////////////////////////////////////////////////////////////
 
-#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize, WireType)]
-#[serde(from = "<Self as WireType>::WireType")]
-#[serde(into = "<Self as WireType>::WireType")]
-#[wire_type(recurse = 2)]
+#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct StagedLedgerHash {
     pub non_snark: NonSnarkStagedLedgerHash,
     pub pending_coinbase_hash: CoinBaseHash,
 }
 
-#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize, WireType)]
-#[serde(from = "<Self as WireType>::WireType")]
-#[serde(into = "<Self as WireType>::WireType")]
+#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct NonSnarkStagedLedgerHash {
     pub ledger_hash: LedgerHash,
     pub aux_hash: AuxHash,
     pub pending_coinbase_aux: PendingCoinbaseAuxHash,
 }
 
-#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize, WireType)]
-#[serde(from = "<Self as WireType>::WireType")]
-#[serde(into = "<Self as WireType>::WireType")]
+#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct AuxHash(pub Vec<u8>);
 
 impl Base58Encodable for AuxHash {
@@ -155,9 +136,7 @@ impl From<Vec<u8>> for AuxHash {
     }
 }
 
-#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize, WireType)]
-#[serde(from = "<Self as WireType>::WireType")]
-#[serde(into = "<Self as WireType>::WireType")]
+#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct PendingCoinbaseAuxHash(pub Vec<u8>);
 
 impl Base58Encodable for PendingCoinbaseAuxHash {
@@ -183,9 +162,7 @@ impl AsRef<[u8]> for AuxHash {
 
 //////////////////////////////////////////////////////////////////////////
 
-#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize, WireType)]
-#[serde(from = "<Self as WireType>::WireType")]
-#[serde(into = "<Self as WireType>::WireType")]
+#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct VrfOutputHash(BaseHash);
 
 impl_bs58!(VrfOutputHash, version_bytes::VRF_TRUNCATED_OUTPUT);

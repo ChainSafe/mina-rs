@@ -12,40 +12,27 @@ use crate::{
 };
 use derive_deref::Deref;
 use serde::{Deserialize, Serialize};
-use wire_type::WireType;
 
-#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize, WireType)]
-#[serde(from = "<Self as WireType>::WireType")]
-#[serde(into = "<Self as WireType>::WireType")]
+#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct CompressedCurvePoint {
     pub x: [u8; 32],
     pub is_odd: bool,
 }
 
-#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize, WireType)]
-#[serde(from = "<Self as WireType>::WireType")]
-#[serde(into = "<Self as WireType>::WireType")]
+#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct PublicKey {
     pub poly: CompressedCurvePoint,
 }
 
 impl_bs58_for_binprot!(PublicKey, version_bytes::NON_ZERO_CURVE_POINT_COMPRESSED);
 
-#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize, Deref, WireType)]
-#[serde(from = "<Self as WireType>::WireType")]
-#[serde(into = "<Self as WireType>::WireType")]
+#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize, Deref)]
 pub struct PublicKey2(pub CompressedCurvePoint);
 
-#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize, Deref, WireType)]
-#[serde(from = "<Self as WireType>::WireType")]
-#[serde(into = "<Self as WireType>::WireType")]
-#[wire_type(recurse = 2)]
+#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize, Deref)]
 pub struct PublicKey3(pub CompressedCurvePoint);
 
-#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, WireType)]
-#[serde(from = "<Self as WireType>::WireType")]
-#[serde(into = "<Self as WireType>::WireType")]
-#[wire_type(recurse = 2)]
+#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug)]
 pub struct Signature((FieldPoint, InnerCurveScalar));
 
 impl Signature {
@@ -85,7 +72,7 @@ impl From<Vec<u8>> for Signature {
     }
 }
 
-#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, WireType)]
+#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug)]
 pub struct FieldPoint(BaseHash);
 
 impl AsRef<[u8]> for FieldPoint {
