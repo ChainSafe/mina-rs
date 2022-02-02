@@ -16,6 +16,7 @@ use crate::hash::Hash;
 use crate::impl_bs58;
 use derive_more::From;
 use serde::{Deserialize, Serialize};
+use mina_network_types::v1::{HashV1, ByteVecV1};
 
 pub(crate) type HashBytes = Box<[u8]>;
 
@@ -63,6 +64,12 @@ impl From<HashBytes> for StateHash {
     }
 }
 
+impl From<HashV1> for StateHash {
+    fn from(h: HashV1) -> Self {
+        Self(BaseHash(h.t))
+    }    
+}
+
 impl Hash for StateHash {
     const PREFIX: &'static HashPrefix = PROTOCOL_STATE;
 }
@@ -74,10 +81,25 @@ pub struct LedgerHash(BaseHash);
 
 impl_bs58!(LedgerHash, version_bytes::LEDGER_HASH);
 
+impl From<HashV1> for LedgerHash {
+    fn from(h: HashV1) -> Self {
+        Self(BaseHash(h.t))
+    }    
+}
+
+//////////////////////////////////////////////////////////////////////////
+
+
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct CoinBaseHash(BaseHash);
 
 impl_bs58!(CoinBaseHash, 12);
+
+impl From<HashV1> for CoinBaseHash {
+    fn from(h: HashV1) -> Self {
+        Self(BaseHash(h.t))
+    }    
+}
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -96,12 +118,24 @@ impl Hash for EpochSeed {
     const PREFIX: &'static HashPrefix = EPOCH_SEED;
 }
 
+impl From<HashV1> for EpochSeed {
+    fn from(h: HashV1) -> Self {
+        Self(BaseHash(h.t))
+    }    
+}
+
 //////////////////////////////////////////////////////////////////////////
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct SnarkedLedgerHash(BaseHash);
 
 impl_bs58!(SnarkedLedgerHash, version_bytes::LEDGER_HASH);
+
+impl From<HashV1> for SnarkedLedgerHash {
+    fn from(h: HashV1) -> Self {
+        Self(BaseHash(h.t))
+    }    
+}
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -136,6 +170,15 @@ impl From<Vec<u8>> for AuxHash {
     }
 }
 
+impl AsRef<[u8]> for AuxHash {
+    fn as_ref(&self) -> &[u8] {
+        self.0.as_ref()
+    }
+}
+
+//////////////////////////////////////////////////////////////////////////
+
+
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct PendingCoinbaseAuxHash(pub Vec<u8>);
 
@@ -154,10 +197,10 @@ impl From<Vec<u8>> for PendingCoinbaseAuxHash {
     }
 }
 
-impl AsRef<[u8]> for AuxHash {
-    fn as_ref(&self) -> &[u8] {
-        self.0.as_ref()
-    }
+impl From<ByteVecV1> for PendingCoinbaseAuxHash {
+    fn from(h: ByteVecV1) -> Self {
+        Self(h.t)
+    }    
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -175,6 +218,12 @@ impl From<HashBytes> for VrfOutputHash {
 
 impl Hash for VrfOutputHash {
     const PREFIX: &'static HashPrefix = VRF_OUTPUT;
+}
+
+impl From<HashV1> for VrfOutputHash {
+    fn from(h: HashV1) -> Self {
+        Self(BaseHash(h.t))
+    }    
 }
 
 //////////////////////////////////////////////////////////////////////////

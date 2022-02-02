@@ -3,12 +3,13 @@
 
 #[cfg(test)]
 mod tests {
-    use super::super::tests::select_path;
-    use mina_consensus::genesis::*;
+    // use super::super::tests::select_path;
+    // use mina_consensus::genesis::*;
     use mina_crypto::prelude::*;
-    use mina_rs_base::types::*;
+    // use mina_rs_base::types::*;
+    // use mina_network_types::v1::ExternalTransitionV1;
     use pretty_assertions::assert_eq;
-    use serde::Serialize;
+    // use serde::Serialize;
     use test_fixtures::*;
     use wasm_bindgen_test::*;
     use bin_prot::encodable::BinProtEncodable;
@@ -26,7 +27,7 @@ mod tests {
     }
 
     fn test_genesis_roundtrip(genesis_fixture: &BlockFixture) {
-        let genesis = genesis_fixture.external_transition().unwrap();
+        let genesis = genesis_fixture.external_transitionv1().unwrap();
         let output = genesis.try_encode_binprot().unwrap();
         assert_eq!(genesis_fixture.bytes, output)
     }
@@ -35,30 +36,32 @@ mod tests {
     #[wasm_bindgen_test]
     fn test_genesis_protocol_state_proof() {
         for et in [
-            ExternalTransition::from_genesis_config(&MAINNET_CONFIG),
-            GENESIS_BLOCK_MAINNET.external_transition().unwrap(),
+            // ExternalTransition::from_genesis_config(&MAINNET_CONFIG), // reinstate this once the conversion is complete
+            GENESIS_BLOCK_MAINNET.external_transitionv1().unwrap(),
         ] {
-            let protocol_state_proof = &et.protocol_state_proof;
-            let ev0 = &protocol_state_proof.proof.openings.evals.0;
+            let protocol_state_proof = &et.0.t.protocol_state_proof;
+            let ev0 = &protocol_state_proof.t.t.t.t.proof.t.t.openings.t.evals.0.t;
             assert_eq!(
-                ev0.l.to_hex_string(),
+                ev0.l.t.to_hex_string(),
                 "2e53605b801ad7fea745e9766add8da9ed33589d758fb339fed40c329c59aa27"
             );
             assert_eq!(
-                ev0.r.to_hex_string(),
+                ev0.r.t.to_hex_string(),
                 "b77a8788b07f7cd1c9c61618755cca3d0d303a7b096124ce0c02dc5f451a0f03"
             );
             assert_eq!(
-                ev0.o.to_hex_string(),
+                ev0.o.t.to_hex_string(),
                 "2e1e68731d00b84720038823777ec6522d9a1e9e365920c3e7ce064ade0c2e1e"
             );
             assert_eq!(
-                ev0.z.to_hex_string(),
+                ev0.z.t.to_hex_string(),
                 "d96d62e54a0a49d3a44c919eb4b089333d64a236edcda1921274ac6903bad937"
             );
-            assert_eq!(ev0.t.0.len(), 5);
+            assert_eq!(ev0.t.t.len(), 5);
         }
     }
+
+    /* Reinstate once conversion is complete
 
     #[test]
     #[wasm_bindgen_test]
@@ -81,6 +84,7 @@ mod tests {
         assert_eq!(genesis_fixture.bytes, output)
     }
 
+
     #[test]
     #[wasm_bindgen_test]
     fn test_genesis_path_mainnet() {
@@ -92,6 +96,7 @@ mod tests {
     fn test_genesis_path_devnet() {
         test_genesis_path(&DEVNET_CONFIG, &GENESIS_BLOCK_DEVNET)
     }
+
 
     fn test_genesis_path(genesis_init_config: &GenesisInitConfig, fixture: &BlockFixture) {
         let genesis = ExternalTransition::from_genesis_config(genesis_init_config);
@@ -239,15 +244,16 @@ mod tests {
         });
     }
 
+
     fn test_path<T>(
-        et: &ExternalTransition,
+        et: &ExternalTransitionV1,
         block_fixture: &BlockFixture,
         path: impl AsRef<str>,
-        select: fn(et: &ExternalTransition) -> &T,
+        select: fn(et: &ExternalTransitionV1) -> &T,
     ) where
         T: std::fmt::Debug + PartialEq + Serialize,
     {
-        let et_deserialized = block_fixture.external_transition().unwrap();
+        let et_deserialized = block_fixture.external_transitionv1().unwrap();
         test_path_typed(et, &et_deserialized, select);
         let _ = et_deserialized;
         let path = path.as_ref();
@@ -262,12 +268,16 @@ mod tests {
     }
 
     fn test_path_typed<'a, T>(
-        a: &'a ExternalTransition,
-        b: &'a ExternalTransition,
-        select: fn(et: &'a ExternalTransition) -> &'a T,
+        a: &'a ExternalTransitionV1,
+        b: &'a ExternalTransitionV1,
+        select: fn(et: &'a ExternalTransitionV1) -> &'a T,
     ) where
         T: std::fmt::Debug + PartialEq,
     {
         assert_eq!(select(a), select(b))
     }
+
+    */
 }
+
+
