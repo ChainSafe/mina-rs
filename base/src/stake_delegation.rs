@@ -11,7 +11,7 @@ use wire_type::WireType;
 #[serde(into = "<Self as WireType>::WireType")]
 #[wire_type(recurse = 2)]
 
-///
+/// https://github.com/MinaProtocol/mina/blob/aacfe04245d14b3331e89ed76a4b77bec902b290/src/lib/mina_base/stake_delegation.ml#L23
 pub struct StakeDelegation {
     ///
     pub delegator: PublicKey,

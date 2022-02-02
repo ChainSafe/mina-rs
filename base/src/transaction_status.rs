@@ -11,7 +11,7 @@ use wire_type::WireType;
 #[serde(from = "<Self as WireType>::WireType")]
 #[serde(into = "<Self as WireType>::WireType")]
 #[non_exhaustive]
-///
+/// https://github.com/MinaProtocol/mina/blob/aacfe04245d14b3331e89ed76a4b77bec902b290/src/lib/mina_base/transaction_status.ml#L834
 pub enum TransactionStatus {
     ///
     Applied(TransactionStatusApplied),
@@ -66,7 +66,7 @@ pub struct TransactionStatusAuxiliaryData {
 #[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, WireType)]
 #[serde(from = "<Self as WireType>::WireType")]
 #[serde(into = "<Self as WireType>::WireType")]
-///
+/// https://github.com/MinaProtocol/mina/blob/aacfe04245d14b3331e89ed76a4b77bec902b290/src/lib/mina_base/transaction_status.ml#L9
 pub struct TransactionStatusFailure {
     pub predicate: String,
     pub source_not_present: String,
