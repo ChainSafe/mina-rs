@@ -7,15 +7,16 @@
 // TODO: Get clarification on all the fields of this type before documenting
 #![allow(missing_docs)]
 
+use crate::coinbase::*;
 use crate::minting_payload::MintingPayload;
 use crate::new_account_payload::NewAccountPayload;
 use crate::new_token_payload::NewTokenPayload;
-use crate::numbers::{Amount, ExtendedU32, ExtendedU64_2, ExtendedU64_3};
+use crate::numbers::{Amount, ExtendedU32, ExtendedU64_3};
 use crate::party::{Signed, Stable};
 use crate::snapp_command::SnappCommand;
 use crate::snapp_predicate::ProtocolState;
 use crate::stake_delegation::StakeDelegation;
-use crate::transaction_status::TransactionStatus;
+use crate::transaction_status::{InternalCommandBalanceData, TransactionStatus};
 use mina_crypto::signature::{PublicKey2, PublicKey3, Signature};
 use serde::{Deserialize, Serialize};
 use thiserror::Error;
@@ -207,58 +208,4 @@ impl TryFrom<String> for SignedCommandMemo {
 pub enum SignedCommandMemoError {
     #[error("Input string is too long")]
     StringTooLong,
-}
-
-#[derive(Clone, Serialize, Deserialize, PartialEq, Debug, WireType)]
-#[serde(from = "<Self as WireType>::WireType")]
-#[serde(into = "<Self as WireType>::WireType")]
-#[non_exhaustive]
-/// https://github.com/MinaProtocol/mina/blob/aacfe04245d14b3331e89ed76a4b77bec902b290/src/lib/staged_ledger_diff/staged_ledger_diff.ml#L10
-pub enum CoinBase {
-    Zero,
-    One(Option<CoinBaseFeeTransfer>),
-    Two(Option<Option<CoinBaseFeeTransfer>>),
-}
-
-impl Default for CoinBase {
-    fn default() -> Self {
-        Self::Zero
-    }
-}
-
-#[derive(Clone, Serialize, Deserialize, PartialEq, Debug, WireType)]
-#[serde(from = "<Self as WireType>::WireType")]
-#[serde(into = "<Self as WireType>::WireType")]
-#[wire_type(recurse = 2)]
-// FIXME: No test coverage yet
-pub struct CoinBaseFeeTransfer {
-    pub receiver_pk: PublicKey2,
-    pub fee: ExtendedU64_2,
-}
-
-#[derive(Clone, Serialize, Deserialize, PartialEq, Debug, WireType)]
-#[serde(from = "<Self as WireType>::WireType")]
-#[serde(into = "<Self as WireType>::WireType")]
-#[non_exhaustive]
-pub enum InternalCommandBalanceData {
-    CoinBase(CoinBaseBalanceData),
-    FeeTransfer(FeeTransferBalanceData),
-}
-
-#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, WireType)]
-#[serde(from = "<Self as WireType>::WireType")]
-#[serde(into = "<Self as WireType>::WireType")]
-pub struct CoinBaseBalanceData {
-    pub coinbase_receiver_balance: ExtendedU64_3,
-    // FIXME: No test coverage yet
-    pub fee_transfer_receiver_balance: Option<ExtendedU64_3>,
-}
-
-#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, WireType)]
-#[serde(from = "<Self as WireType>::WireType")]
-#[serde(into = "<Self as WireType>::WireType")]
-pub struct FeeTransferBalanceData {
-    pub receiver1_balance: ExtendedU64_3,
-    // FIXME: No test coverage yet
-    pub receiver2_balance: Option<ExtendedU64_3>,
 }

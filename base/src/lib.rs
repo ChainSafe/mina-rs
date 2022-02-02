@@ -11,6 +11,7 @@
 #![deny(missing_docs)]
 
 pub mod blockchain_state;
+pub mod coinbase;
 pub mod consensus_state;
 mod constants;
 pub mod delta_transition_chain_proof;

@@ -93,3 +93,30 @@ pub struct TransactionStatusBalanceData {
     pub source_balance: Option<ExtendedU64_3>,
     pub receiver_balance: Option<ExtendedU64_3>,
 }
+
+#[derive(Clone, Serialize, Deserialize, PartialEq, Debug, WireType)]
+#[serde(from = "<Self as WireType>::WireType")]
+#[serde(into = "<Self as WireType>::WireType")]
+#[non_exhaustive]
+pub enum InternalCommandBalanceData {
+    CoinBase(CoinBaseBalanceData),
+    FeeTransfer(FeeTransferBalanceData),
+}
+
+#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, WireType)]
+#[serde(from = "<Self as WireType>::WireType")]
+#[serde(into = "<Self as WireType>::WireType")]
+pub struct CoinBaseBalanceData {
+    pub coinbase_receiver_balance: ExtendedU64_3,
+    // FIXME: No test coverage yet
+    pub fee_transfer_receiver_balance: Option<ExtendedU64_3>,
+}
+
+#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, WireType)]
+#[serde(from = "<Self as WireType>::WireType")]
+#[serde(into = "<Self as WireType>::WireType")]
+pub struct FeeTransferBalanceData {
+    pub receiver1_balance: ExtendedU64_3,
+    // FIXME: No test coverage yet
+    pub receiver2_balance: Option<ExtendedU64_3>,
+}
