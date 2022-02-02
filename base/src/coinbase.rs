@@ -4,8 +4,8 @@
 //! Types and funcions related to the Mina coinbase
 
 use crate::fee_transfer::FeeTransfer;
-use crate::numbers::Amount;
-use mina_crypto::signature::PublicKey;
+use crate::numbers::{Amount, ExtendedU64_2};
+use mina_crypto::signature::{PublicKey,PublicKey2};
 use serde::{Deserialize, Serialize};
 use wire_type::WireType;
 
@@ -34,13 +34,25 @@ impl Default for CoinBase {
 #[serde(from = "<Self as WireType>::WireType")]
 #[serde(into = "<Self as WireType>::WireType")]
 #[wire_type(recurse = 2)]
-// FIXME: No test coverage yet
 /// https://github.com/MinaProtocol/mina/blob/aacfe04245d14b3331e89ed76a4b77bec902b290/src/lib/mina_base/coinbase.ml#L3
-pub struct CoinBaseFeeTransfer {
+pub struct CoinBaseV1 {
     ///
     pub receiver: PublicKey,
     ///
     pub amount: Amount,
     ///
     pub fee_transfer: FeeTransfer,
+}
+
+#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, WireType)]
+#[serde(from = "<Self as WireType>::WireType")]
+#[serde(into = "<Self as WireType>::WireType")]
+#[wire_type(recurse = 2)]
+// FIXME: No test coverage yet
+///https://github.com/MinaProtocol/mina/blob/aacfe04245d14b3331e89ed76a4b77bec902b290/src/lib/mina_base/coinbase_fee_transfer.ml#L8
+pub struct CoinBaseFeeTransfer {
+    ///
+    pub receiver_pk: PublicKey2,
+    ///
+    pub fee: ExtendedU64_2,
 }
