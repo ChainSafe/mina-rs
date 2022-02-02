@@ -31,6 +31,7 @@ pub mod signed_command;
 pub mod snapp_command;
 pub mod user_command;
 
+pub mod fee_transfer;
 ///
 pub mod snapp_predicate;
 pub mod staged_ledger_diff;

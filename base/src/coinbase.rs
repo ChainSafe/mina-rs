@@ -3,8 +3,9 @@
 
 //! Types and funcions related to the Mina coinbase
 
-use crate::numbers::ExtendedU64_2;
-use mina_crypto::signature::PublicKey2;
+use crate::fee_transfer::FeeTransfer;
+use crate::numbers::Amount;
+use mina_crypto::signature::PublicKey;
 use serde::{Deserialize, Serialize};
 use wire_type::WireType;
 
@@ -37,7 +38,9 @@ impl Default for CoinBase {
 /// https://github.com/MinaProtocol/mina/blob/aacfe04245d14b3331e89ed76a4b77bec902b290/src/lib/mina_base/coinbase.ml#L3
 pub struct CoinBaseFeeTransfer {
     ///
-    pub receiver_pk: PublicKey2,
+    pub receiver: PublicKey,
     ///
-    pub fee: ExtendedU64_2,
+    pub amount: Amount,
+    ///
+    pub fee_transfer: FeeTransfer,
 }
