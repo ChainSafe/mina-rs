@@ -73,6 +73,7 @@ pub struct UserCommandWithStatus {
 #[serde(into = "<Self as WireType>::WireType")]
 #[wire_type(recurse = 2)]
 #[non_exhaustive]
+/// https://github.com/MinaProtocol/mina/blob/aacfe04245d14b3331e89ed76a4b77bec902b290/src/lib/mina_base/user_command.ml#L6
 pub enum UserCommand {
     SignedCommand(SignedCommand),
     Parties(Parties),
@@ -99,6 +100,7 @@ pub struct SignedCommand {
 #[serde(from = "<Self as WireType>::WireType")]
 #[serde(into = "<Self as WireType>::WireType")]
 #[wire_type(recurse = 2)]
+/// https://github.com/MinaProtocol/mina/blob/aacfe04245d14b3331e89ed76a4b77bec902b290/src/lib/mina_base/parties.ml#L7
 pub struct Parties {
     pub fee_payer: Signed,
     pub other_parties: Stable,
@@ -132,6 +134,7 @@ pub struct SignedCommandPayloadCommon {
 #[serde(into = "<Self as WireType>::WireType")]
 #[wire_type(recurse = 2)]
 #[non_exhaustive]
+/// https://github.com/MinaProtocol/mina/blob/aacfe04245d14b3331e89ed76a4b77bec902b290/src/lib/mina_base/signed_command_payload.ml#L200
 pub enum SignedCommandPayloadBody {
     PaymentPayload(PaymentPayload),
     StakeDelegationPayload(StakeDelegation),
@@ -210,6 +213,7 @@ pub enum SignedCommandMemoError {
 #[serde(from = "<Self as WireType>::WireType")]
 #[serde(into = "<Self as WireType>::WireType")]
 #[non_exhaustive]
+/// https://github.com/MinaProtocol/mina/blob/aacfe04245d14b3331e89ed76a4b77bec902b290/src/lib/staged_ledger_diff/staged_ledger_diff.ml#L10
 pub enum CoinBase {
     Zero,
     One(Option<CoinBaseFeeTransfer>),
