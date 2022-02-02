@@ -16,12 +16,11 @@ mod tests {
     use super::{block_path_test, block_path_test_batch};
     use bin_prot::{from_reader, to_writer, Value};
     use mina_crypto::{hash::*, prelude::*, signature::*};
-    use mina_rs_base::coinbase::*;
-    use mina_rs_base::transaction_status::*;
     use mina_rs_base::types::{
         proof_messages::{ProofMessageWithDegreeBound, ProofMessageWithoutDegreeBoundList},
         *,
     };
+    use mina_rs_base::{coinbase::*, signed_command::*, transaction_status::*, user_command::*};
     use pretty_assertions::assert_eq;
     use serde::{Deserialize, Serialize};
     use std::str::FromStr;

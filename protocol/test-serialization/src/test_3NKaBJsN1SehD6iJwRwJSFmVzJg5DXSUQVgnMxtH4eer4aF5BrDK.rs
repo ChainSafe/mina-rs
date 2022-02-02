@@ -5,9 +5,8 @@
 mod tests {
     use anyhow::bail;
     use mina_crypto::prelude::*;
-    use mina_rs_base::coinbase::*;
-    use mina_rs_base::transaction_status::*;
     use mina_rs_base::types::*;
+    use mina_rs_base::{coinbase::*, signed_command::*, transaction_status::*, user_command::*};
     use pretty_assertions::assert_eq;
     use test_fixtures::*;
     use time::macros::*;

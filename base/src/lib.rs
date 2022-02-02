@@ -27,7 +27,10 @@ pub mod party;
 pub mod protocol_state;
 pub mod protocol_state_proof;
 pub mod protocol_version;
+pub mod signed_command;
 pub mod snapp_command;
+pub mod user_command;
+
 ///
 pub mod snapp_predicate;
 pub mod staged_ledger_diff;
