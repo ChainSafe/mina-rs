@@ -12,7 +12,7 @@ use wire_type::WireType;
 #[serde(into = "<Self as WireType>::WireType")]
 #[wire_type(recurse = 2)]
 
-///
+/// https://github.com/MinaProtocol/mina/blob/aacfe04245d14b3331e89ed76a4b77bec902b290/src/lib/mina_base/new_token_payload.ml#L8
 pub struct NewTokenPayload {
     ///
     pub token_owner_pk: PublicKey,
