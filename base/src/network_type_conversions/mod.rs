@@ -31,16 +31,46 @@ impl From<ExternalTransitionV1> for ExternalTransition {
     }
 }
 
+impl From<StagedLedgerDiffTuple> for StagedLedgerDiffTupleV1 {
+    fn from(t: StagedLedgerDiffTuple) -> Self {
+        StagedLedgerDiffTupleV1::new(    
+        	(t.0.0.into(), t.0.1.into())
+        )
+    }
+}
+impl From<StagedLedgerDiffTupleV1> for StagedLedgerDiffTuple {
+    fn from(t: StagedLedgerDiffTupleV1) -> Self {
+        StagedLedgerDiffTuple((t.t.0.into(), t.t.1.into()))
+    }
+}
+
+impl From<StagedLedgerDiff> for StagedLedgerDiffV1 {
+    fn from(t: StagedLedgerDiff) -> Self {
+        StagedLedgerDiffV1::new(    
+            mina_network_types::staged_ledger_diff::StagedLedgerDiff {
+            	diff: t.diff.into()
+            }
+        )
+    }
+}
+impl From<StagedLedgerDiffV1> for StagedLedgerDiff {
+    fn from(t: StagedLedgerDiffV1) -> Self {
+        StagedLedgerDiff {
+        	diff: t.t.diff.into()
+        }
+    }
+}
+
 use mina_network_types::delta_transition_chain_proof::DeltaTransitionChainProof as DeltaTransitionChainProofV1;
 
 impl From<crate::types::DeltaTransitionChainProof> for DeltaTransitionChainProofV1 {
     fn from(t: crate::types::DeltaTransitionChainProof) -> Self {
-        Self(t.0.into(), t.1.into())
+        Self(t.0.into(), t.1.into_iter().map(Into::into).collect())
     }
 }
 impl From<DeltaTransitionChainProofV1> for crate::types::DeltaTransitionChainProof {
     fn from(t: DeltaTransitionChainProofV1) -> Self {
-        Self(t.0.into(), t.1.iter().map(Into::into).collect())
+        Self(t.0.into(), t.1.into_iter().map(Into::into).collect())
     }
 }
 

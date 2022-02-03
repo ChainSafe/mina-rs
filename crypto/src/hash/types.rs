@@ -69,6 +69,11 @@ impl From<HashV1> for StateHash {
         Self(BaseHash(h.t))
     }
 }
+impl From<StateHash> for HashV1 {
+    fn from(h: StateHash) -> Self {
+        Self::new(h.0.0)
+    }
+}
 
 impl Hash for StateHash {
     const PREFIX: &'static HashPrefix = PROTOCOL_STATE;

@@ -20,7 +20,7 @@ pub struct StagedLedgerDiff {
 }
 
 #[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug)]
-pub struct StagedLedgerDiffTuple((StagedLedgerPreDiffTwo, Option<StagedLedgerPreDiffOne>));
+pub struct StagedLedgerDiffTuple(pub(crate) (StagedLedgerPreDiffTwo, Option<StagedLedgerPreDiffOne>));
 
 impl StagedLedgerDiffTuple {
     pub fn diff_two(&self) -> &StagedLedgerPreDiffTwo {
