@@ -1,6 +1,6 @@
-use serde::{Serialize, Deserialize};
-use crate::Deserializer;
 use crate::error::Error;
+use crate::Deserializer;
+use serde::{Deserialize, Serialize};
 
 /// Trait to allow a type to give a size it will serialize to/from
 pub trait BinProtEncodable {
@@ -16,7 +16,7 @@ pub trait BinProtEncodable {
         crate::to_writer(&mut output, &self)?;
         Ok(output)
     }
-    
+
     /// yep
     fn try_decode_binprot<'de>(bytes: impl AsRef<[u8]>) -> Result<Self, Error>
     where

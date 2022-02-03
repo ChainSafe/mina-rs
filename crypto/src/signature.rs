@@ -11,8 +11,8 @@ use crate::{
     impl_bs58_for_binprot,
 };
 use derive_deref::Deref;
-use serde::{Deserialize, Serialize};
 use mina_network_types::v1::PublicKeyV1;
+use serde::{Deserialize, Serialize};
 use versioned::Versioned;
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
@@ -28,17 +28,14 @@ pub struct PublicKey {
     pub poly: CompressedCurvePoint,
 }
 
-
-impl Into<PublicKeyV1> for PublicKey {
-    fn into(self) -> PublicKeyV1 {
-        PublicKeyV1::new(
-            Versioned::new(
-                mina_network_types::signatures::CompressedCurvePoint {
-                    x: self.poly.x,
-                    is_odd: self.poly.is_odd
-                }
-            )
-        )
+impl From<PublicKey> for PublicKeyV1 {
+    fn from(t: PublicKey) -> Self {
+        Self::new(Versioned::new(
+            mina_network_types::signatures::CompressedCurvePoint {
+                x: t.poly.x,
+                is_odd: t.poly.is_odd,
+            },
+        ))
     }
 }
 
@@ -48,11 +45,10 @@ impl From<PublicKeyV1> for PublicKey {
             poly: CompressedCurvePoint {
                 x: t.t.t.x,
                 is_odd: t.t.t.is_odd,
-            }
+            },
         }
     }
 }
-
 
 impl_bs58_for_binprot!(PublicKey, version_bytes::NON_ZERO_CURVE_POINT_COMPRESSED);
 

@@ -8,6 +8,8 @@
 // mod array;
 mod consts;
 mod de;
+/// sd
+pub mod encodable;
 pub mod error;
 pub mod integers;
 #[cfg(feature = "loose_deserialization")]
@@ -16,8 +18,6 @@ mod read_ext;
 mod ser;
 pub mod value;
 mod write_ext;
-/// sd
-pub mod encodable;
 
 // pub use array::OcamlArray;
 pub use de::{from_reader, Deserializer};

@@ -15,8 +15,8 @@ use crate::base58::{version_bytes, Base58Encodable};
 use crate::hash::Hash;
 use crate::impl_bs58;
 use derive_more::From;
+use mina_network_types::v1::{ByteVecV1, HashV1};
 use serde::{Deserialize, Serialize};
-use mina_network_types::v1::{HashV1, ByteVecV1};
 
 pub(crate) type HashBytes = Box<[u8]>;
 
@@ -67,7 +67,7 @@ impl From<HashBytes> for StateHash {
 impl From<HashV1> for StateHash {
     fn from(h: HashV1) -> Self {
         Self(BaseHash(h.t))
-    }    
+    }
 }
 
 impl Hash for StateHash {
@@ -84,11 +84,10 @@ impl_bs58!(LedgerHash, version_bytes::LEDGER_HASH);
 impl From<HashV1> for LedgerHash {
     fn from(h: HashV1) -> Self {
         Self(BaseHash(h.t))
-    }    
+    }
 }
 
 //////////////////////////////////////////////////////////////////////////
-
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct CoinBaseHash(BaseHash);
@@ -98,7 +97,7 @@ impl_bs58!(CoinBaseHash, 12);
 impl From<HashV1> for CoinBaseHash {
     fn from(h: HashV1) -> Self {
         Self(BaseHash(h.t))
-    }    
+    }
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -121,7 +120,7 @@ impl Hash for EpochSeed {
 impl From<HashV1> for EpochSeed {
     fn from(h: HashV1) -> Self {
         Self(BaseHash(h.t))
-    }    
+    }
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -134,7 +133,7 @@ impl_bs58!(SnarkedLedgerHash, version_bytes::LEDGER_HASH);
 impl From<HashV1> for SnarkedLedgerHash {
     fn from(h: HashV1) -> Self {
         Self(BaseHash(h.t))
-    }    
+    }
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -178,7 +177,6 @@ impl AsRef<[u8]> for AuxHash {
 
 //////////////////////////////////////////////////////////////////////////
 
-
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct PendingCoinbaseAuxHash(pub Vec<u8>);
 
@@ -200,7 +198,7 @@ impl From<Vec<u8>> for PendingCoinbaseAuxHash {
 impl From<ByteVecV1> for PendingCoinbaseAuxHash {
     fn from(h: ByteVecV1) -> Self {
         Self(h.t)
-    }    
+    }
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -223,7 +221,7 @@ impl Hash for VrfOutputHash {
 impl From<HashV1> for VrfOutputHash {
     fn from(h: HashV1) -> Self {
         Self(BaseHash(h.t))
-    }    
+    }
 }
 
 //////////////////////////////////////////////////////////////////////////

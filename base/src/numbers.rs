@@ -39,10 +39,7 @@ pub struct Length(pub u32);
 /// Represents a difference between two lengths
 pub struct Delta(pub u32);
 
-#[derive(
-    Clone, Serialize, Deserialize, PartialEq, PartialOrd, Debug, Hash, Copy, Default,
-)]
-
+#[derive(Clone, Serialize, Deserialize, PartialEq, PartialOrd, Debug, Hash, Copy, Default)]
 // FIXME: 255 255 cannot be deserialized to u32, use i32 for now
 // Note: Extended_Uint32 is not defined in bin_prot, but comes from mina
 // Block path: t/staged_ledger_diff/t/diff/t/0/t/t/commands/0/t/data/t/t/t/t/payload/t/t/common/t/t/t/valid_until
@@ -50,16 +47,12 @@ pub struct Delta(pub u32);
 /// This will not be part of the public API once the deserialization refactor is complete
 pub struct ExtendedU32(pub i32);
 
-#[derive(
-    Clone, Serialize, Deserialize, PartialEq, PartialOrd, Debug, Hash, Copy, Default,
-)]
+#[derive(Clone, Serialize, Deserialize, PartialEq, PartialOrd, Debug, Hash, Copy, Default)]
 /// u64 wrapped in 3 version bytes
 /// This will not be part of the public API once the deserialization refactor is complete
 pub struct ExtendedU64_3(pub u64);
 
-#[derive(
-    Clone, Serialize, Deserialize, PartialEq, PartialOrd, Debug, Hash, Copy, Default,
-)]
+#[derive(Clone, Serialize, Deserialize, PartialEq, PartialOrd, Debug, Hash, Copy, Default)]
 
 /// u64 wrapped in 2 version bytes
 /// This will not be part of the public API once the deserialization refactor is complete
@@ -118,6 +111,12 @@ impl std::str::FromStr for Amount {
     }
 }
 
+impl From<mina_network_types::v1::AmountV1> for Amount {
+    fn from(t: mina_network_types::v1::AmountV1) -> Self {
+        Self(t.t.t)
+    }
+}
+
 #[derive(Clone, Serialize, Deserialize, PartialEq, Debug, Hash, Default, From)]
 /// 4 bytes wrapped by a version
 /// Will not form part of the public API when deserialization refactor is complete
@@ -128,15 +127,7 @@ pub struct Hex64(i64);
 pub struct Char(pub u8);
 
 #[derive(
-    Clone,
-    Serialize,
-    Deserialize,
-    PartialEq,
-    Debug,
-    Hash,
-    Default,
-    Deref,
-    derive_more::From,
+    Clone, Serialize, Deserialize, PartialEq, Debug, Hash, Default, Deref, derive_more::From,
 )]
 
 /// A global slot number
@@ -173,6 +164,12 @@ impl BlockTime {
         } else {
             dt + Duration::milliseconds(r)
         }
+    }
+}
+
+impl From<mina_network_types::v1::BlockTimeV1> for BlockTime {
+    fn from(t: mina_network_types::v1::BlockTimeV1) -> Self {
+        Self(t.t.t)
     }
 }
 

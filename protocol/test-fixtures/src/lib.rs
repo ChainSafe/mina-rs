@@ -3,7 +3,7 @@
 
 #![deny(warnings)]
 
-use bin_prot::{BinProtRule, Deserializer, encodable::BinProtEncodable};
+use bin_prot::{encodable::BinProtEncodable, BinProtRule, Deserializer};
 use lazy_static::lazy_static;
 use mina_network_types::v1::ExternalTransitionV1;
 use mina_rs_base::external_transition::ExternalTransition;

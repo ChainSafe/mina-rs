@@ -46,7 +46,7 @@ impl<const N: usize> HexEncodable for Vec<[u8; N]> {
     type Error = hex::FromHexError;
 
     fn to_hex_string(&self) -> String {
-        self.into_iter().map(|i| i.to_hex_string()).collect()
+        self.iter().map(|i| i.to_hex_string()).collect()
     }
 
     fn try_from_hex(s: impl AsRef<[u8]>) -> Result<Self, Self::Error> {
