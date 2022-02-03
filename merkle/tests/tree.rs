@@ -41,14 +41,10 @@ mod tests {
         fn merge(
             items: [&Option<(Self::Hash, MerkleTreeNodeMetadata<2>)>; 2],
         ) -> Option<Self::Hash> {
-            if let Some((left, _)) = items[0] {
-                if let Some((right, _)) = items[1] {
-                    Some(left + right)
-                } else {
-                    Some(*left)
-                }
-            } else {
-                None
+            match (items[0], items[1]) {
+                (Some((left, _)), Some((right, _))) => Some(left + right),
+                (Some((left, _)), None) => Some(*left),
+                _ => None,
             }
         }
     }
