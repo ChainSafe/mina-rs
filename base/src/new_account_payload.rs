@@ -1,7 +1,7 @@
-// Copyright 2020 ChainSafe Systems
+// Copyright 2021 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
-//! Types and funcions related to the Mina new_account_payload
+//! Types and functions related to the Mina new_account_payload
 
 use crate::token_id::TokenId;
 use mina_crypto::signature::PublicKey;

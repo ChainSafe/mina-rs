@@ -1,11 +1,11 @@
-// Copyright 2020 ChainSafe Systems
+// Copyright 2021 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
-//! Types and funcions related to the Mina coinbase
+//! Types and functions related to the Mina coinbase
 
 use crate::fee_transfer::FeeTransfer;
 use crate::numbers::{Amount, ExtendedU64_2};
-use mina_crypto::signature::{PublicKey,PublicKey2};
+use mina_crypto::signature::{PublicKey, PublicKey2};
 use serde::{Deserialize, Serialize};
 use wire_type::WireType;
 

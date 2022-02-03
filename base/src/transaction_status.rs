@@ -1,4 +1,4 @@
-// Copyright 2020 ChainSafe Systems
+// Copyright 2021 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
 //! types and functions related to Mina transaction_status

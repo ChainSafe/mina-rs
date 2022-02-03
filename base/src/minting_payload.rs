@@ -1,7 +1,7 @@
-// Copyright 2020 ChainSafe Systems
+// Copyright 2021 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
-//! Types and funcions related to the Mina minting_payload
+//! Types and functions related to the Mina minting_payload
 
 use crate::numbers::Amount;
 use crate::token_id::TokenId;

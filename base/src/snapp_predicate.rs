@@ -1,4 +1,4 @@
-// Copyright 2020 ChainSafe Systems
+// Copyright 2021 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
 use serde::{Deserialize, Serialize};
@@ -9,5 +9,5 @@ use wire_type::WireType;
 #[serde(into = "<Self as WireType>::WireType")]
 #[wire_type(recurse = 2)]
 
-///
+/// https://github.com/MinaProtocol/mina/blob/aacfe04245d14b3331e89ed76a4b77bec902b290/src/lib/mina_base/snapp_predicate.ml#L529
 pub struct ProtocolState {}

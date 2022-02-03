@@ -1,7 +1,7 @@
-// Copyright 2020 ChainSafe Systems
+// Copyright 2021 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
-//! Types and funcions related to the Mina stake_delegation
+//! Types and functions related to the Mina stake_delegation
 
 use mina_crypto::signature::PublicKey;
 use serde::{Deserialize, Serialize};
