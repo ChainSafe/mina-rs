@@ -12,6 +12,8 @@ publish = false
 bin-prot = {path = "../bin-prot", features = ["loose_deserialization"]}
 mina-crypto = {path = "../../crypto"}
 mina-rs-base = {path = "../../base"}
+mina-serialization-types = {path = "../serialization-types"}
+
 
 anyhow = "1"
 hex = "0.4"
