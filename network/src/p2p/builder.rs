@@ -4,7 +4,6 @@
 use super::*;
 use libp2p::{
     core::{muxing::StreamMuxerBox, transport, upgrade},
-    futures::{AsyncRead, AsyncWrite},
     identity,
     noise::{self, AuthenticKeypair, X25519Spec},
     pnet::PnetConfig,
@@ -12,6 +11,11 @@ use libp2p::{
 };
 use libp2p_mplex::MplexConfig;
 use std::{borrow::Borrow, time::Duration};
+
+/// Type alias for libp2p transport
+pub type P2PTransport = (PeerId, StreamMuxerBox);
+/// Type alias for boxed libp2p transport
+pub type BoxedP2PTransport = transport::Boxed<P2PTransport>;
 
 /// Builds libp2p transport for mina with various configurations
 #[derive(Clone)]
@@ -73,19 +77,34 @@ impl TransportBuilder {
     }
 
     /// Builds libp2p transport
-    pub fn build<TTransport>(
-        self,
-        transport: TTransport,
-    ) -> (transport::Boxed<(PeerId, StreamMuxerBox)>, PeerId)
-    where
-        TTransport: Transport + Sized + Clone + Send + Sync + 'static,
-        <TTransport as Transport>::Output: AsyncRead + AsyncWrite + Send + Unpin + 'static,
-        TTransport::Dial: Send + 'static,
-        TTransport::Listener: Send + 'static,
-        TTransport::ListenerUpgrade: Send + 'static,
-        TTransport::Error: Send + Sync,
-    {
-        (
+    pub fn build(self) -> Result<(BoxedP2PTransport, PeerId), std::io::Error> {
+        let transport = {
+            cfg_if::cfg_if! {
+                if #[cfg(target_arch = "wasm32")] {
+                    use libp2p::wasm_ext;
+
+                    // Note that DNS has been implictly supported in the extended javascript code,
+                    // and TCP is not feasible in browsers
+                    wasm_ext::ExtTransport::new(wasm_ext::ffi::websocket_transport())
+                } else {
+                    // Choose tokio over async-std here for 2 reasons:
+                    //  1. Tokio has better performance as an coroutine scheduler.
+                    //  2. TokioDnsConfig does not propagate async to build function's signature, while DnsConfig does.
+                    // Cons:
+                    //  1. Tokio builds more slowly.
+                    //  2. Tokio's API is slightly more complicated.
+                    //
+                    use libp2p::{dns::TokioDnsConfig as DnsConfig, tcp::TokioTcpConfig as TcpConfig, websocket::WsConfig};
+
+                    let tcp = TcpConfig::new().nodelay(true);
+                    let dns_tcp = DnsConfig::system(tcp)?;
+                    let ws_dns_tcp = WsConfig::new(dns_tcp.clone());
+                    dns_tcp.or_transport(ws_dns_tcp)
+                }
+            }
+        };
+
+        Ok((
             transport
                 .and_then(move |socket, _| self.pnet_config.handshake(socket))
                 .upgrade(upgrade::Version::V1)
@@ -94,7 +113,7 @@ impl TransportBuilder {
                 .timeout(self.timeout)
                 .boxed(),
             self.peer_id,
-        )
+        ))
     }
 }
 
