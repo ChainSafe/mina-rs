@@ -6,8 +6,8 @@
 use bin_prot::{BinProtRule, Deserializer};
 use lazy_static::lazy_static;
 use mina_crypto::prelude::*;
-use mina_serialization_types::v1::ExternalTransitionV1;
 use mina_rs_base::external_transition::ExternalTransition;
+use mina_serialization_types::v1::ExternalTransitionV1;
 use serde::Deserialize;
 use std::{borrow::Borrow, collections::HashMap};
 
