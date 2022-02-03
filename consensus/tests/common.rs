@@ -4,7 +4,7 @@
 #[cfg(test)]
 mod tests {
     use hex::ToHex;
-    use mina_consensus::{common::*, density::ConsensusConstants, error::ConsensusError};
+    use mina_consensus::{common::*, error::ConsensusError};
     use mina_crypto::hash::*;
     use mina_rs_base::types::*;
     use wasm_bindgen_test::*;

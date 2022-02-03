@@ -3,121 +3,111 @@
 
 #[cfg(test)]
 mod tests {
-    use mina_consensus::{checkpoint::*, common::*, error::ConsensusError};
+    use mina_consensus::{
+        common::*,
+        error::ConsensusError,
+        genesis::{Genesis, MAINNET_CONFIG},
+    };
     use mina_crypto::{hash::*, prelude::*};
     use mina_rs_base::types::*;
     use wasm_bindgen_test::*;
 
-    pub fn init_checkpoints(genesis: &mut ProtocolState) -> Result<(), ConsensusError> {
-        genesis.body.consensus_state.staking_epoch_data.seed = EpochSeed::default();
-        genesis
-            .body
-            .consensus_state
-            .staking_epoch_data
-            .start_checkpoint = StateHash::default();
-        genesis
-            .body
-            .consensus_state
-            .staking_epoch_data
-            .lock_checkpoint = StateHash::default();
-        genesis
-            .body
-            .consensus_state
-            .staking_epoch_data
-            .epoch_length
-            .0 = 1;
-        genesis.body.consensus_state.next_epoch_data.seed =
-            EpochSeed::from_base58("2vaRh7FQ5wSzmpFReF9gcRKjv48CcJvHs25aqb3SSZiPgHQBy5Dt")
-                .map_err(|_| ConsensusError::ConsensusStateNotFound)?;
-        genesis
-            .body
-            .consensus_state
-            .next_epoch_data
-            .start_checkpoint = StateHash::default();
-        genesis.body.consensus_state.next_epoch_data.lock_checkpoint =
-            StateHash::from_base58("3NLoKn22eMnyQ7rxh5pxB6vBA3XhSAhhrf7akdqS6HbAKD14Dh1d")
-                .map_err(|_| ConsensusError::ConsensusStateNotFound)?;
-        genesis.body.consensus_state.next_epoch_data.epoch_length.0 = 2;
-        Ok(())
+    fn genesis_consensus_state() -> ProtocolStateChain {
+        let genesis = ExternalTransition::from_genesis_config(&MAINNET_CONFIG);
+        let a = genesis.protocol_state;
+        ProtocolStateChain(vec![a])
     }
 
     #[test]
     #[wasm_bindgen_test]
-    fn test_init_checkpoints() {
-        let mut genesis: ProtocolState = Default::default();
-        init_checkpoints(&mut genesis).unwrap();
-        assert_eq!(
-            genesis
-                .body
-                .consensus_state
-                .staking_epoch_data
-                .start_checkpoint,
-            StateHash::default()
-        );
-        assert_eq!(
-            genesis
-                .body
-                .consensus_state
-                .staking_epoch_data
-                .lock_checkpoint,
-            StateHash::default()
-        );
-        assert_eq!(
-            genesis
-                .body
-                .consensus_state
-                .next_epoch_data
-                .start_checkpoint,
-            StateHash::default()
-        );
-        assert_eq!(
-            genesis.body.consensus_state.next_epoch_data.lock_checkpoint,
-            StateHash::from_base58("3NLoKn22eMnyQ7rxh5pxB6vBA3XhSAhhrf7akdqS6HbAKD14Dh1d").unwrap()
-        );
+    fn short_range_same_chain_same_epoch() {
+        let chain_a = genesis_consensus_state();
+        let chain_b = genesis_consensus_state();
+        assert!(chain_a.is_short_range(&chain_b).unwrap());
     }
 
     #[test]
     #[wasm_bindgen_test]
-    fn test_is_short_range() {
-        let mut genesis: ProtocolState = Default::default();
-        init_checkpoints(&mut genesis).unwrap();
-        let mut c0: ProtocolStateChain = ProtocolStateChain(vec![]);
-        let mut c1: ProtocolStateChain = ProtocolStateChain(vec![]);
-        let mut c3: ProtocolStateChain = ProtocolStateChain(vec![]);
-        let mut b0: ProtocolState = Default::default();
-        b0.body.consensus_state.blockchain_length = Length(0);
-        b0.body.consensus_state.curr_global_slot = GlobalSlot {
-            slot_number: GlobalSlotNumber(0),
-            slots_per_epoch: Length(7140),
-        };
-        let mut b1: ProtocolState = Default::default();
-        b1.body.consensus_state.blockchain_length = Length(1);
-        b1.body.consensus_state.curr_global_slot = GlobalSlot {
-            slot_number: GlobalSlotNumber(1),
-            slots_per_epoch: Length(7140),
-        };
+    #[should_panic]
+    fn short_range_fails_when_chains_in_different_epoch() {
+        let mut chain_a = genesis_consensus_state();
+        let a = &mut chain_a.0[0];
+        a.body.consensus_state.epoch_count = Length(0);
+        a.body.consensus_state.next_epoch_data = EpochData::default();
+        a.body.consensus_state.next_epoch_data.lock_checkpoint =
+            StateHash::from_base58("3NLWRuFB7G8CPkizXnRwpAUcQu5cAS5RTWE5vhWL1XBE47oEJ2kn").unwrap();
+        a.body.consensus_state.next_epoch_data.start_checkpoint =
+            StateHash::from_base58("3NK2tkzqqK5spR2sZ7tujjqPksL45M3UUrcA4WhCkeiPtnugyE2x").unwrap();
+        a.body.consensus_state.staking_epoch_data.lock_checkpoint =
+            StateHash::from_base58("3NK2tkzqqK5spR2sZ7tujjqPksL45M3UUrcA4WhCkeiPtnugyE2x").unwrap();
+        a.body.consensus_state.staking_epoch_data.start_checkpoint =
+            StateHash::from_base58("3NK2tkzqqK5spR2sZ7tujjqPksL45M3UUrcA4WhCkeiPtnugyE2x").unwrap();
+        a.body.consensus_state.curr_global_slot = GlobalSlot::default();
+        a.body.consensus_state.curr_global_slot.slot_number = GlobalSlotNumber(7139);
 
-        c0.push(b0).unwrap();
-        c1.push(b1).unwrap();
-        assert_eq!(is_short_range(&c0, &c1).unwrap(), true);
-        assert_eq!(is_short_range(&c1, &c0).unwrap(), true);
+        let mut chain_b = genesis_consensus_state();
+        let b = &mut chain_b.0[0];
+        // setting states to block at height 5076
+        b.body.consensus_state.epoch_count = Length(1);
+        b.body.consensus_state.next_epoch_data = EpochData::default();
+        b.body.consensus_state.next_epoch_data.lock_checkpoint =
+            StateHash::from_base58("3NKmKfm2RSTfA1w5mNSJRLoyAQgcRhWjH5qdNynchHar4kBmJPbW").unwrap();
+        b.body.consensus_state.next_epoch_data.start_checkpoint =
+            StateHash::from_base58("3NKmKfm2RSTfA1w5mNSJRLoyAQgcRhWjH5qdNynchHar4kBmJPbW").unwrap();
+        b.body.consensus_state.staking_epoch_data.lock_checkpoint =
+            StateHash::from_base58("3NLWRuFB7G8CPkizXnRwpAUcQu5cAS5RTWE5vhWL1XBE47oEJ2kn").unwrap();
+        b.body.consensus_state.staking_epoch_data.start_checkpoint =
+            StateHash::from_base58("3NK2tkzqqK5spR2sZ7tujjqPksL45M3UUrcA4WhCkeiPtnugyE2x").unwrap();
 
-        init_checkpoints(&mut genesis).unwrap();
-        let mut b1: ProtocolState = Default::default();
-        b1.body.consensus_state.blockchain_length = Length(2);
-        b1.body.consensus_state.curr_global_slot = GlobalSlot {
-            slot_number: GlobalSlotNumber(2),
-            slots_per_epoch: Length(7140),
-        };
-        let mut b2: ProtocolState = Default::default();
-        b2.body.consensus_state.blockchain_length = Length(667);
-        b2.body.consensus_state.epoch_count = Length(11);
-        b2.body.consensus_state.curr_global_slot = GlobalSlot {
-            slot_number: GlobalSlotNumber(667),
-            slots_per_epoch: Length(7140),
-        };
-        c3.push(b2).unwrap();
-        assert_eq!(is_short_range(&c3, &c0).unwrap(), false);
-        assert_eq!(is_short_range(&c0, &c3).unwrap(), false);
+        assert!(chain_a.is_short_range(&chain_b).unwrap());
+
+        // Epoch = 0
+
+        // {
+        //     "blockHeight": 5075,
+        //     "creatorAccount": {
+        //       "publicKey": "B62qqhURJQo3CvWC3WFo9LhUhtcaJWLBcJsaA3DXaU2GH5KgXujZiwB"
+        //     },
+        //     "dateTime": "2021-03-31T20:57:00Z",
+        //     "protocolState": {
+        //       "consensusState": {
+        //         "blockHeight": 5075,
+        //         "epochCount": 0,
+        //         "nextEpochData": {
+        //           "lockCheckpoint": "3NLWRuFB7G8CPkizXnRwpAUcQu5cAS5RTWE5vhWL1XBE47oEJ2kn",
+        //           "startCheckpoint": "3NK2tkzqqK5spR2sZ7tujjqPksL45M3UUrcA4WhCkeiPtnugyE2x"
+        //         },
+        //         "stakingEpochData": {
+        //           "lockCheckpoint": "3NK2tkzqqK5spR2sZ7tujjqPksL45M3UUrcA4WhCkeiPtnugyE2x",
+        //           "startCheckpoint": "3NK2tkzqqK5spR2sZ7tujjqPksL45M3UUrcA4WhCkeiPtnugyE2x"
+        //         }
+        //       }
+        //     },
+        //     "stateHash": "3NKmKfm2RSTfA1w5mNSJRLoyAQgcRhWjH5qdNynchHar4kBmJPbW"
+        //   },
+
+        // Epoch = 1
+        //   {
+        //     "blockHeight": 5076,
+        //     "creatorAccount": {
+        //       "publicKey": "B62qqhURJQo3CvWC3WFo9LhUhtcaJWLBcJsaA3DXaU2GH5KgXujZiwB"
+        //     },
+        //     "dateTime": "2021-03-31T21:00:00Z",
+        //     "protocolState": {
+        //       "consensusState": {
+        //         "blockHeight": 5076,
+        //         "epochCount": 1,
+        //         "nextEpochData": {
+        //           "lockCheckpoint": "3NKmKfm2RSTfA1w5mNSJRLoyAQgcRhWjH5qdNynchHar4kBmJPbW",
+        //           "startCheckpoint": "3NKmKfm2RSTfA1w5mNSJRLoyAQgcRhWjH5qdNynchHar4kBmJPbW"
+        //         },
+        //         "stakingEpochData": {
+        //           "lockCheckpoint": "3NLWRuFB7G8CPkizXnRwpAUcQu5cAS5RTWE5vhWL1XBE47oEJ2kn",
+        //           "startCheckpoint": "3NK2tkzqqK5spR2sZ7tujjqPksL45M3UUrcA4WhCkeiPtnugyE2x"
+        //         }
+        //       }
+        //     },
+        //     "stateHash": "3NLC8CV9kZYFkXnUipJzkkHvT9RmsttSUNpwfwqwWCfbP9bQmwNJ"
+        //   },
     }
 }

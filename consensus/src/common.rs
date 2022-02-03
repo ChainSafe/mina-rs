@@ -3,15 +3,46 @@
 
 //! Implements common APIs for the blockchain in the context of consensus.
 
+use crate::density::relative_min_window_density;
+use crate::error::ConsensusError;
 use hex::ToHex;
 use mina_crypto::hash::{Hashable, StateHash};
 use mina_rs_base::consensus_state::ConsensusState;
 use mina_rs_base::global_slot::GlobalSlot;
 use mina_rs_base::protocol_state::{Header, ProtocolState};
+use mina_rs_base::types::{BlockTime, Length};
 
-use crate::checkpoint::is_short_range;
-use crate::density::{relative_min_window_density, ConsensusConstants};
-use crate::error::ConsensusError;
+// TODO: derive from protocol constants
+pub struct ConsensusConstants {
+    /// Point of finality (number of confirmations)
+    pub k: Length,
+    /// Number of slots per epoch
+    pub slots_per_epoch: Length,
+    /// No of slots in a sub-window = 7
+    pub slots_per_sub_window: Length,
+    /// Maximum permissable delay of packets (in slots after the current)
+    pub delta: Length,
+    /// Timestamp of genesis block in unixtime
+    pub genesis_state_timestamp: BlockTime,
+    /// Sub windows within a window
+    pub sub_windows_per_window: Length,
+    /// Number of slots before minimum density is used in chain selection
+    pub grace_period_end: Length,
+}
+
+impl ConsensusConstants {
+    pub const fn from_genesis() -> Self {
+        Self {
+            k: Length(290),
+            slots_per_epoch: Length(7140),
+            slots_per_sub_window: Length(7),
+            delta: Length(0),
+            genesis_state_timestamp: BlockTime(1615939200000),
+            sub_windows_per_window: Length(11),
+            grace_period_end: Length(1440),
+        }
+    }
+}
 
 #[derive(Debug, Default)]
 // TODO: replace vec element with ExternalTransition
@@ -106,6 +137,7 @@ impl Chain<ProtocolState> for ProtocolStateChain {
 
 pub trait Consensus {
     type Chain;
+    const CONSTANTS: ConsensusConstants;
     fn select_secure_chain<'a>(
         &'a self,
         candidates: &'a [Self::Chain],
@@ -116,17 +148,21 @@ pub trait Consensus {
         &'a self,
         candidate: &'a ProtocolStateChain,
     ) -> Result<&'a ProtocolStateChain, ConsensusError>;
+
+    fn is_short_range<'a>(&'a self, candidate: &ProtocolStateChain)
+        -> Result<bool, ConsensusError>;
 }
 
 impl Consensus for ProtocolStateChain {
     type Chain = ProtocolStateChain;
+    const CONSTANTS: ConsensusConstants = ConsensusConstants::from_genesis();
     fn select_secure_chain<'a>(
         &'a self,
         candidates: &'a [Self::Chain],
         constants: &ConsensusConstants,
     ) -> Result<&'a ProtocolStateChain, ConsensusError> {
         let tip = candidates.iter().fold(Ok(self), |tip, c| {
-            if is_short_range(self, c)? {
+            if self.is_short_range(c)? {
                 // short-range fork, select longer chain
                 self.select_longer_chain(c)
             } else {
@@ -138,7 +174,7 @@ impl Consensus for ProtocolStateChain {
                     .consensus_state()
                     .ok_or(ConsensusError::ConsensusStateNotFound)?;
                 let tip_density =
-                    relative_min_window_density(tip_state, candidate_state, constants)?;
+                    relative_min_window_density(tip_state, candidate_state, &Self::CONSTANTS)?;
                 let candidate_density =
                     relative_min_window_density(candidate_state, tip_state, constants)?;
                 match candidate_density.cmp(&tip_density) {
@@ -178,5 +214,40 @@ impl Consensus for ProtocolStateChain {
         }
 
         Ok(self)
+    }
+
+    fn is_short_range<'a>(
+        &'a self,
+        candidate: &ProtocolStateChain,
+    ) -> Result<bool, ConsensusError> {
+        let s0 = &self
+            .consensus_state()
+            .ok_or(ConsensusError::ConsensusStateNotFound)?;
+        let s1 = &candidate
+            .consensus_state()
+            .ok_or(ConsensusError::ConsensusStateNotFound)?;
+        let s0_lock_checkpoint = &s0.staking_epoch_data.lock_checkpoint;
+        let s1_lock_checkpoint = &s1.staking_epoch_data.lock_checkpoint;
+        let s1_next_epoch_lock_checkpoint = &s1.next_epoch_data.lock_checkpoint;
+
+        let check = |s0_lock_checkpoint, s1_next_epoch_lock_checkpoint| {
+            if s0.epoch_count.0 == s1.epoch_count.0 + 1
+                && candidate.epoch_slot() >= Some(Self::CONSTANTS.slots_per_epoch.0 * 2 / 3)
+            {
+                // S0 is one epoch ahead of S1 and S1 is not in the seed update range
+                s0_lock_checkpoint == s1_next_epoch_lock_checkpoint
+            } else {
+                false
+            }
+        };
+
+        if s0.epoch_count == s1.epoch_count {
+            // Simple case: blocks have same previous epoch, so compare previous epochs' lock_checkpoints
+            Ok(s0_lock_checkpoint == s1_lock_checkpoint)
+        } else {
+            // Check for previous epoch case using both orientations
+            Ok(check(s0_lock_checkpoint, s1_next_epoch_lock_checkpoint)
+                || check(s1_next_epoch_lock_checkpoint, s0_lock_checkpoint))
+        }
     }
 }

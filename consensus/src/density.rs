@@ -4,42 +4,10 @@
 //! This module implements window density APIs to aid in long range fork
 //! selection rule during chain selection in the mina consensus algorithm.
 
+use crate::common::ConsensusConstants;
 use crate::error::ConsensusError;
 use mina_rs_base::consensus_state::ConsensusState;
-use mina_rs_base::numbers::BlockTime;
 use mina_rs_base::numbers::Length;
-
-// TODO: derive from protocol constants
-pub struct ConsensusConstants {
-    /// Point of finality (number of confirmations)
-    pub k: Length,
-    /// Number of slots per epoch
-    pub slots_per_epoch: Length,
-    /// No of slots in a sub-window = 7
-    pub slots_per_sub_window: Length,
-    /// Maximum permissable delay of packets (in slots after the current)
-    pub delta: Length,
-    /// Timestamp of genesis block in unixtime
-    pub genesis_state_timestamp: BlockTime,
-    /// Sub windows within a window
-    pub sub_windows_per_window: Length,
-    /// Number of slots before minimum density is used in chain selection
-    pub grace_period_end: Length,
-}
-
-impl ConsensusConstants {
-    pub fn from_genesis() -> Self {
-        Self {
-            k: Length(290),
-            slots_per_epoch: 7140.into(),
-            slots_per_sub_window: 7.into(),
-            delta: 0.into(),
-            genesis_state_timestamp: BlockTime(1615939200000),
-            sub_windows_per_window: 11.into(),
-            grace_period_end: Length(1440),
-        }
-    }
-}
 
 fn min(a: u32, b: u32) -> u32 {
     a.min(b)
@@ -110,7 +78,7 @@ mod tests {
     };
     use wasm_bindgen_test::*;
 
-    use crate::density::ConsensusConstants;
+    use crate::common::ConsensusConstants;
 
     use super::relative_min_window_density;
 
