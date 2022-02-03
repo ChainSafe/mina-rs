@@ -42,8 +42,8 @@ mod tests {
             items: [&Option<(Self::Hash, MerkleTreeNodeMetadata<2>)>; 2],
         ) -> Option<Self::Hash> {
             match (items[0], items[1]) {
-                (Some((left, _)), Some((right, _))) => Some(left+right),
-                (Some((left, _)), None)) => Some(*left * 2),
+                (Some((left, _)), Some((right, _))) => Some(left + right),
+                (Some((left, _)), None) => Some(*left * 2),
                 _ => None,
             }
         }
