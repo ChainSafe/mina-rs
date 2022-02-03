@@ -111,8 +111,8 @@ impl std::str::FromStr for Amount {
     }
 }
 
-impl From<mina_network_types::v1::AmountV1> for Amount {
-    fn from(t: mina_network_types::v1::AmountV1) -> Self {
+impl From<mina_serialization_types::v1::AmountV1> for Amount {
+    fn from(t: mina_serialization_types::v1::AmountV1) -> Self {
         Self(t.t.t)
     }
 }
@@ -167,8 +167,8 @@ impl BlockTime {
     }
 }
 
-impl From<mina_network_types::v1::BlockTimeV1> for BlockTime {
-    fn from(t: mina_network_types::v1::BlockTimeV1) -> Self {
+impl From<mina_serialization_types::v1::BlockTimeV1> for BlockTime {
+    fn from(t: mina_serialization_types::v1::BlockTimeV1) -> Self {
         Self(t.t.t)
     }
 }

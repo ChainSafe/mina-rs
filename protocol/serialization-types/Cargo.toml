@@ -1,6 +1,6 @@
 [package]
 authors = ["ChainSafe Systems <info@chainsafe.io>"]
-name = "mina-network-types"
+name = "mina-serialization-types"
 version = "0.1.0"
 
 edition = "2021"

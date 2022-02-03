@@ -1,12 +1,12 @@
 use versioned::Versioned;
 use crate::types::*;
-use mina_network_types::v1::*;
+use mina_serialization_types::v1::*;
 
 
 impl From<ExternalTransition> for ExternalTransitionV1 {
     fn from(t: ExternalTransition) -> Self {
         ExternalTransitionV1(Versioned::new(
-            mina_network_types::external_transition::ExternalTransition{
+            mina_serialization_types::external_transition::ExternalTransition{
                 protocol_state: t.protocol_state.into(),
                 protocol_state_proof: t.protocol_state_proof.into(),
                 staged_ledger_diff: t.staged_ledger_diff.into(),
@@ -47,7 +47,7 @@ impl From<StagedLedgerDiffTupleV1> for StagedLedgerDiffTuple {
 impl From<StagedLedgerDiff> for StagedLedgerDiffV1 {
     fn from(t: StagedLedgerDiff) -> Self {
         StagedLedgerDiffV1::new(    
-            mina_network_types::staged_ledger_diff::StagedLedgerDiff {
+            mina_serialization_types::staged_ledger_diff::StagedLedgerDiff {
             	diff: t.diff.into()
             }
         )
@@ -61,7 +61,7 @@ impl From<StagedLedgerDiffV1> for StagedLedgerDiff {
     }
 }
 
-use mina_network_types::delta_transition_chain_proof::DeltaTransitionChainProof as DeltaTransitionChainProofV1;
+use mina_serialization_types::delta_transition_chain_proof::DeltaTransitionChainProof as DeltaTransitionChainProofV1;
 
 impl From<crate::types::DeltaTransitionChainProof> for DeltaTransitionChainProofV1 {
     fn from(t: crate::types::DeltaTransitionChainProof) -> Self {
@@ -77,7 +77,7 @@ impl From<DeltaTransitionChainProofV1> for crate::types::DeltaTransitionChainPro
 impl From<ProtocolVersion> for ProtocolVersionV1 {
     fn from(t: ProtocolVersion) -> Self {
         ProtocolVersionV1::new(    
-            mina_network_types::protocol_version::ProtocolVersion {
+            mina_serialization_types::protocol_version::ProtocolVersion {
             	major: t.major,
             	minor: t.minor,
             	patch: t.patch,

@@ -15,7 +15,7 @@ use crate::base58::{version_bytes, Base58Encodable};
 use crate::hash::Hash;
 use crate::impl_bs58;
 use derive_more::From;
-use mina_network_types::v1::{ByteVecV1, HashV1};
+use mina_serialization_types::v1::{ByteVecV1, HashV1};
 use serde::{Deserialize, Serialize};
 
 pub(crate) type HashBytes = Box<[u8]>;

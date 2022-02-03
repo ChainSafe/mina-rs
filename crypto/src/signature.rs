@@ -11,7 +11,7 @@ use crate::{
     impl_bs58_for_binprot,
 };
 use derive_deref::Deref;
-use mina_network_types::v1::PublicKeyV1;
+use mina_serialization_types::v1::PublicKeyV1;
 use serde::{Deserialize, Serialize};
 use versioned::Versioned;
 
@@ -31,7 +31,7 @@ pub struct PublicKey {
 impl From<PublicKey> for PublicKeyV1 {
     fn from(t: PublicKey) -> Self {
         Self::new(Versioned::new(
-            mina_network_types::signatures::CompressedCurvePoint {
+            mina_serialization_types::signatures::CompressedCurvePoint {
                 x: t.poly.x,
                 is_odd: t.poly.is_odd,
             },

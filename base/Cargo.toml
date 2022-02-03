@@ -9,7 +9,7 @@ license = "Apache-2.0"
 [dependencies]
 mina-crypto = {path = "../crypto"}
 bin-prot = {path = "../protocol/bin-prot"}
-mina-network-types = {path = "../protocol/network-types"}
+mina-serialization-types = {path = "../protocol/serialization-types"}
 versioned = {path = "../protocol/versioned"}
 
 base64 = "0.13"
