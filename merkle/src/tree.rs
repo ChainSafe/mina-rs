@@ -18,5 +18,5 @@ pub trait MerkleTree<const DEGREE: usize> {
     /// Adds a new leaf
     fn add(&mut self, item: Self::Item);
     /// Adds a batch of leaves in the give order
-    fn add_batch(&mut self, items: Vec<Self::Item>);
+    fn add_batch(&mut self, items: impl IntoIterator<Item = Self::Item>);
 }

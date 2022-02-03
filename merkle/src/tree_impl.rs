@@ -113,8 +113,13 @@ where
         self.calculate_hash_if_needed(0).map(|(hash, _)| hash)
     }
 
-    fn add_batch(&mut self, items: Vec<Self::Item>) {
-        let new_leaf_count = self.leafs.len() + items.len();
+    fn add_batch(&mut self, items: impl IntoIterator<Item = Self::Item>) {
+        let mut leaves: Vec<_> = items
+            .into_iter()
+            .enumerate()
+            .map(|(i, item)| (THasher::hash(&item, MerkleTreeNodeMetadata::new(i)), item))
+            .collect();
+        let new_leaf_count = self.leafs.len() + leaves.len();
         let new_depth = calculate_depth(new_leaf_count);
         if new_depth != self.depth {
             let new_node_count = calculate_node_count(new_depth);
@@ -122,17 +127,11 @@ where
             self.nodes = vec![None; new_node_count];
         } else {
             let start = self.nodes.len() + self.leafs.len();
-            for i in start..(start + items.len()) {
+            for i in start..(start + leaves.len()) {
                 self.clear_dirty_hashes(i);
             }
         }
-        for leaf in items
-            .into_iter()
-            .enumerate()
-            .map(|(i, item)| (THasher::hash(&item, MerkleTreeNodeMetadata::new(i)), item))
-        {
-            self.leafs.push(leaf);
-        }
+        self.leafs.append(&mut leaves);
     }
 
     fn add(&mut self, item: Self::Item) {
