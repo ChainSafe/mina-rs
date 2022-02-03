@@ -1,4 +1,4 @@
-// Copyright 2020 ChainSafe Systems
+// Copyright 2021 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
 //! Types and funcions related to the Mina snapp_command
@@ -11,6 +11,8 @@ use wire_type::WireType;
 #[serde(into = "<Self as WireType>::WireType")]
 #[wire_type(recurse = 2)]
 
-///
+
 // FIXME: No test coverage yet
+/// https://github.com/MinaProtocol/mina/blob/aacfe04245d14b3331e89ed76a4b77bec902b290/src/lib/mina_base/snapp_command.ml
+/// snapp_command is a very complicated data structure in Ocaml can we split this part out to another PR?
 pub struct SnappCommand {}
