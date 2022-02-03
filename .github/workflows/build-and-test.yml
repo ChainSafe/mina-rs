@@ -8,7 +8,7 @@ name: CI
 jobs:
   checks:
     runs-on: ubuntu-latest
-    steps:      
+    steps:
       - uses: actions/checkout@v2
       - run: cat .github/cargo-config > $HOME/.cargo/config
       - uses: actions/cache@v2
@@ -43,7 +43,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - run: cat .github/cargo-config > $HOME/.cargo/config      
+      - run: cat .github/cargo-config > $HOME/.cargo/config
       - uses: actions-rs/toolchain@v1
         with:
           profile: minimal
@@ -66,16 +66,16 @@ jobs:
           key: ${{ runner.os }}-benchmark
       - uses: benchmark-action/github-action-benchmark@v1
         with:
-            tool: cargo
-            output-file-path: bencher.log
-            external-data-json-path: ./.cache/benchmark-data.json
-            alert-threshold: 200%
-            fail-threshold: 400%
-            auto-push: false
-            # GitHub API token needs to be given to enable comment-on-alert feature.
-            github-token: ${{ secrets.GITHUB_TOKEN }}
-            comment-on-alert: true
-            # fail-on-alert: true
+          tool: cargo
+          output-file-path: bencher.log
+          external-data-json-path: ./.cache/benchmark-data.json
+          alert-threshold: 200%
+          fail-threshold: 400%
+          auto-push: false
+          # GitHub API token needs to be given to enable comment-on-alert feature.
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          comment-on-alert: true
+          # fail-on-alert: true
       - run: cat ./.cache/benchmark-data.json
       - run: cargo bench --all-features --manifest-path apps/Cargo.toml
       - run: cargo doc --no-deps --release --all-features
@@ -110,7 +110,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - run: cat .github/cargo-config > $HOME/.cargo/config      
+      - run: cat .github/cargo-config > $HOME/.cargo/config
       - uses: actions-rs/toolchain@v1
         with:
           profile: minimal
@@ -139,15 +139,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - run: cat .github/cargo-config > $HOME/.cargo/config      
+      - run: cat .github/cargo-config > $HOME/.cargo/config
       - uses: actions-rs/toolchain@v1
         with:
           profile: minimal
-          # Pin rust toolchain to nightly-2022-01-14 until https://github.com/taiki-e/cargo-llvm-cov/issues/128 
-          # is resolved
-          toolchain: nightly-2022-01-14
+          toolchain: nightly
           override: true
-          components: llvm-tools-preview      
+          components: llvm-tools-preview
       - uses: taiki-e/install-action@cargo-llvm-cov
       - run: cargo llvm-cov --all-features --lcov --output-path lcov.info
       - uses: actions/upload-artifact@v2
