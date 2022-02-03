@@ -10,9 +10,7 @@ use wire_type::WireType;
 #[serde(from = "<Self as WireType>::WireType")]
 #[serde(into = "<Self as WireType>::WireType")]
 #[wire_type(recurse = 2)]
-
-
 // FIXME: No test coverage yet
 /// https://github.com/MinaProtocol/mina/blob/aacfe04245d14b3331e89ed76a4b77bec902b290/src/lib/mina_base/snapp_command.ml
-/// snapp_command is a very complicated data structure in Ocaml can we split this part out to another PR?
+/// snapp_command are very complicated data structures in Ocaml can we split this part out to another PR?
 pub struct SnappCommand {}
