@@ -6,7 +6,8 @@ const PADDING_CHAR: u8 = b'*';
 
 pub type HashPrefix = [u8; PREFIX_BYTE_LEN];
 
-/// const function
+/// const function to create padded prefix strings with fixed length
+/// that is being used in various of algorithms at compile time
 const fn create(prefix: &[u8]) -> HashPrefix {
     let mut padded_prefix = [PADDING_CHAR; PREFIX_BYTE_LEN];
     let mut i = 0;
