@@ -88,7 +88,7 @@ impl TransportBuilder {
                     wasm_ext::ExtTransport::new(wasm_ext::ffi::websocket_transport())
                 } else {
                     // Choose tokio over async-std here for 2 reasons:
-                    //  1. Tokio has better performance as an coroutine scehduler.
+                    //  1. Tokio has better performance as an coroutine scheduler.
                     //  2. TokioDnsConfig does not propagate async to build function's signature, while DnsConfig does.
                     // Cons:
                     //  1. Tokio builds more slowly.
