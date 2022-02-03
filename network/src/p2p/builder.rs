@@ -12,6 +12,11 @@ use libp2p::{
 use libp2p_mplex::MplexConfig;
 use std::{borrow::Borrow, time::Duration};
 
+/// Type alias for libp2p transport
+pub type P2PTransport = (PeerId, StreamMuxerBox);
+/// Type alias for boxed libp2p transport
+pub type BoxedP2PTransport = transport::Boxed<P2PTransport>;
+
 /// Builds libp2p transport for mina with various configurations
 #[derive(Clone)]
 pub struct TransportBuilder {
@@ -72,9 +77,7 @@ impl TransportBuilder {
     }
 
     /// Builds libp2p transport
-    pub fn build(
-        self,
-    ) -> Result<(transport::Boxed<(PeerId, StreamMuxerBox)>, PeerId), std::io::Error> {
+    pub fn build(self) -> Result<(BoxedP2PTransport, PeerId), std::io::Error> {
         let transport = {
             cfg_if::cfg_if! {
                 if #[cfg(target_arch = "wasm32")] {

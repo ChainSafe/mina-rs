@@ -20,7 +20,7 @@ libp2p-mplex = {git = "https://github.com/libp2p/rust-libp2p", version = "0.31",
 
 [dev-dependencies]
 anyhow = "1"
-tokio = {version = "1.15", features = ["rt", "macros"]}
+tokio = {version = "1.16", features = ["rt", "macros"]}
 
 # To list all wasm targets, use command 'rustc --print target-list | grep wasm'
 [target.'cfg(target_arch = "wasm32")'.dependencies]

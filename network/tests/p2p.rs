@@ -74,8 +74,8 @@ pub mod tests {
                     success = true;
                     break;
                 }
-                _ => {
-                    println!("Other");
+                e => {
+                    println!("Other: {:?}", e);
                     break;
                 }
             }
