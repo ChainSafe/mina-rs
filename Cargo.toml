@@ -11,7 +11,7 @@ members = [
   "protocol/wire-type-derive",
   "protocol/test-fixtures",
   "protocol/test-serialization",
-  "protocol/network-types",
+  "protocol/serialization-types",
   "protocol/versioned",
 ]
 # This is still needed for virtual workspaces 
