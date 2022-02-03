@@ -1,6 +1,8 @@
 // Copyright 2021 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
+use crate::epoch_data::EpochData;
+use crate::numbers::Amount;
 use serde::{Deserialize, Serialize};
 use wire_type::WireType;
 
@@ -11,4 +13,10 @@ use wire_type::WireType;
 
 /// https://github.com/MinaProtocol/mina/blob/aacfe04245d14b3331e89ed76a4b77bec902b290/src/lib/mina_base/snapp_predicate.ml#L529
 ///
-pub struct ProtocolState {}
+pub struct ProtocolState {
+    ///  TODO: Not sure if this should be frozen ledger hash or not
+    ///
+    pub currency: Amount,
+    ///
+    pub data: EpochData,
+}
