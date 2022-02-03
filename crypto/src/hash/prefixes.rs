@@ -6,14 +6,15 @@ const PADDING_CHAR: u8 = b'*';
 
 pub type HashPrefix = [u8; PREFIX_BYTE_LEN];
 
-const fn create(s: &[u8]) -> HashPrefix {
-    let mut o = [PADDING_CHAR; PREFIX_BYTE_LEN];
+/// const function
+const fn create(prefix: &[u8]) -> HashPrefix {
+    let mut padded_prefix = [PADDING_CHAR; PREFIX_BYTE_LEN];
     let mut i = 0;
-    while i < PREFIX_BYTE_LEN && i < s.len() {
-        o[i] = s[i];
+    while i < PREFIX_BYTE_LEN && i < prefix.len() {
+        padded_prefix[i] = prefix[i];
         i += 1;
     }
-    o
+    padded_prefix
 }
 
 pub const PROTOCOL_STATE: &HashPrefix = &create(b"CodaProtoState");
