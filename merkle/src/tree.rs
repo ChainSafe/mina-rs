@@ -1,7 +1,7 @@
 // Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
-/// Trait for implementing general binary merkle tree
+/// Trait for implementing general n-degree merkle tree
 pub trait MerkleTree<const DEGREE: usize> {
     /// Type of the leaf data
     type Item;
@@ -15,8 +15,8 @@ pub trait MerkleTree<const DEGREE: usize> {
     /// Root hash, lazy-evaluated
     fn root(&mut self) -> Option<Self::Hash>;
 
-    /// Add a new leaf
+    /// Adds a new leaf
     fn add(&mut self, item: Self::Item);
-    /// Add a batch of leaves in the give order
+    /// Adds a batch of leaves in the give order
     fn add_batch(&mut self, items: Vec<Self::Item>);
 }

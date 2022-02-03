@@ -11,7 +11,7 @@
 // let my_merge a b =
 //   match a with
 //   | None -> None
-//   | Some a -> ( match b with None -> Some a | Some b -> Some (a + b))
+//   | Some a -> ( match b with None -> Some (a * 2) | Some b -> Some (a + b))
 
 // let create_tree n =
 //   let tree = create ~hash:my_hash ~merge:my_merge 0 in
@@ -45,7 +45,7 @@ mod tests {
                 if let Some((right, _)) = items[1] {
                     Some(left + right)
                 } else {
-                    Some(*left)
+                    Some(*left * 2)
                 }
             } else {
                 None
@@ -66,17 +66,17 @@ mod tests {
 
     #[test]
     fn mina_merkle_tree_tests_10() {
-        test_mina_merkle_tree(10, 45, 4);
+        test_mina_merkle_tree(10, 96, 4);
     }
 
     #[test]
     fn mina_merkle_tree_tests_111() {
-        test_mina_merkle_tree(111, 6105, 7);
+        test_mina_merkle_tree(111, 7870, 7);
     }
 
     #[test]
     fn mina_merkle_tree_tests_127() {
-        test_mina_merkle_tree(127, 8001, 7);
+        test_mina_merkle_tree(127, 8127, 7);
     }
 
     #[test]
@@ -86,12 +86,12 @@ mod tests {
 
     #[test]
     fn mina_merkle_tree_tests_129() {
-        test_mina_merkle_tree(129, 8256, 8);
+        test_mina_merkle_tree(129, 24512, 8);
     }
 
     #[test]
     fn mina_merkle_tree_tests_188() {
-        test_mina_merkle_tree(188, 17578, 8);
+        test_mina_merkle_tree(188, 28512, 8);
     }
 
     fn test_mina_merkle_tree(n: usize, expected_root_hash: i64, expected_depth: u32) {
@@ -108,13 +108,13 @@ mod tests {
     fn mina_merkle_tree_expansion_tests() {
         let mut tree = Default::default();
         test_expand_mina_merkle_tree(&mut tree, 1, 0, 0);
-        test_expand_mina_merkle_tree(&mut tree, 9, 36, 4);
-        test_expand_mina_merkle_tree(&mut tree, 10, 45, 4);
-        test_expand_mina_merkle_tree(&mut tree, 111, 6105, 7);
-        test_expand_mina_merkle_tree(&mut tree, 127, 8001, 7);
+        test_expand_mina_merkle_tree(&mut tree, 9, 92, 4);
+        test_expand_mina_merkle_tree(&mut tree, 10, 96, 4);
+        test_expand_mina_merkle_tree(&mut tree, 111, 7870, 7);
+        test_expand_mina_merkle_tree(&mut tree, 127, 8127, 7);
         test_expand_mina_merkle_tree(&mut tree, 128, 8128, 7);
-        test_expand_mina_merkle_tree(&mut tree, 129, 8256, 8);
-        test_expand_mina_merkle_tree(&mut tree, 188, 17578, 8);
+        test_expand_mina_merkle_tree(&mut tree, 129, 24512, 8);
+        test_expand_mina_merkle_tree(&mut tree, 188, 28512, 8);
     }
 
     fn test_expand_mina_merkle_tree(
