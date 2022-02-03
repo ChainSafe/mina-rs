@@ -15,9 +15,9 @@ use wire_type::WireType;
 #[wire_type(recurse = 2)]
 /// https://github.com/MinaProtocol/mina/blob/aacfe04245d14b3331e89ed76a4b77bec902b290/src/lib/mina_base/fee_transfer.ml#L9
 pub struct FeeTransfer {
-    ///
+    /// The public key of the intended recipient
     pub receiver_pk: PublicKey,
-    ///
+    /// The fee to be paid to the network to process the transaction
     pub fee: Amount,
     ///
     pub fee_token: TokenId,

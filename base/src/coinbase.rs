@@ -36,9 +36,9 @@ impl Default for CoinBase {
 #[wire_type(recurse = 2)]
 /// https://github.com/MinaProtocol/mina/blob/aacfe04245d14b3331e89ed76a4b77bec902b290/src/lib/mina_base/coinbase.ml#L9
 pub struct CoinBaseV1 {
-    ///
+    /// The public key of the intended recipient
     pub receiver: PublicKey,
-    ///
+    /// The amount of mina you are sending
     pub amount: Amount,
     ///
     pub fee_transfer: FeeTransfer,
@@ -51,8 +51,8 @@ pub struct CoinBaseV1 {
 // FIXME: No test coverage yet
 ///https://github.com/MinaProtocol/mina/blob/aacfe04245d14b3331e89ed76a4b77bec902b290/src/lib/mina_base/coinbase_fee_transfer.ml#L8
 pub struct CoinBaseFeeTransfer {
-    ///
+    /// The public key of the intended recipient
     pub receiver_pk: PublicKey2,
-    ///
+    /// The fee to be paid to the network to process the transaction
     pub fee: ExtendedU64_2,
 }
