@@ -4,6 +4,8 @@
 //! Delta transition chain proof structures and functions
 
 use mina_crypto::hash::StateHash;
+use serde::{Serialize, Deserialize};
 
 /// Proof that the block was produced within the allotted slot time
-pub type DeltaTransitionChainProof = (StateHash, Vec<StateHash>);
+#[derive(Debug, Serialize, Deserialize, PartialEq)]
+pub struct DeltaTransitionChainProof(pub StateHash, pub Vec<StateHash>);

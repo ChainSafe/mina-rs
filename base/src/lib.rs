@@ -24,6 +24,7 @@ pub mod protocol_version;
 pub mod staged_ledger_diff;
 pub mod token_id;
 pub mod verification_key;
+mod network_type_conversions;
 
 /// Re-export all the public types under this module for convenience
 pub mod types {

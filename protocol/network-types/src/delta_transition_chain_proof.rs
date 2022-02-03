@@ -4,6 +4,8 @@
 //! Delta transition chain proof structures and functions
 
 use crate::v1::HashV1;
+use serde::{Serialize, Deserialize};
 
 /// Proof that the block was produced within the allotted slot time
-pub type DeltaTransitionChainProof = (HashV1, Vec<HashV1>);
+#[derive(Debug, Serialize, Deserialize, PartialEq)]
+pub struct DeltaTransitionChainProof(pub HashV1, pub Vec<HashV1>);
