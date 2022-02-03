@@ -15,12 +15,12 @@ use wire_type::WireType;
 
 /// https://github.com/MinaProtocol/mina/blob/aacfe04245d14b3331e89ed76a4b77bec902b290/src/lib/mina_base/new_account_payload.ml
 pub struct NewAccountPayload {
-    ///
+    /// Token is implemented as ERC20 smart contract
     pub token_id: TokenId,
-    ///
+    /// The public key of the token_owner
     pub token_owner_pk: PublicKey,
-    ///
+    /// The public key of the intended recipient
     pub receiver_pk: PublicKey,
-    ///
+    /// The account has been disabled
     pub account_disabled: bool,
 }

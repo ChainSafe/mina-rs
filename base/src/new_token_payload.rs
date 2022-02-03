@@ -14,8 +14,8 @@ use wire_type::WireType;
 
 /// https://github.com/MinaProtocol/mina/blob/aacfe04245d14b3331e89ed76a4b77bec902b290/src/lib/mina_base/new_token_payload.ml#L8
 pub struct NewTokenPayload {
-    ///
+    /// The public key of the token_owner
     pub token_owner_pk: PublicKey,
-    ///
+    /// Disable new account
     pub disable_new_accounts: bool,
 }

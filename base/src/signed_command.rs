@@ -45,7 +45,7 @@ pub struct SignedCommandPayload {
 #[wire_type(recurse = 3)]
 ///
 pub struct SignedCommandPayloadCommon {
-    ///
+    /// The fee to be paid to the network to process the transaction
     pub fee: Amount,
     ///
     pub fee_token: SignedCommandFeeToken,
@@ -91,13 +91,13 @@ impl Default for SignedCommandPayloadBody {
 #[wire_type(recurse = 2)]
 ///
 pub struct PaymentPayload {
-    ///
+    /// The source public key
     pub source_pk: PublicKey2,
-    ///
+    /// The public key of the intended recipient
     pub receiver_pk: PublicKey2,
-    ///
+    /// Token is implemented as ERC20 smart contract
     pub token_id: ExtendedU64_3,
-    ///
+    /// The amount of mina you are sending
     pub amount: Amount,
 }
 
@@ -143,8 +143,6 @@ impl TryFrom<String> for SignedCommandMemo {
         Self::try_from(s.as_str())
     }
 }
-
-// TODO impl Into<String> for SignedCommandMemo
 
 #[derive(Debug, Error)]
 ///

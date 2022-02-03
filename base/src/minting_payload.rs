@@ -16,12 +16,12 @@ use wire_type::WireType;
 
 /// https://github.com/MinaProtocol/mina/blob/aacfe04245d14b3331e89ed76a4b77bec902b290/src/lib/mina_base/minting_payload.ml#L8
 pub struct MintingPayload {
-    ///
+    /// Token is implemented as ERC20 smart contract
     pub token_id: TokenId,
-    ///
+    /// The public key of the token_owner
     pub token_owner_pk: PublicKey,
-    ///
+    /// The public key of the intended recipient
     pub receiver_pk: PublicKey,
-    ///
+    /// The amount of mina you are sending
     pub amount: Amount,
 }
