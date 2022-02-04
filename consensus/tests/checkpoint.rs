@@ -29,7 +29,7 @@ mod tests {
     #[test]
     #[wasm_bindgen_test]
     #[should_panic]
-    fn short_range_fails_when_chains_in_different_epoch() {
+    fn short_range_fails_when_chains_in_different_epoch_and_different_lock_checkpoints() {
         let mut chain_a = genesis_consensus_state();
         let a = &mut chain_a.0[0];
         a.body.consensus_state.epoch_count = Length(0);
@@ -38,6 +38,7 @@ mod tests {
             StateHash::from_base58("3NLWRuFB7G8CPkizXnRwpAUcQu5cAS5RTWE5vhWL1XBE47oEJ2kn").unwrap();
         a.body.consensus_state.next_epoch_data.start_checkpoint =
             StateHash::from_base58("3NK2tkzqqK5spR2sZ7tujjqPksL45M3UUrcA4WhCkeiPtnugyE2x").unwrap();
+
         a.body.consensus_state.staking_epoch_data.lock_checkpoint =
             StateHash::from_base58("3NK2tkzqqK5spR2sZ7tujjqPksL45M3UUrcA4WhCkeiPtnugyE2x").unwrap();
         a.body.consensus_state.staking_epoch_data.start_checkpoint =
@@ -48,12 +49,15 @@ mod tests {
         let mut chain_b = genesis_consensus_state();
         let b = &mut chain_b.0[0];
         // setting states to block at height 5076
+        // block in json: https://storage.googleapis.com/mina_network_blocfk_data/mainnet-3NLC8CV9kZYFkXnUipJzkkHvT9RmsttSUNpwfwqwWCfbP9bQmwNJ.json
         b.body.consensus_state.epoch_count = Length(1);
         b.body.consensus_state.next_epoch_data = EpochData::default();
+        a.body.consensus_state.curr_global_slot.slot_number = GlobalSlotNumber(7140);
         b.body.consensus_state.next_epoch_data.lock_checkpoint =
             StateHash::from_base58("3NKmKfm2RSTfA1w5mNSJRLoyAQgcRhWjH5qdNynchHar4kBmJPbW").unwrap();
         b.body.consensus_state.next_epoch_data.start_checkpoint =
             StateHash::from_base58("3NKmKfm2RSTfA1w5mNSJRLoyAQgcRhWjH5qdNynchHar4kBmJPbW").unwrap();
+
         b.body.consensus_state.staking_epoch_data.lock_checkpoint =
             StateHash::from_base58("3NLWRuFB7G8CPkizXnRwpAUcQu5cAS5RTWE5vhWL1XBE47oEJ2kn").unwrap();
         b.body.consensus_state.staking_epoch_data.start_checkpoint =

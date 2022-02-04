@@ -220,18 +220,18 @@ impl Consensus for ProtocolStateChain {
         &'a self,
         candidate: &ProtocolStateChain,
     ) -> Result<bool, ConsensusError> {
-        let s0 = &self
+        let a = &self
             .consensus_state()
             .ok_or(ConsensusError::ConsensusStateNotFound)?;
-        let s1 = &candidate
+        let b = &candidate
             .consensus_state()
             .ok_or(ConsensusError::ConsensusStateNotFound)?;
-        let s0_lock_checkpoint = &s0.staking_epoch_data.lock_checkpoint;
-        let s1_lock_checkpoint = &s1.staking_epoch_data.lock_checkpoint;
-        let s1_next_epoch_lock_checkpoint = &s1.next_epoch_data.lock_checkpoint;
+        let a_prev_lock_checkpoint = &a.staking_epoch_data.lock_checkpoint;
+        let b_prev_lock_checkpoint = &b.staking_epoch_data.lock_checkpoint;
+        let b_curr_lock_checkpoint = &b.next_epoch_data.lock_checkpoint;
 
         let check = |s0_lock_checkpoint, s1_next_epoch_lock_checkpoint| {
-            if s0.epoch_count.0 == s1.epoch_count.0 + 1
+            if a.epoch_count.0 == b.epoch_count.0 + 1
                 && candidate.epoch_slot() >= Some(Self::CONSTANTS.slots_per_epoch.0 * 2 / 3)
             {
                 // S0 is one epoch ahead of S1 and S1 is not in the seed update range
@@ -241,13 +241,13 @@ impl Consensus for ProtocolStateChain {
             }
         };
 
-        if s0.epoch_count == s1.epoch_count {
+        if a.epoch_count == b.epoch_count {
             // Simple case: blocks have same previous epoch, so compare previous epochs' lock_checkpoints
-            Ok(s0_lock_checkpoint == s1_lock_checkpoint)
+            Ok(a_prev_lock_checkpoint == b_prev_lock_checkpoint)
         } else {
             // Check for previous epoch case using both orientations
-            Ok(check(s0_lock_checkpoint, s1_next_epoch_lock_checkpoint)
-                || check(s1_next_epoch_lock_checkpoint, s0_lock_checkpoint))
+            Ok(check(a_prev_lock_checkpoint, b_curr_lock_checkpoint)
+                || check(b_curr_lock_checkpoint, a_prev_lock_checkpoint))
         }
     }
 }
