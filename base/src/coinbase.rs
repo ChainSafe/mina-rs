@@ -16,11 +16,11 @@ use wire_type::WireType;
 /// https://github.com/MinaProtocol/mina/blob/aacfe04245d14b3331e89ed76a4b77bec902b290/src/lib/staged_ledger_diff/staged_ledger_diff.ml#L10
 /// https://github.com/MinaProtocol/mina/blob/1c189f630365e2ee8f6f3f221bb11f9718efe024/src/lib/staged_ledger/diff_creation_log.ml#L44
 pub enum CoinBase {
-    ///
+    /// Match coinbase with zero
     Zero,
-    ///
+    /// Match coinbase with one
     One(Option<CoinBaseFeeTransfer>),
-    ///
+    /// Match coinbase with two
     Two(Option<CoinBaseFeeTransfer>, Option<CoinBaseFeeTransfer>),
 }
 
@@ -40,7 +40,7 @@ pub struct CoinBaseV1 {
     pub receiver: PublicKey,
     /// The amount of mina you are sending
     pub amount: Amount,
-    ///
+    /// Fee transfer single
     pub fee_transfer: FeeTransfer,
 }
 

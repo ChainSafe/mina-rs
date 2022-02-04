@@ -13,8 +13,8 @@ use wire_type::WireType;
 
 /// https://github.com/MinaProtocol/mina/blob/aacfe04245d14b3331e89ed76a4b77bec902b290/src/lib/mina_base/stake_delegation.ml#L23
 pub struct StakeDelegation {
-    ///
+    /// Someone who delegates (= gives) part of their stake
     pub delegator: PublicKey,
-    ///
+    /// New delegating mina
     pub new_delegate: PublicKey,
 }
