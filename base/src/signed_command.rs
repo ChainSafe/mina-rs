@@ -35,7 +35,7 @@ pub struct SignedCommand {
 pub struct SignedCommandPayload {
     /// Payload common of a signed transaction Request
     pub common: SignedCommandPayloadCommon,
-    ///  Payload body of a signed transaction Request
+    /// Payload body of a signed transaction Request
     pub body: SignedCommandPayloadBody,
 }
 
@@ -47,15 +47,15 @@ pub struct SignedCommandPayload {
 pub struct SignedCommandPayloadCommon {
     /// The fee to be paid to the network to process the transaction
     pub fee: Amount,
-    ///
+    /// MINA is the token used by Mina Protocol to execute network transactions.
     pub fee_token: SignedCommandFeeToken,
-    ///
+    /// Fee payer's publickey
     pub fee_payer_pk: PublicKey2,
     /// The nonce in the Sender’s account
     pub nonce: ExtendedU32,
-    ///
+    /// Valid until certain amount of time
     pub valid_until: ExtendedU32,
-    ///
+    /// A unique memo field when sending MINA deposits to the exchange
     pub memo: SignedCommandMemo,
 }
 
@@ -105,13 +105,13 @@ pub struct PaymentPayload {
 #[serde(from = "<Self as WireType>::WireType")]
 #[serde(into = "<Self as WireType>::WireType")]
 #[wire_type(recurse = 3)]
-///
+/// MINA is the token used by Mina Protocol to execute network transactions.
 pub struct SignedCommandFeeToken(pub u64);
 
 #[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, WireType)]
 #[serde(from = "<Self as WireType>::WireType")]
 #[serde(into = "<Self as WireType>::WireType")]
-///
+/// The memo field when sending a transaction
 pub struct SignedCommandMemo(pub Vec<u8>);
 
 impl TryFrom<&str> for SignedCommandMemo {
@@ -145,9 +145,9 @@ impl TryFrom<String> for SignedCommandMemo {
 }
 
 #[derive(Debug, Error)]
-///
+/// Error message when string in memo field is too long
 pub enum SignedCommandMemoError {
     #[error("Input string is too long")]
-    ///
+    /// String is too long
     StringTooLong,
 }
