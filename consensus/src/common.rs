@@ -149,8 +149,7 @@ pub trait Consensus {
         candidate: &'a ProtocolStateChain,
     ) -> Result<&'a ProtocolStateChain, ConsensusError>;
 
-    fn is_short_range<'a>(&'a self, candidate: &ProtocolStateChain)
-        -> Result<bool, ConsensusError>;
+    fn is_short_range(&self, candidate: &ProtocolStateChain) -> Result<bool, ConsensusError>;
 }
 
 impl Consensus for ProtocolStateChain {
@@ -216,10 +215,7 @@ impl Consensus for ProtocolStateChain {
         Ok(self)
     }
 
-    fn is_short_range<'a>(
-        &'a self,
-        candidate: &ProtocolStateChain,
-    ) -> Result<bool, ConsensusError> {
+    fn is_short_range(&self, candidate: &ProtocolStateChain) -> Result<bool, ConsensusError> {
         let a = &self
             .consensus_state()
             .ok_or(ConsensusError::ConsensusStateNotFound)?;
