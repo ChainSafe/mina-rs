@@ -1,4 +1,4 @@
-// Copyright 2021 ChainSafe Systems
+// Copyright 2022 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::epoch_data::EpochData;

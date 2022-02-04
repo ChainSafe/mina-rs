@@ -1,4 +1,4 @@
-// Copyright 2020 ChainSafe Systems
+// Copyright 2022 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
 //! In this context a diff refers to a difference between two states of the blockchain.

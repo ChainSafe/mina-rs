@@ -1,4 +1,4 @@
-// Copyright 2021 ChainSafe Systems
+// Copyright 2022 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
 //! Types and functions related to the Mina minting_payload

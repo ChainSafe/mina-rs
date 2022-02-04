@@ -1,4 +1,4 @@
-// Copyright 2021 ChainSafe Systems
+// Copyright 2022 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
 //! types and functions related to Mina signed_command
@@ -17,13 +17,13 @@ use wire_type::WireType;
 #[serde(from = "<Self as WireType>::WireType")]
 #[serde(into = "<Self as WireType>::WireType")]
 #[wire_type(recurse = 2)]
-///
+/// Commands for signed transaction
 pub struct SignedCommand {
-    ///
+    /// The payload is the part of transmitted data that is the actual intended message
     pub payload: SignedCommandPayload,
-    ///
+    /// Signer's public key for signing transactions on various networks for Mina Protocol
     pub signer: PublicKey3,
-    ///
+    /// The signature verifies in the block verifies and that verify consensus
     pub signature: Signature,
 }
 
@@ -31,11 +31,11 @@ pub struct SignedCommand {
 #[serde(from = "<Self as WireType>::WireType")]
 #[serde(into = "<Self as WireType>::WireType")]
 #[wire_type(recurse = 2)]
-///
+///  The payload is the part of transmitted signed comand data that is the actual intended message
 pub struct SignedCommandPayload {
-    ///
+    /// Payload common of a signed transaction Request
     pub common: SignedCommandPayloadCommon,
-    ///
+    ///  Payload body of a signed transaction Request
     pub body: SignedCommandPayloadBody,
 }
 
@@ -43,7 +43,7 @@ pub struct SignedCommandPayload {
 #[serde(from = "<Self as WireType>::WireType")]
 #[serde(into = "<Self as WireType>::WireType")]
 #[wire_type(recurse = 3)]
-///
+/// Verifies validity of the signed transaction.
 pub struct SignedCommandPayloadCommon {
     /// The fee to be paid to the network to process the transaction
     pub fee: Amount,
@@ -51,7 +51,7 @@ pub struct SignedCommandPayloadCommon {
     pub fee_token: SignedCommandFeeToken,
     ///
     pub fee_payer_pk: PublicKey2,
-    ///
+    /// The nonce in the Sender’s account
     pub nonce: ExtendedU32,
     ///
     pub valid_until: ExtendedU32,
@@ -65,17 +65,17 @@ pub struct SignedCommandPayloadCommon {
 #[wire_type(recurse = 2)]
 #[non_exhaustive]
 /// https://github.com/MinaProtocol/mina/blob/aacfe04245d14b3331e89ed76a4b77bec902b290/src/lib/mina_base/signed_command_payload.ml#L200
-///
+/// payload body of a signed transaction command HTTP Request
 pub enum SignedCommandPayloadBody {
-    ///
+    /// The part of transmitted payment data that is the actual intended message
     PaymentPayload(PaymentPayload),
-    ///
+    /// The part of transmitted stake delegation data that is the actual intended message
     StakeDelegationPayload(StakeDelegation),
-    ///
+    /// The part of transmitted create new token data that is the actual intended message
     CreateNewTokenPayload(NewTokenPayload),
-    ///
+    /// The part of transmitted create token account data that is the actual intended message
     CreateTokenAccountPayload(NewAccountPayload),
-    ///
+    /// The part of transmitted Mint tokens data that is the actual intended message
     MintTokensPayload(MintingPayload),
 }
 
@@ -89,7 +89,7 @@ impl Default for SignedCommandPayloadBody {
 #[serde(from = "<Self as WireType>::WireType")]
 #[serde(into = "<Self as WireType>::WireType")]
 #[wire_type(recurse = 2)]
-///
+/// The part of transmitted payment data that is the actual intended message
 pub struct PaymentPayload {
     /// The source public key
     pub source_pk: PublicKey2,

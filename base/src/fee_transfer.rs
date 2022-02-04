@@ -1,4 +1,4 @@
-// Copyright 2021 ChainSafe Systems
+// Copyright 2022 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
 //! types and functions related to Mina fee_transfer
@@ -19,6 +19,6 @@ pub struct FeeTransfer {
     pub receiver_pk: PublicKey,
     /// The fee to be paid to the network to process the transaction
     pub fee: Amount,
-    ///
+    /// The token used by Mina Protocol to execute network transactions.
     pub fee_token: TokenId,
 }
