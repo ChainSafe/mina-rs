@@ -15,6 +15,7 @@ use wire_type::WireType;
 #[non_exhaustive]
 /// https://github.com/MinaProtocol/mina/blob/aacfe04245d14b3331e89ed76a4b77bec902b290/src/lib/staged_ledger_diff/staged_ledger_diff.ml#L10
 /// https://github.com/MinaProtocol/mina/blob/1c189f630365e2ee8f6f3f221bb11f9718efe024/src/lib/staged_ledger/diff_creation_log.ml#L44
+/// Coin minting exchange
 pub enum CoinBase {
     /// Match coinbase with zero
     Zero,

@@ -13,9 +13,9 @@ use wire_type::WireType;
 #[non_exhaustive]
 /// https://github.com/MinaProtocol/mina/blob/aacfe04245d14b3331e89ed76a4b77bec902b290/src/lib/mina_base/transaction_status.ml#L834
 pub enum TransactionStatus {
-    ///
+    /// Transaction status applied
     Applied(TransactionStatusApplied),
-    ///
+    /// Transaction failed
     Failed(TransactionStatusFailed),
 }
 
@@ -26,15 +26,13 @@ impl Default for TransactionStatus {
 }
 
 #[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug)]
-///
+/// Struct of transaction status applied
 pub struct TransactionStatusApplied((TransactionStatusAuxiliaryData, TransactionStatusBalanceData));
-///
+/// Transaction status applied
 impl TransactionStatusApplied {
-    ///
     pub fn auxiliary_data(&self) -> &TransactionStatusAuxiliaryData {
         &self.0 .0
     }
-    ///
     pub fn balance_data(&self) -> &TransactionStatusBalanceData {
         &self.0 .1
     }
@@ -42,7 +40,7 @@ impl TransactionStatusApplied {
 
 #[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug)]
 pub struct TransactionStatusFailed((TransactionStatusFailure, TransactionStatusBalanceData));
-///
+///  Transaction failed
 impl TransactionStatusFailed {
     pub fn failure(&self) -> &TransactionStatusFailure {
         &self.0 .0

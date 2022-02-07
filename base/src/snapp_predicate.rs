@@ -15,8 +15,8 @@ use wire_type::WireType;
 ///
 pub struct ProtocolState {
     ///  TODO: Not sure if this should be frozen ledger hash or not
-    ///
+    /// Currency
     pub currency: Amount,
-    ///
+    /// Epoch data
     pub data: EpochData,
 }
