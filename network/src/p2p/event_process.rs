@@ -1,4 +1,4 @@
-// Copyright 2020 ChainSafe Systems
+// Copyright 2022 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::p2p::constants::DEST;
@@ -123,6 +123,7 @@ pub async fn passsive_discovery() -> Result<(), Box<dyn Error>> {
     // as it only uses UDP.
     let mut swarm = Swarm::new(transport, behaviour, peer_id);
     swarm.listen_on(DEST.parse()?)?;
+    let mut discovery = false;
 
     loop {
         match swarm.select_next_some().await {
@@ -130,11 +131,13 @@ pub async fn passsive_discovery() -> Result<(), Box<dyn Error>> {
                 for (peer, addr) in peers {
                     println!("discovered {} {}", peer, addr);
                 }
+                discovery = true;
             }
             SwarmEvent::Behaviour(MdnsEvent::Expired(expired)) => {
                 for (peer, addr) in expired {
                     println!("expired {} {}", peer, addr);
                 }
+                discovery = false;
             }
             _ => {}
         }

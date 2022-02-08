@@ -66,7 +66,4 @@ pub mod tests {
             assert_eq!(success, success_expected);
         });
     }
-
-    #[test]
-    pub fn mdns_test() {}
 }
