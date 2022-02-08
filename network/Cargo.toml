@@ -10,8 +10,8 @@ license = "Apache-2.0"
 getrandom = {version = "0.2", features = ["js"]}
 lazy_static = "1"
 multihash = "0.15"
-env_logger = "0.9.0"
-log = "0.4.0"
+async-io = "1.3.1"
+futures = "0.3.13"
 
 # switch back to published versions once libp2p-mplex 0.30.1 or above is published
 libp2p = {git = "https://github.com/libp2p/rust-libp2p", version = "0.42", rev = "fad99808ac708f0d55f72b12037dec3ef3678547"}
@@ -23,8 +23,9 @@ version = "1.6"
 features = ["attributes"]
 
 [dev-dependencies]
-async-std = "1"
-
+async-std = { version = "1.9.0", features = ["attributes"] }
+env_logger = "0.9.0"
+tokio = { version = "1.15", default-features = false, features = ["macros", "rt", "rt-multi-thread", "time"] }
 # nix is one of the indirect dependencies of libp2p
 # patch its version to dismiss errors from 'cargo deny check advisories'
 # this can be removed once unstream crate(s) are updated
