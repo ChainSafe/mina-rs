@@ -115,7 +115,7 @@ pub async fn create_swarm(config: MdnsConfig) -> Result<Swarm<Mdns>, Box<dyn Err
 
 /// mdns passive discovery
 pub async fn passsive_discovery(_config: MdnsConfig) -> Result<(), Box<dyn Error>> {
-    env_logger::init();
+    env_logger::try_init().ok();
 
     let mut swarm = create_swarm(_config.clone()).await?;
     let mut discovered = false;
@@ -128,7 +128,7 @@ pub async fn passsive_discovery(_config: MdnsConfig) -> Result<(), Box<dyn Error
                     if discovered {
                         return Ok(());
                     } else {
-                        discovered = false;
+                        discovered = true;
                     }
                 }
             }

@@ -124,6 +124,21 @@ async fn test_expired_async_std() -> Result<(), Box<dyn Error>> {
         .map_err(|e| Box::new(e) as Box<dyn Error>)
 }
 
+#[async_std::test]
+async fn test_passive_discovery_expired_async_std() -> Result<(), Box<dyn Error>> {
+    env_logger::try_init().ok();
+    let config = MdnsConfig {
+        ttl: Duration::from_secs(1),
+        query_interval: Duration::from_secs(10),
+        ..Default::default()
+    };
+
+    async_std::future::timeout(Duration::from_secs(6), passsive_discovery(config))
+        .await
+        .map(|_| ())
+        .map_err(|e| Box::new(e) as Box<dyn Error>)
+}
+
 #[tokio::test]
 async fn test_expired_tokio() -> Result<(), Box<dyn Error>> {
     env_logger::try_init().ok();
@@ -134,6 +149,20 @@ async fn test_expired_tokio() -> Result<(), Box<dyn Error>> {
     };
 
     tokio::time::timeout(Duration::from_secs(6), run_peer_expiration_test(config))
+        .await
+        .unwrap()
+}
+
+#[tokio::test]
+async fn test_passive_discover_expired_tokio() -> Result<(), Box<dyn Error>> {
+    env_logger::try_init().ok();
+    let config = MdnsConfig {
+        ttl: Duration::from_secs(1),
+        query_interval: Duration::from_secs(10),
+        ..Default::default()
+    };
+
+    tokio::time::timeout(Duration::from_secs(6), passsive_discovery(config))
         .await
         .unwrap()
 }
