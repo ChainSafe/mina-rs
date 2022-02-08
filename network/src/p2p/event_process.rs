@@ -1,7 +1,7 @@
 // Copyright 2022 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
-use crate::p2p::constants::DEST;
+use crate::p2p::constants::DNS_DEST;
 use libp2p::{
     futures::StreamExt,
     gossipsub::{Gossipsub, GossipsubEvent},
@@ -122,8 +122,7 @@ pub async fn passsive_discovery() -> Result<(), Box<dyn Error>> {
     // Note that the MDNS behaviour itself will not actually inititiate any connections,
     // as it only uses UDP.
     let mut swarm = Swarm::new(transport, behaviour, peer_id);
-    swarm.listen_on(DEST.parse()?)?;
-    let mut discovery = false;
+    swarm.listen_on(DNS_DEST.parse()?)?;
 
     loop {
         match swarm.select_next_some().await {
@@ -131,13 +130,11 @@ pub async fn passsive_discovery() -> Result<(), Box<dyn Error>> {
                 for (peer, addr) in peers {
                     println!("discovered {} {}", peer, addr);
                 }
-                discovery = true;
             }
             SwarmEvent::Behaviour(MdnsEvent::Expired(expired)) => {
                 for (peer, addr) in expired {
                     println!("expired {} {}", peer, addr);
                 }
-                discovery = false;
             }
             _ => {}
         }
