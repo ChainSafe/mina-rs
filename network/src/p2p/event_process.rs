@@ -135,10 +135,8 @@ pub async fn passsive_discovery(_config: MdnsConfig) -> Result<(), Box<dyn Error
             SwarmEvent::Behaviour(MdnsEvent::Expired(expired)) => {
                 for (peer, addr) in expired {
                     println!("expired {} {}", peer, addr);
-                    if discovered {
+                    if peer == *swarm.local_peer_id() {
                         return Ok(());
-                    } else {
-                        discovered = true;
                     }
                 }
             }
