@@ -6,14 +6,16 @@ const PADDING_CHAR: u8 = b'*';
 
 pub type HashPrefix = [u8; PREFIX_BYTE_LEN];
 
-const fn create(s: &[u8]) -> HashPrefix {
-    let mut o = [PADDING_CHAR; PREFIX_BYTE_LEN];
+/// const function to create padded prefix strings with fixed length
+/// that is being used in various of algorithms at compile time
+const fn create(prefix: &[u8]) -> HashPrefix {
+    let mut padded_prefix = [PADDING_CHAR; PREFIX_BYTE_LEN];
     let mut i = 0;
-    while i < PREFIX_BYTE_LEN && i < s.len() {
-        o[i] = s[i];
+    while i < PREFIX_BYTE_LEN && i < prefix.len() {
+        padded_prefix[i] = prefix[i];
         i += 1;
     }
-    o
+    padded_prefix
 }
 
 pub const PROTOCOL_STATE: &HashPrefix = &create(b"CodaProtoState");
@@ -93,7 +95,28 @@ mod tests {
     }
 
     #[test]
-    fn make_merkle_tree_hash() {
+    fn make_merkle_tree_hash_3() {
+        let prefix_at_3 = make_prefix_merkle_tree(3);
+        assert_eq!(prefix_at_3.len(), 20);
+        assert_eq!(&prefix_at_3, b"CodaMklTree003******");
+    }
+
+    #[test]
+    fn make_merkle_tree_hash_13() {
+        let prefix_at_3 = make_prefix_merkle_tree(13);
+        assert_eq!(prefix_at_3.len(), 20);
+        assert_eq!(&prefix_at_3, b"CodaMklTree013******");
+    }
+
+    #[test]
+    fn make_merkle_tree_hash_113() {
+        let prefix_at_3 = make_prefix_merkle_tree(113);
+        assert_eq!(prefix_at_3.len(), 20);
+        assert_eq!(&prefix_at_3, b"CodaMklTree113******");
+    }
+
+    #[test]
+    fn make_coinbase_merkle_tree_hash() {
         let prefix_at_3 = make_prefix_coinbase_merkle_tree(3);
         assert_eq!(prefix_at_3.len(), 20);
         assert_eq!(&prefix_at_3, b"CodaCbMklTree003****");
