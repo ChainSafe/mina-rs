@@ -3,10 +3,8 @@
 
 #[cfg(test)]
 pub mod tests {
-    use ::mina_network::p2p::event_process::*;
     use libp2p::{futures::StreamExt, ping, swarm::SwarmEvent, tcp::TcpConfig, Multiaddr, Swarm};
     use mina_network::p2p::{TransportBuilder, TransportConfig, MAINNET_CONFIG};
-    use std::time::Duration;
 
     const DEST: &str =
         "/ip4/95.217.106.189/tcp/8302/p2p/12D3KooWSxxCtzRLfUzoxgRYW9fTKWPUujdvStuwCPSPUN3629mb";
