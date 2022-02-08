@@ -3,6 +3,7 @@ members = [
   "base",
   "consensus",
   "crypto",
+  "merkle",
   "network",
   "snark-keys",
   "protocol/bin-prot",
@@ -11,6 +12,8 @@ members = [
   "protocol/wire-type-derive",
   "protocol/test-fixtures",
   "protocol/test-serialization",
+  "protocol/serialization-types",
+  "protocol/versioned",
 ]
 # This is still needed for virtual workspaces 
 # per <https://doc.rust-lang.org/edition-guide/rust-2021/default-cargo-resolver.html#details>
