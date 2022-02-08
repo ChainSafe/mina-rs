@@ -102,38 +102,44 @@ impl NetworkBehaviourEventProcess<ping::Event> for NetworkBehaviour {
     }
 }
 
-#[allow(dead_code)]
-/// mdns passive discovery
-pub async fn passsive_discovery() -> Result<(), Box<dyn Error>> {
-    env_logger::init();
-
-    // Create a random PeerId.
+///
+pub async fn create_swarm(config: MdnsConfig) -> Result<Swarm<Mdns>, Box<dyn Error>> {
     let id_keys = identity::Keypair::generate_ed25519();
     let peer_id = PeerId::from(id_keys.public());
-    println!("Local peer id: {:?}", peer_id);
-
-    // Create a transport.
     let transport = libp2p::development_transport(id_keys).await?;
-
-    // Create an MDNS network behaviour.
-    let behaviour = Mdns::new(MdnsConfig::default()).await?;
-
-    // Create a Swarm that establishes connections through the given transport.
-    // Note that the MDNS behaviour itself will not actually inititiate any connections,
-    // as it only uses UDP.
+    let behaviour = Mdns::new(config).await?;
     let mut swarm = Swarm::new(transport, behaviour, peer_id);
     swarm.listen_on(DNS_DEST.parse()?)?;
+    Ok(swarm)
+}
+
+/// mdns passive discovery
+pub async fn passsive_discovery(_config: MdnsConfig) -> Result<(), Box<dyn Error>> {
+    env_logger::init();
+
+    let mut swarm = create_swarm(_config.clone()).await?;
+    let mut discovered = false;
 
     loop {
         match swarm.select_next_some().await {
             SwarmEvent::Behaviour(MdnsEvent::Discovered(peers)) => {
                 for (peer, addr) in peers {
                     println!("discovered {} {}", peer, addr);
+                    if discovered {
+                        return Ok(());
+                    } else {
+                        discovered = false;
+                    }
                 }
             }
             SwarmEvent::Behaviour(MdnsEvent::Expired(expired)) => {
                 for (peer, addr) in expired {
                     println!("expired {} {}", peer, addr);
+                    if discovered {
+                        return Ok(());
+                    } else {
+                        discovered = true;
+                    }
                 }
             }
             _ => {}
