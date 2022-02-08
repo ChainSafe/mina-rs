@@ -55,9 +55,19 @@ async fn test_discovery_async_std_ipv4() -> Result<(), Box<dyn Error>> {
     run_discovery_test(MdnsConfig::default()).await
 }
 
+#[async_std::test]
+async fn test_passive_discovery_async_std_ipv4() -> Result<(), Box<dyn Error>> {
+    passsive_discovery(MdnsConfig::default()).await
+}
+
 #[tokio::test]
 async fn test_discovery_tokio_ipv4() -> Result<(), Box<dyn Error>> {
     run_discovery_test(MdnsConfig::default()).await
+}
+
+#[tokio::test]
+async fn test_passive_discovery_tokio_ipv4() -> Result<(), Box<dyn Error>> {
+    passsive_discovery(MdnsConfig::default()).await
 }
 
 #[async_std::test]
@@ -69,6 +79,15 @@ async fn test_discovery_async_std_ipv6() -> Result<(), Box<dyn Error>> {
     run_discovery_test(config).await
 }
 
+#[async_std::test]
+async fn test_passive_discovery_async_std_ipv6() -> Result<(), Box<dyn Error>> {
+    let config = MdnsConfig {
+        enable_ipv6: true,
+        ..Default::default()
+    };
+    passsive_discovery(config).await
+}
+
 #[tokio::test]
 async fn test_discovery_tokio_ipv6() -> Result<(), Box<dyn Error>> {
     let config = MdnsConfig {
@@ -76,6 +95,15 @@ async fn test_discovery_tokio_ipv6() -> Result<(), Box<dyn Error>> {
         ..Default::default()
     };
     run_discovery_test(config).await
+}
+
+#[tokio::test]
+async fn test_passive_discovery_tokio_ipv6() -> Result<(), Box<dyn Error>> {
+    let config = MdnsConfig {
+        enable_ipv6: true,
+        ..Default::default()
+    };
+    passsive_discovery(config).await
 }
 
 async fn run_peer_expiration_test(config: MdnsConfig) -> Result<(), Box<dyn Error>> {
