@@ -1,0 +1,16 @@
+[package]
+authors = ["ChainSafe Systems <info@chainsafe.io>"]
+name = "bin-prot-layout-reader"
+version = "0.1.0"
+
+edition = "2021"
+license = "Apache-2.0"
+
+[dependencies]
+
+bin-prot = { path = "../../protocol/bin-prot", features = ["loose_deserialization"] }
+hex = "0.4.3"
+serde = { version = "1", features = ["derive"] }
+serde_json = {version = "1", features = ["unbounded_depth"]}
+serde_stacker = "0.1"
+structopt = "0.3.21"
