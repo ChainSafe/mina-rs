@@ -3,13 +3,13 @@
 
 #![doc = include_str!("../README.md")]
 
-use std::io::Read;
-use std::io::BufReader;
 use std::fs::File;
+use std::io::BufReader;
+use std::io::Read;
 use std::io::Write;
 use std::path::PathBuf;
 
-use serde::{Deserialize};
+use serde::Deserialize;
 use structopt::StructOpt;
 
 #[derive(StructOpt)]
@@ -27,7 +27,6 @@ struct Opt {
     output: Option<PathBuf>,
 }
 
-
 fn main() {
     let opt = Opt::from_args();
 
@@ -39,18 +38,18 @@ fn main() {
     // need to use the disable_recursion_limit hack because these can be HUGE!
     json_deserializer.disable_recursion_limit();
     let json_deserializer = serde_stacker::Deserializer::new(&mut json_deserializer);
-    let layout = bin_prot::Layout::deserialize(json_deserializer).expect("Failed to read layout JSON");
-
+    let layout =
+        bin_prot::Layout::deserialize(json_deserializer).expect("Failed to read layout JSON");
 
     // Use this layout to read the binary
-    // binary file could be either actual binary encoded bin_prot 
+    // binary file could be either actual binary encoded bin_prot
     // OR utf-8 encoded hex string representation of the binary
     let binary_file = File::open(opt.binary).expect("Could not open binary file to read");
     let mut reader = BufReader::new(binary_file);
     let mut buffer = Vec::new();
     reader.read_to_end(&mut buffer).unwrap();
 
-    // How to know which one to use? Try and decode hex first and if that fails 
+    // How to know which one to use? Try and decode hex first and if that fails
     // fallback to binary interpretation
     let bytes = if let Ok(hex_bytes) = hex::decode(&buffer) {
         println!("Info: Identified HEX encoded string input");
@@ -59,7 +58,6 @@ fn main() {
         println!("Info: Interpreting binary as raw bytes");
         buffer
     };
-
 
     // either way decode using the layout from above
     let mut de = bin_prot::Deserializer::from_reader(&bytes[..]).with_layout(&layout.bin_prot_rule);
