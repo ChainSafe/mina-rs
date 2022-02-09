@@ -52,9 +52,9 @@ fn main() {
 
     // How to know which one to use? Try and decode hex first and if that fails 
     // fallback to binary interpretation
-    let bytes = if let Ok(bytes) = hex::decode(&buffer) {
+    let bytes = if let Ok(hex_bytes) = hex::decode(&buffer) {
         println!("Info: Identified HEX encoded string input");
-        bytes
+        hex_bytes
     } else {
         println!("Info: Interpreting binary as raw bytes");
         buffer
