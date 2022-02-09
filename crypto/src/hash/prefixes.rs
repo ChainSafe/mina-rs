@@ -1,6 +1,10 @@
 // Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
+use ark_ff::{biginteger::BigInteger256, FromBytes};
+use mina_curves::pasta::*;
+use oracle::poseidon::*;
+
 const PREFIX_BYTE_LEN: usize = 20;
 const PADDING_CHAR: u8 = b'*';
 
@@ -84,41 +88,33 @@ pub fn make_prefix_coinbase_merkle_tree(i: usize) -> HashPrefix {
     create(base.as_bytes())
 }
 
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn create_works_as_expected() {
-        assert_eq!(PROTOCOL_STATE.len(), 20);
-        assert_eq!(PROTOCOL_STATE, b"CodaProtoState******");
+/// Converts prefix string to field type of pasta elliptic curve
+pub fn prefix_to_field(s: &[u8]) -> Result<mina_curves::pasta::Fp, std::io::Error> {
+    const LEN: usize = 32;
+    let mut bytes = [0_u8; LEN];
+    for (i, &b) in s.iter().enumerate().take(LEN) {
+        bytes[i] = b;
     }
 
-    #[test]
-    fn make_merkle_tree_hash_3() {
-        let prefix_at_3 = make_prefix_merkle_tree(3);
-        assert_eq!(prefix_at_3.len(), 20);
-        assert_eq!(&prefix_at_3, b"CodaMklTree003******");
-    }
+    let big = BigInteger256::read(bytes.as_slice())?;
+    Ok(big.into())
+}
 
-    #[test]
-    fn make_merkle_tree_hash_13() {
-        let prefix_at_3 = make_prefix_merkle_tree(13);
-        assert_eq!(prefix_at_3.len(), 20);
-        assert_eq!(&prefix_at_3, b"CodaMklTree013******");
-    }
+/// Gets hash state from prefix string
+pub fn salt(s: &[u8]) -> Result<Vec<Fp>, std::io::Error> {
+    let f = prefix_to_field(s)?;
+    let mut hash =
+        ArithmeticSponge::<Fp, PlonkSpongeConstantsBasic>::new(oracle::pasta::fp::params());
+    hash.absorb(&[f]);
+    hash.squeeze();
+    Ok(hash.state)
+}
 
-    #[test]
-    fn make_merkle_tree_hash_113() {
-        let prefix_at_3 = make_prefix_merkle_tree(113);
-        assert_eq!(prefix_at_3.len(), 20);
-        assert_eq!(&prefix_at_3, b"CodaMklTree113******");
-    }
-
-    #[test]
-    fn make_coinbase_merkle_tree_hash() {
-        let prefix_at_3 = make_prefix_coinbase_merkle_tree(3);
-        assert_eq!(prefix_at_3.len(), 20);
-        assert_eq!(&prefix_at_3, b"CodaCbMklTree003****");
-    }
+/// Calculates hash of given fields with init state
+pub fn hash(init: Vec<Fp>, fields: &[Fp]) -> Fp {
+    let mut hash =
+        ArithmeticSponge::<Fp, PlonkSpongeConstantsBasic>::new(oracle::pasta::fp::params());
+    hash.state = init;
+    hash.absorb(fields);
+    hash.squeeze()
 }
