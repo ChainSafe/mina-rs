@@ -1,3 +1,6 @@
+// Copyright 2020 ChainSafe Systems
+// SPDX-License-Identifier: Apache-2.0
+
 use ark_ff::{biginteger::BigInteger256, FromBytes};
 use mina_curves::pasta::*;
 use oracle::poseidon::*;
