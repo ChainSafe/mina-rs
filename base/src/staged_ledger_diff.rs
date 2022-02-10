@@ -7,11 +7,13 @@
 // TODO: Get clarification on all the fields of this type before documenting
 #![allow(missing_docs)]
 
-use mina_crypto::signature::{PublicKey2, PublicKey3, Signature};
+use crate::types::TokenId;
+use mina_crypto::signature::{PublicKey, Signature};
 use serde::{Deserialize, Serialize};
 use thiserror::Error;
+use derive_more::From;
 
-use crate::numbers::{Amount, ExtendedU32, ExtendedU64_2, ExtendedU64_3};
+use crate::numbers::{Amount, ExtendedU32, ExtendedU64};
 
 #[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug)]
 /// Top level wrapper type for a StagedLedgerDiff
@@ -69,7 +71,7 @@ impl Default for UserCommand {
 #[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug)]
 pub struct SignedCommand {
     pub payload: SignedCommandPayload,
-    pub signer: PublicKey3,
+    pub signer: PublicKey,
     pub signature: Signature,
 }
 
@@ -82,8 +84,8 @@ pub struct SignedCommandPayload {
 #[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug)]
 pub struct SignedCommandPayloadCommon {
     pub fee: Amount,
-    pub fee_token: SignedCommandFeeToken,
-    pub fee_payer_pk: PublicKey2,
+    pub fee_token: TokenId,
+    pub fee_payer_pk: PublicKey,
     pub nonce: ExtendedU32,
     pub valid_until: ExtendedU32,
     pub memo: SignedCommandMemo,
@@ -104,16 +106,13 @@ impl Default for SignedCommandPayloadBody {
 
 #[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug)]
 pub struct PaymentPayload {
-    pub source_pk: PublicKey2,
-    pub receiver_pk: PublicKey2,
-    pub token_id: ExtendedU64_3,
+    pub source_pk: PublicKey,
+    pub receiver_pk: PublicKey,
+    pub token_id: TokenId,
     pub amount: Amount,
 }
 
-#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug)]
-pub struct SignedCommandFeeToken(pub u64);
-
-#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug)]
+#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, From)]
 pub struct SignedCommandMemo(pub Vec<u8>);
 
 impl TryFrom<&str> for SignedCommandMemo {
@@ -188,14 +187,14 @@ impl TransactionStatusApplied {
 pub struct TransactionStatusAuxiliaryData {
     pub fee_payer_account_creation_fee_paid: Option<Amount>,
     pub receiver_account_creation_fee_paid: Option<Amount>,
-    pub created_token: Option<ExtendedU64_3>,
+    pub created_token: Option<ExtendedU64>,
 }
 
 #[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug)]
 pub struct TransactionStatusBalanceData {
-    pub fee_payer_balance: Option<ExtendedU64_3>,
-    pub source_balance: Option<ExtendedU64_3>,
-    pub receiver_balance: Option<ExtendedU64_3>,
+    pub fee_payer_balance: Option<Amount>,
+    pub source_balance: Option<Amount>,
+    pub receiver_balance: Option<Amount>,
 }
 
 #[derive(Clone, Serialize, Deserialize, PartialEq, Debug)]
@@ -216,8 +215,8 @@ impl Default for CoinBase {
 #[derive(Clone, Serialize, Deserialize, PartialEq, Debug)]
 // FIXME: No test coverage yet
 pub struct CoinBaseFeeTransfer {
-    pub receiver_pk: PublicKey2,
-    pub fee: ExtendedU64_2,
+    pub receiver_pk: PublicKey,
+    pub fee: Amount,
 }
 
 #[derive(Clone, Serialize, Deserialize, PartialEq, Debug)]
@@ -229,14 +228,14 @@ pub enum InternalCommandBalanceData {
 
 #[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug)]
 pub struct CoinBaseBalanceData {
-    pub coinbase_receiver_balance: ExtendedU64_3,
+    pub coinbase_receiver_balance: Amount,
     // FIXME: No test coverage yet
-    pub fee_transfer_receiver_balance: Option<ExtendedU64_3>,
+    pub fee_transfer_receiver_balance: Option<Amount>,
 }
 
 #[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug)]
 pub struct FeeTransferBalanceData {
-    pub receiver1_balance: ExtendedU64_3,
+    pub receiver1_balance: Amount,
     // FIXME: No test coverage yet
-    pub receiver2_balance: Option<ExtendedU64_3>,
+    pub receiver2_balance: Option<Amount>,
 }

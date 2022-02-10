@@ -2,6 +2,8 @@ use crate::types::*;
 use mina_serialization_types::v1::*;
 use versioned::Versioned;
 
+mod numbers;
+
 impl From<ExternalTransition> for ExternalTransitionV1 {
     fn from(t: ExternalTransition) -> Self {
         ExternalTransitionV1(Versioned::new(
@@ -30,15 +32,108 @@ impl From<ExternalTransitionV1> for ExternalTransition {
     }
 }
 
+impl From<PaymentPayload> for PaymentPayloadV1 {
+    fn from(t: PaymentPayload) -> Self {
+        PaymentPayloadV1::new(
+            Versioned::new(
+            mina_serialization_types::staged_ledger_diff::PaymentPayload {
+                source_pk: t.source_pk.into(),
+                receiver_pk: t.receiver_pk.into(),
+                token_id: t.token_id.into(),
+                amount: t.amount.into(),
+            }
+        ))
+    }
+}
+impl From<PaymentPayloadV1> for PaymentPayload {
+    fn from(t: PaymentPayloadV1) -> Self {
+        Self {
+            source_pk: t.t.t.source_pk.into(),
+            receiver_pk: t.t.t.receiver_pk.into(),
+            token_id: t.t.t.token_id.t.t.t.into(),
+            amount: t.t.t.amount.t.t.into(),
+        }
+    }
+}
+
+impl From<SignedCommandPayloadBody> for SignedCommandPayloadBodyV1 {
+    fn from(t: SignedCommandPayloadBody) -> Self {
+        use mina_serialization_types::staged_ledger_diff::SignedCommandPayloadBody as b;
+        match t {
+            SignedCommandPayloadBody::PaymentPayload(pp) => {
+                Self::new(Versioned::new(b::PaymentPayload(pp.into())))
+            }
+            _ => unimplemented!(),
+        }
+    }
+}
+impl From<SignedCommandPayloadBodyV1> for SignedCommandPayloadBody {
+    fn from(t: SignedCommandPayloadBodyV1) -> Self {
+        use mina_serialization_types::staged_ledger_diff::SignedCommandPayloadBody as b;
+        match t.t.t {
+            b::PaymentPayload(pp) => Self::PaymentPayload(pp.into()),
+            _ => unimplemented!(),
+        }
+    }
+}
+
+impl From<SignedCommandPayloadCommon> for SignedCommandPayloadCommonV1 {
+    fn from(t: SignedCommandPayloadCommon) -> Self {
+        SignedCommandPayloadCommonV1::new(
+            mina_serialization_types::staged_ledger_diff::SignedCommandPayloadCommon {
+                fee: t.fee.into(),
+                fee_token: t.fee_token.into(),
+                fee_payer_pk: t.fee_payer_pk.into(),
+                nonce: t.nonce.into(),
+                valid_until: t.valid_until.into(),
+                memo: t.memo.into(),
+            },
+        )
+    }
+}
+impl From<SignedCommandPayloadCommonV1> for SignedCommandPayloadCommon {
+    fn from(t: SignedCommandPayloadCommonV1) -> Self {
+        Self {
+            fee: t.t.t.t.fee.t.t.into(),
+            fee_token: t.t.t.t.fee_token.t.t.t.into(),
+            fee_payer_pk: t.t.t.t.fee_payer_pk.into(),
+            nonce: t.t.t.t.nonce.t.t.into(),
+            valid_until: t.t.t.t.valid_until.t.t.into(),
+            memo: t.t.t.t.memo.t.into(),
+        }
+    }
+}
+
+impl From<SignedCommandPayload> for SignedCommandPayloadV1 {
+    fn from(t: SignedCommandPayload) -> Self {
+        SignedCommandPayloadV1::new(
+            Versioned::new(
+            mina_serialization_types::staged_ledger_diff::SignedCommandPayload {
+                common: t.common.into(),
+                body: t.body.into(),
+            },
+        ))
+    }
+}
+impl From<SignedCommandPayloadV1> for SignedCommandPayload {
+    fn from(t: SignedCommandPayloadV1) -> Self {
+        Self {
+            common: t.t.t.common.into(),
+            body: t.t.t.body.into(),
+        }
+    }
+}
+
 impl From<SignedCommand> for SignedCommandV1 {
     fn from(t: SignedCommand) -> Self {
         SignedCommandV1::new(
+            Versioned::new(
             mina_serialization_types::staged_ledger_diff::SignedCommand {
                 payload: t.payload.into(),
                 signer: t.signer.into(),
                 signature: t.signature.into(),
             },
-        )
+        ))
     }
 }
 impl From<SignedCommandV1> for SignedCommand {

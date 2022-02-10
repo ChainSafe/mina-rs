@@ -7,13 +7,12 @@
 
 use crate::{
     base58::{version_bytes, Base58Encodable},
-    hash::BaseHash,
     impl_bs58_for_binprot,
 };
 use derive_deref::Deref;
 use mina_serialization_types::v1::PublicKeyV1;
 use serde::{Deserialize, Serialize};
-use versioned::Versioned;
+use derive_more::{From, Into};
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct CompressedCurvePoint {
@@ -28,28 +27,6 @@ pub struct PublicKey {
     pub poly: CompressedCurvePoint,
 }
 
-impl From<PublicKey> for PublicKeyV1 {
-    fn from(t: PublicKey) -> Self {
-        Self::new(Versioned::new(
-            mina_serialization_types::signatures::CompressedCurvePoint {
-                x: t.poly.x,
-                is_odd: t.poly.is_odd,
-            },
-        ))
-    }
-}
-
-impl From<PublicKeyV1> for PublicKey {
-    fn from(t: PublicKeyV1) -> Self {
-        Self {
-            poly: CompressedCurvePoint {
-                x: t.t.t.x,
-                is_odd: t.t.t.is_odd,
-            },
-        }
-    }
-}
-
 impl_bs58_for_binprot!(PublicKey, version_bytes::NON_ZERO_CURVE_POINT_COMPRESSED);
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize, Deref)]
@@ -59,7 +36,7 @@ pub struct PublicKey2(pub CompressedCurvePoint);
 pub struct PublicKey3(pub CompressedCurvePoint);
 
 #[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug)]
-pub struct Signature((FieldPoint, InnerCurveScalar));
+pub struct Signature(pub (FieldPoint, InnerCurveScalar));
 
 impl Signature {
     /// field_point
@@ -79,9 +56,9 @@ impl Base58Encodable for Signature {
     const MINA_VERSION_BYTE_COUNT: usize = 1;
 
     fn write_encodable_bytes(&self, output: &mut Vec<u8>) {
-        let field_point_bytes: &[u8; 32] = self.0 .0 .0.as_ref();
+        let field_point_bytes: &[u8; 32] = &self.0.0.0;
         output.extend(field_point_bytes);
-        let inner_curve_scalar_bytes: &[u8; 32] = self.0 .1 .0.as_ref();
+        let inner_curve_scalar_bytes: &[u8; 32] = &self.0 .1 .0;
         output.extend(inner_curve_scalar_bytes);
     }
 }
@@ -98,8 +75,9 @@ impl From<Vec<u8>> for Signature {
     }
 }
 
-#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug)]
-pub struct FieldPoint(BaseHash);
+#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, From, Into)]
+#[into(owned, ref)]
+pub struct FieldPoint([u8; 32]);
 
 impl AsRef<[u8]> for FieldPoint {
     fn as_ref(&self) -> &[u8] {
@@ -107,8 +85,9 @@ impl AsRef<[u8]> for FieldPoint {
     }
 }
 
-#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug)]
-pub struct InnerCurveScalar(BaseHash);
+#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, From, Into)]
+#[into(owned, ref)]
+pub struct InnerCurveScalar(pub [u8; 32]);
 
 impl AsRef<[u8]> for InnerCurveScalar {
     fn as_ref(&self) -> &[u8] {

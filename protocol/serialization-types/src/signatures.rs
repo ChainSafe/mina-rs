@@ -18,7 +18,7 @@ pub struct CompressedCurvePoint {
 
 /// Wrapper type for field element denoting it is on the curves scalar field
 #[derive(Debug, Serialize, Deserialize, PartialEq)]
-pub struct InnerCurveScalar(FieldElement);
+pub struct InnerCurveScalar(pub FieldElement);
 
 /// Public key (v1)
 pub type PublicKeyV1 = Versioned<Versioned<CompressedCurvePoint, 1>, 1>;

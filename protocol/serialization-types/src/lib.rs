@@ -46,7 +46,7 @@ pub mod v1 {
         ScalarChallengeVector2V1,
     };
     pub use super::common::{
-        AmountV1, BigInt256, BlockTimeV1, ByteVecV1, CharV1, DeltaV1, ExtendedU32, ExtendedU64_2,
+        AmountV1, BigInt256, BlockTimeV1, ByteVecV1, CharV1, DeltaV1, ExtendedU32, ExtendedU64, ExtendedU64_2,
         ExtendedU64_3, GlobalSlotNumberV1, Hash2V1, HashV1, Hex64V1, LengthV1, TokenIdV1,
     };
     pub use super::consensus_state::{ConsensusStateV1, VrfOutputTruncatedV1};
@@ -80,6 +80,6 @@ pub mod v1 {
         SignedCommandV1, StagedLedgerDiffTupleV1, StagedLedgerDiffV1, StagedLedgerPreDiffOneV1,
         StagedLedgerPreDiffTwoV1, TransactionSnarkWork, TransactionStatusAppliedV1,
         TransactionStatusAuxiliaryDataV1, TransactionStatusBalanceDataV1, TransactionStatusV1,
-        UserCommandV1, UserCommandWithStatusV1,
+        UserCommandV1, UserCommandWithStatusV1, SignedCommandPayloadV1,
     };
 }
