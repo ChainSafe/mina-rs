@@ -1,20 +1,19 @@
-use versioned::Versioned;
 use crate::types::*;
 use mina_serialization_types::v1::*;
-
+use versioned::Versioned;
 
 impl From<ExternalTransition> for ExternalTransitionV1 {
     fn from(t: ExternalTransition) -> Self {
         ExternalTransitionV1(Versioned::new(
-            mina_serialization_types::external_transition::ExternalTransition{
+            mina_serialization_types::external_transition::ExternalTransition {
                 protocol_state: t.protocol_state.into(),
                 protocol_state_proof: t.protocol_state_proof.into(),
                 staged_ledger_diff: t.staged_ledger_diff.into(),
                 delta_transition_chain_proof: t.delta_transition_chain_proof.into(),
                 current_protocol_version: t.current_protocol_version.into(),
                 proposed_protocol_version_opt: t.proposed_protocol_version_opt.map(Into::into),
-                validation_callback: (),           
-            }
+                validation_callback: (),
+            },
         ))
     }
 }
@@ -33,12 +32,12 @@ impl From<ExternalTransitionV1> for ExternalTransition {
 
 impl From<SignedCommand> for SignedCommandV1 {
     fn from(t: SignedCommand) -> Self {
-        SignedCommandV1::new(    
+        SignedCommandV1::new(
             mina_serialization_types::staged_ledger_diff::SignedCommand {
                 payload: t.payload.into(),
                 signer: t.signer.into(),
                 signature: t.signature.into(),
-            }
+            },
         )
     }
 }
@@ -56,7 +55,9 @@ impl From<UserCommand> for UserCommandV1 {
     fn from(t: UserCommand) -> Self {
         use mina_serialization_types::staged_ledger_diff::UserCommand as UC;
         match t {
-            UserCommand::SignedCommand(sc) => Self::new(Versioned::new(UC::SignedCommand(sc.into()))),
+            UserCommand::SignedCommand(sc) => {
+                Self::new(Versioned::new(UC::SignedCommand(sc.into())))
+            }
             _ => unimplemented!(),
         }
     }
@@ -73,11 +74,11 @@ impl From<UserCommandV1> for UserCommand {
 
 impl From<UserCommandWithStatus> for UserCommandWithStatusV1 {
     fn from(t: UserCommandWithStatus) -> Self {
-        UserCommandWithStatusV1::new(    
+        UserCommandWithStatusV1::new(
             mina_serialization_types::staged_ledger_diff::UserCommandWithStatus {
                 data: t.data.into(),
-                status: t.status.into(),1
-            }
+                status: t.status.into(),
+            },
         )
     }
 }
@@ -92,16 +93,18 @@ impl From<UserCommandWithStatusV1> for UserCommandWithStatus {
 
 impl From<StagedLedgerPreDiffTwo> for StagedLedgerPreDiffTwoV1 {
     fn from(t: StagedLedgerPreDiffTwo) -> Self {
-        StagedLedgerPreDiffTwoV1::new(    
-            Versioned::new(
-                mina_serialization_types::staged_ledger_diff::StagedLedgerPreDiffTwo {
-                    completed_works: t.completed_works.into_iter().map(Into::into).collect(),
-                    commands: t.commands.into_iter().map(Into::into).collect(),
-                    coinbase: t.coinbase.into(),
-                    internal_command_balances: t.internal_command_balances.into_iter().map(Into::into).collect(),
-                }
-            )
-        )
+        StagedLedgerPreDiffTwoV1::new(Versioned::new(
+            mina_serialization_types::staged_ledger_diff::StagedLedgerPreDiffTwo {
+                completed_works: t.completed_works.into_iter().map(Into::into).collect(),
+                commands: t.commands.into_iter().map(Into::into).collect(),
+                coinbase: t.coinbase.into(),
+                internal_command_balances: t
+                    .internal_command_balances
+                    .into_iter()
+                    .map(Into::into)
+                    .collect(),
+            },
+        ))
     }
 }
 impl From<StagedLedgerPreDiffTwoV1> for StagedLedgerPreDiffTwo {
@@ -110,16 +113,20 @@ impl From<StagedLedgerPreDiffTwoV1> for StagedLedgerPreDiffTwo {
             completed_works: t.t.t.completed_works.into_iter().map(Into::into).collect(),
             commands: t.t.t.commands.into_iter().map(Into::into).collect(),
             coinbase: t.t.t.coinbase.into(),
-            internal_command_balances: t.t.t.internal_command_balances.into_iter().map(Into::into).collect(), 
+            internal_command_balances: t
+                .t
+                .t
+                .internal_command_balances
+                .into_iter()
+                .map(Into::into)
+                .collect(),
         }
     }
 }
 
 impl From<StagedLedgerDiffTuple> for StagedLedgerDiffTupleV1 {
     fn from(t: StagedLedgerDiffTuple) -> Self {
-        StagedLedgerDiffTupleV1::new(    
-        	(t.0.0.into(), t.0.1.into())
-        )
+        StagedLedgerDiffTupleV1::new((t.0 .0.into(), t.0 .1.into()))
     }
 }
 impl From<StagedLedgerDiffTupleV1> for StagedLedgerDiffTuple {
@@ -130,17 +137,17 @@ impl From<StagedLedgerDiffTupleV1> for StagedLedgerDiffTuple {
 
 impl From<StagedLedgerDiff> for StagedLedgerDiffV1 {
     fn from(t: StagedLedgerDiff) -> Self {
-        StagedLedgerDiffV1::new(    
+        StagedLedgerDiffV1::new(
             mina_serialization_types::staged_ledger_diff::StagedLedgerDiff {
-            	diff: t.diff.into()
-            }
+                diff: t.diff.into(),
+            },
         )
     }
 }
 impl From<StagedLedgerDiffV1> for StagedLedgerDiff {
     fn from(t: StagedLedgerDiffV1) -> Self {
         StagedLedgerDiff {
-        	diff: t.t.diff.into()
+            diff: t.t.diff.into(),
         }
     }
 }
@@ -160,21 +167,21 @@ impl From<DeltaTransitionChainProofV1> for crate::types::DeltaTransitionChainPro
 
 impl From<ProtocolVersion> for ProtocolVersionV1 {
     fn from(t: ProtocolVersion) -> Self {
-        ProtocolVersionV1::new(    
+        ProtocolVersionV1::new(
             mina_serialization_types::protocol_version::ProtocolVersion {
-            	major: t.major,
-            	minor: t.minor,
-            	patch: t.patch,
-            }
+                major: t.major,
+                minor: t.minor,
+                patch: t.patch,
+            },
         )
     }
 }
 impl From<ProtocolVersionV1> for ProtocolVersion {
     fn from(t: ProtocolVersionV1) -> Self {
         ProtocolVersion {
-        	major: t.t.major,
-        	minor: t.t.minor,
-        	patch: t.t.patch,
+            major: t.t.major,
+            minor: t.t.minor,
+            patch: t.t.patch,
         }
     }
 }

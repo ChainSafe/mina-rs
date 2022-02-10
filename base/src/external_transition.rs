@@ -3,8 +3,8 @@
 
 //! Mina ExternalTransition
 
-use serde::{Deserialize, Serialize};
 use crate::types::*;
+use serde::{Deserialize, Serialize};
 
 /// This structure represents a mina block
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]

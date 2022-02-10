@@ -4,7 +4,7 @@
 //! Delta transition chain proof structures and functions
 
 use crate::v1::HashV1;
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 
 /// Proof that the block was produced within the allotted slot time
 #[derive(Debug, Serialize, Deserialize, PartialEq)]

@@ -21,10 +21,10 @@ pub mod numbers;
 pub mod protocol_state;
 pub mod protocol_state_proof;
 pub mod protocol_version;
+mod serialization_type_conversions;
 pub mod staged_ledger_diff;
 pub mod token_id;
 pub mod verification_key;
-mod serialization_type_conversions;
 
 /// Re-export all the public types under this module for convenience
 pub mod types {

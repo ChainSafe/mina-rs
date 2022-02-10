@@ -4,7 +4,7 @@
 //! Delta transition chain proof structures and functions
 
 use mina_crypto::hash::StateHash;
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 
 /// Proof that the block was produced within the allotted slot time
 #[derive(Clone, Debug, Default, Serialize, Deserialize, PartialEq)]
