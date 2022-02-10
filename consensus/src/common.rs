@@ -224,14 +224,14 @@ impl Consensus for ProtocolStateChain {
             .ok_or(ConsensusError::ConsensusStateNotFound)?;
         let a_prev_lock_checkpoint = &a.staking_epoch_data.lock_checkpoint;
         let b_prev_lock_checkpoint = &b.staking_epoch_data.lock_checkpoint;
-        let b_curr_lock_checkpoint = &b.next_epoch_data.lock_checkpoint;
+        let _b_curr_lock_checkpoint = &b.next_epoch_data.lock_checkpoint;
 
-        let check = |s0_lock_checkpoint, s1_next_epoch_lock_checkpoint| {
-            if a.epoch_count.0 == b.epoch_count.0 + 1
-                && candidate.epoch_slot() >= Some(Self::CONSTANTS.slots_per_epoch.0 * 2 / 3)
+        let check = |s1: &ConsensusState, s2: &ConsensusState, s2_epoch_slot: Option<u32>| {
+            if s1.epoch_count.0 == s2.epoch_count.0 + 1
+                && s2_epoch_slot >= Some(Self::CONSTANTS.slots_per_epoch.0 * 2 / 3)
             {
-                // S0 is one epoch ahead of S1 and S1 is not in the seed update range
-                s0_lock_checkpoint == s1_next_epoch_lock_checkpoint
+                // S1 is one epoch ahead of S2 and S2 is not in the seed update range
+                s1.staking_epoch_data.lock_checkpoint == s2.next_epoch_data.lock_checkpoint
             } else {
                 false
             }
@@ -242,8 +242,7 @@ impl Consensus for ProtocolStateChain {
             Ok(a_prev_lock_checkpoint == b_prev_lock_checkpoint)
         } else {
             // Check for previous epoch case using both orientations
-            Ok(check(a_prev_lock_checkpoint, b_curr_lock_checkpoint)
-                || check(b_curr_lock_checkpoint, a_prev_lock_checkpoint))
+            Ok(check(&a, &b, candidate.epoch_slot()) || check(&b, &a, self.epoch_slot()))
         }
     }
 }
