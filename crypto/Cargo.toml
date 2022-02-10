@@ -6,6 +6,12 @@ version = "0.1.0"
 edition = "2021"
 license = "Apache-2.0"
 
+[features]
+default = []
+
+# browser feature is used to run wasm tests in headless browser context
+browser = []
+
 [dependencies]
 bin-prot = {path = "../protocol/bin-prot"}
 wire-type = {path = "../protocol/wire-type"}
@@ -24,3 +30,7 @@ thiserror = "1"
 
 [dev-dependencies]
 num-bigint = "0.4"
+wasm-bindgen-test = "0.3"
+
+[target.'cfg(target_arch = "wasm32")'.dependencies]
+getrandom = {version = "0.2", features = ["js"]}

@@ -6,13 +6,21 @@ version = "0.1.0"
 edition = "2021"
 license = "Apache-2.0"
 
+[features]
+default = []
+
+# browser feature is used to run wasm tests in headless browser context
+browser = []
+
 [dependencies]
+mina-crypto = {path = "../../crypto"}# TODO: Try and remove this dep
 versioned = {path = "../versioned"}
+
 serde = {version = "1", features = ["derive"]}
-mina-crypto = {path = "../../crypto"} # TODO: Try and remove this dep
 
 [dev-dependencies]
-wasm-bindgen-test = "0.3"
 bin-prot = {path = "../bin-prot"}
 test-fixtures = {path = "../test-fixtures"}
+
 pretty_assertions = "1"
+wasm-bindgen-test = "0.3"

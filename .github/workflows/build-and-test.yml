@@ -125,14 +125,24 @@ jobs:
       - run: cargo doc --no-deps --release --all-features --target wasm32-unknown-unknown --manifest-path apps/Cargo.toml
       - name: Install wasm-pack
         run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
-      - name: wasm-pack tests for test-serialization
-        run: |
-          cd protocol/test-serialization
-          wasm-pack test --node --release
-          wasm-pack test --headless --chrome --release --features browser
       - name: wasm-pack tests for consensus
         run: |
           cd consensus
+          wasm-pack test --node --release
+          wasm-pack test --headless --chrome --release --features browser
+      - name: wasm-pack tests for crypto
+        run: |
+          cd crypto
+          wasm-pack test --node --release
+          wasm-pack test --headless --chrome --release --features browser
+      - name: wasm-pack tests for serialization-types
+        run: |
+          cd protocol/serialization-types
+          wasm-pack test --node --release
+          wasm-pack test --headless --chrome --release --features browser
+      - name: wasm-pack tests for test-serialization
+        run: |
+          cd protocol/test-serialization
           wasm-pack test --node --release
           wasm-pack test --headless --chrome --release --features browser
   codecov-x86_64:

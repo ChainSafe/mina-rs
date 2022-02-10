@@ -15,3 +15,6 @@ mod constants;
 pub mod density;
 pub mod error;
 pub mod genesis;
+
+#[cfg(all(test, feature = "browser"))]
+wasm_bindgen_test::wasm_bindgen_test_configure!(run_in_browser);

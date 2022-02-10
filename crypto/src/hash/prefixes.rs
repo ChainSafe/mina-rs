@@ -1,10 +1,6 @@
 // Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
-use ark_ff::{biginteger::BigInteger256, FromBytes};
-use mina_curves::pasta::*;
-use oracle::poseidon::*;
-
 const PREFIX_BYTE_LEN: usize = 20;
 const PADDING_CHAR: u8 = b'*';
 
@@ -86,35 +82,4 @@ pub fn make_prefix_merkle_tree(i: usize) -> HashPrefix {
 pub fn make_prefix_coinbase_merkle_tree(i: usize) -> HashPrefix {
     let base = format!("CodaCbMklTree{:03}", i);
     create(base.as_bytes())
-}
-
-/// Converts prefix string to field type of pasta elliptic curve
-pub fn prefix_to_field(s: &[u8]) -> Result<mina_curves::pasta::Fp, std::io::Error> {
-    const LEN: usize = 32;
-    let mut bytes = [0_u8; LEN];
-    for (i, &b) in s.iter().enumerate().take(LEN) {
-        bytes[i] = b;
-    }
-
-    let big = BigInteger256::read(bytes.as_slice())?;
-    Ok(big.into())
-}
-
-/// Gets hash state from prefix string
-pub fn salt(s: &[u8]) -> Result<Vec<Fp>, std::io::Error> {
-    let f = prefix_to_field(s)?;
-    let mut hash =
-        ArithmeticSponge::<Fp, PlonkSpongeConstantsBasic>::new(oracle::pasta::fp::params());
-    hash.absorb(&[f]);
-    hash.squeeze();
-    Ok(hash.state)
-}
-
-/// Calculates hash of given fields with init state
-pub fn hash(init: Vec<Fp>, fields: &[Fp]) -> Fp {
-    let mut hash =
-        ArithmeticSponge::<Fp, PlonkSpongeConstantsBasic>::new(oracle::pasta::fp::params());
-    hash.state = init;
-    hash.absorb(fields);
-    hash.squeeze()
 }

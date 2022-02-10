@@ -21,3 +21,6 @@ pub mod prelude {
     pub use crate::binprot::BinProtEncodable;
     pub use crate::hex::HexEncodable;
 }
+
+#[cfg(all(test, feature = "browser"))]
+wasm_bindgen_test::wasm_bindgen_test_configure!(run_in_browser);
