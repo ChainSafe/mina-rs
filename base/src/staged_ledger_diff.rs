@@ -171,7 +171,7 @@ impl Default for TransactionStatus {
 }
 
 #[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug)]
-pub struct TransactionStatusApplied((TransactionStatusAuxiliaryData, TransactionStatusBalanceData));
+pub struct TransactionStatusApplied(pub (TransactionStatusAuxiliaryData, TransactionStatusBalanceData));
 
 impl TransactionStatusApplied {
     pub fn auxiliary_data(&self) -> &TransactionStatusAuxiliaryData {
@@ -187,7 +187,7 @@ impl TransactionStatusApplied {
 pub struct TransactionStatusAuxiliaryData {
     pub fee_payer_account_creation_fee_paid: Option<Amount>,
     pub receiver_account_creation_fee_paid: Option<Amount>,
-    pub created_token: Option<ExtendedU64>,
+    pub created_token: Option<TokenId>,
 }
 
 #[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug)]

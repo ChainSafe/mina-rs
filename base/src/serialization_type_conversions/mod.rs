@@ -77,9 +77,16 @@ impl From<SignedCommandPayloadBodyV1> for SignedCommandPayloadBody {
     }
 }
 
+impl From<SignedCommandMemo> for SignedCommandMemoV1 {
+    fn from(t: SignedCommandMemo) -> Self {
+        Self::new(t.0)
+    }
+}
+
 impl From<SignedCommandPayloadCommon> for SignedCommandPayloadCommonV1 {
     fn from(t: SignedCommandPayloadCommon) -> Self {
         SignedCommandPayloadCommonV1::new(
+            Versioned::new(Versioned::new(
             mina_serialization_types::staged_ledger_diff::SignedCommandPayloadCommon {
                 fee: t.fee.into(),
                 fee_token: t.fee_token.into(),
@@ -88,6 +95,7 @@ impl From<SignedCommandPayloadCommon> for SignedCommandPayloadCommonV1 {
                 valid_until: t.valid_until.into(),
                 memo: t.memo.into(),
             },
+            ))
         )
     }
 }
@@ -162,6 +170,59 @@ impl From<UserCommandV1> for UserCommand {
         use mina_serialization_types::staged_ledger_diff::UserCommand as UC;
         match t.t.t {
             UC::SignedCommand(sc) => Self::SignedCommand(sc.into()),
+            _ => unimplemented!(),
+        }
+    }
+}
+
+impl From<TransactionStatusAuxiliaryData> for TransactionStatusAuxiliaryDataV1 {
+    fn from(t: TransactionStatusAuxiliaryData) -> Self {
+        TransactionStatusAuxiliaryDataV1::new(
+            mina_serialization_types::staged_ledger_diff::TransactionStatusAuxiliaryData {
+                fee_payer_account_creation_fee_paid: t.fee_payer_account_creation_fee_paid.map(Into::into),
+                receiver_account_creation_fee_paid: t.receiver_account_creation_fee_paid.map(Into::into),
+                created_token: t.created_token.map(Into::into),
+            },
+        )
+    }
+}
+impl From<TransactionStatusAuxiliaryDataV1> for TransactionStatusAuxiliaryData {
+    fn from(t: TransactionStatusAuxiliaryDataV1) -> Self {
+        Self {
+            fee_payer_account_creation_fee_paid: t.t.fee_payer_account_creation_fee_paid.map(Into::into),
+            receiver_account_creation_fee_paid: t.t.receiver_account_creation_fee_paid.map(Into::into),
+            created_token: t.t.created_token.map(Into::into),
+        }
+    }
+}
+
+impl From<TransactionStatusApplied> for TransactionStatusAppliedV1 {
+    fn from(t: TransactionStatusApplied) -> Self {
+        TransactionStatusAppliedV1((t.0.0.into(), t.0.1.into()))
+    }
+}
+impl From<TransactionStatusAppliedV1> for TransactionStatusApplied {
+    fn from(t: TransactionStatusAppliedV1) -> Self {
+        Self ((t.0.0.into(), t.0.1.into()))
+    }
+}
+
+impl From<TransactionStatus> for TransactionStatusV1 {
+    fn from(t: TransactionStatus) -> Self {
+        use mina_serialization_types::staged_ledger_diff::TransactionStatus as TS;
+        match t {
+            TransactionStatus::Applied(sc) => {
+                Self::new(TS::Applied(sc.into()))
+            }
+            _ => unimplemented!(),
+        }
+    }
+}
+impl From<TransactionStatusV1> for TransactionStatus {
+    fn from(t: TransactionStatusV1) -> Self {
+        use mina_serialization_types::staged_ledger_diff::TransactionStatus as TS;
+        match t.t {
+            TS::Applied(a) => Self::Applied(a.into()),
             _ => unimplemented!(),
         }
     }
