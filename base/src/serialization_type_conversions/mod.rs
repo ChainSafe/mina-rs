@@ -31,6 +31,90 @@ impl From<ExternalTransitionV1> for ExternalTransition {
     }
 }
 
+impl From<SignedCommand> for SignedCommandV1 {
+    fn from(t: SignedCommand) -> Self {
+        SignedCommandV1::new(    
+            mina_serialization_types::staged_ledger_diff::SignedCommand {
+                payload: t.payload.into(),
+                signer: t.signer.into(),
+                signature: t.signature.into(),
+            }
+        )
+    }
+}
+impl From<SignedCommandV1> for SignedCommand {
+    fn from(t: SignedCommandV1) -> Self {
+        Self {
+            payload: t.t.t.payload.into(),
+            signer: t.t.t.signer.into(),
+            signature: t.t.t.signature.into(),
+        }
+    }
+}
+
+impl From<UserCommand> for UserCommandV1 {
+    fn from(t: UserCommand) -> Self {
+        use mina_serialization_types::staged_ledger_diff::UserCommand as UC;
+        match t {
+            UserCommand::SignedCommand(sc) => Self::new(Versioned::new(UC::SignedCommand(sc.into()))),
+            _ => unimplemented!(),
+        }
+    }
+}
+impl From<UserCommandV1> for UserCommand {
+    fn from(t: UserCommandV1) -> Self {
+        use mina_serialization_types::staged_ledger_diff::UserCommand as UC;
+        match t.t.t {
+            UC::SignedCommand(sc) => Self::SignedCommand(sc.into()),
+            _ => unimplemented!(),
+        }
+    }
+}
+
+impl From<UserCommandWithStatus> for UserCommandWithStatusV1 {
+    fn from(t: UserCommandWithStatus) -> Self {
+        UserCommandWithStatusV1::new(    
+            mina_serialization_types::staged_ledger_diff::UserCommandWithStatus {
+                data: t.data.into(),
+                status: t.status.into(),1
+            }
+        )
+    }
+}
+impl From<UserCommandWithStatusV1> for UserCommandWithStatus {
+    fn from(t: UserCommandWithStatusV1) -> Self {
+        Self {
+            data: t.t.data.into(),
+            status: t.t.status.into(),
+        }
+    }
+}
+
+impl From<StagedLedgerPreDiffTwo> for StagedLedgerPreDiffTwoV1 {
+    fn from(t: StagedLedgerPreDiffTwo) -> Self {
+        StagedLedgerPreDiffTwoV1::new(    
+            Versioned::new(
+                mina_serialization_types::staged_ledger_diff::StagedLedgerPreDiffTwo {
+                    completed_works: t.completed_works.into_iter().map(Into::into).collect(),
+                    commands: t.commands.into_iter().map(Into::into).collect(),
+                    coinbase: t.coinbase.into(),
+                    internal_command_balances: t.internal_command_balances.into_iter().map(Into::into).collect(),
+                }
+            )
+        )
+    }
+}
+impl From<StagedLedgerPreDiffTwoV1> for StagedLedgerPreDiffTwo {
+    fn from(t: StagedLedgerPreDiffTwoV1) -> Self {
+        Self {
+            completed_works: t.t.t.completed_works.into_iter().map(Into::into).collect(),
+            commands: t.t.t.commands.into_iter().map(Into::into).collect(),
+            coinbase: t.t.t.coinbase.into(),
+            internal_command_balances: t.t.t.internal_command_balances.into_iter().map(Into::into).collect(), 
+        }
+    }
+}
+
 impl From<StagedLedgerDiffTuple> for StagedLedgerDiffTupleV1 {
     fn from(t: StagedLedgerDiffTuple) -> Self {
         StagedLedgerDiffTupleV1::new(    
