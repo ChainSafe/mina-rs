@@ -3,5 +3,6 @@
 [workspace]
 members = [
   "profilers",
+  "bin-prot-layout-reader",
 ]
 resolver = "2"
