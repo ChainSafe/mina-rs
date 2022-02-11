@@ -7,7 +7,7 @@ use std::io::Read;
 
 use crate::de::{Enum, LooselyTyped, MapAccess, SeqAccess};
 use crate::error::{Error, Result};
-use crate::value::layout::BinProtRule;
+use crate::value::layout::{BinProtRule, Polyvar};
 use crate::value::layout::Summand;
 use crate::Deserializer as DS;
 use crate::ReadBinProtExt;
@@ -52,6 +52,22 @@ impl<'de, 'a, R: Read> DS<R, LooselyTyped> {
                             .push(vec![BinProtRule::Tuple(variant_rules)]);
                         visitor.visit_enum(ValueEnum::new(self, summands[index as usize].clone()))
                     }
+                    BinProtRule::Polyvar(summands) => {
+                        let tag = self.rdr.bin_read_polyvar_tag()?;
+                        let (index, variant) = summands.into_iter().enumerate().find_map(|(i, v)| {
+                            match v {
+                                Polyvar::Tagged(t) => {
+                                    // return the first tagged variant where the tag matches
+                                    if t.hash == tag { Some((i, t)) } else { None }
+                                }
+                                Polyvar::Inherited(_) => unimplemented!() // don't know how to handle these yet
+                            }
+                        }).ok_or(Error::UnknownPolyvarTag(tag))?;
+                        self.mode
+                            .layout_iter
+                            .push(vec![BinProtRule::Tuple(variant.clone().polyvar_args)]);                        
+                        visitor.visit_enum(ValueEnum::new(self, variant.to_summand(index)))
+                    }
                     BinProtRule::Option(some_rule) => {
                         let index = self.rdr.bin_read_variant_index()?; // 0 or 1
                         match index {
@@ -81,8 +97,7 @@ impl<'de, 'a, R: Read> DS<R, LooselyTyped> {
                     | BinProtRule::Int32
                     | BinProtRule::Int64
                     | BinProtRule::NativeInt => visitor.visit_i64(self.rdr.bin_read_integer()?),
-                    BinProtRule::Polyvar(_)
-                    | BinProtRule::Vec(_, _)
+                    BinProtRule::Vec(_, _)
                     | BinProtRule::Nat0
                     | BinProtRule::Hashtable(_)
                     | BinProtRule::TypeVar(_)

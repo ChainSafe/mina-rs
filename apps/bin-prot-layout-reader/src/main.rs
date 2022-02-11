@@ -60,6 +60,7 @@ fn main() -> Result<()> {
     // fallback to binary interpretation
     let bytes = if let Ok(hex_bytes) = hex::decode(&buffer) {
         info!("Identified HEX encoded string input");
+        println!("{:?}", hex_bytes);
         hex_bytes
     } else {
         info!("Interpreting binary as raw bytes");
