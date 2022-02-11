@@ -243,6 +243,6 @@ impl<'de, 'a, R: Read> serde::de::EnumAccess<'de> for ValueEnum<'a, R, LooselyTy
         let mut de = DS::from_reader(buf.as_slice());
         let v = seed.deserialize(&mut de)?;
 
-        Ok((v, Enum::new(self.de, index.try_into().unwrap())))
+        Ok((v, Enum::new(self.de, index)))
     }
 }
