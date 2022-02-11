@@ -58,7 +58,7 @@ impl<'de, 'a, R: Read> DS<R, LooselyTyped> {
                             match v {
                                 Polyvar::Tagged(t) => {
                                     // return the first tagged variant where the tag matches
-                                    if t.hash == tag { Some((i, t)) } else { None }
+                                    if t.hash.to_u32() == tag { Some((i, t)) } else { None }
                                 }
                                 Polyvar::Inherited(_) => unimplemented!() // don't know how to handle these yet
                             }
