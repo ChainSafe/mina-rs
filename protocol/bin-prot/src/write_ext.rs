@@ -119,6 +119,11 @@ pub trait WriteBinProtExt: io::Write {
     fn bin_write_variant_index(&mut self, i: u8) -> Result<usize, io::Error> {
         self.write_u8(i).map(|_| 1) // truncating downcast
     }
+
+    /// For Polyvar types write the 4 bytes of the tag/hash for a variant
+    fn bin_write_polyvar_tag(&mut self, i: u32) -> Result<usize, io::Error> {
+        self.write(&i.to_le_bytes()).map(|_| 4) // truncating downcast
+    }
 }
 
 /// All types that implement `Write` get methods defined in `WriteBinProtIntegerExt`

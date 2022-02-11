@@ -112,7 +112,6 @@ pub trait ReadBinProtExt: io::Read {
     fn bin_read_polyvar_tag(&mut self) -> Result<u32> {
         let mut buf = [0_u8; 4];
         self.read_exact(&mut buf)?;
-        println!("Reading polyvar tag {} = {:?}", u32::from_le_bytes(buf), &buf);
         Ok(u32::from_le_bytes(buf))
     }
 
