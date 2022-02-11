@@ -80,7 +80,10 @@ fn main() -> Result<()> {
         let mut reserialized_bytes = Vec::<u8>::new();
         bin_prot::to_writer(&mut reserialized_bytes, &result)
             .context("Failed to write result back to binary")?;
-        assert_eq!(bytes, reserialized_bytes, "Reserialized binary is not identical to the original!");
+        assert_eq!(
+            bytes, reserialized_bytes,
+            "Reserialized binary is not identical to the original!"
+        );
     }
 
     // pretty print the result (or write to a file)
