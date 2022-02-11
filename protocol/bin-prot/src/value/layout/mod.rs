@@ -191,19 +191,6 @@ pub enum Polyvar {
     Inherited(BinProtRule),
 }
 
-impl TaggedPolyvar {
-    /// Convert a tagged polyvar to a summand since Rust has no concept of polvar types
-    /// they can be represented as an enum instead for now
-    /// Note: This is not perfect since it means round-trips are not possible!
-    pub fn to_summand(self, index: usize) -> Summand {
-        Summand {
-            ctor_name: self.polyvar_name,
-            index: index as i32,
-            ctor_args: self.polyvar_args,
-        }
-    }
-}
-
 #[derive(Clone, Serialize, Deserialize, Debug)]
 /// A polyvar hash identifies a variant in a polyvar rather than
 /// an index in a sum type
