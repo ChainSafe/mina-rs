@@ -115,15 +115,20 @@ impl<'de> Visitor<'de> for ValueVisitor {
         // the variant access can be used to retrieve the correct content based on this
 
         match payload {
-            EnumData::Sum{index, name, len} => {
+            EnumData::Sum { index, name, len } => {
                 let body = variant_access.tuple_variant(len, self)?;
                 Ok(Value::Sum {
                     name,
                     index,
                     value: Box::new(body),
                 })
-            },
-            EnumData::Polyvar{ index: _, tag, name, len } => {
+            }
+            EnumData::Polyvar {
+                index: _,
+                tag,
+                name,
+                len,
+            } => {
                 let body = variant_access.tuple_variant(len, self)?;
                 Ok(Value::Polyvar {
                     name,

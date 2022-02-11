@@ -41,12 +41,10 @@ where
     fn write_variant_index_or_tag(&mut self, index: u32) -> Result<()> {
         if let Ok(b) = check_variant_index(index) {
             // it is a sum variant
-            self.writer
-            .bin_write_variant_index(b)?;
+            self.writer.bin_write_variant_index(b)?;
         } else {
             // assume it is a Polyvar tagged variant
-            self.writer
-            .bin_write_polyvar_tag(index)?;
+            self.writer.bin_write_polyvar_tag(index)?;
         }
         Ok(())
     }

@@ -59,7 +59,7 @@ pub enum Value {
         /// Polyvar variant tag (e.g. hash)
         tag: u32,
         /// value wrapped by variant
-        value: Box<Value>
+        value: Box<Value>,
     },
     /// List of types (variable length)
     List(Vec<Value>),

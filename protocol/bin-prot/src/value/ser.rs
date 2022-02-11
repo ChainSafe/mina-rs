@@ -52,7 +52,7 @@ impl Serialize for Value {
             Value::Polyvar {
                 name: _,
                 ref tag,
-                ref value
+                ref value,
             } => serializer.serialize_newtype_variant("", *tag as u32, "", value), // sum types/enums
             Value::List(ref v) => v.serialize(serializer),
         }

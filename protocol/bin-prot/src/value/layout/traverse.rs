@@ -47,8 +47,7 @@ impl Iterator for BinProtRuleIterator {
                     BinProtRule::Tuple(mut rules) => {
                         self.stack.extend(rules.drain(0..).rev());
                     }
-                    BinProtRule::Sum(_)
-                    | BinProtRule::Polyvar(_) => {
+                    BinProtRule::Sum(_) | BinProtRule::Polyvar(_) => {
                         // don't add to the stack. Add to the branch field instead
                         // this must be resolved by calling `branch` before the iterator can continue
                     }
