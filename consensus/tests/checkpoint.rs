@@ -36,9 +36,6 @@ mod tests {
 
     #[test]
     #[wasm_bindgen_test]
-    // FIXME: No way to tell wasm bindgen that the test should panic. CI fails here.
-    // https://github.com/rustwasm/wasm-bindgen/issues/2286
-    #[should_panic]
     fn short_range_fails_when_chains_are_one_epoch_apart_but_beyond_seed_update_range() {
         let mut chain_a = genesis_consensus_state();
         let a = &mut chain_a.0[0];
@@ -60,7 +57,7 @@ mod tests {
         b.body.consensus_state.staking_epoch_data.start_checkpoint =
             StateHash::from_base58("3NK2tkzqqK5spR2sZ7tujjqPksL45M3UUrcA4WhCkeiPtnugyE2x").unwrap();
 
-        assert!(chain_a.is_short_range(&chain_b).unwrap());
+        assert!(!chain_a.is_short_range(&chain_b).unwrap());
     }
 
     #[test]
