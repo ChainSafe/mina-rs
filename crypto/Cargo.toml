@@ -16,8 +16,8 @@ browser = []
 bin-prot = {path = "../protocol/bin-prot"}
 wire-type = {path = "../protocol/wire-type"}
 
-mina-curves = {git = "https://github.com/o1-labs/proof-systems", rev = "9b12fcecb9231bb5ab7c43fa3b504967669ef243"}
-oracle = {git = "https://github.com/o1-labs/proof-systems", rev = "9b12fcecb9231bb5ab7c43fa3b504967669ef243"}
+mina-curves = {git = "https://github.com/o1-labs/proof-systems", rev = "e0ab398798e8193833e46e55af83fa825031375e"}
+oracle = {git = "https://github.com/o1-labs/proof-systems", rev = "e0ab398798e8193833e46e55af83fa825031375e"}
 
 ark-ff = "0.3"
 base64 = "0.13"
