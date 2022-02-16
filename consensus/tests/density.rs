@@ -1,3 +1,6 @@
+// Copyright 2020 ChainSafe Systems
+// SPDX-License-Identifier: Apache-2.0
+
 #[cfg(test)]
 mod tests {
     use mina_consensus::common::{Chain, Consensus, ProtocolStateChain};
@@ -9,13 +12,10 @@ mod tests {
     };
     use wasm_bindgen_test::*;
 
-    // use crate::common::{Chain, Consensus, ProtocolStateChain};
-
     #[test]
     #[wasm_bindgen_test]
     fn genesis_to_block_at_height_2120_density() {
         // constants from genesis state
-
         let mut chain_a = ConsensusState::default();
         chain_a.min_window_density = Length(77);
         chain_a.sub_window_densities = vec![
