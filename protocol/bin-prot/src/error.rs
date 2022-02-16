@@ -108,6 +108,10 @@ pub enum Error {
     #[error("Unimplemented rule")]
     UnimplementedRule,
 
+    /// When deserializing a polyvar the tag does not match any known tags for the type
+    #[error("Unrecognised Polyvar tag {0}")]
+    UnknownPolyvarTag(u32),
+
     //////////////////////////////////
     /// Some user-defined error occurred.
     #[error("{message}")]

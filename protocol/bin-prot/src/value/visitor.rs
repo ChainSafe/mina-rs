@@ -114,12 +114,28 @@ impl<'de> Visitor<'de> for ValueVisitor {
         // payload must encode the index and name in a deserializer
         // the variant access can be used to retrieve the correct content based on this
 
-        let body = variant_access.tuple_variant(payload.len, self)?;
-
-        Ok(Value::Sum {
-            name: payload.name,
-            index: payload.index,
-            value: Box::new(body),
-        })
+        match payload {
+            EnumData::Sum { index, name, len } => {
+                let body = variant_access.tuple_variant(len, self)?;
+                Ok(Value::Sum {
+                    name,
+                    index,
+                    value: Box::new(body),
+                })
+            }
+            EnumData::Polyvar {
+                index: _,
+                tag,
+                name,
+                len,
+            } => {
+                let body = variant_access.tuple_variant(len, self)?;
+                Ok(Value::Polyvar {
+                    name,
+                    tag,
+                    value: Box::new(body),
+                })
+            }
+        }
     }
 }

@@ -108,6 +108,13 @@ pub trait ReadBinProtExt: io::Read {
         self.read_u8().map_err(Error::Io)
     }
 
+    /// Read the tag of a polyvar variant (4 bytes)
+    fn bin_read_polyvar_tag(&mut self) -> Result<u32> {
+        let mut buf = [0_u8; 4];
+        self.read_exact(&mut buf)?;
+        Ok(u32::from_le_bytes(buf))
+    }
+
     /// Read a string
     fn bin_read_string(&mut self) -> Result<String> {
         let len = self.bin_read_nat0::<u64>()? as usize;
