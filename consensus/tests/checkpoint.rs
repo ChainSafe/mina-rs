@@ -140,6 +140,7 @@ mod tests {
     }
 
     #[test]
+    #[wasm_bindgen_test]
     fn short_range_fails_when_more_than_one_epoch_apart() {
         let mut chain_a = genesis_consensus_state();
         let a = &mut chain_a.0[0];

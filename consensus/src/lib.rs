@@ -10,6 +10,5 @@
 //!
 
 pub mod common;
-pub mod density;
 pub mod error;
 pub mod genesis;
