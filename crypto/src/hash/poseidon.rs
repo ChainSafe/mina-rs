@@ -14,7 +14,9 @@ pub fn prefix_to_field(s: &[u8]) -> Result<Fp, std::io::Error> {
     for (i, &b) in s.iter().enumerate().take(LEN) {
         bytes[i] = b;
     }
-
+    // Note that `read` fn requires input byte slice to be 256 bit
+    // Otherwise Error { kind: UnexpectedEof, message: "failed to fill whole buffer" }
+    // is returned
     let big = BigInteger256::read(bytes.as_slice())?;
     Ok(big.into())
 }
