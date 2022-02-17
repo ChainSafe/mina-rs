@@ -7,8 +7,8 @@ use std::io::Read;
 
 use crate::de::{Enum, LooselyTyped, MapAccess, SeqAccess};
 use crate::error::{Error, Result};
-use crate::value::layout::BinProtRule;
 use crate::value::layout::Summand;
+use crate::value::layout::{BinProtRule, Polyvar, TaggedPolyvar};
 use crate::Deserializer as DS;
 use crate::ReadBinProtExt;
 use serde::de::Visitor;
@@ -50,7 +50,37 @@ impl<'de, 'a, R: Read> DS<R, LooselyTyped> {
                         self.mode
                             .layout_iter
                             .push(vec![BinProtRule::Tuple(variant_rules)]);
-                        visitor.visit_enum(ValueEnum::new(self, summands[index as usize].clone()))
+                        visitor.visit_enum(ValueEnum::new(
+                            self,
+                            VariantType::Sum(summands[index as usize].clone()),
+                        ))
+                    }
+                    BinProtRule::Polyvar(summands) => {
+                        let tag = self.rdr.bin_read_polyvar_tag()?;
+                        let (index, variant) = summands
+                            .into_iter()
+                            .enumerate()
+                            .find_map(|(i, v)| {
+                                match v {
+                                    Polyvar::Tagged(t) => {
+                                        // return the first tagged variant where the tag matches
+                                        if t.hash.to_u32() == tag {
+                                            Some((i, t))
+                                        } else {
+                                            None
+                                        }
+                                    }
+                                    Polyvar::Inherited(_) => unimplemented!(), // don't know how to handle these yet
+                                }
+                            })
+                            .ok_or(Error::UnknownPolyvarTag(tag))?;
+                        self.mode
+                            .layout_iter
+                            .push(vec![BinProtRule::Tuple(variant.clone().polyvar_args)]);
+                        visitor.visit_enum(ValueEnum::new(
+                            self,
+                            VariantType::Polyvar(index as u8, variant),
+                        ))
                     }
                     BinProtRule::Option(some_rule) => {
                         let index = self.rdr.bin_read_variant_index()?; // 0 or 1
@@ -81,8 +111,7 @@ impl<'de, 'a, R: Read> DS<R, LooselyTyped> {
                     | BinProtRule::Int32
                     | BinProtRule::Int64
                     | BinProtRule::NativeInt => visitor.visit_i64(self.rdr.bin_read_integer()?),
-                    BinProtRule::Polyvar(_)
-                    | BinProtRule::Vec(_, _)
+                    BinProtRule::Vec(_, _)
                     | BinProtRule::Nat0
                     | BinProtRule::Hashtable(_)
                     | BinProtRule::TypeVar(_)
@@ -143,22 +172,35 @@ impl<'de, 'a, R: Read> DS<R, LooselyTyped> {
     }
 }
 
+pub enum VariantType {
+    Sum(Summand),
+    Polyvar(u8, TaggedPolyvar),
+}
+
 // for accessing enums when using the loosely typed method
 // to deserialize into a Value
 pub struct ValueEnum<'a, R: Read, Mode> {
     de: &'a mut DS<R, Mode>,
-    variant: Summand,
+    variant: VariantType,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
-pub struct EnumData {
-    pub index: u8,
-    pub name: String,
-    pub len: usize,
+pub enum EnumData {
+    Sum {
+        index: u8,
+        name: String,
+        len: usize,
+    },
+    Polyvar {
+        index: u8,
+        tag: u32,
+        name: String,
+        len: usize,
+    },
 }
 
 impl<'a, 'de, R: Read, Mode> ValueEnum<'a, R, Mode> {
-    fn new(de: &'a mut DS<R, Mode>, variant: Summand) -> Self {
+    fn new(de: &'a mut DS<R, Mode>, variant: VariantType) -> Self {
         Self { de, variant }
     }
 }
@@ -171,17 +213,29 @@ impl<'de, 'a, R: Read> serde::de::EnumAccess<'de> for ValueEnum<'a, R, LooselyTy
     where
         V: serde::de::DeserializeSeed<'de>,
     {
-        let index = self.variant.index;
-
         // bit of a hack here. visit_enum in the visitor is expecting to be able to
         // deserialize the enum details (e.g. variant index and name) from the stream.
         // Since in this case it comes from the layout file we need to serialize this data
         // and then return the deserializer to be handled by visit_enum
 
-        let enum_data = EnumData {
-            index: index.try_into().unwrap(),
-            name: self.variant.ctor_name,
-            len: self.variant.ctor_args.len(),
+        let (index, enum_data) = match self.variant {
+            VariantType::Sum(summand) => (
+                summand.index as u8,
+                EnumData::Sum {
+                    index: summand.index.try_into().unwrap(),
+                    name: summand.ctor_name,
+                    len: summand.ctor_args.len(),
+                },
+            ),
+            VariantType::Polyvar(index, polyvar) => (
+                index,
+                EnumData::Polyvar {
+                    index,
+                    tag: polyvar.hash.to_u32(),
+                    name: polyvar.polyvar_name,
+                    len: polyvar.polyvar_args.len(),
+                },
+            ),
         };
 
         let mut buf = Vec::<u8>::new();
@@ -189,6 +243,6 @@ impl<'de, 'a, R: Read> serde::de::EnumAccess<'de> for ValueEnum<'a, R, LooselyTy
         let mut de = DS::from_reader(buf.as_slice());
         let v = seed.deserialize(&mut de)?;
 
-        Ok((v, Enum::new(self.de, index.try_into().unwrap())))
+        Ok((v, Enum::new(self.de, index)))
     }
 }

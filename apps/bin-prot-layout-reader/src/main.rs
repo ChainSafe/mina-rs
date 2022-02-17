@@ -26,6 +26,10 @@ struct Opt {
     #[structopt(parse(from_os_str))]
     binary: PathBuf,
 
+    /// Test roundtrip
+    #[structopt(long, short)]
+    roundtrip: bool,
+
     /// Output file, stdout if not present
     #[structopt(long, short, parse(from_os_str))]
     output: Option<PathBuf>,
@@ -54,7 +58,7 @@ fn main() -> Result<()> {
         .with_context(|| format!("Could not open binary file to read: {:?}", opt.binary))?;
     let mut reader = BufReader::new(binary_file);
     let mut buffer = Vec::new();
-    reader.read_to_end(&mut buffer).unwrap();
+    reader.read_to_end(&mut buffer)?;
 
     // How to know which one to use? Try and decode hex first and if that fails
     // fallback to binary interpretation
@@ -70,6 +74,17 @@ fn main() -> Result<()> {
     let mut de = bin_prot::Deserializer::from_reader(&bytes[..]).with_layout(&layout.bin_prot_rule);
     let result: bin_prot::Value = Deserialize::deserialize(&mut de)
         .context("Failed to deserialize binary file with given layout")?;
+
+    if opt.roundtrip {
+        // check it can be serialized back to binary and the result is the same. Otherwise we have a problem.
+        let mut reserialized_bytes = Vec::<u8>::new();
+        bin_prot::to_writer(&mut reserialized_bytes, &result)
+            .context("Failed to write result back to binary")?;
+        assert_eq!(
+            bytes, reserialized_bytes,
+            "Reserialized binary is not identical to the original!"
+        );
+    }
 
     // pretty print the result (or write to a file)
     if let Some(out_path) = opt.output {

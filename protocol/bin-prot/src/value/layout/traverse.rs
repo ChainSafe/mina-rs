@@ -47,16 +47,12 @@ impl Iterator for BinProtRuleIterator {
                     BinProtRule::Tuple(mut rules) => {
                         self.stack.extend(rules.drain(0..).rev());
                     }
-                    BinProtRule::Sum(_summands) => {
+                    BinProtRule::Sum(_) | BinProtRule::Polyvar(_) => {
                         // don't add to the stack. Add to the branch field instead
                         // this must be resolved by calling `branch` before the iterator can continue
                     }
                     BinProtRule::Option(_r) => {
                         // Option is a special case of a Sum where the None variant contain nothing
-                    }
-                    BinProtRule::Polyvar(_polyvars) => {
-                        // these are pretty much anonymous enum/sum types and should be handled the same way
-                        unimplemented!();
                     }
                     BinProtRule::Reference(rule_ref) => match rule_ref {
                         RuleRef::Unresolved(_payload) => {
