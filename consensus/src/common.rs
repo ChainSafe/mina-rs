@@ -3,11 +3,14 @@
 
 //! Implements common APIs for the blockchain in the context of consensus.
 
+use std::collections::HashMap;
+
 use hex::ToHex;
 use mina_crypto::hash::{Hashable, StateHash};
 use mina_rs_base::consensus_state::ConsensusState;
 use mina_rs_base::global_slot::GlobalSlot;
 use mina_rs_base::protocol_state::{Header, ProtocolState};
+use mina_rs_base::types::ExternalTransition;
 
 use crate::checkpoint::is_short_range;
 use crate::density::{relative_min_window_density, ConsensusConstants};
@@ -179,4 +182,34 @@ impl Consensus for ProtocolStateChain {
 
         Ok(self)
     }
+}
+
+struct ForkTree<T> {
+    tree: Vec<T>,
+}
+
+impl<T> ForkTree<T> {
+    fn new() -> Self {
+        Self { tree: vec![] }
+    }
+}
+
+struct Peer {
+    genesis_block: ExternalTransition,
+    neighbours: HashMap<String, Peer>,
+    chains: ForkTree<ProtocolStateChain>,
+    tip: Option<ProtocolStateChain>,
+}
+
+impl Peer {
+    fn bootstrap() {
+        // TODO: load genesis block
+    }
+
+    fn catchup() {
+        // TODO: integrate select secure chain
+    }
+
+    // Top level API for Peer initialization
+    fn init() {}
 }
