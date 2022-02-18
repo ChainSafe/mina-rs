@@ -16,10 +16,12 @@ browser = []
 bin-prot = {path = "../protocol/bin-prot"}
 wire-type = {path = "../protocol/wire-type"}
 
-mina-curves = {git = "https://github.com/o1-labs/proof-systems", rev = "e0ab398798e8193833e46e55af83fa825031375e"}
-oracle = {git = "https://github.com/o1-labs/proof-systems", rev = "e0ab398798e8193833e46e55af83fa825031375e"}
+mina-curves = {git = "https://github.com/o1-labs/proof-systems", rev = "b7495933e70ae078eddedc43c59f867cb9bb78da"}
+# o1-utils = {git = "https://github.com/o1-labs/proof-systems", rev = "b7495933e70ae078eddedc43c59f867cb9bb78da"}
+oracle = {git = "https://github.com/o1-labs/proof-systems", rev = "b7495933e70ae078eddedc43c59f867cb9bb78da"}
 
-ark-ff = "0.3"
+ark-ec = "0.3"
+ark-serialize = "0.3"
 base64 = "0.13"
 blake2 = "0.10"
 bs58 = {version = "0.4", features = ["check"]}
@@ -29,6 +31,7 @@ serde = {version = "1", features = ["derive"]}
 thiserror = "1"
 
 [dev-dependencies]
+ark-ff = "0.3"
 num-bigint = "0.4"
 wasm-bindgen-test = "0.3"
 
