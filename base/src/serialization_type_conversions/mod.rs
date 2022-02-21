@@ -311,6 +311,28 @@ impl From<CoinBaseV1> for CoinBase {
     }
 }
 
+impl From<InternalCommandBalanceData> for InternalCommandBalanceDataV1 {
+    fn from(t: InternalCommandBalanceData) -> Self {
+        use mina_serialization_types::staged_ledger_diff::InternalCommandBalanceData as BD;
+        match t {
+            InternalCommandBalanceData::CoinBase(data) => Self::new(BD::CoinBase(data.into())),
+            InternalCommandBalanceData::FeeTransfer(data) => Self::new(BD::FeeTransfer(data.into())),
+
+            _ => unimplemented!(),
+        }
+    }
+}
+impl From<InternalCommandBalanceDataV1> for InternalCommandBalanceData {
+    fn from(t: InternalCommandBalanceDataV1) -> Self {
+        use mina_serialization_types::staged_ledger_diff::InternalCommandBalanceData as BD;
+        match t.t {
+            BD::CoinBase(data) => Self::CoinBase(data.into()),
+            BD::FeeTransfer(data) => Self::FeeTransfer(data.into()),
+            _ => unimplemented!(),
+        }
+    }
+}
+
 impl From<StagedLedgerPreDiffTwo> for StagedLedgerPreDiffTwoV1 {
     fn from(t: StagedLedgerPreDiffTwo) -> Self {
         StagedLedgerPreDiffTwoV1::new(Versioned::new(
