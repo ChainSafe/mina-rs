@@ -21,6 +21,7 @@ o1-utils = {git = "https://github.com/o1-labs/proof-systems", rev = "abe3e65375b
 oracle = {git = "https://github.com/o1-labs/proof-systems", rev = "abe3e65375b17e9fea3edc8d2be4d5288b20b440"}
 
 ark-ec = "0.3"
+ark-ff = "0.3"
 base64 = "0.13"
 blake2 = "0.10"
 bs58 = {version = "0.4", features = ["check"]}

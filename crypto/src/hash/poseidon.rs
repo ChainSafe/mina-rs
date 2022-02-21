@@ -2,7 +2,8 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use ark_ec::AffineCurve;
-use mina_curves::pasta::*;
+use ark_ff::{FpParameters, PrimeField};
+use mina_curves::pasta::vesta;
 use o1_utils::field_helpers::{FieldHelpers, FieldHelpersError};
 use oracle::poseidon::*;
 
@@ -12,14 +13,14 @@ use oracle::poseidon::*;
 pub fn prefix_to_field(
     s: &[u8],
 ) -> Result<<vesta::Affine as AffineCurve>::ScalarField, FieldHelpersError> {
-    // Need to pad bytes into 256 bits
+    // Need to pad bytes into MODULUS_BITS bits
     // All predefined prefixes are 160 bits
-    const LEN: usize = 32;
+    const BITS: u32 = <<<vesta::Affine as AffineCurve>::ScalarField as PrimeField>::Params as FpParameters>::MODULUS_BITS;
+    const LEN: usize = bits_to_byte_len(BITS as usize);
     let mut bytes = [0_u8; LEN];
     for (i, &b) in s.iter().enumerate().take(LEN) {
         bytes[i] = b;
     }
-
     <vesta::Affine as AffineCurve>::ScalarField::from_bytes(&bytes)
 }
 
@@ -50,4 +51,11 @@ pub fn hash(
     hash.state = init_state;
     hash.absorb(fields);
     hash.squeeze()
+}
+
+const fn bits_to_byte_len(bits: usize) -> usize {
+    match bits % 8 {
+        0 => bits / 8,
+        _ => bits / 8 + 1,
+    }
 }
