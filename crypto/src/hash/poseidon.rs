@@ -2,34 +2,31 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use ark_ec::AffineCurve;
-use ark_serialize::CanonicalDeserialize;
 use mina_curves::pasta::*;
-// use o1_utils::field_helpers::FieldHelpers;
+use o1_utils::field_helpers::{FieldHelpers, FieldHelpersError};
 use oracle::poseidon::*;
 
 /// Converts prefix string into scalar type of vesta elliptic curve
 /// Note that Fp is the base field type of pallas elliptic curve and
 /// the scalar field type of vesta elliptic curve
-pub fn prefix_to_field(s: &[u8]) -> Result<<vesta::Affine as AffineCurve>::ScalarField, &str> {
+pub fn prefix_to_field(
+    s: &[u8],
+) -> Result<<vesta::Affine as AffineCurve>::ScalarField, FieldHelpersError> {
     // Need to pad bytes into 256 bits
-    // All predefined prefixes are of 160 bits
+    // All predefined prefixes are 160 bits
     const LEN: usize = 32;
     let mut bytes = [0_u8; LEN];
     for (i, &b) in s.iter().enumerate().take(LEN) {
         bytes[i] = b;
     }
 
-    // TODO: update FieldHelpers trait impl to accept owned bytes or Read trait instead of borrowed ones
-    // to fix error: returns a value referencing data owned by the current function
-    // <vesta::Affine as AffineCurve>::ScalarField::from_bytes(&bytes)
-    //
-    // This works because it takes a Read trait instead of borrows
-    <vesta::Affine as AffineCurve>::ScalarField::deserialize(bytes.as_slice())
-        .map_err(|_| "Failed to deserialize field bytes")
+    <vesta::Affine as AffineCurve>::ScalarField::from_bytes(&bytes)
 }
 
 /// Gets poseidon hash state from prefix string
-pub fn salt(s: &[u8]) -> Result<Vec<<vesta::Affine as AffineCurve>::ScalarField>, &str> {
+pub fn salt(
+    s: &[u8],
+) -> Result<Vec<<vesta::Affine as AffineCurve>::ScalarField>, FieldHelpersError> {
     let f = prefix_to_field(s)?;
     let mut hash = ArithmeticSponge::<
         <vesta::Affine as AffineCurve>::ScalarField,
