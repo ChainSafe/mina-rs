@@ -7,7 +7,7 @@ use mina_curves::pasta::vesta;
 use o1_utils::field_helpers::{FieldHelpers, FieldHelpersError};
 use oracle::poseidon::*;
 
-/// Alias type for [<mina_curves::pasta::vesta::Affine as ark_ec::AffineCurve>::ScalarField]
+/// Alias type for <mina_curves::pasta::vesta::Affine as ark_ec::AffineCurve>::ScalarField
 pub type VestaScalarField = <vesta::Affine as AffineCurve>::ScalarField;
 
 /// Converts prefix string into scalar type of vesta elliptic curve
