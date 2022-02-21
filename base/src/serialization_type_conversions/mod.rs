@@ -268,6 +268,29 @@ impl From<UserCommandWithStatusV1> for UserCommandWithStatus {
     }
 }
 
+impl From<CoinBase> for CoinBaseV1 {
+    fn from(t: CoinBase) -> Self {
+        use mina_serialization_types::staged_ledger_diff::CoinBase as CB;
+        match t {
+            CoinBase::Zero => Self::new(CB::Zero),
+            CoinBase::One(maybeFee) => Self::new(CB::One(maybeFee.map(Into::into))),
+            CoinBase::Two => Self::new(CB::Two),
+            _ => unimplemented!(),
+        }
+    }
+}
+impl From<CoinBaseV1> for CoinBase {
+    fn from(t: CoinBaseV1) -> Self {
+        use mina_serialization_types::staged_ledger_diff::CoinBase as CB;
+        match t.t {
+            CB::Zero => Self::Zero,
+            CB::One(maybeFee) => Self::One(maybeFee.map(Into::into)),
+            CB::Two => Self::Two,
+            _ => unimplemented!(),
+        }
+    }
+}
+
 impl From<StagedLedgerPreDiffTwo> for StagedLedgerPreDiffTwoV1 {
     fn from(t: StagedLedgerPreDiffTwo) -> Self {
         StagedLedgerPreDiffTwoV1::new(Versioned::new(
