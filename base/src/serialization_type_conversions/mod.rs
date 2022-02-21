@@ -311,6 +311,44 @@ impl From<CoinBaseV1> for CoinBase {
     }
 }
 
+impl From<CoinBaseBalanceData> for CoinBaseBalanceDataV1 {
+    fn from(t: CoinBaseBalanceData) -> Self {
+        CoinBaseBalanceDataV1::new(
+            mina_serialization_types::staged_ledger_diff::CoinBaseBalanceData {
+                coinbase_receiver_balance: ExtendedU64_3::new(Versioned::new(Versioned::new(t.coinbase_receiver_balance.0))),
+                fee_transfer_receiver_balance: t.fee_transfer_receiver_balance.map(|v| ExtendedU64_3::new(Versioned::new(Versioned::new(v.0)))),
+            },
+        )
+    }
+}
+impl From<CoinBaseBalanceDataV1> for CoinBaseBalanceData {
+    fn from(t: CoinBaseBalanceDataV1) -> Self {
+        Self {
+            coinbase_receiver_balance: t.t.coinbase_receiver_balance.t.t.t.into(),
+            fee_transfer_receiver_balance: t.t.fee_transfer_receiver_balance.map(|v| v.t.t.t.into()),
+        }
+    }
+}
+
+impl From<FeeTransferBalanceData> for FeeTransferBalanceDataV1 {
+    fn from(t: FeeTransferBalanceData) -> Self {
+        FeeTransferBalanceDataV1::new(
+            mina_serialization_types::staged_ledger_diff::FeeTransferBalanceData {
+                receiver1_balance: ExtendedU64_3::new(Versioned::new(Versioned::new(t.receiver1_balance.0))),
+                receiver2_balance: t.receiver2_balance.map(|v| ExtendedU64_3::new(Versioned::new(Versioned::new(v.0)))),
+            },
+        )
+    }
+}
+impl From<FeeTransferBalanceDataV1> for FeeTransferBalanceData {
+    fn from(t: FeeTransferBalanceDataV1) -> Self {
+        Self {
+            receiver1_balance: t.t.receiver1_balance.t.t.t.into(),
+            receiver2_balance: t.t.receiver2_balance.map(|v| v.t.t.t.into()),
+        }
+    }
+}
+
 impl From<InternalCommandBalanceData> for InternalCommandBalanceDataV1 {
     fn from(t: InternalCommandBalanceData) -> Self {
         use mina_serialization_types::staged_ledger_diff::InternalCommandBalanceData as BD;
