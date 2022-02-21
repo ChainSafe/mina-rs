@@ -268,6 +268,26 @@ impl From<UserCommandWithStatusV1> for UserCommandWithStatus {
     }
 }
 
+impl From<CoinBaseFeeTransfer> for CoinBaseFeeTransferV1 {
+    fn from(t: CoinBaseFeeTransfer) -> Self {
+        CoinBaseFeeTransferV1::new(
+            Versioned::new(
+            mina_serialization_types::staged_ledger_diff::CoinBaseFeeTransfer {
+                receiver_pk: t.receiver_pk.into(),
+                fee: t.fee.into(),
+            },
+        ))
+    }
+}
+impl From<CoinBaseFeeTransferV1> for CoinBaseFeeTransfer {
+    fn from(t: CoinBaseFeeTransferV1) -> Self {
+        Self {
+            receiver_pk: t.t.t.receiver_pk.into(),
+            fee: t.t.t.fee.t.t.into(),
+        }
+    }
+}
+
 impl From<CoinBase> for CoinBaseV1 {
     fn from(t: CoinBase) -> Self {
         use mina_serialization_types::staged_ledger_diff::CoinBase as CB;

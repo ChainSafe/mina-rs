@@ -152,7 +152,7 @@ pub type TransactionStatusBalanceDataV1 = Versioned<TransactionStatusBalanceData
 pub enum CoinBase {
     Zero,
     // FIXME: other variants are not covered by current test block
-    One(Option<CoinBaseFeeTransfer>),
+    One(Option<CoinBaseFeeTransferV1>),
     Two,
 }
 
