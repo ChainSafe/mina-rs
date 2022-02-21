@@ -1,7 +1,7 @@
 
 use versioned::Versioned;
 use crate::numbers::*;
-use mina_serialization_types::v1::{AmountV1, LengthV1, DeltaV1, ExtendedU32 as ExtendedU32V1, TokenIdV1, ExtendedU64_3};
+use mina_serialization_types::v1::{AmountV1, LengthV1, DeltaV1, ExtendedU32 as ExtendedU32V1, TokenIdV1};
 
 impl From<Amount> for AmountV1 {
 	fn from(t: Amount) -> Self {

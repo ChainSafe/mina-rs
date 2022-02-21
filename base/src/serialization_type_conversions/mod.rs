@@ -175,6 +175,27 @@ impl From<UserCommandV1> for UserCommand {
     }
 }
 
+impl From<TransactionStatusBalanceData> for TransactionStatusBalanceDataV1 {
+    fn from(t: TransactionStatusBalanceData) -> Self {
+        TransactionStatusBalanceDataV1::new(
+            mina_serialization_types::staged_ledger_diff::TransactionStatusBalanceData {
+               fee_payer_balance: t.fee_payer_balance.map(|v| ExtendedU64_3::new(Versioned::new(Versioned::new(v.0)))),
+               source_balance: t.source_balance.map(|v| ExtendedU64_3::new(Versioned::new(Versioned::new(v.0)))),
+               receiver_balance: t.receiver_balance.map(|v| ExtendedU64_3::new(Versioned::new(Versioned::new(v.0)))),
+            },
+        )
+    }
+}
+impl From<TransactionStatusBalanceDataV1> for TransactionStatusBalanceData {
+    fn from(t: TransactionStatusBalanceDataV1) -> Self {
+        Self {
+           fee_payer_balance: t.t.fee_payer_balance.map(|v|v.t.t.t.into()),
+           source_balance: t.t.source_balance.map(|v|v.t.t.t.into()),
+           receiver_balance: t.t.receiver_balance.map(|v|v.t.t.t.into()),
+        }
+    }
+}
+
 impl From<TransactionStatusAuxiliaryData> for TransactionStatusAuxiliaryDataV1 {
     fn from(t: TransactionStatusAuxiliaryData) -> Self {
         TransactionStatusAuxiliaryDataV1::new(
@@ -189,9 +210,9 @@ impl From<TransactionStatusAuxiliaryData> for TransactionStatusAuxiliaryDataV1 {
 impl From<TransactionStatusAuxiliaryDataV1> for TransactionStatusAuxiliaryData {
     fn from(t: TransactionStatusAuxiliaryDataV1) -> Self {
         Self {
-            fee_payer_account_creation_fee_paid: t.t.fee_payer_account_creation_fee_paid.map(Into::into),
-            receiver_account_creation_fee_paid: t.t.receiver_account_creation_fee_paid.map(Into::into),
-            created_token: t.t.created_token.map(Into::into),
+            fee_payer_account_creation_fee_paid: t.t.fee_payer_account_creation_fee_paid.map(|v| v.t.t.into()),
+            receiver_account_creation_fee_paid: t.t.receiver_account_creation_fee_paid.map(|v| v.t.t.into()),
+            created_token: t.t.created_token.map(|v| v.t.t.t.into()),
         }
     }
 }
