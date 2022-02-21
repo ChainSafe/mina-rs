@@ -32,6 +32,77 @@ impl From<ExternalTransitionV1> for ExternalTransition {
     }
 }
 
+impl From<BlockchainState> for BlockchainStateV1 {
+    fn from(t: BlockchainState) -> Self {
+        BlockchainStateV1::new(
+            Versioned::new(
+            mina_serialization_types::blockchain_state::BlockchainState {
+                staged_ledger_hash: t.staged_ledger_hash.into(),
+                snarked_ledger_hash: t.snarked_ledger_hash.into_inner().into(),
+                genesis_ledger_hash: t.genesis_ledger_hash.into_inner().into(),
+                snarked_next_available_token: t.snarked_next_available_token.into(),
+                timestamp: Versioned::new(Versioned::new(t.timestamp.0)),
+            }
+        ))
+    }
+}
+impl From<BlockchainStateV1> for BlockchainState {
+    fn from(t: BlockchainStateV1) -> Self {
+        Self {
+            staged_ledger_hash: t.t.t.staged_ledger_hash.into(),
+            snarked_ledger_hash: t.t.t.snarked_ledger_hash.into(),
+            genesis_ledger_hash: t.t.t.genesis_ledger_hash.into(),
+            snarked_next_available_token: t.t.t.snarked_next_available_token.t.t.t.into(),
+            timestamp: t.t.t.timestamp.into(),
+        }
+    }
+}
+
+impl From<ProtocolStateBody> for ProtocolStateBodyV1 {
+    fn from(t: ProtocolStateBody) -> Self {
+        ProtocolStateBodyV1::new(
+            Versioned::new(
+            mina_serialization_types::protocol_state_body::ProtocolStateBody {
+                genesis_state_hash: t.genesis_state_hash.into(),
+                blockchain_state: t.blockchain_state.into(),
+                consensus_state: t.consensus_state.into(),
+                constants: t.constants.into(),
+            }
+        ))
+    }
+}
+impl From<ProtocolStateBodyV1> for ProtocolStateBody {
+    fn from(t: ProtocolStateBodyV1) -> Self {
+        Self {
+            genesis_state_hash: t.t.t.genesis_state_hash.into(),
+            blockchain_state: t.t.t.blockchain_state.into(),
+            consensus_state: t.t.t.consensus_state.into(),
+            constants: t.t.t.constants.into(),
+        }
+    }
+}
+
+impl From<ProtocolState> for ProtocolStateV1 {
+    fn from(t: ProtocolState) -> Self {
+        ProtocolStateV1::new(
+            Versioned::new(
+            mina_serialization_types::protocol_state::ProtocolState {
+                previous_state_hash: t.previous_state_hash.into(),
+                body: t.body.into(),
+            }
+        ))
+    }
+}
+impl From<ProtocolStateV1> for ProtocolState {
+    fn from(t: ProtocolStateV1) -> Self {
+        Self {
+            previous_state_hash: t.t.t.previous_state_hash.into(),
+            body: t.t.t.body.into(),
+        }
+    }
+}
+
+
 impl From<PaymentPayload> for PaymentPayloadV1 {
     fn from(t: PaymentPayload) -> Self {
         PaymentPayloadV1::new(

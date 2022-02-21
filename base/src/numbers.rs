@@ -140,7 +140,6 @@ pub struct Char(pub u8);
 pub struct GlobalSlotNumber(pub u32);
 
 #[derive(Clone, Serialize, Deserialize, PartialEq, Debug, Hash, Default, From)]
-
 /// Block time numeric type
 pub struct BlockTime(pub u64);
 

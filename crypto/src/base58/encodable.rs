@@ -94,6 +94,12 @@ macro_rules! impl_bs58_full {
                 self.0.as_ref()
             }
         }
+
+        impl $ty {
+            pub fn into_inner(self) -> [u8; 32] {
+                self.0.0
+            }
+        }
     };
 }
 

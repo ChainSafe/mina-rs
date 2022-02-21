@@ -30,7 +30,7 @@ pub type BlockchainStateV1 = Versioned<Versioned<BlockchainState, 1>, 1>;
 /// Staged ledger hash structure
 #[derive(Debug, Serialize, Deserialize, PartialEq)]
 pub struct StagedLedgerHash {
-    pub non_snark: NonSnarkStagedLedgerHash,
+    pub non_snark: NonSnarkStagedLedgerHashV1,
     pub pending_coinbase_hash: Hash2V1,
 }
 
