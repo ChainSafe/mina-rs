@@ -4,6 +4,74 @@ use mina_serialization_types::v1::FiniteECPoint as FiniteECPointV1;
 use crate::types::FiniteECPoint;
 use versioned::Versioned;
 
+impl From<ProofOpenings> for ProofOpeningsV1 {
+    fn from(t: ProofOpenings) -> Self {
+        ProofOpeningsV1::new(
+            mina_serialization_types::protocol_state_proof::ProofOpenings {
+                proof: t.proof.into(),
+                evals: t.evals.into(),
+            },
+        )
+    }
+}
+impl From<ProofOpeningsV1> for ProofOpenings {
+    fn from(t: ProofOpeningsV1) -> Self {
+        Self {
+            proof: t.t.proof.into(),
+            evals: t.t.proof.into(),
+        }
+    }
+}
+
+impl From<Proof> for ProofV1 {
+    fn from(t: Proof) -> Self {
+        ProofV1::new(Versioned::new(
+            mina_serialization_types::protocol_state_proof::Proof {
+                messages: t.messages.into(),
+                openings: t.openings.into(),
+            },
+        ))
+    }
+}
+impl From<ProofV1> for Proof {
+    fn from(t: ProofV1) -> Self {
+        Self {
+            messages: t.t.t.messages.into(),
+            openings: t.t.t.openings.into(),
+        }
+    }
+}
+
+impl From<PrevXHat> for PrevXHatV1 {
+    fn from(t: PrevXHat) -> Self {
+        PrevXHatV1::new(   
+            t.0.into()
+        )
+    }
+}
+impl From<PrevXHatV1> for PrevXHat {
+    fn from(t: PrevXHatV1) -> Self {
+        Self (
+            t.t.into()
+        )
+    }
+}
+
+impl From<PrevEvals> for PrevEvalsV1 {
+    fn from(t: PrevEvals) -> Self {
+        PrevEvalsV1::new(   
+            (t.0.0.into(), t.0.1.into())
+        )
+    }
+}
+impl From<PrevEvalsV1> for PrevEvals {
+    fn from(t: PrevEvalsV1) -> Self {
+        Self (
+            (t.t.0.into(), t.t.1.into())
+        )
+    }
+}
+
 impl From<PairingBased> for PairingBasedV1 {
     fn from(t: PairingBased) -> Self {
         PairingBasedV1::new(
