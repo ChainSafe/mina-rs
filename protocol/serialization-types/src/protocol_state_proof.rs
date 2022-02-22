@@ -80,7 +80,7 @@ pub enum ShiftedValue {
 pub type ShiftedValueV1 = Versioned<ShiftedValue, 1>;
 
 #[derive(Debug, Serialize, Deserialize, PartialEq)]
-pub struct SpongeDigestBeforeEvaluations((Hex64V1, Hex64V1, Hex64V1, Hex64V1, ()));
+pub struct SpongeDigestBeforeEvaluations(pub (Hex64V1, Hex64V1, Hex64V1, Hex64V1, ()));
 
 pub type SpongeDigestBeforeEvaluationsV1 =
     Versioned<Versioned<SpongeDigestBeforeEvaluations, 1>, 1>;

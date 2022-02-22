@@ -3,6 +3,7 @@ use mina_serialization_types::v1::*;
 use versioned::Versioned;
 
 mod numbers;
+mod protocol_state_proof;
 
 impl From<ExternalTransition> for ExternalTransitionV1 {
     fn from(t: ExternalTransition) -> Self {

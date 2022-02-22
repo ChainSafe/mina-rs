@@ -86,7 +86,7 @@ impl Default for ShiftedValue {
 }
 
 #[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug)]
-pub struct SpongeDigestBeforeEvaluations((Hex64, Hex64, Hex64, Hex64, ()));
+pub struct SpongeDigestBeforeEvaluations(pub (Hex64, Hex64, Hex64, Hex64, ()));
 
 #[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug)]
 pub struct ProofStatePairingBased {

@@ -122,7 +122,7 @@ impl std::str::FromStr for Amount {
 
 /// 4 bytes wrapped by a version
 /// Will not form part of the public API when deserialization refactor is complete
-pub struct Hex64(i64);
+pub struct Hex64(pub i64);
 
 #[derive(Clone, Serialize, Deserialize, PartialEq, Debug, Hash, Default, From)]
 #[from(forward)]
