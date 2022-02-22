@@ -36,6 +36,8 @@ impl_bs58_for_binprot!(PublicKey, version_bytes::NON_ZERO_CURVE_POINT_COMPRESSED
 #[serde(into = "<Self as WireType>::WireType")]
 pub struct PublicKey2(pub CompressedCurvePoint);
 
+impl_bs58_for_binprot!(PublicKey2, version_bytes::NON_ZERO_CURVE_POINT_COMPRESSED);
+
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize, Deref, WireType)]
 #[serde(from = "<Self as WireType>::WireType")]
 #[serde(into = "<Self as WireType>::WireType")]
