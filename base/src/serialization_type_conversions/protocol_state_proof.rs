@@ -1,15 +1,127 @@
 use crate::types::*;
+use crate::types::proof_messages::{ProofMessageWithoutDegreeBoundList, ProofMessageWithDegreeBound};
 use mina_serialization_types::v1::*;
-use mina_serialization_types::v1::FiniteECPoint as FiniteECPointV1;
-use crate::types::FiniteECPoint;
 use versioned::Versioned;
+
+impl From<ProofMessageWithDegreeBound> for ProofMessageWithDegreeBoundV1 {
+    fn from(t: ProofMessageWithDegreeBound) -> Self {
+        ProofMessageWithDegreeBoundV1::new(
+            mina_serialization_types::proof_messages::ProofMessageWithDegreeBound {
+                unshifted: t.unshifted.into(),
+                shifted: t.shifted.into(),
+            },
+        )
+    }
+}
+impl From<ProofMessageWithDegreeBoundV1> for ProofMessageWithDegreeBound {
+    fn from(t: ProofMessageWithDegreeBoundV1) -> Self {
+        Self {
+            unshifted: t.t.unshifted.into(),
+            shifted: t.t.shifted.into(),
+        }
+    }
+}
+
+impl From<ProofMessageWithoutDegreeBoundList> for ProofMessageWithoutDegreeBoundListV1 {
+    fn from(t: ProofMessageWithoutDegreeBoundList) -> Self {
+        ProofMessageWithoutDegreeBoundListV1::new(Versioned::new(t.0.into_iter().map(Into::into).collect()))
+    }
+}
+impl From<ProofMessageWithoutDegreeBoundListV1> for ProofMessageWithoutDegreeBoundList {
+    fn from(t: ProofMessageWithoutDegreeBoundListV1) -> Self {
+        Self(t.t.t.into_iter().map(Into::into).collect())
+    }
+}
+
+impl From<ProofMessages> for ProofMessagesV1 {
+    fn from(t: ProofMessages) -> Self {
+        ProofMessagesV1::new(
+            mina_serialization_types::proof_messages::ProofMessages {
+                l_comm: t.l_comm.into(),
+                r_comm: t.r_comm.into(),
+                o_comm: t.o_comm.into(),
+                z_comm: t.z_comm.into(),
+                t_comm: t.t_comm.into(),
+            },
+        )
+    }
+}
+impl From<ProofMessagesV1> for ProofMessages {
+    fn from(t: ProofMessagesV1) -> Self {
+        Self {
+            l_comm: t.t.l_comm.into(),
+            r_comm: t.t.r_comm.into(),
+            o_comm: t.t.o_comm.into(),
+            z_comm: t.t.z_comm.into(),
+            t_comm: t.t.t_comm.into(),
+        }
+    }
+}
+
+impl From<ProofEvaluations> for ProofEvaluationsV1 {
+    fn from(t: ProofEvaluations) -> Self {
+        ProofEvaluationsV1::new(
+            mina_serialization_types::proof_evaluations::ProofEvaluations {
+                l: t.l.into(),
+                r: t.r.use crate::types::*;
+use mina_serialization_types::v1::*;
+use versioned::Versioned;into(),
+                o: t.o.into(),
+                z: t.z.into(),
+                t: t.t.into(),
+                f: t.f.into(),
+                sigma1: t.sigma1.into(),
+                sigma2: t.sigma2.into(),
+            },
+        )
+    }
+}
+impl From<ProofEvaluationsV1> for ProofEvaluations {
+    fn from(t: ProofEvaluationsV1) -> Self {
+        Self {
+            l: t.t.l.into(),
+            r: t.t.r.into(),
+            o: t.t.o.into(),
+            z: t.t.z.into(),
+            t: t.t.t.into(),
+            f: t.t.f.into(),
+            sigma1: t.t.sigma1.into(),
+            sigma2: t.t.sigma2.into(),
+        }
+    }
+}
+
+impl From<OpeningProof> for OpeningProofV1 {
+    fn from(t: OpeningProof) -> Self {
+        OpeningProofV1::new(
+            mina_serialization_types::opening_proof::OpeningProof {
+                lr: t.lr.into(),
+                z_1: t.z_1.0.into(),
+                z_2: t.z_2.0.into(),
+                delta: t.delta.into(),
+                sg: t.sg.into(),
+            },
+        )
+    }
+}
+impl From<OpeningProofV1> for OpeningProof {
+    fn from(t: OpeningProofV1) -> Self {
+        Self {
+            lr: t.t.lr.into(),
+            z_1: t.t.z_1.into(),
+            z_2: t.t.z_2.into(),
+            delta: t.t.delta.into(),
+            sg: t.t.sg.into(),
+        }
+    }
+}
 
 impl From<ProofOpenings> for ProofOpeningsV1 {
     fn from(t: ProofOpenings) -> Self {
         ProofOpeningsV1::new(
             mina_serialization_types::protocol_state_proof::ProofOpenings {
                 proof: t.proof.into(),
-                evals: t.evals.into(),
+                evals: (t.evals.0.into(), t.evals.1.into()),
             },
         )
     }
@@ -18,7 +130,7 @@ impl From<ProofOpeningsV1> for ProofOpenings {
     fn from(t: ProofOpeningsV1) -> Self {
         Self {
             proof: t.t.proof.into(),
-            evals: t.t.proof.into(),
+            evals: (t.t.evals.0.into(), t.t.evals.1.into()),
         }
     }
 }
@@ -90,32 +202,6 @@ impl From<PairingBasedV1> for PairingBased {
             sg: t.t.sg.into(),
             old_bulletproof_challenges: t.t.old_bulletproof_challenges.into(),
         }
-    }
-}
-
-impl From<FiniteECPointVec> for FiniteECPointVecV1 {
-    fn from(t: FiniteECPointVec) -> Self {
-        Versioned::new(t.0.into_iter().map(Into::into).collect())
-    }
-}
-impl From<FiniteECPointVecV1> for FiniteECPointVec {
-    fn from(t: FiniteECPointVecV1) -> Self {
-        Self(t.t.into_iter().map(Into::into).collect())
-    }
-}
-
-impl From<FiniteECPoint> for FiniteECPointV1 {
-    fn from(t: FiniteECPoint) -> Self {
-        Self (
-            t.0.0.into(), t.1.0.into()
-        )
-    }
-}
-impl From<FiniteECPointV1> for FiniteECPoint {
-    fn from(t: FiniteECPointV1) -> Self {
-        Self (
-            t.0.into(), t.1.into()
-        )
     }
 }
 
