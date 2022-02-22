@@ -58,6 +58,118 @@ impl From<BlockchainStateV1> for BlockchainState {
     }
 }
 
+impl From<GlobalSlot> for GlobalSlotV1 {
+    fn from(t: GlobalSlot) -> Self {
+        GlobalSlotV1::new(
+            Versioned::new(
+            mina_serialization_types::global_slot::GlobalSlot {
+                slot_number: t.slot_number.into(),
+                slots_per_epoch: t.slots_per_epoch.into(),
+            }
+        ))
+    }
+}
+impl From<GlobalSlotV1> for GlobalSlot {
+    fn from(t: GlobalSlotV1) -> Self {
+        Self {
+            slot_number: t.t.t.slot_number.t.t.into(),
+            slots_per_epoch: t.t.t.slots_per_epoch.t.t.into(),
+        }
+    }
+}
+
+impl From<EpochLedger> for EpochLedgerV1 {
+    fn from(t: EpochLedger) -> Self {
+        EpochLedgerV1::new(
+            Versioned::new(
+            mina_serialization_types::epoch_data::EpochLedger {
+                hash: t.hash.into_inner().into(),
+                total_currency: t.total_currency.into(),
+            }
+        ))
+    }
+}
+impl From<EpochLedgerV1> for EpochLedger {
+    fn from(t: EpochLedgerV1) -> Self {
+        Self {
+            hash: t.t.t.hash.into(),
+            total_currency: t.t.t.total_currency.t.t.into(),
+        }
+    }
+}
+
+impl From<EpochData> for EpochDataV1 {
+    fn from(t: EpochData) -> Self {
+        EpochDataV1::new(
+            Versioned::new(
+            mina_serialization_types::epoch_data::EpochData {
+                ledger: t.ledger.into(),
+                seed: t.seed.into_inner().into(),
+                start_checkpoint: t.start_checkpoint.into(),
+                lock_checkpoint: t.lock_checkpoint.into(),
+                epoch_length: t.epoch_length.into(),
+            }
+        ))
+    }
+}
+impl From<EpochDataV1> for EpochData {
+    fn from(t: EpochDataV1) -> Self {
+        Self {
+            ledger: t.t.t.ledger.into(),
+            seed: t.t.t.seed.into(),
+            start_checkpoint: t.t.t.start_checkpoint.into(),
+            lock_checkpoint: t.t.t.lock_checkpoint.into(),
+            epoch_length: t.t.t.epoch_length.t.t.into(),
+        }
+    }
+}
+
+impl From<ConsensusState> for ConsensusStateV1 {
+    fn from(t: ConsensusState) -> Self {
+        ConsensusStateV1::new(
+            Versioned::new(
+            mina_serialization_types::consensus_state::ConsensusState {
+                blockchain_length: t.blockchain_length.into(),
+                epoch_count: t.epoch_count.into(),
+                min_window_density: t.min_window_density.into(),
+                sub_window_densities: t.sub_window_densities.into_iter().map(Into::into).collect(),
+                last_vrf_output: t.last_vrf_output.0.into(),
+                total_currency: t.total_currency.into(),
+                curr_global_slot: t.curr_global_slot.into(),
+                global_slot_since_genesis: t.global_slot_since_genesis.into(),
+                staking_epoch_data: t.staking_epoch_data.into(),
+                next_epoch_data: t.next_epoch_data.into(),
+                has_ancestor_in_same_checkpoint_window: t.has_ancestor_in_same_checkpoint_window,
+                block_stake_winner: t.block_stake_winner.into(),
+                block_creator: t.block_creator.into(),
+                coinbase_receiver: t.coinbase_receiver.into(),
+                supercharge_coinbase: t.supercharge_coinbase,
+            }
+        ))
+    }
+}
+impl From<ConsensusStateV1> for ConsensusState {
+    fn from(t: ConsensusStateV1) -> Self {
+        Self {
+            blockchain_length: t.t.t.blockchain_length.t.t.into(),
+            epoch_count: t.t.t.epoch_count.t.t.into(),
+            min_window_density: t.t.t.min_window_density.t.t.into(),
+            sub_window_densities: t.t.t.sub_window_densities.into_iter().map(|v| v.t.t.into()).collect(),
+            last_vrf_output: t.t.t.last_vrf_output.t.into(),
+            total_currency: t.t.t.total_currency.t.t.into(),
+            curr_global_slot: t.t.t.curr_global_slot.into(),
+            global_slot_since_genesis: t.t.t.global_slot_since_genesis.t.t.into(),
+            staking_epoch_data: t.t.t.staking_epoch_data.into(),
+            next_epoch_data: t.t.t.next_epoch_data.into(),
+            has_ancestor_in_same_checkpoint_window: t.t.t.has_ancestor_in_same_checkpoint_window,
+            block_stake_winner: t.t.t.block_stake_winner.into(),
+            block_creator: t.t.t.block_creator.into(),
+            coinbase_receiver: t.t.t.coinbase_receiver.into(),
+            supercharge_coinbase: t.t.t.supercharge_coinbase,
+        }
+    }
+}
+
 impl From<ProtocolStateBody> for ProtocolStateBodyV1 {
     fn from(t: ProtocolStateBody) -> Self {
         ProtocolStateBodyV1::new(

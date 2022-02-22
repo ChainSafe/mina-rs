@@ -1,7 +1,7 @@
 
 use versioned::Versioned;
 use crate::numbers::*;
-use mina_serialization_types::v1::{AmountV1, LengthV1, DeltaV1, ExtendedU32 as ExtendedU32V1, TokenIdV1};
+use mina_serialization_types::v1::{AmountV1, LengthV1, DeltaV1, ExtendedU32 as ExtendedU32V1, TokenIdV1, GlobalSlotNumberV1};
 
 impl From<Amount> for AmountV1 {
 	fn from(t: Amount) -> Self {
@@ -39,6 +39,14 @@ impl From<TokenId> for TokenIdV1 {
 	fn from(t: TokenId) -> Self {
 		TokenIdV1::new(
 			Versioned::new(Versioned::new(t.0))
+		)
+	}
+}
+
+impl From<GlobalSlotNumber> for GlobalSlotNumberV1 {
+	fn from(t: GlobalSlotNumber) -> Self {
+		GlobalSlotNumberV1::new(
+			Versioned::new(t.0)
 		)
 	}
 }

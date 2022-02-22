@@ -134,8 +134,6 @@ pub struct Char(pub u8);
     Clone, Serialize, Deserialize, PartialEq, Debug, Hash, Default, Deref, From,
 )]
 #[from(forward)]
-
-
 /// A global slot number
 pub struct GlobalSlotNumber(pub u32);
 
