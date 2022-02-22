@@ -170,6 +170,32 @@ impl From<ConsensusStateV1> for ConsensusState {
     }
 }
 
+impl From<ProtocolConstants> for ProtocolConstantsV1 {
+    fn from(t: ProtocolConstants) -> Self {
+        ProtocolConstantsV1::new(
+            Versioned::new(
+            mina_serialization_types::protocol_constants::ProtocolConstants {
+                k: t.k.into(),
+                slots_per_epoch: t.slots_per_epoch.into(),
+                slots_per_sub_window: t.slots_per_sub_window.into(),
+                delta: t.delta.into(),
+                genesis_state_timestamp: Versioned::new(Versioned::new(t.genesis_state_timestamp.0)),
+            }
+        ))
+    }
+}
+impl From<ProtocolConstantsV1> for ProtocolConstants {
+    fn from(t: ProtocolConstantsV1) -> Self {
+        Self {
+            k: t.t.t.k.t.t.into(),
+            slots_per_epoch: t.t.t.slots_per_epoch.t.t.into(),
+            slots_per_sub_window: t.t.t.slots_per_sub_window.t.t.into(),
+            delta: t.t.t.delta.t.t.into(),
+            genesis_state_timestamp: t.t.t.genesis_state_timestamp.into(),
+        }
+    }
+}
+
 impl From<ProtocolStateBody> for ProtocolStateBodyV1 {
     fn from(t: ProtocolStateBody) -> Self {
         ProtocolStateBodyV1::new(
