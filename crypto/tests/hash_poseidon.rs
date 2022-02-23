@@ -5,7 +5,7 @@
 mod tests {
     use crate::*;
     use ark_ff::BigInteger256;
-    use mina_crypto::hash::poseidon::*;
+    use mina_crypto::hash::{poseidon::*, prefixes};
     use num_bigint::BigUint;
     use wasm_bindgen_test::*;
 
@@ -24,8 +24,6 @@ mod tests {
         test_prefix_to_field!(b"12", "12849");
         // Printf.printf "%s" ("123" |> prefix_to_field |> Field.to_string) ;
         test_prefix_to_field!(b"123", "3355185");
-        // Printf.printf "%s" ("AbC" |> prefix_to_field |> Field.to_string) ;
-        test_prefix_to_field!(b"AbC", "4416065");
         // Printf.printf "%s" ("AbC" |> prefix_to_field |> Field.to_string) ;
         test_prefix_to_field!(b"AbC", "4416065");
         // Printf.printf "%s" ("CodaMklTree003******" |> prefix_to_field |> Field.to_string) ;
@@ -51,7 +49,7 @@ mod tests {
     // run `dune test` under src/lib/random_oracle
     //
     // let fields = "CodaMklTree003******" |> salt in
-    //   for i = 0 to Array.length fields - 1 do
+    // for i = 0 to Array.length fields - 1 do
     //   Printf.printf "\"%s\",\n" (fields.(i) |> Field.to_string)
     // done ;
     //
@@ -96,6 +94,19 @@ mod tests {
                 "4759486266429649359680583704294416062325271909975044439354030843449421998024",
                 "20959467482874439523768445553897628827309247681867820797074898520853041807408",
                 "23898473196000807214630503958354143234825691497475523006976384309715021272572",
+            ]
+        );
+        // (* Add hash_prefixes to dune libraries section *)
+        // let fields = (Hash_prefixes.account :> string) |> salt in
+        // for i = 0 to Array.length fields - 1 do
+        //   Printf.printf "\"%s\",\n" (fields.(i) |> Field.to_string)
+        // done ;
+        test_salt_inner!(
+            prefixes::ACCOUNT,
+            &[
+                "12998954778669241781448774976300398324919051791695676472777494503713667303740",
+                "6323689934661546640754775526080351721071089602132555750654792316900709540562",
+                "4743986494909653027808222635607813381449303609213534174959940818185014464420",
             ]
         );
     }
