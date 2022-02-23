@@ -41,9 +41,9 @@ mod tests {
         );
 
         let cs = &et.protocol_state.body.consensus_state;
-        assert_eq!(cs.blockchain_length, 1.into());
-        assert_eq!(cs.epoch_count, 0.into());
-        assert_eq!(cs.min_window_density, 77.into());
+        assert_eq!(cs.blockchain_length, 1_u32.into());
+        assert_eq!(cs.epoch_count, 0_u32.into());
+        assert_eq!(cs.min_window_density, 77_u32.into());
         assert_eq!(cs.sub_window_densities.len(), 11);
         assert_eq!(
             cs.sub_window_densities(),
@@ -54,9 +54,9 @@ mod tests {
             base64::decode("NfThG1r1GxQuhaGLSJWGxcpv24SudtXG4etB0TnGqwg=").unwrap()
         );
         assert_eq!(cs.total_currency.to_string(), "805385692.840039233");
-        assert_eq!(cs.curr_global_slot.slot_number, 0.into());
-        assert_eq!(cs.curr_global_slot.slots_per_epoch, 7140.into());
-        assert_eq!(cs.global_slot_since_genesis, 0.into());
+        assert_eq!(cs.curr_global_slot.slot_number, 0_u32.into());
+        assert_eq!(cs.curr_global_slot.slots_per_epoch, 7140_u32.into());
+        assert_eq!(cs.global_slot_since_genesis, 0_u32.into());
 
         {
             let sed = &cs.staking_epoch_data;
@@ -77,7 +77,7 @@ mod tests {
                 sed.lock_checkpoint.to_base58_string(),
                 "3NK2tkzqqK5spR2sZ7tujjqPksL45M3UUrcA4WhCkeiPtnugyE2x"
             );
-            assert_eq!(sed.epoch_length, 1.into());
+            assert_eq!(sed.epoch_length, 1_u32.into());
         }
         {
             let ned = &cs.next_epoch_data;
@@ -98,7 +98,7 @@ mod tests {
                 ned.lock_checkpoint.to_base58_string(),
                 "3NLoKn22eMnyQ7rxh5pxB6vBA3XhSAhhrf7akdqS6HbAKD14Dh1d"
             );
-            assert_eq!(ned.epoch_length, 2.into());
+            assert_eq!(ned.epoch_length, 2_u32.into());
         }
 
         assert_eq!(cs.has_ancestor_in_same_checkpoint_window, true);

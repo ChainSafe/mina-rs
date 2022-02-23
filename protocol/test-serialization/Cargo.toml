@@ -19,6 +19,8 @@ mina-consensus = {path = "../../consensus"}
 mina-crypto = {path = "../../crypto"}
 mina-rs-base = {path = "../../base"}
 test-fixtures = {path = "../test-fixtures"}
+mina-serialization-types = {path = "../serialization-types"}
+
 
 anyhow = "1"
 base64 = "0.13"
