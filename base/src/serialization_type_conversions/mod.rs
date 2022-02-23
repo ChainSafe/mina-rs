@@ -5,6 +5,7 @@ use versioned::Versioned;
 mod numbers;
 mod protocol_state_proof;
 mod field_and_curve_elements;
+mod bulletproof_challenges;
 
 impl From<ExternalTransition> for ExternalTransitionV1 {
     fn from(t: ExternalTransition) -> Self {

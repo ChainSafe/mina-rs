@@ -28,24 +28,24 @@ pub struct ProofStateBulletproofChallenges(
 
 #[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug)]
 pub struct BulletproofChallengeTuple17(
-    BulletproofChallenge,
-    BulletproofChallenge,
-    BulletproofChallenge,
-    BulletproofChallenge,
-    BulletproofChallenge,
-    BulletproofChallenge,
-    BulletproofChallenge,
-    BulletproofChallenge,
-    BulletproofChallenge,
-    BulletproofChallenge,
-    BulletproofChallenge,
-    BulletproofChallenge,
-    BulletproofChallenge,
-    BulletproofChallenge,
-    BulletproofChallenge,
-    BulletproofChallenge,
-    BulletproofChallenge,
-    (),
+    pub BulletproofChallenge,
+    pub BulletproofChallenge,
+    pub BulletproofChallenge,
+    pub BulletproofChallenge,
+    pub BulletproofChallenge,
+    pub BulletproofChallenge,
+    pub BulletproofChallenge,
+    pub BulletproofChallenge,
+    pub BulletproofChallenge,
+    pub BulletproofChallenge,
+    pub BulletproofChallenge,
+    pub BulletproofChallenge,
+    pub BulletproofChallenge,
+    pub BulletproofChallenge,
+    pub BulletproofChallenge,
+    pub BulletproofChallenge,
+    pub BulletproofChallenge,
+    pub (),
 );
 
 impl BulletproofChallengeTuple17 {
@@ -75,25 +75,25 @@ impl BulletproofChallengeTuple17 {
 
 #[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug)]
 pub struct BulletproofChallengeTuple18(
-    BulletproofChallenge,
-    BulletproofChallenge,
-    BulletproofChallenge,
-    BulletproofChallenge,
-    BulletproofChallenge,
-    BulletproofChallenge,
-    BulletproofChallenge,
-    BulletproofChallenge,
-    BulletproofChallenge,
-    BulletproofChallenge,
-    BulletproofChallenge,
-    BulletproofChallenge,
-    BulletproofChallenge,
-    BulletproofChallenge,
-    BulletproofChallenge,
-    BulletproofChallenge,
-    BulletproofChallenge,
-    BulletproofChallenge,
-    (),
+    pub BulletproofChallenge,
+    pub BulletproofChallenge,
+    pub BulletproofChallenge,
+    pub BulletproofChallenge,
+    pub BulletproofChallenge,
+    pub BulletproofChallenge,
+    pub BulletproofChallenge,
+    pub BulletproofChallenge,
+    pub BulletproofChallenge,
+    pub BulletproofChallenge,
+    pub BulletproofChallenge,
+    pub BulletproofChallenge,
+    pub BulletproofChallenge,
+    pub BulletproofChallenge,
+    pub BulletproofChallenge,
+    pub BulletproofChallenge,
+    pub BulletproofChallenge,
+    pub BulletproofChallenge,
+    pub (),
 );
 
 impl BulletproofChallengeTuple18 {
@@ -135,7 +135,7 @@ impl BulletproofPreChallenge {
 }
 
 #[derive(Clone, Serialize, Default, Deserialize, PartialEq, Debug)]
-pub struct ScalarChallengeVector2((Hex64, Hex64, ()));
+pub struct ScalarChallengeVector2(pub (Hex64, Hex64, ()));
 
 impl ScalarChallengeVector2 {
     pub fn new(a: i64, b: i64) -> Self {
