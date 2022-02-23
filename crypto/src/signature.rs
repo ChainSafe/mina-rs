@@ -68,9 +68,9 @@ impl From<Vec<u8>> for Signature {
         // skip the bs58 version byte and mina bin_prot version byte
         let mut b32 = [0; 32];
         b32.copy_from_slice(&bytes[..32]);
-        let field_point = FieldPoint(b32.into());
+        let field_point = FieldPoint(b32);
         b32.copy_from_slice(&bytes[32..]);
-        let inner_curve_scalar = InnerCurveScalar(b32.into());
+        let inner_curve_scalar = InnerCurveScalar(b32);
         Self((field_point, inner_curve_scalar))
     }
 }

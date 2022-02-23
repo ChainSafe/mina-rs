@@ -6,7 +6,7 @@ use versioned::Versioned;
 
 impl From<FieldElementVec> for FieldElementVecV1 {
     fn from(t: FieldElementVec) -> Self {
-        Versioned::new(t.0.into_iter().map(|v| v.0.into()).collect())
+        Versioned::new(t.0.into_iter().map(|v| v.0).collect())
     }
 }
 impl From<FieldElementVecV1> for FieldElementVec {
@@ -58,7 +58,7 @@ impl From<FiniteECPointVecV1> for FiniteECPointVec {
 
 impl From<FiniteECPoint> for FiniteECPointV1 {
     fn from(t: FiniteECPoint) -> Self {
-        Self(t.0 .0.into(), t.1 .0.into())
+        Self(t.0.0, t.1.0)
     }
 }
 impl From<FiniteECPointV1> for FiniteECPoint {

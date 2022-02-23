@@ -95,8 +95,8 @@ impl From<OpeningProof> for OpeningProofV1 {
     fn from(t: OpeningProof) -> Self {
         OpeningProofV1::new(mina_serialization_types::opening_proof::OpeningProof {
             lr: t.lr.into(),
-            z_1: t.z_1.0.into(),
-            z_2: t.z_2.0.into(),
+            z_1: t.z_1.0,
+            z_2: t.z_2.0,
             delta: t.delta.into(),
             sg: t.sg.into(),
         })
@@ -188,7 +188,7 @@ impl From<PairingBased> for PairingBasedV1 {
 impl From<PairingBasedV1> for PairingBased {
     fn from(t: PairingBasedV1) -> Self {
         Self {
-            app_state: t.t.app_state.into(),
+            app_state: (),
             sg: t.t.sg.into(),
             old_bulletproof_challenges: t.t.old_bulletproof_challenges.into(),
         }

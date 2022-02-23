@@ -31,12 +31,12 @@ impl ConsensusConstants {
     pub fn from_genesis() -> Self {
         Self {
             k: Length(290),
-            slots_per_epoch: 7140.into(),
-            slots_per_sub_window: 7.into(),
-            delta: 0.into(),
+            slots_per_epoch: 7140_u32.into(),
+            slots_per_sub_window: 7_u32.into(),
+            delta: 0_u32.into(),
             genesis_state_timestamp: BlockTime(1615939200000),
-            sub_windows_per_window: 11.into(),
-            grace_period_end: Length(1440),
+            sub_windows_per_window: 11_u32.into(),
+            grace_period_end: 1440_u32.into(),
         }
     }
 }
@@ -123,17 +123,17 @@ mod tests {
         let mut chain_a = ConsensusState::default();
         chain_a.min_window_density = Length(77);
         chain_a.sub_window_densities = vec![
-            1.into(),
-            7.into(),
-            7.into(),
-            7.into(),
-            7.into(),
-            7.into(),
-            7.into(),
-            7.into(),
-            7.into(),
-            7.into(),
-            7.into(),
+            Length(1),
+            Length(7),
+            Length(7),
+            Length(7),
+            Length(7),
+            Length(7),
+            Length(7),
+            Length(7),
+            Length(7),
+            Length(7),
+            Length(7),
         ];
 
         chain_a.curr_global_slot = GlobalSlot {
@@ -179,17 +179,17 @@ mod tests {
         let mut genesis = ConsensusState::default();
         genesis.min_window_density = Length(77);
         genesis.sub_window_densities = vec![
-            1.into(),
-            7.into(),
-            7.into(),
-            7.into(),
-            7.into(),
-            7.into(),
-            7.into(),
-            7.into(),
-            7.into(),
-            7.into(),
-            7.into(),
+            Length(1),
+            Length(7),
+            Length(7),
+            Length(7),
+            Length(7),
+            Length(7),
+            Length(7),
+            Length(7),
+            Length(7),
+            Length(7),
+            Length(7),
         ];
         let genesis_global_slot = GlobalSlot {
             slot_number: GlobalSlotNumber(0),

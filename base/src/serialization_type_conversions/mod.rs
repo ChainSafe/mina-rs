@@ -632,12 +632,12 @@ impl From<StagedLedgerPreDiffTwoV1> for StagedLedgerPreDiffTwo {
 
 impl From<StagedLedgerDiffTuple> for StagedLedgerDiffTupleV1 {
     fn from(t: StagedLedgerDiffTuple) -> Self {
-        StagedLedgerDiffTupleV1::new((t.0 .0.into(), t.0 .1.into()))
+        StagedLedgerDiffTupleV1::new((t.0 .0.into(), t.0 .1))
     }
 }
 impl From<StagedLedgerDiffTupleV1> for StagedLedgerDiffTuple {
     fn from(t: StagedLedgerDiffTupleV1) -> Self {
-        StagedLedgerDiffTuple((t.t.0.into(), t.t.1.into()))
+        StagedLedgerDiffTuple((t.t.0.into(), t.t.1))
     }
 }
 
