@@ -167,13 +167,6 @@ mod tests {
             "B62qk9WYHu2PBYv4EyEubnVQURcwpiV2ysuYYoMdwi8YTnwZQ7H4bLM"
         );
         assert_eq!(consensus_state.supercharge_coinbase, false);
-
-        let bytes = bs58::decode("B62qpge4uMq4Vv5Rvc8Gw9qSquUYd6xoW1pz7HQkMSHm6h1o7pvLPAN")
-            .into_vec()
-            .unwrap();
-        // TODO: Validate full bytes vec with salted mainnet signature
-        assert_eq!(consensus_state.block_creator.poly.x[..], bytes[3..35]);
-
         assert_eq!(
             consensus_state.total_currency.to_string(),
             "867667132.840039233"
@@ -225,18 +218,14 @@ mod tests {
                 match &command.payload.body {
                     SignedCommandPayloadBody::PaymentPayload(body) => {
                         assert_eq!(body.amount.to_string(), "0.027370000");
-                        let bytes =
-                            bs58::decode("B62qoSuxNqwogusxxZbs3gpJUxCCN4GZEv21FX8S2DtNpToLgKnrexM")
-                                .into_vec()
-                                .unwrap();
-                        // TODO: Validate full bytes vec with salted mainnet signature
-                        assert_eq!(body.source_pk.x[..], bytes[3..35]);
-                        let bytes =
-                            bs58::decode("B62qn2MtuQ9GyyVnotUHB9Ehp9EZre5m6TYpGx64tBCDHHBZFZRURnL")
-                                .into_vec()
-                                .unwrap();
-                        // TODO: Validate full bytes vec with salted mainnet signature
-                        assert_eq!(body.receiver_pk.x[..], bytes[3..35]);
+                        assert_eq!(
+                            body.source_pk.to_base58_string(),
+                            "B62qoSuxNqwogusxxZbs3gpJUxCCN4GZEv21FX8S2DtNpToLgKnrexM"
+                        );
+                        assert_eq!(
+                            body.receiver_pk.to_base58_string(),
+                            "B62qn2MtuQ9GyyVnotUHB9Ehp9EZre5m6TYpGx64tBCDHHBZFZRURnL"
+                        );
                         assert_eq!(body.token_id.0, 1);
                     }
                     _ => bail!(
