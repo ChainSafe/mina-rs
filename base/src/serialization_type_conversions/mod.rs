@@ -275,7 +275,6 @@ impl From<SignedCommandPayloadBody> for SignedCommandPayloadBodyV1 {
             SignedCommandPayloadBody::PaymentPayload(pp) => {
                 Self::new(Versioned::new(b::PaymentPayload(pp.into())))
             }
-            _ => unimplemented!(),
         }
     }
 }
@@ -373,7 +372,6 @@ impl From<UserCommand> for UserCommandV1 {
             UserCommand::SignedCommand(sc) => {
                 Self::new(Versioned::new(UC::SignedCommand(sc.into())))
             }
-            _ => unimplemented!(),
         }
     }
 }
@@ -447,7 +445,6 @@ impl From<TransactionStatus> for TransactionStatusV1 {
             TransactionStatus::Applied(sc) => {
                 Self::new(TS::Applied(sc.into()))
             }
-            _ => unimplemented!(),
         }
     }
 }
@@ -505,9 +502,8 @@ impl From<CoinBase> for CoinBaseV1 {
         use mina_serialization_types::staged_ledger_diff::CoinBase as CB;
         match t {
             CoinBase::Zero => Self::new(CB::Zero),
-            CoinBase::One(maybeFee) => Self::new(CB::One(maybeFee.map(Into::into))),
+            CoinBase::One(maybe_fee) => Self::new(CB::One(maybe_fee.map(Into::into))),
             CoinBase::Two => Self::new(CB::Two),
-            _ => unimplemented!(),
         }
     }
 }
@@ -516,7 +512,7 @@ impl From<CoinBaseV1> for CoinBase {
         use mina_serialization_types::staged_ledger_diff::CoinBase as CB;
         match t.t {
             CB::Zero => Self::Zero,
-            CB::One(maybeFee) => Self::One(maybeFee.map(Into::into)),
+            CB::One(maybe_fee) => Self::One(maybe_fee.map(Into::into)),
             CB::Two => Self::Two,
             _ => unimplemented!(),
         }
@@ -567,8 +563,6 @@ impl From<InternalCommandBalanceData> for InternalCommandBalanceDataV1 {
         match t {
             InternalCommandBalanceData::CoinBase(data) => Self::new(BD::CoinBase(data.into())),
             InternalCommandBalanceData::FeeTransfer(data) => Self::new(BD::FeeTransfer(data.into())),
-
-            _ => unimplemented!(),
         }
     }
 }

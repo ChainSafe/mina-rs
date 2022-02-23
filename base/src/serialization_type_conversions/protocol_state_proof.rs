@@ -247,7 +247,6 @@ impl From<ShiftedValue> for ShiftedValueV1 {
             ShiftedValue::ShiftedValue(v) => {
                 Self::new(SV::ShiftedValue(v.0))
             }
-            _ => unimplemented!(),
         }
     }
 }

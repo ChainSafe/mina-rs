@@ -100,7 +100,6 @@ impl From<BulletproofPreChallenge> for BulletproofPreChallengeV1 {
         use mina_serialization_types::bulletproof_challenges::BulletproofPreChallenge as PC;
         match t {
             BulletproofPreChallenge::ScalarChallenge(v) => Versioned::new(PC::ScalarChallenge(v.into())),
-            _ => unimplemented!(),
         }
     }
 }

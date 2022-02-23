@@ -69,7 +69,6 @@ impl From<ECPoint> for ECPointV1 {
         Versioned::new(match t {
             ECPoint::Infinite => EC::Infinite,
             ECPoint::Finite(v) => EC::Finite(v.into()),
-            _ => unimplemented!(),
         })
     }
 }
@@ -79,7 +78,6 @@ impl From<ECPointV1> for ECPoint {
         match t.t {
             EC::Infinite => Self::Infinite,
             EC::Finite(v) => Self::Finite(v.into()),
-            _ => unimplemented!(),
         }
     }
 }

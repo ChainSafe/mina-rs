@@ -13,7 +13,7 @@ use serde::{Deserialize, Serialize};
 use thiserror::Error;
 use derive_more::From;
 
-use crate::numbers::{Amount, ExtendedU32, ExtendedU64};
+use crate::numbers::{Amount, ExtendedU32};
 
 #[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug)]
 /// Top level wrapper type for a StagedLedgerDiff
