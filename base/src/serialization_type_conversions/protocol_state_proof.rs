@@ -1,5 +1,7 @@
+use crate::types::proof_messages::{
+    ProofMessageWithDegreeBound, ProofMessageWithoutDegreeBoundList,
+};
 use crate::types::*;
-use crate::types::proof_messages::{ProofMessageWithoutDegreeBoundList, ProofMessageWithDegreeBound};
 use mina_serialization_types::v1::*;
 use versioned::Versioned;
 
@@ -24,7 +26,9 @@ impl From<ProofMessageWithDegreeBoundV1> for ProofMessageWithDegreeBound {
 
 impl From<ProofMessageWithoutDegreeBoundList> for ProofMessageWithoutDegreeBoundListV1 {
     fn from(t: ProofMessageWithoutDegreeBoundList) -> Self {
-        ProofMessageWithoutDegreeBoundListV1::new(Versioned::new(t.0.into_iter().map(Into::into).collect()))
+        ProofMessageWithoutDegreeBoundListV1::new(Versioned::new(
+            t.0.into_iter().map(Into::into).collect(),
+        ))
     }
 }
 impl From<ProofMessageWithoutDegreeBoundListV1> for ProofMessageWithoutDegreeBoundList {
@@ -35,15 +39,13 @@ impl From<ProofMessageWithoutDegreeBoundListV1> for ProofMessageWithoutDegreeBou
 
 impl From<ProofMessages> for ProofMessagesV1 {
     fn from(t: ProofMessages) -> Self {
-        ProofMessagesV1::new(
-            mina_serialization_types::proof_messages::ProofMessages {
-                l_comm: t.l_comm.into(),
-                r_comm: t.r_comm.into(),
-                o_comm: t.o_comm.into(),
-                z_comm: t.z_comm.into(),
-                t_comm: t.t_comm.into(),
-            },
-        )
+        ProofMessagesV1::new(mina_serialization_types::proof_messages::ProofMessages {
+            l_comm: t.l_comm.into(),
+            r_comm: t.r_comm.into(),
+            o_comm: t.o_comm.into(),
+            z_comm: t.z_comm.into(),
+            t_comm: t.t_comm.into(),
+        })
     }
 }
 impl From<ProofMessagesV1> for ProofMessages {
@@ -91,15 +93,13 @@ impl From<ProofEvaluationsV1> for ProofEvaluations {
 
 impl From<OpeningProof> for OpeningProofV1 {
     fn from(t: OpeningProof) -> Self {
-        OpeningProofV1::new(
-            mina_serialization_types::opening_proof::OpeningProof {
-                lr: t.lr.into(),
-                z_1: t.z_1.0.into(),
-                z_2: t.z_2.0.into(),
-                delta: t.delta.into(),
-                sg: t.sg.into(),
-            },
-        )
+        OpeningProofV1::new(mina_serialization_types::opening_proof::OpeningProof {
+            lr: t.lr.into(),
+            z_1: t.z_1.0.into(),
+            z_2: t.z_2.0.into(),
+            delta: t.delta.into(),
+            sg: t.sg.into(),
+        })
     }
 }
 impl From<OpeningProofV1> for OpeningProof {
@@ -154,31 +154,23 @@ impl From<ProofV1> for Proof {
 
 impl From<PrevXHat> for PrevXHatV1 {
     fn from(t: PrevXHat) -> Self {
-        PrevXHatV1::new(   
-            t.0.into()
-        )
+        PrevXHatV1::new(t.0.into())
     }
 }
 impl From<PrevXHatV1> for PrevXHat {
     fn from(t: PrevXHatV1) -> Self {
-        Self (
-            t.t.into()
-        )
+        Self(t.t.into())
     }
 }
 
 impl From<PrevEvals> for PrevEvalsV1 {
     fn from(t: PrevEvals) -> Self {
-        PrevEvalsV1::new(   
-            (t.0.0.into(), t.0.1.into())
-        )
+        PrevEvalsV1::new((t.0 .0.into(), t.0 .1.into()))
     }
 }
 impl From<PrevEvalsV1> for PrevEvals {
     fn from(t: PrevEvalsV1) -> Self {
-        Self (
-            (t.t.0.into(), t.t.1.into())
-        )
+        Self((t.t.0.into(), t.t.1.into()))
     }
 }
 
@@ -225,28 +217,33 @@ impl From<ProofStatePairingBasedV1> for ProofStatePairingBased {
 impl From<SpongeDigestBeforeEvaluations> for SpongeDigestBeforeEvaluationsV1 {
     fn from(t: SpongeDigestBeforeEvaluations) -> Self {
         SpongeDigestBeforeEvaluationsV1::new(Versioned::new(
-            mina_serialization_types::protocol_state_proof::SpongeDigestBeforeEvaluations (
-                (t.0.0.into(), t.0.1.into(), t.0.2.into(), t.0.3.into(), ())
-            ),
+            mina_serialization_types::protocol_state_proof::SpongeDigestBeforeEvaluations((
+                t.0 .0.into(),
+                t.0 .1.into(),
+                t.0 .2.into(),
+                t.0 .3.into(),
+                (),
+            )),
         ))
     }
 }
 impl From<SpongeDigestBeforeEvaluationsV1> for SpongeDigestBeforeEvaluations {
     fn from(t: SpongeDigestBeforeEvaluationsV1) -> Self {
-        Self (
-            (t.t.t.0.0.t.into(), t.t.t.0.1.t.into(), t.t.t.0.2.t.into(), t.t.t.0.3.t.into(), ())
-        )
+        Self((
+            t.t.t.0 .0.t.into(),
+            t.t.t.0 .1.t.into(),
+            t.t.t.0 .2.t.into(),
+            t.t.t.0 .3.t.into(),
+            (),
+        ))
     }
 }
-
 
 impl From<ShiftedValue> for ShiftedValueV1 {
     fn from(t: ShiftedValue) -> Self {
         use mina_serialization_types::protocol_state_proof::ShiftedValue as SV;
         match t {
-            ShiftedValue::ShiftedValue(v) => {
-                Self::new(SV::ShiftedValue(v.0))
-            }
+            ShiftedValue::ShiftedValue(v) => Self::new(SV::ShiftedValue(v.0)),
         }
     }
 }
@@ -262,14 +259,12 @@ impl From<ShiftedValueV1> for ShiftedValue {
 
 impl From<Plonk> for PlonkV1 {
     fn from(t: Plonk) -> Self {
-        PlonkV1::new(
-            mina_serialization_types::protocol_state_proof::Plonk {
-                alpha: t.alpha.into(),
-                beta: t.beta.into(),
-                gamma: t.gamma.into(),
-                zeta: t.zeta.into(),
-            },
-        )
+        PlonkV1::new(mina_serialization_types::protocol_state_proof::Plonk {
+            alpha: t.alpha.into(),
+            beta: t.beta.into(),
+            gamma: t.gamma.into(),
+            zeta: t.zeta.into(),
+        })
     }
 }
 impl From<PlonkV1> for Plonk {
@@ -312,13 +307,11 @@ impl From<ProofStateDeferredValuesV1> for ProofStateDeferredValues {
 
 impl From<ProofState> for ProofStateV1 {
     fn from(t: ProofState) -> Self {
-        ProofStateV1::new(
-            mina_serialization_types::protocol_state_proof::ProofState {
-                deferred_values: t.deferred_values.into(),
-                sponge_digest_before_evaluations: t.sponge_digest_before_evaluations.into(),
-                me_only: t.me_only.into(),
-            },
-        )
+        ProofStateV1::new(mina_serialization_types::protocol_state_proof::ProofState {
+            deferred_values: t.deferred_values.into(),
+            sponge_digest_before_evaluations: t.sponge_digest_before_evaluations.into(),
+            me_only: t.me_only.into(),
+        })
     }
 }
 impl From<ProofStateV1> for ProofState {

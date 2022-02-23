@@ -46,8 +46,9 @@ pub mod v1 {
         ScalarChallengeVector2V1,
     };
     pub use super::common::{
-        AmountV1, BigInt256, BlockTimeV1, ByteVecV1, CharV1, DeltaV1, ExtendedU32, ExtendedU64, ExtendedU64_2,
-        ExtendedU64_3, GlobalSlotNumberV1, Hash2V1, HashV1, Hex64V1, LengthV1, TokenIdV1,
+        AmountV1, BigInt256, BlockTimeV1, ByteVecV1, CharV1, DeltaV1, ExtendedU32, ExtendedU64,
+        ExtendedU64_2, ExtendedU64_3, GlobalSlotNumberV1, Hash2V1, HashV1, Hex64V1, LengthV1,
+        TokenIdV1,
     };
     pub use super::consensus_state::{ConsensusStateV1, VrfOutputTruncatedV1};
     pub use super::delta_transition_chain_proof::DeltaTransitionChainProof;
@@ -77,9 +78,10 @@ pub mod v1 {
         CoinBaseBalanceDataV1, CoinBaseFeeTransferV1, CoinBaseV1, FeeTransferBalanceDataV1,
         InternalCommandBalanceDataV1, PaymentPayloadV1, SignedCommandFeeTokenV1,
         SignedCommandMemoV1, SignedCommandPayloadBodyV1, SignedCommandPayloadCommonV1,
-        SignedCommandV1, StagedLedgerDiffTupleV1, StagedLedgerDiffV1, StagedLedgerPreDiffOneV1,
-        StagedLedgerPreDiffTwoV1, TransactionSnarkWork, TransactionStatusAppliedV1,
-        TransactionStatusAuxiliaryDataV1, TransactionStatusBalanceDataV1, TransactionStatusV1,
-        UserCommandV1, UserCommandWithStatusV1, SignedCommandPayloadV1,
+        SignedCommandPayloadV1, SignedCommandV1, StagedLedgerDiffTupleV1, StagedLedgerDiffV1,
+        StagedLedgerPreDiffOneV1, StagedLedgerPreDiffTwoV1, TransactionSnarkWork,
+        TransactionStatusAppliedV1, TransactionStatusAuxiliaryDataV1,
+        TransactionStatusBalanceDataV1, TransactionStatusV1, UserCommandV1,
+        UserCommandWithStatusV1,
     };
 }

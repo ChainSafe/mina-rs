@@ -12,8 +12,8 @@ pub mod base58;
 pub mod base64;
 pub mod hash;
 pub mod hex;
-pub mod signature;
 mod serialization_type_conversions;
+pub mod signature;
 
 pub mod prelude {
     pub use crate::base58::Base58Encodable;

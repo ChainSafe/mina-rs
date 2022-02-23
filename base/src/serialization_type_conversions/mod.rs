@@ -2,10 +2,10 @@ use crate::types::*;
 use mina_serialization_types::v1::*;
 use versioned::Versioned;
 
+mod bulletproof_challenges;
+mod field_and_curve_elements;
 mod numbers;
 mod protocol_state_proof;
-mod field_and_curve_elements;
-mod bulletproof_challenges;
 
 impl From<ExternalTransition> for ExternalTransitionV1 {
     fn from(t: ExternalTransition) -> Self {
@@ -37,15 +37,14 @@ impl From<ExternalTransitionV1> for ExternalTransition {
 
 impl From<BlockchainState> for BlockchainStateV1 {
     fn from(t: BlockchainState) -> Self {
-        BlockchainStateV1::new(
-            Versioned::new(
+        BlockchainStateV1::new(Versioned::new(
             mina_serialization_types::blockchain_state::BlockchainState {
                 staged_ledger_hash: t.staged_ledger_hash.into(),
                 snarked_ledger_hash: t.snarked_ledger_hash.into_inner().into(),
                 genesis_ledger_hash: t.genesis_ledger_hash.into_inner().into(),
                 snarked_next_available_token: t.snarked_next_available_token.into(),
                 timestamp: Versioned::new(Versioned::new(t.timestamp.0)),
-            }
+            },
         ))
     }
 }
@@ -63,12 +62,11 @@ impl From<BlockchainStateV1> for BlockchainState {
 
 impl From<GlobalSlot> for GlobalSlotV1 {
     fn from(t: GlobalSlot) -> Self {
-        GlobalSlotV1::new(
-            Versioned::new(
+        GlobalSlotV1::new(Versioned::new(
             mina_serialization_types::global_slot::GlobalSlot {
                 slot_number: t.slot_number.into(),
                 slots_per_epoch: t.slots_per_epoch.into(),
-            }
+            },
         ))
     }
 }
@@ -83,12 +81,11 @@ impl From<GlobalSlotV1> for GlobalSlot {
 
 impl From<EpochLedger> for EpochLedgerV1 {
     fn from(t: EpochLedger) -> Self {
-        EpochLedgerV1::new(
-            Versioned::new(
+        EpochLedgerV1::new(Versioned::new(
             mina_serialization_types::epoch_data::EpochLedger {
                 hash: t.hash.into_inner().into(),
                 total_currency: t.total_currency.into(),
-            }
+            },
         ))
     }
 }
@@ -103,15 +100,14 @@ impl From<EpochLedgerV1> for EpochLedger {
 
 impl From<EpochData> for EpochDataV1 {
     fn from(t: EpochData) -> Self {
-        EpochDataV1::new(
-            Versioned::new(
+        EpochDataV1::new(Versioned::new(
             mina_serialization_types::epoch_data::EpochData {
                 ledger: t.ledger.into(),
                 seed: t.seed.into_inner().into(),
                 start_checkpoint: t.start_checkpoint.into(),
                 lock_checkpoint: t.lock_checkpoint.into(),
                 epoch_length: t.epoch_length.into(),
-            }
+            },
         ))
     }
 }
@@ -129,8 +125,7 @@ impl From<EpochDataV1> for EpochData {
 
 impl From<ConsensusState> for ConsensusStateV1 {
     fn from(t: ConsensusState) -> Self {
-        ConsensusStateV1::new(
-            Versioned::new(
+        ConsensusStateV1::new(Versioned::new(
             mina_serialization_types::consensus_state::ConsensusState {
                 blockchain_length: t.blockchain_length.into(),
                 epoch_count: t.epoch_count.into(),
@@ -147,7 +142,7 @@ impl From<ConsensusState> for ConsensusStateV1 {
                 block_creator: t.block_creator.into(),
                 coinbase_receiver: t.coinbase_receiver.into(),
                 supercharge_coinbase: t.supercharge_coinbase,
-            }
+            },
         ))
     }
 }
@@ -157,7 +152,13 @@ impl From<ConsensusStateV1> for ConsensusState {
             blockchain_length: t.t.t.blockchain_length.t.t.into(),
             epoch_count: t.t.t.epoch_count.t.t.into(),
             min_window_density: t.t.t.min_window_density.t.t.into(),
-            sub_window_densities: t.t.t.sub_window_densities.into_iter().map(|v| v.t.t.into()).collect(),
+            sub_window_densities: t
+                .t
+                .t
+                .sub_window_densities
+                .into_iter()
+                .map(|v| v.t.t.into())
+                .collect(),
             last_vrf_output: t.t.t.last_vrf_output.t.into(),
             total_currency: t.t.t.total_currency.t.t.into(),
             curr_global_slot: t.t.t.curr_global_slot.into(),
@@ -175,15 +176,16 @@ impl From<ConsensusStateV1> for ConsensusState {
 
 impl From<ProtocolConstants> for ProtocolConstantsV1 {
     fn from(t: ProtocolConstants) -> Self {
-        ProtocolConstantsV1::new(
-            Versioned::new(
+        ProtocolConstantsV1::new(Versioned::new(
             mina_serialization_types::protocol_constants::ProtocolConstants {
                 k: t.k.into(),
                 slots_per_epoch: t.slots_per_epoch.into(),
                 slots_per_sub_window: t.slots_per_sub_window.into(),
                 delta: t.delta.into(),
-                genesis_state_timestamp: Versioned::new(Versioned::new(t.genesis_state_timestamp.0)),
-            }
+                genesis_state_timestamp: Versioned::new(Versioned::new(
+                    t.genesis_state_timestamp.0,
+                )),
+            },
         ))
     }
 }
@@ -201,14 +203,13 @@ impl From<ProtocolConstantsV1> for ProtocolConstants {
 
 impl From<ProtocolStateBody> for ProtocolStateBodyV1 {
     fn from(t: ProtocolStateBody) -> Self {
-        ProtocolStateBodyV1::new(
-            Versioned::new(
+        ProtocolStateBodyV1::new(Versioned::new(
             mina_serialization_types::protocol_state_body::ProtocolStateBody {
                 genesis_state_hash: t.genesis_state_hash.into(),
                 blockchain_state: t.blockchain_state.into(),
                 consensus_state: t.consensus_state.into(),
                 constants: t.constants.into(),
-            }
+            },
         ))
     }
 }
@@ -225,12 +226,11 @@ impl From<ProtocolStateBodyV1> for ProtocolStateBody {
 
 impl From<ProtocolState> for ProtocolStateV1 {
     fn from(t: ProtocolState) -> Self {
-        ProtocolStateV1::new(
-            Versioned::new(
+        ProtocolStateV1::new(Versioned::new(
             mina_serialization_types::protocol_state::ProtocolState {
                 previous_state_hash: t.previous_state_hash.into(),
                 body: t.body.into(),
-            }
+            },
         ))
     }
 }
@@ -243,17 +243,15 @@ impl From<ProtocolStateV1> for ProtocolState {
     }
 }
 
-
 impl From<PaymentPayload> for PaymentPayloadV1 {
     fn from(t: PaymentPayload) -> Self {
-        PaymentPayloadV1::new(
-            Versioned::new(
+        PaymentPayloadV1::new(Versioned::new(
             mina_serialization_types::staged_ledger_diff::PaymentPayload {
                 source_pk: t.source_pk.into(),
                 receiver_pk: t.receiver_pk.into(),
                 token_id: t.token_id.into(),
                 amount: t.amount.into(),
-            }
+            },
         ))
     }
 }
@@ -296,8 +294,7 @@ impl From<SignedCommandMemo> for SignedCommandMemoV1 {
 
 impl From<SignedCommandPayloadCommon> for SignedCommandPayloadCommonV1 {
     fn from(t: SignedCommandPayloadCommon) -> Self {
-        SignedCommandPayloadCommonV1::new(
-            Versioned::new(Versioned::new(
+        SignedCommandPayloadCommonV1::new(Versioned::new(Versioned::new(
             mina_serialization_types::staged_ledger_diff::SignedCommandPayloadCommon {
                 fee: t.fee.into(),
                 fee_token: t.fee_token.into(),
@@ -306,8 +303,7 @@ impl From<SignedCommandPayloadCommon> for SignedCommandPayloadCommonV1 {
                 valid_until: t.valid_until.into(),
                 memo: t.memo.into(),
             },
-            ))
-        )
+        )))
     }
 }
 impl From<SignedCommandPayloadCommonV1> for SignedCommandPayloadCommon {
@@ -325,8 +321,7 @@ impl From<SignedCommandPayloadCommonV1> for SignedCommandPayloadCommon {
 
 impl From<SignedCommandPayload> for SignedCommandPayloadV1 {
     fn from(t: SignedCommandPayload) -> Self {
-        SignedCommandPayloadV1::new(
-            Versioned::new(
+        SignedCommandPayloadV1::new(Versioned::new(
             mina_serialization_types::staged_ledger_diff::SignedCommandPayload {
                 common: t.common.into(),
                 body: t.body.into(),
@@ -345,8 +340,7 @@ impl From<SignedCommandPayloadV1> for SignedCommandPayload {
 
 impl From<SignedCommand> for SignedCommandV1 {
     fn from(t: SignedCommand) -> Self {
-        SignedCommandV1::new(
-            Versioned::new(
+        SignedCommandV1::new(Versioned::new(
             mina_serialization_types::staged_ledger_diff::SignedCommand {
                 payload: t.payload.into(),
                 signer: t.signer.into(),
@@ -389,9 +383,15 @@ impl From<TransactionStatusBalanceData> for TransactionStatusBalanceDataV1 {
     fn from(t: TransactionStatusBalanceData) -> Self {
         TransactionStatusBalanceDataV1::new(
             mina_serialization_types::staged_ledger_diff::TransactionStatusBalanceData {
-               fee_payer_balance: t.fee_payer_balance.map(|v| ExtendedU64_3::new(Versioned::new(Versioned::new(v.0)))),
-               source_balance: t.source_balance.map(|v| ExtendedU64_3::new(Versioned::new(Versioned::new(v.0)))),
-               receiver_balance: t.receiver_balance.map(|v| ExtendedU64_3::new(Versioned::new(Versioned::new(v.0)))),
+                fee_payer_balance: t
+                    .fee_payer_balance
+                    .map(|v| ExtendedU64_3::new(Versioned::new(Versioned::new(v.0)))),
+                source_balance: t
+                    .source_balance
+                    .map(|v| ExtendedU64_3::new(Versioned::new(Versioned::new(v.0)))),
+                receiver_balance: t
+                    .receiver_balance
+                    .map(|v| ExtendedU64_3::new(Versioned::new(Versioned::new(v.0)))),
             },
         )
     }
@@ -399,9 +399,9 @@ impl From<TransactionStatusBalanceData> for TransactionStatusBalanceDataV1 {
 impl From<TransactionStatusBalanceDataV1> for TransactionStatusBalanceData {
     fn from(t: TransactionStatusBalanceDataV1) -> Self {
         Self {
-           fee_payer_balance: t.t.fee_payer_balance.map(|v|v.t.t.t.into()),
-           source_balance: t.t.source_balance.map(|v|v.t.t.t.into()),
-           receiver_balance: t.t.receiver_balance.map(|v|v.t.t.t.into()),
+            fee_payer_balance: t.t.fee_payer_balance.map(|v| v.t.t.t.into()),
+            source_balance: t.t.source_balance.map(|v| v.t.t.t.into()),
+            receiver_balance: t.t.receiver_balance.map(|v| v.t.t.t.into()),
         }
     }
 }
@@ -410,8 +410,12 @@ impl From<TransactionStatusAuxiliaryData> for TransactionStatusAuxiliaryDataV1 {
     fn from(t: TransactionStatusAuxiliaryData) -> Self {
         TransactionStatusAuxiliaryDataV1::new(
             mina_serialization_types::staged_ledger_diff::TransactionStatusAuxiliaryData {
-                fee_payer_account_creation_fee_paid: t.fee_payer_account_creation_fee_paid.map(Into::into),
-                receiver_account_creation_fee_paid: t.receiver_account_creation_fee_paid.map(Into::into),
+                fee_payer_account_creation_fee_paid: t
+                    .fee_payer_account_creation_fee_paid
+                    .map(Into::into),
+                receiver_account_creation_fee_paid: t
+                    .receiver_account_creation_fee_paid
+                    .map(Into::into),
                 created_token: t.created_token.map(Into::into),
             },
         )
@@ -420,8 +424,14 @@ impl From<TransactionStatusAuxiliaryData> for TransactionStatusAuxiliaryDataV1 {
 impl From<TransactionStatusAuxiliaryDataV1> for TransactionStatusAuxiliaryData {
     fn from(t: TransactionStatusAuxiliaryDataV1) -> Self {
         Self {
-            fee_payer_account_creation_fee_paid: t.t.fee_payer_account_creation_fee_paid.map(|v| v.t.t.into()),
-            receiver_account_creation_fee_paid: t.t.receiver_account_creation_fee_paid.map(|v| v.t.t.into()),
+            fee_payer_account_creation_fee_paid: t
+                .t
+                .fee_payer_account_creation_fee_paid
+                .map(|v| v.t.t.into()),
+            receiver_account_creation_fee_paid: t
+                .t
+                .receiver_account_creation_fee_paid
+                .map(|v| v.t.t.into()),
             created_token: t.t.created_token.map(|v| v.t.t.t.into()),
         }
     }
@@ -429,12 +439,12 @@ impl From<TransactionStatusAuxiliaryDataV1> for TransactionStatusAuxiliaryData {
 
 impl From<TransactionStatusApplied> for TransactionStatusAppliedV1 {
     fn from(t: TransactionStatusApplied) -> Self {
-        TransactionStatusAppliedV1((t.0.0.into(), t.0.1.into()))
+        TransactionStatusAppliedV1((t.0 .0.into(), t.0 .1.into()))
     }
 }
 impl From<TransactionStatusAppliedV1> for TransactionStatusApplied {
     fn from(t: TransactionStatusAppliedV1) -> Self {
-        Self ((t.0.0.into(), t.0.1.into()))
+        Self((t.0 .0.into(), t.0 .1.into()))
     }
 }
 
@@ -442,9 +452,7 @@ impl From<TransactionStatus> for TransactionStatusV1 {
     fn from(t: TransactionStatus) -> Self {
         use mina_serialization_types::staged_ledger_diff::TransactionStatus as TS;
         match t {
-            TransactionStatus::Applied(sc) => {
-                Self::new(TS::Applied(sc.into()))
-            }
+            TransactionStatus::Applied(sc) => Self::new(TS::Applied(sc.into())),
         }
     }
 }
@@ -479,8 +487,7 @@ impl From<UserCommandWithStatusV1> for UserCommandWithStatus {
 
 impl From<CoinBaseFeeTransfer> for CoinBaseFeeTransferV1 {
     fn from(t: CoinBaseFeeTransfer) -> Self {
-        CoinBaseFeeTransferV1::new(
-            Versioned::new(
+        CoinBaseFeeTransferV1::new(Versioned::new(
             mina_serialization_types::staged_ledger_diff::CoinBaseFeeTransfer {
                 receiver_pk: t.receiver_pk.into(),
                 fee: t.fee.into(),
@@ -523,8 +530,12 @@ impl From<CoinBaseBalanceData> for CoinBaseBalanceDataV1 {
     fn from(t: CoinBaseBalanceData) -> Self {
         CoinBaseBalanceDataV1::new(
             mina_serialization_types::staged_ledger_diff::CoinBaseBalanceData {
-                coinbase_receiver_balance: ExtendedU64_3::new(Versioned::new(Versioned::new(t.coinbase_receiver_balance.0))),
-                fee_transfer_receiver_balance: t.fee_transfer_receiver_balance.map(|v| ExtendedU64_3::new(Versioned::new(Versioned::new(v.0)))),
+                coinbase_receiver_balance: ExtendedU64_3::new(Versioned::new(Versioned::new(
+                    t.coinbase_receiver_balance.0,
+                ))),
+                fee_transfer_receiver_balance: t
+                    .fee_transfer_receiver_balance
+                    .map(|v| ExtendedU64_3::new(Versioned::new(Versioned::new(v.0)))),
             },
         )
     }
@@ -533,7 +544,10 @@ impl From<CoinBaseBalanceDataV1> for CoinBaseBalanceData {
     fn from(t: CoinBaseBalanceDataV1) -> Self {
         Self {
             coinbase_receiver_balance: t.t.coinbase_receiver_balance.t.t.t.into(),
-            fee_transfer_receiver_balance: t.t.fee_transfer_receiver_balance.map(|v| v.t.t.t.into()),
+            fee_transfer_receiver_balance: t
+                .t
+                .fee_transfer_receiver_balance
+                .map(|v| v.t.t.t.into()),
         }
     }
 }
@@ -542,8 +556,12 @@ impl From<FeeTransferBalanceData> for FeeTransferBalanceDataV1 {
     fn from(t: FeeTransferBalanceData) -> Self {
         FeeTransferBalanceDataV1::new(
             mina_serialization_types::staged_ledger_diff::FeeTransferBalanceData {
-                receiver1_balance: ExtendedU64_3::new(Versioned::new(Versioned::new(t.receiver1_balance.0))),
-                receiver2_balance: t.receiver2_balance.map(|v| ExtendedU64_3::new(Versioned::new(Versioned::new(v.0)))),
+                receiver1_balance: ExtendedU64_3::new(Versioned::new(Versioned::new(
+                    t.receiver1_balance.0,
+                ))),
+                receiver2_balance: t
+                    .receiver2_balance
+                    .map(|v| ExtendedU64_3::new(Versioned::new(Versioned::new(v.0)))),
             },
         )
     }
@@ -562,7 +580,9 @@ impl From<InternalCommandBalanceData> for InternalCommandBalanceDataV1 {
         use mina_serialization_types::staged_ledger_diff::InternalCommandBalanceData as BD;
         match t {
             InternalCommandBalanceData::CoinBase(data) => Self::new(BD::CoinBase(data.into())),
-            InternalCommandBalanceData::FeeTransfer(data) => Self::new(BD::FeeTransfer(data.into())),
+            InternalCommandBalanceData::FeeTransfer(data) => {
+                Self::new(BD::FeeTransfer(data.into()))
+            }
         }
     }
 }

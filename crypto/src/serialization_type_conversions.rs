@@ -1,7 +1,10 @@
+use crate::hash::{NonSnarkStagedLedgerHash, StagedLedgerHash};
+use crate::signature::{CompressedCurvePoint, InnerCurveScalar, PublicKey, Signature};
+use mina_serialization_types::{
+    signatures::InnerCurveScalar as InnerCurveScalarV1,
+    v1::{NonSnarkStagedLedgerHashV1, PublicKey2V1, PublicKeyV1, SignatureV1, StagedLedgerHashV1},
+};
 use versioned::Versioned;
-use crate::signature::{PublicKey, CompressedCurvePoint, Signature, InnerCurveScalar};
-use mina_serialization_types::{v1::{PublicKeyV1, PublicKey2V1, SignatureV1, StagedLedgerHashV1, NonSnarkStagedLedgerHashV1}, signatures::InnerCurveScalar as InnerCurveScalarV1};
-use crate::hash::{StagedLedgerHash, NonSnarkStagedLedgerHash};
 
 impl From<PublicKey> for PublicKeyV1 {
     fn from(t: PublicKey) -> Self {
@@ -26,8 +29,7 @@ impl From<PublicKeyV1> for PublicKey {
 
 impl From<PublicKey> for PublicKey2V1 {
     fn from(t: PublicKey) -> Self {
-        Self::new(Versioned::new(
-            Versioned::new(
+        Self::new(Versioned::new(Versioned::new(
             mina_serialization_types::signatures::CompressedCurvePoint {
                 x: t.poly.x,
                 is_odd: t.poly.is_odd,
@@ -48,14 +50,12 @@ impl From<PublicKey2V1> for PublicKey {
 
 impl From<Signature> for SignatureV1 {
     fn from(t: Signature) -> Self {
-        Self::new(Versioned::new(
-            (t.0.0.into(), t.0.1.into())
-        ))
+        Self::new(Versioned::new((t.0 .0.into(), t.0 .1.into())))
     }
 }
 impl From<SignatureV1> for Signature {
     fn from(t: SignatureV1) -> Self {
-        Self ((t.t.t.0.into(), t.t.t.1.into()))
+        Self((t.t.t.0.into(), t.t.t.1.into()))
     }
 }
 
@@ -66,7 +66,7 @@ impl From<InnerCurveScalar> for InnerCurveScalarV1 {
 }
 impl From<InnerCurveScalarV1> for InnerCurveScalar {
     fn from(t: InnerCurveScalarV1) -> Self {
-        Self (t.0)
+        Self(t.0)
     }
 }
 
@@ -77,7 +77,7 @@ impl From<NonSnarkStagedLedgerHash> for NonSnarkStagedLedgerHashV1 {
                 ledger_hash: t.ledger_hash.into_inner().into(),
                 aux_hash: t.aux_hash.0.into(),
                 pending_coinbase_aux: t.pending_coinbase_aux.0.into(),
-            }
+            },
         )
     }
 }
@@ -93,12 +93,11 @@ impl From<NonSnarkStagedLedgerHashV1> for NonSnarkStagedLedgerHash {
 
 impl From<StagedLedgerHash> for StagedLedgerHashV1 {
     fn from(t: StagedLedgerHash) -> Self {
-        StagedLedgerHashV1::new(
-            Versioned::new(Versioned::new(
+        StagedLedgerHashV1::new(Versioned::new(Versioned::new(
             mina_serialization_types::blockchain_state::StagedLedgerHash {
                 non_snark: t.non_snark.into(),
                 pending_coinbase_hash: Versioned::new(t.pending_coinbase_hash.into_inner().into()),
-            }
+            },
         )))
     }
 }

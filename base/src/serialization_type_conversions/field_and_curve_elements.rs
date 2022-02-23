@@ -1,8 +1,8 @@
+use crate::types::FiniteECPoint;
 use crate::types::*;
+use mina_serialization_types::v1::FiniteECPoint as FiniteECPointV1;
 use mina_serialization_types::v1::*;
 use versioned::Versioned;
-use mina_serialization_types::v1::FiniteECPoint as FiniteECPointV1;
-use crate::types::FiniteECPoint;
 
 impl From<FieldElementVec> for FieldElementVecV1 {
     fn from(t: FieldElementVec) -> Self {
@@ -17,12 +17,20 @@ impl From<FieldElementVecV1> for FieldElementVec {
 
 impl From<FiniteECPointPairVec> for FiniteECPointPairVecV1 {
     fn from(t: FiniteECPointPairVec) -> Self {
-        Versioned::new(t.0.into_iter().map(|(v1, v2)|(v1.into(), v2.into())).collect())
+        Versioned::new(
+            t.0.into_iter()
+                .map(|(v1, v2)| (v1.into(), v2.into()))
+                .collect(),
+        )
     }
 }
 impl From<FiniteECPointPairVecV1> for FiniteECPointPairVec {
     fn from(t: FiniteECPointPairVecV1) -> Self {
-        Self(t.t.into_iter().map(|(v1, v2)|(v1.into(), v2.into())).collect())
+        Self(
+            t.t.into_iter()
+                .map(|(v1, v2)| (v1.into(), v2.into()))
+                .collect(),
+        )
     }
 }
 
@@ -50,16 +58,12 @@ impl From<FiniteECPointVecV1> for FiniteECPointVec {
 
 impl From<FiniteECPoint> for FiniteECPointV1 {
     fn from(t: FiniteECPoint) -> Self {
-        Self (
-            t.0.0.into(), t.1.0.into()
-        )
+        Self(t.0 .0.into(), t.1 .0.into())
     }
 }
 impl From<FiniteECPointV1> for FiniteECPoint {
     fn from(t: FiniteECPointV1) -> Self {
-        Self (
-            t.0.into(), t.1.into()
-        )
+        Self(t.0.into(), t.1.into())
     }
 }
 

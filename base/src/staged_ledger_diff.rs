@@ -8,10 +8,10 @@
 #![allow(missing_docs)]
 
 use crate::types::TokenId;
+use derive_more::From;
 use mina_crypto::signature::{PublicKey, Signature};
 use serde::{Deserialize, Serialize};
 use thiserror::Error;
-use derive_more::From;
 
 use crate::numbers::{Amount, ExtendedU32};
 
@@ -171,7 +171,9 @@ impl Default for TransactionStatus {
 }
 
 #[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug)]
-pub struct TransactionStatusApplied(pub (TransactionStatusAuxiliaryData, TransactionStatusBalanceData));
+pub struct TransactionStatusApplied(
+    pub (TransactionStatusAuxiliaryData, TransactionStatusBalanceData),
+);
 
 impl TransactionStatusApplied {
     pub fn auxiliary_data(&self) -> &TransactionStatusAuxiliaryData {

@@ -10,9 +10,9 @@ use crate::{
     impl_bs58_for_binprot,
 };
 use derive_deref::Deref;
+use derive_more::{From, Into};
 use mina_serialization_types::v1::PublicKeyV1;
 use serde::{Deserialize, Serialize};
-use derive_more::{From, Into};
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct CompressedCurvePoint {
@@ -56,7 +56,7 @@ impl Base58Encodable for Signature {
     const MINA_VERSION_BYTE_COUNT: usize = 1;
 
     fn write_encodable_bytes(&self, output: &mut Vec<u8>) {
-        let field_point_bytes: &[u8; 32] = &self.0.0.0;
+        let field_point_bytes: &[u8; 32] = &self.0 .0 .0;
         output.extend(field_point_bytes);
         let inner_curve_scalar_bytes: &[u8; 32] = &self.0 .1 .0;
         output.extend(inner_curve_scalar_bytes);

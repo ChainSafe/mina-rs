@@ -97,7 +97,7 @@ macro_rules! impl_bs58_full {
 
         impl $ty {
             pub fn into_inner(self) -> [u8; 32] {
-                self.0.0
+                self.0 .0
             }
         }
     };
