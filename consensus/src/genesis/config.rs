@@ -520,7 +520,8 @@ impl GenesisInitConfig {
                 StateHash::from_base58("3NLoKn22eMnyQ7rxh5pxB6vBA3XhSAhhrf7akdqS6HbAKD14Dh1d")
                     .expect(ERR_FAIL_TO_DECODE_B58),
                 Default::default(),
-            ).into(),
+            )
+                .into(),
         }
     }
 

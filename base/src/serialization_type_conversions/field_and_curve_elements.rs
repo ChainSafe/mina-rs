@@ -58,7 +58,7 @@ impl From<FiniteECPointVecV1> for FiniteECPointVec {
 
 impl From<FiniteECPoint> for FiniteECPointV1 {
     fn from(t: FiniteECPoint) -> Self {
-        Self(t.0.0, t.1.0)
+        Self(t.0 .0, t.1 .0)
     }
 }
 impl From<FiniteECPointV1> for FiniteECPoint {

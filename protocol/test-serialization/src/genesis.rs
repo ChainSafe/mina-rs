@@ -40,7 +40,20 @@ mod tests {
             GENESIS_BLOCK_MAINNET.external_transitionv1().unwrap(),
         ] {
             let protocol_state_proof = &et.0.t.protocol_state_proof;
-            let ev0: ProofEvaluations = protocol_state_proof.t.t.t.t.proof.t.t.openings.t.evals.0.clone().into();
+            let ev0: ProofEvaluations = protocol_state_proof
+                .t
+                .t
+                .t
+                .t
+                .proof
+                .t
+                .t
+                .openings
+                .t
+                .evals
+                .0
+                .clone()
+                .into();
             assert_eq!(
                 ev0.l.to_hex_string(),
                 "2e53605b801ad7fea745e9766add8da9ed33589d758fb339fed40c329c59aa27"
@@ -77,7 +90,8 @@ mod tests {
         genesis_fixture: &BlockFixture,
         genesis_init_config: &GenesisInitConfig,
     ) {
-        let genesis:ExternalTransitionV1 = ExternalTransition::from_genesis_config(genesis_init_config).into();
+        let genesis: ExternalTransitionV1 =
+            ExternalTransition::from_genesis_config(genesis_init_config).into();
         let output = genesis.try_encode_binprot().unwrap();
         assert_eq!(genesis_fixture.bytes, output)
     }
@@ -95,7 +109,8 @@ mod tests {
     }
 
     fn test_genesis_path(genesis_init_config: &GenesisInitConfig, fixture: &BlockFixture) {
-        let genesis: ExternalTransitionV1 = ExternalTransition::from_genesis_config(genesis_init_config).into();
+        let genesis: ExternalTransitionV1 =
+            ExternalTransition::from_genesis_config(genesis_init_config).into();
 
         test_path(
             &genesis,
@@ -135,7 +150,20 @@ mod tests {
             &genesis,
             &fixture,
             "t/protocol_state_proof/t/t/t/t/statement/t/t/proof_state/t/deferred_values",
-            |b| &b.0.t.protocol_state_proof.t.t.t.t.statement.t.t.proof_state.t.deferred_values,
+            |b| {
+                &b.0.t
+                    .protocol_state_proof
+                    .t
+                    .t
+                    .t
+                    .t
+                    .statement
+                    .t
+                    .t
+                    .proof_state
+                    .t
+                    .deferred_values
+            },
         );
         test_path(
             &genesis,
@@ -147,7 +175,20 @@ mod tests {
             &genesis,
             &fixture,
             "t/protocol_state_proof/t/t/t/t/statement/t/t/proof_state/t/me_only",
-            |b| &b.0.t.protocol_state_proof.t.t.t.t.statement.t.t.proof_state.t.me_only,
+            |b| {
+                &b.0.t
+                    .protocol_state_proof
+                    .t
+                    .t
+                    .t
+                    .t
+                    .statement
+                    .t
+                    .t
+                    .proof_state
+                    .t
+                    .me_only
+            },
         );
         test_path(
             &genesis,
@@ -159,7 +200,18 @@ mod tests {
             &genesis,
             &fixture,
             "t/protocol_state_proof/t/t/t/t/statement/t/t/pass_through",
-            |b| &b.0.t.protocol_state_proof.t.t.t.t.statement.t.t.pass_through,
+            |b| {
+                &b.0.t
+                    .protocol_state_proof
+                    .t
+                    .t
+                    .t
+                    .t
+                    .statement
+                    .t
+                    .t
+                    .pass_through
+            },
         );
         test_path(
             &genesis,
@@ -189,19 +241,60 @@ mod tests {
             &genesis,
             &fixture,
             "t/protocol_state_proof/t/t/t/t/proof/t/t/openings/t/proof/t/lr",
-            |b| &b.0.t.protocol_state_proof.t.t.t.t.proof.t.t.openings.t.proof.t.lr,
+            |b| {
+                &b.0.t
+                    .protocol_state_proof
+                    .t
+                    .t
+                    .t
+                    .t
+                    .proof
+                    .t
+                    .t
+                    .openings
+                    .t
+                    .proof
+                    .t
+                    .lr
+            },
         );
         test_path(
             &genesis,
             &fixture,
             "t/protocol_state_proof/t/t/t/t/proof/t/t/openings/t/proof",
-            |b| &b.0.t.protocol_state_proof.t.t.t.t.proof.t.t.openings.t.proof,
+            |b| {
+                &b.0.t
+                    .protocol_state_proof
+                    .t
+                    .t
+                    .t
+                    .t
+                    .proof
+                    .t
+                    .t
+                    .openings
+                    .t
+                    .proof
+            },
         );
         test_path(
             &genesis,
             &fixture,
             "t/protocol_state_proof/t/t/t/t/proof/t/t/openings/t/evals",
-            |b| &b.0.t.protocol_state_proof.t.t.t.t.proof.t.t.openings.t.evals,
+            |b| {
+                &b.0.t
+                    .protocol_state_proof
+                    .t
+                    .t
+                    .t
+                    .t
+                    .proof
+                    .t
+                    .t
+                    .openings
+                    .t
+                    .evals
+            },
         );
         test_path(
             &genesis,
