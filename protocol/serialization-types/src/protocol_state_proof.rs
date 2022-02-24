@@ -20,7 +20,7 @@ use crate::v1::{
 
 use crate::field_and_curve_elements::{FiniteECPoint, FiniteECPointVecV1};
 
-#[derive(Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 /// SNARK proof of the protocol state at some point in time
 pub struct ProtocolStateProof {
     pub statement: ProofStatementV1,
@@ -32,7 +32,7 @@ pub struct ProtocolStateProof {
 pub type ProtocolStateProofV1 =
     Versioned<Versioned<Versioned<Versioned<ProtocolStateProof, 1>, 1>, 1>, 1>;
 
-#[derive(Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub struct ProofStatement {
     pub proof_state: ProofStateV1,
     pub pass_through: PairingBasedV1,
@@ -40,7 +40,7 @@ pub struct ProofStatement {
 
 pub type ProofStatementV1 = Versioned<Versioned<ProofStatement, 1>, 1>;
 
-#[derive(Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub struct ProofState {
     pub deferred_values: ProofStateDeferredValuesV1,
     pub sponge_digest_before_evaluations: SpongeDigestBeforeEvaluationsV1,
@@ -49,7 +49,7 @@ pub struct ProofState {
 
 pub type ProofStateV1 = Versioned<ProofState, 1>;
 
-#[derive(Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub struct ProofStateDeferredValues {
     pub plonk: PlonkV1,
     pub combined_inner_product: ShiftedValueV1,
@@ -61,7 +61,7 @@ pub struct ProofStateDeferredValues {
 
 pub type ProofStateDeferredValuesV1 = Versioned<ProofStateDeferredValues, 1>;
 
-#[derive(Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub struct Plonk {
     pub alpha: BulletproofPreChallengeV1,
     pub beta: ScalarChallengeVector2V1,
@@ -71,7 +71,7 @@ pub struct Plonk {
 
 pub type PlonkV1 = Versioned<Plonk, 1>;
 
-#[derive(Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 #[non_exhaustive]
 pub enum ShiftedValue {
     ShiftedValue(BigInt256),
@@ -79,13 +79,13 @@ pub enum ShiftedValue {
 
 pub type ShiftedValueV1 = Versioned<ShiftedValue, 1>;
 
-#[derive(Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub struct SpongeDigestBeforeEvaluations(pub (Hex64V1, Hex64V1, Hex64V1, Hex64V1, ()));
 
 pub type SpongeDigestBeforeEvaluationsV1 =
     Versioned<Versioned<SpongeDigestBeforeEvaluations, 1>, 1>;
 
-#[derive(Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub struct ProofStatePairingBased {
     pub sg: FiniteECPoint,
     pub old_bulletproof_challenges: ProofStateBulletproofChallengesV1,
@@ -93,7 +93,7 @@ pub struct ProofStatePairingBased {
 
 pub type ProofStatePairingBasedV1 = Versioned<ProofStatePairingBased, 1>;
 
-#[derive(Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub struct PairingBased {
     pub app_state: (),
     pub sg: FiniteECPointVecV1,
@@ -106,7 +106,7 @@ pub type PrevEvalsV1 = Versioned<(ProofEvaluationsV1, ProofEvaluationsV1), 1>;
 
 pub type PrevXHatV1 = Versioned<FiniteECPoint, 1>;
 
-#[derive(Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub struct Proof {
     pub messages: ProofMessagesV1,
     pub openings: ProofOpeningsV1,
@@ -114,7 +114,7 @@ pub struct Proof {
 
 pub type ProofV1 = Versioned<Versioned<Proof, 1>, 1>;
 
-#[derive(Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub struct ProofOpenings {
     pub proof: OpeningProofV1,
     pub evals: (ProofEvaluationsV1, ProofEvaluationsV1),

@@ -10,7 +10,7 @@ use versioned::Versioned;
 
 use crate::v1::Hex64V1;
 
-#[derive(Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub struct BulletproofChallenge {
     pub prechallenge: BulletproofPreChallengeV1,
 }
@@ -29,7 +29,7 @@ pub type ProofStateBulletproofChallengesV1 = Versioned<
 >;
 
 // TODO - see if this can be rewritten with const generics over an array
-#[derive(Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub struct BulletproofChallengeTuple17(
     pub BulletproofChallengeV1,
     pub BulletproofChallengeV1,
@@ -55,7 +55,7 @@ pub type BulletproofChallengeTuple17V1 =
     Versioned<Versioned<Versioned<BulletproofChallengeTuple17, 1>, 1>, 1>;
 
 // TODO - see if this can be rewritten with const generics over an array
-#[derive(Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub struct BulletproofChallengeTuple18(
     pub BulletproofChallengeV1,
     pub BulletproofChallengeV1,
@@ -80,7 +80,7 @@ pub struct BulletproofChallengeTuple18(
 
 pub type BulletproofChallengeTuple18V1 = Versioned<Versioned<BulletproofChallengeTuple18, 1>, 1>;
 
-#[derive(Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 #[non_exhaustive]
 pub enum BulletproofPreChallenge {
     ScalarChallenge(ScalarChallengeVector2V1),

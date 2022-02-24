@@ -8,7 +8,7 @@ use serde::{Deserialize, Serialize};
 use versioned::Versioned;
 
 /// An EC point stored in compressed form containing only the x coordinate and one extra bit
-#[derive(Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub struct CompressedCurvePoint {
     /// The x coordinate of the EC point
     pub x: FieldElement,
@@ -17,7 +17,7 @@ pub struct CompressedCurvePoint {
 }
 
 /// Wrapper type for field element denoting it is on the curves scalar field
-#[derive(Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub struct InnerCurveScalar(pub FieldElement);
 
 /// Public key (v1)

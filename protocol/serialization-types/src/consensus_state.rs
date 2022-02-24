@@ -19,7 +19,7 @@ pub type VrfOutputTruncatedV1 = Versioned<Vec<u8>, 1>;
 /// approach where the future stake distribution snapshot is prepared by the current consensus epoch.
 ///
 /// Samasika prepares the past for the future! This future state is stored in the next_epoch_data field.
-#[derive(Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub struct ConsensusState {
     /// Height of block
     pub blockchain_length: LengthV1,

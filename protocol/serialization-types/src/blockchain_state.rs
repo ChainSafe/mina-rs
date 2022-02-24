@@ -10,7 +10,7 @@ use serde::{Deserialize, Serialize};
 use versioned::Versioned;
 
 /// Mina blockchain state struct
-#[derive(Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub struct BlockchainState {
     /// Hash of the proposed next state of the blockchain
     pub staged_ledger_hash: StagedLedgerHashV1,
@@ -28,7 +28,7 @@ pub struct BlockchainState {
 pub type BlockchainStateV1 = Versioned<Versioned<BlockchainState, 1>, 1>;
 
 /// Staged ledger hash structure
-#[derive(Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub struct StagedLedgerHash {
     pub non_snark: NonSnarkStagedLedgerHashV1,
     pub pending_coinbase_hash: Hash2V1,
@@ -38,7 +38,7 @@ pub struct StagedLedgerHash {
 pub type StagedLedgerHashV1 = Versioned<Versioned<Versioned<StagedLedgerHash, 1>, 1>, 1>;
 
 /// Non-snarked ledger hash
-#[derive(Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub struct NonSnarkStagedLedgerHash {
     pub ledger_hash: HashV1,
     pub aux_hash: ByteVecV1,

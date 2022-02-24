@@ -9,7 +9,7 @@ use versioned::Versioned;
 use crate::v1::{GlobalSlotNumberV1, LengthV1};
 
 /// A global slot
-#[derive(Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub struct GlobalSlot {
     /// The global slot number of a chain or block
     pub slot_number: GlobalSlotNumberV1,
