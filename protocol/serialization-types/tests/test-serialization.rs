@@ -6,7 +6,6 @@ wasm_bindgen_test::wasm_bindgen_test_configure!(run_in_browser);
 
 use bin_prot::encodable::BinProtEncodable;
 use bin_prot::{from_reader, to_writer, Value};
-use mina_crypto::binprot::BinProtEncodable;
 use mina_serialization_types::v1::*;
 use pretty_assertions::assert_eq;
 use serde::{Deserialize, Serialize};
