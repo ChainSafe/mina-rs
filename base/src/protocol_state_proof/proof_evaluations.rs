@@ -19,20 +19,20 @@ pub struct ProofEvaluations {
     pub sigma2: FieldElementVec,
 }
 
-impl<Fs> From<ProofEvaluations> for plonk_circuits::scalars::ProofEvaluations<Vec<Fs>>
-where
-    Fs: From<ark_ff::BigInteger256>,
-{
-    fn from(t: ProofEvaluations) -> Self {
-        Self {
-            l: t.l.into(),
-            r: t.r.into(),
-            o: t.o.into(),
-            z: t.z.into(),
-            t: t.t.into(),
-            f: t.f.into(),
-            sigma1: t.sigma1.into(),
-            sigma2: t.sigma2.into(),
-        }
-    }
-}
+// impl<Fs> From<ProofEvaluations> for plonk_circuits::scalars::ProofEvaluations<Vec<Fs>>
+// where
+//     Fs: From<ark_ff::BigInteger256>,
+// {
+//     fn from(t: ProofEvaluations) -> Self {
+//         Self {
+//             l: t.l.into(),
+//             r: t.r.into(),
+//             o: t.o.into(),
+//             z: t.z.into(),
+//             t: t.t.into(),
+//             f: t.f.into(),
+//             sigma1: t.sigma1.into(),
+//             sigma2: t.sigma2.into(),
+//         }
+//     }
+// }

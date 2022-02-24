@@ -5,6 +5,7 @@ use super::prefixes::HashPrefix;
 use bin_prot::to_writer;
 use blake2::digest::VariableOutput;
 use blake2::Blake2bVar;
+use mina_signer::ROInput;
 use serde::Serialize;
 
 const BLAKE_HASH_SIZE: usize = 32;
@@ -34,6 +35,12 @@ where
         to_writer(&mut hasher, self).unwrap();
         OutputType::from(hasher.finalize_boxed())
     }
+}
+
+/// Trait that converts itself into either field(s) or bits(s)
+/// for constructing the given [ROInput]
+pub trait RandomOracleInputElement {
+    fn add_self_to(&self, input: &mut ROInput);
 }
 
 #[cfg(test)]

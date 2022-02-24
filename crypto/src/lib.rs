@@ -15,6 +15,9 @@ pub mod hash;
 pub mod hex;
 pub mod signature;
 
+/// Re-export mina_signer
+pub use mina_signer;
+
 pub mod prelude {
     pub use crate::base58::Base58Encodable;
     pub use crate::base64::Base64Encodable;

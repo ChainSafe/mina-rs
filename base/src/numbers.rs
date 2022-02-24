@@ -7,7 +7,7 @@ use std::fmt;
 
 use derive_deref::Deref;
 use derive_more::From;
-use mina_crypto::{hex::skip_0x_prefix_when_needed, prelude::*};
+use mina_crypto::{hash::*, hex::*, mina_signer::*};
 use num::Integer;
 use serde::{Deserialize, Serialize};
 use thiserror::Error;
@@ -35,6 +35,12 @@ use crate::constants::MINA_PRECISION;
 #[wire_type(recurse = 2)]
 /// Represents the length of something (e.g. an epoch or window)
 pub struct Length(pub u32);
+
+impl RandomOracleInputElement for Length {
+    fn add_self_to(&self, input: &mut ROInput) {
+        input.append_u32(self.0)
+    }
+}
 
 #[derive(
     Clone, Serialize, Deserialize, PartialEq, PartialOrd, Debug, Hash, Copy, Default, WireType, From,
@@ -242,7 +248,7 @@ impl From<BigInt256> for ark_ff::BigInteger256 {
 
 #[cfg(test)]
 pub mod tests {
-    use crate::numbers::*;
+    use super::*;
     use crate::types::ParseAmountError;
     use std::str::FromStr;
 

@@ -19,21 +19,21 @@ pub struct ProofMessages {
     pub t_comm: ProofMessageWithDegreeBound,
 }
 
-impl<P> From<ProofMessages> for plonk_protocol_dlog::prover::ProverCommitments<GroupAffine<P>>
-where
-    P: ark_ec::SWModelParameters,
-    <P as ModelParameters>::BaseField: From<ark_ff::BigInteger256>,
-{
-    fn from(t: ProofMessages) -> Self {
-        Self {
-            l_comm: t.l_comm.into(),
-            r_comm: t.r_comm.into(),
-            o_comm: t.o_comm.into(),
-            z_comm: t.z_comm.into(),
-            t_comm: t.t_comm.into(),
-        }
-    }
-}
+// impl<P> From<ProofMessages> for plonk_protocol_dlog::prover::ProverCommitments<GroupAffine<P>>
+// where
+//     P: ark_ec::SWModelParameters,
+//     <P as ModelParameters>::BaseField: From<ark_ff::BigInteger256>,
+// {
+//     fn from(t: ProofMessages) -> Self {
+//         Self {
+//             l_comm: t.l_comm.into(),
+//             r_comm: t.r_comm.into(),
+//             o_comm: t.o_comm.into(),
+//             z_comm: t.z_comm.into(),
+//             t_comm: t.t_comm.into(),
+//         }
+//     }
+// }
 
 #[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, WireType)]
 #[serde(from = "<Self as WireType>::WireType")]

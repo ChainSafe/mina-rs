@@ -10,6 +10,8 @@ license = "Apache-2.0"
 bin-prot = {path = "../protocol/bin-prot"}
 wire-type = {path = "../protocol/wire-type"}
 
+mina-signer = {git = "https://github.com/o1-labs/proof-systems", rev = "9a1c4852c11f04f54e5e71b050af02e5586bb698"}
+
 base64 = "0.13"
 blake2 = "0.10"
 bs58 = {version = "0.4", features = ["check"]}
