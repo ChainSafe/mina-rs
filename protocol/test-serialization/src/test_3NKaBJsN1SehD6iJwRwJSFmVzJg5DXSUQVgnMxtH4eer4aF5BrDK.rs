@@ -26,7 +26,7 @@ mod tests {
         let et: ExternalTransitionV1 = TEST_BLOCKS
             .get("3NKaBJsN1SehD6iJwRwJSFmVzJg5DXSUQVgnMxtH4eer4aF5BrDK.hex")
             .unwrap()
-            .external_transition()?.into();
+            .external_transitionv1()?;
 
         let protocol_state = &et.0.t.protocol_state;
         assert_eq!(

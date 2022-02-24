@@ -27,7 +27,7 @@ mod tests {
     }
 
     fn test_genesis_roundtrip(genesis_fixture: &BlockFixture) {
-        let genesis = genesis_fixture.external_transition().unwrap();
+        let genesis = genesis_fixture.external_transitionv1().unwrap();
         let output = genesis.try_encode_binprot().unwrap();
         assert_eq!(genesis_fixture.bytes, output)
     }
@@ -37,7 +37,7 @@ mod tests {
     fn test_genesis_protocol_state_proof() {
         for et in [
             ExternalTransitionV1::from(ExternalTransition::from_genesis_config(&MAINNET_CONFIG)),
-            GENESIS_BLOCK_MAINNET.external_transition().unwrap().into(),
+            GENESIS_BLOCK_MAINNET.external_transitionv1().unwrap(),
         ] {
             let protocol_state_proof = &et.0.t.protocol_state_proof;
             let ev0 = &protocol_state_proof.t.t.t.t.proof.t.t.openings.t.evals.0;
@@ -248,7 +248,7 @@ mod tests {
     ) where
         T: std::fmt::Debug + PartialEq + Serialize,
     {
-        let et_deserialized = block_fixture.external_transition().unwrap().into();
+        let et_deserialized = block_fixture.external_transitionv1().unwrap();
         test_path_typed(et, &et_deserialized, select);
         let _ = et_deserialized;
         let path = path.as_ref();
