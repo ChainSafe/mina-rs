@@ -46,4 +46,5 @@ pub struct NonSnarkStagedLedgerHash {
 }
 
 /// Non-snarked ledger hash (v1)
-pub type NonSnarkStagedLedgerHashV1 = Versioned<NonSnarkStagedLedgerHash, 1>;
+/// Strangely this one does not have a version byte. This is not a typo
+pub type NonSnarkStagedLedgerHashV1 = NonSnarkStagedLedgerHash;
