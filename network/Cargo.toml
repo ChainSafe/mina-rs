@@ -12,8 +12,8 @@ default = []
 [dependencies]
 cfg-if = "1"
 lazy_static = "1"
-libp2p = {version = "0.42", features = ["dns-tokio", "tcp-tokio"]}
-libp2p-mplex = {version = "0.31"}
+libp2p = {version = "0.43", features = ["dns-tokio", "tcp-tokio"]}
+libp2p-mplex = {version = "0.32"}
 multihash = "0.16"
 
 [dev-dependencies]
@@ -22,7 +22,7 @@ tokio = {version = "1.16", features = ["rt", "macros"]}
 
 # To list all wasm targets, use command 'rustc --print target-list | grep wasm'
 [target.'cfg(target_arch = "wasm32")'.dependencies]
-libp2p = {version = "0.42", features = ["wasm-bindgen", "wasm-ext-websocket"]}
+libp2p = {version = "0.43", features = ["wasm-bindgen", "wasm-ext-websocket"]}
 
 getrandom = {version = "0.2", features = ["js"]}
 js-sys = "0.3"
