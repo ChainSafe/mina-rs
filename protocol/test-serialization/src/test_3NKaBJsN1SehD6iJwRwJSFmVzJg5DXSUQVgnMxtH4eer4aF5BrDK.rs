@@ -40,34 +40,34 @@ mod tests {
             "3NKeMoncuHab5ScarV5ViyF16cJPT4taWNSaTLS64Dp67wuXigPZ"
         );
         let blockchain_state = &body.t.t.blockchain_state;
-        let non_snark = &blockchain_state.t.t.staged_ledger_hash.t.t.t.non_snark;
+        let non_snark = &blockchain_state.t.t.staged_ledger_hash.t.t.non_snark;
         assert_eq!(
-            LedgerHash::from(non_snark.ledger_hash.clone()).to_base58_string(),
+            LedgerHash::from(non_snark.t.ledger_hash.clone()).to_base58_string(),
             "jwD5Kx1GtLKJGSWufhkvCn8m7EFLm2LmAM7neyzLtTiN8wyn2po"
         );
 
         let bytes = bs58::decode("UworXDykADr3Lte856ePMsdawpTVhKLKT9Y3UKha7Tpbt4V1JP")
             .into_vec()
             .unwrap();
-        assert_eq!(non_snark.aux_hash.t[..], bytes[1..33]);
+        assert_eq!(non_snark.t.aux_hash.t[..], bytes[1..33]);
         assert_eq!(
-            AuxHash::from(non_snark.aux_hash.t.clone()).to_base58_string(),
+            AuxHash::from(non_snark.t.aux_hash.t.clone()).to_base58_string(),
             "UworXDykADr3Lte856ePMsdawpTVhKLKT9Y3UKha7Tpbt4V1JP"
         );
 
         let bytes = bs58::decode("XbwfEKZjgcZiyDhHRZjHUx72TuxpnuzLPwVYpVWkMAAXkSy7go")
             .into_vec()
             .unwrap();
-        assert_eq!(non_snark.pending_coinbase_aux.t[..], bytes[1..33]);
+        assert_eq!(non_snark.t.pending_coinbase_aux.t[..], bytes[1..33]);
         assert_eq!(
-            PendingCoinbaseAuxHash(non_snark.pending_coinbase_aux.t.clone()).to_base58_string(),
+            PendingCoinbaseAuxHash(non_snark.t.pending_coinbase_aux.t.clone()).to_base58_string(),
             "XbwfEKZjgcZiyDhHRZjHUx72TuxpnuzLPwVYpVWkMAAXkSy7go"
         );
 
         assert_eq!(
             CoinBaseHash::from(blockchain_state
                 .t.t.staged_ledger_hash
-                .t.t.t.pending_coinbase_hash.t
+                .t.t.pending_coinbase_hash.t
                 .clone()).to_base58_string(),
             "2mzpdUi5ddLicLGUns4iYFiNahL5B5cPkTUot83v2moNtr4mzRYf"
         );
