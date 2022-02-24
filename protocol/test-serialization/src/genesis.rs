@@ -40,24 +40,24 @@ mod tests {
             GENESIS_BLOCK_MAINNET.external_transitionv1().unwrap(),
         ] {
             let protocol_state_proof = &et.0.t.protocol_state_proof;
-            let ev0 = &protocol_state_proof.t.t.t.t.proof.t.t.openings.t.evals.0;
+            let ev0: ProofEvaluations = protocol_state_proof.t.t.t.t.proof.t.t.openings.t.evals.0.clone().into();
             assert_eq!(
-                ev0.t.t.t.to_hex_string(),
+                ev0.l.to_hex_string(),
                 "2e53605b801ad7fea745e9766add8da9ed33589d758fb339fed40c329c59aa27"
             );
             assert_eq!(
-                ev0.t.t.t.to_hex_string(),
+                ev0.r.to_hex_string(),
                 "b77a8788b07f7cd1c9c61618755cca3d0d303a7b096124ce0c02dc5f451a0f03"
             );
             assert_eq!(
-                ev0.t.t.t.to_hex_string(),
+                ev0.o.to_hex_string(),
                 "2e1e68731d00b84720038823777ec6522d9a1e9e365920c3e7ce064ade0c2e1e"
             );
             assert_eq!(
-                ev0.t.t.t.to_hex_string(),
+                ev0.z.to_hex_string(),
                 "d96d62e54a0a49d3a44c919eb4b089333d64a236edcda1921274ac6903bad937"
             );
-            assert_eq!(ev0.t.l.t.len(), 5);
+            assert_eq!(ev0.t.0.len(), 5);
         }
     }
 
@@ -77,7 +77,7 @@ mod tests {
         genesis_fixture: &BlockFixture,
         genesis_init_config: &GenesisInitConfig,
     ) {
-        let genesis = ExternalTransition::from_genesis_config(genesis_init_config);
+        let genesis:ExternalTransitionV1 = ExternalTransition::from_genesis_config(genesis_init_config).into();
         let output = genesis.try_encode_binprot().unwrap();
         assert_eq!(genesis_fixture.bytes, output)
     }
