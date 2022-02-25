@@ -26,6 +26,25 @@ pub struct CompressedCurvePoint {
     pub is_odd: bool,
 }
 
+impl CompressedCurvePoint {
+    pub const fn to_big256(&self) -> BigInteger256 {
+        let mut array = [0_u64; 4];
+        let mut buffer = [0_u8; 8];
+        let mut i = 0;
+        while i < 4 {
+            let mut j = 0;
+            while j < 8 {
+                let offset = i * 8;
+                buffer[j] = self.x[offset + j];
+                j += 1;
+            }
+            array[i] = u64::from_le_bytes(buffer);
+            i += 1;
+        }
+        BigInteger256::new(array)
+    }
+}
+
 impl RandomOraclePartialInput for CompressedCurvePoint {
     fn add_self_to(&self, input: &mut ROInput) {
         let _ = input;
@@ -35,13 +54,7 @@ impl RandomOraclePartialInput for CompressedCurvePoint {
 
 impl From<CompressedCurvePoint> for BigInteger256 {
     fn from(p: CompressedCurvePoint) -> BigInteger256 {
-        let mut array: [u64; 4] = Default::default();
-        let mut buffer: [u8; 8] = Default::default();
-        for (i, ele) in array.iter_mut().enumerate() {
-            buffer.copy_from_slice(&p.x[(i * 8)..(i * 8 + 8)]);
-            *ele = u64::from_le_bytes(buffer);
-        }
-        BigInteger256::new(array)
+        p.to_big256()
     }
 }
 
