@@ -10,7 +10,9 @@ use crate::{
     hash::BaseHash,
     impl_bs58_for_binprot,
 };
+use ark_ff::{BigInteger256, FromBytes};
 use derive_deref::Deref;
+use mina_curves::pasta::Fp;
 use serde::{Deserialize, Serialize};
 use wire_type::WireType;
 
@@ -22,6 +24,21 @@ pub struct CompressedCurvePoint {
     pub is_odd: bool,
 }
 
+impl TryInto<BigInteger256> for CompressedCurvePoint {
+    type Error = std::io::Error;
+    fn try_into(self) -> Result<BigInteger256, Self::Error> {
+        BigInteger256::read(self.x.as_slice())
+    }
+}
+
+impl TryInto<Fp> for CompressedCurvePoint {
+    type Error = std::io::Error;
+    fn try_into(self) -> Result<Fp, Self::Error> {
+        let big256 = BigInteger256::read(self.x.as_slice())?;
+        Ok(big256.into())
+    }
+}
+
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize, WireType)]
 #[serde(from = "<Self as WireType>::WireType")]
 #[serde(into = "<Self as WireType>::WireType")]
@@ -31,6 +48,8 @@ pub struct PublicKey {
 
 impl_bs58_for_binprot!(PublicKey, version_bytes::NON_ZERO_CURVE_POINT_COMPRESSED);
 
+// TODO: Replace PublicKey2 usage with PublicKey as they are pretty much the same
+// in terms of bin-prot serde
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize, Deref, WireType)]
 #[serde(from = "<Self as WireType>::WireType")]
 #[serde(into = "<Self as WireType>::WireType")]
@@ -109,6 +128,7 @@ impl AsRef<[u8]> for InnerCurveScalar {
 pub mod tests {
     use super::*;
     use bin_prot::to_writer;
+    use num::BigUint;
 
     #[test]
     fn serialize_empty_keypair() {
@@ -120,14 +140,64 @@ pub mod tests {
     #[test]
     fn public_key_from_base58_roundtrip() {
         let s = "B62qonDZEKYULNkfq7WGu1Z881YBRnMSuBGGX5DhnTv26mUyvN99mpo";
+
         let k = PublicKey::from_base58(s).unwrap();
-        assert_eq!(s, k.to_base58_string())
+        assert_eq!(s, k.to_base58_string());
+
+        let k = PublicKey2::from_base58(s).unwrap();
+        assert_eq!(s, k.to_base58_string());
+    }
+
+    // Test cases are generated from OCaml code
+    // Run mina code with mainnet profile after adding below code
+    // into `load` function in `src/genesis_ledger_helper/genesis_ledger_helper.ml`
+    //
+    // (* begin CS debugging *)
+    //   let padded_accounts =
+    //     padded_accounts_opt |> Option.value_exn |> Lazy.force
+    //   in
+    //   Print.printf "padded_accounts_from_runtime_config_opt: %d\n"
+    //     (padded_accounts |> List.length) ;
+    //   let _, acc = padded_accounts |> List.hd_exn in
+    //   let acc_json = Account.to_yojson acc in
+    //   let pk_compressed = acc |> Account.public_key in
+    //   let ({ x; is_odd }
+    //         : ( Marlin_plonk_bindings_pasta_fp.t
+    //           , bool )
+    //           Public_key.Compressed.Poly.t) =
+    //     pk_compressed
+    //   in
+    //   Print.printf
+    //     "padded_accounts_from_runtime_config_opt[0]: %s\n\
+    //      pk_compressed:%s,x:%s,odd:%b\n"
+    //     (acc_json |> Yojson.Safe.pretty_to_string)
+    //     (pk_compressed |> Public_key.Compressed.to_string)
+    //     (x |> Snark_params.Tick.Field.to_string)
+    //     is_odd ;
+    //   (* end CS debugging *)
+    #[test]
+    fn public_key_fields() -> anyhow::Result<()> {
+        // This is the public key of the first account in padded_accounts_from_runtime_config_opt
+        let s = "B62qiy32p8kAKnny8ZFwoMhYpBppM1DWVCqAPBYNcXnsAHhnfAAuXgg";
+        let k = PublicKey::from_base58(s).unwrap();
+        assert_eq!(s, k.to_base58_string());
+        assert_eq!(k.poly.is_odd, false);
+        assert_eq!(
+            {
+                let f: Fp = k.poly.try_into()?;
+                let big256: BigInteger256 = f.into();
+                let big: BigUint = big256.into();
+                big.to_str_radix(10)
+            },
+            "22536877747820698688010660184495467853785925552441222123266613953322243475471"
+        );
+        Ok(())
     }
 
     #[test]
     fn signature_from_base58_roundtrip() {
         let s = "7mXTB1bcHYLJTmTfMtTboo4FSGStvera3z2wd6qjSxhpz1hZFMZZjcyaWAFEmZhgbq6DqVqGsNodnYKsCbMAq7D8yWo5bRSd";
         let k = Signature::from_base58(s).unwrap();
-        assert_eq!(s, k.to_base58_string())
+        assert_eq!(s, k.to_base58_string());
     }
 }

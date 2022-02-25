@@ -3,6 +3,7 @@ members = [
   "base",
   "consensus",
   "crypto",
+  "ledger",
   "merkle",
   "network",
   "snark-keys",
