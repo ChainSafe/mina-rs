@@ -27,6 +27,7 @@ pub struct CompressedCurvePoint {
 }
 
 impl CompressedCurvePoint {
+    /// Const function that converts CompressedCurvePoint into BigInteger256
     pub const fn to_big256(&self) -> BigInteger256 {
         let mut array = [0_u64; 4];
         let mut buffer = [0_u8; 8];
