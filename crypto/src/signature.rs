@@ -47,9 +47,10 @@ impl CompressedCurvePoint {
 }
 
 impl RandomOraclePartialInput for CompressedCurvePoint {
+    /// This is equivilent to <https://github.com/MinaProtocol/mina/blob/76ecf475e974c0f3c36fedb547e1ff46a9deaa82/src/lib/non_zero_curve_point/non_zero_curve_point.ml#L119>
     fn add_self_to(&self, input: &mut ROInput) {
-        let _ = input;
-        todo!()
+        input.append_field(self.to_big256().into());
+        input.append_bit(self.is_odd);
     }
 }
 
@@ -207,6 +208,12 @@ pub mod tests {
     //           Public_key.Compressed.Poly.t) =
     //     pk_compressed
     //   in
+    //   let pk_compressed_roinput =
+    //     pk_compressed |> Public_key.Compressed.to_input
+    //   in
+    //   let pk_compressed_ro_packed_fields =
+    //     pk_compressed_roinput |> Random_oracle.pack_input
+    //   in
     //   Print.printf
     //     "padded_accounts_from_runtime_config_opt[0]: %s\n\
     //      pk_compressed:%s,x:%s,odd:%b\n"
@@ -214,24 +221,37 @@ pub mod tests {
     //     (pk_compressed |> Public_key.Compressed.to_string)
     //     (x |> Snark_params.Tick.Field.to_string)
     //     is_odd ;
+    //   Print.printf "roinput of pk_compressed packed fields:\n" ;
+    //   for i = 0 to Array.length pk_compressed_ro_packed_fields - 1 do
+    //     Print.printf "\"%s\",\n"
+    //       ( pk_compressed_ro_packed_fields.(i)
+    //       |> Snark_params.Tick.Field.to_string )
+    //   done ;
     //   (* end CS debugging *)
     #[test]
-    fn public_key_fields() -> anyhow::Result<()> {
+    fn public_key_fields() {
         // This is the public key of the first account in padded_accounts_from_runtime_config_opt
         let s = "B62qiy32p8kAKnny8ZFwoMhYpBppM1DWVCqAPBYNcXnsAHhnfAAuXgg";
-        let k = PublicKey::from_base58(s).unwrap();
-        assert_eq!(s, k.to_base58_string());
-        assert_eq!(k.poly.is_odd, false);
+        let pk = PublicKey::from_base58(s).unwrap();
+        assert_eq!(s, pk.to_base58_string());
+        assert_eq!(pk.poly.is_odd, false);
         assert_eq!(
-            {
-                let f: Fp = k.poly.into();
-                let big256: BigInteger256 = f.into();
-                let big: BigUint = big256.into();
-                big.to_str_radix(10)
-            },
+            field_to_str_radix_10(pk.poly.into()),
             "22536877747820698688010660184495467853785925552441222123266613953322243475471"
         );
-        Ok(())
+        let mut roinput = ROInput::new();
+        pk.add_self_to(&mut roinput);
+        let roinput_fields = {
+            let mut roinput = ROInput::new();
+            pk.add_self_to(&mut roinput);
+            roinput.to_fields()
+        };
+        assert_eq!(roinput_fields.len(), 2);
+        assert_eq!(
+            field_to_str_radix_10(roinput_fields[0]),
+            "22536877747820698688010660184495467853785925552441222123266613953322243475471"
+        );
+        assert_eq!(field_to_str_radix_10(roinput_fields[1]), "0");
     }
 
     #[test]
@@ -239,5 +259,11 @@ pub mod tests {
         let s = "7mXTB1bcHYLJTmTfMtTboo4FSGStvera3z2wd6qjSxhpz1hZFMZZjcyaWAFEmZhgbq6DqVqGsNodnYKsCbMAq7D8yWo5bRSd";
         let k = Signature::from_base58(s).unwrap();
         assert_eq!(s, k.to_base58_string());
+    }
+
+    fn field_to_str_radix_10(f: Fp) -> String {
+        let big256: BigInteger256 = f.into();
+        let big: BigUint = big256.into();
+        big.to_str_radix(10)
     }
 }
