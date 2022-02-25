@@ -72,9 +72,9 @@ mod tests {
         let a = chain_a.relative_min_window_density(&chain_c).unwrap();
 
         assert_eq!(a, 0);
-        // comparing both of these the select_secure_chain ends up chossing 42 with chain_c as the canonical chain
+        // comparing both of these the select_secure_chain ends up chossing 47 with chain_c as the canonical chain
         let c = chain_c.relative_min_window_density(&chain_a).unwrap();
-        assert_eq!(c, 42);
+        assert_eq!(c, 47);
     }
 
     #[test]

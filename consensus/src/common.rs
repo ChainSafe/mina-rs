@@ -171,16 +171,16 @@ impl Consensus for ProtocolStateChain {
         &'a self,
         candidates: &'a [Self::Chain],
     ) -> Result<&'a ProtocolStateChain, ConsensusError> {
-        let tip = candidates.iter().fold(Ok(self), |tip, c| {
-            if self.is_short_range(c)? {
+        let tip = candidates.iter().fold(Ok(self), |tip, candidate| {
+            if self.is_short_range(candidate)? {
                 // short-range fork, select longer chain
-                self.select_longer_chain(c)
+                self.select_longer_chain(candidate)
             } else {
-                let tip_density = self.relative_min_window_density(c)?;
-                let candidate_density = c.relative_min_window_density(self)?;
+                let tip_density = self.relative_min_window_density(candidate)?;
+                let candidate_density = candidate.relative_min_window_density(self)?;
                 match candidate_density.cmp(&tip_density) {
-                    std::cmp::Ordering::Greater => Ok(c),
-                    std::cmp::Ordering::Equal => self.select_longer_chain(c),
+                    std::cmp::Ordering::Greater => Ok(candidate),
+                    std::cmp::Ordering::Equal => self.select_longer_chain(candidate),
                     _ => tip, // no change
                 }
             }
@@ -226,7 +226,6 @@ impl Consensus for ProtocolStateChain {
             .ok_or(ConsensusError::ConsensusStateNotFound)?;
         let a_prev_lock_checkpoint = &a.staking_epoch_data.lock_checkpoint;
         let b_prev_lock_checkpoint = &b.staking_epoch_data.lock_checkpoint;
-        let _b_curr_lock_checkpoint = &b.next_epoch_data.lock_checkpoint;
 
         let check = |s1: &ConsensusState, s2: &ConsensusState, s2_epoch_slot: Option<u32>| {
             if s1.epoch_count.0 == s2.epoch_count.0 + 1
@@ -254,7 +253,7 @@ impl Consensus for ProtocolStateChain {
 
     /// Computes the relative minimum window density of the given chains.
     /// The minimum density value is used in the case of a long range fork
-    /// and the chain with the higher minimum window density is chosen as the canonical chain.
+    /// and the chain with the higher relative minimum window density is chosen as the canonical chain.
     /// The need for relative density is explained here:
     /// <https://github.com/MinaProtocol/mina/blob/02dfc3ff0160ba3c1bbc732baa07502fe4312b04/docs/specs/consensus/README.md#5412-relative-minimum-window-density>
     fn relative_min_window_density(
@@ -295,8 +294,9 @@ impl Consensus for ProtocolStateChain {
             let mut projected_window = tip_state.sub_window_densities.clone();
 
             // relative sub window
-            let mut rel_sub_window =
-                tip_state.curr_global_slot.slot_number.0 % self.config().sub_windows_per_window.0;
+            let mut rel_sub_window = tip_state.curr_global_slot.slot_number.0
+                / self.config().sub_windows_per_window.0
+                % self.config().sub_windows_per_window.0;
 
             // ring shift
             while shift_count > 0 {
