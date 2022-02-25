@@ -39,7 +39,7 @@ where
 
 /// Trait that converts itself into either field(s) or bits(s)
 /// for constructing the given [ROInput]
-pub trait RandomOracleInputElement {
+pub trait RandomOraclePartialInput {
     fn add_self_to(&self, input: &mut ROInput);
 }
 

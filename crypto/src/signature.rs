@@ -7,16 +7,18 @@
 
 use crate::{
     base58::{version_bytes, Base58Encodable},
-    hash::BaseHash,
+    hash::{BaseHash, RandomOraclePartialInput},
     impl_bs58_for_binprot,
 };
 use ark_ff::BigInteger256;
 use derive_deref::Deref;
 use mina_curves::pasta::Fp;
+use mina_signer::ROInput;
 use serde::{Deserialize, Serialize};
 use wire_type::WireType;
 
-#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize, WireType)]
+/// TODO: Do not derive Copy trait?
+#[derive(Clone, Copy, Default, Debug, PartialEq, Serialize, Deserialize, WireType)]
 #[serde(from = "<Self as WireType>::WireType")]
 #[serde(into = "<Self as WireType>::WireType")]
 pub struct CompressedCurvePoint {
@@ -24,26 +26,34 @@ pub struct CompressedCurvePoint {
     pub is_odd: bool,
 }
 
-impl Into<BigInteger256> for CompressedCurvePoint {
-    fn into(self) -> BigInteger256 {
-        let mut array = [0_u64; 4];
-        let mut buffer = [0_u8; 8];
-        for i in 0..4 {
-            buffer.copy_from_slice(&self.x[(i * 8)..(i * 8 + 8)]);
-            array[i] = u64::from_le_bytes(buffer);
+impl RandomOraclePartialInput for CompressedCurvePoint {
+    fn add_self_to(&self, input: &mut ROInput) {
+        let _ = input;
+        todo!()
+    }
+}
+
+impl From<CompressedCurvePoint> for BigInteger256 {
+    fn from(p: CompressedCurvePoint) -> BigInteger256 {
+        let mut array: [u64; 4] = Default::default();
+        let mut buffer: [u8; 8] = Default::default();
+        for (i, ele) in array.iter_mut().enumerate() {
+            buffer.copy_from_slice(&p.x[(i * 8)..(i * 8 + 8)]);
+            *ele = u64::from_le_bytes(buffer);
         }
         BigInteger256::new(array)
     }
 }
 
-impl Into<Fp> for CompressedCurvePoint {
-    fn into(self) -> Fp {
-        let big256: BigInteger256 = self.into();
+impl From<CompressedCurvePoint> for Fp {
+    fn from(p: CompressedCurvePoint) -> Self {
+        let big256: BigInteger256 = p.into();
         big256.into()
     }
 }
 
-#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize, WireType)]
+/// TODO: Do not derive Copy trait?
+#[derive(Clone, Copy, Default, Debug, PartialEq, Serialize, Deserialize, WireType)]
 #[serde(from = "<Self as WireType>::WireType")]
 #[serde(into = "<Self as WireType>::WireType")]
 pub struct PublicKey {
@@ -51,6 +61,12 @@ pub struct PublicKey {
 }
 
 impl_bs58_for_binprot!(PublicKey, version_bytes::NON_ZERO_CURVE_POINT_COMPRESSED);
+
+impl RandomOraclePartialInput for PublicKey {
+    fn add_self_to(&self, input: &mut ROInput) {
+        self.poly.add_self_to(input)
+    }
+}
 
 // TODO: Replace PublicKey2 usage with PublicKey as they are pretty much the same
 // in terms of bin-prot serde
@@ -60,6 +76,12 @@ impl_bs58_for_binprot!(PublicKey, version_bytes::NON_ZERO_CURVE_POINT_COMPRESSED
 pub struct PublicKey2(pub CompressedCurvePoint);
 
 impl_bs58_for_binprot!(PublicKey2, version_bytes::NON_ZERO_CURVE_POINT_COMPRESSED);
+
+impl RandomOraclePartialInput for PublicKey2 {
+    fn add_self_to(&self, input: &mut ROInput) {
+        self.0.add_self_to(input)
+    }
+}
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize, Deref, WireType)]
 #[serde(from = "<Self as WireType>::WireType")]
