@@ -10,7 +10,7 @@ use crate::{
     hash::BaseHash,
     impl_bs58_for_binprot,
 };
-use ark_ff::{BigInteger256, FromBytes};
+use ark_ff::BigInteger256;
 use derive_deref::Deref;
 use mina_curves::pasta::Fp;
 use serde::{Deserialize, Serialize};
@@ -24,18 +24,22 @@ pub struct CompressedCurvePoint {
     pub is_odd: bool,
 }
 
-impl TryInto<BigInteger256> for CompressedCurvePoint {
-    type Error = std::io::Error;
-    fn try_into(self) -> Result<BigInteger256, Self::Error> {
-        BigInteger256::read(self.x.as_slice())
+impl Into<BigInteger256> for CompressedCurvePoint {
+    fn into(self) -> BigInteger256 {
+        let mut array = [0_u64; 4];
+        let mut buffer = [0_u8; 8];
+        for i in 0..4 {
+            buffer.copy_from_slice(&self.x[(i * 8)..(i * 8 + 8)]);
+            array[i] = u64::from_le_bytes(buffer);
+        }
+        BigInteger256::new(array)
     }
 }
 
-impl TryInto<Fp> for CompressedCurvePoint {
-    type Error = std::io::Error;
-    fn try_into(self) -> Result<Fp, Self::Error> {
-        let big256 = BigInteger256::read(self.x.as_slice())?;
-        Ok(big256.into())
+impl Into<Fp> for CompressedCurvePoint {
+    fn into(self) -> Fp {
+        let big256: BigInteger256 = self.into();
+        big256.into()
     }
 }
 
@@ -184,7 +188,7 @@ pub mod tests {
         assert_eq!(k.poly.is_odd, false);
         assert_eq!(
             {
-                let f: Fp = k.poly.try_into()?;
+                let f: Fp = k.poly.into();
                 let big256: BigInteger256 = f.into();
                 let big: BigUint = big256.into();
                 big.to_str_radix(10)

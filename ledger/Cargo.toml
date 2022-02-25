@@ -1,0 +1,12 @@
+[package]
+authors = ["ChainSafe Systems <info@chainsafe.io>"]
+name = "mina-ledger"
+version = "0.1.0"
+
+edition = "2021"
+license = "Apache-2.0"
+
+[dependencies]
+mina-signer = {git = "https://github.com/o1-labs/proof-systems", rev = "9a1c4852c11f04f54e5e71b050af02e5586bb698"}
+
+[dev-dependencies]
