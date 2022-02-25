@@ -1,7 +1,7 @@
 // Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
-use mina_crypto::{hash::RandomOraclePartialInput, signature::PublicKey};
+use mina_crypto::{hash::RandomOraclePartialInput, signature::PublicKey2};
 use mina_signer::ROInput;
 
 /// Data structure that represents an account
@@ -10,7 +10,7 @@ use mina_signer::ROInput;
 /// It's currently required by [mina_signer::Hashable]
 #[derive(Debug, Clone, Copy)]
 pub struct Account {
-    public_key: PublicKey,
+    public_key: PublicKey2,
     // token_id: i32,
     // token_permissions: i32,
     // balance: i32,

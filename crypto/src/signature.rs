@@ -66,8 +66,7 @@ impl From<CompressedCurvePoint> for Fp {
     }
 }
 
-/// TODO: Do not derive Copy trait?
-#[derive(Clone, Copy, Default, Debug, PartialEq, Serialize, Deserialize, WireType)]
+#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize, WireType)]
 #[serde(from = "<Self as WireType>::WireType")]
 #[serde(into = "<Self as WireType>::WireType")]
 pub struct PublicKey {
@@ -84,7 +83,8 @@ impl RandomOraclePartialInput for PublicKey {
 
 // TODO: Replace PublicKey2 usage with PublicKey as they are pretty much the same
 // in terms of bin-prot serde
-#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize, Deref, WireType)]
+// TODO: Do not derive Copy trait?
+#[derive(Clone, Copy, Default, Debug, PartialEq, Serialize, Deserialize, Deref, WireType)]
 #[serde(from = "<Self as WireType>::WireType")]
 #[serde(into = "<Self as WireType>::WireType")]
 pub struct PublicKey2(pub CompressedCurvePoint);
