@@ -1,3 +1,6 @@
+// Copyright 2020 ChainSafe Systems
+// SPDX-License-Identifier: Apache-2.0
+
 use crate::types::FiniteECPoint;
 use crate::types::*;
 use mina_serialization_types::v1::FiniteECPoint as FiniteECPointV1;

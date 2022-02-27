@@ -1,3 +1,6 @@
+// Copyright 2020 ChainSafe Systems
+// SPDX-License-Identifier: Apache-2.0
+
 use mina_rs_base::types::ExternalTransition;
 use mina_serialization_types::v1::ExternalTransitionV1;
 use test_fixtures::*;

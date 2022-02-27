@@ -1,3 +1,6 @@
+// Copyright 2020 ChainSafe Systems
+// SPDX-License-Identifier: Apache-2.0
+
 use crate::numbers::*;
 use mina_serialization_types::v1::{
     AmountV1, DeltaV1, ExtendedU32 as ExtendedU32V1, GlobalSlotNumberV1, Hex64V1, LengthV1,
