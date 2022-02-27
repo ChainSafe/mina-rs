@@ -1,6 +1,8 @@
 // Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
+//! Trait types can implement to make serialization and deserialization more ergonomic
+
 use crate::error::Error;
 use crate::Deserializer;
 use serde::{Deserialize, Serialize};
