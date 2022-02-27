@@ -3,6 +3,7 @@ members = [
   "base",
   "consensus",
   "crypto",
+  "merkle",
   "network",
   "protocol/bin-prot",
   "protocol/bin_prot_checker",

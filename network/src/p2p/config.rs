@@ -3,7 +3,7 @@
 
 use libp2p::pnet::PreSharedKey;
 use libp2p_mplex::MplexConfig;
-use multihash::{Blake2b256, StatefulHasher};
+use multihash::{Blake2b256, Hasher};
 
 lazy_static::lazy_static! {
     /// Mainnet config for mina p2p network

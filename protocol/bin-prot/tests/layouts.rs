@@ -139,6 +139,48 @@ mod tests {
         test_reserialize(&result, &example);
     }
 
+    const TAGGED_POLYVAR_RULE: &str = r#"
+[
+  "Polyvar",
+   [
+    [
+     "Tagged",
+     {
+      "polyvar_name": "One",
+      "hash": 3953222,
+      "polyvar_args": [["Int"]]
+     }
+    ],
+    [
+     "Tagged",
+     {
+      "polyvar_name": "Two",
+      "hash": 4203884,
+      "polyvar_args": [["Bool"]]
+     }
+    ]
+   ]
+]
+"#;
+
+    #[test]
+    fn test_tagged_polyvar_rule() {
+        let rule: BinProtRule = serde_json::from_str(TAGGED_POLYVAR_RULE).unwrap();
+        let example = vec![0xd9, 0x4a, 0x80, 0x00, 0x01]; // Two((true))
+
+        let mut de = Deserializer::from_reader(Cursor::new(example.as_slice())).with_layout(&rule);
+        let result: Value = Deserialize::deserialize(&mut de).expect("Failed to deserialize");
+        assert_eq!(
+            result,
+            Value::Polyvar {
+                name: "Two".to_string(),
+                tag: 8407769, // Note this is different to the json encoded version which uses OCaml 63 bit encoding. You can convert between using (x << 1 | 1)
+                value: Box::new(Value::Tuple(vec![Value::Bool(true)]))
+            }
+        );
+        test_reserialize(&result, &example);
+    }
+
     const NESTED_SUM_RULE: &str = r#"
 [
   "Sum",
