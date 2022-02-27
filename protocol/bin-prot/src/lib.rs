@@ -8,7 +8,6 @@
 // mod array;
 mod consts;
 mod de;
-/// sd
 pub mod encodable;
 pub mod error;
 pub mod integers;
