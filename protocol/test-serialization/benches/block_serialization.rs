@@ -1,8 +1,8 @@
 // Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
-use criterion::{black_box, criterion_group, criterion_main, Criterion};
 use bin_prot::encodable::BinProtEncodable;
+use criterion::{black_box, criterion_group, criterion_main, Criterion};
 use test_fixtures::TEST_BLOCKS;
 
 fn criterion_benchmark(c: &mut Criterion) {
