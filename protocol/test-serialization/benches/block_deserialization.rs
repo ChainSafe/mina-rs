@@ -11,7 +11,7 @@ fn criterion_benchmark(c: &mut Criterion) {
             let block = TEST_BLOCKS
                 .get("3NKaBJsN1SehD6iJwRwJSFmVzJg5DXSUQVgnMxtH4eer4aF5BrDK.hex")
                 .unwrap();
-            b.iter(|| black_box(block).external_transition().unwrap())
+            b.iter(|| black_box(block).external_transitionv1().unwrap())
         },
     );
 }
