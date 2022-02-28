@@ -1,8 +1,8 @@
 // Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
-use clap::{App, Arg};
 use bin_prot::encodable::BinProtEncodable;
+use clap::{App, Arg};
 use mina_rs_base::types::ExternalTransition;
 use std::str::FromStr;
 
