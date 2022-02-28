@@ -4,10 +4,14 @@
 #[cfg(test)]
 mod tests {
     use crate::*;
-    use ark_ff::BigInteger256;
+    use ark_ec::AffineCurve;
+    use ark_ff::{field_new, BigInteger256};
     use mina_crypto::hash::{poseidon::*, prefixes};
+    use mina_curves::pasta::vesta;
     use num_bigint::BigUint;
     use wasm_bindgen_test::*;
+
+    type FieldType = <vesta::Affine as AffineCurve>::ScalarField;
 
     // Test cases are generated from ocaml code
     // add inline ocaml code to any unittests in
@@ -37,9 +41,7 @@ mod tests {
     macro_rules! test_prefix_to_field {
         ($prefix:expr, $expected_field_str:expr) => {
             let f = prefix_to_field($prefix).unwrap();
-            let big256: BigInteger256 = f.into();
-            let big: BigUint = big256.into();
-            assert_eq!($expected_field_str, big.to_str_radix(10))
+            assert_eq!(field_new!(FieldType, $expected_field_str), f);
         };
     }
 
@@ -56,7 +58,7 @@ mod tests {
     #[test]
     #[wasm_bindgen_test]
     fn test_salt() {
-        test_salt_inner!(
+        test_salt!(
             b"",
             &[
                 "10810255668636942098026103766265049994195917059170783454356350086236922262043",
@@ -64,7 +66,7 @@ mod tests {
                 "23199662569381889769462525393322679512135888284607235517285306434130713031505",
             ]
         );
-        test_salt_inner!(
+        test_salt!(
             b"1",
             &[
                 "26959872850589468433716176478758670364938559091018984464547761444407740430490",
@@ -72,7 +74,7 @@ mod tests {
                 "25751709115320426463100541822106182596074955216799512201836609258257127172454",
             ]
         );
-        test_salt_inner!(
+        test_salt!(
             b"12",
             &[
                 "25413427419476335337191819532645296442286213094707480147794752856248042737641",
@@ -80,7 +82,7 @@ mod tests {
                 "21851504850499680971383647984837601926602580239148151982886754639614483383049",
             ]
         );
-        test_salt_inner!(
+        test_salt!(
             b"0",
             &[
                 "9687080897238730679281332027647963754910144833562264548730594001666765199615",
@@ -88,7 +90,7 @@ mod tests {
                 "442126543670066912644781665934079626630208057488650742218981350471105366026",
             ]
         );
-        test_salt_inner!(
+        test_salt!(
             b"CodaMklTree003******",
             &[
                 "4759486266429649359680583704294416062325271909975044439354030843449421998024",
@@ -101,7 +103,7 @@ mod tests {
         // for i = 0 to Array.length fields - 1 do
         //   Printf.printf "\"%s\",\n" (fields.(i) |> Field.to_string)
         // done ;
-        test_salt_inner!(
+        test_salt!(
             prefixes::ACCOUNT,
             &[
                 "12998954778669241781448774976300398324919051791695676472777494503713667303740",
@@ -112,7 +114,7 @@ mod tests {
     }
 
     #[macro_export]
-    macro_rules! test_salt_inner {
+    macro_rules! test_salt {
         ($prefix:expr, $expected_fields:expr) => {
             let fields = salt($prefix).unwrap();
             assert_eq!(fields.len(), $expected_fields.len());
@@ -135,36 +137,34 @@ mod tests {
     #[test]
     #[wasm_bindgen_test]
     fn test_hash() {
-        test_hash_inner!(
+        test_hash!(
             b"",
             "24205185403244298026878196079710983462016752932337361617747822459876338913053"
         );
-        test_hash_inner!(
+        test_hash!(
             b"0",
             "5496131356387564043198525479062691436049129693667187354714170366167796524973"
         );
-        test_hash_inner!(
+        test_hash!(
             b"1",
             "9935913569175172664639067019488671388546456308890708045000229809977751864941"
         );
-        test_hash_inner!(
+        test_hash!(
             b"12",
             "943243131985716223594928077527124171127078993271980814573823847313318392653"
         );
-        test_hash_inner!(
+        test_hash!(
             b"CodaMklTree003******",
             "22053519500510895302504638888009899630643515378059175829722187193750278074165"
         );
     }
 
     #[macro_export]
-    macro_rules! test_hash_inner {
+    macro_rules! test_hash {
         ($prefix:expr, $expected_field:expr) => {
             let fields = salt($prefix).unwrap();
             let h = hash(fields.clone(), &fields);
-            let big256: BigInteger256 = h.into();
-            let big: BigUint = big256.into();
-            assert_eq!($expected_field, big.to_str_radix(10))
+            assert_eq!(field_new!(FieldType, $expected_field), h);
         };
     }
 }
