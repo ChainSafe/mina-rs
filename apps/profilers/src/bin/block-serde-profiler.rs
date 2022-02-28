@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use clap::{App, Arg};
-use mina_crypto::prelude::*;
+use bin_prot::encodable::BinProtEncodable;
 use mina_rs_base::types::ExternalTransition;
 use std::str::FromStr;
 
