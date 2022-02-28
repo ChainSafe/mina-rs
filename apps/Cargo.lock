@@ -824,7 +824,6 @@ dependencies = [
  "bin-prot",
  "clap 3.0.10",
  "dhat",
- "mina-crypto",
  "mina-rs-base",
  "serde",
 ]
