@@ -30,7 +30,7 @@ impl mina_signer::Hashable for Account {
     /// <https://github.com/MinaProtocol/mina/blob/aa5f4efa5868b5b9f067d70e6a3f795d43dbb472/src/lib/mina_base/account.ml#L259>
     fn to_roinput(self) -> ROInput {
         let mut roi = ROInput::new();
-        self.public_key.add_self_to(&mut roi);
+        roi.append(&self.public_key);
         roi
     }
 }

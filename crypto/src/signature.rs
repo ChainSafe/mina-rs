@@ -46,11 +46,11 @@ impl CompressedCurvePoint {
     }
 }
 
-impl RandomOraclePartialInput for CompressedCurvePoint {
+impl RandomOraclePartialInput<CompressedCurvePoint> for ROInput {
     /// This is equivilent to <https://github.com/MinaProtocol/mina/blob/76ecf475e974c0f3c36fedb547e1ff46a9deaa82/src/lib/non_zero_curve_point/non_zero_curve_point.ml#L119>
-    fn add_self_to(&self, input: &mut ROInput) {
-        input.append_field(self.to_big256().into());
-        input.append_bit(self.is_odd);
+    fn append(&mut self, value: &CompressedCurvePoint) {
+        self.append_field(value.to_big256().into());
+        self.append_bit(value.is_odd);
     }
 }
 
@@ -76,9 +76,9 @@ pub struct PublicKey {
 
 impl_bs58_for_binprot!(PublicKey, version_bytes::NON_ZERO_CURVE_POINT_COMPRESSED);
 
-impl RandomOraclePartialInput for PublicKey {
-    fn add_self_to(&self, input: &mut ROInput) {
-        self.poly.add_self_to(input)
+impl RandomOraclePartialInput<PublicKey> for ROInput {
+    fn append(&mut self, value: &PublicKey) {
+        self.append(&value.poly)
     }
 }
 
@@ -92,9 +92,9 @@ pub struct PublicKey2(pub CompressedCurvePoint);
 
 impl_bs58_for_binprot!(PublicKey2, version_bytes::NON_ZERO_CURVE_POINT_COMPRESSED);
 
-impl RandomOraclePartialInput for PublicKey2 {
-    fn add_self_to(&self, input: &mut ROInput) {
-        self.0.add_self_to(input)
+impl RandomOraclePartialInput<PublicKey2> for ROInput {
+    fn append(&mut self, value: &PublicKey2) {
+        self.append(&value.0)
     }
 }
 
@@ -239,11 +239,9 @@ pub mod tests {
             field_to_str_radix_10(pk.poly.into()),
             "22536877747820698688010660184495467853785925552441222123266613953322243475471"
         );
-        let mut roinput = ROInput::new();
-        pk.add_self_to(&mut roinput);
         let roinput_fields = {
             let mut roinput = ROInput::new();
-            pk.add_self_to(&mut roinput);
+            roinput.append(&pk);
             roinput.to_fields()
         };
         assert_eq!(roinput_fields.len(), 2);

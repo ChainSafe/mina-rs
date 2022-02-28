@@ -62,7 +62,7 @@ pub mod tests {
         ($num:expr, $expected_hash_str:expr) => {
             let fields = {
                 let mut roi = ROInput::new();
-                Length($num).add_self_to(&mut roi);
+                roi.append(&Length($num));
                 roi.to_fields()
             };
             let mut hasher = ArithmeticSponge::<

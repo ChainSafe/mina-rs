@@ -36,9 +36,9 @@ use crate::constants::MINA_PRECISION;
 /// Represents the length of something (e.g. an epoch or window)
 pub struct Length(pub u32);
 
-impl RandomOraclePartialInput for Length {
-    fn add_self_to(&self, input: &mut ROInput) {
-        input.append_u32(self.0)
+impl RandomOraclePartialInput<Length> for ROInput {
+    fn append(&mut self, value: &Length) {
+        self.append_u32(value.0)
     }
 }
 
