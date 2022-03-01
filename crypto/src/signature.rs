@@ -17,8 +17,7 @@ use mina_signer::ROInput;
 use serde::{Deserialize, Serialize};
 use wire_type::WireType;
 
-/// TODO: Do not derive Copy trait?
-#[derive(Clone, Copy, Default, Debug, PartialEq, Serialize, Deserialize, WireType)]
+#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize, WireType)]
 #[serde(from = "<Self as WireType>::WireType")]
 #[serde(into = "<Self as WireType>::WireType")]
 pub struct CompressedCurvePoint {
@@ -84,8 +83,7 @@ impl RandomOraclePartialInput<PublicKey> for ROInput {
 
 // TODO: Replace PublicKey2 usage with PublicKey as they are pretty much the same
 // in terms of bin-prot serde
-// TODO: Do not derive Copy trait?
-#[derive(Clone, Copy, Default, Debug, PartialEq, Serialize, Deserialize, Deref, WireType)]
+#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize, Deref, WireType)]
 #[serde(from = "<Self as WireType>::WireType")]
 #[serde(into = "<Self as WireType>::WireType")]
 pub struct PublicKey2(pub CompressedCurvePoint);
@@ -236,7 +234,7 @@ pub mod tests {
         assert_eq!(s, pk.to_base58_string());
         assert_eq!(pk.poly.is_odd, false);
         assert_eq!(
-            field_to_str_radix_10(pk.poly.into()),
+            field_to_str_radix_10(pk.poly.clone().into()),
             "22536877747820698688010660184495467853785925552441222123266613953322243475471"
         );
         let roinput_fields = {

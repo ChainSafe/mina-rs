@@ -21,11 +21,11 @@ time = "0.3"
 
 ark-ec = "0.3.0"
 ark-ff = "0.3.0"
-commitment_dlog = {git = "https://github.com/o1-labs/proof-systems", rev = "9a1c4852c11f04f54e5e71b050af02e5586bb698"}
+commitment_dlog = {git = "https://github.com/o1-labs/proof-systems", rev = "3516d433411d482b9b720c3ca0d3caec0359f0ac"}
 
 [dev-dependencies]
-mina-curves = {git = "https://github.com/o1-labs/proof-systems", rev = "9a1c4852c11f04f54e5e71b050af02e5586bb698"}
-oracle = {git = "https://github.com/o1-labs/proof-systems", rev = "9a1c4852c11f04f54e5e71b050af02e5586bb698"}
+mina-curves = {git = "https://github.com/o1-labs/proof-systems", rev = "3516d433411d482b9b720c3ca0d3caec0359f0ac"}
+oracle = {git = "https://github.com/o1-labs/proof-systems", rev = "3516d433411d482b9b720c3ca0d3caec0359f0ac"}
 
 # This dependency is not used by the crate, but is a subdependency of commitment_dlog
 # This features must be enable to build with WASM support

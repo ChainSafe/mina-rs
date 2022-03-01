@@ -6,9 +6,7 @@ use mina_signer::ROInput;
 
 /// Data structure that represents an account
 /// <https://github.com/MinaProtocol/mina/blob/aa5f4efa5868b5b9f067d70e6a3f795d43dbb472/src/lib/mina_base/account.ml#L88>
-/// TODO: Do not derive Copy trait?
-/// It's currently required by [mina_signer::Hashable]
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone)]
 pub struct Account {
     public_key: PublicKey2,
     // token_id: i32,
