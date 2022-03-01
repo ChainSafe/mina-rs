@@ -7,7 +7,7 @@ name: CI
 
 env:
   # https://doc.rust-lang.org/cargo/reference/profiles.html#incremental
-  CARGO_INCREMENTAL: true
+  CARGO_INCREMENTAL: 1
 
 jobs:
   checks:
