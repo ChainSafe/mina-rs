@@ -37,7 +37,7 @@ where
 }
 
 /// Trait that converts given generic value into either field(s) or bits(s)
-/// and append to mutable [ROInput], this trait should be implemented for [ROInput]
+/// and append to mutable [mina_signer::ROInput], this trait should be implemented for [mina_signer::ROInput]
 pub trait RandomOraclePartialInput<T> {
     fn append(&mut self, value: &T);
 }
