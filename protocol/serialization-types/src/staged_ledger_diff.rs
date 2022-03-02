@@ -13,7 +13,7 @@ use versioned::Versioned;
 
 use crate::v1::{AmountV1, ExtendedU32, ExtendedU64_2, ExtendedU64_3};
 
-#[derive(Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 /// Top level wrapper type for a StagedLedgerDiff
 pub struct StagedLedgerDiff {
     pub diff: StagedLedgerDiffTupleV1,
@@ -29,7 +29,7 @@ pub type StagedLedgerPreDiffOneV1 = ();
 
 pub type TransactionSnarkWork = ();
 
-#[derive(Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub struct StagedLedgerPreDiffTwo {
     pub completed_works: Vec<TransactionSnarkWork>,
     pub commands: Vec<UserCommandWithStatusV1>,
@@ -39,7 +39,7 @@ pub struct StagedLedgerPreDiffTwo {
 
 pub type StagedLedgerPreDiffTwoV1 = Versioned<Versioned<StagedLedgerPreDiffTwo, 1>, 1>;
 
-#[derive(Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub struct UserCommandWithStatus {
     pub data: UserCommandV1,
     pub status: TransactionStatusV1,
@@ -47,7 +47,7 @@ pub struct UserCommandWithStatus {
 
 pub type UserCommandWithStatusV1 = Versioned<UserCommandWithStatus, 1>;
 
-#[derive(Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 #[non_exhaustive]
 pub enum UserCommand {
     SignedCommand(SignedCommandV1),
@@ -56,7 +56,7 @@ pub enum UserCommand {
 
 pub type UserCommandV1 = Versioned<Versioned<UserCommand, 1>, 1>;
 
-#[derive(Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub struct SignedCommand {
     pub payload: SignedCommandPayloadV1,
     pub signer: PublicKey2V1,
@@ -65,7 +65,7 @@ pub struct SignedCommand {
 
 pub type SignedCommandV1 = Versioned<Versioned<SignedCommand, 1>, 1>;
 
-#[derive(Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub struct SignedCommandPayload {
     pub common: SignedCommandPayloadCommonV1,
     pub body: SignedCommandPayloadBodyV1,
@@ -73,7 +73,7 @@ pub struct SignedCommandPayload {
 
 pub type SignedCommandPayloadV1 = Versioned<Versioned<SignedCommandPayload, 1>, 1>;
 
-#[derive(Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub struct SignedCommandPayloadCommon {
     pub fee: AmountV1,
     pub fee_token: SignedCommandFeeTokenV1,
@@ -86,7 +86,7 @@ pub struct SignedCommandPayloadCommon {
 pub type SignedCommandPayloadCommonV1 =
     Versioned<Versioned<Versioned<SignedCommandPayloadCommon, 1>, 1>, 1>;
 
-#[derive(Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 #[non_exhaustive]
 pub enum SignedCommandPayloadBody {
     PaymentPayload(PaymentPayloadV1),
@@ -95,7 +95,7 @@ pub enum SignedCommandPayloadBody {
 
 pub type SignedCommandPayloadBodyV1 = Versioned<Versioned<SignedCommandPayloadBody, 1>, 1>;
 
-#[derive(Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub struct PaymentPayload {
     pub source_pk: PublicKeyV1,
     pub receiver_pk: PublicKeyV1,
@@ -112,7 +112,7 @@ pub type SignedCommandMemoV1 = Versioned<Vec<u8>, 1>;
 // FIXME: No test coverage yet
 pub type SnappCommand = Versioned<Versioned<(), 1>, 1>;
 
-#[derive(Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 #[non_exhaustive]
 pub enum TransactionStatus {
     Applied(TransactionStatusAppliedV1),
@@ -121,7 +121,7 @@ pub enum TransactionStatus {
 
 pub type TransactionStatusV1 = Versioned<TransactionStatus, 1>;
 
-#[derive(Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub struct TransactionStatusAppliedV1(
     pub  (
         TransactionStatusAuxiliaryDataV1,
@@ -129,7 +129,7 @@ pub struct TransactionStatusAppliedV1(
     ),
 );
 
-#[derive(Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub struct TransactionStatusAuxiliaryData {
     pub fee_payer_account_creation_fee_paid: Option<AmountV1>,
     pub receiver_account_creation_fee_paid: Option<AmountV1>,
@@ -138,7 +138,7 @@ pub struct TransactionStatusAuxiliaryData {
 
 pub type TransactionStatusAuxiliaryDataV1 = Versioned<TransactionStatusAuxiliaryData, 1>;
 
-#[derive(Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub struct TransactionStatusBalanceData {
     pub fee_payer_balance: Option<ExtendedU64_3>,
     pub source_balance: Option<ExtendedU64_3>,
@@ -147,12 +147,12 @@ pub struct TransactionStatusBalanceData {
 
 pub type TransactionStatusBalanceDataV1 = Versioned<TransactionStatusBalanceData, 1>;
 
-#[derive(Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 #[non_exhaustive]
 pub enum CoinBase {
     Zero,
     // FIXME: other variants are not covered by current test block
-    One(Option<CoinBaseFeeTransfer>),
+    One(Option<CoinBaseFeeTransferV1>),
     Two,
 }
 
@@ -164,7 +164,7 @@ impl Default for CoinBase {
 
 pub type CoinBaseV1 = Versioned<CoinBase, 1>;
 
-#[derive(Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 // FIXME: No test coverage yet
 pub struct CoinBaseFeeTransfer {
     pub receiver_pk: PublicKeyV1,
@@ -173,7 +173,7 @@ pub struct CoinBaseFeeTransfer {
 
 pub type CoinBaseFeeTransferV1 = Versioned<Versioned<CoinBaseFeeTransfer, 1>, 1>;
 
-#[derive(Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 #[non_exhaustive]
 pub enum InternalCommandBalanceData {
     CoinBase(CoinBaseBalanceDataV1),
@@ -182,7 +182,7 @@ pub enum InternalCommandBalanceData {
 
 pub type InternalCommandBalanceDataV1 = Versioned<InternalCommandBalanceData, 1>;
 
-#[derive(Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub struct CoinBaseBalanceData {
     pub coinbase_receiver_balance: ExtendedU64_3,
     // FIXME: No test coverage yet
@@ -191,7 +191,7 @@ pub struct CoinBaseBalanceData {
 
 pub type CoinBaseBalanceDataV1 = Versioned<CoinBaseBalanceData, 1>;
 
-#[derive(Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub struct FeeTransferBalanceData {
     pub receiver1_balance: ExtendedU64_3,
     // FIXME: No test coverage yet

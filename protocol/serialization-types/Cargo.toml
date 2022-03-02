@@ -9,7 +9,7 @@ license = "Apache-2.0"
 [dependencies]
 versioned = {path = "../versioned"}
 serde = {version = "1", features = ["derive"]}
-mina-crypto = {path = "../../crypto"} # TODO: Try and remove this dep
+bin-prot = {path = "../bin-prot"}
 
 [dev-dependencies]
 wasm-bindgen-test = "0.3"

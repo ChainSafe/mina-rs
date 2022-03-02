@@ -16,7 +16,7 @@ pub type FieldElementVecV1 = Versioned<Vec<FieldElement>, 1>;
 
 /// An elliptic curve point defined over a base field with elements that fit in a BigInt256
 /// This is a Finite elliptic curve point as this type cannot be used to encode the point-at-infinity
-#[derive(Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub struct FiniteECPoint(pub FieldElement, pub FieldElement);
 
 /// Vector of finite EC points (with version number)
@@ -30,7 +30,7 @@ pub type FiniteECPointPairVecV1 = Versioned<Vec<FiniteECPointPair>, 1>;
 
 /// Elliptic curve point that can either be the coordinates of a point on the curve
 /// OR it can be the point-at-infinity
-#[derive(Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub enum ECPoint {
     /// The point at infinity
     Infinite,

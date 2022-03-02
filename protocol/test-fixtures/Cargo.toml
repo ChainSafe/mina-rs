@@ -10,8 +10,6 @@ publish = false
 [dependencies]
 # layout support should only be used in tests
 bin-prot = {path = "../bin-prot", features = ["loose_deserialization"]}
-mina-crypto = {path = "../../crypto"}
-mina-rs-base = {path = "../../base"}
 mina-serialization-types = {path = "../serialization-types"}
 
 

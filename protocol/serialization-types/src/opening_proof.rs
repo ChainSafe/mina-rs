@@ -9,7 +9,7 @@ use crate::field_and_curve_elements::{FieldElement, FiniteECPoint, FiniteECPoint
 use serde::{Deserialize, Serialize};
 use versioned::Versioned;
 
-#[derive(Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub struct OpeningProof {
     pub lr: FiniteECPointPairVecV1,
     pub z_1: FieldElement,

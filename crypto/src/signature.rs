@@ -7,48 +7,36 @@
 
 use crate::{
     base58::{version_bytes, Base58Encodable},
-    hash::BaseHash,
     impl_bs58_for_binprot,
 };
 use derive_deref::Deref;
+use derive_more::{From, Into};
+use mina_serialization_types::v1::PublicKeyV1;
 use serde::{Deserialize, Serialize};
-use wire_type::WireType;
 
-#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize, WireType)]
-#[serde(from = "<Self as WireType>::WireType")]
-#[serde(into = "<Self as WireType>::WireType")]
+#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct CompressedCurvePoint {
     pub x: [u8; 32],
     pub is_odd: bool,
 }
 
-#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize, WireType)]
-#[serde(from = "<Self as WireType>::WireType")]
-#[serde(into = "<Self as WireType>::WireType")]
+#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
+#[serde(from = "PublicKeyV1")]
+#[serde(into = "PublicKeyV1")]
 pub struct PublicKey {
     pub poly: CompressedCurvePoint,
 }
 
 impl_bs58_for_binprot!(PublicKey, version_bytes::NON_ZERO_CURVE_POINT_COMPRESSED);
 
-#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize, Deref, WireType)]
-#[serde(from = "<Self as WireType>::WireType")]
-#[serde(into = "<Self as WireType>::WireType")]
+#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize, Deref)]
 pub struct PublicKey2(pub CompressedCurvePoint);
 
-impl_bs58_for_binprot!(PublicKey2, version_bytes::NON_ZERO_CURVE_POINT_COMPRESSED);
-
-#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize, Deref, WireType)]
-#[serde(from = "<Self as WireType>::WireType")]
-#[serde(into = "<Self as WireType>::WireType")]
-#[wire_type(recurse = 2)]
+#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize, Deref)]
 pub struct PublicKey3(pub CompressedCurvePoint);
 
-#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, WireType)]
-#[serde(from = "<Self as WireType>::WireType")]
-#[serde(into = "<Self as WireType>::WireType")]
-#[wire_type(recurse = 2)]
-pub struct Signature((FieldPoint, InnerCurveScalar));
+#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug)]
+pub struct Signature(pub (FieldPoint, InnerCurveScalar));
 
 impl Signature {
     /// field_point
@@ -68,9 +56,9 @@ impl Base58Encodable for Signature {
     const MINA_VERSION_BYTE_COUNT: usize = 1;
 
     fn write_encodable_bytes(&self, output: &mut Vec<u8>) {
-        let field_point_bytes: &[u8; 32] = self.0 .0 .0.as_ref();
+        let field_point_bytes: &[u8; 32] = &self.0 .0 .0;
         output.extend(field_point_bytes);
-        let inner_curve_scalar_bytes: &[u8; 32] = self.0 .1 .0.as_ref();
+        let inner_curve_scalar_bytes: &[u8; 32] = &self.0 .1 .0;
         output.extend(inner_curve_scalar_bytes);
     }
 }
@@ -80,15 +68,16 @@ impl From<Vec<u8>> for Signature {
         // skip the bs58 version byte and mina bin_prot version byte
         let mut b32 = [0; 32];
         b32.copy_from_slice(&bytes[..32]);
-        let field_point = FieldPoint(b32.into());
+        let field_point = FieldPoint(b32);
         b32.copy_from_slice(&bytes[32..]);
-        let inner_curve_scalar = InnerCurveScalar(b32.into());
+        let inner_curve_scalar = InnerCurveScalar(b32);
         Self((field_point, inner_curve_scalar))
     }
 }
 
-#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, WireType)]
-pub struct FieldPoint(BaseHash);
+#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, From, Into)]
+#[into(owned, ref)]
+pub struct FieldPoint([u8; 32]);
 
 impl AsRef<[u8]> for FieldPoint {
     fn as_ref(&self) -> &[u8] {
@@ -96,8 +85,9 @@ impl AsRef<[u8]> for FieldPoint {
     }
 }
 
-#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug)]
-pub struct InnerCurveScalar(BaseHash);
+#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, From, Into)]
+#[into(owned, ref)]
+pub struct InnerCurveScalar(pub [u8; 32]);
 
 impl AsRef<[u8]> for InnerCurveScalar {
     fn as_ref(&self) -> &[u8] {

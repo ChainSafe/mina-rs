@@ -8,7 +8,9 @@ license = "Apache-2.0"
 
 [dependencies]
 mina-crypto = {path = "../crypto"}
-wire-type = {path = "../protocol/wire-type"}
+bin-prot = {path = "../protocol/bin-prot"}
+mina-serialization-types = {path = "../protocol/serialization-types"}
+versioned = {path = "../protocol/versioned"}
 
 base64 = "0.13"
 derive_deref = "1.1"
@@ -31,3 +33,6 @@ plonk_protocol_dlog = {git = "https://github.com/o1-labs/proof-systems", rev = "
 # It has no effect for normal builds
 [target.'cfg(target_arch = "wasm32")'.dependencies]
 getrandom = {version = "0.2", features = ["js"]}
+
+[dev-dependencies]
+test-fixtures = { path = "../protocol/test-fixtures" }

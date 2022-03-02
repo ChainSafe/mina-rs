@@ -10,7 +10,7 @@ use versioned::Versioned;
 use crate::v1::{HashV1, ProtocolStateBodyV1};
 
 /// This structure can be thought of like the block header. It contains the most essential information of a block.
-#[derive(Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub struct ProtocolState {
     /// Commitment to previous block (hash of previous protocol state hash and body hash)
     pub previous_state_hash: HashV1,

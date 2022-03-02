@@ -9,7 +9,7 @@ use crate::field_and_curve_elements::{ECPointV1, ECPointVecV1, FiniteECPoint};
 use serde::{Deserialize, Serialize};
 use versioned::Versioned;
 
-#[derive(Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub struct ProofMessages {
     pub l_comm: ProofMessageWithoutDegreeBoundListV1,
     pub r_comm: ProofMessageWithoutDegreeBoundListV1,
@@ -22,7 +22,7 @@ pub type ProofMessagesV1 = Versioned<ProofMessages, 1>;
 
 pub type ProofMessageWithoutDegreeBoundListV1 = Versioned<Versioned<Vec<FiniteECPoint>, 1>, 1>;
 
-#[derive(Serialize, Deserialize, Default, PartialEq, Debug)]
+#[derive(Clone, Debug, Serialize, Deserialize, Default, PartialEq)]
 pub struct ProofMessageWithDegreeBound {
     pub unshifted: ECPointVecV1,
     pub shifted: ECPointV1,

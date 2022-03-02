@@ -3,10 +3,8 @@
 
 #![deny(warnings)]
 
-use bin_prot::{BinProtRule, Deserializer};
+use bin_prot::{encodable::BinProtEncodable, BinProtRule, Deserializer};
 use lazy_static::lazy_static;
-use mina_crypto::prelude::*;
-use mina_rs_base::external_transition::ExternalTransition;
 use mina_serialization_types::v1::ExternalTransitionV1;
 use serde::Deserialize;
 use std::{borrow::Borrow, collections::HashMap};
@@ -54,12 +52,6 @@ pub struct BlockFixture {
 }
 
 impl BlockFixture {
-    pub fn external_transition(&self) -> anyhow::Result<ExternalTransition> {
-        Ok(ExternalTransition::try_decode_binprot(
-            self.bytes.as_slice(),
-        )?)
-    }
-
     pub fn external_transitionv1(&self) -> anyhow::Result<ExternalTransitionV1> {
         Ok(ExternalTransitionV1::try_decode_binprot(
             self.bytes.as_slice(),

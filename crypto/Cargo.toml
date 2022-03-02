@@ -8,11 +8,14 @@ license = "Apache-2.0"
 
 [dependencies]
 bin-prot = {path = "../protocol/bin-prot"}
-wire-type = {path = "../protocol/wire-type"}
+mina-serialization-types = {path = "../protocol/serialization-types"}
+versioned = {path = "../protocol/versioned"}
 
 base64 = "0.13"
 blake2 = "0.10"
 bs58 = {version = "0.4", features = ["check"]}
+hex = "0.4"
+num = "0.4"
 derive_deref = "1.1"
 derive_more = "0.99"
 serde = {version = "1", features = ["derive"]}

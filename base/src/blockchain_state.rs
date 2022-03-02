@@ -3,16 +3,12 @@
 
 //! Types related to the Blockchain State
 
-use crate::{numbers::BlockTime, token_id::TokenId};
+use crate::numbers::{BlockTime, TokenId};
 use mina_crypto::hash::*;
 use serde::{Deserialize, Serialize};
-use wire_type::WireType;
 
-#[derive(Clone, Serialize, Deserialize, Default, Debug, PartialEq, WireType)]
-#[serde(from = "<Self as WireType>::WireType")]
-#[serde(into = "<Self as WireType>::WireType")]
+#[derive(Clone, Serialize, Deserialize, Default, Debug, PartialEq)]
 /// Mina blockchain state struct
-#[wire_type(recurse = 2)]
 pub struct BlockchainState {
     /// Hash of the proposed next state of the blockchain
     pub staged_ledger_hash: StagedLedgerHash,

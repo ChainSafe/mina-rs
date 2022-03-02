@@ -11,12 +11,9 @@ use crate::{
 use derive_more::From;
 use mina_crypto::{hash::*, prelude::*, signature::*};
 use serde::{Deserialize, Serialize};
-use wire_type::WireType;
 
 /// Wrapper struct for the output for a VRF
-#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, WireType, From)]
-#[serde(from = "<Self as WireType>::WireType")]
-#[serde(into = "<Self as WireType>::WireType")]
+#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, From)]
 pub struct VrfOutputTruncated(pub Vec<u8>);
 
 impl Base64Encodable for VrfOutputTruncated {}
@@ -44,10 +41,7 @@ impl AsRef<[u8]> for VrfOutputTruncated {
 /// approach where the future stake distribution snapshot is prepared by the current consensus epoch.
 ///
 /// Samasika prepares the past for the future! This future state is stored in the next_epoch_data field.
-#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize, WireType)]
-#[serde(from = "<Self as WireType>::WireType")]
-#[serde(into = "<Self as WireType>::WireType")]
-#[wire_type(recurse = 2)]
+#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct ConsensusState {
     /// Height of block
     pub blockchain_length: Length,

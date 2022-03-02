@@ -7,12 +7,8 @@ use serde::{Deserialize, Serialize};
 
 use crate::numbers::{Amount, Length};
 use mina_crypto::hash::*;
-use wire_type::WireType;
 
-#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, WireType)]
-#[serde(from = "<Self as WireType>::WireType")]
-#[serde(into = "<Self as WireType>::WireType")]
-#[wire_type(recurse = 2)]
+#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug)]
 /// Epoch Ledger
 pub struct EpochLedger {
     /// A unique identifier of the EpochLedger
@@ -21,10 +17,7 @@ pub struct EpochLedger {
     pub total_currency: Amount,
 }
 
-#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, WireType)]
-#[serde(from = "<Self as WireType>::WireType")]
-#[serde(into = "<Self as WireType>::WireType")]
-#[wire_type(recurse = 2)]
+#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug)]
 /// Epoch data
 pub struct EpochData {
     /// Epoch Ledger, contains ledger related data for the epoch
