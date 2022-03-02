@@ -4,7 +4,7 @@
 mod config;
 pub use config::*;
 use mina_rs_base::types::*;
-mod genesis_impl;
+pub mod genesis_impl;
 
 /// Trait for genesis block initialization logic
 /// # Example

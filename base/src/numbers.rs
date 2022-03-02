@@ -133,17 +133,17 @@ pub struct BlockTime(pub u64);
 
 impl BlockTime {
     /// Unix timestamp conversion (seconds since the unix epoch)
-    pub fn from_unix_epoch(ts: u64) -> Self {
+    pub const fn from_unix_epoch(ts: u64) -> Self {
         Self::from_unix_epoch_millis(ts * 1000)
     }
 
     /// Unix timestamp conversion (milliseconds since the unix epoch)
-    pub fn from_unix_epoch_millis(ts: u64) -> Self {
+    pub const fn from_unix_epoch_millis(ts: u64) -> Self {
         Self(ts)
     }
 
     /// Gets unix timestamp in milliseconds
-    pub fn epoch_millis(&self) -> u64 {
+    pub const fn epoch_millis(&self) -> u64 {
         self.0
     }
 

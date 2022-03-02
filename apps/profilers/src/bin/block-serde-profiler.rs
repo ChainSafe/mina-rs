@@ -2,14 +2,14 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use bin_prot::encodable::BinProtEncodable;
-use clap::{App, Arg};
+use clap::{Arg, Command};
 use mina_rs_base::types::ExternalTransition;
 use std::str::FromStr;
 
 const BLOCK_BYTES: &[u8] = include_bytes!("../../../../protocol/test-fixtures/src/data/block1");
 
 fn main() -> anyhow::Result<()> {
-    let matches = App::new("block-serde-app")
+    let matches = Command::new("block-serde-app")
         .arg(
             Arg::new("mode")
                 .short('m')
@@ -35,11 +35,9 @@ fn cpu_profile_serialization() -> anyhow::Result<ExternalTransition> {
 }
 
 fn heap_profile_serialization() -> anyhow::Result<ExternalTransition> {
-    use dhat::{Dhat, DhatAlloc};
-
     #[global_allocator]
-    static ALLOCATOR: DhatAlloc = DhatAlloc;
-    let _dhat = Dhat::start_heap_profiling();
+    static ALLOC: dhat::Alloc = dhat::Alloc;
+    let _profiler = dhat::Profiler::new_heap();
 
     cpu_profile_serialization()
 }
