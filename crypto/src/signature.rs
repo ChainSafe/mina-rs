@@ -85,8 +85,6 @@ impl RandomOraclePartialInput<PublicKey> for ROInput {
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize, Deref)]
 pub struct PublicKey2(pub CompressedCurvePoint);
 
-impl_bs58_for_binprot!(PublicKey2, version_bytes::NON_ZERO_CURVE_POINT_COMPRESSED);
-
 impl RandomOraclePartialInput<PublicKey2> for ROInput {
     fn append(&mut self, value: &PublicKey2) {
         self.append(&value.0)
@@ -174,9 +172,6 @@ pub mod tests {
         let s = "B62qonDZEKYULNkfq7WGu1Z881YBRnMSuBGGX5DhnTv26mUyvN99mpo";
 
         let k = PublicKey::from_base58(s).unwrap();
-        assert_eq!(s, k.to_base58_string());
-
-        let k = PublicKey2::from_base58(s).unwrap();
         assert_eq!(s, k.to_base58_string());
     }
 
