@@ -10,7 +10,7 @@ use versioned::Versioned;
 use crate::v1::{BlockTimeV1, LengthV1};
 
 /// Constants that define the consensus parameters
-#[derive(Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub struct ProtocolConstants {
     /// Point of finality (number of confirmations)
     pub k: LengthV1,

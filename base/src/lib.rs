@@ -21,8 +21,8 @@ pub mod numbers;
 pub mod protocol_state;
 pub mod protocol_state_proof;
 pub mod protocol_version;
+mod serialization_type_conversions;
 pub mod staged_ledger_diff;
-pub mod token_id;
 pub mod verification_key;
 
 /// Re-export all the public types under this module for convenience
@@ -38,6 +38,5 @@ pub mod types {
     pub use super::protocol_state_proof::*;
     pub use super::protocol_version::*;
     pub use super::staged_ledger_diff::*;
-    pub use super::token_id::*;
     pub use super::verification_key::*;
 }

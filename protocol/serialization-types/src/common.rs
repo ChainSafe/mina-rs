@@ -35,8 +35,8 @@ pub type AmountV1 = Versioned<Versioned<u64, 1>, 1>;
 /// u32 wrapped in 1 version byte
 pub type ExtendedU32 = Versioned<Versioned<i32, 1>, 1>;
 
-// u64 wrapped in 1 version byte
-type ExtendedU64 = Versioned<u64, 1>;
+/// u64 wrapped in 1 version byte
+pub type ExtendedU64 = Versioned<u64, 1>;
 
 /// u64 wrapped in 2 version bytes
 pub type ExtendedU64_2 = Versioned<ExtendedU64, 1>;

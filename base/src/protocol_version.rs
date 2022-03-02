@@ -4,11 +4,8 @@
 //! Protocol version structure
 
 use serde::{Deserialize, Serialize};
-use wire_type::WireType;
 
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, WireType)]
-#[serde(from = "<Self as WireType>::WireType")]
-#[serde(into = "<Self as WireType>::WireType")]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 /// Defines a version of the Mina protocol in semver format
 pub struct ProtocolVersion {
     /// Major version number

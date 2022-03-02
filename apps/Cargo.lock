@@ -793,9 +793,12 @@ dependencies = [
  "bs58",
  "derive_deref",
  "derive_more",
+ "hex",
+ "mina-serialization-types",
+ "num",
  "serde",
  "thiserror",
- "wire-type",
+ "versioned",
 ]
 
 [[package]]
@@ -814,6 +817,7 @@ dependencies = [
  "ark-ec",
  "ark-ff",
  "base64",
+ "bin-prot",
  "commitment_dlog",
  "derive_deref",
  "derive_more",
@@ -821,13 +825,14 @@ dependencies = [
  "hex",
  "mina-crypto",
  "mina-curves",
+ "mina-serialization-types",
  "num",
  "plonk_circuits",
  "plonk_protocol_dlog",
  "serde",
  "thiserror",
  "time",
- "wire-type",
+ "versioned",
 ]
 
 [[package]]
@@ -838,9 +843,17 @@ dependencies = [
  "bin-prot",
  "clap 3.1.2",
  "dhat",
- "mina-crypto",
  "mina-rs-base",
  "serde",
+]
+
+[[package]]
+name = "mina-serialization-types"
+version = "0.1.0"
+dependencies = [
+ "bin-prot",
+ "serde",
+ "versioned",
 ]
 
 [[package]]
@@ -1633,6 +1646,13 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "49874b5167b65d7193b8aba1567f5c7d93d001cafc34600cee003eda787e483f"
 
 [[package]]
+name = "versioned"
+version = "0.1.0"
+dependencies = [
+ "serde",
+]
+
+[[package]]
 name = "wasi"
 version = "0.10.2+wasi-snapshot-preview1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1722,23 +1742,6 @@ name = "winapi-x86_64-pc-windows-gnu"
 version = "0.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "712e227841d057c1ee1cd2fb22fa7e5a5461ae8e48fa2ca79ec42cfc1931183f"
-
-[[package]]
-name = "wire-type"
-version = "0.1.0"
-dependencies = [
- "serde",
- "wire-type-derive",
-]
-
-[[package]]
-name = "wire-type-derive"
-version = "0.1.0"
-dependencies = [
- "darling",
- "quote",
- "syn",
-]
 
 [[package]]
 name = "zeroize"
