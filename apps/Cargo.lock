@@ -339,9 +339,9 @@ dependencies = [
 
 [[package]]
 name = "clap"
-version = "3.1.2"
+version = "3.1.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5177fac1ab67102d8989464efd043c6ff44191b1557ec1ddd489b4f7e1447e77"
+checksum = "86f8c0e2a6b902acc18214e24a6935cdaf8a8e34231913d4404dcaee659f65a1"
 dependencies = [
  "atty",
  "bitflags",
@@ -793,9 +793,12 @@ dependencies = [
  "bs58",
  "derive_deref",
  "derive_more",
+ "hex",
+ "mina-serialization-types",
+ "num",
  "serde",
  "thiserror",
- "wire-type",
+ "versioned",
 ]
 
 [[package]]
@@ -814,6 +817,7 @@ dependencies = [
  "ark-ec",
  "ark-ff",
  "base64",
+ "bin-prot",
  "commitment_dlog",
  "derive_deref",
  "derive_more",
@@ -821,13 +825,14 @@ dependencies = [
  "hex",
  "mina-crypto",
  "mina-curves",
+ "mina-serialization-types",
  "num",
  "plonk_circuits",
  "plonk_protocol_dlog",
  "serde",
  "thiserror",
  "time",
- "wire-type",
+ "versioned",
 ]
 
 [[package]]
@@ -836,11 +841,19 @@ version = "0.1.0"
 dependencies = [
  "anyhow",
  "bin-prot",
- "clap 3.1.2",
+ "clap 3.1.3",
  "dhat",
- "mina-crypto",
  "mina-rs-base",
  "serde",
+]
+
+[[package]]
+name = "mina-serialization-types"
+version = "0.1.0"
+dependencies = [
+ "bin-prot",
+ "serde",
+ "versioned",
 ]
 
 [[package]]
@@ -1261,9 +1274,9 @@ dependencies = [
 
 [[package]]
 name = "redox_syscall"
-version = "0.2.10"
+version = "0.2.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8383f39639269cde97d255a32bdb68c047337295414940c68bdd30c2e13203ff"
+checksum = "8380fe0152551244f0747b1bf41737e0f8a74f97a14ccefd1148187271634f3c"
 dependencies = [
  "bitflags",
 ]
@@ -1633,6 +1646,13 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "49874b5167b65d7193b8aba1567f5c7d93d001cafc34600cee003eda787e483f"
 
 [[package]]
+name = "versioned"
+version = "0.1.0"
+dependencies = [
+ "serde",
+]
+
+[[package]]
 name = "wasi"
 version = "0.10.2+wasi-snapshot-preview1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1724,27 +1744,10 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "712e227841d057c1ee1cd2fb22fa7e5a5461ae8e48fa2ca79ec42cfc1931183f"
 
 [[package]]
-name = "wire-type"
-version = "0.1.0"
-dependencies = [
- "serde",
- "wire-type-derive",
-]
-
-[[package]]
-name = "wire-type-derive"
-version = "0.1.0"
-dependencies = [
- "darling",
- "quote",
- "syn",
-]
-
-[[package]]
 name = "zeroize"
-version = "1.5.2"
+version = "1.5.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7c88870063c39ee00ec285a2f8d6a966e5b6fb2becc4e8dac77ed0d370ed6006"
+checksum = "50344758e2f40e3a1fcfc8f6f91aa57b5f8ebd8d27919fe6451f15aaaf9ee608"
 dependencies = [
  "zeroize_derive",
 ]

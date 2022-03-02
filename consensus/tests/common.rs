@@ -4,7 +4,7 @@
 #[cfg(test)]
 mod tests {
     use hex::ToHex;
-    use mina_consensus::{common::*, density::ConsensusConstants, error::ConsensusError};
+    use mina_consensus::{common::*, error::ConsensusError};
     use mina_crypto::hash::*;
     use mina_rs_base::types::*;
     use wasm_bindgen_test::*;
@@ -130,7 +130,6 @@ mod tests {
     #[test]
     #[wasm_bindgen_test]
     fn selects_longer_chain() {
-        let constants = ConsensusConstants::from_genesis();
         let mut genesis_chain = ProtocolStateChain::default();
         let mut consensus_state = ConsensusState::default();
         consensus_state.min_window_density = Length(77);
@@ -187,11 +186,15 @@ mod tests {
 
         let mut chains = vec![];
         chains.push(chain_at_5001);
-        let select_result = genesis_chain
-            .select_secure_chain(&chains, &constants)
-            .unwrap();
-        let a = select_result.0.get(0).unwrap();
-        assert_eq!(a.body.consensus_state.min_window_density, Length(43));
-        assert_eq!(a.body.consensus_state.sub_window_densities, densities);
+        let canonical = genesis_chain.select_secure_chain(&chains).unwrap();
+        let canonical = canonical.0.get(0).unwrap();
+        assert_eq!(
+            canonical.body.consensus_state.min_window_density,
+            Length(43)
+        );
+        assert_eq!(
+            canonical.body.consensus_state.sub_window_densities,
+            densities
+        );
     }
 }

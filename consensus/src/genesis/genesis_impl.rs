@@ -13,18 +13,18 @@ impl Genesis for ExternalTransition {
         et.protocol_state.body.constants = config.constants.clone();
 
         let cs = &mut et.protocol_state.body.consensus_state;
-        cs.blockchain_length = 1.into();
-        cs.epoch_count = 0.into();
+        cs.blockchain_length = 1_u32.into();
+        cs.epoch_count = 0_u32.into();
         cs.min_window_density =
             (config.sub_windows_per_window * config.constants.slots_per_sub_window.0).into();
         cs.sub_window_densities = config.sub_window_densities.clone();
         cs.last_vrf_output = config.last_vrf_output.clone();
         cs.total_currency = config.total_currency;
         cs.curr_global_slot = GlobalSlot {
-            slot_number: 0.into(),
+            slot_number: 0_u32.into(),
             slots_per_epoch: config.constants.slots_per_epoch,
         };
-        cs.global_slot_since_genesis = 0.into();
+        cs.global_slot_since_genesis = 0_u32.into();
         cs.staking_epoch_data = config.staking_epoch_data.clone();
         cs.next_epoch_data = config.next_epoch_data.clone();
         cs.has_ancestor_in_same_checkpoint_window = true;

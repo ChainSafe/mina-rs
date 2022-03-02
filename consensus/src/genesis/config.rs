@@ -41,10 +41,10 @@ impl GenesisInitConfig {
     pub(crate) fn mainnet() -> Self {
         // https://github.com/MinaProtocol/mina/tree/feature/9665-spec-ouroboros-samasika-checkpointing/docs/specs/consensus#3-constants
         let constants = ProtocolConstants {
-            k: 290.into(),
-            slots_per_epoch: 7140.into(),
-            slots_per_sub_window: 7.into(),
-            delta: 0.into(),
+            k: 290_u32.into(),
+            slots_per_epoch: 7140_u32.into(),
+            slots_per_sub_window: 7_u32.into(),
+            delta: 0_u32.into(),
             genesis_state_timestamp: BlockTime::from_unix_epoch(1615939200),
         };
         let total_currency = Amount(805385692840039233);
@@ -479,17 +479,17 @@ impl GenesisInitConfig {
             .expect(ERR_FAIL_TO_DECODE_B64),
             total_currency,
             sub_window_densities: vec![
-                1.into(),
-                7.into(),
-                7.into(),
-                7.into(),
-                7.into(),
-                7.into(),
-                7.into(),
-                7.into(),
-                7.into(),
-                7.into(),
-                7.into(),
+                Length(1),
+                Length(7),
+                Length(7),
+                Length(7),
+                Length(7),
+                Length(7),
+                Length(7),
+                Length(7),
+                Length(7),
+                Length(7),
+                Length(7),
             ],
             constants,
             staking_epoch_data,
@@ -520,7 +520,8 @@ impl GenesisInitConfig {
                 StateHash::from_base58("3NLoKn22eMnyQ7rxh5pxB6vBA3XhSAhhrf7akdqS6HbAKD14Dh1d")
                     .expect(ERR_FAIL_TO_DECODE_B58),
                 Default::default(),
-            ),
+            )
+                .into(),
         }
     }
 

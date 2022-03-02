@@ -3,11 +3,8 @@
 
 use crate::types::FieldElementVec;
 use serde::{Deserialize, Serialize};
-use wire_type::WireType;
 
-#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, WireType)]
-#[serde(from = "<Self as WireType>::WireType")]
-#[serde(into = "<Self as WireType>::WireType")]
+#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug)]
 pub struct ProofEvaluations {
     pub l: FieldElementVec,
     pub r: FieldElementVec,

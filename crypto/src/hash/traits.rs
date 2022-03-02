@@ -46,14 +46,13 @@ pub trait RandomOraclePartialInput<T> {
 mod tests {
     use super::*;
     use crate::base58::{version_bytes, Base58Encodable};
-    use crate::binprot::BinProtEncodable;
     use crate::hash::prefixes::PROTOCOL_STATE;
     use crate::hash::types::{BaseHash, HashBytes};
     use crate::impl_bs58_for_binprot;
+    use bin_prot::encodable::BinProtEncodable;
     use serde::Deserialize;
-    use wire_type::WireType;
 
-    #[derive(Clone, Serialize, Deserialize, PartialEq, Debug, WireType)]
+    #[derive(Clone, Serialize, Deserialize, PartialEq, Debug)]
     struct TestHash(BaseHash);
 
     impl BinProtEncodable for TestHash {

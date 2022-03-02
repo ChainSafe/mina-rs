@@ -10,7 +10,7 @@ use versioned::Versioned;
 use crate::v1::{BlockchainStateV1, ConsensusStateV1, HashV1, ProtocolConstantsV1};
 
 /// Body of the protocol state
-#[derive(Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub struct ProtocolStateBody {
     /// Genesis protocol state hash (used for hardforks)
     pub genesis_state_hash: HashV1,

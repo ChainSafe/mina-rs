@@ -15,8 +15,8 @@ use crate::base58::{version_bytes, Base58Encodable};
 use crate::hash::Hash;
 use crate::impl_bs58;
 use derive_more::From;
+use mina_serialization_types::v1::{ByteVecV1, HashV1};
 use serde::{Deserialize, Serialize};
-use wire_type::WireType;
 
 pub(crate) type HashBytes = Box<[u8]>;
 
@@ -53,9 +53,7 @@ impl AsRef<[u8; 32]> for BaseHash {
 }
 
 //////////////////////////////////////////////////////////////////////////
-#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize, WireType, PartialOrd)]
-#[serde(from = "<Self as WireType>::WireType")]
-#[serde(into = "<Self as WireType>::WireType")]
+#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize, PartialOrd)]
 pub struct StateHash(BaseHash);
 
 impl_bs58!(StateHash, version_bytes::STATE_HASH);
@@ -66,32 +64,50 @@ impl From<HashBytes> for StateHash {
     }
 }
 
+impl From<HashV1> for StateHash {
+    fn from(h: HashV1) -> Self {
+        Self(BaseHash(h.t))
+    }
+}
+impl From<StateHash> for HashV1 {
+    fn from(h: StateHash) -> Self {
+        Self::new(h.0 .0)
+    }
+}
+
 impl Hash for StateHash {
     const PREFIX: &'static HashPrefix = PROTOCOL_STATE;
 }
 
 //////////////////////////////////////////////////////////////////////////
 
-#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize, WireType)]
-#[serde(from = "<Self as WireType>::WireType")]
-#[serde(into = "<Self as WireType>::WireType")]
+#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct LedgerHash(BaseHash);
 
 impl_bs58!(LedgerHash, version_bytes::LEDGER_HASH);
 
-#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize, WireType)]
-#[serde(from = "<Self as WireType>::WireType")]
-#[serde(into = "<Self as WireType>::WireType")]
-#[wire_type(recurse = 2)]
+impl From<HashV1> for LedgerHash {
+    fn from(h: HashV1) -> Self {
+        Self(BaseHash(h.t))
+    }
+}
+
+//////////////////////////////////////////////////////////////////////////
+
+#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct CoinBaseHash(BaseHash);
 
 impl_bs58!(CoinBaseHash, 12);
 
+impl From<HashV1> for CoinBaseHash {
+    fn from(h: HashV1) -> Self {
+        Self(BaseHash(h.t))
+    }
+}
+
 //////////////////////////////////////////////////////////////////////////
 
-#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize, WireType)]
-#[serde(from = "<Self as WireType>::WireType")]
-#[serde(into = "<Self as WireType>::WireType")]
+#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct EpochSeed(BaseHash);
 
 impl_bs58!(EpochSeed, version_bytes::EPOCH_SEED);
@@ -106,38 +122,41 @@ impl Hash for EpochSeed {
     const PREFIX: &'static HashPrefix = EPOCH_SEED;
 }
 
+impl From<HashV1> for EpochSeed {
+    fn from(h: HashV1) -> Self {
+        Self(BaseHash(h.t))
+    }
+}
+
 //////////////////////////////////////////////////////////////////////////
 
-#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize, WireType)]
-#[serde(from = "<Self as WireType>::WireType")]
-#[serde(into = "<Self as WireType>::WireType")]
+#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct SnarkedLedgerHash(BaseHash);
 
 impl_bs58!(SnarkedLedgerHash, version_bytes::LEDGER_HASH);
 
+impl From<HashV1> for SnarkedLedgerHash {
+    fn from(h: HashV1) -> Self {
+        Self(BaseHash(h.t))
+    }
+}
+
 //////////////////////////////////////////////////////////////////////////
 
-#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize, WireType)]
-#[serde(from = "<Self as WireType>::WireType")]
-#[serde(into = "<Self as WireType>::WireType")]
-#[wire_type(recurse = 2)]
+#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct StagedLedgerHash {
     pub non_snark: NonSnarkStagedLedgerHash,
     pub pending_coinbase_hash: CoinBaseHash,
 }
 
-#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize, WireType)]
-#[serde(from = "<Self as WireType>::WireType")]
-#[serde(into = "<Self as WireType>::WireType")]
+#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct NonSnarkStagedLedgerHash {
     pub ledger_hash: LedgerHash,
     pub aux_hash: AuxHash,
     pub pending_coinbase_aux: PendingCoinbaseAuxHash,
 }
 
-#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize, WireType)]
-#[serde(from = "<Self as WireType>::WireType")]
-#[serde(into = "<Self as WireType>::WireType")]
+#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct AuxHash(pub Vec<u8>);
 
 impl Base58Encodable for AuxHash {
@@ -155,9 +174,15 @@ impl From<Vec<u8>> for AuxHash {
     }
 }
 
-#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize, WireType)]
-#[serde(from = "<Self as WireType>::WireType")]
-#[serde(into = "<Self as WireType>::WireType")]
+impl AsRef<[u8]> for AuxHash {
+    fn as_ref(&self) -> &[u8] {
+        self.0.as_ref()
+    }
+}
+
+//////////////////////////////////////////////////////////////////////////
+
+#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct PendingCoinbaseAuxHash(pub Vec<u8>);
 
 impl Base58Encodable for PendingCoinbaseAuxHash {
@@ -175,17 +200,15 @@ impl From<Vec<u8>> for PendingCoinbaseAuxHash {
     }
 }
 
-impl AsRef<[u8]> for AuxHash {
-    fn as_ref(&self) -> &[u8] {
-        self.0.as_ref()
+impl From<ByteVecV1> for PendingCoinbaseAuxHash {
+    fn from(h: ByteVecV1) -> Self {
+        Self(h.t)
     }
 }
 
 //////////////////////////////////////////////////////////////////////////
 
-#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize, WireType)]
-#[serde(from = "<Self as WireType>::WireType")]
-#[serde(into = "<Self as WireType>::WireType")]
+#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct VrfOutputHash(BaseHash);
 
 impl_bs58!(VrfOutputHash, version_bytes::VRF_TRUNCATED_OUTPUT);
@@ -198,6 +221,12 @@ impl From<HashBytes> for VrfOutputHash {
 
 impl Hash for VrfOutputHash {
     const PREFIX: &'static HashPrefix = VRF_OUTPUT;
+}
+
+impl From<HashV1> for VrfOutputHash {
+    fn from(h: HashV1) -> Self {
+        Self(BaseHash(h.t))
+    }
 }
 
 //////////////////////////////////////////////////////////////////////////

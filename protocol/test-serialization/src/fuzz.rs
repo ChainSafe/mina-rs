@@ -5,7 +5,7 @@
 mod tests {
     use crate::fuzz_test;
     use bin_prot::Deserializer;
-    use mina_rs_base::types::*;
+    use mina_serialization_types::v1::*;
     use rand::prelude::*;
     use serde::Deserialize;
     use wasm_bindgen_test::*;
@@ -14,28 +14,28 @@ mod tests {
     #[wasm_bindgen_test]
     fn test_corrupted_deserialization() {
         fuzz_test!(
-            ExternalTransition
+            ExternalTransitionV1
 
-            ProtocolState
-            ProtocolStateBody
-            BlockchainState
-            ConsensusState
-            ProtocolConstants
+            ProtocolStateV1
+            ProtocolStateBodyV1
+            BlockchainStateV1
+            ConsensusStateV1
+            ProtocolConstantsV1
 
-            ProtocolStateProof
-            ProofStatement
-            PrevEvals
-            Proof
-            ProofMessages
-            ProofOpenings
+            ProtocolStateProofV1
+            ProofStatementV1
+            PrevEvalsV1
+            ProofV1
+            ProofMessagesV1
+            ProofOpeningsV1
 
-            StagedLedgerDiff
-            StagedLedgerDiffTuple
-            StagedLedgerPreDiffTwo
+            StagedLedgerDiffV1
+            StagedLedgerDiffTupleV1
+            StagedLedgerPreDiffTwoV1
 
             DeltaTransitionChainProof
 
-            Option<ProtocolVersion>
+            Option<ProtocolVersionV1>
             ()
         );
     }
@@ -48,7 +48,7 @@ mod tests {
 
         bytes[0] = 1;
         let mut de = Deserializer::from_reader(bytes.as_slice());
-        let _et: ProtocolVersion = Deserialize::deserialize(&mut de).unwrap();
+        let _et: ProtocolVersionV1 = Deserialize::deserialize(&mut de).unwrap();
     }
 
     #[macro_export]
