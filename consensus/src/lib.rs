@@ -9,9 +9,6 @@
 //! Contains definitions of data structures and APIs for mina consensus
 //!
 
-pub mod checkpoint;
 pub mod common;
-mod constants;
-pub mod density;
 pub mod error;
 pub mod genesis;
