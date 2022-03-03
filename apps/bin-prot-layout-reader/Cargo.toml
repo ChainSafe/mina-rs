@@ -7,13 +7,13 @@ edition = "2021"
 license = "Apache-2.0"
 
 [dependencies]
-anyhow = "1.0.53"
+bin-prot = {path = "../../protocol/bin-prot", features = ["loose_deserialization"]}
 
-bin-prot = { path = "../../protocol/bin-prot", features = ["loose_deserialization"] }
+anyhow = "1.0.53"
 env_logger = "0.9.0"
 hex = "0.4.3"
 log = "0.4.14"
-serde = { version = "1", features = ["derive"] }
+serde = {version = "1", features = ["derive"]}
 serde_json = {version = "1", features = ["unbounded_depth"]}
 serde_stacker = "0.1"
 structopt = "0.3.21"
