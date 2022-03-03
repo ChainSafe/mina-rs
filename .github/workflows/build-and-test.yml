@@ -5,6 +5,12 @@ on:
 
 name: CI
 
+env:
+  # https://doc.rust-lang.org/cargo/reference/profiles.html#incremental
+  CARGO_INCREMENTAL: 1
+  # Investigate why it does not build with this flag
+  # RUSTFLAGS: -Ctarget-cpu=native
+
 jobs:
   checks:
     runs-on: ubuntu-latest
@@ -30,15 +36,18 @@ jobs:
       - run: cargo fmt --all --manifest-path apps/Cargo.toml -- --check
       - name: Check license
         run: ./scripts/add_license.sh
+      - uses: EmbarkStudios/cargo-deny-action@v1
+        with:
+          command: check All -s
+          arguments: --all-features
+      - uses: EmbarkStudios/cargo-deny-action@v1
+        with:
+          command: check All -s
+          arguments: --all-features --manifest-path apps/Cargo.toml
       - run: cargo install cargo-udeps || echo 'already installed'
       - run: rustup install nightly
       - run: cargo +nightly udeps --all-targets --all-features
       - run: cargo +nightly udeps --all-targets --all-features --manifest-path apps/Cargo.toml
-      - run: cargo install cargo-deny || echo 'already installed'
-      - run: cargo deny check All -s
-      - run: |
-          cd apps
-          cargo deny check All -s
   x86_64:
     runs-on: ubuntu-latest
     steps:
@@ -50,10 +59,12 @@ jobs:
           toolchain: stable
           components: clippy
           override: true
-      - run: cargo build --release --no-default-features
-      - run: cargo build --release
-      - run: cargo build --release --all-features
-      - run: cargo build --release --all-features --manifest-path apps/Cargo.toml
+      # `cargo check` compiles the packages without performing the final step of code generation,
+      # which is faster than running `cargo build`.
+      - run: cargo check --release --no-default-features
+      - run: cargo check --release
+      - run: cargo check --release --all-features
+      - run: cargo check --release --all-features --manifest-path apps/Cargo.toml
       - run: cargo test --release --all-features
       - run: cargo test --release --all-features --manifest-path apps/Cargo.toml
       # https://github.com/benchmark-action/github-action-benchmark#how-to-use
@@ -84,6 +95,7 @@ jobs:
       - run: cargo clippy --release --all-features --manifest-path apps/Cargo.toml -- --deny warnings
       - name: Run profilers
         run: |
+          sudo apt-get update -y
           sudo apt-get install -y valgrind graphviz
           sudo pip install gprof2dot
           ./scripts/profiler.sh

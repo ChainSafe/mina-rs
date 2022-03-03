@@ -9,7 +9,7 @@ use crate::v1::{AmountV1, HashV1, LengthV1};
 use versioned::Versioned;
 
 /// Epoch Ledger
-#[derive(Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub struct EpochLedger {
     /// A unique identifier of the EpochLedger
     pub hash: HashV1,
@@ -21,7 +21,7 @@ pub struct EpochLedger {
 pub type EpochLedgerV1 = Versioned<Versioned<EpochLedger, 1>, 1>;
 
 /// Epoch data
-#[derive(Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub struct EpochData {
     /// Epoch Ledger, contains ledger related data for the epoch
     pub ledger: EpochLedgerV1,

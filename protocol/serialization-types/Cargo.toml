@@ -13,13 +13,12 @@ default = []
 browser = []
 
 [dependencies]
-mina-crypto = {path = "../../crypto"}# TODO: Try and remove this dep
+bin-prot = {path = "../bin-prot"}
 versioned = {path = "../versioned"}
 
 serde = {version = "1", features = ["derive"]}
 
 [dev-dependencies]
-bin-prot = {path = "../bin-prot"}
 test-fixtures = {path = "../test-fixtures"}
 
 pretty_assertions = "1"

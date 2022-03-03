@@ -3,15 +3,49 @@
 
 //! Implements common APIs for the blockchain in the context of consensus.
 
+use crate::error::ConsensusError;
 use hex::ToHex;
 use mina_crypto::hash::{Hashable, StateHash};
 use mina_rs_base::consensus_state::ConsensusState;
 use mina_rs_base::global_slot::GlobalSlot;
 use mina_rs_base::protocol_state::{Header, ProtocolState};
+use mina_rs_base::types::{BlockTime, Length};
 
-use crate::checkpoint::is_short_range;
-use crate::density::{relative_min_window_density, ConsensusConstants};
-use crate::error::ConsensusError;
+// TODO: derive from protocol constants
+pub struct ConsensusConstants {
+    /// Point of finality (number of confirmations)
+    pub k: Length,
+    /// Number of slots per epoch
+    pub slots_per_epoch: Length,
+    /// No of slots in a sub-window = 7
+    pub slots_per_sub_window: Length,
+    /// Maximum permissable delay of packets (in slots after the current)
+    pub delta: Length,
+    /// Timestamp of genesis block in unixtime
+    pub genesis_state_timestamp: BlockTime,
+    /// Sub windows within a window
+    pub sub_windows_per_window: Length,
+    /// Number of slots before minimum density is used in chain selection
+    pub grace_period_end: Length,
+}
+
+impl ConsensusConstants {
+    pub fn mainnet() -> Self {
+        Self {
+            k: Length(290),
+            slots_per_epoch: Length(7140),
+            slots_per_sub_window: Length(7),
+            delta: Length(0),
+            genesis_state_timestamp: BlockTime(1615939200000),
+            sub_windows_per_window: Length(11),
+            grace_period_end: Length(1440),
+        }
+    }
+
+    pub fn devnet() -> Self {
+        todo!()
+    }
+}
 
 #[derive(Debug, Default)]
 // TODO: replace vec element with ExternalTransition
@@ -106,16 +140,29 @@ impl Chain<ProtocolState> for ProtocolStateChain {
 
 pub trait Consensus {
     type Chain;
+    /// Top level API to select between chains during a fork.
     fn select_secure_chain<'a>(
         &'a self,
         candidates: &'a [Self::Chain],
-        constants: &ConsensusConstants,
     ) -> Result<&'a ProtocolStateChain, ConsensusError>;
 
+    /// Selects the longer chain when there's a short range fork.
     fn select_longer_chain<'a>(
         &'a self,
         candidate: &'a ProtocolStateChain,
     ) -> Result<&'a ProtocolStateChain, ConsensusError>;
+
+    /// Checks whether the fork is short range wrt to candidate chain
+    fn is_short_range(&self, candidate: &ProtocolStateChain) -> Result<bool, ConsensusError>;
+
+    /// Calculates the relate minimum window density wrt to candidate chain.
+    fn relative_min_window_density(
+        &self,
+        candidate: &ProtocolStateChain,
+    ) -> Result<u32, ConsensusError>;
+
+    /// Constants used for consensus
+    fn config(&self) -> ConsensusConstants;
 }
 
 impl Consensus for ProtocolStateChain {
@@ -123,27 +170,17 @@ impl Consensus for ProtocolStateChain {
     fn select_secure_chain<'a>(
         &'a self,
         candidates: &'a [Self::Chain],
-        constants: &ConsensusConstants,
     ) -> Result<&'a ProtocolStateChain, ConsensusError> {
-        let tip = candidates.iter().fold(Ok(self), |tip, c| {
-            if is_short_range(self, c)? {
+        let tip = candidates.iter().fold(Ok(self), |tip, candidate| {
+            if self.is_short_range(candidate)? {
                 // short-range fork, select longer chain
-                self.select_longer_chain(c)
+                self.select_longer_chain(candidate)
             } else {
-                // long-range fork, compare relative minimum window densities
-                let tip_state = self
-                    .consensus_state()
-                    .ok_or(ConsensusError::ConsensusStateNotFound)?;
-                let candidate_state = c
-                    .consensus_state()
-                    .ok_or(ConsensusError::ConsensusStateNotFound)?;
-                let tip_density =
-                    relative_min_window_density(tip_state, candidate_state, constants)?;
-                let candidate_density =
-                    relative_min_window_density(candidate_state, tip_state, constants)?;
+                let tip_density = self.relative_min_window_density(candidate)?;
+                let candidate_density = candidate.relative_min_window_density(self)?;
                 match candidate_density.cmp(&tip_density) {
-                    std::cmp::Ordering::Greater => Ok(c),
-                    std::cmp::Ordering::Equal => self.select_longer_chain(c),
+                    std::cmp::Ordering::Greater => Ok(candidate),
+                    std::cmp::Ordering::Equal => self.select_longer_chain(candidate),
                     _ => tip, // no change
                 }
             }
@@ -178,5 +215,106 @@ impl Consensus for ProtocolStateChain {
         }
 
         Ok(self)
+    }
+
+    fn is_short_range(&self, candidate: &ProtocolStateChain) -> Result<bool, ConsensusError> {
+        let a = &self
+            .consensus_state()
+            .ok_or(ConsensusError::ConsensusStateNotFound)?;
+        let b = &candidate
+            .consensus_state()
+            .ok_or(ConsensusError::ConsensusStateNotFound)?;
+        let a_prev_lock_checkpoint = &a.staking_epoch_data.lock_checkpoint;
+        let b_prev_lock_checkpoint = &b.staking_epoch_data.lock_checkpoint;
+
+        let check = |s1: &ConsensusState, s2: &ConsensusState, s2_epoch_slot: Option<u32>| {
+            if s1.epoch_count.0 == s2.epoch_count.0 + 1
+                && s2_epoch_slot >= Some(self.config().slots_per_epoch.0 * 2 / 3)
+            {
+                // S1 is one epoch ahead of S2 and S2 is not in the seed update range
+                s1.staking_epoch_data.lock_checkpoint == s2.next_epoch_data.lock_checkpoint
+            } else {
+                false
+            }
+        };
+
+        if a.epoch_count == b.epoch_count {
+            // Simple case: blocks have same previous epoch, so compare previous epochs' lock_checkpoints
+            Ok(a_prev_lock_checkpoint == b_prev_lock_checkpoint)
+        } else {
+            // Check for previous epoch case using both orientations
+            Ok(check(a, b, candidate.epoch_slot()) || check(b, a, self.epoch_slot()))
+        }
+    }
+
+    fn config(&self) -> ConsensusConstants {
+        ConsensusConstants::mainnet()
+    }
+
+    /// Computes the relative minimum window density of the given chains.
+    /// The minimum density value is used in the case of a long range fork
+    /// and the chain with the higher relative minimum window density is chosen as the canonical chain.
+    /// The need for relative density is explained here:
+    /// <https://github.com/MinaProtocol/mina/blob/02dfc3ff0160ba3c1bbc732baa07502fe4312b04/docs/specs/consensus/README.md#5412-relative-minimum-window-density>
+    fn relative_min_window_density(
+        &self,
+        chain_b: &ProtocolStateChain,
+    ) -> Result<u32, ConsensusError> {
+        let tip_state = self
+            .consensus_state()
+            .ok_or(ConsensusError::ConsensusStateNotFound)?;
+        let chain_b = chain_b
+            .consensus_state()
+            .ok_or(ConsensusError::ConsensusStateNotFound)?;
+
+        // helpers for readability.
+        let min = |a: u32, b: u32| a.min(b);
+        let max = |a: u32, b: u32| a.max(b);
+
+        let max_slot = max(
+            tip_state.curr_global_slot.slot_number.0,
+            chain_b.curr_global_slot.slot_number.0,
+        );
+
+        // grace-period rule
+        if max_slot < self.config().grace_period_end.0 {
+            return Ok(tip_state.min_window_density.0);
+        }
+
+        let projected_window = {
+            // compute shift count
+            let mut shift_count = min(
+                max(
+                    max_slot - tip_state.curr_global_slot.slot_number.0.saturating_sub(1),
+                    0,
+                ),
+                self.config().sub_windows_per_window.0,
+            );
+            // initialize projected window based off of chain_a
+            let mut projected_window = tip_state.sub_window_densities.clone();
+
+            // relative sub window
+            let mut rel_sub_window = tip_state.curr_global_slot.slot_number.0
+                / self.config().sub_windows_per_window.0
+                % self.config().sub_windows_per_window.0;
+
+            // ring shift
+            while shift_count > 0 {
+                rel_sub_window = (rel_sub_window + 1) % self.config().sub_windows_per_window.0;
+                projected_window[rel_sub_window as usize] = Length(0);
+                shift_count -= 1;
+            }
+
+            projected_window
+        };
+
+        // compute projected window density
+        let projected_window_density = projected_window.iter().map(|s| s.0).sum();
+
+        // compute minimum window density
+        Ok(min(
+            tip_state.min_window_density.0,
+            projected_window_density,
+        ))
     }
 }

@@ -9,7 +9,7 @@ use crate::field_and_curve_elements::FieldElementVecV1;
 use serde::{Deserialize, Serialize};
 use versioned::Versioned;
 
-#[derive(Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub struct ProofEvaluations {
     pub l: FieldElementVecV1,
     pub r: FieldElementVecV1,

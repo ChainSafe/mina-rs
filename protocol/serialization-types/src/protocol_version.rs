@@ -7,7 +7,7 @@ use serde::{Deserialize, Serialize};
 use versioned::Versioned;
 
 /// Defines a version of the Mina protocol in semver format
-#[derive(Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub struct ProtocolVersion {
     /// Major version number
     pub major: u32,

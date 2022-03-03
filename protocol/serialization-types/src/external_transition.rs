@@ -12,7 +12,7 @@ use crate::v1::{
 use versioned::Versioned;
 
 /// This structure represents a mina block received from an external block producer
-#[derive(Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub struct ExternalTransition {
     /// The blockchain state, including consensus and the ledger
     pub protocol_state: ProtocolStateV1,
@@ -33,9 +33,9 @@ pub struct ExternalTransition {
 }
 
 /// Versioned structure to use externally
-#[derive(Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub struct ExternalTransitionV1(pub Versioned<ExternalTransition, 1>);
 
-impl mina_crypto::binprot::BinProtEncodable for ExternalTransitionV1 {
+impl bin_prot::encodable::BinProtEncodable for ExternalTransitionV1 {
     const PREALLOCATE_BUFFER_BYTES: usize = 13 * 1024;
 }

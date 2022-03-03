@@ -3,14 +3,11 @@
 
 use crate::types::{FieldElement, FiniteECPoint, FiniteECPointPairVec};
 use serde::{Deserialize, Serialize};
-use wire_type::WireType;
 
 use ark_ec::models::ModelParameters;
 use ark_ec::short_weierstrass_jacobian::GroupAffine;
 
-#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, WireType)]
-#[serde(from = "<Self as WireType>::WireType")]
-#[serde(into = "<Self as WireType>::WireType")]
+#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug)]
 pub struct OpeningProof {
     pub lr: FiniteECPointPairVec,
     pub z_1: FieldElement,
