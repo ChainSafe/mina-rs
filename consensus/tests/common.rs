@@ -197,4 +197,63 @@ mod tests {
             densities
         );
     }
+
+    #[test]
+    #[wasm_bindgen_test]
+    fn test_longer_chain_with_diff_blockchain_length() {
+        let mut chain_a = ProtocolStateChain::default();
+        let mut consensus_state = ConsensusState::default();
+        consensus_state.blockchain_length = Length(113267);
+        let mut prot_state = ProtocolState::default();
+        prot_state.body.consensus_state = consensus_state;
+        chain_a.push(prot_state).unwrap();
+
+        let mut chain_b = ProtocolStateChain::default();
+        let mut consensus_state = ConsensusState::default();
+        consensus_state.blockchain_length = Length(77748);
+        let mut prot_state = ProtocolState::default();
+        prot_state.body.consensus_state = consensus_state;
+        chain_b.push(prot_state).unwrap();
+
+        let select_result = chain_a.select_longer_chain(&chain_b).unwrap();
+
+        let result_state = select_result.0.get(0).unwrap();
+        assert_eq!(
+            result_state.body.consensus_state.blockchain_length,
+            Length(113267)
+        );
+    }
+
+    #[test]
+    #[wasm_bindgen_test]
+    //Same BlockChain length but different last vrf output
+    //Chain A: https://storage.googleapis.com/mina_network_block_data/mainnet-113267-3NKtqqstB6h8SVNQCtspFisjUwCTqoQ6cC1KGvb6kx6n2dqKkiZS.json
+    //Chain B: https://storage.googleapis.com/mina_network_block_data/mainnet-113267-3NLenrog9wkiJMoA774T9VraqSUGhCuhbDLj3JKbEzomNdjr78G8.json
+    fn test_longer_chain_with_same_chain_length_diff_last_vrf_output() {
+        let mut chain_a = ProtocolStateChain::default();
+        let mut consensus_state = ConsensusState::default();
+        consensus_state.blockchain_length = Length(113267);
+        consensus_state.last_vrf_output =
+            VrfOutputTruncated::from("r0K80Xsb44NLx_pBjI9UQtt6a1N-RWym8VxVTY4pAAA=");
+        let mut prot_state = ProtocolState::default();
+        prot_state.body.consensus_state = consensus_state;
+        chain_a.push(prot_state).unwrap();
+
+        let mut chain_b = ProtocolStateChain::default();
+        let mut consensus_state = ConsensusState::default();
+        consensus_state.blockchain_length = Length(113267);
+        consensus_state.last_vrf_output =
+            VrfOutputTruncated::from("kKr83LYd7DyFupRAPh5Dh9eWM1teSEs5VjU4XId2DgA=");
+        let mut prot_state = ProtocolState::default();
+        prot_state.body.consensus_state = consensus_state;
+        chain_b.push(prot_state).unwrap();
+
+        let select_result = chain_a.select_longer_chain(&chain_b).unwrap();
+
+        let result_state = select_result.0.get(0).unwrap();
+        assert_eq!(
+            result_state.body.consensus_state.last_vrf_output,
+            VrfOutputTruncated::from("kKr83LYd7DyFupRAPh5Dh9eWM1teSEs5VjU4XId2DgA=")
+        );
+    }
 }
