@@ -8,6 +8,8 @@ name: CI
 env:
   # https://doc.rust-lang.org/cargo/reference/profiles.html#incremental
   CARGO_INCREMENTAL: 1
+  # Investigate why it does not build with this flag
+  # RUSTFLAGS: -Ctarget-cpu=native
 
 jobs:
   checks:
@@ -93,6 +95,7 @@ jobs:
       - run: cargo clippy --release --all-features --manifest-path apps/Cargo.toml -- --deny warnings
       - name: Run profilers
         run: |
+          sudo apt-get update -y
           sudo apt-get install -y valgrind graphviz
           sudo pip install gprof2dot
           ./scripts/profiler.sh
