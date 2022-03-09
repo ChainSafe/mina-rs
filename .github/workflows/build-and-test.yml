@@ -31,9 +31,11 @@ jobs:
           profile: minimal
           toolchain: stable
           components: rustfmt
+          target: wasm32-unknown-unknown
           override: true
       - run: cargo fmt --all -- --check
       - run: cargo fmt --all --manifest-path apps/Cargo.toml -- --check
+      - run: cargo fmt --all --manifest-path apps/wasm/Cargo.toml -- --check
       - name: Check license
         run: ./scripts/add_license.sh
       - uses: EmbarkStudios/cargo-deny-action@v1
@@ -44,10 +46,16 @@ jobs:
         with:
           command: check All -s
           arguments: --all-features --manifest-path apps/Cargo.toml
+      - uses: EmbarkStudios/cargo-deny-action@v1
+        with:
+          command: check All -s
+          arguments: --all-features --manifest-path apps/wasm/Cargo.toml
       - run: cargo install cargo-udeps || echo 'already installed'
       - run: rustup install nightly
+      - run: rustup +nightly target add wasm32-unknown-unknown
       - run: cargo +nightly udeps --all-targets --all-features
       - run: cargo +nightly udeps --all-targets --all-features --manifest-path apps/Cargo.toml
+      - run: cargo +nightly udeps --target wasm32-unknown-unknown --all-features --manifest-path apps/wasm/Cargo.toml
   x86_64:
     runs-on: ubuntu-latest
     steps:
@@ -133,8 +141,10 @@ jobs:
       # clippy includes cargo check
       - run: cargo clippy --release --all-features --target wasm32-unknown-unknown -- --deny warnings
       - run: cargo clippy --release --all-features --target wasm32-unknown-unknown --manifest-path apps/Cargo.toml -- --deny warnings
+      - run: cargo clippy --release --all-features --target wasm32-unknown-unknown --manifest-path apps/wasm/Cargo.toml -- --deny warnings
       - run: cargo doc --no-deps --release --all-features --target wasm32-unknown-unknown
       - run: cargo doc --no-deps --release --all-features --target wasm32-unknown-unknown --manifest-path apps/Cargo.toml
+      - run: cargo doc --no-deps --release --all-features --target wasm32-unknown-unknown --manifest-path apps/wasm/Cargo.toml
       - name: Install wasm-pack
         run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
       - name: wasm-pack tests for test-serialization
@@ -166,7 +176,7 @@ jobs:
         run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
       - name: build mvp
         run: |
-          cd apps/mvp
+          cd apps/wasm/mvp
           yarn
           yarn build
       - name: build & test mvp proxy

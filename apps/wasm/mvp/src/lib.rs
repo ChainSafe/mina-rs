@@ -14,8 +14,8 @@ use libp2p::{
     wasm_ext::ExtTransport,
     Multiaddr, NetworkBehaviour, PeerId, Transport,
 };
-use std::{io, time::Duration};
 use multihash::{Blake2b256, Hasher};
+use std::{io, time::Duration};
 use wasm_bindgen::prelude::*;
 
 const RENDEZVOUS_STRING: &str =
