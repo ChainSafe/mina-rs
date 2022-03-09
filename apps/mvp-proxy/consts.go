@@ -18,7 +18,7 @@ const (
 	// devnet seeds:  https://storage.googleapis.com/seed-lists/devnet_seeds.txt
 	// MINA_NODE_ADDRESS = "/ip4/127.0.0.1/tcp/8302/p2p/12D3KooWKK3RpV1MWAZk3FJ5xqbVPL2BMDdUEGSfwfQoUprBNZCv"
 	// MINA_NODE_ADDRESS = "/ip4/95.217.106.189/tcp/8302/p2p/12D3KooWSxxCtzRLfUzoxgRYW9fTKWPUujdvStuwCPSPUN3629mb"
-	MINA_NODE_ADDRESS = "/dns4/seed-1.mainnet.o1test.net/tcp/10000/p2p/12D3KooWCa1d7G3SkRxy846qTvdAFX69NnoYZ32orWVLqJcDVGHW"
+	// MINA_NODE_ADDRESS = "/dns4/seed-1.mainnet.o1test.net/tcp/10000/p2p/12D3KooWCa1d7G3SkRxy846qTvdAFX69NnoYZ32orWVLqJcDVGHW"
 )
 
 var (

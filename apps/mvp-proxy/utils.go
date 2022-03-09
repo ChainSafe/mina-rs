@@ -3,32 +3,18 @@ package main
 import (
 	"context"
 	"crypto/rand"
+	"fmt"
 
 	"github.com/libp2p/go-libp2p"
-	relay "github.com/libp2p/go-libp2p-circuit"
 	"github.com/libp2p/go-libp2p-core/crypto"
 	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/network"
-	"github.com/libp2p/go-libp2p/config"
 	ma "github.com/multiformats/go-multiaddr"
 )
 
-func createRelayHost(isRelayNode bool, listenEnabled bool) (host host.Host, err error) {
-	var relayOps config.Option
-	if isRelayNode {
-		_ = relay.OptHop
-		relayOps = libp2p.EnableRelay(relay.OptHop)
-	} else {
-		relayOps = libp2p.EnableRelay()
-	}
-	var listenAddrs config.Option
-	if listenEnabled {
-		// listenAddr, _ := ma.NewMultiaddr("/ip4/127.0.0.1/tcp/0")
-		listenAddrWs, _ := ma.NewMultiaddr("/ip4/127.0.0.1/tcp/23333/ws")
-		listenAddrs = libp2p.ListenAddrs(listenAddrWs)
-	} else {
-		listenAddrs = libp2p.ListenAddrs()
-	}
+func createWsProxyHost(port int) (host host.Host, err error) {
+	listenAddrWs, _ := ma.NewMultiaddr(fmt.Sprintf("/ip4/127.0.0.1/tcp/%d/ws", port))
+	listenAddrs := libp2p.ListenAddrs(listenAddrWs)
 	r := rand.Reader
 	prvKey, _, err := crypto.GenerateKeyPairWithReader(crypto.Ed25519, 2048, r)
 	if err != nil {
@@ -39,7 +25,6 @@ func createRelayHost(isRelayNode bool, listenEnabled bool) (host host.Host, err 
 		context.Background(),
 		libp2p.Identity(prvKey),
 		listenAddrs,
-		relayOps,
 		muxer,
 		userAgent,
 		privateNetwork,

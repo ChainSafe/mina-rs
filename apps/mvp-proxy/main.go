@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	"context"
+	"flag"
 	"fmt"
 	"log"
 	"sync"
@@ -11,20 +12,22 @@ import (
 	"github.com/libp2p/go-libp2p-core/network"
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/libp2p/go-libp2p/p2p/protocol/identify"
-	mplex "github.com/libp2p/go-mplex"
+
 	ma "github.com/multiformats/go-multiaddr"
-	// pubsub "github.com/libp2p/go-libp2p-pubsub"
 )
 
 func run() {
-	relayHost, err := createRelayHost(true, true)
+	var port int
+	flag.IntVar(&port, "port", 23333, "websocket port, default is 23333")
+	flag.Parse()
+	proxyHost, err := createWsProxyHost(port)
 	if err != nil {
-		log.Printf("Failed to create relayHost: %v", err)
+		log.Printf("Failed to create proxyHost: %v", err)
 		return
 	}
-	hostAddrStr := fmt.Sprintf("%s/p2p/%s", relayHost.Addrs()[0], relayHost.ID())
-	ctx := NewContext(&relayHost)
-	relayHost.SetStreamHandler("/webnode", func(s network.Stream) {
+	hostAddrStr := fmt.Sprintf("%s/p2p/%s", proxyHost.Addrs()[0], proxyHost.ID())
+	ctx := NewContext(&proxyHost)
+	proxyHost.SetStreamHandler("/webnode", func(s network.Stream) {
 		rw := bufio.NewReadWriter(bufio.NewReader(s), bufio.NewWriter(s))
 		mutex := &sync.RWMutex{}
 		{
@@ -66,13 +69,13 @@ func run() {
 			}
 		}()
 	})
-	// mypubsub, err := pubsub.NewGossipSub(context.Background(), relayHost)
+	// mypubsub, err := pubsub.NewGossipSub(context.Background(), proxyHost)
 
-	log.Printf("relayHost: %s %s\n", relayHost.Addrs(), relayHost.ID())
-	log.Printf("relayHost: %s\n", hostAddrStr)
+	// log.Printf("proxyHost: %s %s\n", proxyHost.Addrs(), proxyHost.ID())
+	log.Printf("proxyHost: %s\n", hostAddrStr)
 
-	peerChan := initMDNS(context.Background(), relayHost, mdnsRendezvousString)
-	idService, _ := identify.NewIDService(relayHost)
+	peerChan := initMDNS(context.Background(), proxyHost, mdnsRendezvousString)
+	idService, _ := identify.NewIDService(proxyHost)
 	_ = idService
 	go func() {
 		peer := <-peerChan // will block untill we discover a peer
@@ -97,8 +100,6 @@ func run() {
 		ctx.Loop()
 		time.Sleep(time.Second * 10)
 	}
-
-	log.Printf("relayHost: %s\n", hostAddrStr)
 }
 
 func (ctx *Context) FetchNodeStatus(addrInfo *peer.AddrInfo) {
@@ -106,7 +107,7 @@ func (ctx *Context) FetchNodeStatus(addrInfo *peer.AddrInfo) {
 	c := host.Network().Connectedness(addrInfo.ID)
 	if c != network.Connected {
 		if err := host.Connect(context.Background(), *addrInfo); err != nil {
-			log.Printf("Failed to connect relayHost to mina: %v", err)
+			log.Printf("Failed to connect to mina node %s: %v", addrInfo.ID, err)
 			ctx.UpdateStatus(addrInfo, false, nil)
 			return
 		}
@@ -124,7 +125,6 @@ func (ctx *Context) FetchNodeStatus(addrInfo *peer.AddrInfo) {
 }
 
 func main() {
-	mplex.MaxMessageSize = 1 << 30
 	run()
 	wg := sync.WaitGroup{}
 	wg.Add(1)

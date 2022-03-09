@@ -4,10 +4,8 @@ go 1.17
 
 require (
 	github.com/libp2p/go-libp2p v0.15.1
-	github.com/libp2p/go-libp2p-circuit v0.4.0
 	github.com/libp2p/go-libp2p-core v0.9.0
 	github.com/libp2p/go-libp2p-mplex v0.4.1
-	github.com/libp2p/go-mplex v0.3.0
 	github.com/multiformats/go-multiaddr v0.4.1
 	golang.org/x/crypto v0.0.0-20210921155107-089bfa567519
 )
@@ -40,6 +38,7 @@ require (
 	github.com/libp2p/go-flow-metrics v0.0.3 // indirect
 	github.com/libp2p/go-libp2p-autonat v0.4.2 // indirect
 	github.com/libp2p/go-libp2p-blankhost v0.2.0 // indirect
+	github.com/libp2p/go-libp2p-circuit v0.4.0 // indirect
 	github.com/libp2p/go-libp2p-discovery v0.5.1 // indirect
 	github.com/libp2p/go-libp2p-nat v0.0.6 // indirect
 	github.com/libp2p/go-libp2p-noise v0.2.2 // indirect
@@ -50,6 +49,7 @@ require (
 	github.com/libp2p/go-libp2p-transport-upgrader v0.4.6 // indirect
 	github.com/libp2p/go-libp2p-yamux v0.5.4 // indirect
 	github.com/libp2p/go-maddr-filter v0.1.0 // indirect
+	github.com/libp2p/go-mplex v0.3.0 // indirect
 	github.com/libp2p/go-msgio v0.0.6 // indirect
 	github.com/libp2p/go-nat v0.0.5 // indirect
 	github.com/libp2p/go-netroute v0.1.6 // indirect
