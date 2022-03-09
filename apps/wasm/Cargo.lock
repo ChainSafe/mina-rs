@@ -1787,7 +1787,6 @@ dependencies = [
  "libp2p",
  "libp2p-mplex",
  "mina-network",
- "multihash",
  "wasm-bindgen",
  "wasm-bindgen-futures",
 ]

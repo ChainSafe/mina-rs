@@ -6,6 +6,8 @@ version = "0.1.0"
 edition = "2021"
 license = "Apache-2.0"
 
+publish = false
+
 [features]
 default = []
 
@@ -17,14 +19,10 @@ async-trait = "0.1"
 base64 = "0.13"
 hex = "0.4"
 js-sys = "0.3"
-libp2p = "0.43"
+libp2p = {version = "0.43", features = ["wasm-bindgen", "wasm-ext-websocket"]}
 libp2p-mplex = "0.32"
-multihash = "0.16"
 wasm-bindgen = "0.2"
 wasm-bindgen-futures = "0.4"
-
-[target.'cfg(target_arch = "wasm32")'.dependencies]
-libp2p = {version = "0.43", features = ["wasm-bindgen", "wasm-ext-websocket"]}
 
 [lib]
 crate-type = ["cdylib", "lib"]

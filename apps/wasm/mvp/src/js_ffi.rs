@@ -1,3 +1,6 @@
+// https://github.com/rustwasm/wasm-bindgen/issues/2774#issuecomment-1030747023
+#![allow(clippy::unused_unit)]
+
 use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen]

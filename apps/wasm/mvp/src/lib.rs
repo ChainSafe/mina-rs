@@ -1,6 +1,9 @@
 // Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
+// https://github.com/rustwasm/wasm-bindgen/issues/2774#issuecomment-1030747023
+#![allow(clippy::unused_unit)]
+
 mod js_ffi;
 use js_ffi::*;
 use libp2p::{
