@@ -147,6 +147,32 @@ jobs:
           cd consensus
           wasm-pack test --node --release
           wasm-pack test --headless --chrome --release --features browser
+  mvp:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - run: cat .github/cargo-config > $HOME/.cargo/config
+      - uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
+          components: clippy
+          target: wasm32-unknown-unknown
+          override: true
+      - uses: actions/setup-go@v2
+        with:
+          go-version: "^1.17"
+      - name: Install wasm-pack
+        run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
+      - name: build mvp
+        run: |
+          cd apps/mvp
+          yarn
+          yarn build
+      - name: build & test mvp proxy
+        run: |
+          cd apps/mvp-proxy
+          go test -v
   codecov-x86_64:
     runs-on: ubuntu-latest
     steps:
