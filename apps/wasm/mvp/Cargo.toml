@@ -10,10 +10,11 @@ license = "Apache-2.0"
 default = []
 
 [dependencies]
+mina-network = {path = "../../../network"}
+
 anyhow = "1"
 async-trait = "0.1"
 base64 = "0.13"
-env_logger = "0.9"
 hex = "0.4"
 js-sys = "0.3"
 libp2p = "0.43"
