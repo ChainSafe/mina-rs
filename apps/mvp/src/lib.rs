@@ -1,4 +1,6 @@
-// use anyhow::Result;
+// Copyright 2020 ChainSafe Systems
+// SPDX-License-Identifier: Apache-2.0
+
 use libp2p::{
     core::{upgrade, ProtocolName},
     futures::{io::BufReader, AsyncBufReadExt, AsyncRead, AsyncWrite, AsyncWriteExt, StreamExt},
@@ -13,18 +15,11 @@ use libp2p::{
     Multiaddr, NetworkBehaviour, PeerId, Transport,
 };
 use std::{io, time::Duration};
-// use libp2p_relay::RelayConfig;
-use multihash::{Blake2b256, StatefulHasher};
-// use std::time::Duration;
+use multihash::{Blake2b256, Hasher};
 use wasm_bindgen::prelude::*;
 
 const RENDEZVOUS_STRING: &str =
     "/coda/0.0.1/5f704cc0c82e0ed70e873f0893d7e06f148524e3f0bdae2afb02e7819a0c24d1";
-// const RELAY_SERVER_WS_ADDR: &str =
-//     "/ip4/127.0.0.1/tcp/43637/ws/p2p/QmdDda64RhVC2BMHdW8y92jfcjWEH8qhzozHkbRt6gKXY2";
-const MINA_PEER_ADDR: &str =
-    "/ip4/95.217.106.189/tcp/8302/p2p/12D3KooWSxxCtzRLfUzoxgRYW9fTKWPUujdvStuwCPSPUN3629mb";
-// "/ip4/127.0.0.1/tcp/8302/p2p/12D3KooWKK3RpV1MWAZk3FJ5xqbVPL2BMDdUEGSfwfQoUprBNZCv";
 
 static mut EVENT_EMITTER: Option<EventEmitter> = None;
 
@@ -64,17 +59,11 @@ pub async fn connect(addr: String) -> bool {
     connect_async(&addr).await
 }
 
-// #[tokio::main(flavor = "current_thread")]
 async fn connect_async(addr: &str) -> bool {
-    // env_logger::init();
-
     let js_promise = js_sys::Promise::resolve(&42.into());
     let js_future: wasm_bindgen_futures::JsFuture = js_promise.into();
     let js_val = js_future.await.unwrap();
     log_string(format!("js_val: {:?}", js_val));
-
-    log_string(format!("Relay node ws address: {}", addr));
-    log_string(format!("Mina node address: {}", MINA_PEER_ADDR));
 
     // Create a random PeerId
     let id_keys = identity::Keypair::generate_ed25519();
@@ -126,12 +115,10 @@ async fn connect_async(addr: &str) -> bool {
                     _ => {}
                 }
             }
-            // return true;
         }
         Err(e) => log_string(format!("Fail to dail: {}", e)),
     }
     false
-    // Ok(false)
 }
 
 fn get_event_emitter<'a>() -> Option<&'a EventEmitter> {
@@ -146,7 +133,6 @@ fn get_event_emitter<'a>() -> Option<&'a EventEmitter> {
 
 #[derive(NetworkBehaviour)]
 #[behaviour(event_process = true)]
-// #[behaviour(out_event = "NodeStatusEvent")]
 struct NodeStatusBehaviour {
     request_response: RequestResponse<NodeStatusCodec>,
 }

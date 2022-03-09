@@ -33,7 +33,7 @@ base64 = "0.13"
 env_logger = "0.9"
 hex = "0.4"
 js-sys = "0.3"
-multihash = "0.15"
+multihash = "0.16"
 wasm-bindgen = "0.2"
 wasm-bindgen-futures = "0.4"
 
