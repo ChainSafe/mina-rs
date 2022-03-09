@@ -1,5 +1,13 @@
 # Prerequisites
 
+[rust stable](https://rustup.rs/)
+
+[nodejs lts](https://nodejs.org/en/download/)
+
+[go 1.17.x](https://go.dev/dl/)
+
+[yarn](https://classic.yarnpkg.com/en/docs/install#windows-stable)
+
 ```
 cargo install wasm-pack
 ```
