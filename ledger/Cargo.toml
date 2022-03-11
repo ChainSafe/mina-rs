@@ -8,7 +8,9 @@ license = "Apache-2.0"
 
 [dependencies]
 mina-crypto = {path = "../crypto"}
+mina-rs-base = {path = "../base"}
 
 mina-signer = {git = "https://github.com/o1-labs/proof-systems", rev = "3516d433411d482b9b720c3ca0d3caec0359f0ac"}
+rocksdb = "0.18.0"
 
 [dev-dependencies]

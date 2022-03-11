@@ -13,7 +13,7 @@ use crate::{
 use ark_ff::BigInteger256;
 use derive_more::{From, Into};
 use mina_curves::pasta::Fp;
-use mina_signer::ROInput;
+use mina_signer::{ROInput};
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
@@ -72,6 +72,16 @@ impl RandomOraclePartialInput<PublicKey> for ROInput {
     fn append(&mut self, value: &PublicKey) {
         self.append(&value.0)
     }
+}
+
+// TODO: Plaeholder
+pub type PrivateKey = PublicKey;
+
+// TODO: This is a placeholder type until proper crypto integration is complete
+#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
+pub struct KeyPair {
+    pk: PublicKey,
+    sk: PrivateKey,
 }
 
 #[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug)]
