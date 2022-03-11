@@ -10,7 +10,8 @@
     "transform": "node transform.js",
     "build:web": "yarn clean && parcel build web/index.html --no-source-maps",
     "build": "yarn wasm-pack && yarn transform && yarn build:web",
-    "clean": "rm -r dist || echo 0"
+    "clean": "rm -r dist || echo 0",
+    "test": "echo 'placeholder for tests'"
   },
   "dependencies": {
     "events": "^3.3.0",

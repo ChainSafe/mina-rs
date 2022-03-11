@@ -157,7 +157,18 @@ jobs:
           cd consensus
           wasm-pack test --node --release
           wasm-pack test --headless --chrome --release --features browser
-  mvp:
+  go:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-go@v2
+        with:
+          go-version: "^1.17"
+      - name: build & test mvp proxy
+        run: |
+          cd apps/mvp-proxy
+          go test -v
+  node:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -169,20 +180,14 @@ jobs:
           components: clippy
           target: wasm32-unknown-unknown
           override: true
-      - uses: actions/setup-go@v2
-        with:
-          go-version: "^1.17"
       - name: Install wasm-pack
         run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
-      - name: build mvp
-        run: |
-          cd apps/wasm/mvp
-          yarn
-          yarn build
-      - name: build & test mvp proxy
-        run: |
-          cd apps/mvp-proxy
-          go test -v
+      # lerna is pre-installed on github CI image
+      # https://github.com/actions/virtual-environments/blob/main/images/linux/Ubuntu2004-Readme.md#project-management
+      # - run: yarn global add lerna
+      - run: lerna bootstrap
+      - run: lerna run build
+      - run: lerna run test
   codecov-x86_64:
     runs-on: ubuntu-latest
     steps:
