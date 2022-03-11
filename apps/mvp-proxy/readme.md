@@ -1,6 +1,7 @@
 ## Commands
 
 ```
+cd apps/mvp-proxy
 go mod vendor
 go run .
 ```

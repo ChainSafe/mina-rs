@@ -22,11 +22,23 @@ cargo install wasm-pack
   go run .
   ```
 
-- Run
+- Build and Run
 
   ```
+  cd apps/wasm/mvp
   yarn
   yarn build
+  yarn start
+  ```
+
+  Alternatively, this package can be built from root directory of the repo with [workspace manager](https://lerna.js.org/)
+
+  ```
+  yarn global add lerna
+  lerna bootstrap
+  lerna run build
+
+  cd apps/wasm/mvp
   yarn start
   ```
 
@@ -36,7 +48,7 @@ cargo install wasm-pack
 proxyHost: /ip4/127.0.0.1/tcp/23333/ws/p2p/12D3KooWBJS5MW5tY93UgKvQ9KKzd4s4SRHEZoUsv7frvcAZKaQt
 ```
 
-- Click on connect
+- Click on `Connect` button on the web page
 
 # Notes
 
