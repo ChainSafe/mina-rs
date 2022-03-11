@@ -238,7 +238,7 @@ mod tests {
                 let bytes = bs58::decode("B62qoSuxNqwogusxxZbs3gpJUxCCN4GZEv21FX8S2DtNpToLgKnrexM")
                     .into_vec()
                     .unwrap();
-                assert_eq!(command.signer.poly.x[..], bytes[3..35]);
+                assert_eq!(command.signer.0.x[..], bytes[3..35]);
 
                 assert_eq!(Signature::from(command.signature.clone()).to_base58_string(), "7mXTB1bcHYLJTmTfMtTboo4FSGStvera3z2wd6qjSxhpz1hZFMZZjcyaWAFEmZhgbq6DqVqGsNodnYKsCbMAq7D8yWo5bRSd");
                 let bytes = bs58::decode("7mXTB1bcHYLJTmTfMtTboo4FSGStvera3z2wd6qjSxhpz1hZFMZZjcyaWAFEmZhgbq6DqVqGsNodnYKsCbMAq7D8yWo5bRSd")
@@ -267,13 +267,13 @@ mod tests {
                                 .into_vec()
                                 .unwrap();
                         // TODO: Validate full bytes vec with salted mainnet signature
-                        assert_eq!(body.source_pk.poly.x[..], bytes[3..35]);
+                        assert_eq!(body.source_pk.0.x[..], bytes[3..35]);
                         let bytes =
                             bs58::decode("B62qn2MtuQ9GyyVnotUHB9Ehp9EZre5m6TYpGx64tBCDHHBZFZRURnL")
                                 .into_vec()
                                 .unwrap();
                         // TODO: Validate full bytes vec with salted mainnet signature
-                        assert_eq!(body.receiver_pk.poly.x[..], bytes[3..35]);
+                        assert_eq!(body.receiver_pk.0.x[..], bytes[3..35]);
                         assert_eq!(body.token_id.0, 1);
                     }
                     _ => bail!(

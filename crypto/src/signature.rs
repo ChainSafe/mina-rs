@@ -11,10 +11,8 @@ use crate::{
     impl_bs58_for_binprot,
 };
 use ark_ff::BigInteger256;
-use derive_deref::Deref;
 use derive_more::{From, Into};
 use mina_curves::pasta::Fp;
-use mina_serialization_types::v1::PublicKeyV1;
 use mina_signer::ROInput;
 use serde::{Deserialize, Serialize};
 
@@ -66,33 +64,15 @@ impl From<CompressedCurvePoint> for Fp {
 }
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
-#[serde(from = "PublicKeyV1")]
-#[serde(into = "PublicKeyV1")]
-pub struct PublicKey {
-    pub poly: CompressedCurvePoint,
-}
+pub struct PublicKey(pub CompressedCurvePoint);
 
 impl_bs58_for_binprot!(PublicKey, version_bytes::NON_ZERO_CURVE_POINT_COMPRESSED);
 
 impl RandomOraclePartialInput<PublicKey> for ROInput {
     fn append(&mut self, value: &PublicKey) {
-        self.append(&value.poly)
-    }
-}
-
-// TODO: Replace PublicKey2 usage with PublicKey as they are pretty much the same
-// in terms of bin-prot serde
-#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize, Deref)]
-pub struct PublicKey2(pub CompressedCurvePoint);
-
-impl RandomOraclePartialInput<PublicKey2> for ROInput {
-    fn append(&mut self, value: &PublicKey2) {
         self.append(&value.0)
     }
 }
-
-#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize, Deref)]
-pub struct PublicKey3(pub CompressedCurvePoint);
 
 #[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug)]
 pub struct Signature(pub (FieldPoint, InnerCurveScalar));
@@ -220,9 +200,9 @@ pub mod tests {
         let s = "B62qiy32p8kAKnny8ZFwoMhYpBppM1DWVCqAPBYNcXnsAHhnfAAuXgg";
         let pk = PublicKey::from_base58(s).unwrap();
         assert_eq!(s, pk.to_base58_string());
-        assert_eq!(pk.poly.is_odd, false);
+        assert_eq!(pk.0.is_odd, false);
         assert_eq!(
-            field_to_str_radix_10(pk.poly.clone().into()),
+            field_to_str_radix_10(pk.0.clone().into()),
             "22536877747820698688010660184495467853785925552441222123266613953322243475471"
         );
         let roinput_fields = {

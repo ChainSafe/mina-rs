@@ -13,20 +13,20 @@ impl From<PublicKey> for PublicKeyV1 {
     fn from(t: PublicKey) -> Self {
         Self::new(Versioned::new(
             mina_serialization_types::signatures::CompressedCurvePoint {
-                x: t.poly.x,
-                is_odd: t.poly.is_odd,
+                x: t.0.x,
+                is_odd: t.0.is_odd,
             },
         ))
     }
 }
 impl From<PublicKeyV1> for PublicKey {
     fn from(t: PublicKeyV1) -> Self {
-        Self {
-            poly: CompressedCurvePoint {
+        Self (
+            CompressedCurvePoint {
                 x: t.t.t.x,
                 is_odd: t.t.t.is_odd,
             },
-        }
+        )
     }
 }
 
@@ -34,20 +34,20 @@ impl From<PublicKey> for PublicKey2V1 {
     fn from(t: PublicKey) -> Self {
         Self::new(Versioned::new(Versioned::new(
             mina_serialization_types::signatures::CompressedCurvePoint {
-                x: t.poly.x,
-                is_odd: t.poly.is_odd,
+                x: t.0.x,
+                is_odd: t.0.is_odd,
             },
         )))
     }
 }
 impl From<PublicKey2V1> for PublicKey {
     fn from(t: PublicKey2V1) -> Self {
-        Self {
-            poly: CompressedCurvePoint {
+        Self (
+            CompressedCurvePoint {
                 x: t.t.t.t.x,
                 is_odd: t.t.t.t.is_odd,
-            },
-        }
+            }
+        )
     }
 }
 
