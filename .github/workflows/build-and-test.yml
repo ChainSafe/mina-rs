@@ -182,12 +182,13 @@ jobs:
           override: true
       - name: Install wasm-pack
         run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
-      # lerna is pre-installed on github CI image
-      # https://github.com/actions/virtual-environments/blob/main/images/linux/Ubuntu2004-Readme.md#project-management
+      # lerna is pre-installed on github CI images
+      # per <https://github.com/actions/virtual-environments/blob/main/images/linux/Ubuntu2004-Readme.md#project-management>
       # - run: yarn global add lerna
       - run: lerna bootstrap
       - run: lerna run build
       - run: lerna run test
+      - run: lerna run lint
   codecov-x86_64:
     runs-on: ubuntu-latest
     steps:

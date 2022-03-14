@@ -214,3 +214,5 @@ Cargo.lock
 
 # End of https://www.toptal.com/developers/gitignore/api/osx,visualstudiocode,rust,yarn,node
 .vercel
+
+pkg/
