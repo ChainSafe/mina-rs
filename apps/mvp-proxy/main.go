@@ -37,21 +37,21 @@ func run() {
 			rw.Flush()
 			mutex.Unlock()
 		}
-		var f func(peerId peer.ID, status *PeerStatus) = func(peerId peer.ID, status *PeerStatus) {
+		var notify func(peerId peer.ID, status *PeerStatus) = func(peerId peer.ID, status *PeerStatus) {
 			fmt.Printf("Updating peer status for %s ... ", peerId)
 			statusLite := status.ToLite(peerId)
 			j := statusLite.ToBase64EncodedJson() + "\n"
 			mutex.Lock()
-			// defer mutex.Unlock()
+			defer mutex.Unlock()
 			fmt.Println(len(j))
 			if _, err := rw.WriteString(j); err == nil {
 				rw.Flush()
 			}
-			mutex.Unlock()
+			// mutex.Unlock()
 		}
-		ctx.NotifyFunc = &f
+		ctx.NotifyFunc = &notify
 		for k, v := range ctx.PeerId2Status {
-			f(k, v)
+			notify(k, v)
 		}
 		// Ping
 		go func() {
@@ -60,6 +60,7 @@ func run() {
 					mutex.Lock()
 					// defer mutex.Unlock()
 					if _, err := rw.WriteString("\n"); err != nil {
+						mutex.Unlock()
 						break
 					}
 					rw.Flush()

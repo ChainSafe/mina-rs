@@ -66,7 +66,7 @@ export default {
       console.log(`eventEmitter onupdate: ${msg}`);
       try {
         const o = JSON.parse(msg);
-        console.log(o);
+        // console.log(o);
         this.peers[o["peer_id"]] = o;
         this.peerKeys = Object.keys(this.peers);
       } catch (e) {
@@ -77,7 +77,6 @@ export default {
   },
   methods: {
     async connect() {
-      console.log("here");
       this.clear();
       set_event_emitter(this.eventEmitter);
       console.log(`Connecting to ${this.addr}`);

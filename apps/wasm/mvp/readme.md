@@ -6,7 +6,7 @@
 
 [go 1.17.x](https://go.dev/dl/)
 
-[yarn](https://classic.yarnpkg.com/en/docs/install#windows-stable)
+[yarn](https://classic.yarnpkg.com/en/docs/install)
 
 ```
 cargo install wasm-pack
