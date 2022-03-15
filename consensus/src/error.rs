@@ -27,4 +27,10 @@ pub enum ConsensusError {
     /// candidates not found
     #[error("candidates not found")]
     CandidatesNotFound,
+    /// Candidates missing some sub window densities
+    #[error("Candidates missing some sub window densities")]
+    CandidatesMissingSubWindowDensities,
+    /// Invalid sub window density length
+    #[error("Invalid sub window density length")]
+    InvalidSubWindowDensityLen,
 }
