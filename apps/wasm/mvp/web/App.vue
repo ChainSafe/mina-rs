@@ -43,11 +43,8 @@
 </template>
 
 <script lang="ts">
-import wasmUrl from "./../pkg/wasm_bg.wasm";
 import {
   connect,
-  wasm_test,
-  wasm_test_async,
   set_event_emitter,
 } from "./../pkg/wasm";
 import { EventEmitter } from "events";

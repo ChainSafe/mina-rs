@@ -27,16 +27,9 @@ func run() {
 	}
 	hostAddrStr := fmt.Sprintf("%s/p2p/%s", proxyHost.Addrs()[0], proxyHost.ID())
 	ctx := NewContext(&proxyHost)
-	proxyHost.SetStreamHandler("/webnode", func(s network.Stream) {
+	proxyHost.SetStreamHandler("/mina-proxy/node-status", func(s network.Stream) {
 		rw := bufio.NewReadWriter(bufio.NewReader(s), bufio.NewWriter(s))
 		mutex := &sync.RWMutex{}
-		{
-			mutex.Lock()
-			// defer mutex.Unlock()
-			rw.WriteString("Hello\nWorld\n")
-			rw.Flush()
-			mutex.Unlock()
-		}
 		var notify func(peerId peer.ID, status *PeerStatus) = func(peerId peer.ID, status *PeerStatus) {
 			fmt.Printf("Updating peer status for %s ... ", peerId)
 			statusLite := status.ToLite(peerId)

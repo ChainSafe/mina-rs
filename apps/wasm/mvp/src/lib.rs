@@ -9,13 +9,12 @@ use js_ffi::*;
 use libp2p::{
     core::ProtocolName,
     futures::{io::BufReader, AsyncBufReadExt, AsyncRead, AsyncWrite, AsyncWriteExt, StreamExt},
-    identity, noise,
     request_response::{
         ProtocolSupport, RequestResponse, RequestResponseCodec, RequestResponseConfig,
         RequestResponseEvent,
     },
     swarm::{NetworkBehaviourEventProcess, SwarmBuilder, SwarmEvent},
-    Multiaddr, NetworkBehaviour, PeerId,
+    Multiaddr, NetworkBehaviour,
 };
 use mina_network::p2p::{TransportBuilder, MAINNET_CONFIG};
 use std::{io, time::Duration};
@@ -26,47 +25,17 @@ const TIMEOUT_SECS: u64 = 60;
 static mut EVENT_EMITTER: Option<EventEmitter> = None;
 
 #[wasm_bindgen]
-pub fn wasm_test() -> bool {
-    log_str("wasm_test");
-    true
-}
-
-#[wasm_bindgen]
-pub async fn wasm_test_async() -> bool {
-    log_str("wasm_test_async");
-    true
-}
-
-#[wasm_bindgen]
 pub fn set_event_emitter(e: EventEmitter) {
-    log_str("set_event_emitter");
-    e.emit("update", "hello from wasm");
+    e.emit("update", "set_event_emitter called in wasm");
     unsafe { EVENT_EMITTER = Some(e) };
 }
 
 #[wasm_bindgen]
 pub async fn connect(addr: String) -> bool {
-    connect_async(&addr).await.unwrap()
+    connect_async(&addr).await.unwrap_or(false)
 }
 
 async fn connect_async(addr: &str) -> anyhow::Result<bool> {
-    let js_promise = js_sys::Promise::resolve(&42.into());
-    let js_future: wasm_bindgen_futures::JsFuture = js_promise.into();
-    let js_val = js_future.await.unwrap();
-    log_string(format!("js_val: {:?}", js_val));
-
-    // Create a random PeerId
-    let id_keys = identity::Keypair::generate_ed25519();
-    let peer_id = PeerId::from(id_keys.public());
-    log_string(format!("Local peer id: {:?}", peer_id));
-
-    // Create a keypair for authenticated encryption of the transport.
-    let _noise_keys = noise::Keypair::<noise::X25519Spec>::new()
-        .into_authentic(&id_keys)
-        .expect("Signing libp2p-noise static DH keypair failed.");
-
-    let mut mux_config = libp2p_mplex::MplexConfig::new();
-    mux_config.set_protocol_name(b"/coda/mplex/1.0.0");
     let (transport, peer_id) = {
         let builder = TransportBuilder::default()
             .with_config(&MAINNET_CONFIG)
@@ -75,7 +44,7 @@ async fn connect_async(addr: &str) -> anyhow::Result<bool> {
     };
 
     let parsed_addr: Multiaddr = addr.parse().unwrap();
-    log_string(format!("Connecting to relay server via ws {} ... ", addr));
+    log_string(format!("Connecting to proxy server via ws {} ... ", addr));
     let mut swarm = {
         let behaviour = NodeStatusBehaviour::new().await.unwrap();
         SwarmBuilder::new(transport, behaviour, peer_id).build()
@@ -144,7 +113,7 @@ struct NodeStatusProtocol;
 impl ProtocolName for NodeStatusProtocol {
     fn protocol_name(&self) -> &[u8] {
         // b"/mina/node-status"
-        b"/webnode"
+        b"/mina-proxy/node-status"
     }
 }
 
