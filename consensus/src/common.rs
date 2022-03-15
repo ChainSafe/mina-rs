@@ -15,8 +15,8 @@ use mina_rs_base::types::{BlockTime, Length};
 use once_cell::sync::OnceCell;
 use proof_systems::mina_hasher::{create_kimchi, Fp, Hasher, PoseidonHasherKimchi};
 
-/// Type that defines constant values for mina consensus calculation
 // TODO: derive from protocol constants
+/// Constants used for the conensus
 pub struct ConsensusConstants {
     /// Point of finality (number of confirmations)
     pub k: Length,
@@ -55,7 +55,7 @@ impl ConsensusConstants {
 }
 
 /// A chain of [ProtocolState]
-#[derive(Debug, Clone, Default)]
+#[derive(Debug, Default, PartialEq, Clone)]
 // TODO: replace vec element with ExternalTransition
 pub struct ProtocolStateChain(pub Vec<ProtocolState>);
 
@@ -191,6 +191,26 @@ impl Consensus for ProtocolStateChain {
                 // short-range fork, select longer chain
                 self.select_longer_chain(candidate)
             } else {
+                // check against sub window density sizes > 11
+                let candidate_state = candidate
+                    .consensus_state()
+                    .ok_or(ConsensusError::ConsensusStateNotFound)?;
+
+                // sub window density must not be greater than initial genesis subwindow density value.
+                if candidate_state
+                    .sub_window_densities()
+                    .iter()
+                    .any(|s| *s > self.config().slots_per_sub_window.0)
+                {
+                    return Ok(self);
+                };
+
+                // sub window densities must not be greater than sub_windows_per_window
+                let sub_windows_per_window = self.config().sub_windows_per_window.0 as usize;
+                if candidate_state.sub_window_densities.len() != sub_windows_per_window {
+                    return Ok(self);
+                }
+
                 let tip_density = self.relative_min_window_density(candidate)?;
                 let candidate_density = candidate.relative_min_window_density(self)?;
                 match candidate_density.cmp(&tip_density) {
@@ -316,7 +336,10 @@ impl Consensus for ProtocolStateChain {
             // ring shift
             while shift_count > 0 {
                 rel_sub_window = (rel_sub_window + 1) % self.config().sub_windows_per_window.0;
-                projected_window[rel_sub_window as usize] = Length(0);
+                match projected_window.get_mut(rel_sub_window as usize) {
+                    Some(density) => *density = Length(0),
+                    None => return Err(ConsensusError::CandidatesMissingSubWindowDensities),
+                };
                 shift_count -= 1;
             }
 
