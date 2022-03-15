@@ -1,0 +1,10 @@
+@startuml mvp
+actor User
+node WebNode
+node ProxyNode
+node MinaNetwork
+
+User -> WebNode : browser
+WebNode -> ProxyNode : websocket
+ProxyNode -> MinaNetwork : tcp
+@enduml

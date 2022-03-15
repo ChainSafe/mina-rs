@@ -1,8 +1,14 @@
+# How it works
+
+In order to connect the web node to the mina network, websocket protocol needs to be enabled. Before that happens, we use a temporary proxy node that connects to mina network via TCP while exposing websocket endpoint to allow inbound connection from the web node.
+
+![arch-uml](http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/ChainSafe/mina-rs/main/docs/mvp-arch.iuml)
+
 # Prerequisites
 
 [rust stable](https://rustup.rs/)
 
-[nodejs lts](https://nodejs.org/en/download/)
+[nodejs 16](https://nodejs.org/en/download/)
 
 [go 1.17.x](https://go.dev/dl/)
 
