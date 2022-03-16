@@ -16,6 +16,5 @@ module.exports.init = async function (stream) {
     return wasm
 }
 `
-// .replace('const bytes = ', 'const bytes = require("wasm_bg")\nconsole.log("reloading wasm")\n// const bytes =')
-// console.log(content)
+
 fs.writeFileSync(filePath, content, { encoding: 'utf-8' })
