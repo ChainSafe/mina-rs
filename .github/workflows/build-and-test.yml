@@ -157,17 +157,6 @@ jobs:
           cd consensus
           wasm-pack test --node --release
           wasm-pack test --headless --chrome --release --features browser
-  go:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-go@v2
-        with:
-          go-version: "^1.17"
-      - name: build & test mvp proxy
-        run: |
-          cd apps/mvp-proxy
-          go test -v
   node:
     runs-on: ubuntu-latest
     steps:

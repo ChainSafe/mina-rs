@@ -2,7 +2,7 @@
   <div><h2>Mina Web Node Demo</h2></div>
   <p>
     Run
-    <a href="https://github.com/ChainSafe/mina-rs/tree/main/apps/mvp-proxy">proxy node</a>
+    <a href="https://github.com/ChainSafe/mina-rs/tree/mvp-proxy/apps/mvp-proxy">proxy node</a>
     locally, then paste node address into below input box.
   </p>
   <p />
@@ -43,10 +43,7 @@
 </template>
 
 <script lang="ts">
-import {
-  connect,
-  set_event_emitter,
-} from "./../pkg/wasm";
+import { connect, set_event_emitter } from "./../pkg/wasm";
 import { EventEmitter } from "events";
 
 export default {
