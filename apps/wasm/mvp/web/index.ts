@@ -1,11 +1,10 @@
 import { createApp } from "vue";
 import App from "./App.vue";
 import 'regenerator-runtime/runtime'
-import wasmUrl from "./../pkg/wasm_bg.wasm"
-import { init } from "./../pkg/wasm"
+import { initWasm } from "./../utils"
 
 async function buildApp() {
-  await init(await fetch(wasmUrl))
+  await initWasm()
   const app = createApp(App);
   app.mount("#app");
 }
