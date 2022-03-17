@@ -15,6 +15,7 @@
 #![deny(warnings)]
 #![deny(missing_docs)]
 
+pub mod account;
 pub mod blockchain_state;
 pub mod bulletproof_challenges;
 pub mod common;
@@ -37,6 +38,9 @@ pub mod staged_ledger_diff;
 
 /// Version 1 serialization types for the Mina protocol
 pub mod v1 {
+    pub use super::account::{
+        AccountV1, AuthRequiredV1, PermissionsV1, TimingV1, TokenPermissionsV1,
+    };
     pub use super::blockchain_state::{
         BlockchainStateV1, NonSnarkStagedLedgerHashV1, StagedLedgerHashV1,
     };
@@ -46,9 +50,9 @@ pub mod v1 {
         ScalarChallengeVector2V1,
     };
     pub use super::common::{
-        AmountV1, BigInt256, BlockTimeV1, ByteVecV1, CharV1, DeltaV1, ExtendedU32, ExtendedU64,
-        ExtendedU64_2, ExtendedU64_3, GlobalSlotNumberV1, Hash2V1, HashV1, Hex64V1, LengthV1,
-        TokenIdV1,
+        AccountNonceV1, AmountV1, BigInt256, BlockTimeV1, ByteVecV1, CharV1, DeltaV1, ExtendedU32,
+        ExtendedU64, ExtendedU64_2, ExtendedU64_3, GlobalSlotNumberV1, Hash2V1, HashV1, Hex64V1,
+        LengthV1, TokenIdV1,
     };
     pub use super::consensus_state::{ConsensusStateV1, VrfOutputTruncatedV1};
     pub use super::delta_transition_chain_proof::DeltaTransitionChainProof;
