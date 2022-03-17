@@ -11,16 +11,24 @@ use mina_rs_base::account::Account;
 
 /// A genesis ledger provides access to its accounts by implementing IntoIterator
 /// This implementation must be provided to meet the trait requirements
-pub trait GenesisLedger<'a>
+///
+/// A Genesis ledger has a compile time pre-defined depth which is set here as a const generic
+/// This ensures compile-time checking that the correct depth ledger is being used in the correc place
+pub trait GenesisLedger<'a, const DEPTH: usize>
 where
     Self: 'a,
     &'a Self: IntoIterator<Item = Account>,
 {
     /// Return the depth of the ledger
-    fn depth(&self) -> u32;
+    fn depth(&self) -> usize {
+        DEPTH
+    }
 
     /// Return a iterator over the accounts in this genesis ledger without consuming self
     fn accounts(&'a self) -> <&'a Self as IntoIterator>::IntoIter {
         self.into_iter()
     }
+
+    // TODO: Add additional methods when they are required
+    // https://github.com/MinaProtocol/mina/blob/65b59f56b6e98e1d9648280c2153d809abb42ba3/src/lib/genesis_ledger/intf.ml#L84
 }

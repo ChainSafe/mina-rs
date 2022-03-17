@@ -7,18 +7,19 @@
 use crate::genesis_ledger::GenesisLedger;
 use bin_prot::from_reader;
 use mina_rs_base::account::Account;
-use rocksdb::{DBIterator, IteratorMode, DB};
-
+use rocksdb::DB;
 
 /// The first byte of keys in the RocksDB stored Ledger
 /// that indicates the value is an Account (leaf node)
 const ACCOUNT_PREFIX: u8 = 0xfe;
 
-struct RocksDbGenesisLedger<'a> {
+/// A genesis ledger backed by a RocksDB instance
+pub struct RocksDbGenesisLedger<'a, const DEPTH: usize> {
     db: &'a DB,
 }
 
-impl<'a> RocksDbGenesisLedger<'a> {
+impl<'a, const DEPTH: usize> RocksDbGenesisLedger<'a, DEPTH> {
+    /// Create a new rocksDB genesis ledger given a database connection
     pub fn new(db: &'a DB) -> Self {
         Self { db }
     }
@@ -28,7 +29,7 @@ fn decode_account_from_kv((_k, v): (Box<[u8]>, Box<[u8]>)) -> Account {
     from_reader(&v[..]).unwrap()
 }
 
-impl<'a> IntoIterator for &RocksDbGenesisLedger<'a> {
+impl<'a, const DEPTH: usize> IntoIterator for &RocksDbGenesisLedger<'a, DEPTH> {
     type Item = Account;
     type IntoIter = Box<dyn Iterator<Item = Account> + 'a>;
 
@@ -36,19 +37,13 @@ impl<'a> IntoIterator for &RocksDbGenesisLedger<'a> {
         let db_iter = self
             .db
             .prefix_iterator(&[ACCOUNT_PREFIX]) // This will ensure the iterator doesnt start until the prefix byte is matched
-            .take_while(|(k, _)| {
-                k.first() == Some(&ACCOUNT_PREFIX)
-            }); // Ensures the iterator stops when the prefix stops matching
+            .take_while(|(k, _)| k.first() == Some(&ACCOUNT_PREFIX)); // Ensures the iterator stops when the prefix stops matching
 
         Box::new(db_iter.map(decode_account_from_kv))
     }
 }
 
-impl<'a> GenesisLedger<'a> for RocksDbGenesisLedger<'a> {
-    fn depth(&self) -> u32 {
-        unimplemented!()
-    }
-}
+impl<'a, const DEPTH: usize> GenesisLedger<'a, DEPTH> for RocksDbGenesisLedger<'a, DEPTH> {}
 
 #[cfg(test)]
 mod tests {
@@ -60,7 +55,7 @@ mod tests {
     #[test]
     fn test_iterate_database() {
         let db = rocksdb::DB::open_for_read_only(&Options::default(), DBPATH, true).unwrap();
-        let genesis_ledger = RocksDbGenesisLedger::new(&db);
+        let genesis_ledger: RocksDbGenesisLedger<20> = RocksDbGenesisLedger::new(&db);
         genesis_ledger.accounts().count(); // calling count consumes the iterator and at the moment results in it being printed out
     }
 }
