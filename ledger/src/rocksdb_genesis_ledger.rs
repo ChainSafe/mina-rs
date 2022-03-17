@@ -34,6 +34,13 @@ impl<'a, const DEPTH: usize> IntoIterator for &RocksDbGenesisLedger<'a, DEPTH> {
     type IntoIter = Box<dyn Iterator<Item = Account> + 'a>;
 
     fn into_iter(self) -> Box<dyn Iterator<Item = Account> + 'a> {
+        // A RockDB genesis ledger contains a Merkle tree. We only need to
+        // iterate the leaves of the tree to iterate over all accounts.
+        // It uses mina merkle_ledger locations as keys in the database
+        // https://github.com/MinaProtocol/mina/blob/65b59f56b6e98e1d9648280c2153d809abb42ba3/src/lib/merkle_ledger/location.ml#L29
+        // The first byte indicates the type of a record (e.g. internal node, leaf node) and
+        // we can filter on this byte to only iterate the leaves
+
         let db_iter = self
             .db
             .prefix_iterator(&[ACCOUNT_PREFIX]) // This will ensure the iterator doesnt start until the prefix byte is matched
