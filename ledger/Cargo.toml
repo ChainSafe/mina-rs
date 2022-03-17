@@ -1,0 +1,16 @@
+[package]
+authors = ["ChainSafe Systems <info@chainsafe.io>"]
+name = "mina-ledger"
+version = "0.1.0"
+
+edition = "2021"
+license = "Apache-2.0"
+
+[dependencies]
+mina-crypto = {path = "../crypto"}
+mina-rs-base = {path = "../base"}
+bin-prot = {path = "../protocol/bin-prot"}
+
+rocksdb = "0.18.0"
+
+[dev-dependencies]
