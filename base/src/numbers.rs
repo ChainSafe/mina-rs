@@ -22,7 +22,7 @@ pub struct TokenId(pub u64);
 
 impl Default for TokenId {
     fn default() -> Self {
-        Self(1) // 1 is the Mina native token ID
+        Self(0) // 1 is the Mina native token ID, 0 is used for testing only
     }
 }
 
