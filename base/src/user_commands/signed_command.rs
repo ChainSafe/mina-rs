@@ -1,3 +1,6 @@
+// Copyright 2020 ChainSafe Systems
+// SPDX-License-Identifier: Apache-2.0
+
 //! Signed commands are commands that require signing with some accounts private key
 
 use crate::numbers::{Amount, ExtendedU32, TokenId};

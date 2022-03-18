@@ -1,3 +1,6 @@
+// Copyright 2020 ChainSafe Systems
+// SPDX-License-Identifier: Apache-2.0
+
 //! Helpers for building a user command
 
 use crate::numbers::{Amount, ExtendedU32};
@@ -8,6 +11,7 @@ use crate::user_commands::{
 use mina_crypto::signature::PublicKey;
 
 /// A builder for UserCommands to transfer funds
+#[derive(Default)]
 pub struct SignedTransferCommandBuilder {
     common: SignedCommandPayloadCommon,
     payment: PaymentPayload,
@@ -16,10 +20,7 @@ pub struct SignedTransferCommandBuilder {
 impl SignedTransferCommandBuilder {
     /// Create a new builder containing default transaction params
     pub fn new() -> Self {
-        Self {
-            common: SignedCommandPayloadCommon::default(),
-            payment: PaymentPayload::default(),
-        }
+        Self::default()
     }
 
     /// Set the payment recipient account

@@ -1,3 +1,6 @@
+// Copyright 2020 ChainSafe Systems
+// SPDX-License-Identifier: Apache-2.0
+
 //! User commands are how external users can mutate the state of the Mina ledger
 //! This module contains the command data structures and helpers to create and
 //! serialize new commands to broadcast to the network

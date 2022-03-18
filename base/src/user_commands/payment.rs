@@ -1,3 +1,6 @@
+// Copyright 2020 ChainSafe Systems
+// SPDX-License-Identifier: Apache-2.0
+
 //! Payment commands are for transfering some token amounts between accounts
 
 use crate::numbers::{Amount, TokenId};

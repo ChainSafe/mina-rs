@@ -1,3 +1,6 @@
+// Copyright 2020 ChainSafe Systems
+// SPDX-License-Identifier: Apache-2.0
+
 //! Commands can include memo fields which contain arbitrary byte data
 //!
 use derive_more::From;
