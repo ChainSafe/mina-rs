@@ -5,7 +5,7 @@
   "private": true,
   "browserslist": "> 0.5%, last 2 versions, not dead",
   "scripts": {
-    "start": "parcel serve web/index.html --open",
+    "start": "parcel serve web/index.html --open --lazy",
     "watch:ext": "parcel watch chrome-ext/{background.ts,content_script.ts,*.html} --no-hmr",
     "wasm-pack": "wasm-pack build -t nodejs --out-name wasm",
     "patch": "node patch.js",
