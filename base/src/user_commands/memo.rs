@@ -1,5 +1,5 @@
 //! Commands can include memo fields which contain arbitrary byte data
-//! 
+//!
 use derive_more::From;
 use serde::{Deserialize, Serialize};
 use thiserror::Error;
@@ -43,7 +43,7 @@ impl TryFrom<String> for SignedCommandMemo {
 /// Error type for converting memo types
 #[derive(Debug, Error)]
 pub enum SignedCommandMemoError {
-	/// Tried to build a memo from a string that is too long to fit
+    /// Tried to build a memo from a string that is too long to fit
     #[error("Input string is too long")]
     StringTooLong,
 }

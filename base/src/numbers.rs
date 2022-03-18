@@ -15,10 +15,16 @@ use time::Duration;
 
 use crate::constants::MINA_PRECISION;
 
-#[derive(Clone, Serialize, Deserialize, PartialEq, Debug, Hash, Default, From)]
+#[derive(Clone, Serialize, Deserialize, PartialEq, Debug, Hash, From)]
 #[from(forward)]
 /// Newtype for TokenIds
 pub struct TokenId(pub u64);
+
+impl Default for TokenId {
+    fn default() -> Self {
+        Self(1) // 1 is the Mina native token ID
+    }
+}
 
 #[derive(
     Clone, Serialize, Deserialize, PartialEq, PartialOrd, Debug, Hash, Copy, Default, Deref, From,

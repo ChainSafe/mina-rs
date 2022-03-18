@@ -1,9 +1,10 @@
 //! User commands are how external users can mutate the state of the Mina ledger
-//! This module contains the command data structures and helpers to create and 
+//! This module contains the command data structures and helpers to create and
 //! serialize new commands to broadcast to the network
 
 use serde::{Deserialize, Serialize};
 
+pub mod builder;
 pub mod memo;
 pub mod payment;
 pub mod signed_command;
