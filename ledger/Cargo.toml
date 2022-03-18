@@ -12,5 +12,6 @@ mina-rs-base = {path = "../base"}
 bin-prot = {path = "../protocol/bin-prot"}
 
 rocksdb = "0.18.0"
+thiserror = "1"
 
 [dev-dependencies]

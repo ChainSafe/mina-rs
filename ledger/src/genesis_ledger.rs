@@ -17,8 +17,11 @@ use mina_rs_base::account::Account;
 pub trait GenesisLedger<'a, const DEPTH: usize>
 where
     Self: 'a,
-    &'a Self: IntoIterator<Item = Account>,
+    &'a Self: IntoIterator<Item = Result<Account, Self::Error>>,
 {
+    /// Error type that can be produces when trying to access the underlying store
+    type Error;
+
     /// Return the depth of the ledger
     fn depth(&self) -> usize {
         DEPTH

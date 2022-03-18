@@ -8,6 +8,7 @@ use crate::genesis_ledger::GenesisLedger;
 use bin_prot::from_reader;
 use mina_rs_base::account::Account;
 use rocksdb::DB;
+use thiserror::Error;
 
 /// The first byte of keys in the RocksDB stored Ledger
 /// that indicates the value is an Account (leaf node)
@@ -18,6 +19,13 @@ pub struct RocksDbGenesisLedger<'a, const DEPTH: usize> {
     db: &'a DB,
 }
 
+/// Errors than can be produces when trying to access a Rocksdb backed ledger
+#[derive(Error, Debug)]
+pub enum Error {
+    #[error("Could not deserialize account")]
+    Disconnect(#[from] bin_prot::error::Error),
+}
+
 impl<'a, const DEPTH: usize> RocksDbGenesisLedger<'a, DEPTH> {
     /// Create a new rocksDB genesis ledger given a database connection
     pub fn new(db: &'a DB) -> Self {
@@ -25,17 +33,16 @@ impl<'a, const DEPTH: usize> RocksDbGenesisLedger<'a, DEPTH> {
     }
 }
 
-fn decode_account_from_kv((_k, v): (Box<[u8]>, Box<[u8]>)) -> Account {
-    let account = from_reader(&v[..]).unwrap();
-    println!("{:#?}", account);
-    account
+fn decode_account_from_kv((_k, v): (Box<[u8]>, Box<[u8]>)) -> Result<Account, Error> {
+    let account = from_reader(&v[..])?;
+    Ok(account)
 }
 
 impl<'a, const DEPTH: usize> IntoIterator for &RocksDbGenesisLedger<'a, DEPTH> {
-    type Item = Account;
-    type IntoIter = Box<dyn Iterator<Item = Account> + 'a>;
+    type Item = Result<Account, Error>;
+    type IntoIter = Box<dyn Iterator<Item = Result<Account, Error>> + 'a>;
 
-    fn into_iter(self) -> Box<dyn Iterator<Item = Account> + 'a> {
+    fn into_iter(self) -> Box<dyn Iterator<Item = Result<Account, Error>> + 'a> {
         // A RockDB genesis ledger contains a Merkle tree. We only need to
         // iterate the leaves of the tree to iterate over all accounts.
         // It uses mina merkle_ledger locations as keys in the database
@@ -52,7 +59,9 @@ impl<'a, const DEPTH: usize> IntoIterator for &RocksDbGenesisLedger<'a, DEPTH> {
     }
 }
 
-impl<'a, const DEPTH: usize> GenesisLedger<'a, DEPTH> for RocksDbGenesisLedger<'a, DEPTH> {}
+impl<'a, const DEPTH: usize> GenesisLedger<'a, DEPTH> for RocksDbGenesisLedger<'a, DEPTH> {
+    type Error = Error;
+}
 
 #[cfg(test)]
 mod tests {
@@ -65,7 +74,7 @@ mod tests {
     fn test_iterate_database() {
         let db = rocksdb::DB::open_for_read_only(&Options::default(), DBPATH, true).unwrap();
         let genesis_ledger: RocksDbGenesisLedger<20> = RocksDbGenesisLedger::new(&db);
-        let accounts: Vec<_> = genesis_ledger.accounts().collect();
-        assert_eq!(accounts.len(), 1676); // successfully read all the accounts
+        assert_eq!(genesis_ledger.accounts().count(), 1676); // successfully read the correct number of accounts
+        assert!(genesis_ledger.accounts().all(|e| e.is_ok())) // All deserialied sucessfully
     }
 }
