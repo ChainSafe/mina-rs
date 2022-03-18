@@ -86,3 +86,8 @@ proxyHost: /ip4/127.0.0.1/tcp/23333/ws/p2p/12D3KooWBJS5MW5tY93UgKvQ9KKzd4s4SRHEZ
       Secp256k1(secp256k1::Keypair),
   }
   ```
+
+# Others
+
+- Chrome extension [examples repository](https://github.com/GoogleChrome/chrome-extensions-samples)
+- Chrome extension [api references](https://developer.chrome.com/docs/extensions/reference/)
