@@ -52,7 +52,7 @@ cargo install wasm-pack
 
 - Copy & paste peer address that `proxy` prints on console into the web gui at http://localhost:1234/
 
-- Alternatively, open chrome, and load extension from dist/ext folder, then click on the extension icon, it will open the same web gui in a new tab
+- Alternatively, open chrome, and load extension from `dist/ext` folder, then click on the extension icon, it will open the same web gui in a new tab. `dist/ext` can be downloaded from `mvp-chrome-ext` in CI build artifacts as well.
 
 ```
 proxyHost: /ip4/127.0.0.1/tcp/23333/ws/p2p/12D3KooWBJS5MW5tY93UgKvQ9KKzd4s4SRHEZoUsv7frvcAZKaQt

@@ -178,6 +178,16 @@ jobs:
       - run: lerna run build
       - run: lerna run test
       - run: lerna run lint
+      - uses: actions/upload-artifact@v2
+        with:
+          name: mvp-chrome-ext
+          path: apps/wasm/mvp/dist/ext/**/*
+          if-no-files-found: error
+      - uses: actions/upload-artifact@v2
+        with:
+          name: mvp-web
+          path: apps/wasm/mvp/dist/web/**/*
+          if-no-files-found: error
   codecov-x86_64:
     runs-on: ubuntu-latest
     steps:
