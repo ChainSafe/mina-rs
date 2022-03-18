@@ -26,7 +26,9 @@ impl<'a, const DEPTH: usize> RocksDbGenesisLedger<'a, DEPTH> {
 }
 
 fn decode_account_from_kv((_k, v): (Box<[u8]>, Box<[u8]>)) -> Account {
-    from_reader(&v[..]).unwrap()
+    let account = from_reader(&v[..]).unwrap();
+    println!("{:#?}", account);
+    account
 }
 
 impl<'a, const DEPTH: usize> IntoIterator for &RocksDbGenesisLedger<'a, DEPTH> {
@@ -57,12 +59,13 @@ mod tests {
     use super::*;
     use rocksdb::Options;
 
-    const DBPATH: &str =  "/home/willem/.mina-config/genesis/genesis_ledger_accounts_71d4f4a0e8c1f3e78760b989234760584969ea0144ed1a3057234f6f0e73621a";
+    const DBPATH: &str =  "test-data/genesis_ledger_6a887ea130e53b06380a9ab27b327468d28d4ce47515a0cc59759d4a3912f0ef/";
 
     #[test]
     fn test_iterate_database() {
         let db = rocksdb::DB::open_for_read_only(&Options::default(), DBPATH, true).unwrap();
         let genesis_ledger: RocksDbGenesisLedger<20> = RocksDbGenesisLedger::new(&db);
-        genesis_ledger.accounts().count(); // calling count consumes the iterator and at the moment results in it being printed out
+        let accounts: Vec<_> = genesis_ledger.accounts().collect();
+        assert_eq!(accounts.len(), 1676); // successfully read all the accounts
     }
 }
