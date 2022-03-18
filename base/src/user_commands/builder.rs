@@ -3,7 +3,7 @@
 
 //! Helpers for building a user command
 
-use crate::numbers::{Amount, ExtendedU32};
+use crate::numbers::{Amount, ExtendedU32, TokenId};
 use crate::user_commands::{
     PaymentPayload, SignedCommand, SignedCommandPayload, SignedCommandPayloadBody,
     SignedCommandPayloadCommon, UserCommand,
@@ -21,6 +21,8 @@ impl SignedTransferCommandBuilder {
     /// Create a new builder containing default transaction params
     pub fn new() -> Self {
         Self::default()
+        	.transfer_token(TokenId(1))
+        	.fee_token(TokenId(1)) // set the token IDs to the native token (100% of cases atm)
     }
 
     /// Set the payment recipient account
@@ -56,10 +58,30 @@ impl SignedTransferCommandBuilder {
         }
     }
 
+    /// Set token to transfer
+    pub fn transfer_token(self, token_id: TokenId) -> Self {
+        Self {
+            common: SignedCommandPayloadCommon { ..self.common },
+            payment: PaymentPayload {
+                token_id,
+                ..self.payment
+            },
+        }
+    }
+
+
     /// Set the fee to pay the block producer
     pub fn fee(self, fee: Amount) -> Self {
         Self {
             common: SignedCommandPayloadCommon { fee, ..self.common },
+            payment: PaymentPayload { ..self.payment },
+        }
+    }
+
+    /// Set the fee token to pay the block producer
+    pub fn fee_token(self, fee_token: TokenId) -> Self {
+        Self {
+            common: SignedCommandPayloadCommon { fee_token, ..self.common },
             payment: PaymentPayload { ..self.payment },
         }
     }
@@ -94,12 +116,6 @@ impl SignedTransferCommandBuilder {
 mod tests {
     use super::*;
     use mina_crypto::prelude::Base58Encodable;
-
-    #[test]
-    fn can_build_default() {
-        let cmd = SignedTransferCommandBuilder::new().sign_and_build(PublicKey::default());
-        assert_eq!(cmd, UserCommand::default())
-    }
 
     #[test]
     fn can_set_receiver_pk() {
