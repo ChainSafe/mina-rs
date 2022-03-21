@@ -21,8 +21,8 @@ impl SignedTransferCommandBuilder {
     /// Create a new builder containing default transaction params
     pub fn new() -> Self {
         Self::default()
-        	.transfer_token(TokenId(1))
-        	.fee_token(TokenId(1)) // set the token IDs to the native token (100% of cases atm)
+            .transfer_token(TokenId(1))
+            .fee_token(TokenId(1)) // set the token IDs to the native token (100% of cases atm)
     }
 
     /// Set the payment recipient account
@@ -69,7 +69,6 @@ impl SignedTransferCommandBuilder {
         }
     }
 
-
     /// Set the fee to pay the block producer
     pub fn fee(self, fee: Amount) -> Self {
         Self {
@@ -81,7 +80,10 @@ impl SignedTransferCommandBuilder {
     /// Set the fee token to pay the block producer
     pub fn fee_token(self, fee_token: TokenId) -> Self {
         Self {
-            common: SignedCommandPayloadCommon { fee_token, ..self.common },
+            common: SignedCommandPayloadCommon {
+                fee_token,
+                ..self.common
+            },
             payment: PaymentPayload { ..self.payment },
         }
     }
