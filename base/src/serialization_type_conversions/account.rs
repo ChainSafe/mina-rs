@@ -29,7 +29,7 @@ impl From<Account> for AccountV1 {
 }
 impl From<AccountV1> for Account {
     fn from(t: AccountV1) -> Self {
-        let t= t.t.t.t;
+        let t = t.t.t.t;
         Self {
             public_key: t.public_key.into(),
             token_id: t.token_id.t.t.t.into(),
