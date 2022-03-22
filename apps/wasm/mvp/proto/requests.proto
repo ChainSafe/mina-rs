@@ -1,0 +1,6 @@
+syntax = "proto3";
+
+message ConnectRequest
+{
+    string address = 1;
+}

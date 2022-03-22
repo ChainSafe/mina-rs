@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+message PeerStatus
+{
+    bool connected = 1;
+    string peer_id = 2;
+    string sync_status = 3;
+    string protocol_state_hash = 4;
+    string git_commit = 5;
+    int64 uptime_minutes = 6;
+}

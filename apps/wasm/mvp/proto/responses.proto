@@ -1,0 +1,7 @@
+syntax = "proto3";
+
+message CommonResponse
+{
+    bool success = 1;
+    string error_message = 2;
+}

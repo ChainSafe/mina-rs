@@ -43,10 +43,10 @@
       >
         <td>{{ id }}</td>
         <td>{{ peers[id].connected }}</td>
-        <td>{{ peers[id].sync_status }}</td>
-        <td>{{ peers[id].protocol_state_hash }}</td>
-        <td>{{ peers[id].git_commit }}</td>
-        <td>{{ peers[id].uptime_minutes }}</td>
+        <td>{{ peers[id].syncStatus }}</td>
+        <td>{{ peers[id].protocolStateHash }}</td>
+        <td>{{ peers[id].gitCommit }}</td>
+        <td>{{ peers[id].uptimeMinutes }}</td>
       </tr>
     </table>
   </div>
@@ -56,6 +56,8 @@
 import { initWasm } from "./../utils";
 import { connect, set_event_emitter } from "./../pkg/wasm";
 import { EventEmitter } from "events";
+import { ConnectRequest } from "./pb/requests";
+import { PeerStatus } from "./pb/messages";
 import _ from "lodash";
 
 export default {
@@ -72,12 +74,15 @@ export default {
     this.loadWasm();
   },
   mounted() {
+    this.eventEmitter.on("log", (msg) => {
+      console.log(`[log] ${msg}`);
+    });
     this.eventEmitter.on("update", (msg) => {
-      console.log(`eventEmitter onupdate: ${msg}`);
+      console.log(`[update] raw msg: ${msg}`);
       try {
-        const o = JSON.parse(msg);
-        // console.log(o);
-        this.peers[o["peer_id"]] = o;
+        let ps = PeerStatus.decode(msg);
+        console.log(`[update] decoded msg: ${ps}`);
+        this.peers[ps.peerId] = ps;
         this.peerKeys = Object.keys(this.peers);
       } catch (e) {
         console.log(e);
@@ -96,8 +101,14 @@ export default {
       }
       this.clear();
       set_event_emitter(this.eventEmitter);
-      console.log(`Connecting to ${this.addr}`);
-      await connect(this.addr);
+      console.log(`[JS] Connecting to ${this.addr}`);
+      let req = ConnectRequest.create();
+      req.address = this.addr;
+      try {
+        await connect(ConnectRequest.encode(req).finish());
+      } catch (e) {
+        alert(e);
+      }
     },
     clear() {
       this.peers = {};
