@@ -18,7 +18,6 @@ impl TryFrom<&str> for SignedCommandMemo {
         const MAX_INPUT_STRING_LENGTH: usize = DIGEST_LEN;
         const MEMO_LEN: usize = DIGEST_LEN + 2;
         const TAG_INDEX: usize = 0;
-        // const DIGEST_TAG: u8 = 0;
         const LEN_INDEX: usize = 1;
         const BYTES_TAG: u8 = 1;
         if s.len() > MAX_INPUT_STRING_LENGTH {
@@ -41,7 +40,7 @@ impl TryFrom<String> for SignedCommandMemo {
     }
 }
 
-// TODO impl Into<String> for SignedCommandMemo
+// TODO impl ToString for SignedCommandMemo
 
 /// Error type for converting memo types
 #[derive(Debug, Error)]
