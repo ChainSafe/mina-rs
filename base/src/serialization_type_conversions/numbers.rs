@@ -3,8 +3,8 @@
 
 use crate::numbers::*;
 use mina_serialization_types::v1::{
-    AmountV1, DeltaV1, ExtendedU32 as ExtendedU32V1, GlobalSlotNumberV1, Hex64V1, LengthV1,
-    TokenIdV1,
+    AccountNonceV1, AmountV1, BlockTimeV1, DeltaV1, ExtendedU32 as ExtendedU32V1,
+    GlobalSlotNumberV1, Hex64V1, LengthV1, TokenIdV1,
 };
 use versioned::Versioned;
 
@@ -35,6 +35,18 @@ impl From<ExtendedU32> for ExtendedU32V1 {
 impl From<TokenId> for TokenIdV1 {
     fn from(t: TokenId) -> Self {
         TokenIdV1::new(Versioned::new(Versioned::new(t.0)))
+    }
+}
+
+impl From<AccountNonce> for AccountNonceV1 {
+    fn from(t: AccountNonce) -> Self {
+        AccountNonceV1::new(Versioned::new(t.0))
+    }
+}
+
+impl From<BlockTime> for BlockTimeV1 {
+    fn from(t: BlockTime) -> Self {
+        BlockTimeV1::new(Versioned::new(t.0))
     }
 }
 
