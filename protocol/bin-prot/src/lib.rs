@@ -13,6 +13,7 @@ pub mod error;
 pub mod integers;
 #[cfg(feature = "loose_deserialization")]
 mod loose_deserializer;
+mod polyvar;
 mod read_ext;
 mod ser;
 pub mod value;
@@ -20,6 +21,7 @@ mod write_ext;
 
 // pub use array::OcamlArray;
 pub use de::{from_reader, Deserializer};
+pub use polyvar::{caml_hash_variant, PolyVar, VariantHash};
 pub use read_ext::ReadBinProtExt;
 pub use ser::{to_writer, Serializer};
 #[cfg(feature = "loose_deserialization")]
