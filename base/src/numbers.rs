@@ -109,6 +109,12 @@ impl std::str::FromStr for Amount {
     }
 }
 
+/// Number representing how many txns sent from an account
+#[derive(Copy, Clone, Serialize, Deserialize, PartialEq, Debug, Hash, Default, From)]
+#[from(forward)]
+
+pub struct AccountNonce(pub u64);
+
 #[derive(Clone, Serialize, Deserialize, PartialEq, Debug, Hash, Default, From)]
 #[from(forward)]
 

@@ -95,6 +95,19 @@ impl From<HashV1> for LedgerHash {
 //////////////////////////////////////////////////////////////////////////
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
+pub struct ChainHash(BaseHash);
+
+impl_bs58!(ChainHash, version_bytes::LEDGER_HASH);
+
+impl From<HashV1> for ChainHash {
+    fn from(h: HashV1) -> Self {
+        Self(BaseHash(h.t))
+    }
+}
+
+//////////////////////////////////////////////////////////////////////////
+
+#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct CoinBaseHash(BaseHash);
 
 impl_bs58!(CoinBaseHash, 12);

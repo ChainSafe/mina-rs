@@ -12,12 +12,22 @@
       v-model="addr"
       class="addr"
     > <br>
-    <button @click="connect">
+    <button
+      v-if="wasmLoaded"
+      @click="connect"
+    >
       Connect
+    </button>
+    <button
+      v-if="!wasmLoaded"
+      disabled="disabled"
+      @click="connect"
+    >
+      Loading
     </button>
   </p>
   <div>
-    Peers:
+    Peers({{ getConnectedPeerCount() }} connected / {{ getPeerCount() }} total):
     <table>
       <tr>
         <th>id</th>
@@ -43,8 +53,10 @@
 </template>
 
 <script lang="ts">
+import { initWasm } from "./../utils";
 import { connect, set_event_emitter } from "./../pkg/wasm";
 import { EventEmitter } from "events";
+import _ from "lodash";
 
 export default {
   data() {
@@ -53,7 +65,11 @@ export default {
       eventEmitter: new EventEmitter(),
       peers: {},
       peerKeys: [],
+      wasmLoaded: false,
     };
+  },
+  created() {
+    this.loadWasm();
   },
   mounted() {
     this.eventEmitter.on("update", (msg) => {
@@ -70,7 +86,14 @@ export default {
     });
   },
   methods: {
+    async loadWasm() {
+      await initWasm();
+      this.wasmLoaded = true;
+    },
     async connect() {
+      if (!this.wasmLoaded) {
+        return;
+      }
       this.clear();
       set_event_emitter(this.eventEmitter);
       console.log(`Connecting to ${this.addr}`);
@@ -79,6 +102,15 @@ export default {
     clear() {
       this.peers = {};
       this.peerKeys = [];
+    },
+    getPeerCount() {
+      return this.peerKeys.length;
+    },
+    getConnectedPeerCount() {
+      return _.chain(this.peers)
+        .filter((p) => p.connected)
+        .size()
+        .value();
     },
   },
 };

@@ -10,6 +10,7 @@
 #![deny(warnings)]
 #![deny(missing_docs)]
 
+pub mod account;
 pub mod blockchain_state;
 pub mod consensus_state;
 mod constants;
@@ -28,6 +29,7 @@ pub mod verification_key;
 
 /// Re-export all the public types under this module for convenience
 pub mod types {
+    pub use super::account::*;
     pub use super::blockchain_state::*;
     pub use super::consensus_state::*;
     pub use super::delta_transition_chain_proof::*;

@@ -7,12 +7,13 @@ edition = "2021"
 license = "Apache-2.0"
 
 [dependencies]
-versioned = {path = "../versioned"}
-serde = {version = "1", features = ["derive"]}
 bin-prot = {path = "../bin-prot"}
+versioned = {path = "../versioned"}
+
+serde = {version = "1", features = ["derive"]}
 
 [dev-dependencies]
-wasm-bindgen-test = "0.3"
-bin-prot = {path = "../bin-prot"}
 test-fixtures = {path = "../test-fixtures"}
+
 pretty_assertions = "1"
+wasm-bindgen-test = "0.3"
