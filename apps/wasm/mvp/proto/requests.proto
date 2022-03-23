@@ -1,6 +1,8 @@
 syntax = "proto3";
 
+// message that requests outbound connection to a certain peer
 message ConnectRequest
 {
+    // Full peer address to connect to
     string address = 1;
 }

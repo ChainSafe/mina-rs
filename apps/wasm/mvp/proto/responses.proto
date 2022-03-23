@@ -1,7 +1,10 @@
 syntax = "proto3";
 
+// Message that represents common response of an operation request
 message CommonResponse
 {
+    // Flag that indicates wheather the operation is successful
     bool success = 1;
+    // Error messsage when the operation failed
     string error_message = 2;
 }

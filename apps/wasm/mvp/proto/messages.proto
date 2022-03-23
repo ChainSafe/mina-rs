@@ -1,11 +1,18 @@
 syntax = "proto3";
 
+// Message that represents peer status in mina network
 message PeerStatus
 {
+    // Flag that indicates whether the peer is connected
     bool connected = 1;
+    // Peer ID
     string peer_id = 2;
+    // The network syncronous status of the peer
     string sync_status = 3;
+    // The current state hash of the tip block on the peer
     string protocol_state_hash = 4;
+    // The git commit that the peer executable is built from
     string git_commit = 5;
+    // The total uptime of the peer, in minutes
     int64 uptime_minutes = 6;
 }
