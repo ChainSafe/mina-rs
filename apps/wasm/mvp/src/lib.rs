@@ -23,16 +23,14 @@ use mina_network::p2p::{TransportBuilder, MAINNET_CONFIG};
 use pb::{requests::ConnectRequest, responses::CommonResponse};
 use std::{io, time::Duration};
 use utils::*;
-
-const TIMEOUT_SECS: u64 = 60;
-
-static mut EVENT_EMITTER: Option<EventEmitter> = None;
+mod consts;
+mod event_emitter;
 
 async fn connect_async(request: &ConnectRequest) -> anyhow::Result<CommonResponse> {
     let (transport, peer_id) = {
         let builder = TransportBuilder::default()
             .with_config(&MAINNET_CONFIG)
-            .with_timeout(Duration::from_secs(TIMEOUT_SECS));
+            .with_timeout(Duration::from_secs(consts::TIMEOUT_SECS));
         builder.build()?
     };
 
@@ -67,16 +65,6 @@ async fn connect_async(request: &ConnectRequest) -> anyhow::Result<CommonRespons
         r.set_success(true);
         r
     })
-}
-
-fn get_event_emitter<'a>() -> Option<&'a EventEmitter> {
-    unsafe {
-        if let Some(ee) = &EVENT_EMITTER {
-            Some(ee)
-        } else {
-            None
-        }
-    }
 }
 
 #[derive(NetworkBehaviour)]
@@ -185,7 +173,7 @@ impl RequestResponseCodec for NodeStatusCodec {
                                         s.uptime_minutes = status.uptime_minutes;
                                         s
                                     };
-                                    if let Some(ee) = get_event_emitter() {
+                                    if let Some(ee) = event_emitter::get_event_emitter() {
                                         if let Ok(u8a) = proto_msg_to_u8array(&status_pb) {
                                             ee.emit_u8a("update", &u8a);
                                         } else {
@@ -196,7 +184,7 @@ impl RequestResponseCodec for NodeStatusCodec {
                             }
                             _ => {
                                 log_string(format!("[WASM] read_response({}): {}", n, line));
-                                if let Some(ee) = get_event_emitter() {
+                                if let Some(ee) = event_emitter::get_event_emitter() {
                                     ee.emit_str("log", line);
                                 }
                             }

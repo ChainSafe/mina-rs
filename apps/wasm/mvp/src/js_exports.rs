@@ -11,7 +11,7 @@ use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
 pub fn set_event_emitter(e: EventEmitter) {
     e.emit_str("log", "set_event_emitter called in wasm");
-    unsafe { EVENT_EMITTER = Some(e) };
+    event_emitter::set_event_emitter(e)
 }
 
 #[wasm_bindgen]
