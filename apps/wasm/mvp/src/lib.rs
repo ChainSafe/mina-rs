@@ -186,7 +186,7 @@ impl RequestResponseCodec for NodeStatusCodec {
                                         s
                                     };
                                     if let Some(ee) = get_event_emitter() {
-                                        if let Ok(u8a) = pb_to_u8a(&status_pb) {
+                                        if let Ok(u8a) = proto_msg_to_u8array(&status_pb) {
                                             ee.emit_u8a("update", &u8a);
                                         } else {
                                             ee.emit_str("log", "Fail to serialize node status into protobuf binary");

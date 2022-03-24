@@ -16,7 +16,8 @@ pub fn set_event_emitter(e: EventEmitter) {
 
 #[wasm_bindgen]
 pub async fn connect(request: Uint8Array) -> Result<Uint8Array, JsValue> {
-    let request: pb::requests::ConnectRequest = u8a_to_pb(request).map_err(err_to_js_value)?;
+    let request: pb::requests::ConnectRequest =
+        u8array_to_proto_msg(request).map_err(err_to_js_value)?;
     let response = connect_async(&request).await.map_err(err_to_js_value)?;
-    pb_to_u8a(&response).map_err(err_to_js_value)
+    proto_msg_to_u8array(&response).map_err(err_to_js_value)
 }
