@@ -26,18 +26,3 @@ impl<const DEGREE: usize> MerkleTreeNodeMetadata<DEGREE> {
         ((self.index + DEGREE) as f64).log(DEGREE as f64).ceil() as u32 - 1
     }
 }
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn test_metadata_depth() {
-        assert_eq!(MerkleTreeNodeMetadata::<2>::new(0).depth(), 0);
-        assert_eq!(MerkleTreeNodeMetadata::<2>::new(1).depth(), 1);
-        assert_eq!(MerkleTreeNodeMetadata::<2>::new(2).depth(), 1);
-        assert_eq!(MerkleTreeNodeMetadata::<2>::new(3).depth(), 2);
-        assert_eq!(MerkleTreeNodeMetadata::<2>::new(6).depth(), 2);
-        assert_eq!(MerkleTreeNodeMetadata::<2>::new(7).depth(), 3);
-    }
-}
