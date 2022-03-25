@@ -24,11 +24,11 @@ pub trait MerkleMerger<const DEGREE: usize = DEFAULT_DEGREE> {
 /// with mina specific domain string calculated from node depth
 pub struct MinaPoseidonMerkleMerger {}
 
-impl MerkleMerger for MinaPoseidonMerkleMerger {
+impl<const DEGREE: usize> MerkleMerger<DEGREE> for MinaPoseidonMerkleMerger {
     type Hash = Fp;
     fn merge(
-        hashes: [Option<Self::Hash>; 2],
-        metadata: MerkleTreeNodeMetadata<2>,
+        hashes: [Option<Self::Hash>; DEGREE],
+        metadata: MerkleTreeNodeMetadata<DEGREE>,
     ) -> Option<Self::Hash> {
         // FIXME: Get hasher from object pool
         // when https://github.com/o1-labs/proof-systems/pull/462/files is merged
@@ -40,7 +40,7 @@ impl MerkleMerger for MinaPoseidonMerkleMerger {
 #[derive(Debug, Clone)]
 struct MinaPoseidonMerkleTreeNonLeafNode<const DEGREE: usize>(
     [Option<Fp>; DEGREE],
-    MerkleTreeNodeMetadata<2>,
+    MerkleTreeNodeMetadata<DEGREE>,
 );
 
 impl<const DEGREE: usize> Hashable for MinaPoseidonMerkleTreeNonLeafNode<DEGREE> {

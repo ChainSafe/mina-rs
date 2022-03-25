@@ -17,7 +17,7 @@ pub trait MerkleHasher<const DEGREE: usize = DEFAULT_DEGREE> {
 }
 
 /// Hasher for mina binary merkle tree that uses poseidon hash
-pub struct MinaPoseidonMerkleHasher<TItem>
+pub struct MinaPoseidonMerkleHasher<TItem, const DEGREE: usize = DEFAULT_DEGREE>
 where
     TItem: mina_hasher::Hashable,
     <TItem as mina_hasher::Hashable>::D: Default,
@@ -25,14 +25,14 @@ where
     _pd: PhantomData<TItem>,
 }
 
-impl<TItem> MerkleHasher for MinaPoseidonMerkleHasher<TItem>
+impl<TItem, const DEGREE: usize> MerkleHasher<DEGREE> for MinaPoseidonMerkleHasher<TItem, DEGREE>
 where
     TItem: mina_hasher::Hashable,
     <TItem as mina_hasher::Hashable>::D: Default,
 {
     type Item = TItem;
     type Hash = Fp;
-    fn hash(item: &Self::Item, _: MerkleTreeNodeMetadata<2>) -> Self::Hash {
+    fn hash(item: &Self::Item, _: MerkleTreeNodeMetadata<DEGREE>) -> Self::Hash {
         use mina_hasher::Hasher;
         // FIXME: Get hasher from object pool
         // when https://github.com/o1-labs/proof-systems/pull/462/files is merged
