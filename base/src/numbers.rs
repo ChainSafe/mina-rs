@@ -15,7 +15,7 @@ use time::Duration;
 
 use crate::constants::MINA_PRECISION;
 
-#[derive(Clone, Serialize, Deserialize, PartialEq, Debug, Hash, Default, From)]
+#[derive(Clone, Serialize, Default, Deserialize, PartialEq, Debug, Hash, From)]
 #[from(forward)]
 /// Newtype for TokenIds
 pub struct TokenId(pub u64);
@@ -108,6 +108,12 @@ impl std::str::FromStr for Amount {
         }
     }
 }
+
+/// Number representing how many txns sent from an account
+#[derive(Copy, Clone, Serialize, Deserialize, PartialEq, Debug, Hash, Default, From)]
+#[from(forward)]
+
+pub struct AccountNonce(pub u64);
 
 #[derive(Clone, Serialize, Deserialize, PartialEq, Debug, Hash, Default, From)]
 #[from(forward)]
