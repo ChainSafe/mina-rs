@@ -26,7 +26,7 @@ mod tests {
 
     struct TestHasher {}
 
-    impl MerkleHasher<2> for TestHasher {
+    impl MerkleHasher for TestHasher {
         type Item = i64;
         type Hash = i64;
         fn hash(item: &Self::Item, _: MerkleTreeNodeMetadata<2>) -> Self::Hash {
@@ -36,22 +36,30 @@ mod tests {
 
     struct TestMerger {}
 
-    impl MerkleMerger<2> for TestMerger {
+    impl MerkleMerger for TestMerger {
         type Hash = i64;
         fn merge(
-            items: [&Option<(Self::Hash, MerkleTreeNodeMetadata<2>)>; 2],
+            hashes: [Option<Self::Hash>; 2],
+            _: MerkleTreeNodeMetadata<2>,
         ) -> Option<Self::Hash> {
-            match (items[0], items[1]) {
-                (Some((left, _)), Some((right, _))) => Some(left + right),
-                (Some((left, _)), None) => Some(*left),
+            match (hashes[0], hashes[1]) {
+                (Some(left), Some(right)) => Some(left + right),
+                (Some(left), None) => Some(left),
                 _ => None,
             }
         }
     }
 
+    type TestMerkleTree = MinaMerkleTree<
+        <TestHasher as MerkleHasher>::Item,
+        <TestHasher as MerkleHasher>::Hash,
+        TestHasher,
+        TestMerger,
+    >;
+
     #[test]
     fn mina_merkle_tree_tests_0() {
-        let mut tree = MinaMerkleTree::<i64, i64, TestHasher, TestMerger>::new();
+        let mut tree = TestMerkleTree::new();
         assert!(tree.root().is_none())
     }
 
@@ -91,7 +99,7 @@ mod tests {
     }
 
     fn test_mina_merkle_tree(n: usize, expected_root_hash: i64, expected_depth: u32) {
-        let mut tree = MinaMerkleTree::<i64, i64, TestHasher, TestMerger>::with_capacity(n);
+        let mut tree = TestMerkleTree::with_capacity(n);
         let v: Vec<i64> = (0..n).map(|i| i as i64).collect();
         tree.add_batch(v);
 
@@ -114,7 +122,7 @@ mod tests {
     }
 
     fn test_expand_mina_merkle_tree(
-        tree: &mut MinaMerkleTree<i64, i64, TestHasher, TestMerger>,
+        tree: &mut TestMerkleTree,
         n: usize,
         expected_root_hash: i64,
         expected_depth: u32,

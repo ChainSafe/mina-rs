@@ -21,3 +21,6 @@ mod hasher;
 pub use hasher::*;
 mod metadata;
 pub use metadata::*;
+pub mod prefixes;
+
+const DEFAULT_DEGREE: usize = 2;

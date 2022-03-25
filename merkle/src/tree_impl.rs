@@ -63,27 +63,25 @@ where
     /// either apply hash algorithm if it's a leaf node
     /// or apply merge algorithm if it's a non-leaf node
     /// update the cache once calculated
-    fn calculate_hash_if_needed(
-        &mut self,
-        index: usize,
-    ) -> Option<(THash, MerkleTreeNodeMetadata<DEGREE>)> {
+    fn calculate_hash_if_needed(&mut self, index: usize) -> Option<THash> {
         if index < self.nodes.len() {
             if let Some(hash) = &self.nodes[index] {
-                Some((hash.clone(), MerkleTreeNodeMetadata::new(index)))
+                Some(hash.clone())
             } else {
                 let left = index * 2 + 1;
                 let right = index * 2 + 2;
                 let left_hash = self.calculate_hash_if_needed(left);
                 let right_hash = self.calculate_hash_if_needed(right);
-                let hash = TMerger::merge([&left_hash, &right_hash]);
+                let hash =
+                    TMerger::merge([left_hash, right_hash], MerkleTreeNodeMetadata::new(index));
                 self.nodes[index] = hash.clone();
-                hash.map(|hash| (hash, MerkleTreeNodeMetadata::new(index)))
+                hash
             }
         } else {
             let leaf_index = index - self.nodes.len();
             if leaf_index < self.leafs.len() {
                 let (hash, _) = &self.leafs[leaf_index];
-                Some((hash.clone(), MerkleTreeNodeMetadata::new(index)))
+                Some(hash.clone())
             } else {
                 None
             }
@@ -110,7 +108,7 @@ where
     }
 
     fn root(&mut self) -> Option<Self::Hash> {
-        self.calculate_hash_if_needed(0).map(|(hash, _)| hash)
+        self.calculate_hash_if_needed(0)
     }
 
     fn add_batch(&mut self, items: impl IntoIterator<Item = Self::Item>) {
