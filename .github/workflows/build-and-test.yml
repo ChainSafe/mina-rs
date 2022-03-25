@@ -36,7 +36,7 @@ jobs:
       - uses: actions-rs/toolchain@v1
         with:
           profile: minimal
-          # Pin rust nightly until https://github.com/briansmith/ring/issues/1469 is resolved
+          # Pin rust nightly until https://github.com/briansmith/ring/issues/1469 is resolved.
           toolchain: nightly-2022-03-22
           target: wasm32-unknown-unknown
           override: false
@@ -201,7 +201,7 @@ jobs:
       - uses: actions-rs/toolchain@v1
         with:
           profile: minimal
-          # Pin rust nightly until https://github.com/briansmith/ring/issues/1469 is resolved
+          # Pin rust nightly until https://github.com/briansmith/ring/issues/1469 is resolved.
           toolchain: nightly-2022-03-22
           override: true
           components: llvm-tools-preview
