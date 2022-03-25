@@ -1,10 +1,9 @@
 // Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
+use super::*;
 use mina_curves::pasta::Fp;
 use std::marker::PhantomData;
-
-use super::*;
 
 /// Trait for implementing merkle tree hasher
 /// degree defaults to 2
