@@ -4,6 +4,7 @@
 // https://github.com/rustwasm/wasm-bindgen/issues/2774#issuecomment-1030747023
 #![allow(clippy::unused_unit)]
 
+use js_sys::Uint8Array;
 use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen]
@@ -18,5 +19,8 @@ extern "C" {
     pub type EventEmitter;
 
     #[wasm_bindgen(method, js_name = emit)]
-    pub fn emit(e: &EventEmitter, event: &str, value: &str);
+    pub fn emit_str(e: &EventEmitter, event: &str, value: &str);
+
+    #[wasm_bindgen(method, js_name = emit)]
+    pub fn emit_u8a(e: &EventEmitter, event: &str, value: &Uint8Array);
 }
