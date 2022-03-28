@@ -7,8 +7,6 @@ edition = "2021"
 license = "Apache-2.0"
 
 [dependencies]
-mina-crypto = {path = "../crypto"}
-
 mina-curves = {git = "https://github.com/o1-labs/proof-systems", rev = "566ed75f17e538a7dfc12ee3150dd6b8ebc653c6"}
 mina-hasher = {git = "https://github.com/o1-labs/proof-systems", rev = "566ed75f17e538a7dfc12ee3150dd6b8ebc653c6"}
 oracle = {git = "https://github.com/o1-labs/proof-systems", rev = "566ed75f17e538a7dfc12ee3150dd6b8ebc653c6"}
