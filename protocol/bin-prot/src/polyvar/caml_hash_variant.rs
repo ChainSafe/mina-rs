@@ -42,4 +42,11 @@ mod tests {
             assert_eq!(caml_hash_variant(label), *hash)
         }
     }
+
+    #[test]
+    #[cfg(target_arch = "wasm32")]
+    #[should_panic(expected = "attempt to multiply with overflow")]
+    fn test_overflow_variant() {
+        let _ = caml_hash_variant(b"Three");
+    }
 }
