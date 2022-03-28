@@ -1,0 +1,7 @@
+# nested workspaces are not yet supported, pending on
+# https://github.com/rust-lang/cargo/issues/5042
+[workspace]
+members = [
+  "mvp",
+]
+resolver = "2"
