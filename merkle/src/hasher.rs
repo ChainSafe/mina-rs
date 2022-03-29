@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use super::*;
-use mina_curves::pasta::Fp;
+use mina_hasher::Fp;
 use std::marker::PhantomData;
 
 /// Trait for implementing merkle tree hasher

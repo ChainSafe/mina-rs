@@ -7,9 +7,7 @@ edition = "2021"
 license = "Apache-2.0"
 
 [dependencies]
-mina-curves = {git = "https://github.com/o1-labs/proof-systems", rev = "566ed75f17e538a7dfc12ee3150dd6b8ebc653c6"}
-mina-hasher = {git = "https://github.com/o1-labs/proof-systems", rev = "566ed75f17e538a7dfc12ee3150dd6b8ebc653c6"}
-oracle = {git = "https://github.com/o1-labs/proof-systems", rev = "566ed75f17e538a7dfc12ee3150dd6b8ebc653c6"}
+mina-hasher = {git = "https://github.com/o1-labs/proof-systems", rev = "62f726c2f0b5f4d5bb6a5f66c3f577d518100ed4"}
 
 # lazy_static = "1"
 # lockfree-object-pool = "0.1"

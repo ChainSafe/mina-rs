@@ -3,8 +3,7 @@
 
 use super::*;
 use crate::prefixes::*;
-use mina_curves::pasta::Fp;
-use mina_hasher::{create_legacy, Hashable, Hasher, ROInput};
+use mina_hasher::{create_legacy, Fp, Hashable, Hasher, ROInput};
 
 /// Trait that merges the hashes of child nodes
 /// and calculates the hash of their parent
@@ -49,7 +48,7 @@ impl<const DEGREE: usize> Hashable for MinaPoseidonMerkleTreeNonLeafNode<DEGREE>
     fn to_roinput(&self) -> mina_hasher::ROInput {
         let mut roi = ROInput::new();
         for hash in self.0.into_iter().flatten() {
-            roi.append_field(hash)
+            roi.append_field(hash);
         }
         roi
     }
