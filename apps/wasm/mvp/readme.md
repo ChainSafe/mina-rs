@@ -37,6 +37,8 @@ cargo install wasm-pack
   yarn start
   # Run lint
   yarn lint
+  # Regenerate protobuf code
+  yarn build:proto
   ```
 
   Alternatively, this package can be built from root directory of the repo with [workspace manager](https://lerna.js.org/)
