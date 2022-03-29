@@ -121,8 +121,9 @@ pub trait WriteBinProtExt: io::Write {
     }
 
     /// For Polyvar types write the 4 bytes of the tag/hash for a variant
+    /// You can convert between ocaml native integer using (x >> 1)
     fn bin_write_polyvar_tag(&mut self, i: u32) -> Result<usize, io::Error> {
-        self.write(&i.to_le_bytes()).map(|_| 4) // truncating downcast
+        self.write(&(i << 1 | 1).to_le_bytes()).map(|_| 4) // truncating downcast
     }
 }
 

@@ -64,7 +64,7 @@ impl<'de, 'a, R: Read> DS<R, LooselyTyped> {
                                 match v {
                                     Polyvar::Tagged(t) => {
                                         // return the first tagged variant where the tag matches
-                                        if t.hash.to_u32() == tag {
+                                        if t.hash == tag {
                                             Some((i, t))
                                         } else {
                                             None
@@ -231,7 +231,7 @@ impl<'de, 'a, R: Read> serde::de::EnumAccess<'de> for ValueEnum<'a, R, LooselyTy
                 index,
                 EnumData::Polyvar {
                     index,
-                    tag: polyvar.hash.to_u32(),
+                    tag: polyvar.hash,
                     name: polyvar.polyvar_name,
                     len: polyvar.polyvar_args.len(),
                 },
