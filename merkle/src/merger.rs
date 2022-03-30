@@ -39,7 +39,7 @@ impl<const DEGREE: usize> MerkleMerger<DEGREE> for MinaPoseidonMerkleMerger {
     }
 }
 
-#[derive(Debug, Clone)]
+#[derive(Clone)]
 struct MinaPoseidonMerkleTreeNonLeafNode<const DEGREE: usize>(
     [Option<Fp>; DEGREE],
     MerkleTreeNodeMetadata<DEGREE>,

@@ -6,7 +6,6 @@
 /// calculating hash
 #[derive(Debug, Clone, Default)]
 pub struct MerkleTreeNodeMetadata<const DEGREE: usize> {
-    index: usize,
     depth: u32,
     height: u32,
 }
@@ -17,16 +16,7 @@ impl<const DEGREE: usize> MerkleTreeNodeMetadata<DEGREE> {
     pub fn new(node_index: usize, tree_height: u32) -> Self {
         let depth = depth::<DEGREE>(node_index);
         let height = height::<DEGREE>(node_index, tree_height);
-        Self {
-            index: node_index,
-            depth,
-            height,
-        }
-    }
-
-    /// 0-based Index of the tree node, starting from root
-    pub fn index(&self) -> usize {
-        self.index
+        Self { depth, height }
     }
 
     /// distance to the root node
