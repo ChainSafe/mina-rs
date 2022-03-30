@@ -15,8 +15,8 @@ where
     TMerger: MerkleMerger<DEGREE, Hash = THash>,
     THash: Clone,
 {
-    depth: u32,
-    leafs: Vec<(THash, TItem)>,
+    height: u32,
+    leafs: Vec<(TItem, Option<THash>)>,
     nodes: Vec<Option<THash>>,
 
     _pd_hasher: PhantomData<THasher>,
@@ -36,8 +36,8 @@ where
 
     /// Creates a new instance of [MinaMerkleTree] with estimated capacity of leaves
     pub fn with_capacity(capacity: usize) -> Self {
-        let protential_depth = calculate_depth(capacity);
-        let protential_node_count = calculate_node_count(protential_depth);
+        let protential_height = calculate_height(capacity);
+        let protential_node_count = calculate_node_count(protential_height);
         Self {
             leafs: Vec::with_capacity(capacity),
             nodes: Vec::with_capacity(protential_node_count),
@@ -72,16 +72,28 @@ where
                 let right = index * 2 + 2;
                 let left_hash = self.calculate_hash_if_needed(left);
                 let right_hash = self.calculate_hash_if_needed(right);
-                let hash =
-                    TMerger::merge([left_hash, right_hash], MerkleTreeNodeMetadata::new(index));
+                let hash = TMerger::merge(
+                    [left_hash, right_hash],
+                    MerkleTreeNodeMetadata::new(index, self.height),
+                );
                 self.nodes[index] = hash.clone();
                 hash
             }
         } else {
             let leaf_index = index - self.nodes.len();
             if leaf_index < self.leafs.len() {
-                let (hash, _) = &self.leafs[leaf_index];
-                Some(hash.clone())
+                let (data, hash) = &mut self.leafs[leaf_index];
+                match hash {
+                    None => {
+                        let node_hash = Some(THasher::hash(
+                            data,
+                            MerkleTreeNodeMetadata::new(index, self.height),
+                        ));
+                        *hash = node_hash.clone();
+                        node_hash
+                    }
+                    _ => hash.clone(),
+                }
             } else {
                 None
             }
@@ -99,8 +111,8 @@ where
     type Item = TItem;
     type Hash = THash;
 
-    fn depth(&self) -> u32 {
-        self.depth
+    fn height(&self) -> u32 {
+        self.height
     }
 
     fn count(&self) -> usize {
@@ -114,14 +126,18 @@ where
     fn add_batch(&mut self, items: impl IntoIterator<Item = Self::Item>) {
         let mut leaves: Vec<_> = items
             .into_iter()
-            .enumerate()
-            .map(|(i, item)| (THasher::hash(&item, MerkleTreeNodeMetadata::new(i)), item))
+            .map(|item| {
+                (
+                    // Tree height might be changed, do not calculate hash here.
+                    item, None,
+                )
+            })
             .collect();
         let new_leaf_count = self.leafs.len() + leaves.len();
-        let new_depth = calculate_depth(new_leaf_count);
-        if new_depth != self.depth {
-            let new_node_count = calculate_node_count(new_depth);
-            self.depth = new_depth;
+        let new_height = calculate_height(new_leaf_count);
+        if new_height != self.height {
+            let new_node_count = calculate_node_count(new_height);
+            self.height = new_height;
             self.nodes = vec![None; new_node_count];
         } else {
             let start = self.nodes.len() + self.leafs.len();
@@ -145,7 +161,7 @@ where
 {
     fn default() -> Self {
         Self {
-            depth: 0,
+            height: 0,
             leafs: Vec::new(),
             nodes: Vec::new(),
             _pd_hasher: Default::default(),
@@ -154,7 +170,7 @@ where
     }
 }
 
-fn calculate_depth(size: usize) -> u32 {
+fn calculate_height(size: usize) -> u32 {
     if size < 2 {
         0
     } else {
@@ -162,8 +178,8 @@ fn calculate_depth(size: usize) -> u32 {
     }
 }
 
-fn calculate_node_count(depth: u32) -> usize {
-    2_usize.pow(depth) - 1
+fn calculate_node_count(height: u32) -> usize {
+    2_usize.pow(height) - 1
 }
 
 fn calculate_parent_index(index: usize) -> usize {
@@ -176,14 +192,16 @@ mod tests {
     use super::*;
 
     #[test]
-    fn calculate_depth_tests() {
-        assert_eq!(0, calculate_depth(0));
-        assert_eq!(0, calculate_depth(1));
-        assert_eq!(1, calculate_depth(2));
-        assert_eq!(2, calculate_depth(3));
-        assert_eq!(2, calculate_depth(4));
-        assert_eq!(3, calculate_depth(5));
-        assert_eq!(4, calculate_depth(11));
-        assert_eq!(5, calculate_depth(29));
+    fn calculate_height_tests() {
+        assert_eq!(0, calculate_height(0));
+        assert_eq!(0, calculate_height(1));
+        assert_eq!(1, calculate_height(2));
+        assert_eq!(2, calculate_height(3));
+        assert_eq!(2, calculate_height(4));
+        assert_eq!(3, calculate_height(5));
+        assert_eq!(4, calculate_height(11));
+        assert_eq!(5, calculate_height(29));
+        // Genesis ledger account number
+        assert_eq!(11, calculate_height(1676));
     }
 }

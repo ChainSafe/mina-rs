@@ -98,13 +98,19 @@ mod tests {
         test_mina_merkle_tree(188, 17578, 8);
     }
 
-    fn test_mina_merkle_tree(n: usize, expected_root_hash: i64, expected_depth: u32) {
+    // 1676 is the account number of the genesis ledger
+    #[test]
+    fn mina_merkle_tree_tests_1676() {
+        test_mina_merkle_tree(1676, 1403650, 11);
+    }
+
+    fn test_mina_merkle_tree(n: usize, expected_root_hash: i64, expected_height: u32) {
         let mut tree = TestMerkleTree::with_capacity(n);
         let v: Vec<i64> = (0..n).map(|i| i as i64).collect();
         tree.add_batch(v);
 
         assert_eq!(tree.count(), n);
-        assert_eq!(tree.depth(), expected_depth);
+        assert_eq!(tree.height(), expected_height);
         assert_eq!(tree.root().unwrap(), expected_root_hash);
     }
 
@@ -125,7 +131,7 @@ mod tests {
         tree: &mut TestMerkleTree,
         n: usize,
         expected_root_hash: i64,
-        expected_depth: u32,
+        expected_height: u32,
     ) {
         let v: Vec<i64> = (tree.count()..n).map(|i| i as i64).collect();
         if v.len() > 1 {
@@ -135,7 +141,7 @@ mod tests {
         }
 
         assert_eq!(tree.count(), n);
-        assert_eq!(tree.depth(), expected_depth);
+        assert_eq!(tree.height(), expected_height);
         assert_eq!(tree.root().unwrap(), expected_root_hash);
     }
 }

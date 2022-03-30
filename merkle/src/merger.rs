@@ -20,7 +20,7 @@ pub trait MerkleMerger<const DEGREE: usize = DEFAULT_DEGREE> {
 }
 
 /// Merger for mina binary merkle tree that uses poseidon hash
-/// with mina specific domain string calculated from node depth
+/// with mina specific domain string calculated from node height
 pub struct MinaPoseidonMerkleMerger {}
 
 impl<const DEGREE: usize> MerkleMerger<DEGREE> for MinaPoseidonMerkleMerger {
@@ -31,8 +31,11 @@ impl<const DEGREE: usize> MerkleMerger<DEGREE> for MinaPoseidonMerkleMerger {
     ) -> Option<Self::Hash> {
         // FIXME: Get hasher from object pool
         // when https://github.com/o1-labs/proof-systems/pull/462/files is merged
-        let mut hasher = create_legacy(());
-        Some(hasher.hash(&MinaPoseidonMerkleTreeNonLeafNode(hashes, metadata)))
+        // FIXME: Avoid creating hasher with height when https://github.com/o1-labs/proof-systems/pull/479 is merged
+        let height = metadata.height();
+        let hashable = MinaPoseidonMerkleTreeNonLeafNode(hashes, metadata);
+        let mut hasher = create_legacy(height);
+        Some(hasher.hash(&hashable))
     }
 }
 
@@ -43,7 +46,7 @@ struct MinaPoseidonMerkleTreeNonLeafNode<const DEGREE: usize>(
 );
 
 impl<const DEGREE: usize> Hashable for MinaPoseidonMerkleTreeNonLeafNode<DEGREE> {
-    type D = ();
+    type D = u32;
 
     fn to_roinput(&self) -> mina_hasher::ROInput {
         let mut roi = ROInput::new();
@@ -53,12 +56,17 @@ impl<const DEGREE: usize> Hashable for MinaPoseidonMerkleTreeNonLeafNode<DEGREE>
         roi
     }
 
-    fn domain_string(this: Option<&Self>, _: Self::D) -> Option<String> {
-        if let Some(this) = this {
-            let meta = &this.1;
-            Some(make_prefix_merkle_tree(meta.depth()))
-        } else {
-            None
-        }
+    fn domain_string(_: Option<&Self>, height: Self::D) -> Option<String> {
+        // FIXME: Read depth from self when https://github.com/o1-labs/proof-systems/pull/479 is merged
+        // use height - 1 here because in mina leaf nodes are not counted
+        Some(make_prefix_merkle_tree(height - 1))
+        // if let Some(this) = this {
+        //     println!("domain_string Some");
+        //     let meta = &this.1;
+        //     Some(make_prefix_merkle_tree(meta.height()-1))
+        // } else {
+        //     println!("domain_string None");
+        //     None
+        // }
     }
 }
