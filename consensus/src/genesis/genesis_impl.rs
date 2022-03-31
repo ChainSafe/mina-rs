@@ -6,42 +6,45 @@ use super::*;
 impl Genesis for ExternalTransition {
     /// Initialize genesis block
     /// <https://github.com/MinaProtocol/mina/tree/feature/9665-spec-ouroboros-samasika-checkpointing/docs/specs/consensus#611-genesis-block>
-    fn from_genesis_config(config: &GenesisInitConfig) -> ExternalTransition {
-        let mut et = ExternalTransition::default();
-
-        et.protocol_state.body.blockchain_state = config.blockchain_state.clone();
-        et.protocol_state.body.constants = config.constants.clone();
-
-        let cs = &mut et.protocol_state.body.consensus_state;
-        cs.blockchain_length = 1_u32.into();
-        cs.epoch_count = 0_u32.into();
-        cs.min_window_density =
-            (config.sub_windows_per_window * config.constants.slots_per_sub_window.0).into();
-        cs.sub_window_densities = config.sub_window_densities.clone();
-        cs.last_vrf_output = config.last_vrf_output.clone();
-        cs.total_currency = config.total_currency;
-        cs.curr_global_slot = GlobalSlot {
-            slot_number: 0_u32.into(),
-            slots_per_epoch: config.constants.slots_per_epoch,
+    fn from_genesis_config(config: GenesisInitConfig) -> ExternalTransition {
+        let protocol_state = ProtocolState {
+            body: ProtocolStateBody {
+                blockchain_state: config.blockchain_state,
+                constants: config.constants.clone(),
+                consensus_state: ConsensusState {
+                    block_creator: config.block_creator,
+                    block_stake_winner: config.block_stake_winner,
+                    blockchain_length: 1_u32.into(),
+                    epoch_count: 0_u32.into(),
+                    coinbase_receiver: config.coinbase_receiver,
+                    curr_global_slot: GlobalSlot {
+                        slot_number: 0_u32.into(),
+                        slots_per_epoch: config.constants.slots_per_epoch,
+                    },
+                    global_slot_since_genesis: 0_u32.into(),
+                    has_ancestor_in_same_checkpoint_window: true,
+                    last_vrf_output: config.last_vrf_output,
+                    min_window_density: (config.sub_windows_per_window
+                        * config.constants.slots_per_sub_window.0)
+                        .into(),
+                    next_epoch_data: config.next_epoch_data,
+                    staking_epoch_data: config.staking_epoch_data,
+                    sub_window_densities: config.sub_window_densities,
+                    supercharge_coinbase: true,
+                    total_currency: config.total_currency,
+                },
+                genesis_state_hash: config.genesis_state_hash,
+            },
+            previous_state_hash: config.previous_state_hash,
         };
-        cs.global_slot_since_genesis = 0_u32.into();
-        cs.staking_epoch_data = config.staking_epoch_data.clone();
-        cs.next_epoch_data = config.next_epoch_data.clone();
-        cs.has_ancestor_in_same_checkpoint_window = true;
-        cs.block_stake_winner = config.block_stake_winner.clone();
-        cs.block_creator = config.block_creator.clone();
-        cs.coinbase_receiver = config.coinbase_receiver.clone();
-        cs.supercharge_coinbase = true;
 
-        et.protocol_state.previous_state_hash = config.previous_state_hash.clone();
-        et.protocol_state.body.genesis_state_hash = config.genesis_state_hash.clone();
-
-        et.protocol_state_proof = config.protocol_state_proof.clone();
-
-        et.delta_transition_chain_proof = config.delta_transition_chain_proof.clone();
-        et.current_protocol_version = ProtocolVersion::default();
-        et.proposed_protocol_version_opt = None;
-
-        et
+        ExternalTransition {
+            staged_ledger_diff: StagedLedgerDiff::default(),
+            protocol_state,
+            protocol_state_proof: config.protocol_state_proof,
+            delta_transition_chain_proof: config.delta_transition_chain_proof,
+            current_protocol_version: ProtocolVersion::default(),
+            proposed_protocol_version_opt: None,
+        }
     }
 }

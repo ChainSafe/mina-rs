@@ -3,8 +3,8 @@
 
 //! Types related to the Mina protocol state
 
-use mina_crypto::hash::{StateHash};
-
+use mina_crypto::hash::{Hashable, StateHash};
+use serde::Serialize;
 use crate::{
     blockchain_state::BlockchainState,
     consensus_state::ConsensusState,
@@ -27,7 +27,8 @@ pub struct ProtocolConstants {
     pub genesis_state_timestamp: BlockTime,
 }
 
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq, Serialize)]
+#[serde(into = "mina_serialization_types::v1::ProtocolStateV1")] 
 /// This structure can be thought of like the block header. It contains the most essential information of a block.
 pub struct ProtocolState {
     /// Commitment to previous block (hash of previous protocol state hash and body hash)
@@ -42,6 +43,12 @@ impl ProtocolState {
         &self.body.consensus_state.curr_global_slot
     }
 }
+
+// Protocol state hashes into a StateHash type
+impl Hashable<StateHash> for ProtocolState {}
+
+impl Hashable<StateHash> for &ProtocolState {}
+
 
 #[derive(Clone, Debug, PartialEq)]
 /// Body of the protocol state

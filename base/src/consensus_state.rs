@@ -9,13 +9,13 @@ use crate::{
     numbers::{Amount, GlobalSlotNumber, Length},
 };
 use derive_more::From;
-use mina_crypto::{prelude::*};
+use mina_crypto::{hash::*, prelude::*};
 use mina_signer::CompressedPubKey;
-
+use serde::Serialize;
 
 
 /// Wrapper struct for the output for a VRF
-#[derive(Clone, Default, PartialEq, Debug, From)]
+#[derive(Clone, Default, PartialEq, Debug, From, Serialize)]
 pub struct VrfOutputTruncated(pub Vec<u8>);
 
 impl Base64Encodable for VrfOutputTruncated {}
@@ -25,6 +25,8 @@ impl From<&str> for VrfOutputTruncated {
         VrfOutputTruncated(s.as_bytes().to_vec())
     }
 }
+
+impl Hashable<VrfOutputHash> for VrfOutputTruncated {}
 
 impl AsRef<[u8]> for VrfOutputTruncated {
     fn as_ref(&self) -> &[u8] {

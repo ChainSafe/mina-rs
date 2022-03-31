@@ -21,6 +21,8 @@ hex = "0.4"
 lazy_static = "1"
 thiserror = "1"
 
+mina-signer = {git = "https://github.com/willemolding/proof-systems", rev = "c05889b53668b44bb8944737581a24399747fb78"}
+
 [dev-dependencies]
 base64 = "0.13"
 time = {version = "0.3", features = ["macros"]}

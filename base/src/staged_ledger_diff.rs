@@ -13,13 +13,13 @@ use crate::user_commands::UserCommand;
 
 use mina_signer::CompressedPubKey;
 
-#[derive(Clone, PartialEq, Debug)]
+#[derive(Clone, PartialEq, Debug, Default)]
 /// Top level wrapper type for a StagedLedgerDiff
 pub struct StagedLedgerDiff {
     pub diff: StagedLedgerDiffTuple,
 }
 
-#[derive(Clone, PartialEq, Debug)]
+#[derive(Clone, PartialEq, Debug, Default)]
 pub struct StagedLedgerDiffTuple(
     pub(crate) (StagedLedgerPreDiffTwo, Option<StagedLedgerPreDiffOne>),
 );
@@ -37,7 +37,7 @@ impl StagedLedgerDiffTuple {
 // FIXME: No test coverage yet
 pub type StagedLedgerPreDiffOne = ();
 
-#[derive(Clone, PartialEq, Debug)]
+#[derive(Clone, PartialEq, Debug, Default)]
 pub struct StagedLedgerPreDiffTwo {
     pub completed_works: Vec<TransactionSnarkWork>,
     pub commands: Vec<UserCommandWithStatus>,

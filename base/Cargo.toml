@@ -27,7 +27,7 @@ commitment_dlog = {git = "https://github.com/o1-labs/proof-systems", rev = "6af2
 mina-curves = {git = "https://github.com/o1-labs/proof-systems", rev = "6af257b793d80f900675acc01b16fd4bf6375268"}
 plonk_circuits = {git = "https://github.com/o1-labs/proof-systems", rev = "6af257b793d80f900675acc01b16fd4bf6375268"}
 plonk_protocol_dlog = {git = "https://github.com/o1-labs/proof-systems", rev = "6af257b793d80f900675acc01b16fd4bf6375268"}
-mina-signer = {git = "https://github.com/willemolding/proof-systems", rev = "d4e311e3c7dc7e6ad6bd42dc2a23bbc7093335ce"}
+mina-signer = {git = "https://github.com/willemolding/proof-systems", rev = "c05889b53668b44bb8944737581a24399747fb78"}
 
 # This dependency is not used by the crate, but is a subdependency of commitment_dlog
 # This features must be enable to build with WASM support
