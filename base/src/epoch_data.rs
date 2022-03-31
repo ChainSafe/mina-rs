@@ -3,12 +3,12 @@
 
 //! Types and functions related to the EpochData structure
 
-use serde::{Deserialize, Serialize};
+
 
 use crate::numbers::{Amount, Length};
 use mina_crypto::hash::*;
 
-#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug)]
+#[derive(Clone, Default, PartialEq, Debug)]
 /// Epoch Ledger
 pub struct EpochLedger {
     /// A unique identifier of the EpochLedger
@@ -17,7 +17,7 @@ pub struct EpochLedger {
     pub total_currency: Amount,
 }
 
-#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug)]
+#[derive(Clone, Default, PartialEq, Debug)]
 /// Epoch data
 pub struct EpochData {
     /// Epoch Ledger, contains ledger related data for the epoch

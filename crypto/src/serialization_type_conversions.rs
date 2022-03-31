@@ -2,54 +2,12 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::hash::{NonSnarkStagedLedgerHash, StagedLedgerHash};
-use crate::signature::{CompressedCurvePoint, InnerCurveScalar, PublicKey, Signature};
+use crate::signature::{InnerCurveScalar, Signature};
 use mina_serialization_types::{
     signatures::InnerCurveScalar as InnerCurveScalarV1,
-    v1::{NonSnarkStagedLedgerHashV1, PublicKey2V1, PublicKeyV1, SignatureV1, StagedLedgerHashV1},
+    v1::{NonSnarkStagedLedgerHashV1, SignatureV1, StagedLedgerHashV1},
 };
 use versioned::Versioned;
-
-impl From<PublicKey> for PublicKeyV1 {
-    fn from(t: PublicKey) -> Self {
-        Self::new(Versioned::new(
-            mina_serialization_types::signatures::CompressedCurvePoint {
-                x: t.poly.x,
-                is_odd: t.poly.is_odd,
-            },
-        ))
-    }
-}
-impl From<PublicKeyV1> for PublicKey {
-    fn from(t: PublicKeyV1) -> Self {
-        Self {
-            poly: CompressedCurvePoint {
-                x: t.t.t.x,
-                is_odd: t.t.t.is_odd,
-            },
-        }
-    }
-}
-
-impl From<PublicKey> for PublicKey2V1 {
-    fn from(t: PublicKey) -> Self {
-        Self::new(Versioned::new(Versioned::new(
-            mina_serialization_types::signatures::CompressedCurvePoint {
-                x: t.poly.x,
-                is_odd: t.poly.is_odd,
-            },
-        )))
-    }
-}
-impl From<PublicKey2V1> for PublicKey {
-    fn from(t: PublicKey2V1) -> Self {
-        Self {
-            poly: CompressedCurvePoint {
-                x: t.t.t.t.x,
-                is_odd: t.t.t.t.is_odd,
-            },
-        }
-    }
-}
 
 impl From<Signature> for SignatureV1 {
     fn from(t: Signature) -> Self {

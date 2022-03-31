@@ -9,11 +9,13 @@ use crate::{
     numbers::{Amount, GlobalSlotNumber, Length},
 };
 use derive_more::From;
-use mina_crypto::{hash::*, prelude::*, signature::*};
-use serde::{Deserialize, Serialize};
+use mina_crypto::{prelude::*};
+use mina_signer::CompressedPubKey;
+
+
 
 /// Wrapper struct for the output for a VRF
-#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, From)]
+#[derive(Clone, Default, PartialEq, Debug, From)]
 pub struct VrfOutputTruncated(pub Vec<u8>);
 
 impl Base64Encodable for VrfOutputTruncated {}
@@ -23,8 +25,6 @@ impl From<&str> for VrfOutputTruncated {
         VrfOutputTruncated(s.as_bytes().to_vec())
     }
 }
-
-impl Hashable<VrfOutputHash> for VrfOutputTruncated {}
 
 impl AsRef<[u8]> for VrfOutputTruncated {
     fn as_ref(&self) -> &[u8] {
@@ -41,7 +41,7 @@ impl AsRef<[u8]> for VrfOutputTruncated {
 /// approach where the future stake distribution snapshot is prepared by the current consensus epoch.
 ///
 /// Samasika prepares the past for the future! This future state is stored in the next_epoch_data field.
-#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq)]
 pub struct ConsensusState {
     /// Height of block
     pub blockchain_length: Length,
@@ -66,11 +66,11 @@ pub struct ConsensusState {
     /// If the block has an ancestor in the same checkpoint window
     pub has_ancestor_in_same_checkpoint_window: bool,
     /// Compressed public key of winning account
-    pub block_stake_winner: PublicKey,
+    pub block_stake_winner: CompressedPubKey,
     /// Compressed public key of the block producer
-    pub block_creator: PublicKey,
+    pub block_creator: CompressedPubKey,
     /// Compresed public key of account receiving the block reward
-    pub coinbase_receiver: PublicKey,
+    pub coinbase_receiver: CompressedPubKey,
     /// true if block_stake_winner has no locked tokens, false otherwise
     pub supercharge_coinbase: bool,
 }

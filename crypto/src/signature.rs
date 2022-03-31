@@ -7,27 +7,10 @@
 
 use crate::{
     base58::{version_bytes, Base58Encodable},
-    impl_bs58_for_binprot,
 };
-
 use derive_more::{From, Into};
-use mina_serialization_types::v1::PublicKeyV1;
 use serde::{Deserialize, Serialize};
 
-#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
-pub struct CompressedCurvePoint {
-    pub x: [u8; 32],
-    pub is_odd: bool,
-}
-
-#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
-#[serde(from = "PublicKeyV1")]
-#[serde(into = "PublicKeyV1")]
-pub struct PublicKey {
-    pub poly: CompressedCurvePoint,
-}
-
-impl_bs58_for_binprot!(PublicKey, version_bytes::NON_ZERO_CURVE_POINT_COMPRESSED);
 
 #[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug)]
 pub struct Signature(pub (FieldPoint, InnerCurveScalar));

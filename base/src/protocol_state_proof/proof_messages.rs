@@ -2,12 +2,12 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::types::{ECPoint, ECPointVec, FiniteECPoint};
-use serde::{Deserialize, Serialize};
+
 
 use ark_ec::models::short_weierstrass_jacobian::GroupAffine;
 use ark_ec::models::ModelParameters;
 
-#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug)]
+#[derive(Clone, Default, PartialEq, Debug)]
 pub struct ProofMessages {
     pub l_comm: ProofMessageWithoutDegreeBoundList,
     pub r_comm: ProofMessageWithoutDegreeBoundList,
@@ -32,10 +32,10 @@ where
     }
 }
 
-#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug)]
+#[derive(Clone, Default, PartialEq, Debug)]
 pub struct ProofMessageWithoutDegreeBoundList(pub Vec<FiniteECPoint>);
 
-#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug)]
+#[derive(Clone, Default, PartialEq, Debug)]
 pub struct ProofMessageWithDegreeBound {
     pub unshifted: ECPointVec,
     pub shifted: ECPoint,

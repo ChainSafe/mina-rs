@@ -8,19 +8,18 @@
 #![allow(missing_docs)]
 
 use crate::types::TokenId;
-use mina_crypto::signature::PublicKey;
-use serde::{Deserialize, Serialize};
-
 use crate::numbers::Amount;
 use crate::user_commands::UserCommand;
 
-#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug)]
+use mina_signer::CompressedPubKey;
+
+#[derive(Clone, Default, PartialEq, Debug)]
 /// Top level wrapper type for a StagedLedgerDiff
 pub struct StagedLedgerDiff {
     pub diff: StagedLedgerDiffTuple,
 }
 
-#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug)]
+#[derive(Clone, Default, PartialEq, Debug)]
 pub struct StagedLedgerDiffTuple(
     pub(crate) (StagedLedgerPreDiffTwo, Option<StagedLedgerPreDiffOne>),
 );
@@ -38,7 +37,7 @@ impl StagedLedgerDiffTuple {
 // FIXME: No test coverage yet
 pub type StagedLedgerPreDiffOne = ();
 
-#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug)]
+#[derive(Clone, Default, PartialEq, Debug)]
 pub struct StagedLedgerPreDiffTwo {
     pub completed_works: Vec<TransactionSnarkWork>,
     pub commands: Vec<UserCommandWithStatus>,
@@ -48,13 +47,13 @@ pub struct StagedLedgerPreDiffTwo {
 
 pub type TransactionSnarkWork = ();
 
-#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug)]
+#[derive(Clone, Default, PartialEq, Debug)]
 pub struct UserCommandWithStatus {
     pub data: UserCommand,
     pub status: TransactionStatus,
 }
 
-#[derive(Clone, Serialize, Deserialize, PartialEq, Debug)]
+#[derive(Clone, PartialEq, Debug)]
 #[non_exhaustive]
 pub enum TransactionStatus {
     Applied(TransactionStatusApplied),
@@ -67,7 +66,7 @@ impl Default for TransactionStatus {
     }
 }
 
-#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug)]
+#[derive(Clone, Default, PartialEq, Debug)]
 pub struct TransactionStatusApplied(
     pub (TransactionStatusAuxiliaryData, TransactionStatusBalanceData),
 );
@@ -82,21 +81,21 @@ impl TransactionStatusApplied {
     }
 }
 
-#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug)]
+#[derive(Clone, Default, PartialEq, Debug)]
 pub struct TransactionStatusAuxiliaryData {
     pub fee_payer_account_creation_fee_paid: Option<Amount>,
     pub receiver_account_creation_fee_paid: Option<Amount>,
     pub created_token: Option<TokenId>,
 }
 
-#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug)]
+#[derive(Clone, Default, PartialEq, Debug)]
 pub struct TransactionStatusBalanceData {
     pub fee_payer_balance: Option<Amount>,
     pub source_balance: Option<Amount>,
     pub receiver_balance: Option<Amount>,
 }
 
-#[derive(Clone, Serialize, Deserialize, PartialEq, Debug)]
+#[derive(Clone, PartialEq, Debug)]
 #[non_exhaustive]
 pub enum CoinBase {
     Zero,
@@ -111,28 +110,28 @@ impl Default for CoinBase {
     }
 }
 
-#[derive(Clone, Serialize, Deserialize, PartialEq, Debug)]
+#[derive(Clone, PartialEq, Debug)]
 // FIXME: No test coverage yet
 pub struct CoinBaseFeeTransfer {
-    pub receiver_pk: PublicKey,
+    pub receiver_pk: CompressedPubKey,
     pub fee: Amount,
 }
 
-#[derive(Clone, Serialize, Deserialize, PartialEq, Debug)]
+#[derive(Clone, PartialEq, Debug)]
 #[non_exhaustive]
 pub enum InternalCommandBalanceData {
     CoinBase(CoinBaseBalanceData),
     FeeTransfer(FeeTransferBalanceData),
 }
 
-#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug)]
+#[derive(Clone, Default, PartialEq, Debug)]
 pub struct CoinBaseBalanceData {
     pub coinbase_receiver_balance: Amount,
     // FIXME: No test coverage yet
     pub fee_transfer_receiver_balance: Option<Amount>,
 }
 
-#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug)]
+#[derive(Clone, Default, PartialEq, Debug)]
 pub struct FeeTransferBalanceData {
     pub receiver1_balance: Amount,
     // FIXME: No test coverage yet

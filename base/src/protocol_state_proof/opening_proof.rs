@@ -2,12 +2,12 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::types::{FieldElement, FiniteECPoint, FiniteECPointPairVec};
-use serde::{Deserialize, Serialize};
+
 
 use ark_ec::models::ModelParameters;
 use ark_ec::short_weierstrass_jacobian::GroupAffine;
 
-#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug)]
+#[derive(Clone, Default, PartialEq, Debug)]
 pub struct OpeningProof {
     pub lr: FiniteECPointPairVec,
     pub z_1: FieldElement,

@@ -11,6 +11,8 @@ bin-prot = {path = "../protocol/bin-prot"}
 mina-serialization-types = {path = "../protocol/serialization-types"}
 versioned = {path = "../protocol/versioned"}
 
+mina-signer = {git = "https://github.com/o1-labs/proof-systems", rev = "d8a3c14f4ad953c8a46ab3bcc84c0abbc6be6a10"}
+
 base64 = "0.13"
 blake2 = "0.10"
 bs58 = {version = "0.4", features = ["check"]}
