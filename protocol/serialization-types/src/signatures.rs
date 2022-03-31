@@ -22,11 +22,11 @@ pub struct InnerCurveScalar(pub FieldElement);
 
 /// Public key (v1)
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
-pub struct PublicKeyV1(Versioned<Versioned<CompressedCurvePoint, 1>, 1>);
+pub struct PublicKeyV1(pub Versioned<Versioned<CompressedCurvePoint, 1>, 1>);
 
 /// Public key (v1) with an extra version byte
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
-pub struct PublicKey2V1(Versioned<PublicKeyV1, 1>); // with an extra version wrapper
+pub struct PublicKey2V1(pub Versioned<PublicKeyV1, 1>); // with an extra version wrapper
 
 /// Signature (v1)
 pub type SignatureV1 = Versioned<Versioned<(FieldElement, InnerCurveScalar), 1>, 1>;

@@ -3,16 +3,19 @@
 
 #[cfg(test)]
 mod tests {
-    use anyhow::bail;
+use anyhow::bail;
     use mina_crypto::hash::*;
     use mina_crypto::prelude::*;
-    use mina_crypto::signature::{PublicKey, Signature};
+    use mina_crypto::signature::{Signature};
     use mina_rs_base::types::*;
     use mina_serialization_types::v1::ExternalTransitionV1;
     use pretty_assertions::assert_eq;
     use test_fixtures::*;
     use time::macros::*;
     use wasm_bindgen_test::*;
+
+    use mina_signer::CompressedPubKey;
+    use o1_utils::field_helpers::FieldHelpers;
 
     #[wasm_bindgen_test]
     fn test_block_wasm() {
@@ -183,15 +186,15 @@ mod tests {
             true
         );
         assert_eq!(
-            PublicKey::from(consensus_state.t.t.block_stake_winner.clone()).to_base58_string(),
+            CompressedPubKey::from(consensus_state.t.t.block_stake_winner.clone().into()).into_address(),
             "B62qmsYXFNNE565yv7bEMPsPnpRCsMErf7J2v5jMnuKQ1jgwZS8BzXS"
         );
         assert_eq!(
-            PublicKey::from(consensus_state.t.t.block_creator.clone()).to_base58_string(),
+            CompressedPubKey::from(consensus_state.t.t.block_creator.clone().into()).into_address(),
             "B62qpge4uMq4Vv5Rvc8Gw9qSquUYd6xoW1pz7HQkMSHm6h1o7pvLPAN"
         );
         assert_eq!(
-            PublicKey::from(consensus_state.t.t.coinbase_receiver.clone()).to_base58_string(),
+            CompressedPubKey::from(consensus_state.t.t.coinbase_receiver.clone().into()).into_address(),
             "B62qk9WYHu2PBYv4EyEubnVQURcwpiV2ysuYYoMdwi8YTnwZQ7H4bLM"
         );
         assert_eq!(consensus_state.t.t.supercharge_coinbase, false);
@@ -200,7 +203,7 @@ mod tests {
             .into_vec()
             .unwrap();
         // TODO: Validate full bytes vec with salted mainnet signature
-        assert_eq!(consensus_state.t.t.block_creator.t.t.x[..], bytes[3..35]);
+        assert_eq!(consensus_state.t.t.block_creator.0.t.t.x[..], bytes[3..35]);
 
         assert_eq!(
             Amount::from(consensus_state.t.t.total_currency.t.t).to_string(),
@@ -238,7 +241,7 @@ mod tests {
                 let bytes = bs58::decode("B62qoSuxNqwogusxxZbs3gpJUxCCN4GZEv21FX8S2DtNpToLgKnrexM")
                     .into_vec()
                     .unwrap();
-                assert_eq!(command.signer.poly.x[..], bytes[3..35]);
+                assert_eq!(command.signer.x.to_bytes(), bytes[3..35]);
 
                 assert_eq!(Signature::from(command.signature.clone()).to_base58_string(), "7mXTB1bcHYLJTmTfMtTboo4FSGStvera3z2wd6qjSxhpz1hZFMZZjcyaWAFEmZhgbq6DqVqGsNodnYKsCbMAq7D8yWo5bRSd");
                 let bytes = bs58::decode("7mXTB1bcHYLJTmTfMtTboo4FSGStvera3z2wd6qjSxhpz1hZFMZZjcyaWAFEmZhgbq6DqVqGsNodnYKsCbMAq7D8yWo5bRSd")
@@ -267,13 +270,13 @@ mod tests {
                                 .into_vec()
                                 .unwrap();
                         // TODO: Validate full bytes vec with salted mainnet signature
-                        assert_eq!(body.source_pk.poly.x[..], bytes[3..35]);
+                        assert_eq!(body.source_pk.x.to_bytes(), bytes[3..35]);
                         let bytes =
                             bs58::decode("B62qn2MtuQ9GyyVnotUHB9Ehp9EZre5m6TYpGx64tBCDHHBZFZRURnL")
                                 .into_vec()
                                 .unwrap();
                         // TODO: Validate full bytes vec with salted mainnet signature
-                        assert_eq!(body.receiver_pk.poly.x[..], bytes[3..35]);
+                        assert_eq!(body.receiver_pk.x.to_bytes(), bytes[3..35]);
                         assert_eq!(body.token_id.0, 1);
                     }
                     _ => bail!(

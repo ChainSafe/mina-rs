@@ -75,21 +75,6 @@ impl AsRef<[u8]> for InnerCurveScalar {
 #[cfg(test)]
 pub mod tests {
     use super::*;
-    use bin_prot::to_writer;
-
-    #[test]
-    fn serialize_empty_keypair() {
-        let mut buf = Vec::new();
-        to_writer(&mut buf, &PublicKey::default()).unwrap();
-        println!("{:?}", buf)
-    }
-
-    #[test]
-    fn public_key_from_base58_roundtrip() {
-        let s = "B62qonDZEKYULNkfq7WGu1Z881YBRnMSuBGGX5DhnTv26mUyvN99mpo";
-        let k = PublicKey::from_base58(s).unwrap();
-        assert_eq!(s, k.to_base58_string())
-    }
 
     #[test]
     fn signature_from_base58_roundtrip() {

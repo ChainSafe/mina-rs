@@ -32,6 +32,10 @@ serde = {version = "1", features = ["derive"]}
 time = {version = "0.3", features = ["macros"]}
 wasm-bindgen-test = "0.3"
 
+mina-signer = {git = "https://github.com/willemolding/proof-systems", rev = "c05889b53668b44bb8944737581a24399747fb78"}
+o1-utils = {git = "https://github.com/willemolding/proof-systems", rev = "c05889b53668b44bb8944737581a24399747fb78"}
+
+
 [profile.bench]
 lto = true
 
