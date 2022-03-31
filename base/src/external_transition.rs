@@ -4,7 +4,7 @@
 //! Mina ExternalTransition
 
 use crate::types::*;
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 
 /// This structure represents a mina block
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]

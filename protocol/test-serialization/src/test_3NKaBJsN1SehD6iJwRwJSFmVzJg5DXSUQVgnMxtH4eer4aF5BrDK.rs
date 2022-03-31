@@ -186,8 +186,7 @@ mod tests {
             true
         );
         assert_eq!(
-            CompressedPubKey::from(consensus_state.t.t.block_stake_winner.clone())
-                .into_address(),
+            CompressedPubKey::from(consensus_state.t.t.block_stake_winner.clone()).into_address(),
             "B62qmsYXFNNE565yv7bEMPsPnpRCsMErf7J2v5jMnuKQ1jgwZS8BzXS"
         );
         assert_eq!(
@@ -195,8 +194,7 @@ mod tests {
             "B62qpge4uMq4Vv5Rvc8Gw9qSquUYd6xoW1pz7HQkMSHm6h1o7pvLPAN"
         );
         assert_eq!(
-            CompressedPubKey::from(consensus_state.t.t.coinbase_receiver.clone())
-                .into_address(),
+            CompressedPubKey::from(consensus_state.t.t.coinbase_receiver.clone()).into_address(),
             "B62qk9WYHu2PBYv4EyEubnVQURcwpiV2ysuYYoMdwi8YTnwZQ7H4bLM"
         );
         assert_eq!(consensus_state.t.t.supercharge_coinbase, false);
