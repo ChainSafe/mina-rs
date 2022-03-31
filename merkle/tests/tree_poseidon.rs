@@ -6,6 +6,7 @@ mod tests {
     use ark_ff::{BigInteger256, FromBytes};
     use mina_hasher::{Fp, Hashable, ROInput};
     use mina_merkle::*;
+    use std::collections::HashMap;
 
     #[derive(Debug, Clone)]
     struct TestLeafNode(u64);
@@ -34,10 +35,8 @@ mod tests {
     >;
 
     // The test case is from genesis ledger
-    // TODO: and e2e test to verify every hash node from genesis ledger
-    // once https://github.com/ChainSafe/mina-rs/pull/183 is merged
     #[test]
-    fn test_mina_poseidon_merkle_merger() {
+    fn test_mina_poseidon_merkle_merger_even() {
         let h1: Fp = BigInteger256::read(
             [
                 46, 111, 163, 222, 5, 13, 158, 61, 44, 42, 248, 84, 17, 204, 170, 242, 152, 233,
@@ -74,12 +73,57 @@ mod tests {
             tree.add(TestLeafNode(i))
         }
         let meta = MerkleTreeNodeMetadata::new(node_index, tree.height());
-        let expected =
+        let merged =
             MinaPoseidonMerkleMerger::merge([Some(h1), Some(h2)], meta).unwrap_or_default();
-        assert_eq!(expected, h3);
+        assert_eq!(h3, merged);
     }
 
-    // TODO: More test cases
+    #[cfg(not(target_arch = "wasm32"))]
+    #[test]
+    fn genesis_ledger_parity_test() {
+        use rocksdb::*;
+
+        let db =
+            DB::open_for_read_only(&Options::default(), "../ledger/test-data/genesis_ledger_6a887ea130e53b06380a9ab27b327468d28d4ce47515a0cc59759d4a3912f0ef/", true).unwrap();
+        let mut height_2_nodes: HashMap<u8, Vec<Fp>> = HashMap::new();
+        let mut max_height = 0;
+        for (height, hash) in db
+            .iterator(IteratorMode::Start)
+            .take_while(|(key, _)| key[0] < 0xfe)
+            .map(|(key, value)| {
+                let height = key[0];
+                let hash: Fp = BigInteger256::read(&value[2..]).unwrap().into();
+                (height, hash)
+            })
+        {
+            if height > max_height {
+                max_height = height;
+            }
+            if let Some(vec) = height_2_nodes.get_mut(&height) {
+                vec.push(hash);
+            } else {
+                height_2_nodes.insert(height, vec![hash]);
+            }
+        }
+        let mut assert_hit = false;
+        for height in (1..max_height).rev() {
+            let this_level = height_2_nodes.get(&height).unwrap();
+            let next_level = height_2_nodes.get(&(height - 1)).unwrap();
+            for (i, hash) in this_level.iter().enumerate() {
+                if 2 * i + 1 < next_level.len() {
+                    let left = next_level[2 * i];
+                    let right = next_level[2 * i + 1];
+                    let meta = MerkleTreeNodeMetadata::new(0, height as u32);
+                    let merged = MinaPoseidonMerkleMerger::merge([Some(left), Some(right)], meta)
+                        .unwrap_or_default();
+                    assert_eq!(hash, &merged, "fail at height {height}, i {i}");
+                    assert_hit = true;
+                }
+            }
+        }
+        assert!(assert_hit);
+    }
+
     #[test]
     fn mina_merkle_tree_tests_0() {
         let mut tree = TestMerkleTree::new();
