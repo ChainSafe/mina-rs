@@ -12,7 +12,7 @@ use crate::{
     numbers::{BlockTime, Length},
 };
 
-#[derive(Clone, Default, PartialEq, Debug)]
+#[derive(Clone, PartialEq, Debug)]
 /// Constants that define the consensus parameters
 pub struct ProtocolConstants {
     /// Point of finality (number of confirmations)
@@ -27,7 +27,7 @@ pub struct ProtocolConstants {
     pub genesis_state_timestamp: BlockTime,
 }
 
-#[derive(Clone, Default, Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq)]
 /// This structure can be thought of like the block header. It contains the most essential information of a block.
 pub struct ProtocolState {
     /// Commitment to previous block (hash of previous protocol state hash and body hash)
@@ -43,7 +43,7 @@ impl ProtocolState {
     }
 }
 
-#[derive(Clone, Default, Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq)]
 /// Body of the protocol state
 pub struct ProtocolStateBody {
     /// Genesis protocol state hash (used for hardforks)

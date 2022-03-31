@@ -56,9 +56,3 @@ pub enum SignedCommandPayloadBody {
     PaymentPayload(PaymentPayload),
     // FIXME: other variants are not covered by current test block
 }
-
-impl Default for SignedCommandPayloadBody {
-    fn default() -> Self {
-        Self::PaymentPayload(PaymentPayload::default())
-    }
-}

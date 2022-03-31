@@ -27,9 +27,3 @@ pub enum UserCommand {
     SignedCommand(SignedCommand),
     // FIXME: other variants are not covered by current test block
 }
-
-impl Default for UserCommand {
-    fn default() -> Self {
-        Self::SignedCommand(SignedCommand::default())
-    }
-}

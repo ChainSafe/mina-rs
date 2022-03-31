@@ -8,7 +8,7 @@ use crate::numbers::{Amount, TokenId};
 use mina_signer::CompressedPubKey;
 
 /// The data specific to payload commands
-#[derive(Clone, Default, PartialEq, Debug)]
+#[derive(Clone, PartialEq, Debug)]
 pub struct PaymentPayload {
     /// Account to transfer from
     pub source_pk: CompressedPubKey,

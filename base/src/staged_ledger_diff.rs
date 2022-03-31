@@ -13,13 +13,13 @@ use crate::user_commands::UserCommand;
 
 use mina_signer::CompressedPubKey;
 
-#[derive(Clone, Default, PartialEq, Debug)]
+#[derive(Clone, PartialEq, Debug)]
 /// Top level wrapper type for a StagedLedgerDiff
 pub struct StagedLedgerDiff {
     pub diff: StagedLedgerDiffTuple,
 }
 
-#[derive(Clone, Default, PartialEq, Debug)]
+#[derive(Clone, PartialEq, Debug)]
 pub struct StagedLedgerDiffTuple(
     pub(crate) (StagedLedgerPreDiffTwo, Option<StagedLedgerPreDiffOne>),
 );
@@ -37,7 +37,7 @@ impl StagedLedgerDiffTuple {
 // FIXME: No test coverage yet
 pub type StagedLedgerPreDiffOne = ();
 
-#[derive(Clone, Default, PartialEq, Debug)]
+#[derive(Clone, PartialEq, Debug)]
 pub struct StagedLedgerPreDiffTwo {
     pub completed_works: Vec<TransactionSnarkWork>,
     pub commands: Vec<UserCommandWithStatus>,
@@ -47,7 +47,7 @@ pub struct StagedLedgerPreDiffTwo {
 
 pub type TransactionSnarkWork = ();
 
-#[derive(Clone, Default, PartialEq, Debug)]
+#[derive(Clone, PartialEq, Debug)]
 pub struct UserCommandWithStatus {
     pub data: UserCommand,
     pub status: TransactionStatus,
@@ -60,13 +60,7 @@ pub enum TransactionStatus {
     // FIXME: other variants are not covered by current test block
 }
 
-impl Default for TransactionStatus {
-    fn default() -> Self {
-        Self::Applied(TransactionStatusApplied::default())
-    }
-}
-
-#[derive(Clone, Default, PartialEq, Debug)]
+#[derive(Clone, PartialEq, Debug)]
 pub struct TransactionStatusApplied(
     pub (TransactionStatusAuxiliaryData, TransactionStatusBalanceData),
 );
@@ -81,14 +75,14 @@ impl TransactionStatusApplied {
     }
 }
 
-#[derive(Clone, Default, PartialEq, Debug)]
+#[derive(Clone, PartialEq, Debug)]
 pub struct TransactionStatusAuxiliaryData {
     pub fee_payer_account_creation_fee_paid: Option<Amount>,
     pub receiver_account_creation_fee_paid: Option<Amount>,
     pub created_token: Option<TokenId>,
 }
 
-#[derive(Clone, Default, PartialEq, Debug)]
+#[derive(Clone, PartialEq, Debug)]
 pub struct TransactionStatusBalanceData {
     pub fee_payer_balance: Option<Amount>,
     pub source_balance: Option<Amount>,
@@ -124,14 +118,14 @@ pub enum InternalCommandBalanceData {
     FeeTransfer(FeeTransferBalanceData),
 }
 
-#[derive(Clone, Default, PartialEq, Debug)]
+#[derive(Clone, PartialEq, Debug)]
 pub struct CoinBaseBalanceData {
     pub coinbase_receiver_balance: Amount,
     // FIXME: No test coverage yet
     pub fee_transfer_receiver_balance: Option<Amount>,
 }
 
-#[derive(Clone, Default, PartialEq, Debug)]
+#[derive(Clone, PartialEq, Debug)]
 pub struct FeeTransferBalanceData {
     pub receiver1_balance: Amount,
     // FIXME: No test coverage yet

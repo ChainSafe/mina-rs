@@ -7,7 +7,7 @@ use crate::types::*;
 
 
 /// This structure represents a mina block
-#[derive(Clone, Debug, Default, PartialEq)]
+#[derive(Clone, Debug, PartialEq)]
 /// This structure represents a mina block received from an external block producer
 pub struct ExternalTransition {
     /// The blockchain state, including consensus and the ledger
