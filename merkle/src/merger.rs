@@ -3,8 +3,10 @@
 
 use super::*;
 use crate::prefixes::*;
-use lockfree_object_pool::SpinLockObjectPool;
+use ark_ff::BigInteger256;
+use lockfree_object_pool::{SpinLockObjectPool, SpinLockReusable};
 use mina_hasher::{create_legacy, Fp, Hashable, Hasher, PoseidonHasherLegacy, ROInput};
+use num::{BigUint, Num};
 use once_cell::sync::OnceCell;
 
 /// Trait that merges the hashes of child nodes
@@ -31,24 +33,12 @@ impl MerkleMerger for MinaPoseidonMerkleMerger {
         hashes: [Option<Self::Hash>; MINA_POSEIDON_MERKLE_DEGREE],
         metadata: MerkleTreeNodeMetadata<MINA_POSEIDON_MERKLE_DEGREE>,
     ) -> Option<Self::Hash> {
-        static HASHER_POOL: OnceCell<
-            SpinLockObjectPool<PoseidonHasherLegacy<MinaPoseidonMerkleTreeNonLeafNode>>,
-        > = OnceCell::new();
-        // Not calling reset here because `hasher.init` is called after `pull`, which implicitly calls sponge.reset()
-        let pool = HASHER_POOL.get_or_init(|| SpinLockObjectPool::new(|| create_legacy(0), |_| ()));
-        let height = metadata.height();
-        let hashable = MinaPoseidonMerkleTreeNonLeafNode(hashes, metadata);
-        let mut hasher = pool.pull();
-        hasher.init(height);
-        Some(hasher.hash(&hashable))
+        merge_poseidon_hash(hashes, metadata.height()).into()
     }
 }
 
 #[derive(Clone)]
-struct MinaPoseidonMerkleTreeNonLeafNode(
-    [Option<Fp>; MINA_POSEIDON_MERKLE_DEGREE],
-    MerkleTreeNodeMetadata<MINA_POSEIDON_MERKLE_DEGREE>,
-);
+struct MinaPoseidonMerkleTreeNonLeafNode([Option<Fp>; MINA_POSEIDON_MERKLE_DEGREE], u32);
 
 impl Hashable for MinaPoseidonMerkleTreeNonLeafNode {
     type D = u32;
@@ -68,5 +58,64 @@ impl Hashable for MinaPoseidonMerkleTreeNonLeafNode {
         } else {
             None
         }
+    }
+}
+
+fn merge_poseidon_hash(hashes: [Option<Fp>; MINA_POSEIDON_MERKLE_DEGREE], height: u32) -> Fp {
+    static HASHER_POOL: OnceCell<
+        SpinLockObjectPool<PoseidonHasherLegacy<MinaPoseidonMerkleTreeNonLeafNode>>,
+    > = OnceCell::new();
+    // Not calling reset here because `hasher.init` is called after `pull`, which implicitly calls sponge.reset()
+    let pool = HASHER_POOL.get_or_init(|| SpinLockObjectPool::new(|| create_legacy(0), |_| ()));
+    let mut hasher = pool.pull();
+    merge_poseidon_hash_with_hasher(&mut hasher, hashes, height)
+}
+
+fn merge_poseidon_hash_with_hasher(
+    hasher: &mut SpinLockReusable<PoseidonHasherLegacy<MinaPoseidonMerkleTreeNonLeafNode>>,
+    hashes: [Option<Fp>; MINA_POSEIDON_MERKLE_DEGREE],
+    height: u32,
+) -> Fp {
+    let mut flatten_hashes = hashes;
+    for hash_opt in flatten_hashes.iter_mut() {
+        if hash_opt.is_none() {
+            *hash_opt = get_empty_hash(hasher, height - 1).into();
+        }
+    }
+    let hashable = MinaPoseidonMerkleTreeNonLeafNode(flatten_hashes, height);
+    hasher.init(height);
+    hasher.hash(&hashable)
+}
+
+fn get_empty_hash(
+    hasher: &mut SpinLockReusable<PoseidonHasherLegacy<MinaPoseidonMerkleTreeNonLeafNode>>,
+    height: u32,
+) -> Fp {
+    if height == 0 {
+        static EMPTY_HASH: OnceCell<Fp> = OnceCell::new();
+        *EMPTY_HASH.get_or_init(|| {
+            let big = BigUint::from_str_radix(
+                /*
+                    This is From OCaml code,
+                    add below code to genesis_ledger_helper.ml and run dune test
+
+                    let%test_unit "empty hash" =
+                        let empty =
+                            Snark_params.Tick.Field.to_string Mina_base.Account.empty_digest
+                        in
+                        print_string empty
+                */
+                "14604874247461951431777712543359658136906556694369689076707549712589474483312",
+                10,
+            )
+            .expect("Failed to parse BigUint");
+            let big256: BigInteger256 = big
+                .try_into()
+                .expect("Failed to convert BigUint to BigInteger256");
+            big256.into()
+        })
+    } else {
+        let child_hash = get_empty_hash(hasher, height - 1);
+        merge_poseidon_hash_with_hasher(hasher, [Some(child_hash), Some(child_hash)], height)
     }
 }
