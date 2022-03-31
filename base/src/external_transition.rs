@@ -4,9 +4,12 @@
 //! Mina ExternalTransition
 
 use crate::types::*;
+use serde::{Serialize, Deserialize};
 
 /// This structure represents a mina block
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[serde(from = "mina_serialization_types::v1::ExternalTransitionV1")]
+#[serde(into = "mina_serialization_types::v1::ExternalTransitionV1")]
 /// This structure represents a mina block received from an external block producer
 pub struct ExternalTransition {
     /// The blockchain state, including consensus and the ledger
