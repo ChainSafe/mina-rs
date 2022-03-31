@@ -7,11 +7,13 @@ edition = "2021"
 license = "Apache-2.0"
 
 [dependencies]
-mina-crypto = {path = "../crypto"}
 bin-prot = {path = "../protocol/bin-prot"}
+mina-crypto = {path = "../crypto"}
 mina-serialization-types = {path = "../protocol/serialization-types"}
 versioned = {path = "../protocol/versioned"}
 
+ark-ec = "0.3.0"
+ark-ff = "0.3.0"
 base64 = "0.13"
 derive_deref = "1.1"
 derive_more = "0.99"
@@ -21,12 +23,8 @@ serde = {version = "1", features = ["derive"]}
 thiserror = "1"
 time = "0.3"
 
-ark-ec = "0.3.0"
-ark-ff = "0.3.0"
-commitment_dlog = {git = "https://github.com/o1-labs/proof-systems", rev = "6af257b793d80f900675acc01b16fd4bf6375268"}
-mina-curves = {git = "https://github.com/o1-labs/proof-systems", rev = "6af257b793d80f900675acc01b16fd4bf6375268"}
-plonk_circuits = {git = "https://github.com/o1-labs/proof-systems", rev = "6af257b793d80f900675acc01b16fd4bf6375268"}
-plonk_protocol_dlog = {git = "https://github.com/o1-labs/proof-systems", rev = "6af257b793d80f900675acc01b16fd4bf6375268"}
+commitment_dlog = {git = "https://github.com/o1-labs/proof-systems", rev = "3f5f90d190f537857c800a9aeb349bff2132d175"}
+mina-hasher = {git = "https://github.com/o1-labs/proof-systems", rev = "3f5f90d190f537857c800a9aeb349bff2132d175"}
 
 # This dependency is not used by the crate, but is a subdependency of commitment_dlog
 # This features must be enable to build with WASM support
@@ -35,4 +33,4 @@ plonk_protocol_dlog = {git = "https://github.com/o1-labs/proof-systems", rev = "
 getrandom = {version = "0.2", features = ["js"]}
 
 [dev-dependencies]
-test-fixtures = { path = "../protocol/test-fixtures" }
+test-fixtures = {path = "../protocol/test-fixtures"}

@@ -8,6 +8,7 @@ use std::fmt;
 use derive_deref::Deref;
 use derive_more::From;
 use mina_crypto::{hex::skip_0x_prefix_when_needed, prelude::*};
+use mina_hasher::ROInput;
 use num::Integer;
 use serde::{Deserialize, Serialize};
 use thiserror::Error;
@@ -20,11 +21,24 @@ use crate::constants::MINA_PRECISION;
 /// Newtype for TokenIds
 pub struct TokenId(pub u64);
 
+impl mina_hasher::Hashable for TokenId {
+    type D = ();
+
+    fn to_roinput(&self) -> ROInput {
+        let mut roi = ROInput::new();
+        roi.append_u64(self.0);
+        roi
+    }
+
+    fn domain_string(_: Self::D) -> Option<String> {
+        None
+    }
+}
+
 #[derive(
     Clone, Serialize, Deserialize, PartialEq, PartialOrd, Debug, Hash, Copy, Default, Deref, From,
 )]
 #[from(forward)]
-
 /// Represents the length of something (e.g. an epoch or window)
 pub struct Length(pub u32);
 
@@ -73,6 +87,20 @@ impl fmt::Display for Amount {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let (q, r) = self.0.div_rem(&MINA_PRECISION);
         write!(f, "{}.{:#09}", q, r)
+    }
+}
+
+impl mina_hasher::Hashable for Amount {
+    type D = ();
+
+    fn to_roinput(&self) -> ROInput {
+        let mut roi = ROInput::new();
+        roi.append_u64(self.0);
+        roi
+    }
+
+    fn domain_string(_: Self::D) -> Option<String> {
+        None
     }
 }
 
@@ -211,41 +239,5 @@ impl From<BigInt256> for ark_ff::BigInteger256 {
     fn from(i: BigInt256) -> Self {
         use ark_ff::bytes::FromBytes;
         Self::read(&i.0[..]).unwrap()
-    }
-}
-
-#[cfg(test)]
-pub mod tests {
-    use crate::numbers::*;
-    use crate::types::ParseAmountError;
-    use std::str::FromStr;
-
-    #[test]
-    pub fn test_amount_to_string() {
-        assert_eq!(Amount(0).to_string(), "0.000000000");
-        assert_eq!(Amount(3).to_string(), "0.000000003");
-        assert_eq!(Amount(1000000003).to_string(), "1.000000003");
-        assert_eq!(Amount(1000000030).to_string(), "1.000000030");
-        assert_eq!(Amount(1300000000).to_string(), "1.300000000");
-        assert_eq!(Amount(1000000000).to_string(), "1.000000000");
-    }
-
-    #[test]
-    pub fn test_amount_from_string() {
-        assert_eq!(Amount::from_str("0.000000000").unwrap(), Amount(0));
-        assert_eq!(Amount::from_str("0.000000003").unwrap(), Amount(3));
-        assert_eq!(Amount::from_str("1.000000003").unwrap(), Amount(1000000003));
-        assert_eq!(Amount::from_str("1.000000030").unwrap(), Amount(1000000030));
-        assert_eq!(Amount::from_str("1.300000000").unwrap(), Amount(1300000000));
-        assert_eq!(Amount::from_str("1.000000000").unwrap(), Amount(1000000000));
-
-        assert_eq!(
-            Amount::from_str("0.000000000.0").unwrap_err(),
-            ParseAmountError::ErrorInvalidFormat("0.000000000.0".to_string())
-        );
-        assert_eq!(
-            Amount::from_str("000000000").unwrap_err(),
-            ParseAmountError::ErrorInvalidFormat("000000000".to_string())
-        );
     }
 }
