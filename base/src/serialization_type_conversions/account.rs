@@ -29,19 +29,18 @@ impl From<Account> for AccountV1 {
 }
 impl From<AccountV1> for Account {
     fn from(t: AccountV1) -> Self {
-        let t = t.t.t.t;
         Self {
-            public_key: t.public_key.into(),
-            token_id: t.token_id.t.t.t.into(),
-            token_permissions: t.token_permissions.into(),
-            balance: t.balance.t.t.into(),
-            nonce: t.nonce.t.t.into(),
-            receipt_chain_hash: t.receipt_chain_hash.into(),
-            delegate: t.delegate.map(Into::into),
-            voting_for: t.voting_for.into(),
-            timing: t.timing.into(),
-            permissions: t.permissions.into(),
-            snapp: t.snapp.map(Into::into),
+            public_key: t.t.t.t.public_key.into(),
+            token_id: t.t.t.t.token_id.t.t.t.into(),
+            token_permissions: t.t.t.t.token_permissions.into(),
+            balance: t.t.t.t.balance.t.t.into(),
+            nonce: t.t.t.t.nonce.t.t.into(),
+            receipt_chain_hash: t.t.t.t.receipt_chain_hash.into(),
+            delegate: t.t.t.t.delegate.map(Into::into),
+            voting_for: t.t.t.t.voting_for.into(),
+            timing: t.t.t.t.timing.into(),
+            permissions: t.t.t.t.permissions.into(),
+            snapp: t.t.t.t.snapp.map(Into::into),
         }
     }
 }

@@ -5,7 +5,6 @@ members = [
   "crypto",
   "merkle",
   "network",
-  "ledger",
   "protocol/bin-prot",
   "protocol/bin_prot_checker",
   "protocol/test-fixtures",
