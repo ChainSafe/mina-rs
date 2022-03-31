@@ -23,8 +23,8 @@ serde = {version = "1", features = ["derive"]}
 thiserror = "1"
 time = "0.3"
 
-commitment_dlog = {git = "https://github.com/o1-labs/proof-systems", rev = "3f5f90d190f537857c800a9aeb349bff2132d175"}
-mina-hasher = {git = "https://github.com/o1-labs/proof-systems", rev = "3f5f90d190f537857c800a9aeb349bff2132d175"}
+commitment_dlog = {git = "https://github.com/o1-labs/proof-systems", rev = "56517b55920ea7afc811baa541c859dadc8ae50a"}
+mina-hasher = {git = "https://github.com/o1-labs/proof-systems", rev = "56517b55920ea7afc811baa541c859dadc8ae50a"}
 
 # This dependency is not used by the crate, but is a subdependency of commitment_dlog
 # This features must be enable to build with WASM support

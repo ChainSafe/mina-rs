@@ -63,10 +63,9 @@ impl mina_hasher::Hashable for Account {
         let mut roi = ROInput::new();
         roi
             // .append_hashable(self.public_key)
-            // FIXME: avoid doing clone here once https://github.com/o1-labs/proof-systems/pull/486 is merged
-            .append_hashable(self.token_id.clone())
+            .append_hashable(&self.token_id)
             // .append_hashable(self.token_permissions)
-            .append_hashable(self.balance)
+            .append_hashable(&self.balance)
             // .append_hashable(self.nonce)
             // .append_hashable(self.receipt_chain_hash)
             // .append_hashable(self.delegate)
