@@ -6,7 +6,6 @@ use ark_ec::short_weierstrass_jacobian::GroupAffine;
 use mina_crypto::{hex::skip_0x_prefix_when_needed, prelude::*};
 use num::Integer;
 
-
 use crate::numbers::BigInt256;
 
 /// Represents an element in a finite field that can be encoded as

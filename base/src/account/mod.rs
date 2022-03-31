@@ -15,7 +15,7 @@ pub use token_permissions::TokenPermissions;
 use crate::numbers::{AccountNonce, Amount, TokenId};
 use mina_crypto::hash::{ChainHash, StateHash};
 
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 
 use mina_serialization_types::v1::AccountV1;
 use mina_signer::CompressedPubKey;

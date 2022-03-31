@@ -7,8 +7,8 @@
 // TODO: Get clarification on all the fields of this type before documenting
 #![allow(missing_docs)]
 
-use crate::types::TokenId;
 use crate::numbers::Amount;
+use crate::types::TokenId;
 use crate::user_commands::UserCommand;
 
 use mina_signer::CompressedPubKey;

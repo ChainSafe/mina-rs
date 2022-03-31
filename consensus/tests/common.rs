@@ -130,10 +130,10 @@ mod tests {
     // @willemolding:
     // I have disabled this test as I don't believe it is testing what it is supposed to (or it isn't clear)
     // This tests actually picking the chain by tie-breaking on the state hash. Therefore when we change how
-    // the state hash is calculated (which this PR does) it breaks the test. I suggest this be rewritten to 
+    // the state hash is calculated (which this PR does) it breaks the test. I suggest this be rewritten to
     // actually test selecting a longer chain, or if the test is supposed to be testing the tiebreaking logic
     // it should be more explicit about it and also robust to hash changes.
-    // 
+    //
     // #[test]
     // #[wasm_bindgen_test]
     // fn selects_longer_chain() {

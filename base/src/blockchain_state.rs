@@ -6,7 +6,6 @@
 use crate::numbers::{BlockTime, TokenId};
 use mina_crypto::hash::*;
 
-
 #[derive(Clone, Default, Debug, PartialEq)]
 /// Mina blockchain state struct
 pub struct BlockchainState {

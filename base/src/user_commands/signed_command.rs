@@ -4,7 +4,7 @@
 //! Signed commands are commands that require signing with some accounts private key
 
 use crate::numbers::{Amount, ExtendedU32, TokenId};
-use mina_crypto::signature::{Signature};
+use mina_crypto::signature::Signature;
 
 use mina_signer::CompressedPubKey;
 

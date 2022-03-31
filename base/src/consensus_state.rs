@@ -14,7 +14,6 @@ use mina_signer::CompressedPubKey;
 use serde::Serialize;
 use smart_default::SmartDefault;
 
-
 /// Wrapper struct for the output for a VRF
 #[derive(Clone, Default, PartialEq, Debug, From, Serialize)]
 pub struct VrfOutputTruncated(pub Vec<u8>);

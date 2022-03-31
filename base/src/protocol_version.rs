@@ -3,8 +3,6 @@
 
 //! Protocol version structure
 
-
-
 #[derive(Clone, Debug, PartialEq)]
 /// Defines a version of the Mina protocol in semver format
 pub struct ProtocolVersion {

@@ -5,7 +5,6 @@
 
 use crate::types::*;
 
-
 /// This structure represents a mina block
 #[derive(Clone, Debug, PartialEq)]
 /// This structure represents a mina block received from an external block producer

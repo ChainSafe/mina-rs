@@ -3,7 +3,6 @@
 
 use crate::types::FieldElementVec;
 
-
 #[derive(Clone, Default, PartialEq, Debug)]
 pub struct ProofEvaluations {
     pub l: FieldElementVec,

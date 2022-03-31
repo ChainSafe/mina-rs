@@ -1,8 +1,6 @@
 // Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
-
-
 use crate::types::Hex64;
 
 #[derive(Clone, Default, PartialEq, Debug)]

@@ -3,8 +3,6 @@
 
 //! Types and functions related to the EpochData structure
 
-
-
 use crate::numbers::{Amount, Length};
 use mina_crypto::hash::*;
 

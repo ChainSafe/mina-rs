@@ -20,25 +20,19 @@ use crate::constants::MINA_PRECISION;
 /// Newtype for TokenIds
 pub struct TokenId(pub u64);
 
-#[derive(
-    Clone, PartialEq, PartialOrd, Debug, Hash, Copy, Default, Deref, From,
-)]
+#[derive(Clone, PartialEq, PartialOrd, Debug, Hash, Copy, Default, Deref, From)]
 #[from(forward)]
 
 /// Represents the length of something (e.g. an epoch or window)
 pub struct Length(pub u32);
 
-#[derive(
-    Clone, PartialEq, PartialOrd, Debug, Hash, Copy, Default, From,
-)]
+#[derive(Clone, PartialEq, PartialOrd, Debug, Hash, Copy, Default, From)]
 #[from(forward)]
 
 /// Represents a difference between two lengths
 pub struct Delta(pub u32);
 
-#[derive(
-    Clone, PartialEq, PartialOrd, Debug, Hash, Copy, Default, From,
-)]
+#[derive(Clone, PartialEq, PartialOrd, Debug, Hash, Copy, Default, From)]
 #[from(forward)]
 // FIXME: 255 255 cannot be deserialized to u32, use i32 for now
 // Note: Extended_Uint32 is not defined in bin_prot, but comes from mina
@@ -47,9 +41,7 @@ pub struct Delta(pub u32);
 /// This will not be part of the public API once the deserialization refactor is complete
 pub struct ExtendedU32(pub i32);
 
-#[derive(
-    Clone, PartialEq, PartialOrd, Debug, Hash, Copy, Default, From,
-)]
+#[derive(Clone, PartialEq, PartialOrd, Debug, Hash, Copy, Default, From)]
 #[from(forward)]
 
 /// This will not be part of the public API once the deserialization refactor is complete

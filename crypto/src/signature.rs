@@ -5,12 +5,9 @@
 //! These are currently only used for serialization tests and will
 //! be replaced by those in the 01-labs/proof-systems repo in the future
 
-use crate::{
-    base58::{version_bytes, Base58Encodable},
-};
+use crate::base58::{version_bytes, Base58Encodable};
 use derive_more::{From, Into};
 use serde::{Deserialize, Serialize};
-
 
 #[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug)]
 pub struct Signature(pub (FieldPoint, InnerCurveScalar));

@@ -3,8 +3,6 @@
 
 //! types and functions related to Mina verificiation keys
 
-
-
 use crate::protocol_state_proof::field_and_curve_elements::FiniteECPoint;
 
 #[derive(Clone, Default, Debug, PartialEq)]

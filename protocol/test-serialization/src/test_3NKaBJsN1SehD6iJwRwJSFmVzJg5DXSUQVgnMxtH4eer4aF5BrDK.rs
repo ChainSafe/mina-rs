@@ -3,10 +3,10 @@
 
 #[cfg(test)]
 mod tests {
-use anyhow::bail;
+    use anyhow::bail;
     use mina_crypto::hash::*;
     use mina_crypto::prelude::*;
-    use mina_crypto::signature::{Signature};
+    use mina_crypto::signature::Signature;
     use mina_rs_base::types::*;
     use mina_serialization_types::v1::ExternalTransitionV1;
     use pretty_assertions::assert_eq;
@@ -186,7 +186,8 @@ use anyhow::bail;
             true
         );
         assert_eq!(
-            CompressedPubKey::from(consensus_state.t.t.block_stake_winner.clone().into()).into_address(),
+            CompressedPubKey::from(consensus_state.t.t.block_stake_winner.clone().into())
+                .into_address(),
             "B62qmsYXFNNE565yv7bEMPsPnpRCsMErf7J2v5jMnuKQ1jgwZS8BzXS"
         );
         assert_eq!(
@@ -194,7 +195,8 @@ use anyhow::bail;
             "B62qpge4uMq4Vv5Rvc8Gw9qSquUYd6xoW1pz7HQkMSHm6h1o7pvLPAN"
         );
         assert_eq!(
-            CompressedPubKey::from(consensus_state.t.t.coinbase_receiver.clone().into()).into_address(),
+            CompressedPubKey::from(consensus_state.t.t.coinbase_receiver.clone().into())
+                .into_address(),
             "B62qk9WYHu2PBYv4EyEubnVQURcwpiV2ysuYYoMdwi8YTnwZQ7H4bLM"
         );
         assert_eq!(consensus_state.t.t.supercharge_coinbase, false);

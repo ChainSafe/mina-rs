@@ -3,8 +3,6 @@
 
 //! Structure of a global slot
 
-
-
 use crate::numbers::{self, Length};
 
 #[derive(Clone, Default, PartialEq, Debug)]

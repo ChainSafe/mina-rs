@@ -3,7 +3,6 @@
 
 use crate::types::{FieldElement, FiniteECPoint, FiniteECPointPairVec};
 
-
 use ark_ec::models::ModelParameters;
 use ark_ec::short_weierstrass_jacobian::GroupAffine;
 

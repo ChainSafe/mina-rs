@@ -32,16 +32,16 @@ pub struct PublicKey2V1(pub Versioned<PublicKeyV1, 1>); // with an extra version
 pub type SignatureV1 = Versioned<Versioned<(FieldElement, InnerCurveScalar), 1>, 1>;
 
 mod conversions {
-    use super::{PublicKeyV1, PublicKey2V1, CompressedCurvePoint};
-    use versioned::Versioned;
-    use o1_utils::field_helpers::FieldHelpers;
+    use super::{CompressedCurvePoint, PublicKey2V1, PublicKeyV1};
     use mina_signer::{BaseField, CompressedPubKey};
+    use o1_utils::field_helpers::FieldHelpers;
+    use versioned::Versioned;
 
     impl Into<PublicKeyV1> for CompressedPubKey {
         fn into(self) -> PublicKeyV1 {
             PublicKeyV1(Versioned::new(Versioned::new(CompressedCurvePoint {
                 x: self.x.to_bytes().as_slice().try_into().unwrap(),
-                is_odd: self.is_odd
+                is_odd: self.is_odd,
             })))
         }
     }

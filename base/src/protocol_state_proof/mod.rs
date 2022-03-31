@@ -7,8 +7,6 @@
 // so full documentation will not be included
 #![allow(missing_docs)]
 
-
-
 use crate::numbers::{BigInt256, Char, Hex64};
 
 pub mod proof_messages;
