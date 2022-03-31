@@ -41,6 +41,11 @@ pub struct Delta(pub u32);
 /// This will not be part of the public API once the deserialization refactor is complete
 pub struct ExtendedU32(pub i32);
 
+impl ExtendedU32 {
+    /// Maximum value this type can hold
+    pub const MAX: Self = Self(i32::MAX);
+}
+
 #[derive(Clone, PartialEq, PartialOrd, Debug, Hash, Copy, Default, From)]
 #[from(forward)]
 

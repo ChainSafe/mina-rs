@@ -1,237 +1,103 @@
-// // Copyright 2020 ChainSafe Systems
-// // SPDX-License-Identifier: Apache-2.0
+// Copyright 2020 ChainSafe Systems
+// SPDX-License-Identifier: Apache-2.0
 
-// //! Helpers for building a user command
+//! Helpers for building a user command
 
-// use mina_signer::CompressedPubKey;
+use mina_signer::CompressedPubKey;
 
-// use crate::numbers::{Amount, ExtendedU32, TokenId};
-// use crate::user_commands::{
-//     PaymentPayload, SignedCommand, SignedCommandPayload, SignedCommandPayloadBody,
-//     SignedCommandPayloadCommon, UserCommand,
-// };
+use crate::numbers::{Amount, TokenId};
+use crate::types::ExtendedU32;
+use crate::user_commands::{
+    PaymentPayload, SignedCommand, SignedCommandPayload, SignedCommandPayloadBody,
+    SignedCommandPayloadCommon, UserCommand,
+};
 
-// /// A builder for UserCommands to transfer funds
-// #[derive(Default)]
-// pub struct SignedTransferCommandBuilder {
-//     common: SignedCommandPayloadCommon,
-//     payment: PaymentPayload,
-// }
+use super::SignedCommandMemo;
 
-// impl SignedTransferCommandBuilder {
-//     /// Create a new builder containing default transaction params
-//     pub fn new() -> Self {
-//         Self::default()
-//             .transfer_token(TokenId(1))
-//             .fee_token(TokenId(1)) // set the token IDs to the native token (100% of cases atm)
-//     }
+/// A builder for UserCommands to transfer funds
+pub struct SignedTransferCommandBuilder {
+    to: CompressedPubKey,
+    from: CompressedPubKey,
+    amount: Amount,
+    transfer_token: TokenId,
+    fee_token: TokenId,
+    fee: Amount,
+    nonce: ExtendedU32,
+    memo: SignedCommandMemo,
+    fee_payer_pk: CompressedPubKey,
+    valid_until: ExtendedU32,
+}
 
-//     /// Set the payment recipient account
-//     pub fn to(self, receiver_pk: CompressedPubKey) -> Self {
-//         Self {
-//             common: SignedCommandPayloadCommon { ..self.common },
-//             payment: PaymentPayload {
-//                 receiver_pk,
-//                 ..self.payment
-//             },
-//         }
-//     }
+impl SignedTransferCommandBuilder {
+    /// All required fields must be defined initially
+    pub fn new(
+        to: CompressedPubKey,
+        from: CompressedPubKey,
+        amount: Amount,
+        fee: Amount,
+        nonce: ExtendedU32,
+    ) -> Self {
+        Self {
+            to,
+            from,
+            amount,
+            transfer_token: TokenId(1),
+            fee_token: TokenId(1),
+            fee,
+            nonce,
+            fee_payer_pk: from,
+            memo: SignedCommandMemo::default(),
+            valid_until: ExtendedU32::MAX,
+        }
+    }
 
-//     /// Set the payment source account
-//     pub fn from(self, source_pk: CompressedPubKey) -> Self {
-//         Self {
-//             common: SignedCommandPayloadCommon { ..self.common },
-//             payment: PaymentPayload {
-//                 source_pk,
-//                 ..self.payment
-//             },
-//         }
-//     }
+    /// Set token to transfer
+    pub fn transfer_token(self, transfer_token: TokenId) -> Self {
+        Self {
+            transfer_token,
+            ..self
+        }
+    }
 
-//     /// Set amount to transfer
-//     pub fn amount(self, amount: Amount) -> Self {
-//         Self {
-//             common: SignedCommandPayloadCommon { ..self.common },
-//             payment: PaymentPayload {
-//                 amount,
-//                 ..self.payment
-//             },
-//         }
-//     }
+    /// Set the fee token to pay the block producer
+    pub fn fee_token(self, fee_token: TokenId) -> Self {
+        Self { fee_token, ..self }
+    }
 
-//     /// Set token to transfer
-//     pub fn transfer_token(self, token_id: TokenId) -> Self {
-//         Self {
-//             common: SignedCommandPayloadCommon { ..self.common },
-//             payment: PaymentPayload {
-//                 token_id,
-//                 ..self.payment
-//             },
-//         }
-//     }
+    /// Set the fee payer to something other than the sender
+    pub fn fee_payer(self, fee_payer_pk: CompressedPubKey) -> Self {
+        Self {
+            fee_payer_pk,
+            ..self
+        }
+    }
 
-//     /// Set the fee to pay the block producer
-//     pub fn fee(self, fee: Amount) -> Self {
-//         Self {
-//             common: SignedCommandPayloadCommon { fee, ..self.common },
-//             payment: PaymentPayload { ..self.payment },
-//         }
-//     }
+    /// Set a non-empty memo for the command
+    pub fn memo(self, memo: SignedCommandMemo) -> Self {
+        Self { memo, ..self }
+    }
 
-//     /// Set the fee token to pay the block producer
-//     pub fn fee_token(self, fee_token: TokenId) -> Self {
-//         Self {
-//             common: SignedCommandPayloadCommon {
-//                 fee_token,
-//                 ..self.common
-//             },
-//             payment: PaymentPayload { ..self.payment },
-//         }
-//     }
-
-//     /// Set the nonce for the transaction
-//     pub fn nonce(self, nonce: ExtendedU32) -> Self {
-//         Self {
-//             common: SignedCommandPayloadCommon {
-//                 nonce,
-//                 ..self.common
-//             },
-//             payment: PaymentPayload { ..self.payment },
-//         }
-//     }
-
-//     // TODO: Add additional setters once fields are required (e.g. setting different tokens)
-
-//     /// Sign the transaction and produce a UserCommand with the signature fields filled
-//     pub fn sign_and_build(self, signer: CompressedPubKey) -> UserCommand {
-//         UserCommand::SignedCommand(SignedCommand {
-//             payload: SignedCommandPayload {
-//                 common: self.common,
-//                 body: SignedCommandPayloadBody::PaymentPayload(self.payment),
-//             },
-//             signer,
-//             signature: Default::default(), // TODO: Add signing logic once this is available
-//         })
-//     }
-// }
-
-// #[cfg(test)]
-// mod tests {
-//     use super::*;
-//     use mina_crypto::prelude::Base58Encodable;
-
-//     #[test]
-//     fn can_set_receiver_pk() {
-//         let to = PublicKey::from_base58("B62qonDZEKYULNkfq7WGu1Z881YBRnMSuBGGX5DhnTv26mUyvN99mpo")
-//             .unwrap();
-//         let cmd = SignedTransferCommandBuilder::new()
-//             .to(to.clone())
-//             .sign_and_build(PublicKey::default());
-
-//         match cmd {
-//             UserCommand::SignedCommand(SignedCommand {
-//                 payload:
-//                     SignedCommandPayload {
-//                         body:
-//                             SignedCommandPayloadBody::PaymentPayload(PaymentPayload {
-//                                 receiver_pk, ..
-//                             }),
-//                         ..
-//                     },
-//                 ..
-//             }) => {
-//                 assert_eq!(receiver_pk, to);
-//             }
-//         }
-//     }
-
-//     #[test]
-//     fn can_set_source_pk() {
-//         let from =
-//             PublicKey::from_base58("B62qonDZEKYULNkfq7WGu1Z881YBRnMSuBGGX5DhnTv26mUyvN99mpo")
-//                 .unwrap();
-//         let cmd = SignedTransferCommandBuilder::new()
-//             .from(from.clone())
-//             .sign_and_build(PublicKey::default());
-
-//         match cmd {
-//             UserCommand::SignedCommand(SignedCommand {
-//                 payload:
-//                     SignedCommandPayload {
-//                         body:
-//                             SignedCommandPayloadBody::PaymentPayload(PaymentPayload {
-//                                 source_pk, ..
-//                             }),
-//                         ..
-//                     },
-//                 ..
-//             }) => {
-//                 assert_eq!(source_pk, from);
-//             }
-//         }
-//     }
-
-//     #[test]
-//     fn can_set_amount() {
-//         let set_amount = Amount(99);
-//         let cmd = SignedTransferCommandBuilder::new()
-//             .amount(set_amount)
-//             .sign_and_build(PublicKey::default());
-
-//         match cmd {
-//             UserCommand::SignedCommand(SignedCommand {
-//                 payload:
-//                     SignedCommandPayload {
-//                         body:
-//                             SignedCommandPayloadBody::PaymentPayload(PaymentPayload { amount, .. }),
-//                         ..
-//                     },
-//                 ..
-//             }) => {
-//                 assert_eq!(set_amount, amount);
-//             }
-//         }
-//     }
-
-//     #[test]
-//     fn can_set_fee() {
-//         let set_fee = Amount(99);
-//         let cmd = SignedTransferCommandBuilder::new()
-//             .fee(set_fee)
-//             .sign_and_build(PublicKey::default());
-
-//         match cmd {
-//             UserCommand::SignedCommand(SignedCommand {
-//                 payload:
-//                     SignedCommandPayload {
-//                         common: SignedCommandPayloadCommon { fee, .. },
-//                         ..
-//                     },
-//                 ..
-//             }) => {
-//                 assert_eq!(set_fee, fee);
-//             }
-//         }
-//     }
-
-//     #[test]
-//     fn can_set_nonce() {
-//         let set_nonce = ExtendedU32(4);
-//         let cmd = SignedTransferCommandBuilder::new()
-//             .nonce(set_nonce)
-//             .sign_and_build(PublicKey::default());
-
-//         match cmd {
-//             UserCommand::SignedCommand(SignedCommand {
-//                 payload:
-//                     SignedCommandPayload {
-//                         common: SignedCommandPayloadCommon { nonce, .. },
-//                         ..
-//                     },
-//                 ..
-//             }) => {
-//                 assert_eq!(set_nonce, nonce);
-//             }
-//         }
-//     }
-// }
+    /// Sign the transaction and produce a UserCommand with the signature fields filled
+    pub fn sign_and_build(self, signer: CompressedPubKey) -> UserCommand {
+        UserCommand::SignedCommand(SignedCommand {
+            payload: SignedCommandPayload {
+                common: SignedCommandPayloadCommon {
+                    fee: self.fee,
+                    fee_token: self.fee_token,
+                    memo: self.memo,
+                    fee_payer_pk: self.fee_payer_pk,
+                    nonce: self.nonce,
+                    valid_until: self.valid_until,
+                },
+                body: SignedCommandPayloadBody::PaymentPayload(PaymentPayload {
+                    amount: self.amount,
+                    receiver_pk: self.to,
+                    source_pk: self.from,
+                    token_id: self.transfer_token,
+                }),
+            },
+            signer,
+            signature: Default::default(), // TODO: Add signing logic once this is available
+        })
+    }
+}
