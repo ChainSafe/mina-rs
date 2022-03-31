@@ -37,31 +37,31 @@ mod conversions {
     use o1_utils::field_helpers::FieldHelpers;
     use versioned::Versioned;
 
-    impl Into<PublicKeyV1> for CompressedPubKey {
-        fn into(self) -> PublicKeyV1 {
-            PublicKeyV1(Versioned::new(Versioned::new(CompressedCurvePoint {
-                x: self.x.to_bytes().as_slice().try_into().unwrap(),
-                is_odd: self.is_odd,
-            })))
-        }
-    }
-    impl Into<CompressedPubKey> for PublicKeyV1 {
-        fn into(self) -> CompressedPubKey {
+    impl From<PublicKeyV1> for CompressedPubKey {
+        fn from(t: PublicKeyV1) -> Self {
             CompressedPubKey {
-                x: BaseField::from_bytes(&self.0.t.t.x).unwrap(),
-                is_odd: self.0.t.t.is_odd,
+                x: BaseField::from_bytes(&t.0.t.t.x).unwrap(),
+                is_odd: t.0.t.t.is_odd,
             }
         }
     }
-
-    impl Into<PublicKey2V1> for CompressedPubKey {
-        fn into(self) -> PublicKey2V1 {
-            PublicKey2V1(Versioned::new(self.into()))
+    impl From<CompressedPubKey> for PublicKeyV1 {
+        fn from(t: CompressedPubKey) -> Self {
+            PublicKeyV1(Versioned::new(Versioned::new(CompressedCurvePoint {
+                x: t.x.to_bytes().as_slice().try_into().unwrap(),
+                is_odd: t.is_odd,
+            })))
         }
     }
-    impl Into<CompressedPubKey> for PublicKey2V1 {
-        fn into(self) -> CompressedPubKey {
-            self.0.t.into()
+
+    impl From<PublicKey2V1> for CompressedPubKey {
+        fn from(t: PublicKey2V1) -> Self {
+            t.0.t.into()
+        }
+    }
+    impl From<CompressedPubKey> for PublicKey2V1 {
+        fn from(t: CompressedPubKey) -> Self {
+            PublicKey2V1(Versioned::new(t.into()))
         }
     }
 }
