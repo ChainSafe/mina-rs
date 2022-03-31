@@ -2,21 +2,49 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use super::*;
-use mina_hasher::Fp;
+use lockfree_object_pool::SpinLockObjectPool;
+use mina_hasher::{Fp, Hashable, PoseidonHasherLegacy};
 use std::marker::PhantomData;
+
+/// Trait that provides poseidon hasher pool
+/// as it's expensive to create a new hasher
+pub trait PoseidonLegacyHasherPoolProvider {
+    /// Item type
+    type Item: Hashable;
+
+    /// Gets hasher pool for the associated Item type
+    fn get_pool<'a>() -> &'a SpinLockObjectPool<PoseidonHasherLegacy<Self::Item>>;
+}
+
+/// Macro that auto-implements PoseidonLegacyHasherPoolProvider
+#[macro_export]
+macro_rules! impl_poseidon_legacy_hasher_pool_provider {
+    ($t:ty) => {
+        impl PoseidonLegacyHasherPoolProvider for $t {
+            type Item = Self;
+
+            fn get_pool<'a>() -> &'a SpinLockObjectPool<PoseidonHasherLegacy<$t>> {
+                static POOL: OnceCell<SpinLockObjectPool<PoseidonHasherLegacy<$t>>> =
+                    OnceCell::new();
+                let pool =
+                    POOL.get_or_init(|| SpinLockObjectPool::new(|| create_legacy(()), |_| ()));
+                pool
+            }
+        }
+    };
+}
 
 /// Hasher for mina binary merkle tree that uses poseidon hash
 pub struct MinaPoseidonMerkleHasher<TItem>
 where
     TItem: mina_hasher::Hashable,
-    <TItem as mina_hasher::Hashable>::D: Default,
 {
     _pd: PhantomData<TItem>,
 }
 
 impl<TItem> MerkleHasher<MINA_POSEIDON_MERKLE_DEGREE> for MinaPoseidonMerkleHasher<TItem>
 where
-    TItem: mina_hasher::Hashable,
+    TItem: mina_hasher::Hashable + PoseidonLegacyHasherPoolProvider<Item = TItem>,
     <TItem as mina_hasher::Hashable>::D: Default,
 {
     type Item = TItem;
@@ -26,8 +54,8 @@ where
         _: MerkleTreeNodeMetadata<MINA_POSEIDON_MERKLE_DEGREE>,
     ) -> Self::Hash {
         use mina_hasher::Hasher;
-        // TODO: get hasher pool with `type_id = `std::any::type_name::<Self::Item>()`;
-        let mut hasher = mina_hasher::create_legacy(Default::default());
+        let pool = <TItem as PoseidonLegacyHasherPoolProvider>::get_pool();
+        let mut hasher = pool.pull();
         hasher.hash(item)
     }
 }
