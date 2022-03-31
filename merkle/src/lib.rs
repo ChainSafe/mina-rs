@@ -24,3 +24,4 @@ pub use metadata::*;
 pub mod prefixes;
 
 const DEFAULT_DEGREE: usize = 2;
+const MINA_POSEIDON_MERKLE_DEGREE: usize = 2;

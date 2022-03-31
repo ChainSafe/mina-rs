@@ -7,10 +7,10 @@ edition = "2021"
 license = "Apache-2.0"
 
 [dependencies]
-mina-hasher = {git = "https://github.com/o1-labs/proof-systems", rev = "62f726c2f0b5f4d5bb6a5f66c3f577d518100ed4"}
+mina-hasher = {git = "https://github.com/o1-labs/proof-systems", rev = "a37e9b9a94d9b77c5b69b0dc64788b8c0e0973f0"}
 
-# lazy_static = "1"
-# lockfree-object-pool = "0.1"
+lockfree-object-pool = "0.1"
+once_cell = "1"
 
 [dev-dependencies]
 ark-ff = "0.3"

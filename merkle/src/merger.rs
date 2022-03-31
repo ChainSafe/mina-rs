@@ -3,7 +3,9 @@
 
 use super::*;
 use crate::prefixes::*;
-use mina_hasher::{create_legacy, Fp, Hashable, Hasher, ROInput};
+use lockfree_object_pool::SpinLockObjectPool;
+use mina_hasher::{create_legacy, Fp, Hashable, Hasher, PoseidonHasherLegacy, ROInput};
+use once_cell::sync::OnceCell;
 
 /// Trait that merges the hashes of child nodes
 /// and calculates the hash of their parent
@@ -23,29 +25,32 @@ pub trait MerkleMerger<const DEGREE: usize = DEFAULT_DEGREE> {
 /// with mina specific domain string calculated from node height
 pub struct MinaPoseidonMerkleMerger {}
 
-impl<const DEGREE: usize> MerkleMerger<DEGREE> for MinaPoseidonMerkleMerger {
+impl MerkleMerger for MinaPoseidonMerkleMerger {
     type Hash = Fp;
     fn merge(
-        hashes: [Option<Self::Hash>; DEGREE],
-        metadata: MerkleTreeNodeMetadata<DEGREE>,
+        hashes: [Option<Self::Hash>; MINA_POSEIDON_MERKLE_DEGREE],
+        metadata: MerkleTreeNodeMetadata<MINA_POSEIDON_MERKLE_DEGREE>,
     ) -> Option<Self::Hash> {
-        // FIXME: Get hasher from object pool
-        // when https://github.com/o1-labs/proof-systems/pull/462/files is merged
-        // FIXME: Avoid creating hasher with height when https://github.com/o1-labs/proof-systems/pull/479 is merged
+        static HASHER_POOL: OnceCell<
+            SpinLockObjectPool<PoseidonHasherLegacy<MinaPoseidonMerkleTreeNonLeafNode>>,
+        > = OnceCell::new();
+        // Not calling reset here because `hasher.init` is called after `pull`, which implicitly calls sponge.reset()
+        let pool = HASHER_POOL.get_or_init(|| SpinLockObjectPool::new(|| create_legacy(0), |_| ()));
         let height = metadata.height();
         let hashable = MinaPoseidonMerkleTreeNonLeafNode(hashes, metadata);
-        let mut hasher = create_legacy(height);
+        let mut hasher = pool.pull();
+        hasher.init(height);
         Some(hasher.hash(&hashable))
     }
 }
 
 #[derive(Clone)]
-struct MinaPoseidonMerkleTreeNonLeafNode<const DEGREE: usize>(
-    [Option<Fp>; DEGREE],
-    MerkleTreeNodeMetadata<DEGREE>,
+struct MinaPoseidonMerkleTreeNonLeafNode(
+    [Option<Fp>; MINA_POSEIDON_MERKLE_DEGREE],
+    MerkleTreeNodeMetadata<MINA_POSEIDON_MERKLE_DEGREE>,
 );
 
-impl<const DEGREE: usize> Hashable for MinaPoseidonMerkleTreeNonLeafNode<DEGREE> {
+impl Hashable for MinaPoseidonMerkleTreeNonLeafNode {
     type D = u32;
 
     fn to_roinput(&self) -> mina_hasher::ROInput {
@@ -57,16 +62,11 @@ impl<const DEGREE: usize> Hashable for MinaPoseidonMerkleTreeNonLeafNode<DEGREE>
     }
 
     fn domain_string(_: Option<&Self>, height: Self::D) -> Option<String> {
-        // FIXME: Read depth from self when https://github.com/o1-labs/proof-systems/pull/479 is merged
         // use height - 1 here because in mina leaf nodes are not counted
-        Some(make_prefix_merkle_tree(height - 1))
-        // if let Some(this) = this {
-        //     println!("domain_string Some");
-        //     let meta = &this.1;
-        //     Some(make_prefix_merkle_tree(meta.height()-1))
-        // } else {
-        //     println!("domain_string None");
-        //     None
-        // }
+        if height > 0 {
+            Some(make_prefix_merkle_tree(height - 1))
+        } else {
+            None
+        }
     }
 }
