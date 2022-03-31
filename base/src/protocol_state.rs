@@ -12,7 +12,7 @@ use crate::{
     numbers::{BlockTime, Length},
 };
 
-#[derive(Clone, PartialEq, Debug)]
+#[derive(Clone, Default, PartialEq, Debug)]
 /// Constants that define the consensus parameters
 pub struct ProtocolConstants {
     /// Point of finality (number of confirmations)
@@ -27,7 +27,7 @@ pub struct ProtocolConstants {
     pub genesis_state_timestamp: BlockTime,
 }
 
-#[derive(Clone, Debug, PartialEq, Serialize)]
+#[derive(Clone, Default, Debug, PartialEq, Serialize)]
 #[serde(into = "mina_serialization_types::v1::ProtocolStateV1")] 
 /// This structure can be thought of like the block header. It contains the most essential information of a block.
 pub struct ProtocolState {
@@ -50,7 +50,7 @@ impl Hashable<StateHash> for ProtocolState {}
 impl Hashable<StateHash> for &ProtocolState {}
 
 
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone, Default, Debug, PartialEq)]
 /// Body of the protocol state
 pub struct ProtocolStateBody {
     /// Genesis protocol state hash (used for hardforks)

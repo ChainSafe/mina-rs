@@ -12,6 +12,7 @@ use derive_more::From;
 use mina_crypto::{hash::*, prelude::*};
 use mina_signer::CompressedPubKey;
 use serde::Serialize;
+use smart_default::SmartDefault;
 
 
 /// Wrapper struct for the output for a VRF
@@ -43,7 +44,7 @@ impl AsRef<[u8]> for VrfOutputTruncated {
 /// approach where the future stake distribution snapshot is prepared by the current consensus epoch.
 ///
 /// Samasika prepares the past for the future! This future state is stored in the next_epoch_data field.
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq, SmartDefault)]
 pub struct ConsensusState {
     /// Height of block
     pub blockchain_length: Length,
@@ -68,10 +69,13 @@ pub struct ConsensusState {
     /// If the block has an ancestor in the same checkpoint window
     pub has_ancestor_in_same_checkpoint_window: bool,
     /// Compressed public key of winning account
+    #[default(CompressedPubKey::from_address("B62qiy32p8kAKnny8ZFwoMhYpBppM1DWVCqAPBYNcXnsAHhnfAAuXgg").unwrap())]
     pub block_stake_winner: CompressedPubKey,
     /// Compressed public key of the block producer
+    #[default(CompressedPubKey::from_address("B62qiy32p8kAKnny8ZFwoMhYpBppM1DWVCqAPBYNcXnsAHhnfAAuXgg").unwrap())]
     pub block_creator: CompressedPubKey,
     /// Compresed public key of account receiving the block reward
+    #[default(CompressedPubKey::from_address("B62qiy32p8kAKnny8ZFwoMhYpBppM1DWVCqAPBYNcXnsAHhnfAAuXgg").unwrap())]
     pub coinbase_receiver: CompressedPubKey,
     /// true if block_stake_winner has no locked tokens, false otherwise
     pub supercharge_coinbase: bool,
