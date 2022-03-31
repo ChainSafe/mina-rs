@@ -61,7 +61,7 @@ impl Hashable for MinaPoseidonMerkleTreeNonLeafNode {
         roi
     }
 
-    fn domain_string(_: Option<&Self>, height: Self::D) -> Option<String> {
+    fn domain_string(height: Self::D) -> Option<String> {
         // use height - 1 here because in mina leaf nodes are not counted
         if height > 0 {
             Some(make_prefix_merkle_tree(height - 1))

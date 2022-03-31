@@ -7,7 +7,7 @@ edition = "2021"
 license = "Apache-2.0"
 
 [dependencies]
-mina-hasher = {git = "https://github.com/o1-labs/proof-systems", rev = "a37e9b9a94d9b77c5b69b0dc64788b8c0e0973f0"}
+mina-hasher = {git = "https://github.com/o1-labs/proof-systems", rev = "3f5f90d190f537857c800a9aeb349bff2132d175"}
 
 lockfree-object-pool = "0.1"
 once_cell = "1"
