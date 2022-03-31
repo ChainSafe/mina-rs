@@ -11,6 +11,8 @@ bin-prot = {path = "../bin-prot"}
 versioned = {path = "../versioned"}
 
 serde = {version = "1", features = ["derive"]}
+mina-signer = {git = "https://github.com/willemolding/proof-systems", rev = "d4e311e3c7dc7e6ad6bd42dc2a23bbc7093335ce"}
+o1-utils = {git = "https://github.com/willemolding/proof-systems", rev = "d4e311e3c7dc7e6ad6bd42dc2a23bbc7093335ce"}
 
 [dev-dependencies]
 test-fixtures = {path = "../test-fixtures"}
