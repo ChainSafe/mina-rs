@@ -3,10 +3,9 @@
 
 use super::*;
 use crate::prefixes::*;
-use ark_ff::BigInteger256;
+use ark_ff::{BigInteger256, FromBytes};
 use lockfree_object_pool::{SpinLockObjectPool, SpinLockReusable};
 use mina_hasher::{create_legacy, Fp, Hashable, Hasher, PoseidonHasherLegacy, ROInput};
-use num::{BigUint, Num};
 use once_cell::sync::OnceCell;
 
 /// Merger for mina binary merkle tree that uses poseidon hash
@@ -80,25 +79,26 @@ fn get_empty_hash(
     if height == 0 {
         static EMPTY_HASH: OnceCell<Fp> = OnceCell::new();
         *EMPTY_HASH.get_or_init(|| {
-            let big = BigUint::from_str_radix(
-                /*
-                    This is From OCaml code,
-                    add below code to genesis_ledger_helper.ml and run dune test
+            /*
+                This is From OCaml code,
+                add below code to genesis_ledger_helper.ml and run dune test
 
-                    let%test_unit "empty hash" =
-                        let empty =
-                            Snark_params.Tick.Field.to_string Mina_base.Account.empty_digest
-                        in
-                        print_string empty
-                */
-                "14604874247461951431777712543359658136906556694369689076707549712589474483312",
-                10,
-            )
-            .expect("Failed to parse BigUint");
-            let big256: BigInteger256 = big
-                .try_into()
-                .expect("Failed to convert BigUint to BigInteger256");
-            big256.into()
+                let%test_unit "empty hash" =
+                    let empty =
+                        Snark_params.Tick.Field.to_string Mina_base.Account.empty_digest
+                    in
+                    print_string empty
+
+                radix 10: 14604874247461951431777712543359658136906556694369689076707549712589474483312
+                hex:      0x204a10dde313dedb9a8a568d92ad6df0eecaff98ed379ae50896824fa1dbcc70
+            */
+            const BYTES_LE: [u8; 32] = [
+                112, 204, 219, 161, 79, 130, 150, 8, 229, 154, 55, 237, 152, 255, 202, 238, 240,
+                109, 173, 146, 141, 86, 138, 154, 219, 222, 19, 227, 221, 16, 74, 32,
+            ];
+            BigInteger256::read(BYTES_LE.as_slice())
+                .expect("Failed to convert bytes to BigInteger256")
+                .into()
         })
     } else {
         let child_hash = get_empty_hash(hasher, height - 1);

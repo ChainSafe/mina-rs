@@ -112,6 +112,7 @@ mod tests {
     fn genesis_ledger_parity_test() {
         use rocksdb::*;
 
+        // TODO: Use API from DbBackedGenesisLedger to iterate over hash nodes
         let db =
             DB::open_for_read_only(&Options::default(), "../ledger/test-data/genesis_ledger_6a887ea130e53b06380a9ab27b327468d28d4ce47515a0cc59759d4a3912f0ef/", true).unwrap();
         let mut height_2_nodes: HashMap<u8, Vec<Fp>> = HashMap::new();
@@ -148,6 +149,7 @@ mod tests {
                     true => Some(next_level[2 * i + 1]),
                     _ => None,
                 };
+                // Index is 0 because this is the root node the subtree
                 let meta = MerkleTreeNodeMetadata::new(0, height as u32);
                 let merged =
                     MinaPoseidonMerkleMerger::merge([left, right], meta).unwrap_or_default();
@@ -161,6 +163,6 @@ mod tests {
     #[test]
     fn mina_merkle_tree_tests_0() {
         let mut tree = TestMerkleTree::new();
-        assert!(tree.root().is_none())
+        assert!(tree.root().is_none());
     }
 }

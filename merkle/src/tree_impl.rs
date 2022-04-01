@@ -36,11 +36,11 @@ where
 
     /// Creates a new instance of [MinaMerkleTree] with estimated capacity of leaves
     pub fn with_capacity(capacity: usize) -> Self {
-        let protential_height = calculate_height(capacity);
-        let protential_node_count = calculate_node_count(protential_height);
+        let potential_height = calculate_height(capacity);
+        let potential_node_count = calculate_node_count(potential_height);
         Self {
             leafs: Vec::with_capacity(capacity),
-            nodes: Vec::with_capacity(protential_node_count),
+            nodes: Vec::with_capacity(potential_node_count),
             ..Default::default()
         }
     }
