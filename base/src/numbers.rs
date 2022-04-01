@@ -5,6 +5,8 @@
 
 use std::fmt;
 
+use proof_systems::*;
+
 use derive_deref::Deref;
 use derive_more::From;
 use mina_crypto::{hex::skip_0x_prefix_when_needed, prelude::*};

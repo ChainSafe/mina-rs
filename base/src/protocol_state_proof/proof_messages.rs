@@ -7,6 +7,8 @@ use serde::{Deserialize, Serialize};
 use ark_ec::models::short_weierstrass_jacobian::GroupAffine;
 use ark_ec::models::ModelParameters;
 
+use proof_systems::*;
+
 #[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug)]
 pub struct ProofMessages {
     pub l_comm: ProofMessageWithoutDegreeBoundList,

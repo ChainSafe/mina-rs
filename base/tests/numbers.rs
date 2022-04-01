@@ -3,13 +3,14 @@
 
 #[cfg(test)]
 pub mod tests {
-    use std::str::FromStr;
+    use proof_systems::*;
 
     use super::*;
     use ark_ff::BigInteger256;
     use mina_hasher::*;
     use mina_rs_base::numbers::*;
     use num::BigUint;
+    use std::str::FromStr;
 
     #[test]
     pub fn test_amount_to_string() {

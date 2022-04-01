@@ -8,6 +8,8 @@ pub mod permissions;
 pub mod timing;
 pub mod token_permissions;
 
+use proof_systems::*;
+
 use mina_hasher::ROInput;
 pub use permissions::{AuthRequired, Permissions};
 pub use timing::Timing;
