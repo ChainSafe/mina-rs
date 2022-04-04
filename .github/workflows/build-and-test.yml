@@ -15,6 +15,7 @@ jobs:
   checks:
     runs-on: ubuntu-latest
     steps:
+      - run: lscpu
       - uses: actions/checkout@v2
       - run: cat .github/cargo-config > $HOME/.cargo/config
       - uses: actions/cache@v2
@@ -25,6 +26,8 @@ jobs:
             ~/.cargo/registry/cache/
             ~/.cargo/git/db/
             target/
+            apps/target/
+            apps/wasm/target/
           key: ${{ runner.os }}-checks-cargo-${{ hashFiles('**/Cargo.lock') }}
       - uses: actions-rs/toolchain@v1
         with:
@@ -63,8 +66,19 @@ jobs:
   x86_64:
     runs-on: ubuntu-latest
     steps:
+      - run: lscpu
       - uses: actions/checkout@v2
       - run: cat .github/cargo-config > $HOME/.cargo/config
+      - uses: actions/cache@v2
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            target/
+            apps/target/
+          key: ${{ runner.os }}-x86_64-cargo-${{ hashFiles('**/Cargo.lock') }}
       - uses: actions-rs/toolchain@v1
         with:
           profile: minimal
@@ -83,7 +97,7 @@ jobs:
       # https://github.com/benchmark-action/github-action-benchmark/tree/master/examples/criterion-rs
       - run: (cargo bench --all-features --no-fail-fast -- --output-format bencher > bencher.log) || echo ''
       - name: Download previous benchmark data
-        uses: actions/cache@v1
+        uses: actions/cache@v2
         with:
           path: ./.cache
           key: ${{ runner.os }}-benchmark
@@ -133,8 +147,20 @@ jobs:
   wasm:
     runs-on: ubuntu-latest
     steps:
+      - run: lscpu
       - uses: actions/checkout@v2
       - run: cat .github/cargo-config > $HOME/.cargo/config
+      - uses: actions/cache@v2
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            target/
+            apps/target/
+            apps/wasm/target/
+          key: ${{ runner.os }}-wasm-cargo-${{ hashFiles('**/Cargo.lock') }}
       - uses: actions-rs/toolchain@v1
         with:
           profile: minimal
@@ -164,8 +190,18 @@ jobs:
   node:
     runs-on: ubuntu-latest
     steps:
+      - run: lscpu
       - uses: actions/checkout@v2
       - run: cat .github/cargo-config > $HOME/.cargo/config
+      - uses: actions/cache@v2
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            apps/wasm/target/
+          key: ${{ runner.os }}-node-cargo-${{ hashFiles('**/Cargo.lock') }}
       - uses: actions-rs/toolchain@v1
         with:
           profile: minimal
@@ -195,8 +231,18 @@ jobs:
   codecov-x86_64:
     runs-on: ubuntu-latest
     steps:
+      - run: lscpu
       - uses: actions/checkout@v2
       - run: cat .github/cargo-config > $HOME/.cargo/config
+      - uses: actions/cache@v2
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            target/
+          key: ${{ runner.os }}-codecov-cargo-${{ hashFiles('**/Cargo.lock') }}
       - uses: actions-rs/toolchain@v1
         with:
           profile: minimal
