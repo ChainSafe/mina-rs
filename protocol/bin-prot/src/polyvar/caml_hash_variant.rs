@@ -8,8 +8,9 @@
 pub type VariantHash = u32;
 
 /// Hash the label string (ASCII not UTF-8) into a OCaml style variant hash
-pub fn caml_hash_variant(label: &[u8]) -> VariantHash {
+pub fn caml_hash_variant(label: &str) -> VariantHash {
     label
+        .as_bytes()
         .iter()
         .fold(0_u32, |accu, byte| 223 * accu + (*byte as u32))
 }
@@ -36,7 +37,7 @@ mod tests {
 
     #[test]
     fn test_known_labels() {
-        const CASES: &[(&[u8], u32)] = &[(b"One", 3953222_u32), (b"Two", 4203884_u32)];
+        const CASES: &[(&str, u32)] = &[("One", 3953222_u32), ("Two", 4203884_u32)];
 
         for (label, hash) in CASES {
             assert_eq!(caml_hash_variant(label), *hash)
@@ -47,6 +48,6 @@ mod tests {
     #[cfg(target_arch = "wasm32")]
     #[should_panic(expected = "attempt to multiply with overflow")]
     fn test_overflow_variant() {
-        let _ = caml_hash_variant(b"Three");
+        let _ = caml_hash_variant("Three");
     }
 }

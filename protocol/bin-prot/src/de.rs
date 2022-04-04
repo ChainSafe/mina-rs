@@ -381,14 +381,14 @@ macro_rules! impl_polyvar_enum_access {
             where
                 V: de::DeserializeSeed<'de>,
             {
-                // Return the first polyvar variant where the hash matches
                 let index = self
                     .variants
                     .into_iter()
-                    .filter(|v| v.is_ascii())
+                    .filter(|v| v.is_ascii()) // Polyvar tag must be within the ASCII range, otherwise computing the caml hash is undefined behaviour.
                     .enumerate()
                     .find_map(|(index, value)| {
-                        if caml_hash_variant(value.as_bytes()) == self.hash {
+                        // Return the first polyvar variant where the hash matches
+                        if caml_hash_variant(value) == self.hash {
                             Some(index)
                         } else {
                             None
