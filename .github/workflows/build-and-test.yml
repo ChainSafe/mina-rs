@@ -15,6 +15,7 @@ jobs:
   checks:
     runs-on: ubuntu-latest
     steps:
+      - run: lscpu
       - uses: actions/checkout@v2
       - run: cat .github/cargo-config > $HOME/.cargo/config
       - uses: actions/cache@v2
@@ -65,6 +66,7 @@ jobs:
   x86_64:
     runs-on: ubuntu-latest
     steps:
+      - run: lscpu
       - uses: actions/checkout@v2
       - run: cat .github/cargo-config > $HOME/.cargo/config
       - uses: actions/cache@v2
@@ -145,6 +147,7 @@ jobs:
   wasm:
     runs-on: ubuntu-latest
     steps:
+      - run: lscpu
       - uses: actions/checkout@v2
       - run: cat .github/cargo-config > $HOME/.cargo/config
       - uses: actions/cache@v2
@@ -187,6 +190,7 @@ jobs:
   node:
     runs-on: ubuntu-latest
     steps:
+      - run: lscpu
       - uses: actions/checkout@v2
       - run: cat .github/cargo-config > $HOME/.cargo/config
       - uses: actions/cache@v2
@@ -227,6 +231,7 @@ jobs:
   codecov-x86_64:
     runs-on: ubuntu-latest
     steps:
+      - run: lscpu
       - uses: actions/checkout@v2
       - run: cat .github/cargo-config > $HOME/.cargo/config
       - uses: actions/cache@v2
