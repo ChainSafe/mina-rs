@@ -5,6 +5,8 @@ members = [
   "crypto",
   "merkle",
   "network",
+  "ledger",
+  "proof-systems-shim",
   "protocol/bin-prot",
   "protocol/bin_prot_checker",
   "protocol/test-fixtures",
