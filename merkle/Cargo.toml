@@ -7,7 +7,7 @@ edition = "2021"
 license = "Apache-2.0"
 
 [dependencies]
-mina-hasher = {git = "https://github.com/o1-labs/proof-systems", rev = "3f5f90d190f537857c800a9aeb349bff2132d175"}
+proof-systems = {path = "../proof-systems-shim"}
 
 ark-ff = "0.3"
 lockfree-object-pool = "0.1"

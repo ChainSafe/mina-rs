@@ -3,6 +3,8 @@
 
 #[cfg(test)]
 mod tests {
+    use proof_systems::*;
+
     use ark_ff::{BigInteger256, FromBytes};
     use lockfree_object_pool::SpinLockObjectPool;
     use mina_hasher::{create_legacy, Fp, Hashable, PoseidonHasherLegacy, ROInput};

@@ -7,5 +7,5 @@ edition = "2021"
 license = "Apache-2.0"
 
 [dependencies]
-commitment_dlog = {git = "https://github.com/o1-labs/proof-systems", rev = "56517b55920ea7afc811baa541c859dadc8ae50a"}
-mina-hasher = {git = "https://github.com/o1-labs/proof-systems", rev = "56517b55920ea7afc811baa541c859dadc8ae50a"}
+commitment_dlog = {git = "https://github.com/o1-labs/proof-systems", rev = "045210ab3c4800822764473844f4979772e93fa4"}
+mina-hasher = {git = "https://github.com/o1-labs/proof-systems", rev = "045210ab3c4800822764473844f4979772e93fa4"}

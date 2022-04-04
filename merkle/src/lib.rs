@@ -27,5 +27,7 @@ mod metadata;
 pub use metadata::*;
 pub mod prefixes;
 
+use proof_systems::*;
+
 const DEFAULT_DEGREE: usize = 2;
 const MINA_POSEIDON_MERKLE_DEGREE: usize = 2;
