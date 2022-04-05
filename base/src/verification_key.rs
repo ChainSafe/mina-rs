@@ -3,11 +3,9 @@
 
 //! types and functions related to Mina verificiation keys
 
-use serde::{Deserialize, Serialize};
-
 use crate::protocol_state_proof::field_and_curve_elements::FiniteECPoint;
 
-#[derive(Clone, Serialize, Deserialize, Default, Debug, PartialEq)]
+#[derive(Clone, Default, Debug, PartialEq)]
 /// Public data required to verify a Mina snark
 pub struct VerificationKey {
     commitments: VerificationKeyEvals,
@@ -16,13 +14,13 @@ pub struct VerificationKey {
     pub data: Data,
 }
 
-#[derive(Clone, Serialize, Deserialize, Default, Debug, PartialEq)]
+#[derive(Clone, Default, Debug, PartialEq)]
 struct Domains {
     h: Domain,
     x: Domain,
 }
 
-#[derive(Clone, Serialize, Deserialize, Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq)]
 enum Domain {
     Pow2RootsOfUnity(usize),
 }
@@ -34,13 +32,13 @@ impl Default for Domain {
 }
 
 /// Data associated with a verification key
-#[derive(Clone, Serialize, Deserialize, Default, Debug, PartialEq)]
+#[derive(Clone, Default, Debug, PartialEq)]
 pub struct Data {
     /// Number of constaints
     pub constraints: usize,
 }
 
-#[derive(Clone, Serialize, Deserialize, Default, Debug, PartialEq)]
+#[derive(Clone, Default, Debug, PartialEq)]
 struct VerificationKeyEvals {
     sigma_comm_0: Vec<FiniteECPoint>,
     sigma_comm_1: Vec<FiniteECPoint>,

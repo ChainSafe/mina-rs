@@ -5,7 +5,6 @@ use ark_ec::models::ModelParameters;
 use ark_ec::short_weierstrass_jacobian::GroupAffine;
 use mina_crypto::{hex::skip_0x_prefix_when_needed, prelude::*};
 use num::Integer;
-use serde::{Deserialize, Serialize};
 
 use crate::numbers::BigInt256;
 
@@ -14,7 +13,7 @@ use crate::numbers::BigInt256;
 pub type FieldElement = BigInt256;
 
 /// Vector of finite field elements (with version number defined in the WireType)
-#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug)]
+#[derive(Clone, Default, PartialEq, Debug)]
 pub struct FieldElementVec(pub Vec<FieldElement>);
 
 impl HexEncodable for FieldElementVec {
@@ -56,7 +55,7 @@ where
 
 /// An elliptic curve point defined over a base field with elements that fit in a BigInt256
 /// This is a Finite elliptic curve point as this type cannot be used to encode the point-at-infinity
-#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug)]
+#[derive(Clone, Default, PartialEq, Debug)]
 pub struct FiniteECPoint(pub FieldElement, pub FieldElement);
 
 impl<P> From<FiniteECPoint> for GroupAffine<P>
@@ -86,7 +85,7 @@ macro_rules! finite_ec_point {
 }
 
 /// Vector of finite EC points (with version number defined in the WireType)
-#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug)]
+#[derive(Clone, Default, PartialEq, Debug)]
 pub struct FiniteECPointVec(pub Vec<FiniteECPoint>);
 
 impl<P> From<FiniteECPointVec> for Vec<GroupAffine<P>>
@@ -113,7 +112,7 @@ macro_rules! finite_ec_point_pair {
 }
 
 /// Vector of 2-tuples of finite EC points (with version number defined in the WireType)
-#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug)]
+#[derive(Clone, Default, PartialEq, Debug)]
 pub struct FiniteECPointPairVec(pub Vec<FiniteECPointPair>);
 
 impl<P> From<FiniteECPointPairVec> for Vec<(GroupAffine<P>, GroupAffine<P>)>
@@ -128,7 +127,7 @@ where
 
 /// Elliptic curve point that can either be the coordinates of a point on the curve
 /// OR it can be the point-at-infinity
-#[derive(Clone, Serialize, Deserialize, PartialEq, Debug)]
+#[derive(Clone, PartialEq, Debug)]
 pub enum ECPoint {
     // elliptic curve point, can be the point at infinity
     Infinite,
@@ -159,7 +158,7 @@ where
 }
 
 /// Vector of EC points (with version number defined in the WireType)
-#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug)]
+#[derive(Clone, Default, PartialEq, Debug)]
 pub struct ECPointVec(pub Vec<ECPoint>);
 
 impl<P> From<ECPointVec> for Vec<GroupAffine<P>>

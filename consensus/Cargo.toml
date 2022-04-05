@@ -21,6 +21,8 @@ hex = "0.4"
 lazy_static = "1"
 thiserror = "1"
 
+proof-systems = { path = "../proof-systems-shim" }
+
 [dev-dependencies]
 base64 = "0.13"
 time = {version = "0.3", features = ["macros"]}

@@ -5,8 +5,7 @@
 
 use derive_more::From;
 use mina_crypto::hash::StateHash;
-use serde::{Deserialize, Serialize};
 
 /// Proof that the block was produced within the allotted slot time
-#[derive(Clone, Debug, Default, Serialize, Deserialize, PartialEq, From)]
+#[derive(Clone, Debug, Default, PartialEq, From)]
 pub struct DeltaTransitionChainProof(pub StateHash, pub Vec<StateHash>);

@@ -1,11 +1,9 @@
 // Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
-use serde::{Deserialize, Serialize};
-
 use crate::types::Hex64;
 
-#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug)]
+#[derive(Clone, Default, PartialEq, Debug)]
 pub struct BulletproofChallenge {
     pub prechallenge: BulletproofPreChallenge,
 }
@@ -18,15 +16,15 @@ impl BulletproofChallenge {
     }
 }
 
-#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug)]
+#[derive(Clone, Default, PartialEq, Debug)]
 pub struct BulletproofChallenges(pub Vec<BulletproofChallengeTuple18>);
 
-#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug)]
+#[derive(Clone, Default, PartialEq, Debug)]
 pub struct ProofStateBulletproofChallenges(
     pub (BulletproofChallengeTuple17, BulletproofChallengeTuple17, ()),
 );
 
-#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug)]
+#[derive(Clone, Default, PartialEq, Debug)]
 pub struct BulletproofChallengeTuple17(
     pub BulletproofChallenge,
     pub BulletproofChallenge,
@@ -73,7 +71,7 @@ impl BulletproofChallengeTuple17 {
     }
 }
 
-#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug)]
+#[derive(Clone, Default, PartialEq, Debug)]
 pub struct BulletproofChallengeTuple18(
     pub BulletproofChallenge,
     pub BulletproofChallenge,
@@ -122,7 +120,7 @@ impl BulletproofChallengeTuple18 {
     }
 }
 
-#[derive(Clone, Serialize, Deserialize, PartialEq, Debug)]
+#[derive(Clone, PartialEq, Debug)]
 #[non_exhaustive]
 pub enum BulletproofPreChallenge {
     ScalarChallenge(ScalarChallengeVector2),
@@ -134,7 +132,7 @@ impl BulletproofPreChallenge {
     }
 }
 
-#[derive(Clone, Serialize, Default, Deserialize, PartialEq, Debug)]
+#[derive(Clone, Default, PartialEq, Debug)]
 pub struct ScalarChallengeVector2(pub (Hex64, Hex64, ()));
 
 impl ScalarChallengeVector2 {

@@ -5,35 +5,9 @@
 //! These are currently only used for serialization tests and will
 //! be replaced by those in the 01-labs/proof-systems repo in the future
 
-use crate::{
-    base58::{version_bytes, Base58Encodable},
-    impl_bs58_for_binprot,
-};
-use derive_deref::Deref;
+use crate::base58::{version_bytes, Base58Encodable};
 use derive_more::{From, Into};
-use mina_serialization_types::v1::PublicKeyV1;
 use serde::{Deserialize, Serialize};
-
-#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
-pub struct CompressedCurvePoint {
-    pub x: [u8; 32],
-    pub is_odd: bool,
-}
-
-#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
-#[serde(from = "PublicKeyV1")]
-#[serde(into = "PublicKeyV1")]
-pub struct PublicKey {
-    pub poly: CompressedCurvePoint,
-}
-
-impl_bs58_for_binprot!(PublicKey, version_bytes::NON_ZERO_CURVE_POINT_COMPRESSED);
-
-#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize, Deref)]
-pub struct PublicKey2(pub CompressedCurvePoint);
-
-#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize, Deref)]
-pub struct PublicKey3(pub CompressedCurvePoint);
 
 #[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug)]
 pub struct Signature(pub (FieldPoint, InnerCurveScalar));
@@ -98,21 +72,6 @@ impl AsRef<[u8]> for InnerCurveScalar {
 #[cfg(test)]
 pub mod tests {
     use super::*;
-    use bin_prot::to_writer;
-
-    #[test]
-    fn serialize_empty_keypair() {
-        let mut buf = Vec::new();
-        to_writer(&mut buf, &PublicKey::default()).unwrap();
-        println!("{:?}", buf)
-    }
-
-    #[test]
-    fn public_key_from_base58_roundtrip() {
-        let s = "B62qonDZEKYULNkfq7WGu1Z881YBRnMSuBGGX5DhnTv26mUyvN99mpo";
-        let k = PublicKey::from_base58(s).unwrap();
-        assert_eq!(s, k.to_base58_string())
-    }
 
     #[test]
     fn signature_from_base58_roundtrip() {
