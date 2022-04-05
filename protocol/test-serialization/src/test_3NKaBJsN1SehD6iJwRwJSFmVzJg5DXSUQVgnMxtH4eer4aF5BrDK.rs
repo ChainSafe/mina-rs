@@ -242,7 +242,6 @@ mod tests {
                     .unwrap();
                 assert_eq!(command.signer.x.to_bytes(), bytes[3..35]);
 
-                // assert_eq!(Signature::from(command.signature).to_base58_string(), "7mXTB1bcHYLJTmTfMtTboo4FSGStvera3z2wd6qjSxhpz1hZFMZZjcyaWAFEmZhgbq6DqVqGsNodnYKsCbMAq7D8yWo5bRSd");
                 let bytes = bs58::decode("7mXTB1bcHYLJTmTfMtTboo4FSGStvera3z2wd6qjSxhpz1hZFMZZjcyaWAFEmZhgbq6DqVqGsNodnYKsCbMAq7D8yWo5bRSd")
                     .into_vec()
                     .unwrap();
