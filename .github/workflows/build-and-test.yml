@@ -15,6 +15,7 @@ jobs:
   checks:
     runs-on: ubuntu-latest
     steps:
+      - run: lscpu
       - uses: actions/checkout@v2
       - run: cat .github/cargo-config > $HOME/.cargo/config
       - uses: actions/cache@v2
@@ -25,6 +26,8 @@ jobs:
             ~/.cargo/registry/cache/
             ~/.cargo/git/db/
             target/
+            apps/target/
+            apps/wasm/target/
           key: ${{ runner.os }}-checks-cargo-${{ hashFiles('**/Cargo.lock') }}
       - uses: actions-rs/toolchain@v1
         with:
@@ -36,8 +39,7 @@ jobs:
       - uses: actions-rs/toolchain@v1
         with:
           profile: minimal
-          # Pin rust nightly until https://github.com/briansmith/ring/issues/1469 is resolved.
-          toolchain: nightly-2022-03-22
+          toolchain: nightly
           target: wasm32-unknown-unknown
           override: false
       - run: cargo fmt --all -- --check
@@ -58,14 +60,25 @@ jobs:
           command: check All -s
           arguments: --all-features --manifest-path apps/wasm/Cargo.toml
       - run: cargo install cargo-udeps || echo 'already installed'
-      - run: cargo +nightly-2022-03-22 udeps --all-targets --all-features
-      - run: cargo +nightly-2022-03-22 udeps --all-targets --all-features --manifest-path apps/Cargo.toml
-      - run: cargo +nightly-2022-03-22 udeps --target wasm32-unknown-unknown --all-features --manifest-path apps/wasm/Cargo.toml
+      - run: cargo +nightly udeps --all-targets --all-features
+      - run: cargo +nightly udeps --all-targets --all-features --manifest-path apps/Cargo.toml
+      - run: cargo +nightly udeps --target wasm32-unknown-unknown --all-features --manifest-path apps/wasm/Cargo.toml
   x86_64:
     runs-on: ubuntu-latest
     steps:
+      - run: lscpu
       - uses: actions/checkout@v2
       - run: cat .github/cargo-config > $HOME/.cargo/config
+      - uses: actions/cache@v2
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            target/
+            apps/target/
+          key: ${{ runner.os }}-x86_64-cargo-${{ hashFiles('**/Cargo.lock') }}
       - uses: actions-rs/toolchain@v1
         with:
           profile: minimal
@@ -84,7 +97,7 @@ jobs:
       # https://github.com/benchmark-action/github-action-benchmark/tree/master/examples/criterion-rs
       - run: (cargo bench --all-features --no-fail-fast -- --output-format bencher > bencher.log) || echo ''
       - name: Download previous benchmark data
-        uses: actions/cache@v1
+        uses: actions/cache@v2
         with:
           path: ./.cache
           key: ${{ runner.os }}-benchmark
@@ -134,8 +147,20 @@ jobs:
   wasm:
     runs-on: ubuntu-latest
     steps:
+      - run: lscpu
       - uses: actions/checkout@v2
       - run: cat .github/cargo-config > $HOME/.cargo/config
+      - uses: actions/cache@v2
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            target/
+            apps/target/
+            apps/wasm/target/
+          key: ${{ runner.os }}-wasm-cargo-${{ hashFiles('**/Cargo.lock') }}
       - uses: actions-rs/toolchain@v1
         with:
           profile: minimal
@@ -165,8 +190,18 @@ jobs:
   node:
     runs-on: ubuntu-latest
     steps:
+      - run: lscpu
       - uses: actions/checkout@v2
       - run: cat .github/cargo-config > $HOME/.cargo/config
+      - uses: actions/cache@v2
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            apps/wasm/target/
+          key: ${{ runner.os }}-node-cargo-${{ hashFiles('**/Cargo.lock') }}
       - uses: actions-rs/toolchain@v1
         with:
           profile: minimal
@@ -196,13 +231,22 @@ jobs:
   codecov-x86_64:
     runs-on: ubuntu-latest
     steps:
+      - run: lscpu
       - uses: actions/checkout@v2
       - run: cat .github/cargo-config > $HOME/.cargo/config
+      - uses: actions/cache@v2
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            target/
+          key: ${{ runner.os }}-codecov-cargo-${{ hashFiles('**/Cargo.lock') }}
       - uses: actions-rs/toolchain@v1
         with:
           profile: minimal
-          # Pin rust nightly until https://github.com/briansmith/ring/issues/1469 is resolved.
-          toolchain: nightly-2022-03-22
+          toolchain: nightly
           override: true
           components: llvm-tools-preview
       - uses: taiki-e/install-action@cargo-llvm-cov
