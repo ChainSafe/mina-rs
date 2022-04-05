@@ -4,12 +4,10 @@
 //! Signed commands are commands that require signing with some accounts private key
 
 use crate::numbers::{Amount, ExtendedU32, TokenId};
-use mina_crypto::signature::Signature;
-
-use proof_systems::mina_signer::CompressedPubKey;
-
 use crate::user_commands::memo::SignedCommandMemo;
 use crate::user_commands::payment::PaymentPayload;
+use mina_crypto::signature::Signature;
+use proof_systems::mina_signer::CompressedPubKey;
 
 /// Top level signed command type
 #[derive(Clone, PartialEq, Debug)]

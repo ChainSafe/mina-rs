@@ -41,7 +41,8 @@ mod conversions {
         fn from(t: PublicKeyV1) -> Self {
             CompressedPubKey {
                 // This unwrap is safe as a PublicKeyV1 always has 32 bytes of data and from_bytes does not check if it is on curve
-                x: BaseField::from_bytes(&t.0.t.t.x).unwrap(),
+                x: BaseField::from_bytes(&t.0.t.t.x)
+                    .expect("Wrong number of bytes encountered when converting to BaseField"),
                 is_odd: t.0.t.t.is_odd,
             }
         }
@@ -51,7 +52,11 @@ mod conversions {
             PublicKeyV1(Versioned::new(Versioned::new(CompressedCurvePoint {
                 // This unwrap of a slice conversion is safe as a CompressedPubKey always has 32 bytes of data which the exact length of
                 // FieldElement
-                x: t.x.to_bytes().as_slice().try_into().unwrap(),
+                x: t.x
+                    .to_bytes()
+                    .as_slice()
+                    .try_into()
+                    .expect("Wrong number of bytes encountered when converting to FieldElement"),
                 is_odd: t.is_odd,
             })))
         }
