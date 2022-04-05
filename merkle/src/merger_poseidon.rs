@@ -58,16 +58,15 @@ fn merge_poseidon_hash(hashes: [Option<Fp>; MINA_POSEIDON_MERKLE_DEGREE], height
 
 fn merge_poseidon_hash_with_hasher(
     hasher: &mut SpinLockReusable<PoseidonHasherLegacy<MinaPoseidonMerkleTreeNonLeafNode>>,
-    hashes: [Option<Fp>; MINA_POSEIDON_MERKLE_DEGREE],
+    mut hashes: [Option<Fp>; MINA_POSEIDON_MERKLE_DEGREE],
     height: u32,
 ) -> Fp {
-    let mut flatten_hashes = hashes;
-    for hash_opt in flatten_hashes.iter_mut() {
+    for hash_opt in hashes.iter_mut() {
         if hash_opt.is_none() {
             *hash_opt = get_empty_hash(hasher, height - 1).into();
         }
     }
-    let hashable = MinaPoseidonMerkleTreeNonLeafNode(flatten_hashes, height);
+    let hashable = MinaPoseidonMerkleTreeNonLeafNode(hashes, height);
     hasher.init(height);
     hasher.hash(&hashable)
 }
