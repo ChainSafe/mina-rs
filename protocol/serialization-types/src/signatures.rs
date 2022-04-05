@@ -33,8 +33,8 @@ pub type SignatureV1 = Versioned<Versioned<(FieldElement, InnerCurveScalar), 1>,
 
 mod conversions {
     use super::{CompressedCurvePoint, PublicKey2V1, PublicKeyV1};
-    use mina_signer::{BaseField, CompressedPubKey};
-    use o1_utils::field_helpers::FieldHelpers;
+    use proof_systems::mina_signer::{BaseField, CompressedPubKey};
+    use proof_systems::o1_utils::field_helpers::FieldHelpers;
     use versioned::Versioned;
 
     impl From<PublicKeyV1> for CompressedPubKey {

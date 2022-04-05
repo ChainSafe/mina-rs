@@ -8,6 +8,9 @@ pub mod permissions;
 pub mod timing;
 pub mod token_permissions;
 
+use proof_systems::*;
+
+use mina_hasher::ROInput;
 pub use permissions::{AuthRequired, Permissions};
 pub use timing::Timing;
 pub use token_permissions::TokenPermissions;
@@ -18,7 +21,7 @@ use mina_crypto::hash::{ChainHash, StateHash};
 use serde::{Deserialize, Serialize};
 
 use mina_serialization_types::v1::AccountV1;
-use mina_signer::CompressedPubKey;
+use proof_systems::mina_signer::CompressedPubKey;
 
 /// An account identified by its public key and token ID. Multiple accounts may
 /// where the same public key if multiple tokens exist
@@ -52,4 +55,32 @@ pub struct Account {
     pub permissions: Permissions,
     /// TODO: This should contain a Snapp account data once we have something to test against
     pub snapp: Option<()>,
+}
+
+impl mina_hasher::Hashable for Account {
+    type D = ();
+
+    // Uncomment these fields once they have implemented Hashable trait
+    // and add unit tests when it's complete
+    fn to_roinput(&self) -> ROInput {
+        let mut roi = ROInput::new();
+        roi
+            // .append_hashable(self.public_key)
+            .append_hashable(&self.token_id)
+            // .append_hashable(self.token_permissions)
+            .append_hashable(&self.balance)
+            // .append_hashable(self.nonce)
+            // .append_hashable(self.receipt_chain_hash)
+            // .append_hashable(self.delegate)
+            // .append_hashable(self.voting_for)
+            // .append_hashable(self.timing)
+            // .append_hashable(self.permissions)
+            // .append_hashable(self.snapp)
+            ;
+        roi
+    }
+
+    fn domain_string(_: Self::D) -> Option<String> {
+        Some("CodaAccount".into())
+    }
 }

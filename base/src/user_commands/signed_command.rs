@@ -6,7 +6,7 @@
 use crate::numbers::{Amount, ExtendedU32, TokenId};
 use mina_crypto::signature::Signature;
 
-use mina_signer::CompressedPubKey;
+use proof_systems::mina_signer::CompressedPubKey;
 
 use crate::user_commands::memo::SignedCommandMemo;
 use crate::user_commands::payment::PaymentPayload;

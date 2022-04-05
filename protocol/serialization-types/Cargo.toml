@@ -9,10 +9,9 @@ license = "Apache-2.0"
 [dependencies]
 bin-prot = {path = "../bin-prot"}
 versioned = {path = "../versioned"}
-
 serde = {version = "1", features = ["derive"]}
-mina-signer = {git = "https://github.com/willemolding/proof-systems", rev = "c05889b53668b44bb8944737581a24399747fb78"}
-o1-utils = {git = "https://github.com/willemolding/proof-systems", rev = "c05889b53668b44bb8944737581a24399747fb78"}
+
+proof-systems = { path = "../../proof-systems-shim" }
 
 [dev-dependencies]
 test-fixtures = {path = "../test-fixtures"}

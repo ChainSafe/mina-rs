@@ -5,7 +5,7 @@
 
 use crate::numbers::{Amount, TokenId};
 
-use mina_signer::CompressedPubKey;
+use proof_systems::mina_signer::CompressedPubKey;
 
 /// The data specific to payload commands
 #[derive(Clone, PartialEq, Debug)]

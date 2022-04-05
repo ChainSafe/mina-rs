@@ -14,8 +14,8 @@ mod tests {
     use time::macros::*;
     use wasm_bindgen_test::*;
 
-    use mina_signer::CompressedPubKey;
-    use o1_utils::field_helpers::FieldHelpers;
+    use proof_systems::mina_signer::CompressedPubKey;
+    use proof_systems::o1_utils::field_helpers::FieldHelpers;
 
     #[wasm_bindgen_test]
     fn test_block_wasm() {

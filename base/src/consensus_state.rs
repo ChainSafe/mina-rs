@@ -10,7 +10,7 @@ use crate::{
 };
 use derive_more::From;
 use mina_crypto::{hash::*, prelude::*};
-use mina_signer::CompressedPubKey;
+use proof_systems::mina_signer::CompressedPubKey;
 use serde::Serialize;
 use smart_default::SmartDefault;
 

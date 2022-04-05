@@ -11,7 +11,7 @@ use crate::numbers::Amount;
 use crate::types::TokenId;
 use crate::user_commands::UserCommand;
 
-use mina_signer::CompressedPubKey;
+use proof_systems::mina_signer::CompressedPubKey;
 
 #[derive(Clone, PartialEq, Debug, Default)]
 /// Top level wrapper type for a StagedLedgerDiff

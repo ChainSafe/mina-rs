@@ -3,7 +3,7 @@
 
 //! Helpers for building a user command
 
-use mina_signer::CompressedPubKey;
+use proof_systems::mina_signer::CompressedPubKey;
 
 use crate::numbers::{Amount, TokenId};
 use crate::types::ExtendedU32;

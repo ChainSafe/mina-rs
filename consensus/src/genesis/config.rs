@@ -6,7 +6,7 @@ use mina_rs_base::{
     finite_ec_point, finite_ec_point_pair,
     types::{proof_messages::ProofMessageWithoutDegreeBoundList, *},
 };
-use mina_signer::CompressedPubKey;
+use proof_systems::mina_signer::CompressedPubKey;
 
 // Panic messages for hard coded genesis block
 // Avoid using unwrap or expect elsewhere without justification

@@ -7,11 +7,14 @@ edition = "2021"
 license = "Apache-2.0"
 
 [dependencies]
-mina-crypto = {path = "../crypto"}
 bin-prot = {path = "../protocol/bin-prot"}
+mina-crypto = {path = "../crypto"}
 mina-serialization-types = {path = "../protocol/serialization-types"}
 versioned = {path = "../protocol/versioned"}
+proof-systems = {path = "../proof-systems-shim"}
 
+ark-ec = "0.3.0"
+ark-ff = "0.3.0"
 base64 = "0.13"
 derive_deref = "1.1"
 derive_more = "0.99"
@@ -20,14 +23,6 @@ num = "0.4"
 serde = {version = "1", features = ["derive"]}
 thiserror = "1"
 time = "0.3"
-
-ark-ec = "0.3.0"
-ark-ff = "0.3.0"
-commitment_dlog = {git = "https://github.com/o1-labs/proof-systems", rev = "6af257b793d80f900675acc01b16fd4bf6375268"}
-mina-curves = {git = "https://github.com/o1-labs/proof-systems", rev = "6af257b793d80f900675acc01b16fd4bf6375268"}
-plonk_circuits = {git = "https://github.com/o1-labs/proof-systems", rev = "6af257b793d80f900675acc01b16fd4bf6375268"}
-plonk_protocol_dlog = {git = "https://github.com/o1-labs/proof-systems", rev = "6af257b793d80f900675acc01b16fd4bf6375268"}
-mina-signer = {git = "https://github.com/willemolding/proof-systems", rev = "c05889b53668b44bb8944737581a24399747fb78"}
 smart-default = "0.6.0"
 
 # This dependency is not used by the crate, but is a subdependency of commitment_dlog
@@ -37,4 +32,4 @@ smart-default = "0.6.0"
 getrandom = {version = "0.2", features = ["js"]}
 
 [dev-dependencies]
-test-fixtures = { path = "../protocol/test-fixtures" }
+test-fixtures = {path = "../protocol/test-fixtures"}
