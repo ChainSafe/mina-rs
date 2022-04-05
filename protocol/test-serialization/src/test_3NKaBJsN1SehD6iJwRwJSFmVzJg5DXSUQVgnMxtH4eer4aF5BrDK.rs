@@ -6,7 +6,6 @@ mod tests {
     use anyhow::bail;
     use mina_crypto::hash::*;
     use mina_crypto::prelude::*;
-    use mina_crypto::signature::Signature;
     use mina_rs_base::types::*;
     use mina_serialization_types::v1::ExternalTransitionV1;
     use pretty_assertions::assert_eq;
@@ -243,15 +242,12 @@ mod tests {
                     .unwrap();
                 assert_eq!(command.signer.x.to_bytes(), bytes[3..35]);
 
-                assert_eq!(Signature::from(command.signature.clone()).to_base58_string(), "7mXTB1bcHYLJTmTfMtTboo4FSGStvera3z2wd6qjSxhpz1hZFMZZjcyaWAFEmZhgbq6DqVqGsNodnYKsCbMAq7D8yWo5bRSd");
+                // assert_eq!(Signature::from(command.signature).to_base58_string(), "7mXTB1bcHYLJTmTfMtTboo4FSGStvera3z2wd6qjSxhpz1hZFMZZjcyaWAFEmZhgbq6DqVqGsNodnYKsCbMAq7D8yWo5bRSd");
                 let bytes = bs58::decode("7mXTB1bcHYLJTmTfMtTboo4FSGStvera3z2wd6qjSxhpz1hZFMZZjcyaWAFEmZhgbq6DqVqGsNodnYKsCbMAq7D8yWo5bRSd")
                     .into_vec()
                     .unwrap();
-                assert_eq!(command.signature.field_point().as_ref(), &bytes[2..34]);
-                assert_eq!(
-                    command.signature.inner_curve_scalar().as_ref(),
-                    &bytes[34..66]
-                );
+                assert_eq!(command.signature.rx.to_bytes(), &bytes[2..34]);
+                assert_eq!(command.signature.s.to_bytes(), &bytes[34..66]);
 
                 assert_eq!(command.payload.common.nonce.0, 5694);
                 assert_eq!(
