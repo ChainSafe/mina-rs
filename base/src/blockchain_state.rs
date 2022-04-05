@@ -5,9 +5,8 @@
 
 use crate::numbers::{BlockTime, TokenId};
 use mina_crypto::hash::*;
-use serde::{Deserialize, Serialize};
 
-#[derive(Clone, Serialize, Deserialize, Default, Debug, PartialEq)]
+#[derive(Clone, Default, Debug, PartialEq)]
 /// Mina blockchain state struct
 pub struct BlockchainState {
     /// Hash of the proposed next state of the blockchain

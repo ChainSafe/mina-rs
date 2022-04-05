@@ -12,13 +12,13 @@ use derive_more::From;
 use mina_crypto::{hex::skip_0x_prefix_when_needed, prelude::*};
 use mina_hasher::ROInput;
 use num::Integer;
-use serde::{Deserialize, Serialize};
+
 use thiserror::Error;
 use time::Duration;
 
 use crate::constants::MINA_PRECISION;
 
-#[derive(Clone, Serialize, Default, Deserialize, PartialEq, Debug, Hash, From)]
+#[derive(Clone, Default, PartialEq, Debug, Hash, From)]
 #[from(forward)]
 /// Newtype for TokenIds
 pub struct TokenId(pub u64);
@@ -37,24 +37,18 @@ impl mina_hasher::Hashable for TokenId {
     }
 }
 
-#[derive(
-    Clone, Serialize, Deserialize, PartialEq, PartialOrd, Debug, Hash, Copy, Default, Deref, From,
-)]
+#[derive(Clone, PartialEq, PartialOrd, Debug, Hash, Copy, Default, Deref, From)]
 #[from(forward)]
 /// Represents the length of something (e.g. an epoch or window)
 pub struct Length(pub u32);
 
-#[derive(
-    Clone, Serialize, Deserialize, PartialEq, PartialOrd, Debug, Hash, Copy, Default, From,
-)]
+#[derive(Clone, PartialEq, PartialOrd, Debug, Hash, Copy, Default, From)]
 #[from(forward)]
 
 /// Represents a difference between two lengths
 pub struct Delta(pub u32);
 
-#[derive(
-    Clone, Serialize, Deserialize, PartialEq, PartialOrd, Debug, Hash, Copy, Default, From,
-)]
+#[derive(Clone, PartialEq, PartialOrd, Debug, Hash, Copy, Default, From)]
 #[from(forward)]
 // FIXME: 255 255 cannot be deserialized to u32, use i32 for now
 // Note: Extended_Uint32 is not defined in bin_prot, but comes from mina
@@ -63,9 +57,12 @@ pub struct Delta(pub u32);
 /// This will not be part of the public API once the deserialization refactor is complete
 pub struct ExtendedU32(pub i32);
 
-#[derive(
-    Clone, Serialize, Deserialize, PartialEq, PartialOrd, Debug, Hash, Copy, Default, From,
-)]
+impl ExtendedU32 {
+    /// Maximum value this type can hold
+    pub const MAX: Self = Self(i32::MAX);
+}
+
+#[derive(Clone, PartialEq, PartialOrd, Debug, Hash, Copy, Default, From)]
 #[from(forward)]
 
 /// This will not be part of the public API once the deserialization refactor is complete
@@ -80,7 +77,7 @@ pub struct ExtendedU64(pub u64);
 /// let amount = Amount(1000000030);
 /// assert_eq!(amount.to_string(), "1.000000030");
 /// ```
-#[derive(Copy, Clone, Serialize, Deserialize, PartialEq, Debug, Hash, Default, From)]
+#[derive(Copy, Clone, PartialEq, Debug, Hash, Default, From)]
 #[from(forward)]
 
 pub struct Amount(pub u64);
@@ -140,30 +137,30 @@ impl std::str::FromStr for Amount {
 }
 
 /// Number representing how many txns sent from an account
-#[derive(Copy, Clone, Serialize, Deserialize, PartialEq, Debug, Hash, Default, From)]
+#[derive(Copy, Clone, PartialEq, Debug, Hash, Default, From)]
 #[from(forward)]
 
 pub struct AccountNonce(pub u64);
 
-#[derive(Clone, Serialize, Deserialize, PartialEq, Debug, Hash, Default, From)]
+#[derive(Clone, PartialEq, Debug, Hash, Default, From)]
 #[from(forward)]
 
 /// 4 bytes wrapped by a version
 /// Will not form part of the public API when deserialization refactor is complete
 pub struct Hex64(pub i64);
 
-#[derive(Clone, Serialize, Deserialize, PartialEq, Debug, Hash, Default, From)]
+#[derive(Clone, PartialEq, Debug, Hash, Default, From)]
 #[from(forward)]
 
 /// A single char defined by a single byte (not variable length like a Rust char)
 pub struct Char(pub u8);
 
-#[derive(Clone, Serialize, Deserialize, PartialEq, Debug, Hash, Default, Deref, From)]
+#[derive(Clone, PartialEq, Debug, Hash, Default, Deref, From)]
 #[from(forward)]
 /// A global slot number
 pub struct GlobalSlotNumber(pub u32);
 
-#[derive(Clone, Serialize, Deserialize, PartialEq, Debug, Hash, Default, From)]
+#[derive(Clone, PartialEq, Debug, Hash, Default, From)]
 /// Block time numeric type
 pub struct BlockTime(pub u64);
 
@@ -202,12 +199,12 @@ impl From<mina_serialization_types::v1::BlockTimeV1> for BlockTime {
     }
 }
 
-#[derive(Clone, Serialize, Deserialize, PartialEq, Debug, Hash, Default, From)]
+#[derive(Clone, PartialEq, Debug, Hash, Default, From)]
 #[from(forward)]
 /// Time span between two block time instants
 pub struct BlockTimeSpan(pub u64);
 
-#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, From)]
+#[derive(Clone, Default, PartialEq, Debug, From)]
 #[from(forward)]
 /// Mina 256 bit Bit Integer type
 pub struct BigInt256(pub [u8; 32]);

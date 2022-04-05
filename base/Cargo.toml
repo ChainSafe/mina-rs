@@ -23,6 +23,7 @@ num = "0.4"
 serde = {version = "1", features = ["derive"]}
 thiserror = "1"
 time = "0.3"
+smart-default = "0.6.0"
 
 # This dependency is not used by the crate, but is a subdependency of commitment_dlog
 # This features must be enable to build with WASM support

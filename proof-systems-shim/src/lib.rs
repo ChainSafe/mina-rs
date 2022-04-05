@@ -15,4 +15,9 @@
 //!
 
 pub use commitment_dlog;
+pub use mina_curves;
 pub use mina_hasher;
+pub use mina_signer;
+pub use o1_utils;
+pub use plonk_circuits;
+pub use plonk_protocol_dlog;

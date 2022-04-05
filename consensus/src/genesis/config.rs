@@ -1,11 +1,12 @@
 // Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
-use mina_crypto::{hash::*, prelude::*, signature::*};
+use mina_crypto::{hash::*, prelude::*};
 use mina_rs_base::{
     finite_ec_point, finite_ec_point_pair,
     types::{proof_messages::ProofMessageWithoutDegreeBoundList, *},
 };
+use proof_systems::mina_signer::CompressedPubKey;
 
 // Panic messages for hard coded genesis block
 // Avoid using unwrap or expect elsewhere without justification
@@ -27,9 +28,9 @@ pub struct GenesisInitConfig {
     pub(crate) sub_window_densities: Vec<Length>,
     pub(crate) staking_epoch_data: EpochData,
     pub(crate) next_epoch_data: EpochData,
-    pub(crate) block_stake_winner: PublicKey,
-    pub(crate) block_creator: PublicKey,
-    pub(crate) coinbase_receiver: PublicKey,
+    pub(crate) block_stake_winner: CompressedPubKey,
+    pub(crate) block_creator: CompressedPubKey,
+    pub(crate) coinbase_receiver: CompressedPubKey,
     pub(crate) genesis_state_hash: StateHash,
     pub(crate) previous_state_hash: StateHash,
     pub(crate) blockchain_state: BlockchainState,
@@ -494,15 +495,15 @@ impl GenesisInitConfig {
             constants,
             staking_epoch_data,
             next_epoch_data,
-            block_stake_winner: PublicKey::from_base58(
+            block_stake_winner: CompressedPubKey::from_address(
                 "B62qiy32p8kAKnny8ZFwoMhYpBppM1DWVCqAPBYNcXnsAHhnfAAuXgg",
             )
             .expect(ERR_FAIL_TO_DECODE_B58),
-            block_creator: PublicKey::from_base58(
+            block_creator: CompressedPubKey::from_address(
                 "B62qiy32p8kAKnny8ZFwoMhYpBppM1DWVCqAPBYNcXnsAHhnfAAuXgg",
             )
             .expect(ERR_FAIL_TO_DECODE_B58),
-            coinbase_receiver: PublicKey::from_base58(
+            coinbase_receiver: CompressedPubKey::from_address(
                 "B62qiy32p8kAKnny8ZFwoMhYpBppM1DWVCqAPBYNcXnsAHhnfAAuXgg",
             )
             .expect(ERR_FAIL_TO_DECODE_B58),
