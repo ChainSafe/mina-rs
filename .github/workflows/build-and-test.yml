@@ -36,8 +36,7 @@ jobs:
       - uses: actions-rs/toolchain@v1
         with:
           profile: minimal
-          # Pin rust nightly until https://github.com/briansmith/ring/issues/1469 is resolved.
-          toolchain: nightly-2022-03-22
+          toolchain: nightly
           target: wasm32-unknown-unknown
           override: false
       - run: cargo fmt --all -- --check
@@ -58,9 +57,9 @@ jobs:
           command: check All -s
           arguments: --all-features --manifest-path apps/wasm/Cargo.toml
       - run: cargo install cargo-udeps || echo 'already installed'
-      - run: cargo +nightly-2022-03-22 udeps --all-targets --all-features
-      - run: cargo +nightly-2022-03-22 udeps --all-targets --all-features --manifest-path apps/Cargo.toml
-      - run: cargo +nightly-2022-03-22 udeps --target wasm32-unknown-unknown --all-features --manifest-path apps/wasm/Cargo.toml
+      - run: cargo +nightly udeps --all-targets --all-features
+      - run: cargo +nightly udeps --all-targets --all-features --manifest-path apps/Cargo.toml
+      - run: cargo +nightly udeps --target wasm32-unknown-unknown --all-features --manifest-path apps/wasm/Cargo.toml
   x86_64:
     runs-on: ubuntu-latest
     steps:
@@ -201,8 +200,7 @@ jobs:
       - uses: actions-rs/toolchain@v1
         with:
           profile: minimal
-          # Pin rust nightly until https://github.com/briansmith/ring/issues/1469 is resolved.
-          toolchain: nightly-2022-03-22
+          toolchain: nightly
           override: true
           components: llvm-tools-preview
       - uses: taiki-e/install-action@cargo-llvm-cov
