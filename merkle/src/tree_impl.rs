@@ -9,25 +9,25 @@ const DEGREE: usize = 2;
 /// Special complete binary merkle tree that is compatible with
 /// <https://github.com/o1-labs/snarky/blob/master/src/base/merkle_tree.ml>
 /// whose leaf nodes are at the same height
-pub struct MinaMerkleTree<TItem, THash, THasher, TMerger>
+pub struct MinaMerkleTree<Item, Hash, Hasher, Merger>
 where
-    THasher: MerkleHasher<DEGREE, Item = TItem, Hash = THash>,
-    TMerger: MerkleMerger<DEGREE, Hash = THash>,
-    THash: Clone,
+    Hasher: MerkleHasher<DEGREE, Item = Item, Hash = Hash>,
+    Merger: MerkleMerger<DEGREE, Hash = Hash>,
+    Hash: Clone,
 {
     height: u32,
-    leafs: Vec<(TItem, Option<THash>)>,
-    nodes: Vec<Option<THash>>,
+    leafs: Vec<(Item, Option<Hash>)>,
+    nodes: Vec<Option<Hash>>,
 
-    _pd_hasher: PhantomData<THasher>,
-    _pd_merger: PhantomData<TMerger>,
+    _pd_hasher: PhantomData<Hasher>,
+    _pd_merger: PhantomData<Merger>,
 }
 
-impl<TItem, THash, THasher, TMerger> MinaMerkleTree<TItem, THash, THasher, TMerger>
+impl<Item, Hash, Hasher, Merger> MinaMerkleTree<Item, Hash, Hasher, Merger>
 where
-    THasher: MerkleHasher<DEGREE, Item = TItem, Hash = THash>,
-    TMerger: MerkleMerger<DEGREE, Hash = THash>,
-    THash: Clone,
+    Hasher: MerkleHasher<DEGREE, Item = Item, Hash = Hash>,
+    Merger: MerkleMerger<DEGREE, Hash = Hash>,
+    Hash: Clone,
 {
     /// Creates a new instance of [MinaMerkleTree]
     pub fn new() -> Self {
@@ -63,7 +63,7 @@ where
     /// either apply hash algorithm if it's a leaf node
     /// or apply merge algorithm if it's a non-leaf node
     /// update the cache once calculated
-    fn calculate_hash_if_needed(&mut self, index: usize) -> Option<THash> {
+    fn calculate_hash_if_needed(&mut self, index: usize) -> Option<Hash> {
         if index < self.nodes.len() {
             if let Some(hash) = &self.nodes[index] {
                 Some(hash.clone())
@@ -72,7 +72,7 @@ where
                 let right = index * 2 + 2;
                 let left_hash = self.calculate_hash_if_needed(left);
                 let right_hash = self.calculate_hash_if_needed(right);
-                let hash = TMerger::merge(
+                let hash = Merger::merge(
                     [left_hash, right_hash],
                     MerkleTreeNodeMetadata::new(index, self.height),
                 );
@@ -85,7 +85,7 @@ where
                 let (data, hash) = &mut self.leafs[leaf_index];
                 match hash {
                     None => {
-                        let node_hash = Some(THasher::hash(
+                        let node_hash = Some(Hasher::hash(
                             data,
                             MerkleTreeNodeMetadata::new(index, self.height),
                         ));
@@ -101,15 +101,14 @@ where
     }
 }
 
-impl<TItem, THash, THasher, TMerger> MerkleTree<DEGREE>
-    for MinaMerkleTree<TItem, THash, THasher, TMerger>
+impl<Item, Hash, Hasher, Merger> MerkleTree<DEGREE> for MinaMerkleTree<Item, Hash, Hasher, Merger>
 where
-    THasher: MerkleHasher<DEGREE, Item = TItem, Hash = THash>,
-    TMerger: MerkleMerger<DEGREE, Hash = THash>,
-    THash: Clone,
+    Hasher: MerkleHasher<DEGREE, Item = Item, Hash = Hash>,
+    Merger: MerkleMerger<DEGREE, Hash = Hash>,
+    Hash: Clone,
 {
-    type Item = TItem;
-    type Hash = THash;
+    type Item = Item;
+    type Hash = Hash;
 
     fn height(&self) -> u32 {
         self.height
@@ -153,11 +152,11 @@ where
     }
 }
 
-impl<TItem, THash, THasher, TMerger> Default for MinaMerkleTree<TItem, THash, THasher, TMerger>
+impl<Item, Hash, Hasher, Merger> Default for MinaMerkleTree<Item, Hash, Hasher, Merger>
 where
-    THasher: MerkleHasher<DEGREE, Item = TItem, Hash = THash>,
-    TMerger: MerkleMerger<DEGREE, Hash = THash>,
-    THash: Clone,
+    Hasher: MerkleHasher<DEGREE, Item = Item, Hash = Hash>,
+    Merger: MerkleMerger<DEGREE, Hash = Hash>,
+    Hash: Clone,
 {
     fn default() -> Self {
         Self {

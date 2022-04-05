@@ -35,26 +35,26 @@ macro_rules! impl_poseidon_legacy_hasher_pool_provider {
 }
 
 /// Hasher for mina binary merkle tree that uses poseidon hash
-pub struct MinaPoseidonMerkleHasher<TItem>
+pub struct MinaPoseidonMerkleHasher<Item>
 where
-    TItem: mina_hasher::Hashable,
+    Item: mina_hasher::Hashable,
 {
-    _pd: PhantomData<TItem>,
+    _pd: PhantomData<Item>,
 }
 
-impl<TItem> MerkleHasher<MINA_POSEIDON_MERKLE_DEGREE> for MinaPoseidonMerkleHasher<TItem>
+impl<Item> MerkleHasher<MINA_POSEIDON_MERKLE_DEGREE> for MinaPoseidonMerkleHasher<Item>
 where
-    TItem: mina_hasher::Hashable + PoseidonLegacyHasherPoolProvider<Item = TItem>,
-    <TItem as mina_hasher::Hashable>::D: Default,
+    Item: mina_hasher::Hashable + PoseidonLegacyHasherPoolProvider<Item = Item>,
+    <Item as mina_hasher::Hashable>::D: Default,
 {
-    type Item = TItem;
+    type Item = Item;
     type Hash = Fp;
     fn hash(
         item: &Self::Item,
         _: MerkleTreeNodeMetadata<MINA_POSEIDON_MERKLE_DEGREE>,
     ) -> Self::Hash {
         use mina_hasher::Hasher;
-        let pool = <TItem as PoseidonLegacyHasherPoolProvider>::get_pool();
+        let pool = <Item as PoseidonLegacyHasherPoolProvider>::get_pool();
         let mut hasher = pool.pull();
         hasher.hash(item)
     }
