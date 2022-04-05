@@ -346,7 +346,7 @@ dependencies = [
 [[package]]
 name = "commitment_dlog"
 version = "0.1.0"
-source = "git+https://github.com/o1-labs/proof-systems?rev=045210ab3c4800822764473844f4979772e93fa4#045210ab3c4800822764473844f4979772e93fa4"
+source = "git+https://github.com/o1-labs/proof-systems?rev=1f88a94eddba96b720c9214303fb2b4b0cd97597#1f88a94eddba96b720c9214303fb2b4b0cd97597"
 dependencies = [
  "ark-ec",
  "ark-ff",
@@ -604,7 +604,7 @@ checksum = "78cc372d058dcf6d5ecd98510e7fbc9e5aec4d21de70f65fea8fecebcd881bd4"
 [[package]]
 name = "groupmap"
 version = "0.1.0"
-source = "git+https://github.com/o1-labs/proof-systems?rev=045210ab3c4800822764473844f4979772e93fa4#045210ab3c4800822764473844f4979772e93fa4"
+source = "git+https://github.com/o1-labs/proof-systems?rev=1f88a94eddba96b720c9214303fb2b4b0cd97597#1f88a94eddba96b720c9214303fb2b4b0cd97597"
 dependencies = [
  "ark-ec",
  "ark-ff",
@@ -766,7 +766,7 @@ dependencies = [
 [[package]]
 name = "mina-curves"
 version = "0.1.0"
-source = "git+https://github.com/o1-labs/proof-systems?rev=045210ab3c4800822764473844f4979772e93fa4#045210ab3c4800822764473844f4979772e93fa4"
+source = "git+https://github.com/o1-labs/proof-systems?rev=1f88a94eddba96b720c9214303fb2b4b0cd97597#1f88a94eddba96b720c9214303fb2b4b0cd97597"
 dependencies = [
  "ark-ec",
  "ark-ff",
@@ -775,7 +775,7 @@ dependencies = [
 [[package]]
 name = "mina-hasher"
 version = "0.1.0"
-source = "git+https://github.com/o1-labs/proof-systems?rev=045210ab3c4800822764473844f4979772e93fa4#045210ab3c4800822764473844f4979772e93fa4"
+source = "git+https://github.com/o1-labs/proof-systems?rev=1f88a94eddba96b720c9214303fb2b4b0cd97597#1f88a94eddba96b720c9214303fb2b4b0cd97597"
 dependencies = [
  "ark-ff",
  "bitvec",
@@ -936,7 +936,7 @@ dependencies = [
 [[package]]
 name = "o1-utils"
 version = "0.1.0"
-source = "git+https://github.com/o1-labs/proof-systems?rev=045210ab3c4800822764473844f4979772e93fa4#045210ab3c4800822764473844f4979772e93fa4"
+source = "git+https://github.com/o1-labs/proof-systems?rev=1f88a94eddba96b720c9214303fb2b4b0cd97597#1f88a94eddba96b720c9214303fb2b4b0cd97597"
 dependencies = [
  "ark-ec",
  "ark-ff",
@@ -975,7 +975,7 @@ checksum = "624a8340c38c1b80fd549087862da4ba43e08858af025b236e509b6649fc13d5"
 [[package]]
 name = "oracle"
 version = "0.1.0"
-source = "git+https://github.com/o1-labs/proof-systems?rev=045210ab3c4800822764473844f4979772e93fa4#045210ab3c4800822764473844f4979772e93fa4"
+source = "git+https://github.com/o1-labs/proof-systems?rev=1f88a94eddba96b720c9214303fb2b4b0cd97597#1f88a94eddba96b720c9214303fb2b4b0cd97597"
 dependencies = [
  "ark-ec",
  "ark-ff",
