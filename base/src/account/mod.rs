@@ -17,10 +17,11 @@ pub use token_permissions::TokenPermissions;
 
 use crate::numbers::{AccountNonce, Amount, TokenId};
 use mina_crypto::hash::{ChainHash, StateHash};
-use mina_crypto::signature::PublicKey;
+
 use serde::{Deserialize, Serialize};
 
 use mina_serialization_types::v1::AccountV1;
+use proof_systems::mina_signer::CompressedPubKey;
 
 /// An account identified by its public key and token ID. Multiple accounts may
 /// where the same public key if multiple tokens exist
@@ -32,7 +33,7 @@ use mina_serialization_types::v1::AccountV1;
 #[serde(into = "AccountV1")]
 pub struct Account {
     /// Account public key
-    pub public_key: PublicKey,
+    pub public_key: CompressedPubKey,
     /// Account token ID
     pub token_id: TokenId,
     /// Permission associated with the given token
@@ -44,7 +45,7 @@ pub struct Account {
     /// ?
     pub receipt_chain_hash: ChainHash,
     /// Delegate for staking purposes
-    pub delegate: Option<PublicKey>,
+    pub delegate: Option<CompressedPubKey>,
     /// The state hash this account is voting for
     pub voting_for: StateHash,
     /// Any timing limitations places on this accounts balance

@@ -3,11 +3,9 @@
 
 //! Structure of a global slot
 
-use serde::{Deserialize, Serialize};
-
 use crate::numbers::{self, Length};
 
-#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug)]
+#[derive(Clone, Default, PartialEq, Debug)]
 /// A global slot
 pub struct GlobalSlot {
     /// The global slot number of a chain or block

@@ -5,8 +5,6 @@
 //! This module contains the command data structures and helpers to create and
 //! serialize new commands to broadcast to the network
 
-use serde::{Deserialize, Serialize};
-
 pub mod builder;
 pub mod memo;
 pub mod payment;
@@ -20,16 +18,10 @@ pub use signed_command::{
 
 /// The top level user command type
 /// This is the output of the command builders
-#[derive(Clone, Serialize, Deserialize, PartialEq, Debug)]
+#[derive(Clone, PartialEq, Debug)]
 #[non_exhaustive]
 pub enum UserCommand {
     /// A command signed by a private key
     SignedCommand(SignedCommand),
     // FIXME: other variants are not covered by current test block
-}
-
-impl Default for UserCommand {
-    fn default() -> Self {
-        Self::SignedCommand(SignedCommand::default())
-    }
 }

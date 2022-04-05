@@ -2,9 +2,8 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::types::FieldElementVec;
-use serde::{Deserialize, Serialize};
 
-#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug)]
+#[derive(Clone, Default, PartialEq, Debug)]
 pub struct ProofEvaluations {
     pub l: FieldElementVec,
     pub r: FieldElementVec,
