@@ -5,11 +5,11 @@ use super::*;
 use libp2p::{
     core::{muxing::StreamMuxerBox, transport, upgrade},
     identity,
+    mplex::MplexConfig,
     noise::{self, AuthenticKeypair, X25519Spec},
     pnet::PnetConfig,
     PeerId, Transport,
 };
-use libp2p_mplex::MplexConfig;
 use std::{borrow::Borrow, time::Duration};
 
 /// Type alias for libp2p transport
