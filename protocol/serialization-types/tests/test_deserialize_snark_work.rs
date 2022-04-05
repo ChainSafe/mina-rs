@@ -1,4 +1,5 @@
 
+use mina_serialization_types::staged_ledger_diff::{TransactionStatus, TransactionSnarkWork};
 use test_fixtures::TEST_BLOCKS;
 
 
@@ -17,6 +18,9 @@ fn test_deserialize_snark_work() {
 	bin_prot::to_writer(&mut snark_work_example_bytes, snark_work_example).unwrap();
 	// you could write these to a file and try to deserialize them directly into the TransactionSnarkWork type 
 	// to make test turnaround time much quicker
+
+	// Ideally we want this to pass
+	// let snark_work: TransactionSnarkWorkV1 = bin_prot::from_reader(&snark_work_example_bytes[..]).unwrap();
 
 	println!("{:?}", snark_work_example_bytes);
 }
