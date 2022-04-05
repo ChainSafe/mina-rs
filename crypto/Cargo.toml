@@ -18,7 +18,6 @@ blake2 = "0.10"
 bs58 = {version = "0.4", features = ["check"]}
 hex = "0.4"
 num = "0.4"
-derive_deref = "1.1"
 derive_more = "0.99"
 serde = {version = "1", features = ["derive"]}
 thiserror = "1"
