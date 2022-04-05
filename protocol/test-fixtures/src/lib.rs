@@ -40,6 +40,9 @@ lazy_static! {
         // "data/3NK9fHpzfPWhuxFhQ9Dau1X1JWtstB6kGC4xrurSPU1kctMCsU9U.hex"
         // "data/3NKapQX5Qe8f4BEZGWxVSWKQvKNnkvPXNLq5KDHCV1qoPzV5Y3Wu.hex"
     );
+    pub static ref TEST_BLOCKS_WITH_SNARK_WORK: HashMap<String, BlockFixture> = load_test_blocks!(
+        "data/3NK9fHpzfPWhuxFhQ9Dau1X1JWtstB6kGC4xrurSPU1kctMCsU9U.hex"
+    );
 }
 
 pub const VERIFICATION_KEY: &[u8] = include_bytes!(

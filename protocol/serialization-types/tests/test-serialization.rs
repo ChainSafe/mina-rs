@@ -351,7 +351,7 @@ fn test_staged_ledger_diff_diff_two() {
 #[wasm_bindgen_test]
 fn test_staged_ledger_diff_diff_completed_works() {
     block_path_test_batch! {
-        Vec<TransactionSnarkWork> => "t/staged_ledger_diff/t/diff/t/0/t/t/completed_works"
+        Vec<TransactionSnarkWorkV1> => "t/staged_ledger_diff/t/diff/t/0/t/t/completed_works"
     }
 }
 
