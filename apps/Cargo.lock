@@ -708,7 +708,6 @@ dependencies = [
  "derive_more",
  "hex",
  "mina-serialization-types",
- "mina-signer 0.1.0 (git+https://github.com/o1-labs/proof-systems?rev=d8a3c14f4ad953c8a46ab3bcc84c0abbc6be6a10)",
  "num",
  "serde",
  "thiserror",
@@ -725,37 +724,15 @@ dependencies = [
 ]
 
 [[package]]
-name = "mina-curves"
-version = "0.1.0"
-source = "git+https://github.com/o1-labs/proof-systems?rev=d8a3c14f4ad953c8a46ab3bcc84c0abbc6be6a10#d8a3c14f4ad953c8a46ab3bcc84c0abbc6be6a10"
-dependencies = [
- "ark-ec",
- "ark-ff",
-]
-
-[[package]]
 name = "mina-hasher"
 version = "0.1.0"
 source = "git+https://github.com/o1-labs/proof-systems?rev=1f88a94eddba96b720c9214303fb2b4b0cd97597#1f88a94eddba96b720c9214303fb2b4b0cd97597"
 dependencies = [
  "ark-ff",
  "bitvec",
- "mina-curves 0.1.0 (git+https://github.com/o1-labs/proof-systems?rev=1f88a94eddba96b720c9214303fb2b4b0cd97597)",
- "o1-utils 0.1.0 (git+https://github.com/o1-labs/proof-systems?rev=1f88a94eddba96b720c9214303fb2b4b0cd97597)",
- "oracle 0.1.0 (git+https://github.com/o1-labs/proof-systems?rev=1f88a94eddba96b720c9214303fb2b4b0cd97597)",
- "serde",
-]
-
-[[package]]
-name = "mina-hasher"
-version = "0.1.0"
-source = "git+https://github.com/o1-labs/proof-systems?rev=d8a3c14f4ad953c8a46ab3bcc84c0abbc6be6a10#d8a3c14f4ad953c8a46ab3bcc84c0abbc6be6a10"
-dependencies = [
- "ark-ff",
- "bitvec",
- "mina-curves 0.1.0 (git+https://github.com/o1-labs/proof-systems?rev=d8a3c14f4ad953c8a46ab3bcc84c0abbc6be6a10)",
- "o1-utils 0.1.0 (git+https://github.com/o1-labs/proof-systems?rev=d8a3c14f4ad953c8a46ab3bcc84c0abbc6be6a10)",
- "oracle 0.1.0 (git+https://github.com/o1-labs/proof-systems?rev=d8a3c14f4ad953c8a46ab3bcc84c0abbc6be6a10)",
+ "mina-curves",
+ "o1-utils",
+ "oracle",
  "serde",
 ]
 
@@ -815,28 +792,9 @@ dependencies = [
  "blake2",
  "bs58",
  "hex",
- "mina-curves 0.1.0 (git+https://github.com/o1-labs/proof-systems?rev=1f88a94eddba96b720c9214303fb2b4b0cd97597)",
- "mina-hasher 0.1.0 (git+https://github.com/o1-labs/proof-systems?rev=1f88a94eddba96b720c9214303fb2b4b0cd97597)",
- "o1-utils 0.1.0 (git+https://github.com/o1-labs/proof-systems?rev=1f88a94eddba96b720c9214303fb2b4b0cd97597)",
- "rand",
- "sha2 0.10.2",
- "thiserror",
-]
-
-[[package]]
-name = "mina-signer"
-version = "0.1.0"
-source = "git+https://github.com/o1-labs/proof-systems?rev=d8a3c14f4ad953c8a46ab3bcc84c0abbc6be6a10#d8a3c14f4ad953c8a46ab3bcc84c0abbc6be6a10"
-dependencies = [
- "ark-ec",
- "ark-ff",
- "bitvec",
- "blake2",
- "bs58",
- "hex",
- "mina-curves 0.1.0 (git+https://github.com/o1-labs/proof-systems?rev=d8a3c14f4ad953c8a46ab3bcc84c0abbc6be6a10)",
- "mina-hasher 0.1.0 (git+https://github.com/o1-labs/proof-systems?rev=d8a3c14f4ad953c8a46ab3bcc84c0abbc6be6a10)",
- "o1-utils 0.1.0 (git+https://github.com/o1-labs/proof-systems?rev=d8a3c14f4ad953c8a46ab3bcc84c0abbc6be6a10)",
+ "mina-curves",
+ "mina-hasher",
+ "o1-utils",
  "rand",
  "sha2 0.10.2",
  "thiserror",
@@ -966,24 +924,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "o1-utils"
-version = "0.1.0"
-source = "git+https://github.com/o1-labs/proof-systems?rev=d8a3c14f4ad953c8a46ab3bcc84c0abbc6be6a10#d8a3c14f4ad953c8a46ab3bcc84c0abbc6be6a10"
-dependencies = [
- "ark-ec",
- "ark-ff",
- "ark-poly",
- "ark-serialize",
- "bcs",
- "hex",
- "rayon",
- "serde",
- "serde_with",
- "sha2 0.10.2",
- "thiserror",
-]
-
-[[package]]
 name = "object"
 version = "0.27.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1012,24 +952,8 @@ dependencies = [
  "ark-ec",
  "ark-ff",
  "ark-poly",
- "mina-curves 0.1.0 (git+https://github.com/o1-labs/proof-systems?rev=1f88a94eddba96b720c9214303fb2b4b0cd97597)",
- "o1-utils 0.1.0 (git+https://github.com/o1-labs/proof-systems?rev=1f88a94eddba96b720c9214303fb2b4b0cd97597)",
- "rand",
- "rayon",
- "serde",
- "serde_with",
-]
-
-[[package]]
-name = "oracle"
-version = "0.1.0"
-source = "git+https://github.com/o1-labs/proof-systems?rev=d8a3c14f4ad953c8a46ab3bcc84c0abbc6be6a10#d8a3c14f4ad953c8a46ab3bcc84c0abbc6be6a10"
-dependencies = [
- "ark-ec",
- "ark-ff",
- "ark-poly",
- "mina-curves 0.1.0 (git+https://github.com/o1-labs/proof-systems?rev=d8a3c14f4ad953c8a46ab3bcc84c0abbc6be6a10)",
- "o1-utils 0.1.0 (git+https://github.com/o1-labs/proof-systems?rev=d8a3c14f4ad953c8a46ab3bcc84c0abbc6be6a10)",
+ "mina-curves",
+ "o1-utils",
  "rand",
  "rayon",
  "serde",
@@ -1128,9 +1052,9 @@ dependencies = [
 name = "proof-systems"
 version = "0.1.0"
 dependencies = [
- "mina-hasher 0.1.0 (git+https://github.com/o1-labs/proof-systems?rev=1f88a94eddba96b720c9214303fb2b4b0cd97597)",
- "mina-signer 0.1.0 (git+https://github.com/o1-labs/proof-systems?rev=1f88a94eddba96b720c9214303fb2b4b0cd97597)",
- "o1-utils 0.1.0 (git+https://github.com/o1-labs/proof-systems?rev=1f88a94eddba96b720c9214303fb2b4b0cd97597)",
+ "mina-hasher",
+ "mina-signer",
+ "o1-utils",
 ]
 
 [[package]]
