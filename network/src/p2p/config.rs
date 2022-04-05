@@ -1,8 +1,7 @@
 // Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
-use libp2p::pnet::PreSharedKey;
-use libp2p_mplex::MplexConfig;
+use libp2p::{mplex::MplexConfig, pnet::PreSharedKey};
 use multihash::{Blake2b256, Hasher};
 
 lazy_static::lazy_static! {
