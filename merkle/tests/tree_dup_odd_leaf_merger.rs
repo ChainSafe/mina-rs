@@ -24,7 +24,7 @@
 mod tests {
     use mina_merkle::*;
 
-    struct TestHasher {}
+    struct TestHasher;
 
     impl MerkleHasher for TestHasher {
         type Item = i64;
@@ -34,7 +34,7 @@ mod tests {
         }
     }
 
-    struct TestMerger {}
+    struct TestMerger;
 
     impl MerkleMerger for TestMerger {
         type Hash = i64;

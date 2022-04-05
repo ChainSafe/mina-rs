@@ -10,7 +10,7 @@ use once_cell::sync::OnceCell;
 
 /// Merger for mina binary merkle tree that uses poseidon hash
 /// with mina specific domain string calculated from node height
-pub struct MinaPoseidonMerkleMerger {}
+pub struct MinaPoseidonMerkleMerger;
 
 impl MerkleMerger for MinaPoseidonMerkleMerger {
     type Hash = Fp;
