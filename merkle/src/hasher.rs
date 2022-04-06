@@ -3,8 +3,9 @@
 
 use super::*;
 
-/// Trait for implementing hasher
-pub trait MerkleHasher<const DEGREE: usize> {
+/// Trait for implementing merkle tree hasher
+/// degree defaults to 2
+pub trait MerkleHasher<const DEGREE: usize = DEFAULT_DEGREE> {
     /// Type that [MerkleHasher] calculates hash from
     type Item;
     /// Type that represents the hash value

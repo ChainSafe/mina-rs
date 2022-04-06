@@ -192,26 +192,10 @@ pub enum Polyvar {
 }
 
 #[derive(Clone, Serialize, Deserialize, Debug)]
-/// A polyvar hash identifies a variant in a polyvar rather than
-/// an index in a sum type
-/// This is encoded in the layout JSON files as an OCaml 63 bit integer
-/// and some special care needs to be taken when coverting between
-pub struct PolyvarTag(u32);
-
-impl PolyvarTag {
-    /// The integers format used to serialize the JSON layouts uses 63 bit integers
-    /// so if we read the bytes from the binary and try and compare they are off by a 1 bit shift.
-    /// This function convers to a rust style integer representation for comparison
-    pub fn to_u32(&self) -> u32 {
-        self.0 << 1 | 1
-    }
-}
-
-#[derive(Clone, Serialize, Deserialize, Debug)]
 /// τ ≤ Γ(a), τ is an instance of Γ(a) and (Γ(a) a type scheme
 pub struct TaggedPolyvar {
     pub(crate) polyvar_name: String,
-    pub(crate) hash: PolyvarTag,
+    pub(crate) hash: u32,
     pub(crate) polyvar_args: Vec<BinProtRule>,
 }
 

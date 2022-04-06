@@ -174,7 +174,7 @@ mod tests {
             result,
             Value::Polyvar {
                 name: "Two".to_string(),
-                tag: 8407769, // Note this is different to the json encoded version which uses OCaml 63 bit encoding. You can convert between using (x << 1 | 1)
+                tag: 4203884,
                 value: Box::new(Value::Tuple(vec![Value::Bool(true)]))
             }
         );

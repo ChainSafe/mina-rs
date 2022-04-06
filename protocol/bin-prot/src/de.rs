@@ -7,6 +7,7 @@ use crate::error::{Error, Result};
 #[cfg(feature = "loose_deserialization")]
 use crate::value::layout::*;
 use crate::ReadBinProtExt;
+use crate::{caml_hash_variant, VariantHash};
 use byteorder::{LittleEndian, ReadBytesExt};
 use serde::de::{self, value::U8Deserializer, EnumAccess, IntoDeserializer, Visitor};
 use serde::Deserialize;
@@ -306,15 +307,25 @@ impl<'de, 'a, R: Read> de::Deserializer<'de> for &'a mut Deserializer<R, Strongl
 
     fn deserialize_enum<V>(
         self,
-        _name: &'static str,
-        _variants: &'static [&'static str],
+        name: &'static str,
+        variants: &'static [&'static str],
         visitor: V,
     ) -> Result<V::Value>
     where
         V: Visitor<'de>,
     {
-        let index = self.rdr.bin_read_variant_index()?;
-        visitor.visit_enum(Enum::new(self, index))
+        // Deserialize polyvar enum using serde container attribute #[serde(rename = "Polyvar")]
+        // Refer tests/polyvar.rs for more info
+        match name {
+            "Polyvar" => {
+                let hash = self.rdr.bin_read_polyvar_tag()?;
+                visitor.visit_enum(PolyvarEnum::new(self, hash, variants))
+            }
+            _ => {
+                let index = self.rdr.bin_read_variant_index()?;
+                visitor.visit_enum(Enum::new(self, index))
+            }
+        }
     }
 
     fn deserialize_identifier<V>(self, _visitor: V) -> Result<V::Value>
@@ -343,6 +354,56 @@ impl<'de, 'a, R: Read> de::Deserializer<'de> for &'a mut Deserializer<R, Strongl
         self.deserialize_any(visitor)
     }
 }
+
+pub struct PolyvarEnum<'a, R: Read, Mode> {
+    de: &'a mut Deserializer<R, Mode>,
+    hash: VariantHash,
+    variants: &'a [&'static str],
+}
+
+impl<'a, 'de, R: Read, Mode> PolyvarEnum<'a, R, Mode> {
+    pub fn new(
+        de: &'a mut Deserializer<R, Mode>,
+        hash: VariantHash,
+        variants: &'a [&'static str],
+    ) -> Self {
+        PolyvarEnum { de, hash, variants }
+    }
+}
+
+macro_rules! impl_polyvar_enum_access {
+    ($ty: ty) => {
+        impl<'de, 'a, R: Read> EnumAccess<'de> for PolyvarEnum<'a, R, $ty> {
+            type Error = Error;
+            type Variant = Enum<'a, R, StronglyTyped>;
+
+            fn variant_seed<V>(self, seed: V) -> Result<(V::Value, Self::Variant)>
+            where
+                V: de::DeserializeSeed<'de>,
+            {
+                let index = self
+                    .variants
+                    .into_iter()
+                    .filter(|v| v.is_ascii()) // Polyvar tag must be within the ASCII range, otherwise computing the caml hash is undefined behaviour.
+                    .enumerate()
+                    .find_map(|(index, value)| {
+                        // Return the first polyvar variant where the hash matches
+                        if caml_hash_variant(value) == self.hash {
+                            Some(index)
+                        } else {
+                            None
+                        }
+                    })
+                    .ok_or(Error::UnknownPolyvarTag(self.hash))?;
+                let de: U8Deserializer<Self::Error> = (index as u8).into_deserializer();
+                let v = seed.deserialize(de)?;
+                Ok((v, Enum::new(self.de, index as u8)))
+            }
+        }
+    };
+}
+
+impl_polyvar_enum_access!(StronglyTyped);
 
 pub struct Enum<'a, R: Read, Mode> {
     de: &'a mut Deserializer<R, Mode>,
@@ -383,8 +444,8 @@ impl_enum_access!(LooselyTyped);
 // `VariantAccess` is provided to the `Visitor` to give it the ability to see
 // the content of the single variant that it decided to deserialize.
 macro_rules! impl_variant_access {
-    ($ty: ty) => {
-        impl<'de, 'a, R: Read> de::VariantAccess<'de> for Enum<'a, R, $ty> {
+    ($ty: ty, $ident: ident) => {
+        impl<'de, 'a, R: Read> de::VariantAccess<'de> for $ident<'a, R, $ty> {
             type Error = Error;
 
             fn unit_variant(self) -> Result<()> {
@@ -419,10 +480,13 @@ macro_rules! impl_variant_access {
     };
 }
 
-impl_variant_access!(StronglyTyped);
+impl_variant_access!(StronglyTyped, Enum);
+impl_variant_access!(StronglyTyped, PolyvarEnum);
 
 #[cfg(feature = "loose_deserialization")]
-impl_variant_access!(LooselyTyped);
+impl_variant_access!(LooselyTyped, Enum);
+#[cfg(feature = "loose_deserialization")]
+impl_variant_access!(LooselyTyped, PolyvarEnum);
 
 pub(crate) struct MapAccess<'a, R: Read + 'a, Mode> {
     de: &'a mut Deserializer<R, Mode>,
