@@ -109,10 +109,11 @@ pub trait ReadBinProtExt: io::Read {
     }
 
     /// Read the tag of a polyvar variant (4 bytes)
+    /// You can convert between ocaml native integer using (x << 1 | 1)
     fn bin_read_polyvar_tag(&mut self) -> Result<u32> {
         let mut buf = [0_u8; 4];
         self.read_exact(&mut buf)?;
-        Ok(u32::from_le_bytes(buf))
+        Ok(u32::from_le_bytes(buf) >> 1)
     }
 
     /// Read a string
