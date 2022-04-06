@@ -17,7 +17,17 @@ mod masking;
 pub use masking::*;
 mod merger;
 pub use merger::*;
+mod merger_poseidon;
+pub use merger_poseidon::*;
 mod hasher;
 pub use hasher::*;
+mod hasher_poseidon;
+pub use hasher_poseidon::*;
 mod metadata;
 pub use metadata::*;
+pub mod prefixes;
+
+use proof_systems::*;
+
+const DEFAULT_DEGREE: usize = 2;
+const MINA_POSEIDON_MERKLE_DEGREE: usize = 2;

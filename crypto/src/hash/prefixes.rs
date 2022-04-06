@@ -72,18 +72,6 @@ pub const SNAPP_PREDICATE_ACCOUNT: &HashPrefix = &create(b"CodaSnappPredAcct");
 
 pub const SNAPP_PREDICATE_PROTOCOL_STATE: &HashPrefix = &create(b"CodaSnappPredPS");
 
-/// Builds a hash prefix for a node at the given depth in a Merkle tree
-pub fn make_prefix_merkle_tree(i: usize) -> HashPrefix {
-    let base = format!("CodaMklTree{:03}", i);
-    create(base.as_bytes())
-}
-
-/// Builds a hash prefix for a node at the given depth in a coinbase Merkle tree
-pub fn make_prefix_coinbase_merkle_tree(i: usize) -> HashPrefix {
-    let base = format!("CodaCbMklTree{:03}", i);
-    create(base.as_bytes())
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -92,33 +80,5 @@ mod tests {
     fn create_works_as_expected() {
         assert_eq!(PROTOCOL_STATE.len(), 20);
         assert_eq!(PROTOCOL_STATE, b"CodaProtoState******");
-    }
-
-    #[test]
-    fn make_merkle_tree_hash_3() {
-        let prefix_at_3 = make_prefix_merkle_tree(3);
-        assert_eq!(prefix_at_3.len(), 20);
-        assert_eq!(&prefix_at_3, b"CodaMklTree003******");
-    }
-
-    #[test]
-    fn make_merkle_tree_hash_13() {
-        let prefix_at_3 = make_prefix_merkle_tree(13);
-        assert_eq!(prefix_at_3.len(), 20);
-        assert_eq!(&prefix_at_3, b"CodaMklTree013******");
-    }
-
-    #[test]
-    fn make_merkle_tree_hash_113() {
-        let prefix_at_3 = make_prefix_merkle_tree(113);
-        assert_eq!(prefix_at_3.len(), 20);
-        assert_eq!(&prefix_at_3, b"CodaMklTree113******");
-    }
-
-    #[test]
-    fn make_coinbase_merkle_tree_hash() {
-        let prefix_at_3 = make_prefix_coinbase_merkle_tree(3);
-        assert_eq!(prefix_at_3.len(), 20);
-        assert_eq!(&prefix_at_3, b"CodaCbMklTree003****");
     }
 }

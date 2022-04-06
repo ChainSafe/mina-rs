@@ -156,12 +156,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "array-init"
-version = "2.0.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6945cc5422176fc5e602e590c2878d2c2acd9a4fe20a4baa7c28022521698ec6"
-
-[[package]]
 name = "atty"
 version = "0.2.14"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -341,29 +335,6 @@ dependencies = [
  "strsim 0.10.0",
  "termcolor",
  "textwrap 0.15.0",
-]
-
-[[package]]
-name = "commitment_dlog"
-version = "0.1.0"
-source = "git+https://github.com/o1-labs/proof-systems?rev=56517b55920ea7afc811baa541c859dadc8ae50a#56517b55920ea7afc811baa541c859dadc8ae50a"
-dependencies = [
- "ark-ec",
- "ark-ff",
- "ark-poly",
- "ark-serialize",
- "array-init",
- "blake2",
- "groupmap",
- "itertools",
- "mina-curves",
- "o1-utils",
- "oracle",
- "rand",
- "rand_core",
- "rayon",
- "serde",
- "serde_with",
 ]
 
 [[package]]
@@ -602,16 +573,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "78cc372d058dcf6d5ecd98510e7fbc9e5aec4d21de70f65fea8fecebcd881bd4"
 
 [[package]]
-name = "groupmap"
-version = "0.1.0"
-source = "git+https://github.com/o1-labs/proof-systems?rev=56517b55920ea7afc811baa541c859dadc8ae50a#56517b55920ea7afc811baa541c859dadc8ae50a"
-dependencies = [
- "ark-ec",
- "ark-ff",
- "rand",
-]
-
-[[package]]
 name = "hashbrown"
 version = "0.11.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -673,15 +634,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "7a5bbe824c507c5da5956355e86a746d82e0e1464f65d862cc5e71da70e94b2c"
 dependencies = [
  "cfg-if",
-]
-
-[[package]]
-name = "itertools"
-version = "0.10.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a9a9d19fa1e79b6215ff29b9d6880b706147f16e9b1dbb1e4e5947b5b02bc5e3"
-dependencies = [
- "either",
 ]
 
 [[package]]
@@ -753,7 +705,6 @@ dependencies = [
  "bin-prot",
  "blake2",
  "bs58",
- "derive_deref",
  "derive_more",
  "hex",
  "mina-serialization-types",
@@ -766,7 +717,7 @@ dependencies = [
 [[package]]
 name = "mina-curves"
 version = "0.1.0"
-source = "git+https://github.com/o1-labs/proof-systems?rev=56517b55920ea7afc811baa541c859dadc8ae50a#56517b55920ea7afc811baa541c859dadc8ae50a"
+source = "git+https://github.com/o1-labs/proof-systems?rev=1f88a94eddba96b720c9214303fb2b4b0cd97597#1f88a94eddba96b720c9214303fb2b4b0cd97597"
 dependencies = [
  "ark-ec",
  "ark-ff",
@@ -775,7 +726,7 @@ dependencies = [
 [[package]]
 name = "mina-hasher"
 version = "0.1.0"
-source = "git+https://github.com/o1-labs/proof-systems?rev=56517b55920ea7afc811baa541c859dadc8ae50a#56517b55920ea7afc811baa541c859dadc8ae50a"
+source = "git+https://github.com/o1-labs/proof-systems?rev=1f88a94eddba96b720c9214303fb2b4b0cd97597#1f88a94eddba96b720c9214303fb2b4b0cd97597"
 dependencies = [
  "ark-ff",
  "bitvec",
@@ -802,6 +753,7 @@ dependencies = [
  "num",
  "proof-systems",
  "serde",
+ "smart-default",
  "thiserror",
  "time",
  "versioned",
@@ -824,8 +776,28 @@ name = "mina-serialization-types"
 version = "0.1.0"
 dependencies = [
  "bin-prot",
+ "proof-systems",
  "serde",
  "versioned",
+]
+
+[[package]]
+name = "mina-signer"
+version = "0.1.0"
+source = "git+https://github.com/o1-labs/proof-systems?rev=1f88a94eddba96b720c9214303fb2b4b0cd97597#1f88a94eddba96b720c9214303fb2b4b0cd97597"
+dependencies = [
+ "ark-ec",
+ "ark-ff",
+ "bitvec",
+ "blake2",
+ "bs58",
+ "hex",
+ "mina-curves",
+ "mina-hasher",
+ "o1-utils",
+ "rand",
+ "sha2 0.10.2",
+ "thiserror",
 ]
 
 [[package]]
@@ -936,7 +908,7 @@ dependencies = [
 [[package]]
 name = "o1-utils"
 version = "0.1.0"
-source = "git+https://github.com/o1-labs/proof-systems?rev=56517b55920ea7afc811baa541c859dadc8ae50a#56517b55920ea7afc811baa541c859dadc8ae50a"
+source = "git+https://github.com/o1-labs/proof-systems?rev=1f88a94eddba96b720c9214303fb2b4b0cd97597#1f88a94eddba96b720c9214303fb2b4b0cd97597"
 dependencies = [
  "ark-ec",
  "ark-ff",
@@ -975,7 +947,7 @@ checksum = "624a8340c38c1b80fd549087862da4ba43e08858af025b236e509b6649fc13d5"
 [[package]]
 name = "oracle"
 version = "0.1.0"
-source = "git+https://github.com/o1-labs/proof-systems?rev=56517b55920ea7afc811baa541c859dadc8ae50a#56517b55920ea7afc811baa541c859dadc8ae50a"
+source = "git+https://github.com/o1-labs/proof-systems?rev=1f88a94eddba96b720c9214303fb2b4b0cd97597#1f88a94eddba96b720c9214303fb2b4b0cd97597"
 dependencies = [
  "ark-ec",
  "ark-ff",
@@ -1080,8 +1052,9 @@ dependencies = [
 name = "proof-systems"
 version = "0.1.0"
 dependencies = [
- "commitment_dlog",
  "mina-hasher",
+ "mina-signer",
+ "o1-utils",
 ]
 
 [[package]]
@@ -1354,6 +1327,17 @@ name = "smallvec"
 version = "1.8.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f2dd574626839106c320a323308629dcb1acfc96e32a8cba364ddc61ac23ee83"
+
+[[package]]
+name = "smart-default"
+version = "0.6.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "133659a15339456eeeb07572eb02a91c91e9815e9cbc89566944d2c8d3efdbf6"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn",
+]
 
 [[package]]
 name = "stacker"

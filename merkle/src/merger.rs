@@ -5,11 +5,14 @@ use super::*;
 
 /// Trait that merges the hashes of child nodes
 /// and calculates the hash of their parent
-pub trait MerkleMerger<const DEGREE: usize> {
+/// degree defaults to 2
+pub trait MerkleMerger<const DEGREE: usize = DEFAULT_DEGREE> {
     /// Type that represents the hash value
     type Hash;
-    /// Merges hashes and metadata from a child nodes
+    /// Merges hashes of child nodes,
+    /// with metadata of the target node
     fn merge(
-        items: [&Option<(Self::Hash, MerkleTreeNodeMetadata<DEGREE>)>; DEGREE],
+        hashes: [Option<Self::Hash>; DEGREE],
+        metadata: MerkleTreeNodeMetadata<DEGREE>,
     ) -> Option<Self::Hash>;
 }

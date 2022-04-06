@@ -4,11 +4,11 @@
 //! Commands can include memo fields which contain arbitrary byte data
 //!
 use derive_more::From;
-use serde::{Deserialize, Serialize};
+
 use thiserror::Error;
 
 /// A memo byte strong for a signed command
-#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, From)]
+#[derive(Clone, Default, PartialEq, Debug, From)]
 pub struct SignedCommandMemo(pub Vec<u8>);
 
 impl TryFrom<&str> for SignedCommandMemo {

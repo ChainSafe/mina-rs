@@ -14,5 +14,6 @@
 //! ```
 //!
 
-pub use commitment_dlog;
 pub use mina_hasher;
+pub use mina_signer;
+pub use o1_utils;

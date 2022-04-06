@@ -103,15 +103,15 @@ mod tests {
 
         assert_eq!(cs.has_ancestor_in_same_checkpoint_window, true);
         assert_eq!(
-            cs.block_stake_winner.to_base58_string(),
+            cs.block_stake_winner.into_address(),
             "B62qiy32p8kAKnny8ZFwoMhYpBppM1DWVCqAPBYNcXnsAHhnfAAuXgg"
         );
         assert_eq!(
-            cs.block_creator.to_base58_string(),
+            cs.block_creator.into_address(),
             "B62qiy32p8kAKnny8ZFwoMhYpBppM1DWVCqAPBYNcXnsAHhnfAAuXgg"
         );
         assert_eq!(
-            cs.coinbase_receiver.to_base58_string(),
+            cs.coinbase_receiver.into_address(),
             "B62qiy32p8kAKnny8ZFwoMhYpBppM1DWVCqAPBYNcXnsAHhnfAAuXgg"
         );
         assert_eq!(cs.supercharge_coinbase, true);

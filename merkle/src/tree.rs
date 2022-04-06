@@ -8,8 +8,8 @@ pub trait MerkleTree<const DEGREE: usize> {
     /// Type of the hash values
     type Hash;
 
-    /// Depth of the tree
-    fn depth(&self) -> u32;
+    /// Height of the tree, leaf nodes that store data are counted
+    fn height(&self) -> u32;
     /// Number of leafs
     fn count(&self) -> usize;
     /// Root hash, lazy-evaluated

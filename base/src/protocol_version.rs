@@ -3,9 +3,7 @@
 
 //! Protocol version structure
 
-use serde::{Deserialize, Serialize};
-
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq)]
 /// Defines a version of the Mina protocol in semver format
 pub struct ProtocolVersion {
     /// Major version number

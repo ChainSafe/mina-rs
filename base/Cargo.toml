@@ -10,8 +10,8 @@ license = "Apache-2.0"
 bin-prot = {path = "../protocol/bin-prot"}
 mina-crypto = {path = "../crypto"}
 mina-serialization-types = {path = "../protocol/serialization-types"}
-versioned = {path = "../protocol/versioned"}
 proof-systems = {path = "../proof-systems-shim"}
+versioned = {path = "../protocol/versioned"}
 
 ark-ec = "0.3.0"
 ark-ff = "0.3.0"
@@ -21,6 +21,7 @@ derive_more = "0.99"
 hex = "0.4"
 num = "0.4"
 serde = {version = "1", features = ["derive"]}
+smart-default = "0.6.0"
 thiserror = "1"
 time = "0.3"
 
