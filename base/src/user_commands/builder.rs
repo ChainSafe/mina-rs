@@ -25,6 +25,7 @@ pub struct SignedTransferCommandBuilder {
     memo: SignedCommandMemo,
     fee_payer_pk: CompressedPubKey,
     valid_until: GlobalSlotNumber,
+    network: NetworkId,
 }
 
 impl SignedTransferCommandBuilder {
@@ -47,6 +48,7 @@ impl SignedTransferCommandBuilder {
             fee_payer_pk: from,
             memo: SignedCommandMemo::default(),
             valid_until: GlobalSlotNumber::MAX,
+            network: NetworkId::TESTNET,
         }
     }
 
@@ -76,6 +78,11 @@ impl SignedTransferCommandBuilder {
         Self { memo, ..self }
     }
 
+    /// Set the network this command can work on (mainnet or test)
+    pub fn network(self, network: NetworkId) -> Self {
+        Self { network, ..self }
+    }
+
     /// Sign the transaction and produce a UserCommand with the signature fields filled
     pub fn sign_and_build(self, keypair: Keypair) -> UserCommand {
         let payload = SignedCommandPayload {
@@ -95,8 +102,9 @@ impl SignedTransferCommandBuilder {
             }),
         };
 
+        // This should change to create_kimchi after fork
         let mut ctx =
-            proof_systems::mina_signer::create_legacy::<SignedCommandPayload>(NetworkId::TESTNET);
+            proof_systems::mina_signer::create_legacy::<SignedCommandPayload>(self.network);
         let signature = ctx.sign(&keypair, &payload);
 
         UserCommand::SignedCommand(SignedCommand {
