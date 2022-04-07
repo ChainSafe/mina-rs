@@ -5,7 +5,6 @@
 //! This module contains the command data structures and helpers to create and
 //! serialize new commands to broadcast to the network
 
-pub mod builder;
 pub mod memo;
 pub mod payment;
 pub mod signed_command;
