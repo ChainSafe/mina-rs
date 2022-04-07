@@ -3,7 +3,7 @@
 
 //! Helpers for building a user command
 
-use proof_systems::mina_signer::{CompressedPubKey, Keypair, Signature};
+use proof_systems::mina_signer::{CompressedPubKey, Keypair, NetworkId, Signer};
 
 use crate::numbers::{AccountNonce, Amount, GlobalSlotNumber, TokenId};
 use crate::user_commands::{
@@ -95,12 +95,14 @@ impl SignedTransferCommandBuilder {
             }),
         };
 
-        // TODO: Sign the payload
+        let mut ctx =
+            proof_systems::mina_signer::create_legacy::<SignedCommandPayload>(NetworkId::TESTNET);
+        let signature = ctx.sign(&keypair, &payload);
 
         UserCommand::SignedCommand(SignedCommand {
             payload,
             signer: keypair.public.into_compressed(),
-            signature: Signature::new(Default::default(), Default::default()), // WARNING this is an empty signature
+            signature,
         })
     }
 }
