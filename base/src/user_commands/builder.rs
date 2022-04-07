@@ -5,8 +5,7 @@
 
 use proof_systems::mina_signer::{CompressedPubKey, Keypair, Signature};
 
-use crate::numbers::{Amount, TokenId};
-use crate::types::ExtendedU32;
+use crate::numbers::{AccountNonce, Amount, GlobalSlotNumber, TokenId};
 use crate::user_commands::{
     PaymentPayload, SignedCommand, SignedCommandPayload, SignedCommandPayloadBody,
     SignedCommandPayloadCommon, UserCommand,
@@ -22,10 +21,10 @@ pub struct SignedTransferCommandBuilder {
     transfer_token: TokenId,
     fee_token: TokenId,
     fee: Amount,
-    nonce: ExtendedU32,
+    nonce: AccountNonce,
     memo: SignedCommandMemo,
     fee_payer_pk: CompressedPubKey,
-    valid_until: ExtendedU32,
+    valid_until: GlobalSlotNumber,
 }
 
 impl SignedTransferCommandBuilder {
@@ -35,7 +34,7 @@ impl SignedTransferCommandBuilder {
         from: CompressedPubKey,
         amount: Amount,
         fee: Amount,
-        nonce: ExtendedU32,
+        nonce: AccountNonce,
     ) -> Self {
         Self {
             to,
@@ -47,7 +46,7 @@ impl SignedTransferCommandBuilder {
             nonce,
             fee_payer_pk: from,
             memo: SignedCommandMemo::default(),
-            valid_until: ExtendedU32::MAX,
+            valid_until: GlobalSlotNumber::MAX,
         }
     }
 
