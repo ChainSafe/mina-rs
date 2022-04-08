@@ -54,7 +54,9 @@ cargo install wasm-pack
 
 - Copy & paste peer address that `proxy` prints on console into the web gui at http://localhost:1234/
 
-- Alternatively, open chrome, and load extension from `dist/ext` folder, then click on the extension icon, it will open the same web gui in a new tab. `dist/ext` can be downloaded from `mvp-chrome-ext` in CI build artifacts as well.
+- Alternatively, open chrome canary, load extension from `dist/ext` folder, then click on the extension icon, it will open the same web gui in a new tab. `dist/ext` can be downloaded from `mvp-chrome-ext` in CI build artifacts as well.
+
+  NOTE: To load web assembly with chrome extension manifect version 3, `unsafe-wasm-eval` is required CSP, which is not yet supported on chrome stable, when you load the extension, it fails with error 'content_security_policy.extension_pages': Insecure CSP value "'wasm-unsafe-eval'" in directive 'script-src'.'. Chrome canary is required for now.
 
 ```
 proxyHost: /ip4/127.0.0.1/tcp/23333/ws/p2p/12D3KooWBJS5MW5tY93UgKvQ9KKzd4s4SRHEZoUsv7frvcAZKaQt
