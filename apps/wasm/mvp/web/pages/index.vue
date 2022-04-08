@@ -12,7 +12,7 @@
 <script lang="ts">
 import NavBar from "~/web/components/NavBar.vue";
 import { marked } from "marked";
-import * as readmeMD from "~/readme.md";
+import readmeMD from "bundle-text:~/readme.md";
 
 export default {
   components: {
@@ -24,6 +24,7 @@ export default {
     };
   },
   created() {
+    // console.log(wasmBin)
     try {
       this.readmeHTML = marked.parse(readmeMD);
     } catch {}

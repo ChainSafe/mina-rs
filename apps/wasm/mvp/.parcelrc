@@ -3,9 +3,6 @@
     "transformers": {
         "*.wasm": [
             "@parcel/transformer-raw"
-        ],
-        "*.md": [
-            "@parcel/transformer-inline-string"
         ]
     },
     "reporters": [
