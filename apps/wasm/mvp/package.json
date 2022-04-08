@@ -7,9 +7,8 @@
   "scripts": {
     "start": "parcel serve web/*.html --open",
     "watch:ext": "parcel watch chrome-ext/{background.ts,content_script.ts,*.html} --no-hmr",
-    "patch-wasm": "node patch.js",
     "build:proto": "rimraf web/pb && node protogen.js",
-    "build:wasm": "wasm-pack build -t nodejs --out-name wasm && yarn patch-wasm",
+    "build:wasm": "wasm-pack build -t web --out-name wasm",
     "build:web": "rimraf dist/web && parcel build web/*.html --no-source-maps --dist-dir dist/web",
     "build:ext": "rimraf dist/ext && parcel build web/*.html --no-source-maps --dist-dir dist/ext && parcel build chrome-ext/{*.ts,*.html} --no-source-maps --dist-dir dist/ext",
     "build": "yarn build:wasm && yarn clean && yarn build:web && yarn build:ext",

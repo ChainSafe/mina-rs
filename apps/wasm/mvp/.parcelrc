@@ -1,7 +1,7 @@
 {
     "extends": "@parcel/config-default",
     "transformers": {
-        "*.wasm": [
+        "raw:*": [
             "@parcel/transformer-raw"
         ]
     },

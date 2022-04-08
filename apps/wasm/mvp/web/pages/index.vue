@@ -24,7 +24,6 @@ export default {
     };
   },
   created() {
-    // console.log(wasmBin)
     try {
       this.readmeHTML = marked.parse(readmeMD);
     } catch {}
