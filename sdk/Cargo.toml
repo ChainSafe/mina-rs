@@ -15,3 +15,4 @@ serde_json = "1.0.79"
 
 [dev-dependencies]
 proof-systems = {path = "../proof-systems-shim"}
+rand = "0.8.0"

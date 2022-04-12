@@ -90,14 +90,15 @@ mod tests {
 
 	#[test]
 	fn smoke() {
+
 		let tx = make_signed_tx!(
             /* sender secret key  */ "164244176fddb5d769b7de2027469d027ad428fadcc0c02396e6280142efb718",
             /* source address     */ "B62qnzbXmRNo9q32n4SNu2mpB8e7FYYLH8NmaX6oFCBYjjQ8SbD7uzV",
-            /* receiver address   */ "B62qicipYxyEHu7QjUqS7QvBipTs5CzgkYZZZkPoKVYBu6tnDUcE9Zt",
-            /* amount             */ 1729000000000_u64,
-            /* fee                */ 2000000000_u32,
-            /* nonce              */ 16_u32,
-            /* valid until        */ 271828_u32,
+            /* receiver address   */ "B62qjJQ8Up2zUVgax2PwoYyDJ4mTq8japh9vt3gBoBWY5ubN7m2yuTf",
+            /* amount             */ 100000000_u64,
+            /* fee                */ 100000000_u32,
+            /* nonce              */ 2_u32,
+            /* valid until        */ 4294967295_u32,
             /* memo               */ "Hello Mina!"
         );
 
