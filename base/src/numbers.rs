@@ -3,7 +3,8 @@
 
 //! Newtypes for different numeric types used throughout Mina
 
-use std::fmt;
+use core::fmt;
+use core::fmt::Display;
 
 use proof_systems::*;
 
@@ -136,10 +137,22 @@ impl std::str::FromStr for Amount {
 #[from(forward)]
 pub struct AccountNonce(pub u32);
 
+impl Display for AccountNonce {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{}", self.0)
+    }
+}
+
 /// Consensus slot index
 #[derive(Copy, Clone, PartialEq, Debug, Hash, Default, From)]
 #[from(forward)]
 pub struct GlobalSlotNumber(pub u32);
+
+impl Display for GlobalSlotNumber {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{}", self.0)
+    }
+}
 
 impl GlobalSlotNumber {
     /// Maximum value this type can hold

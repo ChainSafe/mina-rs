@@ -13,6 +13,7 @@ members = [
   "protocol/test-serialization",
   "protocol/serialization-types",
   "protocol/versioned",
+  "sdk",
 ]
 # This is still needed for virtual workspaces 
 # per <https://doc.rust-lang.org/edition-guide/rust-2021/default-cargo-resolver.html#details>

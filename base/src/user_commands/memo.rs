@@ -4,6 +4,7 @@
 //! Commands can include memo fields which contain arbitrary byte data
 //!
 use derive_more::From;
+use core::fmt;
 
 use thiserror::Error;
 
@@ -40,7 +41,12 @@ impl TryFrom<String> for SignedCommandMemo {
     }
 }
 
-// TODO impl ToString for SignedCommandMemo
+impl fmt::Display for SignedCommandMemo {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let s = String::from_utf8(self.0[2..].to_vec()).unwrap();
+        write!(f, "{}", s)
+    }
+}
 
 /// Error type for converting memo types
 #[derive(Debug, Error)]
