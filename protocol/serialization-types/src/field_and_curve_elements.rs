@@ -11,6 +11,9 @@ use versioned::Versioned;
 /// a BigInt256. All finite field elements used in Mina satisfiy this requirement
 pub type FieldElement = BigInt256;
 
+/// Wrapper type for field element denoting it is on the curves scalar field
+pub type InnerCurveScalar = BigInt256;
+
 /// Vector of finite field elements (v1)
 pub type FieldElementVecV1 = Versioned<Vec<FieldElement>, 1>;
 

@@ -3,7 +3,7 @@
 
 //! Helpers for building a user command
 
-use proof_systems::mina_signer::CompressedPubKey;
+use proof_systems::mina_signer::{CompressedPubKey, Keypair, Signature};
 
 use crate::numbers::{Amount, TokenId};
 use crate::types::ExtendedU32;
@@ -78,26 +78,30 @@ impl SignedTransferCommandBuilder {
     }
 
     /// Sign the transaction and produce a UserCommand with the signature fields filled
-    pub fn sign_and_build(self, signer: CompressedPubKey) -> UserCommand {
-        UserCommand::SignedCommand(SignedCommand {
-            payload: SignedCommandPayload {
-                common: SignedCommandPayloadCommon {
-                    fee: self.fee,
-                    fee_token: self.fee_token,
-                    memo: self.memo,
-                    fee_payer_pk: self.fee_payer_pk,
-                    nonce: self.nonce,
-                    valid_until: self.valid_until,
-                },
-                body: SignedCommandPayloadBody::PaymentPayload(PaymentPayload {
-                    amount: self.amount,
-                    receiver_pk: self.to,
-                    source_pk: self.from,
-                    token_id: self.transfer_token,
-                }),
+    pub fn sign_and_build(self, keypair: Keypair) -> UserCommand {
+        let payload = SignedCommandPayload {
+            common: SignedCommandPayloadCommon {
+                fee: self.fee,
+                fee_token: self.fee_token,
+                memo: self.memo,
+                fee_payer_pk: self.fee_payer_pk,
+                nonce: self.nonce,
+                valid_until: self.valid_until,
             },
-            signer,
-            signature: Default::default(), // TODO: Add signing logic once this is available
+            body: SignedCommandPayloadBody::PaymentPayload(PaymentPayload {
+                amount: self.amount,
+                receiver_pk: self.to,
+                source_pk: self.from,
+                token_id: self.transfer_token,
+            }),
+        };
+
+        // TODO: Sign the payload
+
+        UserCommand::SignedCommand(SignedCommand {
+            payload,
+            signer: keypair.public.into_compressed(),
+            signature: Signature::new(Default::default(), Default::default()), // WARNING this is an empty signature
         })
     }
 }

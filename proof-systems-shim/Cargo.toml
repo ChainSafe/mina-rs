@@ -7,6 +7,8 @@ edition = "2021"
 license = "Apache-2.0"
 
 [dependencies]
+mina-curves = {git = "https://github.com/o1-labs/proof-systems", rev = "6af257b793d80f900675acc01b16fd4bf6375268"}
+
 mina-hasher = {git = "https://github.com/o1-labs/proof-systems", rev = "1f88a94eddba96b720c9214303fb2b4b0cd97597"}
 mina-signer = {git = "https://github.com/o1-labs/proof-systems", rev = "1f88a94eddba96b720c9214303fb2b4b0cd97597"}
 o1-utils = {git = "https://github.com/o1-labs/proof-systems", rev = "1f88a94eddba96b720c9214303fb2b4b0cd97597"}

@@ -60,7 +60,7 @@ pub mod v1 {
     pub use super::external_transition::ExternalTransitionV1;
     pub use super::field_and_curve_elements::{
         ECPointV1, ECPointVecV1, FieldElement, FieldElementVecV1, FiniteECPoint,
-        FiniteECPointPairVecV1, FiniteECPointVecV1,
+        FiniteECPointPairVecV1, FiniteECPointVecV1, InnerCurveScalar,
     };
     pub use super::global_slot::GlobalSlotV1;
     pub use super::opening_proof::OpeningProofV1;
@@ -77,7 +77,7 @@ pub mod v1 {
         ProofV1, ProtocolStateProofV1, ShiftedValueV1, SpongeDigestBeforeEvaluationsV1,
     };
     pub use super::protocol_version::ProtocolVersionV1;
-    pub use super::signatures::{InnerCurveScalar, PublicKey2V1, PublicKeyV1, SignatureV1};
+    pub use super::signatures::{PublicKey2V1, PublicKeyV1, SignatureV1};
     pub use super::staged_ledger_diff::{
         CoinBaseBalanceDataV1, CoinBaseFeeTransferV1, CoinBaseV1, FeeTransferBalanceDataV1,
         InternalCommandBalanceDataV1, PaymentPayloadV1, SignedCommandFeeTokenV1,
