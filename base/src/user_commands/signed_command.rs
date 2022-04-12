@@ -6,8 +6,7 @@
 use crate::numbers::{Amount, ExtendedU32, TokenId};
 use crate::user_commands::memo::SignedCommandMemo;
 use crate::user_commands::payment::PaymentPayload;
-use mina_crypto::signature::Signature;
-use proof_systems::mina_signer::CompressedPubKey;
+use proof_systems::mina_signer::{CompressedPubKey, Signature};
 
 /// Top level signed command type
 #[derive(Clone, PartialEq, Debug)]

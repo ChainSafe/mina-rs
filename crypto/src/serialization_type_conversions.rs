@@ -2,34 +2,8 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::hash::{NonSnarkStagedLedgerHash, StagedLedgerHash};
-use crate::signature::{InnerCurveScalar, Signature};
-use mina_serialization_types::{
-    signatures::InnerCurveScalar as InnerCurveScalarV1,
-    v1::{NonSnarkStagedLedgerHashV1, SignatureV1, StagedLedgerHashV1},
-};
+use mina_serialization_types::v1::{NonSnarkStagedLedgerHashV1, StagedLedgerHashV1};
 use versioned::Versioned;
-
-impl From<Signature> for SignatureV1 {
-    fn from(t: Signature) -> Self {
-        Self::new(Versioned::new((t.0 .0.into(), t.0 .1.into())))
-    }
-}
-impl From<SignatureV1> for Signature {
-    fn from(t: SignatureV1) -> Self {
-        Self((t.t.t.0.into(), t.t.t.1.into()))
-    }
-}
-
-impl From<InnerCurveScalar> for InnerCurveScalarV1 {
-    fn from(t: InnerCurveScalar) -> Self {
-        Self(t.into())
-    }
-}
-impl From<InnerCurveScalarV1> for InnerCurveScalar {
-    fn from(t: InnerCurveScalarV1) -> Self {
-        Self(t.0)
-    }
-}
 
 impl From<NonSnarkStagedLedgerHash> for NonSnarkStagedLedgerHashV1 {
     fn from(t: NonSnarkStagedLedgerHash) -> Self {
