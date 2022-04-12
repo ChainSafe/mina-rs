@@ -28,21 +28,21 @@ pub struct SignedTransferCommandBuilder {
 
 impl SignedTransferCommandBuilder {
     /// All required fields must be defined initially
-    pub fn new(
+    pub fn new<T: Into<Amount>, TT: Into<Amount>, TTT: Into<AccountNonce>>(
         from: CompressedPubKey,
         to: CompressedPubKey,
-        amount: Amount,
-        fee: Amount,
-        nonce: AccountNonce,
+        amount: T,
+        fee: TT,
+        nonce: TTT,
     ) -> Self {
         Self {
             to,
             from,
-            amount,
+            amount: amount.into(),
             transfer_token: TokenId(1),
             fee_token: TokenId(1),
-            fee,
-            nonce,
+            fee: fee.into(),
+            nonce: nonce.into(),
             fee_payer_pk: from,
             memo: SignedCommandMemo::default(),
             valid_until: GlobalSlotNumber::MAX,
@@ -50,16 +50,19 @@ impl SignedTransferCommandBuilder {
     }
 
     /// Set token to transfer
-    pub fn transfer_token(self, transfer_token: TokenId) -> Self {
+    pub fn transfer_token<T: Into<TokenId>>(self, transfer_token: T) -> Self {
         Self {
-            transfer_token,
+            transfer_token: transfer_token.into(),
             ..self
         }
     }
 
     /// Set the fee token to pay the block producer
-    pub fn fee_token(self, fee_token: TokenId) -> Self {
-        Self { fee_token, ..self }
+    pub fn fee_token<T: Into<TokenId>>(self, fee_token: T) -> Self {
+        Self {
+            fee_token: fee_token.into(),
+            ..self
+        }
     }
 
     /// Set the fee payer to something other than the sender
@@ -76,9 +79,9 @@ impl SignedTransferCommandBuilder {
     }
 
     /// Set the global slot which this command is valid until
-    pub fn valid_until(self, valid_until: GlobalSlotNumber) -> Self {
+    pub fn valid_until<T: Into<GlobalSlotNumber>>(self, valid_until: T) -> Self {
         Self {
-            valid_until,
+            valid_until: valid_until.into(),
             ..self
         }
     }
