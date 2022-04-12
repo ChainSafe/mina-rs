@@ -2,6 +2,7 @@ use serde::Serialize;
 
 pub use mina_rs_base::user_commands::signed_command::builder::SignedTransferCommandBuilder;
 pub use mina_rs_base::user_commands::signed_command::{SignedCommand, SignedCommandPayloadBody};
+use num_bigint::BigUint;
 
 #[derive(Debug, Serialize)]
 #[serde(rename_all = "camelCase")]
@@ -40,8 +41,8 @@ impl ToJsonString for SignedCommand {
             SignedCommandPayloadBody::PaymentPayload(payload) => PayloadJson {
                 to: payload.receiver_pk.into_address(),
                 from: payload.source_pk.into_address(),
-                fee: common.fee.to_string(),
-                amount: payload.amount.to_string(),
+                fee: common.fee.0.to_string(),
+                amount: payload.amount.0.to_string(),
                 nonce: common.nonce.to_string(),
                 memo: common.memo.to_string(),
                 valid_until: common.valid_until.to_string(),
@@ -49,8 +50,8 @@ impl ToJsonString for SignedCommand {
             _ => unimplemented!(),
         };
         let signature_json = SignatureJson {
-            field: self.signature.rx.to_string(),
-            scalar: self.signature.s.to_string(),
+            field: Into::<BigUint>::into(self.signature.rx.0).to_str_radix(10),
+            scalar: Into::<BigUint>::into(self.signature.s.0).to_str_radix(10),
         };
         let tx = TransactionJson {
             public_key: payload_json.from.clone(),
