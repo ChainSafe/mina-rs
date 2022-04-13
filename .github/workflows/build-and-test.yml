@@ -225,6 +225,11 @@ jobs:
           if-no-files-found: error
       - uses: actions/upload-artifact@v2
         with:
+          name: mvp-chrome-ext-v2
+          path: apps/wasm/mvp/dist/ext-v2/**/*
+          if-no-files-found: error
+      - uses: actions/upload-artifact@v2
+        with:
           name: mvp-web
           path: apps/wasm/mvp/dist/web/**/*
           if-no-files-found: error
