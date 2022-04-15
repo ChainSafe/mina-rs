@@ -28,7 +28,7 @@
     "lodash": "^4.17.21",
     "marked": "^4.0.14",
     "protobufjs": "^6.11.2",
-    "vue": "^3.2.32"
+    "vue": "^3.2.33"
   },
   "devDependencies": {
     "@babel/core": "^7.17.9",
@@ -41,7 +41,7 @@
     "@types/chrome": "latest",
     "@types/jest": "^27.4.1",
     "@types/lodash": "^4.14.181",
-    "@types/node": "latest",
+    "@types/node": "^17.0.24",
     "autoprefixer": "^10.4.4",
     "eslint": "^8.13.0",
     "eslint-plugin-prettier": "^4.0.0",

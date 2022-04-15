@@ -717,7 +717,7 @@ dependencies = [
 [[package]]
 name = "mina-curves"
 version = "0.1.0"
-source = "git+https://github.com/o1-labs/proof-systems?rev=1f88a94eddba96b720c9214303fb2b4b0cd97597#1f88a94eddba96b720c9214303fb2b4b0cd97597"
+source = "git+https://github.com/o1-labs/proof-systems?rev=9816b804fe2e8336fbe20d2e3d977d766582c4f0#9816b804fe2e8336fbe20d2e3d977d766582c4f0"
 dependencies = [
  "ark-ec",
  "ark-ff",
@@ -726,7 +726,7 @@ dependencies = [
 [[package]]
 name = "mina-hasher"
 version = "0.1.0"
-source = "git+https://github.com/o1-labs/proof-systems?rev=1f88a94eddba96b720c9214303fb2b4b0cd97597#1f88a94eddba96b720c9214303fb2b4b0cd97597"
+source = "git+https://github.com/o1-labs/proof-systems?rev=9816b804fe2e8336fbe20d2e3d977d766582c4f0#9816b804fe2e8336fbe20d2e3d977d766582c4f0"
 dependencies = [
  "ark-ff",
  "bitvec",
@@ -784,7 +784,7 @@ dependencies = [
 [[package]]
 name = "mina-signer"
 version = "0.1.0"
-source = "git+https://github.com/o1-labs/proof-systems?rev=1f88a94eddba96b720c9214303fb2b4b0cd97597#1f88a94eddba96b720c9214303fb2b4b0cd97597"
+source = "git+https://github.com/o1-labs/proof-systems?rev=9816b804fe2e8336fbe20d2e3d977d766582c4f0#9816b804fe2e8336fbe20d2e3d977d766582c4f0"
 dependencies = [
  "ark-ec",
  "ark-ff",
@@ -908,7 +908,7 @@ dependencies = [
 [[package]]
 name = "o1-utils"
 version = "0.1.0"
-source = "git+https://github.com/o1-labs/proof-systems?rev=1f88a94eddba96b720c9214303fb2b4b0cd97597#1f88a94eddba96b720c9214303fb2b4b0cd97597"
+source = "git+https://github.com/o1-labs/proof-systems?rev=9816b804fe2e8336fbe20d2e3d977d766582c4f0#9816b804fe2e8336fbe20d2e3d977d766582c4f0"
 dependencies = [
  "ark-ec",
  "ark-ff",
@@ -947,7 +947,7 @@ checksum = "624a8340c38c1b80fd549087862da4ba43e08858af025b236e509b6649fc13d5"
 [[package]]
 name = "oracle"
 version = "0.1.0"
-source = "git+https://github.com/o1-labs/proof-systems?rev=1f88a94eddba96b720c9214303fb2b4b0cd97597#1f88a94eddba96b720c9214303fb2b4b0cd97597"
+source = "git+https://github.com/o1-labs/proof-systems?rev=9816b804fe2e8336fbe20d2e3d977d766582c4f0#9816b804fe2e8336fbe20d2e3d977d766582c4f0"
 dependencies = [
  "ark-ec",
  "ark-ff",
@@ -1113,9 +1113,9 @@ dependencies = [
 
 [[package]]
 name = "rayon"
-version = "1.5.1"
+version = "1.5.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c06aca804d41dbc8ba42dfd964f0d01334eceb64314b9ecf7c5fad5188a06d90"
+checksum = "fd249e82c21598a9a426a4e00dd7adc1d640b22445ec8545feef801d1a74c221"
 dependencies = [
  "autocfg",
  "crossbeam-deque",
@@ -1125,14 +1125,13 @@ dependencies = [
 
 [[package]]
 name = "rayon-core"
-version = "1.9.1"
+version = "1.9.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d78120e2c850279833f1dd3582f730c4ab53ed95aeaaaa862a2a5c71b1656d8e"
+checksum = "9f51245e1e62e1f1629cbfec37b5793bbabcaeb90f30e94d2ba03564687353e4"
 dependencies = [
  "crossbeam-channel",
  "crossbeam-deque",
  "crossbeam-utils",
- "lazy_static",
  "num_cpus",
 ]
 
