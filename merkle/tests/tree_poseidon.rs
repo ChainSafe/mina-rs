@@ -13,14 +13,14 @@ mod tests {
     use std::collections::HashMap;
 
     #[derive(Debug, Clone)]
-    struct TestLeafNode(u64);
+    struct TestLeafNode(Fp);
 
     impl Hashable for TestLeafNode {
         type D = ();
 
         fn to_roinput(&self) -> mina_hasher::ROInput {
             let mut roi = ROInput::new();
-            roi.append_u64(self.0);
+            roi.append_field(self.0);
             roi
         }
 
@@ -31,7 +31,15 @@ mod tests {
 
     impl_poseidon_legacy_hasher_pool_provider!(TestLeafNode);
 
-    type TestHasher = MinaPoseidonMerkleHasher<TestLeafNode>;
+    struct TestHasher;
+
+    impl MerkleHasher<2> for TestHasher {
+        type Item = TestLeafNode;
+        type Hash = Fp;
+        fn hash(item: &Self::Item, _: MerkleTreeNodeMetadata<2>) -> Self::Hash {
+            item.0
+        }
+    }
 
     type TestMerkleTree = MinaMerkleTree<
         <TestHasher as MerkleHasher>::Item,
@@ -75,8 +83,8 @@ mod tests {
         // Genesis ledger has 1676 accounts
         const GENESIS_LEDGER_ACCOUNT_NUM: u64 = 1676;
         let mut tree = TestMerkleTree::new();
-        for i in 0..GENESIS_LEDGER_ACCOUNT_NUM {
-            tree.add(TestLeafNode(i))
+        for _ in 0..GENESIS_LEDGER_ACCOUNT_NUM {
+            tree.add(TestLeafNode(Fp::default()))
         }
         let meta = MerkleTreeNodeMetadata::new(node_index, tree.height());
         let merged =
@@ -107,6 +115,43 @@ mod tests {
         let meta = MerkleTreeNodeMetadata::new(0, 12);
         let merged = MinaPoseidonMerkleMerger::merge([Some(h1), None], meta).unwrap_or_default();
         assert_eq!(h2, merged);
+    }
+
+    #[cfg(not(target_arch = "wasm32"))]
+    #[test]
+    fn mina_merkle_tree_genesis_ledger_parity_test() {
+        use rocksdb::*;
+
+        let fixed_height = 20;
+        let mut merkle_ledger = TestMerkleTree::new().with_fixed_height(fixed_height);
+
+        // TODO: Use API from DbBackedGenesisLedger to iterate over hash nodes
+        let db =
+            DB::open_for_read_only(&Options::default(), "../ledger/test-data/genesis_ledger_6a887ea130e53b06380a9ab27b327468d28d4ce47515a0cc59759d4a3912f0ef/", true).unwrap();
+        let mut root_height = 0;
+        let mut expected_root_hash: Option<Fp> = None;
+        for (key, value) in db
+            .iterator(IteratorMode::Start)
+            .take_while(|(key, _)| key[0] < 0xfe)
+        {
+            let height = key[0];
+            let hash: Fp = BigInteger256::read(&value[2..]).unwrap().into();
+            if height > root_height {
+                root_height = height;
+                expected_root_hash = Some(hash);
+            }
+            if height == 0 {
+                let node = TestLeafNode(hash);
+                assert_eq!(
+                    hash,
+                    TestHasher::hash(&node, MerkleTreeNodeMetadata::new(0, 1))
+                );
+                merkle_ledger.add(node);
+            }
+        }
+        assert!(expected_root_hash.is_some());
+        assert_eq!(fixed_height, root_height as u32);
+        assert_eq!(merkle_ledger.root(), expected_root_hash);
     }
 
     #[cfg(not(target_arch = "wasm32"))]

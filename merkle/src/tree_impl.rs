@@ -15,6 +15,7 @@ where
     Merger: MerkleMerger<DEGREE, Hash = Hash>,
     Hash: Clone,
 {
+    fixed_height: Option<u32>,
     height: u32,
     leafs: Vec<(Item, Option<Hash>)>,
     nodes: Vec<Option<Hash>>,
@@ -43,6 +44,13 @@ where
             nodes: Vec::with_capacity(potential_node_count),
             ..Default::default()
         }
+    }
+
+    /// Sets the fixed height of the merkle tree
+    /// Note that leaf nodes are at height 0 here but -1 in mina OCaml implementation
+    pub fn with_fixed_height(mut self, height: u32) -> Self {
+        self.fixed_height = Some(height);
+        self
     }
 
     /// Clears cached hashes of all ancester nodes of the give leaf
@@ -119,7 +127,25 @@ where
     }
 
     fn root(&mut self) -> Option<Self::Hash> {
-        self.calculate_hash_if_needed(0)
+        let hash = self.calculate_hash_if_needed(0);
+        if let Some(fixed_height) = self.fixed_height {
+            if fixed_height < self.height {
+                panic!(
+                    "fixed_height {} should not be smaller than current height {}",
+                    fixed_height, self.height,
+                );
+            } else if fixed_height == self.height {
+                hash
+            } else {
+                let mut hash2 = hash;
+                for h in (self.height + 1)..=fixed_height {
+                    hash2 = Merger::merge([hash2, None], MerkleTreeNodeMetadata::new(0, h));
+                }
+                hash2
+            }
+        } else {
+            hash
+        }
     }
 
     fn add_batch(&mut self, items: impl IntoIterator<Item = Self::Item>) {
@@ -160,6 +186,7 @@ where
 {
     fn default() -> Self {
         Self {
+            fixed_height: None,
             height: 0,
             leafs: Vec::new(),
             nodes: Vec::new(),
