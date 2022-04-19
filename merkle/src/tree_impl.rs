@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use super::*;
-use std::marker::PhantomData;
+use std::{cmp::Ordering, marker::PhantomData};
 
 const DEGREE: usize = 2;
 
@@ -129,19 +129,19 @@ where
     fn root(&mut self) -> Option<Self::Hash> {
         let hash = self.calculate_hash_if_needed(0);
         if let Some(fixed_height) = self.fixed_height {
-            if fixed_height < self.height {
-                panic!(
+            match fixed_height.cmp(&self.height) {
+                Ordering::Less => panic!(
                     "fixed_height {} should not be smaller than current height {}",
                     fixed_height, self.height,
-                );
-            } else if fixed_height == self.height {
-                hash
-            } else {
-                let mut hash2 = hash;
-                for h in (self.height + 1)..=fixed_height {
-                    hash2 = Merger::merge([hash2, None], MerkleTreeNodeMetadata::new(0, h));
+                ),
+                Ordering::Equal => hash,
+                Ordering::Greater => {
+                    let mut hash = hash;
+                    for h in (self.height + 1)..=fixed_height {
+                        hash = Merger::merge([hash, None], MerkleTreeNodeMetadata::new(0, h));
+                    }
+                    hash
                 }
-                hash2
             }
         } else {
             hash
