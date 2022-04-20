@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::types::*;
-use mina_serialization_types::v1::*;
+use mina_serialization_types::{external_transition::ExternalTransitionJson, v1::*};
 use versioned::Versioned;
 
 mod account;
@@ -36,6 +36,20 @@ impl From<ExternalTransitionV1> for ExternalTransition {
             current_protocol_version: t.0.t.current_protocol_version.into(),
             proposed_protocol_version_opt: t.0.t.proposed_protocol_version_opt.map(Into::into),
         }
+    }
+}
+
+impl From<ExternalTransition> for ExternalTransitionJson {
+    fn from(t: ExternalTransition) -> Self {
+        let v1: ExternalTransitionV1 = t.into();
+        v1.into()
+    }
+}
+
+impl From<ExternalTransitionJson> for ExternalTransition {
+    fn from(t: ExternalTransitionJson) -> Self {
+        let v1: ExternalTransitionV1 = t.into();
+        v1.into()
     }
 }
 

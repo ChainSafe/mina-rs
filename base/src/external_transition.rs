@@ -4,7 +4,7 @@
 //! Mina ExternalTransition
 
 use crate::{types::*, *};
-use mina_serialization_types::external_transition::ExternalTransitionV1;
+use mina_serialization_types::external_transition::{ExternalTransitionJson, ExternalTransitionV1};
 
 /// This structure represents a mina block
 #[derive(Clone, Debug, PartialEq)]
@@ -26,6 +26,5 @@ pub struct ExternalTransition {
 
 impl SerializationTypeAnnotation for ExternalTransition {
     type BinProtType = ExternalTransitionV1;
-    // TODO: Use actual ExternalTransitionV1Json when it's implemented
-    type JsonType = ExternalTransitionV1;
+    type JsonType = ExternalTransitionJson;
 }

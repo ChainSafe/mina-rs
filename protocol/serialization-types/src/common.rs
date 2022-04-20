@@ -63,7 +63,7 @@ pub type BigInt256 = [u8; 32];
 pub type ByteVecV1 = Versioned<Vec<u8>, 1>;
 
 /// A wrapper of versioned type that is base58 encodable with an optional version byte
-#[derive(Debug, Clone, derive_more::From)]
+#[derive(Debug, Clone, PartialEq, derive_more::From)]
 pub struct Base58EncodableVersionedType<const VERSION_BYTE: u8, T>(pub T);
 
 impl<const VERSION_BYTE: u8, T> From<Base58EncodableVersionedType<VERSION_BYTE, T>> for (T,) {
