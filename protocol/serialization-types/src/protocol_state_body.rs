@@ -24,3 +24,33 @@ pub struct ProtocolStateBody {
 
 /// Body of the protocol state (v1)
 pub type ProtocolStateBodyV1 = Versioned<Versioned<ProtocolStateBody, 1>, 1>;
+
+/// Body of the protocol state
+/// that is convertible from / to the mina specific json representation
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
+pub struct ProtocolStateBodyJson {}
+
+impl From<ProtocolStateBodyJson> for ProtocolStateBodyV1 {
+    fn from(t: ProtocolStateBodyJson) -> Self {
+        let t: ProtocolStateBody = t.into();
+        Self::new(Versioned::new(t))
+    }
+}
+
+impl From<ProtocolStateBodyV1> for ProtocolStateBodyJson {
+    fn from(t: ProtocolStateBodyV1) -> Self {
+        t.t.t.into()
+    }
+}
+
+impl From<ProtocolStateBodyJson> for ProtocolStateBody {
+    fn from(_t: ProtocolStateBodyJson) -> Self {
+        unimplemented!()
+    }
+}
+
+impl From<ProtocolStateBody> for ProtocolStateBodyJson {
+    fn from(_t: ProtocolStateBody) -> Self {
+        unimplemented!()
+    }
+}

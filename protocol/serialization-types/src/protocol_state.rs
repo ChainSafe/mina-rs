@@ -20,3 +20,33 @@ pub struct ProtocolState {
 
 /// This structure can be thought of like the block header. It contains the most essential information of a block (v1)
 pub type ProtocolStateV1 = Versioned<Versioned<ProtocolState, 1>, 1>;
+
+/// This structure can be thought of like the block header. It contains the most essential information of a block.
+/// that is convertible from / to the mina specific json representation
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
+pub struct ProtocolStateJson {}
+
+impl From<ProtocolStateJson> for ProtocolStateV1 {
+    fn from(t: ProtocolStateJson) -> Self {
+        let t: ProtocolState = t.into();
+        Self::new(Versioned::new(t))
+    }
+}
+
+impl From<ProtocolStateV1> for ProtocolStateJson {
+    fn from(t: ProtocolStateV1) -> Self {
+        t.t.t.into()
+    }
+}
+
+impl From<ProtocolStateJson> for ProtocolState {
+    fn from(_t: ProtocolStateJson) -> Self {
+        unimplemented!()
+    }
+}
+
+impl From<ProtocolState> for ProtocolStateJson {
+    fn from(_t: ProtocolState) -> Self {
+        unimplemented!()
+    }
+}

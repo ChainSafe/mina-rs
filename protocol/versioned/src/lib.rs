@@ -53,7 +53,7 @@ impl<T, const V: u16> Versioned<T, V> {
 }
 
 impl<T, const V: u16> From<T> for Versioned<T, V> {
-    fn from(t: T) -> Versioned<T, V> {
+    fn from(t: T) -> Self {
         Self::new(t)
     }
 }
