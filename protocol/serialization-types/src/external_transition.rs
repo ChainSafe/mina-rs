@@ -72,7 +72,7 @@ pub struct ExternalTransitionJson {
 impl From<ExternalTransitionJson> for ExternalTransitionV1 {
     fn from(t: ExternalTransitionJson) -> Self {
         let t: ExternalTransition = t.into();
-        Self(Versioned::new(t))
+        Self(t.into())
     }
 }
 

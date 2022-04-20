@@ -33,7 +33,7 @@ pub struct ProtocolStateBodyJson {}
 impl From<ProtocolStateBodyJson> for ProtocolStateBodyV1 {
     fn from(t: ProtocolStateBodyJson) -> Self {
         let t: ProtocolStateBody = t.into();
-        Self::new(Versioned::new(t))
+        t.into()
     }
 }
 

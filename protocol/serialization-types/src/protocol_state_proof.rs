@@ -130,7 +130,7 @@ pub struct ProtocolStateProofJson {}
 impl From<ProtocolStateProofJson> for ProtocolStateProofV1 {
     fn from(t: ProtocolStateProofJson) -> Self {
         let t: ProtocolStateProof = t.into();
-        Versioned::new(Versioned::new(Versioned::new(Versioned::new(t))))
+        t.into()
     }
 }
 

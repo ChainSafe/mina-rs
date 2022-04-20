@@ -79,7 +79,6 @@ pub struct ExtendedU64(pub u64);
 /// ```
 #[derive(Copy, Clone, PartialEq, Debug, Hash, Default, From)]
 #[from(forward)]
-
 pub struct Amount(pub u64);
 
 impl fmt::Display for Amount {

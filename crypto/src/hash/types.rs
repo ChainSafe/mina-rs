@@ -17,6 +17,7 @@ use crate::impl_bs58;
 use derive_more::From;
 use mina_serialization_types::v1::{ByteVecV1, HashV1};
 use serde::{Deserialize, Serialize};
+use versioned::impl_from_for_newtype;
 
 pub(crate) type HashBytes = Box<[u8]>;
 
@@ -67,16 +68,12 @@ impl From<BaseHash> for HashV1 {
 #[macro_export]
 macro_rules! impl_from_for_hash {
     ($t:ty, $tv:ty) => {
+        impl_from_for_newtype!($t, $tv);
+
         impl From<$tv> for $t {
             fn from(h: $tv) -> Self {
                 let base: BaseHash = h.into();
                 Self(base)
-            }
-        }
-
-        impl From<$t> for $tv {
-            fn from(h: $t) -> Self {
-                h.0.into()
             }
         }
     };

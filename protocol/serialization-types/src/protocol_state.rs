@@ -29,7 +29,7 @@ pub struct ProtocolStateJson {}
 impl From<ProtocolStateJson> for ProtocolStateV1 {
     fn from(t: ProtocolStateJson) -> Self {
         let t: ProtocolState = t.into();
-        Self::new(Versioned::new(t))
+        t.into()
     }
 }
 

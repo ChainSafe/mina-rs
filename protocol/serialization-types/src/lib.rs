@@ -93,3 +93,16 @@ pub mod v1 {
         UserCommandWithStatusV1,
     };
 }
+
+/// json serialization types for the Mina protocol
+pub mod json {
+    use super::*;
+
+    pub use delta_transition_chain_proof::DeltaTransitionChainProofJson;
+    pub use external_transition::ExternalTransitionJson;
+    pub use protocol_state::ProtocolStateJson;
+    pub use protocol_state_body::ProtocolStateBodyJson;
+    pub use protocol_state_proof::ProtocolStateProofJson;
+    pub use protocol_version::ProtocolVersionJson;
+    pub use staged_ledger_diff::StagedLedgerDiffJson;
+}
