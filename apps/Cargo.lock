@@ -726,7 +726,7 @@ dependencies = [
 [[package]]
 name = "mina-curves"
 version = "0.1.0"
-source = "git+https://github.com/o1-labs/proof-systems?rev=9816b804fe2e8336fbe20d2e3d977d766582c4f0#9816b804fe2e8336fbe20d2e3d977d766582c4f0"
+source = "git+https://github.com/o1-labs/proof-systems?rev=52b859e9b5d81e94c4bc0e03cc66d4128419e7d6#52b859e9b5d81e94c4bc0e03cc66d4128419e7d6"
 dependencies = [
  "ark-ec",
  "ark-ff",
@@ -735,7 +735,7 @@ dependencies = [
 [[package]]
 name = "mina-hasher"
 version = "0.1.0"
-source = "git+https://github.com/o1-labs/proof-systems?rev=9816b804fe2e8336fbe20d2e3d977d766582c4f0#9816b804fe2e8336fbe20d2e3d977d766582c4f0"
+source = "git+https://github.com/o1-labs/proof-systems?rev=52b859e9b5d81e94c4bc0e03cc66d4128419e7d6#52b859e9b5d81e94c4bc0e03cc66d4128419e7d6"
 dependencies = [
  "ark-ff",
  "bitvec",
@@ -785,6 +785,8 @@ name = "mina-serialization-types"
 version = "0.1.0"
 dependencies = [
  "bin-prot",
+ "bs58",
+ "derive_more",
  "proof-systems",
  "serde",
  "versioned",
@@ -793,7 +795,7 @@ dependencies = [
 [[package]]
 name = "mina-signer"
 version = "0.1.0"
-source = "git+https://github.com/o1-labs/proof-systems?rev=9816b804fe2e8336fbe20d2e3d977d766582c4f0#9816b804fe2e8336fbe20d2e3d977d766582c4f0"
+source = "git+https://github.com/o1-labs/proof-systems?rev=52b859e9b5d81e94c4bc0e03cc66d4128419e7d6#52b859e9b5d81e94c4bc0e03cc66d4128419e7d6"
 dependencies = [
  "ark-ec",
  "ark-ff",
@@ -916,7 +918,7 @@ dependencies = [
 [[package]]
 name = "o1-utils"
 version = "0.1.0"
-source = "git+https://github.com/o1-labs/proof-systems?rev=9816b804fe2e8336fbe20d2e3d977d766582c4f0#9816b804fe2e8336fbe20d2e3d977d766582c4f0"
+source = "git+https://github.com/o1-labs/proof-systems?rev=52b859e9b5d81e94c4bc0e03cc66d4128419e7d6#52b859e9b5d81e94c4bc0e03cc66d4128419e7d6"
 dependencies = [
  "ark-ec",
  "ark-ff",
@@ -955,7 +957,7 @@ checksum = "624a8340c38c1b80fd549087862da4ba43e08858af025b236e509b6649fc13d5"
 [[package]]
 name = "oracle"
 version = "0.1.0"
-source = "git+https://github.com/o1-labs/proof-systems?rev=9816b804fe2e8336fbe20d2e3d977d766582c4f0#9816b804fe2e8336fbe20d2e3d977d766582c4f0"
+source = "git+https://github.com/o1-labs/proof-systems?rev=52b859e9b5d81e94c4bc0e03cc66d4128419e7d6#52b859e9b5d81e94c4bc0e03cc66d4128419e7d6"
 dependencies = [
  "ark-ec",
  "ark-ff",
