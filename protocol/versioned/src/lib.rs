@@ -17,6 +17,16 @@ pub mod macros;
 use serde::{Deserialize, Serialize};
 
 /// A generic version wrapper around another type
+///
+/// ```rust
+/// use versioned::Versioned;
+///
+/// type I32V1 = Versioned<i32, 2>;
+///
+/// let i = I32V1::default();
+/// assert_eq!(i.version(), 2);
+/// assert_eq!(i.inner(), 0);
+/// ```
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
 pub struct Versioned<T, const V: u16> {
     /// Version byte to be encoded first when the whole wrapper is serialized
@@ -31,7 +41,7 @@ where
 {
     fn default() -> Self {
         Self {
-            version: 1_u16, // 1 is the default version number
+            version: V, // version should always be equal to V
             t: Default::default(),
         }
     }

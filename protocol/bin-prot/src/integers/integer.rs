@@ -46,7 +46,7 @@ where
     {
         let mut rdr = Cursor::new(value);
         rdr.bin_read_integer()
-            .map_err(|_| de::Error::custom("Failed to read valid integer"))
+            .map_err(|err| de::Error::custom(format!("Failed to read valid integer: {err}")))
     }
 }
 
