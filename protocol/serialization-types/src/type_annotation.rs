@@ -3,9 +3,10 @@
 
 /// This trait annotates a given type its different serializable types,
 /// and provide utility functions to easily convert between them
-pub trait TypeAnnotation {
+pub trait TypeAnnotation: Sized {
     /// The corresponding serializable type for bin-prot format
-    type BinProtType;
+    type BinProtType: From<Self> + Into<Self>;
+
     /// The corresponding serializable type for json format
-    type JsonType;
+    type JsonType: From<Self> + Into<Self>;
 }
