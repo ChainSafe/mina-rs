@@ -15,9 +15,9 @@ use crate::base58::{version_bytes, Base58Encodable};
 use crate::hash::Hash;
 use crate::impl_bs58;
 use derive_more::From;
-use mina_serialization_types::v1::HashV1;
+use mina_serialization_types::{json::*, v1::*};
 use serde::{Deserialize, Serialize};
-use versioned::impl_from_for_newtype;
+use versioned::*;
 
 pub(crate) type HashBytes = Box<[u8]>;
 
@@ -96,6 +96,7 @@ impl_bs58!(LedgerHash, version_bytes::LEDGER_HASH);
 impl_from_for_hash!(LedgerHash, HashBytes);
 impl_from_for_hash!(LedgerHash, HashV1);
 impl_from_for_newtype!(LedgerHash, HashV1);
+impl_from_for_ext_type_generic!(LedgerHash, HashV1, LedgerHashV1Json);
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -106,6 +107,7 @@ impl_bs58!(ChainHash, version_bytes::LEDGER_HASH);
 impl_from_for_hash!(ChainHash, HashBytes);
 impl_from_for_hash!(ChainHash, HashV1);
 impl_from_for_newtype!(ChainHash, HashV1);
+impl_from_for_ext_type_generic!(ChainHash, HashV1, ChainHashV1Json);
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -116,6 +118,7 @@ impl_bs58!(CoinBaseHash, 12);
 impl_from_for_hash!(CoinBaseHash, HashBytes);
 impl_from_for_hash!(CoinBaseHash, HashV1);
 impl_from_for_newtype!(CoinBaseHash, HashV1);
+impl_from_for_ext_type_generic!(CoinBaseHash, HashV1, CoinBaseHashV1Json);
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -126,6 +129,7 @@ impl_bs58!(EpochSeed, version_bytes::EPOCH_SEED);
 impl_from_for_hash!(EpochSeed, HashBytes);
 impl_from_for_hash!(EpochSeed, HashV1);
 impl_from_for_newtype!(EpochSeed, HashV1);
+impl_from_for_ext_type_generic!(EpochSeed, HashV1, EpochSeedHashV1Json);
 
 impl Hash for EpochSeed {
     const PREFIX: &'static HashPrefix = EPOCH_SEED;
@@ -140,6 +144,7 @@ impl_bs58!(SnarkedLedgerHash, version_bytes::LEDGER_HASH);
 impl_from_for_hash!(SnarkedLedgerHash, HashBytes);
 impl_from_for_hash!(SnarkedLedgerHash, HashV1);
 impl_from_for_newtype!(SnarkedLedgerHash, HashV1);
+impl_from_for_ext_type_generic!(SnarkedLedgerHash, HashV1, LedgerHashV1Json);
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -225,15 +230,13 @@ pub mod test {
     }
 
     #[test]
-    fn ledger_hash_json() -> anyhow::Result<()> {
+    fn ledger_hash_json_roundtrip() -> anyhow::Result<()> {
         let s = "jxV4SS44wHUVrGEucCsfxLisZyUC5QddsiokGH3kz5xm2hJWZ25";
         let s_json = format!("\"{s}\"");
         let json: LedgerHashV1Json = serde_json::from_str(&s_json)?;
-        let (v1,): (HashV1,) = json.into();
-        let h: LedgerHash = v1.into();
+        let h: LedgerHash = json.into();
         assert_eq!(h.to_base58_string(), s);
-        let v1: HashV1 = h.into();
-        let json: LedgerHashV1Json = v1.into();
+        let json: LedgerHashV1Json = h.into();
         assert_eq!(serde_json::to_string(&json)?, s_json);
         Ok(())
     }

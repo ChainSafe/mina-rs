@@ -116,3 +116,12 @@ pub type HashV1Json<const VERSION_BYTE: u8> = Base58EncodableVersionedType<VERSI
 
 /// base58 string representation of a ledger hash
 pub type LedgerHashV1Json = HashV1Json<{ version_bytes::LEDGER_HASH }>;
+
+/// base58 string representation of a chain hash
+pub type ChainHashV1Json = LedgerHashV1Json;
+
+/// base58 string representation of a coinbase hash
+pub type CoinBaseHashV1Json = HashV1Json<{ version_bytes::COINBASE_HASH }>;
+
+/// base58 string representation of a coinbase hash
+pub type EpochSeedHashV1Json = HashV1Json<{ version_bytes::EPOCH_SEED }>;

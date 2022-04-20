@@ -17,16 +17,6 @@ pub mod macros;
 use serde::{Deserialize, Serialize};
 
 /// A generic version wrapper around another type
-///
-/// ```rust
-/// use versioned::Versioned;
-///
-/// type I32V1 = Versioned<i32, 2>;
-///
-/// let i = I32V1::default();
-/// assert_eq!(i.version(), 2);
-/// assert_eq!(i.inner(), 0);
-/// ```
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
 pub struct Versioned<T, const V: u16> {
     /// Version byte to be encoded first when the whole wrapper is serialized
@@ -96,5 +86,19 @@ impl<T, const V1: u16, const V2: u16, const V3: u16, const V4: u16> From<T>
     fn from(t: T) -> Self {
         let t: Versioned<Versioned<Versioned<T, V1>, V2>, V3> = t.into();
         t.into()
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_versioned() {
+        type I32V1 = Versioned<i32, 2>;
+
+        let i = I32V1::default();
+        assert_eq!(i.version(), 2);
+        assert_eq!(i.inner(), i32::default());
     }
 }

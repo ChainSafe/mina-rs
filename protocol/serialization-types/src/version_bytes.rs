@@ -13,3 +13,9 @@
 
 /// base58 version check byte for ledger hash
 pub const LEDGER_HASH: u8 = 0x05;
+
+/// base58 version check byte for coinbase hash
+pub const COINBASE_HASH: u8 = 0x0c;
+
+/// base58 version check byte for epoch seed hash
+pub const EPOCH_SEED: u8 = 0x0d;
