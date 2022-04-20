@@ -29,7 +29,3 @@ impl SerializableTypeAnnotation for ExternalTransition {
     // TODO: Use actual ExternalTransitionV1Json when it's implemented
     type JsonType = ExternalTransitionV1;
 }
-
-impl bin_prot::encodable::BinProtEncodable for ExternalTransition {
-    const PREALLOCATE_BUFFER_BYTES: usize = 13 * 1024;
-}
