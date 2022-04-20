@@ -27,6 +27,9 @@ pub mod staged_ledger_diff;
 pub mod user_commands;
 pub mod verification_key;
 
+/// Re-export TypeAnnotation
+pub use mina_serialization_types::TypeAnnotation as SerializableTypeAnnotation;
+
 /// Re-export all the public types under this module for convenience
 pub mod types {
     pub use super::account::*;

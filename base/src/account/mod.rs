@@ -8,6 +8,7 @@ pub mod permissions;
 pub mod timing;
 pub mod token_permissions;
 
+use mina_serialization_types::v1::AccountV1;
 use proof_systems::*;
 
 use mina_hasher::ROInput;
@@ -15,12 +16,12 @@ pub use permissions::{AuthRequired, Permissions};
 pub use timing::Timing;
 pub use token_permissions::TokenPermissions;
 
-use crate::numbers::{AccountNonce, Amount, TokenId};
+use crate::{
+    numbers::{AccountNonce, Amount, TokenId},
+    SerializableTypeAnnotation,
+};
 use mina_crypto::hash::{ChainHash, StateHash};
 
-use serde::{Deserialize, Serialize};
-
-use mina_serialization_types::v1::AccountV1;
 use proof_systems::mina_signer::CompressedPubKey;
 
 /// An account identified by its public key and token ID. Multiple accounts may
@@ -28,9 +29,7 @@ use proof_systems::mina_signer::CompressedPubKey;
 ///
 /// Accounts can also be Snapps in which case snapp data is required and proofs must
 /// be provided to perform certain actions
-#[derive(Clone, Debug, Serialize, Deserialize)]
-#[serde(from = "AccountV1")]
-#[serde(into = "AccountV1")]
+#[derive(Clone, Debug)]
 pub struct Account {
     /// Account public key
     pub public_key: CompressedPubKey,
@@ -55,6 +54,12 @@ pub struct Account {
     pub permissions: Permissions,
     /// TODO: This should contain a Snapp account data once we have something to test against
     pub snapp: Option<()>,
+}
+
+impl SerializableTypeAnnotation for Account {
+    type BinProtType = AccountV1;
+    // TODO: Use actual AccountV1Json when it's implemented
+    type JsonType = AccountV1;
 }
 
 impl mina_hasher::Hashable for Account {
