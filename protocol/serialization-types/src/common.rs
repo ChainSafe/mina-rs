@@ -6,6 +6,8 @@
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
 use versioned::Versioned;
 
+use crate::version_bytes;
+
 /// 32 bytes representing a hash of some kind (v1)
 pub type HashV1 = Versioned<[u8; 32], 1>;
 
@@ -61,8 +63,14 @@ pub type BigInt256 = [u8; 32];
 pub type ByteVecV1 = Versioned<Vec<u8>, 1>;
 
 /// A wrapper of versioned type that is base58 encodable with an optional version byte
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, derive_more::From)]
 pub struct Base58EncodableVersionedType<const VERSION_BYTE: u8, T>(pub T);
+
+impl<const VERSION_BYTE: u8, T> From<Base58EncodableVersionedType<VERSION_BYTE, T>> for (T,) {
+    fn from(i: Base58EncodableVersionedType<VERSION_BYTE, T>) -> Self {
+        (i.0,)
+    }
+}
 
 impl<const VERSION_BYTE: u8, T> Serialize for Base58EncodableVersionedType<VERSION_BYTE, T>
 where
@@ -105,3 +113,6 @@ where
 
 /// base58 string representation of a hash
 pub type HashV1Json<const VERSION_BYTE: u8> = Base58EncodableVersionedType<VERSION_BYTE, HashV1>;
+
+/// base58 string representation of a ledger hash
+pub type LedgerHashV1Json = HashV1Json<{ version_bytes::LEDGER_HASH }>;

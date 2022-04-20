@@ -35,6 +35,7 @@ pub mod protocol_state_proof;
 pub mod protocol_version;
 pub mod signatures;
 pub mod staged_ledger_diff;
+pub mod version_bytes;
 
 mod type_annotation;
 pub use type_annotation::TypeAnnotation;

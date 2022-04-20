@@ -52,8 +52,40 @@ impl AsRef<[u8; 32]> for BaseHash {
     }
 }
 
+impl From<HashV1> for BaseHash {
+    fn from(h: HashV1) -> Self {
+        Self(h.t)
+    }
+}
+
+impl From<BaseHash> for HashV1 {
+    fn from(h: BaseHash) -> Self {
+        Self::new(h.0)
+    }
+}
+
+#[macro_export]
+macro_rules! impl_from_for_hash {
+    ($t:ty, $tv:ty) => {
+        impl From<$tv> for $t {
+            fn from(h: $tv) -> Self {
+                let base: BaseHash = h.into();
+                Self(base)
+            }
+        }
+
+        impl From<$t> for $tv {
+            fn from(h: $t) -> Self {
+                h.0.into()
+            }
+        }
+    };
+}
+
 //////////////////////////////////////////////////////////////////////////
-#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize, PartialOrd)]
+#[derive(
+    Clone, Default, Debug, PartialEq, Serialize, Deserialize, PartialOrd, derive_more::From,
+)]
 pub struct StateHash(BaseHash);
 
 impl_bs58!(StateHash, version_bytes::STATE_HASH);
@@ -64,16 +96,7 @@ impl From<HashBytes> for StateHash {
     }
 }
 
-impl From<HashV1> for StateHash {
-    fn from(h: HashV1) -> Self {
-        Self(BaseHash(h.t))
-    }
-}
-impl From<StateHash> for HashV1 {
-    fn from(h: StateHash) -> Self {
-        Self::new(h.0 .0)
-    }
-}
+impl_from_for_hash!(StateHash, HashV1);
 
 impl Hash for StateHash {
     const PREFIX: &'static HashPrefix = PROTOCOL_STATE;
@@ -81,29 +104,21 @@ impl Hash for StateHash {
 
 //////////////////////////////////////////////////////////////////////////
 
-#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize, derive_more::From)]
 pub struct LedgerHash(BaseHash);
 
 impl_bs58!(LedgerHash, version_bytes::LEDGER_HASH);
 
-impl From<HashV1> for LedgerHash {
-    fn from(h: HashV1) -> Self {
-        Self(BaseHash(h.t))
-    }
-}
+impl_from_for_hash!(LedgerHash, HashV1);
 
 //////////////////////////////////////////////////////////////////////////
 
-#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize, derive_more::From)]
 pub struct ChainHash(BaseHash);
 
 impl_bs58!(ChainHash, version_bytes::LEDGER_HASH);
 
-impl From<HashV1> for ChainHash {
-    fn from(h: HashV1) -> Self {
-        Self(BaseHash(h.t))
-    }
-}
+impl_from_for_hash!(ChainHash, HashV1);
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -112,11 +127,7 @@ pub struct CoinBaseHash(BaseHash);
 
 impl_bs58!(CoinBaseHash, 12);
 
-impl From<HashV1> for CoinBaseHash {
-    fn from(h: HashV1) -> Self {
-        Self(BaseHash(h.t))
-    }
-}
+impl_from_for_hash!(CoinBaseHash, HashV1);
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -124,6 +135,8 @@ impl From<HashV1> for CoinBaseHash {
 pub struct EpochSeed(BaseHash);
 
 impl_bs58!(EpochSeed, version_bytes::EPOCH_SEED);
+
+impl_from_for_hash!(EpochSeed, HashV1);
 
 impl From<HashBytes> for EpochSeed {
     fn from(b: HashBytes) -> Self {
@@ -135,12 +148,6 @@ impl Hash for EpochSeed {
     const PREFIX: &'static HashPrefix = EPOCH_SEED;
 }
 
-impl From<HashV1> for EpochSeed {
-    fn from(h: HashV1) -> Self {
-        Self(BaseHash(h.t))
-    }
-}
-
 //////////////////////////////////////////////////////////////////////////
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
@@ -148,11 +155,7 @@ pub struct SnarkedLedgerHash(BaseHash);
 
 impl_bs58!(SnarkedLedgerHash, version_bytes::LEDGER_HASH);
 
-impl From<HashV1> for SnarkedLedgerHash {
-    fn from(h: HashV1) -> Self {
-        Self(BaseHash(h.t))
-    }
-}
+impl_from_for_hash!(SnarkedLedgerHash, HashV1);
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -226,6 +229,8 @@ pub struct VrfOutputHash(BaseHash);
 
 impl_bs58!(VrfOutputHash, version_bytes::VRF_TRUNCATED_OUTPUT);
 
+impl_from_for_hash!(VrfOutputHash, HashV1);
+
 impl From<HashBytes> for VrfOutputHash {
     fn from(b: HashBytes) -> Self {
         Self(BaseHash::from(b))
@@ -236,16 +241,12 @@ impl Hash for VrfOutputHash {
     const PREFIX: &'static HashPrefix = VRF_OUTPUT;
 }
 
-impl From<HashV1> for VrfOutputHash {
-    fn from(h: HashV1) -> Self {
-        Self(BaseHash(h.t))
-    }
-}
-
 //////////////////////////////////////////////////////////////////////////
 
 #[cfg(test)]
 pub mod test {
+
+    use mina_serialization_types::common::LedgerHashV1Json;
 
     use super::*;
 
@@ -264,6 +265,20 @@ pub mod test {
         let s = "jxV4SS44wHUVrGEucCsfxLisZyUC5QddsiokGH3kz5xm2hJWZ25";
         let h = LedgerHash::from_base58(s).unwrap();
         assert_eq!(h.to_base58_string(), s);
+    }
+
+    #[test]
+    fn ledger_hash_json() -> anyhow::Result<()> {
+        let s = "jxV4SS44wHUVrGEucCsfxLisZyUC5QddsiokGH3kz5xm2hJWZ25";
+        let s_json = format!("\"{s}\"");
+        let json: LedgerHashV1Json = serde_json::from_str(&s_json)?;
+        let (v1,): (HashV1,) = json.into();
+        let h: LedgerHash = v1.into();
+        assert_eq!(h.to_base58_string(), s);
+        let v1: HashV1 = h.into();
+        let json: LedgerHashV1Json = v1.into();
+        assert_eq!(serde_json::to_string(&json)?, s_json);
+        Ok(())
     }
 
     #[test]
