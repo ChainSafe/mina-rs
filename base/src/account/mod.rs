@@ -18,7 +18,7 @@ pub use token_permissions::TokenPermissions;
 
 use crate::{
     numbers::{AccountNonce, Amount, TokenId},
-    SerializableTypeAnnotation,
+    SerializationTypeAnnotation,
 };
 use mina_crypto::hash::{ChainHash, StateHash};
 
@@ -56,7 +56,7 @@ pub struct Account {
     pub snapp: Option<()>,
 }
 
-impl SerializableTypeAnnotation for Account {
+impl SerializationTypeAnnotation for Account {
     type BinProtType = AccountV1;
     // TODO: Use actual AccountV1Json when it's implemented
     type JsonType = AccountV1;

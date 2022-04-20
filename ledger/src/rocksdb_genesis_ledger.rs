@@ -6,7 +6,7 @@
 
 use crate::genesis_ledger::GenesisLedger;
 use bin_prot::from_reader;
-use mina_rs_base::{account::Account, SerializableTypeAnnotation};
+use mina_rs_base::{account::Account, *};
 use rocksdb::DB;
 use thiserror::Error;
 
@@ -34,7 +34,7 @@ impl<'a, const DEPTH: usize> RocksDbGenesisLedger<'a, DEPTH> {
 }
 
 fn decode_account_from_kv((_k, v): (Box<[u8]>, Box<[u8]>)) -> Result<Account, Error> {
-    let account: <Account as SerializableTypeAnnotation>::BinProtType = from_reader(&v[..])?;
+    let account: <Account as SerializationTypeAnnotation>::BinProtType = from_reader(&v[..])?;
     Ok(account.into())
 }
 

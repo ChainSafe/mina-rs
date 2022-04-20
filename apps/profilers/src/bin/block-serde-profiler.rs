@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use clap::{Arg, Command};
-use mina_rs_base::{types::*, SerializableTypeAnnotation};
+use mina_rs_base::{types::*, *};
 use serde::Deserialize;
 use std::str::FromStr;
 
@@ -32,7 +32,7 @@ fn main() -> anyhow::Result<()> {
 
 fn cpu_profile_serialization() -> anyhow::Result<ExternalTransition> {
     let mut de = bin_prot::Deserializer::from_reader(BLOCK_BYTES);
-    let et: <ExternalTransition as SerializableTypeAnnotation>::BinProtType =
+    let et: <ExternalTransition as SerializationTypeAnnotation>::BinProtType =
         Deserialize::deserialize(&mut de)?;
     Ok(et.into())
 }
