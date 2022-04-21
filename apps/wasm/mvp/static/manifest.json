@@ -9,12 +9,15 @@
   "background": {
     "service_worker": "background.js"
   },
-  "sandbox":{
-    "pages":["index.html"]
+  "sandbox": {
+    "pages": []
   },
   "permissions": [
     "tabs",
     "webNavigation",
     "storage"
-  ]
+  ],
+  "content_security_policy": {
+    "extension_pages": "worker-src 'self'; connect-src *; img-src *; default-src 'self' 'wasm-unsafe-eval'"
+  }
 }
