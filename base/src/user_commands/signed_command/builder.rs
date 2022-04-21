@@ -3,13 +3,11 @@
 
 //! Helpers for building a user command
 
-use proof_systems::mina_signer::{CompressedPubKey, Keypair, Signature};
+use proof_systems::mina_signer::CompressedPubKey;
 
-use crate::numbers::{Amount, TokenId};
-use crate::types::ExtendedU32;
+use crate::numbers::{AccountNonce, Amount, GlobalSlotNumber, TokenId};
 use crate::user_commands::{
-    PaymentPayload, SignedCommand, SignedCommandPayload, SignedCommandPayloadBody,
-    SignedCommandPayloadCommon, UserCommand,
+    PaymentPayload, SignedCommandPayload, SignedCommandPayloadBody, SignedCommandPayloadCommon,
 };
 
 use super::SignedCommandMemo;
@@ -22,46 +20,49 @@ pub struct SignedTransferCommandBuilder {
     transfer_token: TokenId,
     fee_token: TokenId,
     fee: Amount,
-    nonce: ExtendedU32,
+    nonce: AccountNonce,
     memo: SignedCommandMemo,
     fee_payer_pk: CompressedPubKey,
-    valid_until: ExtendedU32,
+    valid_until: GlobalSlotNumber,
 }
 
 impl SignedTransferCommandBuilder {
     /// All required fields must be defined initially
-    pub fn new(
-        to: CompressedPubKey,
+    pub fn new<T: Into<Amount>, TT: Into<Amount>, TTT: Into<AccountNonce>>(
         from: CompressedPubKey,
-        amount: Amount,
-        fee: Amount,
-        nonce: ExtendedU32,
+        to: CompressedPubKey,
+        amount: T,
+        fee: TT,
+        nonce: TTT,
     ) -> Self {
         Self {
             to,
             from,
-            amount,
+            amount: amount.into(),
             transfer_token: TokenId(1),
             fee_token: TokenId(1),
-            fee,
-            nonce,
+            fee: fee.into(),
+            nonce: nonce.into(),
             fee_payer_pk: from,
             memo: SignedCommandMemo::default(),
-            valid_until: ExtendedU32::MAX,
+            valid_until: GlobalSlotNumber::MAX,
         }
     }
 
     /// Set token to transfer
-    pub fn transfer_token(self, transfer_token: TokenId) -> Self {
+    pub fn transfer_token<T: Into<TokenId>>(self, transfer_token: T) -> Self {
         Self {
-            transfer_token,
+            transfer_token: transfer_token.into(),
             ..self
         }
     }
 
     /// Set the fee token to pay the block producer
-    pub fn fee_token(self, fee_token: TokenId) -> Self {
-        Self { fee_token, ..self }
+    pub fn fee_token<T: Into<TokenId>>(self, fee_token: T) -> Self {
+        Self {
+            fee_token: fee_token.into(),
+            ..self
+        }
     }
 
     /// Set the fee payer to something other than the sender
@@ -77,9 +78,17 @@ impl SignedTransferCommandBuilder {
         Self { memo, ..self }
     }
 
+    /// Set the global slot which this command is valid until
+    pub fn valid_until<T: Into<GlobalSlotNumber>>(self, valid_until: T) -> Self {
+        Self {
+            valid_until: valid_until.into(),
+            ..self
+        }
+    }
+
     /// Sign the transaction and produce a UserCommand with the signature fields filled
-    pub fn sign_and_build(self, keypair: Keypair) -> UserCommand {
-        let payload = SignedCommandPayload {
+    pub fn build(self) -> SignedCommandPayload {
+        SignedCommandPayload {
             common: SignedCommandPayloadCommon {
                 fee: self.fee,
                 fee_token: self.fee_token,
@@ -94,14 +103,6 @@ impl SignedTransferCommandBuilder {
                 source_pk: self.from,
                 token_id: self.transfer_token,
             }),
-        };
-
-        // TODO: Sign the payload
-
-        UserCommand::SignedCommand(SignedCommand {
-            payload,
-            signer: keypair.public.into_compressed(),
-            signature: Signature::new(Default::default(), Default::default()), // WARNING this is an empty signature
-        })
+        }
     }
 }

@@ -57,11 +57,6 @@ pub struct Delta(pub u32);
 /// This will not be part of the public API once the deserialization refactor is complete
 pub struct ExtendedU32(pub i32);
 
-impl ExtendedU32 {
-    /// Maximum value this type can hold
-    pub const MAX: Self = Self(i32::MAX);
-}
-
 #[derive(Clone, PartialEq, PartialOrd, Debug, Hash, Copy, Default, From)]
 #[from(forward)]
 
@@ -139,8 +134,17 @@ impl std::str::FromStr for Amount {
 /// Number representing how many txns sent from an account
 #[derive(Copy, Clone, PartialEq, Debug, Hash, Default, From)]
 #[from(forward)]
+pub struct AccountNonce(pub u32);
 
-pub struct AccountNonce(pub u64);
+/// Consensus slot index
+#[derive(Copy, Clone, PartialEq, Debug, Hash, Default, From)]
+#[from(forward)]
+pub struct GlobalSlotNumber(pub u32);
+
+impl GlobalSlotNumber {
+    /// Maximum value this type can hold
+    pub const MAX: Self = Self(u32::MAX);
+}
 
 #[derive(Clone, PartialEq, Debug, Hash, Default, From)]
 #[from(forward)]
@@ -154,11 +158,6 @@ pub struct Hex64(pub i64);
 
 /// A single char defined by a single byte (not variable length like a Rust char)
 pub struct Char(pub u8);
-
-#[derive(Clone, PartialEq, Debug, Hash, Default, Deref, From)]
-#[from(forward)]
-/// A global slot number
-pub struct GlobalSlotNumber(pub u32);
 
 #[derive(Clone, PartialEq, Debug, Hash, Default, From)]
 /// Block time numeric type
