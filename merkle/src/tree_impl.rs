@@ -131,8 +131,8 @@ where
         if let Some(fixed_height) = self.fixed_height {
             match fixed_height.cmp(&self.height) {
                 Ordering::Less => panic!(
-                    "fixed_height {} should not be smaller than current height {}",
-                    fixed_height, self.height,
+                    "fixed_height {fixed_height} should not be smaller than current height {}",
+                    self.height,
                 ),
                 Ordering::Equal => hash,
                 Ordering::Greater => {
