@@ -302,8 +302,8 @@ impl From<SignedCommandPayloadCommon> for SignedCommandPayloadCommonV1 {
             fee: t.fee.into(),
             fee_token: t.fee_token.into(),
             fee_payer_pk: t.fee_payer_pk.into(),
-            nonce: t.nonce.into(),
-            valid_until: t.valid_until.into(),
+            nonce: (t.nonce.0 as i32).into(),
+            valid_until: (t.valid_until.0 as i32).into(),
             memo: t.memo.into(),
         }
         .into()
@@ -315,8 +315,8 @@ impl From<SignedCommandPayloadCommonV1> for SignedCommandPayloadCommon {
             fee: t.t.t.t.fee.t.t.into(),
             fee_token: t.t.t.t.fee_token.t.t.t.into(),
             fee_payer_pk: t.t.t.t.fee_payer_pk.into(),
-            nonce: t.t.t.t.nonce.t.t.into(),
-            valid_until: t.t.t.t.valid_until.t.t.into(),
+            nonce: AccountNonce(t.t.t.t.nonce.t.t as u32), // TODO - remove these casts once ExtendedU32 is properly handled
+            valid_until: GlobalSlotNumber(t.t.t.t.valid_until.t.t as u32),
             memo: t.t.t.t.memo.t.into(),
         }
     }

@@ -20,8 +20,8 @@ pub type TokenIdV1 = Versioned<Versioned<Versioned<u64, 1>, 1>, 1>;
 /// u64 representing a block time (v1)
 pub type BlockTimeV1 = Versioned<Versioned<u64, 1>, 1>;
 
-/// u64 representing an account nonce (v1)
-pub type AccountNonceV1 = Versioned<Versioned<u64, 1>, 1>;
+/// u64 representing an account nonce (v1) // This should also be an extendedu32
+pub type AccountNonceV1 = Versioned<Versioned<u32, 1>, 1>;
 
 /// u32 representing a length (v1)
 pub type LengthV1 = Versioned<Versioned<u32, 1>, 1>;
