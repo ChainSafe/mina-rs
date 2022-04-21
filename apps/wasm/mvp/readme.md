@@ -28,13 +28,12 @@ cargo install wasm-pack
   go run .
   ```
 
-- Build and Run
+- Build
 
   ```
   cd apps/wasm/mvp
   yarn
   yarn build
-  yarn start
   # Run lint
   yarn lint
   # Regenerate protobuf code
@@ -47,20 +46,54 @@ cargo install wasm-pack
   yarn global add lerna
   lerna bootstrap
   lerna run build
+  ```
 
+- Run as static web app
+
+  ```
   cd apps/wasm/mvp
   yarn start
   ```
 
-- Copy & paste peer address that `proxy` prints on console into the web gui at http://localhost:1234/
+  Copy & paste peer address that `proxy` prints on console into the web gui at http://localhost:1234/
 
-- Alternatively, open chrome, and load extension from `dist/ext` folder, then click on the extension icon, it will open the same web gui in a new tab. `dist/ext` can be downloaded from `mvp-chrome-ext` in CI build artifacts as well.
+- Run as chrome extension v3
 
-```
-proxyHost: /ip4/127.0.0.1/tcp/23333/ws/p2p/12D3KooWBJS5MW5tY93UgKvQ9KKzd4s4SRHEZoUsv7frvcAZKaQt
-```
+  open chrome canary, load extension from `dist/ext` folder, then click on the extension icon, it will open the same web gui in a new tab. `dist/ext` can be downloaded from `mvp-chrome-ext` in CI build artifacts as well.
 
-- Click on `Connect` button on the web page
+  NOTE: To load web assembly with chrome extension manifect version 3, `unsafe-wasm-eval` is required CSP, which is not yet supported on chrome stable, when you load the extension, it fails with error 'content_security_policy.extension_pages': Insecure CSP value "'wasm-unsafe-eval'" in directive 'script-src'.'. Chrome canary is required for now.
+
+- Run as chrome extension v2 (deprecated)
+
+  open chrome (or edge) stable, load extension from `dist/ext-v2`
+
+- Run as firefox extension
+
+  ```
+  yarn global add web-ext
+  cd dist/ext-v2
+  web-ext run
+  ```
+
+  or
+
+  ```
+  yarn global add web-ext
+  cd dist/ext-v2
+  web-ext build
+  ```
+
+  And manually load the zipped add-on from firefox.
+
+  `web-ext build` step can be replace by manually zipping the dist/ext-v2 folder, with manifest.json at the root the zip file.
+
+  For more details, please refer to [firefox add-on doc](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Your_first_WebExtension#installing)
+
+  ```
+  proxyHost: /ip4/127.0.0.1/tcp/23333/ws/p2p/12D3KooWBJS5MW5tY93UgKvQ9KKzd4s4SRHEZoUsv7frvcAZKaQt
+  ```
+
+  Then click on `Connect` button on the web page
 
 - Testing
   ```
