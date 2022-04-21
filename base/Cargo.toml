@@ -7,23 +7,29 @@ edition = "2021"
 license = "Apache-2.0"
 
 [dependencies]
+bin-prot = {path = "../protocol/bin-prot"}
 mina-crypto = {path = "../crypto"}
-wire-type = {path = "../protocol/wire-type"}
-
-derive_deref = "1.1"
-num = "0.4"
-serde = {version = "1", features = ["derive"]}
-thiserror = "1"
-time = "0.3"
+mina-serialization-types = {path = "../protocol/serialization-types"}
+proof-systems = {path = "../proof-systems-shim"}
+versioned = {path = "../protocol/versioned"}
 
 ark-ec = "0.3.0"
 ark-ff = "0.3.0"
-commitment_dlog = {git = "https://github.com/o1-labs/proof-systems", rev = "6af257b793d80f900675acc01b16fd4bf6375268"}
-mina-curves = {git = "https://github.com/o1-labs/proof-systems", rev = "6af257b793d80f900675acc01b16fd4bf6375268"}
-plonk_circuits = {git = "https://github.com/o1-labs/proof-systems", rev = "6af257b793d80f900675acc01b16fd4bf6375268"}
-plonk_protocol_dlog = {git = "https://github.com/o1-labs/proof-systems", rev = "6af257b793d80f900675acc01b16fd4bf6375268"}
+base64 = "0.13"
+derive_deref = "1.1"
+derive_more = "0.99"
+hex = "0.4"
+num = "0.4"
+serde = {version = "1", features = ["derive"]}
+smart-default = "0.6.0"
+thiserror = "1"
+time = "0.3"
 
 # This dependency is not used by the crate, but is a subdependency of commitment_dlog
 # This features must be enable to build with WASM support
 # It has no effect for normal builds
+[target.'cfg(target_arch = "wasm32")'.dependencies]
 getrandom = {version = "0.2", features = ["js"]}
+
+[dev-dependencies]
+test-fixtures = {path = "../protocol/test-fixtures"}

@@ -7,16 +7,13 @@
 //! All types are versioned where required.
 //!
 
-// Need to supress this warning for the moment so we can use the #[verson(x)]
-// attribute macro. It seems we are in an awkward inbetween phase where it can't be
-// defined above a derive macro (or the following warning) and it can't be defined
-// below or it will error. The error will be fixed in the future when derive becomes like a regular
-// attribute macro and an order of operations well defined
-#![allow(legacy_derive_helpers)]
-#![deny(rustdoc::all)]
+#![deny(warnings)]
+#![deny(missing_docs)]
 
+pub mod account;
 pub mod blockchain_state;
 pub mod consensus_state;
+mod constants;
 pub mod delta_transition_chain_proof;
 pub mod epoch_data;
 pub mod external_transition;
@@ -25,11 +22,14 @@ pub mod numbers;
 pub mod protocol_state;
 pub mod protocol_state_proof;
 pub mod protocol_version;
+mod serialization_type_conversions;
 pub mod staged_ledger_diff;
-pub mod token_id;
+pub mod user_commands;
 pub mod verification_key;
 
+/// Re-export all the public types under this module for convenience
 pub mod types {
+    pub use super::account::*;
     pub use super::blockchain_state::*;
     pub use super::consensus_state::*;
     pub use super::delta_transition_chain_proof::*;
@@ -41,6 +41,6 @@ pub mod types {
     pub use super::protocol_state_proof::*;
     pub use super::protocol_version::*;
     pub use super::staged_ledger_diff::*;
-    pub use super::token_id::*;
+    pub use super::user_commands::*;
     pub use super::verification_key::*;
 }

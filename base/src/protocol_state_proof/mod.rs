@@ -1,8 +1,11 @@
 // Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
-use serde::{Deserialize, Serialize};
-use wire_type::WireType;
+//! Module containing the components of a protocol state proof
+
+// Much of this crate will be replaced by arkworks and 01-proof-systems types
+// so full documentation will not be included
+#![allow(missing_docs)]
 
 use crate::numbers::{BigInt256, Char, Hex64};
 
@@ -24,14 +27,12 @@ pub use bulletproof_challenges::{
 
 pub mod field_and_curve_elements;
 pub use field_and_curve_elements::{
-    ECPoint, ECPointVec, FieldElement, FieldElementVec, FiniteECPoint, FiniteECPointPairVec,
-    FiniteECPointVec,
+    ECPoint, ECPointVec, FieldElement, FieldElementVec, FiniteECPoint, FiniteECPointPair,
+    FiniteECPointPairVec, FiniteECPointVec,
 };
 
-#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, WireType)]
-#[serde(from = "<Self as WireType>::WireType")]
-#[serde(into = "<Self as WireType>::WireType")]
-#[wire_type(recurse = 4)]
+#[derive(Clone, Default, PartialEq, Debug)]
+/// SNARK proof of the protocol state at some point in time
 pub struct ProtocolStateProof {
     pub statement: ProofStatement,
     pub prev_evals: PrevEvals,
@@ -39,27 +40,20 @@ pub struct ProtocolStateProof {
     pub proof: Proof,
 }
 
-#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, WireType)]
-#[serde(from = "<Self as WireType>::WireType")]
-#[serde(into = "<Self as WireType>::WireType")]
-#[wire_type(recurse = 2)]
+#[derive(Clone, Default, PartialEq, Debug)]
 pub struct ProofStatement {
     pub proof_state: ProofState,
     pub pass_through: PairingBased,
 }
 
-#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, WireType)]
-#[serde(from = "<Self as WireType>::WireType")]
-#[serde(into = "<Self as WireType>::WireType")]
+#[derive(Clone, Default, PartialEq, Debug)]
 pub struct ProofState {
     pub deferred_values: ProofStateDeferredValues,
     pub sponge_digest_before_evaluations: SpongeDigestBeforeEvaluations,
     pub me_only: ProofStatePairingBased,
 }
 
-#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, WireType)]
-#[serde(from = "<Self as WireType>::WireType")]
-#[serde(into = "<Self as WireType>::WireType")]
+#[derive(Clone, Default, PartialEq, Debug)]
 pub struct ProofStateDeferredValues {
     pub plonk: Plonk,
     pub combined_inner_product: ShiftedValue,
@@ -69,9 +63,7 @@ pub struct ProofStateDeferredValues {
     pub which_branch: Char,
 }
 
-#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, WireType)]
-#[serde(from = "<Self as WireType>::WireType")]
-#[serde(into = "<Self as WireType>::WireType")]
+#[derive(Clone, Default, PartialEq, Debug)]
 pub struct Plonk {
     pub alpha: BulletproofPreChallenge,
     pub beta: ScalarChallengeVector2,
@@ -79,9 +71,7 @@ pub struct Plonk {
     pub zeta: BulletproofPreChallenge,
 }
 
-#[derive(Clone, Serialize, Deserialize, PartialEq, Debug, WireType)]
-#[serde(from = "<Self as WireType>::WireType")]
-#[serde(into = "<Self as WireType>::WireType")]
+#[derive(Clone, PartialEq, Debug)]
 #[non_exhaustive]
 pub enum ShiftedValue {
     ShiftedValue(BigInt256),
@@ -93,51 +83,35 @@ impl Default for ShiftedValue {
     }
 }
 
-#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, WireType)]
-#[serde(from = "<Self as WireType>::WireType")]
-#[serde(into = "<Self as WireType>::WireType")]
-#[wire_type(recurse = 2)]
-pub struct SpongeDigestBeforeEvaluations((Hex64, Hex64, Hex64, Hex64, ()));
+#[derive(Clone, Default, PartialEq, Debug)]
+pub struct SpongeDigestBeforeEvaluations(pub (Hex64, Hex64, Hex64, Hex64, ()));
 
-#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, WireType)]
-#[serde(from = "<Self as WireType>::WireType")]
-#[serde(into = "<Self as WireType>::WireType")]
+#[derive(Clone, Default, PartialEq, Debug)]
 pub struct ProofStatePairingBased {
     pub sg: FiniteECPoint,
     pub old_bulletproof_challenges: ProofStateBulletproofChallenges,
 }
 
-#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, WireType)]
-#[serde(from = "<Self as WireType>::WireType")]
-#[serde(into = "<Self as WireType>::WireType")]
+#[derive(Clone, Default, PartialEq, Debug)]
 pub struct PairingBased {
     pub app_state: (),
     pub sg: FiniteECPointVec,
     pub old_bulletproof_challenges: BulletproofChallenges,
 }
 
-#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, WireType)]
-#[serde(from = "<Self as WireType>::WireType")]
-#[serde(into = "<Self as WireType>::WireType")]
-pub struct PrevEvals((ProofEvaluations, ProofEvaluations));
+#[derive(Clone, Default, PartialEq, Debug)]
+pub struct PrevEvals(pub (ProofEvaluations, ProofEvaluations));
 
-#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, WireType)]
-#[serde(from = "<Self as WireType>::WireType")]
-#[serde(into = "<Self as WireType>::WireType")]
-pub struct PrevXHat(FiniteECPoint);
+#[derive(Clone, Default, PartialEq, Debug)]
+pub struct PrevXHat(pub FiniteECPoint);
 
-#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, WireType)]
-#[serde(from = "<Self as WireType>::WireType")]
-#[serde(into = "<Self as WireType>::WireType")]
-#[wire_type(recurse = 2)]
+#[derive(Clone, Default, PartialEq, Debug)]
 pub struct Proof {
     pub messages: ProofMessages,
     pub openings: ProofOpenings,
 }
 
-#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, WireType)]
-#[serde(from = "<Self as WireType>::WireType")]
-#[serde(into = "<Self as WireType>::WireType")]
+#[derive(Clone, Default, PartialEq, Debug)]
 pub struct ProofOpenings {
     pub proof: OpeningProof,
     pub evals: (ProofEvaluations, ProofEvaluations),

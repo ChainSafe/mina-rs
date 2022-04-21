@@ -15,18 +15,27 @@ browser = []
 
 [dev-dependencies]
 bin-prot = {path = "../bin-prot"}
+mina-consensus = {path = "../../consensus"}
 mina-crypto = {path = "../../crypto"}
 mina-rs-base = {path = "../../base"}
 test-fixtures = {path = "../test-fixtures"}
+mina-serialization-types = {path = "../serialization-types"}
+
 
 anyhow = "1"
 base64 = "0.13"
 bs58 = {version = "0.4", features = ["check"]}
 criterion = {version = "0.3", features = ["html_reports"]}
 pretty_assertions = "1"
+rand = "0.8"
 serde = {version = "1", features = ["derive"]}
 time = {version = "0.3", features = ["macros"]}
 wasm-bindgen-test = "0.3"
+
+proof-systems = { path = "../../proof-systems-shim" }
+
+[profile.bench]
+lto = true
 
 [[bench]]
 harness = false

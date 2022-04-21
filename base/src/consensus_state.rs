@@ -1,20 +1,30 @@
 // Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
+//! Types and funcions related to the Mina consensus state
+
 use crate::{
     epoch_data::EpochData,
     global_slot::GlobalSlot,
     numbers::{Amount, GlobalSlotNumber, Length},
 };
-use mina_crypto::hash::{Hashable, VrfOutputHash};
-use mina_crypto::signature::PublicKey;
-use serde::{Deserialize, Serialize};
-use wire_type::WireType;
+use derive_more::From;
+use mina_crypto::{hash::*, prelude::*};
+use proof_systems::mina_signer::CompressedPubKey;
+use serde::Serialize;
+use smart_default::SmartDefault;
 
-#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, WireType)]
-#[serde(from = "<Self as WireType>::WireType")]
-#[serde(into = "<Self as WireType>::WireType")]
-pub struct VrfOutputTruncated(Vec<u8>);
+/// Wrapper struct for the output for a VRF
+#[derive(Clone, Default, PartialEq, Debug, From, Serialize)]
+pub struct VrfOutputTruncated(pub Vec<u8>);
+
+impl Base64Encodable for VrfOutputTruncated {}
+
+impl From<&str> for VrfOutputTruncated {
+    fn from(s: &str) -> Self {
+        VrfOutputTruncated(s.as_bytes().to_vec())
+    }
+}
 
 impl Hashable<VrfOutputHash> for VrfOutputTruncated {}
 
@@ -33,19 +43,16 @@ impl AsRef<[u8]> for VrfOutputTruncated {
 /// approach where the future stake distribution snapshot is prepared by the current consensus epoch.
 ///
 /// Samasika prepares the past for the future! This future state is stored in the next_epoch_data field.
-#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize, WireType)]
-#[serde(from = "<Self as WireType>::WireType")]
-#[serde(into = "<Self as WireType>::WireType")]
-#[wire_type(recurse = 2)]
+#[derive(Clone, Debug, PartialEq, SmartDefault)]
 pub struct ConsensusState {
     /// Height of block
     pub blockchain_length: Length,
     /// Epoch number
     pub epoch_count: Length,
-    /// Minimum odnws density oberved on the chain
+    /// Minimum window density oberved on the chain
     pub min_window_density: Length,
     /// Current sliding window of densities
-    sub_window_densities: Vec<Length>,
+    pub sub_window_densities: Vec<Length>,
     /// Additional VRS output from leader (for seeding Random Oracle)
     pub last_vrf_output: VrfOutputTruncated,
     /// Total supply of currency
@@ -58,18 +65,23 @@ pub struct ConsensusState {
     pub staking_epoch_data: EpochData,
     /// Epoch data for current epoch
     pub next_epoch_data: EpochData,
+    /// If the block has an ancestor in the same checkpoint window
     pub has_ancestor_in_same_checkpoint_window: bool,
     /// Compressed public key of winning account
-    pub block_stake_winner: PublicKey,
+    #[default(CompressedPubKey::from_address("B62qiy32p8kAKnny8ZFwoMhYpBppM1DWVCqAPBYNcXnsAHhnfAAuXgg").unwrap())]
+    pub block_stake_winner: CompressedPubKey,
     /// Compressed public key of the block producer
-    pub block_creator: PublicKey,
+    #[default(CompressedPubKey::from_address("B62qiy32p8kAKnny8ZFwoMhYpBppM1DWVCqAPBYNcXnsAHhnfAAuXgg").unwrap())]
+    pub block_creator: CompressedPubKey,
     /// Compresed public key of account receiving the block reward
-    pub coinbase_receiver: PublicKey,
+    #[default(CompressedPubKey::from_address("B62qiy32p8kAKnny8ZFwoMhYpBppM1DWVCqAPBYNcXnsAHhnfAAuXgg").unwrap())]
+    pub coinbase_receiver: CompressedPubKey,
     /// true if block_stake_winner has no locked tokens, false otherwise
     pub supercharge_coinbase: bool,
 }
 
 impl ConsensusState {
+    /// Returns the sub-window densities as a vec of u32
     pub fn sub_window_densities(&self) -> Vec<u32> {
         self.sub_window_densities.iter().map(|i| i.0).collect()
     }

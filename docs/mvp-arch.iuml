@@ -1,0 +1,17 @@
+@startuml mvp
+actor User
+
+User --> WebGUI : web url
+User --> WebGUI : chrome extension
+WebGUI <--> "WebNode(WASM)": interop between\njavascript and wasm
+"WebNode(WASM)" --> ProxyNode : connect via websocket
+"WebNode(WASM)" <-- ProxyNode : node status
+"WebNode(WASM)" <-- ProxyNode : blocks
+"WebNode(WASM)" <-- ProxyNode : ...
+"WebNode(WASM)" --> ProxyNode : send transactions etc.
+ProxyNode --> MinaNetwork : connect via tcp
+ProxyNode <-- MinaNetwork : node status
+ProxyNode <-- MinaNetwork : blocks
+ProxyNode <-- MinaNetwork : ...
+ProxyNode --> MinaNetwork : send transactions etc.
+@enduml

@@ -1,6 +1,8 @@
 // Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
+//! Serialization implementation for a BinProt loosely typed Value
+
 use crate::Value;
 
 use serde::ser::{SerializeStruct, SerializeTuple};
@@ -47,6 +49,11 @@ impl Serialize for Value {
                 ref index,
                 ref value,
             } => serializer.serialize_newtype_variant("", *index as u32, "", value), // sum types/enums
+            Value::Polyvar {
+                name: _,
+                ref tag,
+                ref value,
+            } => serializer.serialize_newtype_variant("", *tag as u32, "", value), // sum types/enums
             Value::List(ref v) => v.serialize(serializer),
         }
     }

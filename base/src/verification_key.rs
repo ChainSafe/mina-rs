@@ -1,32 +1,26 @@
 // Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
-use serde::{Deserialize, Serialize};
-use wire_type::WireType;
+//! types and functions related to Mina verificiation keys
 
 use crate::protocol_state_proof::field_and_curve_elements::FiniteECPoint;
 
-#[derive(Clone, Serialize, Deserialize, Default, Debug, PartialEq, WireType)]
-#[serde(from = "<Self as WireType>::WireType")]
-#[serde(into = "<Self as WireType>::WireType")]
-#[wire_type(recurse = 2)]
+#[derive(Clone, Default, Debug, PartialEq)]
+/// Public data required to verify a Mina snark
 pub struct VerificationKey {
     commitments: VerificationKeyEvals,
     step_domains: Vec<Domains>,
+    /// Associated data
     pub data: Data,
 }
 
-#[derive(Clone, Serialize, Deserialize, Default, Debug, PartialEq, WireType)]
-#[serde(from = "<Self as WireType>::WireType")]
-#[serde(into = "<Self as WireType>::WireType")]
+#[derive(Clone, Default, Debug, PartialEq)]
 struct Domains {
     h: Domain,
     x: Domain,
 }
 
-#[derive(Clone, Serialize, Deserialize, Debug, PartialEq, WireType)]
-#[serde(from = "<Self as WireType>::WireType")]
-#[serde(into = "<Self as WireType>::WireType")]
+#[derive(Clone, Debug, PartialEq)]
 enum Domain {
     Pow2RootsOfUnity(usize),
 }
@@ -38,16 +32,13 @@ impl Default for Domain {
 }
 
 /// Data associated with a verification key
-#[derive(Clone, Serialize, Deserialize, Default, Debug, PartialEq, WireType)]
-#[serde(from = "<Self as WireType>::WireType")]
-#[serde(into = "<Self as WireType>::WireType")]
+#[derive(Clone, Default, Debug, PartialEq)]
 pub struct Data {
+    /// Number of constaints
     pub constraints: usize,
 }
 
-#[derive(Clone, Serialize, Deserialize, Default, Debug, PartialEq, WireType)]
-#[serde(from = "<Self as WireType>::WireType")]
-#[serde(into = "<Self as WireType>::WireType")]
+#[derive(Clone, Default, Debug, PartialEq)]
 struct VerificationKeyEvals {
     sigma_comm_0: Vec<FiniteECPoint>,
     sigma_comm_1: Vec<FiniteECPoint>,

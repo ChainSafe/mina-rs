@@ -1,11 +1,10 @@
 // Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
-use serde::{Deserialize, Serialize};
-use wire_type::WireType;
-
 use ark_ec::models::ModelParameters;
 use ark_ec::short_weierstrass_jacobian::GroupAffine;
+use mina_crypto::{hex::skip_0x_prefix_when_needed, prelude::*};
+use num::Integer;
 
 use crate::numbers::BigInt256;
 
@@ -14,10 +13,34 @@ use crate::numbers::BigInt256;
 pub type FieldElement = BigInt256;
 
 /// Vector of finite field elements (with version number defined in the WireType)
-#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, WireType)]
-#[serde(from = "<Self as WireType>::WireType")]
-#[serde(into = "<Self as WireType>::WireType")]
+#[derive(Clone, Default, PartialEq, Debug)]
 pub struct FieldElementVec(pub Vec<FieldElement>);
+
+impl HexEncodable for FieldElementVec {
+    type Error = hex::FromHexError;
+
+    fn to_hex_string(&self) -> String {
+        let mut s = String::with_capacity(64 * self.0.len());
+        for i in &self.0 {
+            s.push_str(&i.to_hex_string());
+        }
+        s
+    }
+
+    fn try_from_hex(s: impl AsRef<[u8]>) -> Result<Self, Self::Error> {
+        let s = skip_0x_prefix_when_needed(s.as_ref());
+        let (q, r) = s.len().div_rem(&64);
+        let mut vec = Vec::with_capacity(match r > 0 {
+            true => q + 1,
+            _ => q,
+        });
+        for chunk in s.chunks(64) {
+            vec.push(BigInt256::try_from_hex(chunk)?);
+        }
+
+        Ok(Self(vec))
+    }
+}
 
 impl<Fs> From<FieldElementVec> for Vec<Fs>
 where
@@ -32,7 +55,7 @@ where
 
 /// An elliptic curve point defined over a base field with elements that fit in a BigInt256
 /// This is a Finite elliptic curve point as this type cannot be used to encode the point-at-infinity
-#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug)]
+#[derive(Clone, Default, PartialEq, Debug)]
 pub struct FiniteECPoint(pub FieldElement, pub FieldElement);
 
 impl<P> From<FiniteECPoint> for GroupAffine<P>
@@ -49,11 +72,21 @@ where
     }
 }
 
+#[macro_export]
+macro_rules! finite_ec_point {
+    ($e1:expr, $e2:expr) => {
+        (|s1, s2| {
+            Ok::<_, hex::FromHexError>(FiniteECPoint(
+                FieldElement::try_from_hex(s1)?,
+                FieldElement::try_from_hex(s2)?,
+            ))
+        })($e1, $e2)
+    };
+}
+
 /// Vector of finite EC points (with version number defined in the WireType)
-#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, WireType)]
-#[serde(from = "<Self as WireType>::WireType")]
-#[serde(into = "<Self as WireType>::WireType")]
-pub struct FiniteECPointVec(Vec<FiniteECPoint>);
+#[derive(Clone, Default, PartialEq, Debug)]
+pub struct FiniteECPointVec(pub Vec<FiniteECPoint>);
 
 impl<P> From<FiniteECPointVec> for Vec<GroupAffine<P>>
 where
@@ -65,11 +98,22 @@ where
     }
 }
 
+pub type FiniteECPointPair = (FiniteECPoint, FiniteECPoint);
+
+#[macro_export]
+macro_rules! finite_ec_point_pair {
+    ($e1:expr, $e2:expr, $e3:expr, $e4:expr) => {
+        (|s1, s2, s3, s4| {
+            use mina_rs_base::finite_ec_point;
+            use mina_rs_base::protocol_state_proof::*;
+            Ok::<_, hex::FromHexError>((finite_ec_point!(s1, s2)?, finite_ec_point!(s3, s4)?))
+        })($e1, $e2, $e3, $e4)
+    };
+}
+
 /// Vector of 2-tuples of finite EC points (with version number defined in the WireType)
-#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, WireType)]
-#[serde(from = "<Self as WireType>::WireType")]
-#[serde(into = "<Self as WireType>::WireType")]
-pub struct FiniteECPointPairVec(Vec<(FiniteECPoint, FiniteECPoint)>);
+#[derive(Clone, Default, PartialEq, Debug)]
+pub struct FiniteECPointPairVec(pub Vec<FiniteECPointPair>);
 
 impl<P> From<FiniteECPointPairVec> for Vec<(GroupAffine<P>, GroupAffine<P>)>
 where
@@ -83,9 +127,7 @@ where
 
 /// Elliptic curve point that can either be the coordinates of a point on the curve
 /// OR it can be the point-at-infinity
-#[derive(Clone, Serialize, Deserialize, PartialEq, Debug, WireType)]
-#[serde(from = "<Self as WireType>::WireType")]
-#[serde(into = "<Self as WireType>::WireType")]
+#[derive(Clone, PartialEq, Debug)]
 pub enum ECPoint {
     // elliptic curve point, can be the point at infinity
     Infinite,
@@ -116,10 +158,8 @@ where
 }
 
 /// Vector of EC points (with version number defined in the WireType)
-#[derive(Clone, Serialize, Deserialize, Default, PartialEq, Debug, WireType)]
-#[serde(from = "<Self as WireType>::WireType")]
-#[serde(into = "<Self as WireType>::WireType")]
-pub struct ECPointVec(Vec<ECPoint>);
+#[derive(Clone, Default, PartialEq, Debug)]
+pub struct ECPointVec(pub Vec<ECPoint>);
 
 impl<P> From<ECPointVec> for Vec<GroupAffine<P>>
 where

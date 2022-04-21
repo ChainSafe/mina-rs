@@ -27,7 +27,7 @@ fn main() {
 
   // Read back into a typed value
   let de_val: Vec<i64> = from_reader(output.as_slice()).unwrap();
-  
+
   assert!(val == de_val)
 }
 
@@ -35,14 +35,21 @@ fn main() {
 
 ### Loosely Typed
 
-Despite bin_prot being a non-self-describing format it is possible to deserialize into a loosely typed value if a layout descriptor file is provided. The layout files are typically written in JSON and describe the nested data structure that 
+Despite bin_prot being a non-self-describing format it is possible to deserialize into a loosely typed value if a layout descriptor file is provided. The layout files are typically written in JSON and describe the nested data structure that
 is to be deserialized. For the specification of the BinProtRule type see src/value/layout/mod.rs.
+
+Note that, Loosely-typed deserialization is behind feature `loose_deserialization` which is disabled by default. Use below config snippet to turn it on.
+
+```toml
+# in Cargo.toml
+bin-prot = {version="$version", features = ["loose_deserialization"]}
+```
 
 These are created using the `Deserializer::from_reader_with_layout` constructor.
 
 ```rust
-
-use bin_prot::{Deserializer, BinProtRule, Value}
+use serde::Deserialize;
+use bin_prot::{Deserializer, BinProtRule, Value};
 
 // this rule describes a record with two fields, one itself being a record with a bool field
 const RECORD_RULE: &str = r#"
@@ -62,7 +69,7 @@ fn main() {
     let bytes = vec![0x00, 0x01];
 
     // provide both the raw bytes and the rule descriptor to `from_reader_with_layout`
-    let mut de = Deserializer::from_reader_with_layout(bytes.as_slice(), rule);
+    let mut de = Deserializer::from_reader(bytes.as_slice()).with_layout(&rule);
 
     // we can now deserialize into a bin_prot::Value type!
     let result: Value = Deserialize::deserialize(&mut de).unwrap();
@@ -80,7 +87,7 @@ fn main() {
 
 All tests can be run through cargo
 
-```
+```shell
 cargo test
 ```
 

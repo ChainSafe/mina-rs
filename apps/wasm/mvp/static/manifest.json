@@ -1,0 +1,23 @@
+{
+  "manifest_version": 3,
+  "name": "Mina Web Node(MVP)",
+  "description": "Web node of the mina blockchain (MVP version)",
+  "version": "0.1",
+  "action": {
+    "default_title": "Mina Web Node(MVP)"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "sandbox": {
+    "pages": []
+  },
+  "permissions": [
+    "tabs",
+    "webNavigation",
+    "storage"
+  ],
+  "content_security_policy": {
+    "extension_pages": "worker-src 'self'; connect-src *; img-src *; default-src 'self' 'wasm-unsafe-eval'"
+  }
+}

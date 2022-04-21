@@ -5,11 +5,19 @@ on:
 
 name: CI
 
+env:
+  # https://doc.rust-lang.org/cargo/reference/profiles.html#incremental
+  CARGO_INCREMENTAL: 1
+  # Investigate why it does not build with this flag
+  # RUSTFLAGS: -Ctarget-cpu=native
+
 jobs:
   checks:
     runs-on: ubuntu-latest
     steps:
+      - run: lscpu
       - uses: actions/checkout@v2
+      - run: cat .github/cargo-config > $HOME/.cargo/config
       - uses: actions/cache@v2
         with:
           path: |
@@ -18,64 +26,141 @@ jobs:
             ~/.cargo/registry/cache/
             ~/.cargo/git/db/
             target/
-          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+            apps/target/
+            apps/wasm/target/
+          key: ${{ runner.os }}-checks-cargo-${{ hashFiles('**/Cargo.lock') }}
       - uses: actions-rs/toolchain@v1
         with:
           profile: minimal
           toolchain: stable
           components: rustfmt
+          target: wasm32-unknown-unknown
           override: true
+      - uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: nightly
+          target: wasm32-unknown-unknown
+          override: false
       - run: cargo fmt --all -- --check
+      - run: cargo fmt --all --manifest-path apps/Cargo.toml -- --check
+      - run: cargo fmt --all --manifest-path apps/wasm/Cargo.toml -- --check
       - name: Check license
         run: ./scripts/add_license.sh
+      - uses: EmbarkStudios/cargo-deny-action@v1
+        with:
+          command: check All -s
+          arguments: --all-features
+      - uses: EmbarkStudios/cargo-deny-action@v1
+        with:
+          command: check All -s
+          arguments: --all-features --manifest-path apps/Cargo.toml
+      - uses: EmbarkStudios/cargo-deny-action@v1
+        with:
+          command: check All -s
+          arguments: --all-features --manifest-path apps/wasm/Cargo.toml
       - run: cargo install cargo-udeps || echo 'already installed'
-      - run: rustup install nightly
       - run: cargo +nightly udeps --all-targets --all-features
-      - run: cargo install cargo-deny || echo 'already installed'
-      - run: cargo deny check Ban -s
-      - run: cargo deny check License -s
-      - run: cargo deny check Sources -s
-      - run: cargo deny check Advisories -s
+      - run: cargo +nightly udeps --all-targets --all-features --manifest-path apps/Cargo.toml
+      - run: cargo +nightly udeps --target wasm32-unknown-unknown --all-features --manifest-path apps/wasm/Cargo.toml
   x86_64:
     runs-on: ubuntu-latest
     steps:
+      - run: lscpu
       - uses: actions/checkout@v2
+      - run: cat .github/cargo-config > $HOME/.cargo/config
+      - uses: actions/cache@v2
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            target/
+            apps/target/
+          key: ${{ runner.os }}-x86_64-cargo-${{ hashFiles('**/Cargo.lock') }}
       - uses: actions-rs/toolchain@v1
         with:
           profile: minimal
           toolchain: stable
           components: clippy
           override: true
-      - run: cargo build --release --all-features
+      # `cargo check` compiles the packages without performing the final step of code generation,
+      # which is faster than running `cargo build`.
+      - run: cargo check --release --no-default-features
+      - run: cargo check --release
+      - run: cargo check --release --all-features
+      - run: cargo check --release --all-features --manifest-path apps/Cargo.toml
       - run: cargo test --release --all-features
-      - run: cargo bench --all-features
+      - run: cargo test --release --all-features --manifest-path apps/Cargo.toml
+      # https://github.com/benchmark-action/github-action-benchmark#how-to-use
+      # https://github.com/benchmark-action/github-action-benchmark/tree/master/examples/criterion-rs
+      - run: (cargo bench --all-features --no-fail-fast -- --output-format bencher > bencher.log) || echo ''
+      - name: Download previous benchmark data
+        uses: actions/cache@v2
+        with:
+          path: ./.cache
+          key: ${{ runner.os }}-benchmark
+      - uses: benchmark-action/github-action-benchmark@v1
+        with:
+          tool: cargo
+          output-file-path: bencher.log
+          external-data-json-path: ./.cache/benchmark-data.json
+          alert-threshold: 200%
+          fail-threshold: 400%
+          auto-push: false
+          # GitHub API token needs to be given to enable comment-on-alert feature.
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          comment-on-alert: true
+          # fail-on-alert: true
+      - run: cat ./.cache/benchmark-data.json
+      - run: cargo bench --all-features --manifest-path apps/Cargo.toml
       - run: cargo doc --no-deps --release --all-features
-      - run: cargo test --release --all-features --doc
+      - run: cargo doc --no-deps --release --all-features --manifest-path apps/Cargo.toml
       - run: cargo clippy --release --all-features -- --deny warnings
+      - run: cargo clippy --release --all-features --manifest-path apps/Cargo.toml -- --deny warnings
       - name: Run profilers
         run: |
+          sudo apt-get update -y
           sudo apt-get install -y valgrind graphviz
           sudo pip install gprof2dot
           ./scripts/profiler.sh
       - uses: actions/upload-artifact@v2
         with:
           name: doc
-          path: target/doc/**/*
+          path: |
+            target/doc/**/*
+            apps/target/doc/**/*
           if-no-files-found: error
       - uses: actions/upload-artifact@v2
         with:
           name: criterion
-          path: target/criterion/**/*
+          path: |
+            target/criterion/**/*
+            apps/target/criterion/**/*
           if-no-files-found: error
       - uses: actions/upload-artifact@v2
         with:
           name: profiler-reports
-          path: target/release/profiler-reports/**/*
+          path: apps/target/release/profiler-reports/**/*
           if-no-files-found: error
   wasm:
     runs-on: ubuntu-latest
     steps:
+      - run: lscpu
       - uses: actions/checkout@v2
+      - run: cat .github/cargo-config > $HOME/.cargo/config
+      - uses: actions/cache@v2
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            target/
+            apps/target/
+            apps/wasm/target/
+          key: ${{ runner.os }}-wasm-cargo-${{ hashFiles('**/Cargo.lock') }}
       - uses: actions-rs/toolchain@v1
         with:
           profile: minimal
@@ -85,33 +170,92 @@ jobs:
           override: true
       # clippy includes cargo check
       - run: cargo clippy --release --all-features --target wasm32-unknown-unknown -- --deny warnings
+      - run: cargo clippy --release --all-features --target wasm32-unknown-unknown --manifest-path apps/Cargo.toml -- --deny warnings
+      - run: cargo clippy --release --all-features --target wasm32-unknown-unknown --manifest-path apps/wasm/Cargo.toml -- --deny warnings
       - run: cargo doc --no-deps --release --all-features --target wasm32-unknown-unknown
+      - run: cargo doc --no-deps --release --all-features --target wasm32-unknown-unknown --manifest-path apps/Cargo.toml
+      - run: cargo doc --no-deps --release --all-features --target wasm32-unknown-unknown --manifest-path apps/wasm/Cargo.toml
       - name: Install wasm-pack
-        # run: cargo install wasm-pack
         run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
       - name: wasm-pack tests for test-serialization
         run: |
           cd protocol/test-serialization
           wasm-pack test --node --release
           wasm-pack test --headless --chrome --release --features browser
-  codecov-x86_64:
+      - name: wasm-pack tests for consensus
+        run: |
+          cd consensus
+          wasm-pack test --node --release
+          wasm-pack test --headless --chrome --release --features browser
+  node:
     runs-on: ubuntu-latest
     steps:
+      - run: lscpu
       - uses: actions/checkout@v2
+      - run: cat .github/cargo-config > $HOME/.cargo/config
+      - uses: actions/cache@v2
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            apps/wasm/target/
+          key: ${{ runner.os }}-node-cargo-${{ hashFiles('**/Cargo.lock') }}
       - uses: actions-rs/toolchain@v1
         with:
           profile: minimal
-          toolchain: nightly
+          toolchain: stable
+          components: clippy
+          target: wasm32-unknown-unknown
+          override: true
+      - name: Install wasm-pack
+        run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
+      # lerna is pre-installed on github CI images
+      # per <https://github.com/actions/virtual-environments/blob/main/images/linux/Ubuntu2004-Readme.md#project-management>
+      # - run: yarn global add lerna
+      - run: lerna bootstrap
+      - run: lerna run build
+      - run: lerna run test
+      - run: lerna run lint
+      - uses: actions/upload-artifact@v2
+        with:
+          name: mvp-chrome-ext
+          path: apps/wasm/mvp/dist/ext/**/*
+          if-no-files-found: error
+      - uses: actions/upload-artifact@v2
+        with:
+          name: mvp-chrome-ext-v2
+          path: apps/wasm/mvp/dist/ext-v2/**/*
+          if-no-files-found: error
+      - uses: actions/upload-artifact@v2
+        with:
+          name: mvp-web
+          path: apps/wasm/mvp/dist/web/**/*
+          if-no-files-found: error
+  codecov-x86_64:
+    runs-on: ubuntu-latest
+    steps:
+      - run: lscpu
+      - uses: actions/checkout@v2
+      - run: cat .github/cargo-config > $HOME/.cargo/config
+      - uses: actions/cache@v2
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            target/
+          key: ${{ runner.os }}-codecov-cargo-${{ hashFiles('**/Cargo.lock') }}
+      - uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
           override: true
           components: llvm-tools-preview
-      - run: curl -L https://github.com/mozilla/grcov/releases/latest/download/grcov-linux-x86_64.tar.bz2 | tar jxf -
-      - name: Run code coverage
-        env:
-          RUSTFLAGS: -Zinstrument-coverage
-          LLVM_PROFILE_FILE: coverage-%p-%m.profraw
-        run: |
-          cargo test --all-features
-          ./grcov . --binary-path ./target/debug/ -s . -t lcov --branch --ignore-not-existing --ignore "/*" -o lcov.info
+      - uses: taiki-e/install-action@cargo-llvm-cov
+      - run: cargo llvm-cov --all-features --lcov --output-path lcov.info
       - uses: actions/upload-artifact@v2
         with:
           name: lcov.info

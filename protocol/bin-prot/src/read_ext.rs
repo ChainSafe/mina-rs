@@ -7,9 +7,9 @@ use byteorder::{LittleEndian, ReadBytesExt};
 use num::{FromPrimitive, Unsigned};
 use std::io;
 
-// Extension trait for readers implementing io::Read to allow them to read a bin_prot encoded
-// integer
+/// Extension trait for readers implementing io::Read to allow them to read a bin_prot encoded values
 pub trait ReadBinProtExt: io::Read {
+    /// Read a unit
     fn bin_read_unit(&mut self) -> Result<()> {
         match self.read_u8()? {
             0x00 => Ok(()),
@@ -21,6 +21,7 @@ pub trait ReadBinProtExt: io::Read {
         }
     }
 
+    /// Read a bool
     fn bin_read_bool(&mut self) -> Result<bool> {
         match self.read_u8()? {
             0x00 => Ok(false),
@@ -33,11 +34,12 @@ pub trait ReadBinProtExt: io::Read {
         }
     }
 
-    // This function reads a single byte as char
+    /// Read a single byte as char
     fn bin_read_char(&mut self) -> Result<char> {
         Ok(self.read_u8()? as char)
     }
 
+    /// Read a variable length integer
     fn bin_read_integer<T: FromPrimitive>(&mut self) -> Result<T> {
         let mut buf = [0];
         self.read_exact(&mut buf)?;
@@ -72,6 +74,7 @@ pub trait ReadBinProtExt: io::Read {
         .ok_or(Error::DestinationIntegerOverflow)
     }
 
+    /// Read a variable length natural integer
     fn bin_read_nat0<T: FromPrimitive + Unsigned>(&mut self) -> Result<T> {
         let mut buf = [0];
         self.read_exact(&mut buf)?;
@@ -100,10 +103,20 @@ pub trait ReadBinProtExt: io::Read {
         .ok_or(Error::DestinationIntegerOverflow)
     }
 
+    /// Read the index of a variant
     fn bin_read_variant_index(&mut self) -> Result<u8> {
         self.read_u8().map_err(Error::Io)
     }
 
+    /// Read the tag of a polyvar variant (4 bytes)
+    /// You can convert between ocaml native integer using (x << 1 | 1)
+    fn bin_read_polyvar_tag(&mut self) -> Result<u32> {
+        let mut buf = [0_u8; 4];
+        self.read_exact(&mut buf)?;
+        Ok(u32::from_le_bytes(buf) >> 1)
+    }
+
+    /// Read a string
     fn bin_read_string(&mut self) -> Result<String> {
         let len = self.bin_read_nat0::<u64>()? as usize;
         let mut buf = vec![0u8; len as usize];
@@ -113,6 +126,7 @@ pub trait ReadBinProtExt: io::Read {
         Ok(s.to_string())
     }
 
+    /// read some bytes
     fn bin_read_bytes(&mut self) -> Result<Vec<u8>> {
         let len = self.bin_read_nat0::<u64>()? as usize;
         let mut buf = vec![0u8; len as usize];

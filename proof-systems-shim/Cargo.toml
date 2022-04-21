@@ -1,0 +1,12 @@
+[package]
+authors = ["ChainSafe Systems <info@chainsafe.io>"]
+name = "proof-systems"
+version = "0.1.0"
+
+edition = "2021"
+license = "Apache-2.0"
+
+[dependencies]
+mina-hasher = {git = "https://github.com/o1-labs/proof-systems", rev = "9816b804fe2e8336fbe20d2e3d977d766582c4f0"}
+mina-signer = {git = "https://github.com/o1-labs/proof-systems", rev = "9816b804fe2e8336fbe20d2e3d977d766582c4f0"}
+o1-utils = {git = "https://github.com/o1-labs/proof-systems", rev = "9816b804fe2e8336fbe20d2e3d977d766582c4f0"}

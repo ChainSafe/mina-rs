@@ -42,20 +42,23 @@ mod tests {
     use crate::base58::{version_bytes, Base58Encodable};
     use crate::hash::prefixes::PROTOCOL_STATE;
     use crate::hash::types::{BaseHash, HashBytes};
+    use crate::impl_bs58_for_binprot;
+    use bin_prot::encodable::BinProtEncodable;
     use serde::Deserialize;
-    use wire_type::WireType;
 
-    #[derive(Clone, Serialize, Deserialize, PartialEq, Debug, WireType)]
+    #[derive(Clone, Serialize, Deserialize, PartialEq, Debug)]
     struct TestHash(BaseHash);
+
+    impl BinProtEncodable for TestHash {
+        const PREALLOCATE_BUFFER_BYTES: usize = 64;
+    }
+
+    impl_bs58_for_binprot!(TestHash, version_bytes::STATE_HASH);
 
     impl From<HashBytes> for TestHash {
         fn from(b: HashBytes) -> Self {
             Self(BaseHash::from(b))
         }
-    }
-
-    impl Base58Encodable for TestHash {
-        const VERSION_BYTE: u8 = version_bytes::STATE_HASH;
     }
 
     impl Hash for TestHash {
@@ -77,7 +80,7 @@ mod tests {
         let t = TestType(123);
         let h = t.hash();
         assert_eq!(
-            h.to_base58().into_string(),
+            h.to_base58_string(),
             "Zbx5bAfiyj8yPh8nhXEW3et2TEbnZvEPrShQxTaJaLX3cvPPZV"
         )
     }

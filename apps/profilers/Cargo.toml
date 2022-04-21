@@ -6,15 +6,13 @@ version = "0.1.0"
 edition = "2021"
 license = "Apache-2.0"
 
-
 [dependencies]
 bin-prot = {path = "../../protocol/bin-prot"}
-mina-crypto = {path = "../../crypto"}
 mina-rs-base = {path = "../../base"}
 
 anyhow = "1"
-clap = "2"
-dhat = "0.2"
+clap = "3"
+dhat = "0.3"
 serde = {version = "1", features = ["derive"]}
 
 [profile.release]

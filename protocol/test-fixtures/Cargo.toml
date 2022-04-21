@@ -8,8 +8,10 @@ license = "Apache-2.0"
 publish = false
 
 [dependencies]
-bin-prot = {path = "../bin-prot"}
-mina-rs-base = {path = "../../base"}
+# layout support should only be used in tests
+bin-prot = {path = "../bin-prot", features = ["loose_deserialization"]}
+mina-serialization-types = {path = "../serialization-types"}
+
 
 anyhow = "1"
 hex = "0.4"

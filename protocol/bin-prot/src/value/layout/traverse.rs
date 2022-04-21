@@ -23,7 +23,7 @@ use crate::value::layout::{BinProtRule, RuleRef};
 /// Implements a depth first search of the type tree
 /// defined by a BinProtRule
 pub struct BinProtRuleIterator {
-    pub stack: Vec<BinProtRule>,         // regular stack to implement the DFS
+    pub(crate) stack: Vec<BinProtRule>, // regular stack to implement the DFS
     current_module_path: Option<String>, // holds on to most recent path encountered in traverse
 }
 
@@ -47,16 +47,12 @@ impl Iterator for BinProtRuleIterator {
                     BinProtRule::Tuple(mut rules) => {
                         self.stack.extend(rules.drain(0..).rev());
                     }
-                    BinProtRule::Sum(_summands) => {
+                    BinProtRule::Sum(_) | BinProtRule::Polyvar(_) => {
                         // don't add to the stack. Add to the branch field instead
                         // this must be resolved by calling `branch` before the iterator can continue
                     }
                     BinProtRule::Option(_r) => {
                         // Option is a special case of a Sum where the None variant contain nothing
-                    }
-                    BinProtRule::Polyvar(_polyvars) => {
-                        // these are pretty much anonymous enum/sum types and should be handled the same way
-                        unimplemented!();
                     }
                     BinProtRule::Reference(rule_ref) => match rule_ref {
                         RuleRef::Unresolved(_payload) => {

@@ -6,14 +6,16 @@ const PADDING_CHAR: u8 = b'*';
 
 pub type HashPrefix = [u8; PREFIX_BYTE_LEN];
 
-const fn create(s: &[u8]) -> HashPrefix {
-    let mut o = [PADDING_CHAR; PREFIX_BYTE_LEN];
+/// const function to create padded prefix strings with fixed length
+/// that is being used in various of algorithms at compile time
+const fn create(prefix: &[u8]) -> HashPrefix {
+    let mut padded_prefix = [PADDING_CHAR; PREFIX_BYTE_LEN];
     let mut i = 0;
-    while i < PREFIX_BYTE_LEN && i < s.len() {
-        o[i] = s[i];
+    while i < PREFIX_BYTE_LEN && i < prefix.len() {
+        padded_prefix[i] = prefix[i];
         i += 1;
     }
-    o
+    padded_prefix
 }
 
 pub const PROTOCOL_STATE: &HashPrefix = &create(b"CodaProtoState");
@@ -70,18 +72,6 @@ pub const SNAPP_PREDICATE_ACCOUNT: &HashPrefix = &create(b"CodaSnappPredAcct");
 
 pub const SNAPP_PREDICATE_PROTOCOL_STATE: &HashPrefix = &create(b"CodaSnappPredPS");
 
-/// Builds a hash prefix for a node at the given depth in a Merkle tree
-pub fn make_prefix_merkle_tree(i: usize) -> HashPrefix {
-    let base = format!("CodaMklTree{:03}", i);
-    create(base.as_bytes())
-}
-
-/// Builds a hash prefix for a node at the given depth in a coinbase Merkle tree
-pub fn make_prefix_coinbase_merkle_tree(i: usize) -> HashPrefix {
-    let base = format!("CodaCbMklTree{:03}", i);
-    create(base.as_bytes())
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -90,12 +80,5 @@ mod tests {
     fn create_works_as_expected() {
         assert_eq!(PROTOCOL_STATE.len(), 20);
         assert_eq!(PROTOCOL_STATE, b"CodaProtoState******");
-    }
-
-    #[test]
-    fn make_merkle_tree_hash() {
-        let prefix_at_3 = make_prefix_coinbase_merkle_tree(3);
-        assert_eq!(prefix_at_3.len(), 20);
-        assert_eq!(&prefix_at_3, b"CodaCbMklTree003****");
     }
 }

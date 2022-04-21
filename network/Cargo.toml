@@ -1,0 +1,28 @@
+[package]
+authors = ["ChainSafe Systems <info@chainsafe.io>"]
+name = "mina-network"
+version = "0.1.0"
+
+edition = "2021"
+license = "Apache-2.0"
+
+[features]
+default = []
+
+[dependencies]
+cfg-if = "1"
+lazy_static = "1"
+libp2p = {version = "0.44", features = ["dns-tokio", "tcp-tokio"]}
+multihash = "0.16"
+
+[dev-dependencies]
+anyhow = "1"
+tokio = {version = "1.16", features = ["rt", "macros"]}
+
+# To list all wasm targets, use command 'rustc --print target-list | grep wasm'
+[target.'cfg(target_arch = "wasm32")'.dependencies]
+libp2p = {version = "0.44", features = ["wasm-bindgen", "wasm-ext-websocket"]}
+
+getrandom = {version = "0.2", features = ["js"]}
+js-sys = "0.3"
+wasm-bindgen = "0.2"

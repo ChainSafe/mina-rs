@@ -1,11 +1,13 @@
 // Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
+#[cfg(feature = "loose_deserialization")]
 use crate::loose_deserializer::EnumData;
 use crate::value::Value;
 use serde::de::MapAccess;
 use serde::de::SeqAccess;
 use serde::de::Visitor;
+#[cfg(feature = "loose_deserialization")]
 use serde::de::{EnumAccess, VariantAccess};
 use serde::Deserialize;
 
@@ -33,11 +35,6 @@ impl<'de> Visitor<'de> for ValueVisitor {
         Ok(Value::Int(value))
     }
 
-    // #[inline]
-    // fn visit_u64<E>(self, value: u64) -> Result<Value, E> {
-    //     Ok(Value::Int(value.into()))
-    // }
-
     #[inline]
     fn visit_f64<E>(self, value: f64) -> Result<Value, E> {
         Ok(Value::Float(value))
@@ -53,7 +50,10 @@ impl<'de> Visitor<'de> for ValueVisitor {
 
     #[inline]
     fn visit_bytes<E>(self, value: &[u8]) -> Result<Value, E> {
-        Ok(Value::String(value.to_vec()))
+        // Represent bytes as a list of chars
+        // Chars are always 1 byte in BinProt so this fits
+        let bytes = value.iter().map(|x| Value::Char(*x)).collect();
+        Ok(Value::List(bytes))
     }
 
     #[inline]
@@ -104,6 +104,7 @@ impl<'de> Visitor<'de> for ValueVisitor {
         Ok(Value::Record(values))
     }
 
+    #[cfg(feature = "loose_deserialization")]
     fn visit_enum<A>(self, data: A) -> Result<Self::Value, A::Error>
     where
         A: EnumAccess<'de>,
@@ -113,12 +114,28 @@ impl<'de> Visitor<'de> for ValueVisitor {
         // payload must encode the index and name in a deserializer
         // the variant access can be used to retrieve the correct content based on this
 
-        let body = variant_access.tuple_variant(payload.len, self)?;
-
-        Ok(Value::Sum {
-            name: payload.name,
-            index: payload.index,
-            value: Box::new(body),
-        })
+        match payload {
+            EnumData::Sum { index, name, len } => {
+                let body = variant_access.tuple_variant(len, self)?;
+                Ok(Value::Sum {
+                    name,
+                    index,
+                    value: Box::new(body),
+                })
+            }
+            EnumData::Polyvar {
+                index: _,
+                tag,
+                name,
+                len,
+            } => {
+                let body = variant_access.tuple_variant(len, self)?;
+                Ok(Value::Polyvar {
+                    name,
+                    tag,
+                    value: Box::new(body),
+                })
+            }
+        }
     }
 }

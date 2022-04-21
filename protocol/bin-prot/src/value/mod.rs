@@ -10,6 +10,7 @@ use serde::Deserialize;
 
 mod enum_data;
 mod index;
+#[cfg(feature = "loose_deserialization")]
 pub mod layout;
 pub mod ser;
 mod visitor;
@@ -20,23 +21,47 @@ pub use enum_data::EnumData;
 use visitor::ValueVisitor;
 
 #[derive(Clone, Debug, PartialEq)]
-#[allow(dead_code)] // allow for now until full implementation
+/// Recursive enum that can define any BinProt serializable type
 pub enum Value {
+    /// Unit type
     Unit,
+    /// Variable length natural integer
     Nat0(u32),
+    /// Boolean
     Bool(bool),
+    /// String
     String(Vec<u8>),
+    /// Char
     Char(u8),
+    /// Variable length integer
     Int(i64),
+    /// Float
     Float(f64),
+    /// Option
     Option(Option<Box<Value>>),
-    Record(Vec<(String, Value)>), // records/structs
+    /// records/structs
+    Record(Vec<(String, Value)>),
+    /// Tuples (fixed length list)
     Tuple(Vec<Value>),
+    /// Sum/enum types
     Sum {
+        /// summand/variant name
         name: String,
+        /// summand index
         index: u8,
+        /// value wrapped by variant
         value: Box<Value>,
-    }, // sum types/enums
+    },
+    /// Polymorphic Variant (Polyvar) types
+    Polyvar {
+        /// Polyvar variant name
+        name: String,
+        /// Polyvar variant tag (e.g. hash)
+        tag: u32,
+        /// value wrapped by variant
+        value: Box<Value>,
+    },
+    /// List of types (variable length)
     List(Vec<Value>),
 }
 

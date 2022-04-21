@@ -1,16 +1,20 @@
 // Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
+//! Serialization for BinProt following the standard serde module layout
+
 use crate::error::{Error, Result};
 use crate::WriteBinProtExt;
 use serde::ser;
 use serde::Serialize;
 
+/// Serializer for writing BinProt bytes to a writer
 pub struct Serializer<W> {
     writer: W,
 }
 
 impl<W> Serializer<W> {
+    /// Create a new serializer given a writer
     pub fn new(writer: W) -> Self {
         Self { writer }
     }
@@ -28,8 +32,26 @@ where
     fn write_byte(&mut self, b: u8) -> Result<()> {
         self.write(&[b])
     }
+
+    // This can be called to serialize a Polyvar which has a 4 byte
+    // tag OR a variant index which is 1-2 bytes. We assume if they fit into a single byte then they
+    // are an index and if they are larger than 1 byte they are a polyvar.
+    // IMPORTANT: This could bug out in the case that a polyvar hash is zero in all places except the lowest byte.
+    // The probability of this happening is vanishingly small but something to be aware of.
+    fn write_variant_index_or_tag(&mut self, index: u32) -> Result<()> {
+        if let Ok(b) = check_variant_index(index) {
+            // it is a sum variant
+            self.writer.bin_write_variant_index(b)?;
+        } else {
+            // assume it is a Polyvar tagged variant
+            self.writer.bin_write_polyvar_tag(index)?;
+        }
+        Ok(())
+    }
 }
 
+/// Convenience function, creates  serializer and uses it to write the given value
+/// to the writer
 pub fn to_writer<W, T>(writer: &mut W, value: &T) -> Result<()>
 where
     W: std::io::Write,
@@ -247,8 +269,7 @@ where
         variant_index: u32,
         _variant: &'static str,
     ) -> Result<()> {
-        self.writer.bin_write_variant_index(variant_index)?;
-        Ok(())
+        self.write_variant_index_or_tag(variant_index)
     }
 
     fn serialize_tuple_variant(
@@ -258,7 +279,7 @@ where
         _variant: &'static str,
         _len: usize,
     ) -> Result<Self::SerializeTupleVariant> {
-        self.writer.bin_write_variant_index(variant_index)?;
+        self.write_variant_index_or_tag(variant_index)?;
         Ok(self)
     }
 
@@ -269,7 +290,7 @@ where
         _variant: &'static str,
         _len: usize,
     ) -> Result<Self::SerializeStructVariant> {
-        self.writer.bin_write_variant_index(variant_index)?;
+        self.write_variant_index_or_tag(variant_index)?;
         Ok(self)
     }
 
@@ -284,7 +305,7 @@ where
     where
         T: ?Sized + Serialize,
     {
-        self.writer.bin_write_variant_index(variant_index)?;
+        self.write_variant_index_or_tag(variant_index)?;
         value.serialize(self)
     }
 }
@@ -448,4 +469,10 @@ where
     fn end(self) -> Result<()> {
         Ok(())
     }
+}
+
+fn check_variant_index(index: u32) -> Result<u8> {
+    index
+        .try_into()
+        .map_err(|_| Error::VariantIndexTooLarge { index })
 }

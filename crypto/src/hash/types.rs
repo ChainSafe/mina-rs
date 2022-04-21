@@ -13,12 +13,14 @@
 use super::prefixes::*;
 use crate::base58::{version_bytes, Base58Encodable};
 use crate::hash::Hash;
+use crate::impl_bs58;
+use derive_more::From;
+use mina_serialization_types::v1::{ByteVecV1, HashV1};
 use serde::{Deserialize, Serialize};
-use wire_type::WireType;
 
 pub(crate) type HashBytes = Box<[u8]>;
 
-#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize, From, PartialOrd)]
 pub(crate) struct BaseHash([u8; 32]);
 
 impl From<HashBytes> for BaseHash {
@@ -44,15 +46,17 @@ impl AsRef<[u8]> for BaseHash {
     }
 }
 
+impl AsRef<[u8; 32]> for BaseHash {
+    fn as_ref(&self) -> &[u8; 32] {
+        &self.0
+    }
+}
+
 //////////////////////////////////////////////////////////////////////////
-#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize, WireType)]
-#[serde(from = "<Self as WireType>::WireType")]
-#[serde(into = "<Self as WireType>::WireType")]
+#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize, PartialOrd)]
 pub struct StateHash(BaseHash);
 
-impl Base58Encodable for StateHash {
-    const VERSION_BYTE: u8 = version_bytes::STATE_HASH;
-}
+impl_bs58!(StateHash, version_bytes::STATE_HASH);
 
 impl From<HashBytes> for StateHash {
     fn from(b: HashBytes) -> Self {
@@ -60,9 +64,14 @@ impl From<HashBytes> for StateHash {
     }
 }
 
-impl AsRef<[u8]> for StateHash {
-    fn as_ref(&self) -> &[u8] {
-        self.0.as_ref()
+impl From<HashV1> for StateHash {
+    fn from(h: HashV1) -> Self {
+        Self(BaseHash(h.t))
+    }
+}
+impl From<StateHash> for HashV1 {
+    fn from(h: StateHash) -> Self {
+        Self::new(h.0 .0)
     }
 }
 
@@ -72,43 +81,49 @@ impl Hash for StateHash {
 
 //////////////////////////////////////////////////////////////////////////
 
-#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize, WireType)]
-#[serde(from = "<Self as WireType>::WireType")]
-#[serde(into = "<Self as WireType>::WireType")]
+#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct LedgerHash(BaseHash);
 
-impl Base58Encodable for LedgerHash {
-    const VERSION_BYTE: u8 = version_bytes::LEDGER_HASH;
-}
+impl_bs58!(LedgerHash, version_bytes::LEDGER_HASH);
 
-impl From<HashBytes> for LedgerHash {
-    fn from(b: HashBytes) -> Self {
-        Self(BaseHash::from(b))
-    }
-}
-
-#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize, WireType)]
-#[serde(from = "<Self as WireType>::WireType")]
-#[serde(into = "<Self as WireType>::WireType")]
-#[wire_type(recurse = 2)]
-pub struct CoinBaseHash(BaseHash);
-
-impl AsRef<[u8]> for CoinBaseHash {
-    fn as_ref(&self) -> &[u8] {
-        self.0.as_ref()
+impl From<HashV1> for LedgerHash {
+    fn from(h: HashV1) -> Self {
+        Self(BaseHash(h.t))
     }
 }
 
 //////////////////////////////////////////////////////////////////////////
 
-#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize, WireType)]
-#[serde(from = "<Self as WireType>::WireType")]
-#[serde(into = "<Self as WireType>::WireType")]
+#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
+pub struct ChainHash(BaseHash);
+
+impl_bs58!(ChainHash, version_bytes::LEDGER_HASH);
+
+impl From<HashV1> for ChainHash {
+    fn from(h: HashV1) -> Self {
+        Self(BaseHash(h.t))
+    }
+}
+
+//////////////////////////////////////////////////////////////////////////
+
+#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
+pub struct CoinBaseHash(BaseHash);
+
+impl_bs58!(CoinBaseHash, 12);
+
+impl From<HashV1> for CoinBaseHash {
+    fn from(h: HashV1) -> Self {
+        Self(BaseHash(h.t))
+    }
+}
+
+//////////////////////////////////////////////////////////////////////////
+
+#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct EpochSeed(BaseHash);
 
-impl Base58Encodable for EpochSeed {
-    const VERSION_BYTE: u8 = version_bytes::EPOCH_SEED;
-}
+impl_bs58!(EpochSeed, version_bytes::EPOCH_SEED);
 
 impl From<HashBytes> for EpochSeed {
     fn from(b: HashBytes) -> Self {
@@ -116,57 +131,61 @@ impl From<HashBytes> for EpochSeed {
     }
 }
 
-impl AsRef<[u8]> for EpochSeed {
-    fn as_ref(&self) -> &[u8] {
-        self.0.as_ref()
-    }
-}
-
 impl Hash for EpochSeed {
     const PREFIX: &'static HashPrefix = EPOCH_SEED;
 }
 
-//////////////////////////////////////////////////////////////////////////
-
-#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize, WireType)]
-#[serde(from = "<Self as WireType>::WireType")]
-#[serde(into = "<Self as WireType>::WireType")]
-pub struct SnarkedLedgerHash(BaseHash);
-
-impl Base58Encodable for SnarkedLedgerHash {
-    const VERSION_BYTE: u8 = version_bytes::LEDGER_HASH;
-}
-
-impl From<HashBytes> for SnarkedLedgerHash {
-    fn from(b: HashBytes) -> Self {
-        Self(BaseHash::from(b))
+impl From<HashV1> for EpochSeed {
+    fn from(h: HashV1) -> Self {
+        Self(BaseHash(h.t))
     }
 }
 
 //////////////////////////////////////////////////////////////////////////
 
-#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize, WireType)]
-#[serde(from = "<Self as WireType>::WireType")]
-#[serde(into = "<Self as WireType>::WireType")]
-#[wire_type(recurse = 2)]
+#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
+pub struct SnarkedLedgerHash(BaseHash);
+
+impl_bs58!(SnarkedLedgerHash, version_bytes::LEDGER_HASH);
+
+impl From<HashV1> for SnarkedLedgerHash {
+    fn from(h: HashV1) -> Self {
+        Self(BaseHash(h.t))
+    }
+}
+
+//////////////////////////////////////////////////////////////////////////
+
+#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct StagedLedgerHash {
     pub non_snark: NonSnarkStagedLedgerHash,
     pub pending_coinbase_hash: CoinBaseHash,
 }
 
-#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize, WireType)]
-#[serde(from = "<Self as WireType>::WireType")]
-#[serde(into = "<Self as WireType>::WireType")]
+#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct NonSnarkStagedLedgerHash {
     pub ledger_hash: LedgerHash,
     pub aux_hash: AuxHash,
-    pub pending_coinbase_aux: AuxHash,
+    pub pending_coinbase_aux: PendingCoinbaseAuxHash,
 }
 
-#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize, WireType)]
-#[serde(from = "<Self as WireType>::WireType")]
-#[serde(into = "<Self as WireType>::WireType")]
-pub struct AuxHash(Vec<u8>);
+#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
+pub struct AuxHash(pub Vec<u8>);
+
+impl Base58Encodable for AuxHash {
+    const VERSION_BYTE: u8 = version_bytes::STAGED_LEDGER_HASH_AUX_HASH;
+    const MINA_VERSION_BYTE_COUNT: usize = 0;
+
+    fn write_encodable_bytes(&self, output: &mut Vec<u8>) {
+        output.extend(self.0.as_slice());
+    }
+}
+
+impl From<Vec<u8>> for AuxHash {
+    fn from(h: Vec<u8>) -> Self {
+        Self(h)
+    }
+}
 
 impl AsRef<[u8]> for AuxHash {
     fn as_ref(&self) -> &[u8] {
@@ -176,28 +195,50 @@ impl AsRef<[u8]> for AuxHash {
 
 //////////////////////////////////////////////////////////////////////////
 
-#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize, WireType)]
-#[serde(from = "<Self as WireType>::WireType")]
-#[serde(into = "<Self as WireType>::WireType")]
+#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
+pub struct PendingCoinbaseAuxHash(pub Vec<u8>);
+
+impl Base58Encodable for PendingCoinbaseAuxHash {
+    const VERSION_BYTE: u8 = version_bytes::STAGED_LEDGER_HASH_PENDING_COINBASE_AUX;
+    const MINA_VERSION_BYTE_COUNT: usize = 0;
+
+    fn write_encodable_bytes(&self, output: &mut Vec<u8>) {
+        output.extend(self.0.as_slice());
+    }
+}
+
+impl From<Vec<u8>> for PendingCoinbaseAuxHash {
+    fn from(h: Vec<u8>) -> Self {
+        Self(h)
+    }
+}
+
+impl From<ByteVecV1> for PendingCoinbaseAuxHash {
+    fn from(h: ByteVecV1) -> Self {
+        Self(h.t)
+    }
+}
+
+//////////////////////////////////////////////////////////////////////////
+
+#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct VrfOutputHash(BaseHash);
 
-impl Base58Encodable for VrfOutputHash {
-    const VERSION_BYTE: u8 = version_bytes::VRF_TRUNCATED_OUTPUT;
+impl_bs58!(VrfOutputHash, version_bytes::VRF_TRUNCATED_OUTPUT);
+
+impl From<HashBytes> for VrfOutputHash {
+    fn from(b: HashBytes) -> Self {
+        Self(BaseHash::from(b))
+    }
 }
 
 impl Hash for VrfOutputHash {
     const PREFIX: &'static HashPrefix = VRF_OUTPUT;
 }
 
-impl AsRef<[u8]> for VrfOutputHash {
-    fn as_ref(&self) -> &[u8] {
-        self.0.as_ref()
-    }
-}
-
-impl From<HashBytes> for VrfOutputHash {
-    fn from(b: HashBytes) -> Self {
-        Self(BaseHash::from(b))
+impl From<HashV1> for VrfOutputHash {
+    fn from(h: HashV1) -> Self {
+        Self(BaseHash(h.t))
     }
 }
 
@@ -206,24 +247,30 @@ impl From<HashBytes> for VrfOutputHash {
 #[cfg(test)]
 pub mod test {
 
-    use super::{BaseHash, LedgerHash};
-    use crate::base58::Base58Encodable;
+    use super::*;
 
     #[test]
-    fn convert_hash_to_base58() {
+    fn convert_ledger_hash_to_base58() {
         let bytes = [
             182, 175, 122, 248, 93, 142, 245, 54, 161, 170, 103, 111, 123, 128, 48, 218, 84, 208,
             17, 245, 30, 111, 61, 210, 168, 20, 160, 79, 111, 37, 167, 2,
         ];
         let h = LedgerHash(BaseHash(bytes));
-        println!("{}", h.to_base58().into_string())
+        println!("{}", h.to_base58_string())
     }
 
     #[test]
     fn ledger_hash_from_base58() {
         let s = "jxV4SS44wHUVrGEucCsfxLisZyUC5QddsiokGH3kz5xm2hJWZ25";
         let h = LedgerHash::from_base58(s).unwrap();
-        assert_eq!(h.to_base58().into_string(), s);
+        assert_eq!(h.to_base58_string(), s);
+    }
+
+    #[test]
+    fn coinbase_hash_from_base58() {
+        let s = "2n1tLdP2gkifmyVmrmzYXTS4ohPbZPJn6Qq4x55ywrbRWB4543cC";
+        let h = CoinBaseHash::from_base58(s).unwrap();
+        assert_eq!(h.to_base58_string(), s);
     }
 
     #[test]
@@ -236,7 +283,7 @@ pub mod test {
         let h = LedgerHash(BaseHash(bytes));
         assert_eq!(
             h.clone(),
-            LedgerHash::from_base58(h.to_base58().into_string()).unwrap()
+            LedgerHash::from_base58(h.to_base58_string()).unwrap()
         )
     }
 }

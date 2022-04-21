@@ -1,42 +1,92 @@
 // Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
+//! Implements common APIs for the blockchain in the context of consensus.
+
+use crate::error::ConsensusError;
 use hex::ToHex;
 use mina_crypto::hash::{Hashable, StateHash};
 use mina_rs_base::consensus_state::ConsensusState;
 use mina_rs_base::global_slot::GlobalSlot;
 use mina_rs_base::protocol_state::{Header, ProtocolState};
-use thiserror::Error;
+use mina_rs_base::types::{BlockTime, Length};
 
-pub struct ProtocolStateChain(pub Vec<ProtocolState>);
-
-#[derive(Error, Debug, PartialEq)]
-pub enum ChainError {
-    #[error("header must have height 1 greater than top")]
-    InvalidHeight,
+// TODO: derive from protocol constants
+pub struct ConsensusConstants {
+    /// Point of finality (number of confirmations)
+    pub k: Length,
+    /// Number of slots per epoch
+    pub slots_per_epoch: Length,
+    /// No of slots in a sub-window = 7
+    pub slots_per_sub_window: Length,
+    /// Maximum permissable delay of packets (in slots after the current)
+    pub delta: Length,
+    /// Timestamp of genesis block in unixtime
+    pub genesis_state_timestamp: BlockTime,
+    /// Sub windows within a window
+    pub sub_windows_per_window: Length,
+    /// Number of slots before minimum density is used in chain selection
+    pub grace_period_end: Length,
 }
+
+impl ConsensusConstants {
+    pub fn mainnet() -> Self {
+        Self {
+            k: Length(290),
+            slots_per_epoch: Length(7140),
+            slots_per_sub_window: Length(7),
+            delta: Length(0),
+            genesis_state_timestamp: BlockTime(1615939200000),
+            sub_windows_per_window: Length(11),
+            grace_period_end: Length(1440),
+        }
+    }
+
+    pub fn devnet() -> Self {
+        todo!()
+    }
+}
+
+#[derive(Debug, Default)]
+// TODO: replace vec element with ExternalTransition
+pub struct ProtocolStateChain(pub Vec<ProtocolState>);
 
 pub trait Chain<T>
 where
     T: Header,
 {
-    fn push(&mut self, new: T) -> Result<(), ChainError>;
+    fn push(&mut self, new: T) -> Result<(), ConsensusError>;
+    /// This function returns the last block of a given chain.
+    /// The input is a chain C and the output is last block of C
+    /// (i.e. the block with greatest height).
     fn top(&self) -> Option<&T>;
+    /// he function returns the consensus state of a block or chain.
+    /// The input is a block or chain X and the output is the consensus state.
     fn consensus_state(&self) -> Option<&ConsensusState>;
+    /// The function returns the global slot number of a chain or block.
+    /// The input X is either a chain or block and the output is the global slot number.
     fn global_slot(&self) -> Option<&GlobalSlot>;
+    /// The function computes the epoch slot number of a block.
+    /// The output is the epoch slot number in [0, slots_per_epoch].
     fn epoch_slot(&self) -> Option<u32>;
+    /// The function the length of a chain. The output is the length of the chain in blocks.
     fn length(&self) -> usize;
-    fn last_vrf(&self) -> Option<String>;
+    /// This function returns the hex digest of the hash of the last VRF output
+    ///  of a given chain. The input is a chain C and the output is the hash digest.
+    fn last_vrf_hash(&self) -> Option<String>;
+    /// This function returns hash of the top block's protocol state for a given chain.
+    /// The input is a chain C and the output is the hash.
     fn state_hash(&self) -> Option<StateHash>;
+    fn genesis_block(&self) -> Option<&ProtocolState>;
 }
 
 impl Chain<ProtocolState> for ProtocolStateChain {
-    fn push(&mut self, new: ProtocolState) -> Result<(), ChainError> {
+    fn push(&mut self, new: ProtocolState) -> Result<(), ConsensusError> {
         match self.0.len() {
             0 => (),
             n => {
                 if new.get_height().0 != self.0[n - 1].get_height().0 + 1 {
-                    return Err(ChainError::InvalidHeight);
+                    return Err(ConsensusError::InvalidHeight);
                 }
             }
         }
@@ -47,6 +97,10 @@ impl Chain<ProtocolState> for ProtocolStateChain {
 
     fn top(&self) -> Option<&ProtocolState> {
         self.0.last()
+    }
+
+    fn genesis_block(&self) -> Option<&ProtocolState> {
+        self.0.first()
     }
 
     fn consensus_state(&self) -> Option<&ConsensusState> {
@@ -66,129 +120,201 @@ impl Chain<ProtocolState> for ProtocolStateChain {
         self.0.len()
     }
 
-    fn last_vrf(&self) -> Option<String> {
+    fn last_vrf_hash(&self) -> Option<String> {
         self.top().map(|s| {
             s.body
                 .consensus_state
                 .last_vrf_output
                 .hash()
+                .as_ref()
                 .encode_hex::<String>()
         })
     }
 
+    // FIXME: this currently returns a blake2b hash. It should
+    // return a poseidon hash according to: https://github.com/MinaProtocol/mina/blob/32f529d8d8d712a44ee75be66061ce08cbdc8924/docs/specs/consensus/README.md#517-hashstate
     fn state_hash(&self) -> Option<StateHash> {
         self.top().map(|s| s.hash())
     }
 }
 
-#[cfg(test)]
-mod tests {
-    use super::*;
-    use mina_rs_base::numbers::{GlobalSlotNumber, Length};
+pub trait Consensus {
+    type Chain;
+    /// Top level API to select between chains during a fork.
+    fn select_secure_chain<'a>(
+        &'a self,
+        candidates: &'a [Self::Chain],
+    ) -> Result<&'a ProtocolStateChain, ConsensusError>;
 
-    #[test]
-    fn test_protocol_state_chain_push() {
-        let mut c: ProtocolStateChain = ProtocolStateChain(vec![]);
-        assert_eq!(c.length(), 0);
+    /// Selects the longer chain when there's a short range fork.
+    fn select_longer_chain<'a>(
+        &'a self,
+        candidate: &'a ProtocolStateChain,
+    ) -> Result<&'a ProtocolStateChain, ConsensusError>;
 
-        let mut b0: ProtocolState = Default::default();
-        b0.body.consensus_state.blockchain_length = Length(0);
-        c.push(b0).unwrap();
-        assert_eq!(c.length(), 1);
+    /// Checks whether the fork is short range wrt to candidate chain
+    fn is_short_range(&self, candidate: &ProtocolStateChain) -> Result<bool, ConsensusError>;
 
-        let mut b1: ProtocolState = Default::default();
-        b1.body.consensus_state.blockchain_length = Length(1);
-        c.push(b1).unwrap();
-        assert_eq!(c.length(), 2);
+    /// Calculates the relate minimum window density wrt to candidate chain.
+    fn relative_min_window_density(
+        &self,
+        candidate: &ProtocolStateChain,
+    ) -> Result<u32, ConsensusError>;
 
-        let mut b2: ProtocolState = Default::default();
-        b2.body.consensus_state.blockchain_length = Length(2);
-        c.push(b2).unwrap();
-        assert_eq!(c.length(), 3);
+    /// Constants used for consensus
+    fn config(&self) -> ConsensusConstants;
+}
 
-        let mut b1: ProtocolState = Default::default();
-        b1.body.consensus_state.blockchain_length = Length(1);
-        assert_eq!(c.push(b1).unwrap_err(), ChainError::InvalidHeight,);
+impl Consensus for ProtocolStateChain {
+    type Chain = ProtocolStateChain;
+    fn select_secure_chain<'a>(
+        &'a self,
+        candidates: &'a [Self::Chain],
+    ) -> Result<&'a ProtocolStateChain, ConsensusError> {
+        let tip = candidates.iter().fold(Ok(self), |tip, candidate| {
+            if self.is_short_range(candidate)? {
+                // short-range fork, select longer chain
+                self.select_longer_chain(candidate)
+            } else {
+                let tip_density = self.relative_min_window_density(candidate)?;
+                let candidate_density = candidate.relative_min_window_density(self)?;
+                match candidate_density.cmp(&tip_density) {
+                    std::cmp::Ordering::Greater => Ok(candidate),
+                    std::cmp::Ordering::Equal => self.select_longer_chain(candidate),
+                    _ => tip, // no change
+                }
+            }
+        });
+
+        tip
     }
 
-    #[test]
-    fn test_protocol_state_chain_top() {
-        let mut c: ProtocolStateChain = ProtocolStateChain(vec![]);
-        assert_eq!(c.length(), 0);
-        assert_eq!(c.top(), None);
+    fn select_longer_chain<'a>(
+        &'a self,
+        candidate: &'a ProtocolStateChain,
+    ) -> Result<&'a ProtocolStateChain, ConsensusError> {
+        let top_state = self
+            .consensus_state()
+            .ok_or(ConsensusError::ConsensusStateNotFound)?;
+        let candidate_state = candidate
+            .consensus_state()
+            .ok_or(ConsensusError::ConsensusStateNotFound)?;
+        if top_state.blockchain_length < candidate_state.blockchain_length {
+            return Ok(candidate);
+        } else if top_state.blockchain_length == candidate_state.blockchain_length {
+            // tiebreak logic
+            match candidate.last_vrf_hash().cmp(&self.last_vrf_hash()) {
+                std::cmp::Ordering::Greater => return Ok(candidate),
+                std::cmp::Ordering::Equal => {
+                    if candidate.state_hash() > self.state_hash() {
+                        return Ok(candidate);
+                    }
+                }
+                _ => {}
+            }
+        }
 
-        let mut b0: ProtocolState = Default::default();
-        b0.body.consensus_state.blockchain_length = Length(0);
-        c.push(b0).unwrap();
-        assert_eq!(c.length(), 1);
-        let expected: ProtocolState = Default::default();
-        assert_eq!(c.top(), Some(&expected));
-
-        let mut b1: ProtocolState = Default::default();
-        b1.body.consensus_state.blockchain_length = Length(1);
-        c.push(b1).unwrap();
-        let mut expected: ProtocolState = Default::default();
-        expected.body.consensus_state.blockchain_length = Length(1);
-        assert_eq!(c.top(), Some(&expected));
+        Ok(self)
     }
 
-    #[test]
-    fn test_protocol_state_chain_epoch_slot() {
-        let mut c: ProtocolStateChain = ProtocolStateChain(vec![]);
+    fn is_short_range(&self, candidate: &ProtocolStateChain) -> Result<bool, ConsensusError> {
+        let a = &self
+            .consensus_state()
+            .ok_or(ConsensusError::ConsensusStateNotFound)?;
+        let b = &candidate
+            .consensus_state()
+            .ok_or(ConsensusError::ConsensusStateNotFound)?;
+        let a_prev_lock_checkpoint = &a.staking_epoch_data.lock_checkpoint;
+        let b_prev_lock_checkpoint = &b.staking_epoch_data.lock_checkpoint;
 
-        let mut b0: ProtocolState = Default::default();
-        b0.body.consensus_state.blockchain_length = Length(0);
-        b0.body.consensus_state.curr_global_slot = GlobalSlot {
-            slot_number: GlobalSlotNumber(0),
-            slots_per_epoch: Length(1000),
+        let check = |s1: &ConsensusState, s2: &ConsensusState, s2_epoch_slot: Option<u32>| {
+            if s1.epoch_count.0 == s2.epoch_count.0 + 1
+                && s2_epoch_slot >= Some(self.config().slots_per_epoch.0 * 2 / 3)
+            {
+                // S1 is one epoch ahead of S2 and S2 is not in the seed update range
+                s1.staking_epoch_data.lock_checkpoint == s2.next_epoch_data.lock_checkpoint
+            } else {
+                false
+            }
         };
-        c.push(b0).unwrap();
-        let epoch_slot = c.epoch_slot();
-        assert_eq!(epoch_slot, Some(0));
 
-        let mut b1: ProtocolState = Default::default();
-        b1.body.consensus_state.blockchain_length = Length(1);
-        b1.body.consensus_state.curr_global_slot = GlobalSlot {
-            slot_number: GlobalSlotNumber(1),
-            slots_per_epoch: Length(1000),
-        };
-        c.push(b1).unwrap();
-        let epoch_slot = c.epoch_slot();
-        assert_eq!(epoch_slot, Some(1));
-
-        let mut b2: ProtocolState = Default::default();
-        b2.body.consensus_state.blockchain_length = Length(2);
-        b2.body.consensus_state.curr_global_slot = GlobalSlot {
-            slot_number: GlobalSlotNumber(1002),
-            slots_per_epoch: Length(1000),
-        };
-        c.push(b2).unwrap();
-        let epoch_slot = c.epoch_slot();
-        assert_eq!(epoch_slot, Some(2));
+        if a.epoch_count == b.epoch_count {
+            // Simple case: blocks have same previous epoch, so compare previous epochs' lock_checkpoints
+            Ok(a_prev_lock_checkpoint == b_prev_lock_checkpoint)
+        } else {
+            // Check for previous epoch case using both orientations
+            Ok(check(a, b, candidate.epoch_slot()) || check(b, a, self.epoch_slot()))
+        }
     }
 
-    #[test]
-    fn test_protocol_state_chain_state_hash() {
-        let mut c: ProtocolStateChain = ProtocolStateChain(vec![]);
-
-        let mut b0: ProtocolState = Default::default();
-        b0.body.consensus_state.blockchain_length = Length(0);
-        c.push(b0).unwrap();
-
-        let hash = c.state_hash();
-        hash.unwrap();
+    fn config(&self) -> ConsensusConstants {
+        ConsensusConstants::mainnet()
     }
 
-    #[test]
-    fn test_protocol_state_chain_last_vrf() {
-        let mut c: ProtocolStateChain = ProtocolStateChain(vec![]);
-        assert_eq!(None, c.last_vrf());
+    /// Computes the relative minimum window density of the given chains.
+    /// The minimum density value is used in the case of a long range fork
+    /// and the chain with the higher relative minimum window density is chosen as the canonical chain.
+    /// The need for relative density is explained here:
+    /// <https://github.com/MinaProtocol/mina/blob/02dfc3ff0160ba3c1bbc732baa07502fe4312b04/docs/specs/consensus/README.md#5412-relative-minimum-window-density>
+    fn relative_min_window_density(
+        &self,
+        chain_b: &ProtocolStateChain,
+    ) -> Result<u32, ConsensusError> {
+        let tip_state = self
+            .consensus_state()
+            .ok_or(ConsensusError::ConsensusStateNotFound)?;
+        let chain_b = chain_b
+            .consensus_state()
+            .ok_or(ConsensusError::ConsensusStateNotFound)?;
 
-        let mut b0: ProtocolState = Default::default();
-        b0.body.consensus_state.blockchain_length = Length(0);
-        c.push(b0.clone()).unwrap();
+        // helpers for readability.
+        let min = |a: u32, b: u32| a.min(b);
+        let max = |a: u32, b: u32| a.max(b);
 
-        let expected = Some(b0.body.consensus_state.last_vrf_output.hash().encode_hex());
-        assert_eq!(expected, c.last_vrf());
+        let max_slot = max(
+            tip_state.curr_global_slot.slot_number.0,
+            chain_b.curr_global_slot.slot_number.0,
+        );
+
+        // grace-period rule
+        if max_slot < self.config().grace_period_end.0 {
+            return Ok(tip_state.min_window_density.0);
+        }
+
+        let projected_window = {
+            // compute shift count
+            let mut shift_count = min(
+                max(
+                    max_slot - tip_state.curr_global_slot.slot_number.0.saturating_sub(1),
+                    0,
+                ),
+                self.config().sub_windows_per_window.0,
+            );
+            // initialize projected window based off of chain_a
+            let mut projected_window = tip_state.sub_window_densities.clone();
+
+            // relative sub window
+            let mut rel_sub_window = tip_state.curr_global_slot.slot_number.0
+                / self.config().sub_windows_per_window.0
+                % self.config().sub_windows_per_window.0;
+
+            // ring shift
+            while shift_count > 0 {
+                rel_sub_window = (rel_sub_window + 1) % self.config().sub_windows_per_window.0;
+                projected_window[rel_sub_window as usize] = Length(0);
+                shift_count -= 1;
+            }
+
+            projected_window
+        };
+
+        // compute projected window density
+        let projected_window_density = projected_window.iter().map(|s| s.0).sum();
+
+        // compute minimum window density
+        Ok(min(
+            tip_state.min_window_density.0,
+            projected_window_density,
+        ))
     }
 }
