@@ -58,6 +58,27 @@ mod tests {
     >;
 
     #[test]
+    #[should_panic]
+    fn test_mina_merkle_tree_with_bad_fixed_height() {
+        let mut tree = TestMerkleTree::new().with_fixed_height(3);
+        let v: Vec<i64> = (0..10).map(|i| i).collect();
+        tree.add_batch(v);
+        _ = tree.root();
+    }
+
+    #[test]
+    fn test_mina_merkle_tree_with_good_fixed_height() {
+        let mut tree = TestMerkleTree::new();
+        let v: Vec<i64> = (0..10).map(|i| i).collect();
+        tree.add_batch(v);
+        assert!(tree.root().is_some());
+        for h in 4..10 {
+            tree = tree.with_fixed_height(h);
+            assert!(tree.root().is_some())
+        }
+    }
+
+    #[test]
     fn mina_merkle_tree_tests_0() {
         let mut tree = TestMerkleTree::new();
         assert!(tree.root().is_none())
