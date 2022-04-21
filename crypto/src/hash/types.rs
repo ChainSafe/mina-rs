@@ -208,7 +208,7 @@ impl Hash for VrfOutputHash {
 #[cfg(test)]
 pub mod test {
 
-    use mina_serialization_types::common::LedgerHashV1Json;
+    use mina_serialization_types::json::*;
 
     use super::*;
 
@@ -246,6 +246,56 @@ pub mod test {
         let s = "2n1tLdP2gkifmyVmrmzYXTS4ohPbZPJn6Qq4x55ywrbRWB4543cC";
         let h = CoinBaseHash::from_base58(s).unwrap();
         assert_eq!(h.to_base58_string(), s);
+    }
+
+    #[test]
+    fn coinbase_hash_json_roundtrip() -> anyhow::Result<()> {
+        let s = "2n1tLdP2gkifmyVmrmzYXTS4ohPbZPJn6Qq4x55ywrbRWB4543cC";
+        let s_json = format!("\"{s}\"");
+        let json: CoinBaseHashV1Json = serde_json::from_str(&s_json)?;
+        let h: CoinBaseHash = json.into();
+        assert_eq!(h.to_base58_string(), s);
+        let json: CoinBaseHashV1Json = h.into();
+        assert_eq!(serde_json::to_string(&json)?, s_json);
+        Ok(())
+    }
+
+    #[test]
+    fn epoch_seed_from_base58() {
+        let s = "2va9BGv9JrLTtrzZttiEMDYw1Zj6a6EHzXjmP9evHDTG3oEquURA";
+        let h = EpochSeed::from_base58(s).unwrap();
+        assert_eq!(h.to_base58_string(), s);
+    }
+
+    #[test]
+    fn epoch_seed_hash_json_roundtrip() -> anyhow::Result<()> {
+        let s = "2va9BGv9JrLTtrzZttiEMDYw1Zj6a6EHzXjmP9evHDTG3oEquURA";
+        let s_json = format!("\"{s}\"");
+        let json: EpochSeedHashV1Json = serde_json::from_str(&s_json)?;
+        let h: EpochSeed = json.into();
+        assert_eq!(h.to_base58_string(), s);
+        let json: EpochSeedHashV1Json = h.into();
+        assert_eq!(serde_json::to_string(&json)?, s_json);
+        Ok(())
+    }
+
+    #[test]
+    fn snarked_ledger_hash_from_base58() {
+        let s = "jx7buQVWFLsXTtzRgSxbYcT8EYLS8KCZbLrfDcJxMtyy4thw2Ee";
+        let h = SnarkedLedgerHash::from_base58(s).unwrap();
+        assert_eq!(h.to_base58_string(), s);
+    }
+
+    #[test]
+    fn snarked_ledger_hash_json_roundtrip() -> anyhow::Result<()> {
+        let s = "jx7buQVWFLsXTtzRgSxbYcT8EYLS8KCZbLrfDcJxMtyy4thw2Ee";
+        let s_json = format!("\"{s}\"");
+        let json: LedgerHashV1Json = serde_json::from_str(&s_json)?;
+        let h: SnarkedLedgerHash = json.into();
+        assert_eq!(h.to_base58_string(), s);
+        let json: LedgerHashV1Json = h.into();
+        assert_eq!(serde_json::to_string(&json)?, s_json);
+        Ok(())
     }
 
     #[test]
