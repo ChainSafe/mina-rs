@@ -64,11 +64,11 @@ impl ToJsonString for SignedCommand {
 
 #[cfg(test)]
 mod tests {
-	use super::*;
-	use mina_rs_base::user_commands::memo::SignedCommandMemo;
-	use proof_systems::mina_signer::{Keypair, CompressedPubKey, NetworkId};
+    use super::*;
+    use mina_rs_base::user_commands::memo::SignedCommandMemo;
+    use proof_systems::mina_signer::{CompressedPubKey, Keypair, NetworkId};
 
-	macro_rules! make_signed_tx {
+    macro_rules! make_signed_tx {
         ($sec_key:expr, $source_address:expr, $receiver_address:expr, $amount:expr, $fee:expr,
          $nonce:expr, $valid_until:expr, $memo:expr) => {{
             let kp = Keypair::from_hex($sec_key).expect("failed to create keypair");
@@ -84,17 +84,19 @@ mod tests {
             .valid_until($valid_until)
             .memo(SignedCommandMemo::try_from($memo).expect("invalid memo string"))
             .build()
-			.into_signed_command(kp, NetworkId::TESTNET)
-        }}
+            .into_signed_command(kp, NetworkId::TESTNET)
+        }};
     }
 
-	#[test]
-	fn smoke() {
-
-		let tx = make_signed_tx!(
-            /* sender secret key  */ "164244176fddb5d769b7de2027469d027ad428fadcc0c02396e6280142efb718",
-            /* source address     */ "B62qnzbXmRNo9q32n4SNu2mpB8e7FYYLH8NmaX6oFCBYjjQ8SbD7uzV",
-            /* receiver address   */ "B62qjJQ8Up2zUVgax2PwoYyDJ4mTq8japh9vt3gBoBWY5ubN7m2yuTf",
+    #[test]
+    fn smoke() {
+        let tx = make_signed_tx!(
+            /* sender secret key  */
+            "164244176fddb5d769b7de2027469d027ad428fadcc0c02396e6280142efb718",
+            /* source address     */
+            "B62qnzbXmRNo9q32n4SNu2mpB8e7FYYLH8NmaX6oFCBYjjQ8SbD7uzV",
+            /* receiver address   */
+            "B62qjJQ8Up2zUVgax2PwoYyDJ4mTq8japh9vt3gBoBWY5ubN7m2yuTf",
             /* amount             */ 100000000_u64,
             /* fee                */ 100000000_u32,
             /* nonce              */ 2_u32,
@@ -103,5 +105,5 @@ mod tests {
         );
 
         println!("{}", tx.to_json_string())
-	}
+    }
 }

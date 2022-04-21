@@ -3,8 +3,8 @@
 
 //! Commands can include memo fields which contain arbitrary byte data
 //!
-use derive_more::From;
 use core::fmt;
+use derive_more::From;
 
 use thiserror::Error;
 
