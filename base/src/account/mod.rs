@@ -56,7 +56,7 @@ pub struct Account {
 impl SerializationTypeAnnotation for Account {
     type BinProtType = AccountV1;
     // TODO: Use actual AccountV1Json when it's implemented
-    type JsonType = AccountV1;
+    type JsonType = Self;
 }
 
 impl mina_hasher::Hashable for Account {

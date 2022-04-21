@@ -28,5 +28,5 @@ pub struct ExternalTransition {
 impl SerializationTypeAnnotation for ExternalTransition {
     type BinProtType = ExternalTransitionV1;
     // TODO: Use actual ExternalTransitionV1Json when it's implemented
-    type JsonType = ExternalTransitionV1;
+    type JsonType = Self;
 }
