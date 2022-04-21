@@ -3,13 +3,12 @@
 
 //! Mina ExternalTransition
 
-use crate::types::*;
-use serde::{Deserialize, Serialize};
+use crate::{types::*, *};
+
+use mina_serialization_types::v1::ExternalTransitionV1;
 
 /// This structure represents a mina block
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-#[serde(from = "mina_serialization_types::v1::ExternalTransitionV1")]
-#[serde(into = "mina_serialization_types::v1::ExternalTransitionV1")]
+#[derive(Clone, Debug, PartialEq)]
 /// This structure represents a mina block received from an external block producer
 pub struct ExternalTransition {
     /// The blockchain state, including consensus and the ledger
@@ -26,6 +25,8 @@ pub struct ExternalTransition {
     pub proposed_protocol_version_opt: Option<ProtocolVersion>,
 }
 
-impl bin_prot::encodable::BinProtEncodable for ExternalTransition {
-    const PREALLOCATE_BUFFER_BYTES: usize = 13 * 1024;
+impl SerializationTypeAnnotation for ExternalTransition {
+    type BinProtType = ExternalTransitionV1;
+    // TODO: Use actual ExternalTransitionV1Json when it's implemented
+    type JsonType = ExternalTransitionV1;
 }
