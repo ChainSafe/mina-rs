@@ -127,7 +127,7 @@ where
     }
 
     fn root(&mut self) -> Option<Self::Hash> {
-        let hash = self.calculate_hash_if_needed(0);
+        let mut hash = self.calculate_hash_if_needed(0);
         if let Some(fixed_height) = self.fixed_height {
             match fixed_height.cmp(&self.height) {
                 Ordering::Less => panic!(
@@ -136,7 +136,6 @@ where
                 ),
                 Ordering::Equal => hash,
                 Ordering::Greater => {
-                    let mut hash = hash;
                     for h in (self.height + 1)..=fixed_height {
                         hash = Merger::merge([hash, None], MerkleTreeNodeMetadata::new(0, h));
                     }
