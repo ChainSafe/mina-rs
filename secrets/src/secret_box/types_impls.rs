@@ -1,4 +1,7 @@
-use super::*;
+// Copyright 2020 ChainSafe Systems
+// SPDX-License-Identifier: Apache-2.0
+
+use super::{constants::*, utils::*, *};
 use argon2::{self, password_hash::SaltString, Argon2, ParamsBuilder, PasswordHasher};
 use xsalsa20poly1305::{
     aead::{generic_array::GenericArray, Aead, NewAead},
@@ -105,6 +108,7 @@ impl SecretBox {
         }
     }
 
+    /// Gets raw bytes(little-endian) of the private key from the wallet with a password
     pub fn get_private_key_bytes(&self, password: impl AsRef<[u8]>) -> Result<Vec<u8>, Error> {
         let secret = self.try_gen_secret(password)?;
         let key = GenericArray::from_slice(secret.as_slice());
@@ -119,6 +123,7 @@ impl SecretBox {
         Ok(bytes)
     }
 
+    /// Gets [Keypair] from the wallet with a password
     pub fn get_keypair(&self, password: impl AsRef<[u8]>) -> Result<Keypair, Error> {
         let mut private_key_bytes = self.get_private_key_bytes(password)?;
         // mina scalars hex format is in big-endian order
