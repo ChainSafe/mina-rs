@@ -1,6 +1,6 @@
 use super::*;
-use mina_crypto::argon2::{self, password_hash::SaltString, Argon2, ParamsBuilder, PasswordHasher};
-use mina_crypto::xsalsa20poly1305::{
+use argon2::{self, password_hash::SaltString, Argon2, ParamsBuilder, PasswordHasher};
+use xsalsa20poly1305::{
     aead::{generic_array::GenericArray, Aead, NewAead},
     XSalsa20Poly1305,
 };
@@ -105,7 +105,7 @@ impl SecretBox {
         }
     }
 
-    pub fn try_get_private_key(&self, password: impl AsRef<[u8]>) -> Result<Vec<u8>, Error> {
+    pub fn get_private_key_bytes(&self, password: impl AsRef<[u8]>) -> Result<Vec<u8>, Error> {
         let secret = self.try_gen_secret(password)?;
         let key = GenericArray::from_slice(secret.as_slice());
         let cipher = XSalsa20Poly1305::new(key);
@@ -117,5 +117,12 @@ impl SecretBox {
             .map_err(|e| Error::AeadError(format!("{}", e)))?;
         bytes.remove(0);
         Ok(bytes)
+    }
+
+    pub fn get_keypair(&self, password: impl AsRef<[u8]>) -> Result<Keypair, Error> {
+        let mut private_key_bytes = self.get_private_key_bytes(password)?;
+        // mina scalars hex format is in big-endian order
+        private_key_bytes.reverse();
+        Keypair::from_hex(&hex::encode(private_key_bytes)).map_err(Error::KeypairError)
     }
 }

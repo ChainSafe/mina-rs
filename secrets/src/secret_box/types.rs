@@ -1,5 +1,5 @@
 use super::*;
-use mina_crypto::argon2::password_hash::SaltString;
+use argon2::password_hash::SaltString;
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default)]
 pub(super) struct SecretBoxJson {

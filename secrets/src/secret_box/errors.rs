@@ -1,3 +1,4 @@
+use proof_systems::mina_signer::keypair::KeypairError;
 use thiserror::Error;
 
 #[derive(Error, Debug)]
@@ -23,4 +24,7 @@ pub enum Error {
 
     #[error("AeadError: {0}")]
     AeadError(String),
+
+    #[error("KeypairError: {0}")]
+    KeypairError(KeypairError),
 }

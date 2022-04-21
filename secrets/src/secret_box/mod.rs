@@ -13,3 +13,6 @@ use utils::*;
 mod types_impls;
 
 use serde::{Deserialize, Serialize};
+
+// Re-export Keypair
+pub use proof_systems::mina_signer::Keypair;
