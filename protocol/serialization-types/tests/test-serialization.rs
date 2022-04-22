@@ -455,10 +455,6 @@ fn test_staged_ledger_diff_diff_coinbase() {
 #[wasm_bindgen_test]
 fn test_staged_ledger_diff_diff_internal_command_balances() {
     block_path_test_batch! {
-        CoinBaseBalanceDataV1 => "t/staged_ledger_diff/t/diff/t/0/t/t/internal_command_balances/0/t/[sum]"
-        FeeTransferBalanceDataV1 => "t/staged_ledger_diff/t/diff/t/0/t/t/internal_command_balances/1/t/[sum]"
-        InternalCommandBalanceDataV1 => "t/staged_ledger_diff/t/diff/t/0/t/t/internal_command_balances/0"
-        InternalCommandBalanceDataV1 => "t/staged_ledger_diff/t/diff/t/0/t/t/internal_command_balances/1"
         Vec<InternalCommandBalanceDataV1> => "t/staged_ledger_diff/t/diff/t/0/t/t/internal_command_balances"
     }
 }
