@@ -1,9 +1,8 @@
 // Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
-use bin_prot::encodable::BinProtEncodable;
 use clap::{Arg, Command};
-use mina_rs_base::types::ExternalTransition;
+use mina_rs_base::{types::*, *};
 use std::str::FromStr;
 
 const BLOCK_BYTES: &[u8] = include_bytes!("../../../../protocol/test-fixtures/src/data/block1");
@@ -31,7 +30,10 @@ fn main() -> anyhow::Result<()> {
 }
 
 fn cpu_profile_serialization() -> anyhow::Result<ExternalTransition> {
-    Ok(ExternalTransition::try_decode_binprot(BLOCK_BYTES)?)
+    let mut de = bin_prot::Deserializer::from_reader(BLOCK_BYTES);
+    let et: <ExternalTransition as BinProtSerializationType>::T =
+        serde::Deserialize::deserialize(&mut de)?;
+    Ok(et.into())
 }
 
 fn heap_profile_serialization() -> anyhow::Result<ExternalTransition> {
