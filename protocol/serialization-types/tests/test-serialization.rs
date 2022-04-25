@@ -439,9 +439,16 @@ fn test_staged_ledger_diff_diff_commands_status() {
 #[wasm_bindgen_test]
 fn test_staged_ledger_diff_diff_coinbase() {
     block_path_test_batch! {
-        Option<CoinBaseFeeTransferV1> => "t/staged_ledger_diff/t/diff/t/0/t/t/coinbase/t/[sum]"
         CoinBaseV1 => "t/staged_ledger_diff/t/diff/t/0/t/t/coinbase"
     }
+    block_sum_path_test!(
+        "t/staged_ledger_diff/t/diff/t/0/t/t/coinbase/t/[sum]",
+        Option<CoinBaseFeeTransferV1>,
+        // other variant (dummy)
+        // replace this with the actual types
+        // once CoinBase::Zero and CoinBase::Two are implemented,
+        CoinBaseFeeTransferV1,
+    );
 }
 
 #[test]
@@ -596,6 +603,21 @@ macro_rules! block_path_test {
     ($typ:ty, $path:expr) => {
         for block in TEST_BLOCKS.values() {
             test_in_block::<$typ>(&block.value, &[$path]);
+        }
+    };
+}
+
+#[macro_export]
+macro_rules! block_sum_path_test {
+    ($path:expr, $($typ:ty,)*) => {
+        for block in TEST_BLOCKS.values() {
+            let mut success = 0;
+            $(
+                if std::panic::catch_unwind(|| test_in_block::<$typ>(&block.value, &[$path])).is_ok() {
+                    success += 1;
+                }
+            )*
+            assert_eq!(success, 1);
         }
     };
 }
