@@ -53,10 +53,8 @@ pub struct Account {
     pub snapp: Option<()>,
 }
 
-impl SerializationTypeAnnotation for Account {
-    type BinProtType = AccountV1;
-    // TODO: Use actual AccountV1Json when it's implemented
-    type JsonType = Self;
+impl BinProtSerializationType for Account {
+    type T = AccountV1;
 }
 
 impl mina_hasher::Hashable for Account {
