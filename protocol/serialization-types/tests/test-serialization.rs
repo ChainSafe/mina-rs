@@ -541,7 +541,10 @@ pub(crate) fn select_path<'a>(
     for p in path_ref.split('/') {
         if p == "[sum]" {
             match val {
-                Value::Sum { ref value, .. } => {
+                Value::Sum {
+                    ref value, index, ..
+                } => {
+                    println!("Unpacking sum type index {index} for {path_ref}");
                     val = value;
                 }
                 _ => assert!(false, "Sum expected"),
@@ -618,14 +621,14 @@ macro_rules! block_path_test {
 #[macro_export]
 macro_rules! block_sum_path_test {
     ($path:expr, $($typ:ty,)*) => {
-        for block in TEST_BLOCKS.values() {
+        for (i, block) in TEST_BLOCKS.values().enumerate() {
             let mut success = 0;
             $(
                 if std::panic::catch_unwind(|| test_in_block::<$typ>(&block.value, &[$path])).is_ok() {
                     success += 1;
                 }
             )*
-            assert_eq!(success, 1);
+            assert_eq!(success, 1, "Block {i} failed");
         }
     };
 }

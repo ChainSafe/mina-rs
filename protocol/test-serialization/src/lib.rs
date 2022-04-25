@@ -30,7 +30,10 @@ mod tests {
         for p in path_ref.split('/') {
             if p == "[sum]" {
                 match val {
-                    Value::Sum { ref value, .. } => {
+                    Value::Sum {
+                        ref value, index, ..
+                    } => {
+                        println!("Unpacking sum type index {index} for {path_ref}");
                         val = value;
                     }
                     _ => assert!(false, "Sum expected"),
