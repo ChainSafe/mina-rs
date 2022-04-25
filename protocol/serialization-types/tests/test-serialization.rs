@@ -9,6 +9,7 @@ use bin_prot::{from_reader, to_writer, Value};
 use mina_serialization_types::v1::*;
 use pretty_assertions::assert_eq;
 use serde::{Deserialize, Serialize};
+use std::any::TypeId;
 use std::str::FromStr;
 use test_fixtures::*;
 use wasm_bindgen_test::*;
@@ -447,7 +448,7 @@ fn test_staged_ledger_diff_diff_coinbase() {
         // other variant (dummy)
         // replace this with the actual types
         // once CoinBase::Zero and CoinBase::Two are implemented,
-        CoinBaseFeeTransferV1,
+        DummyEmptyVariant,
     );
 }
 
@@ -559,6 +560,19 @@ pub(crate) fn select_path<'a>(
     val
 }
 
+fn test_in_block_ensure_empty(block: &bin_prot::Value, paths: &[&str]) {
+    for path in paths {
+        let val = select_path(block, path);
+
+        let mut bytes = vec![];
+        bin_prot::to_writer(&mut bytes, val).expect(&format!(
+            "Failed writing bin-prot encoded data\npath: {}\ndata: {:#?}",
+            path, val
+        ));
+        assert_eq!(bytes.len(), 0, "path: {}\ndata: {:#?}", path, val);
+    }
+}
+
 fn test_in_block<'a, T: Serialize + Deserialize<'a>>(block: &bin_prot::Value, paths: &[&str]) {
     for path in paths {
         let val = select_path(block, path);
@@ -619,6 +633,9 @@ macro_rules! block_path_test {
     };
 }
 
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct DummyEmptyVariant;
+
 #[macro_export]
 macro_rules! block_sum_path_test {
     ($path:expr, $($typ:ty,)*) => {
@@ -626,7 +643,11 @@ macro_rules! block_sum_path_test {
             println!("Testing block {}", block.block_name);
             let mut success = 0;
             $(
-                if std::panic::catch_unwind(|| test_in_block::<$typ>(&block.value, &[$path])).is_ok() {
+                if TypeId::of::<$typ>() == TypeId::of::<DummyEmptyVariant>() {
+                    if std::panic::catch_unwind(|| test_in_block_ensure_empty(&block.value, &[$path])).is_ok() {
+                        success += 1;
+                    }
+                } else if std::panic::catch_unwind(|| test_in_block::<$typ>(&block.value, &[$path])).is_ok() {
                     success += 1;
                 }
             )*
