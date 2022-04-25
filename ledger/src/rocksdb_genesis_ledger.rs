@@ -66,7 +66,12 @@ impl<'a, const DEPTH: usize> GenesisLedger<'a, DEPTH> for RocksDbGenesisLedger<'
 #[cfg(test)]
 mod tests {
     use super::*;
-    use rocksdb::Options;
+    use crate::*;
+
+    use ark_ff::*;
+    use mina_merkle::*;
+    use proof_systems::mina_hasher::Fp;
+    use rocksdb::*;
 
     const DBPATH: &str =  "test-data/genesis_ledger_6a887ea130e53b06380a9ab27b327468d28d4ce47515a0cc59759d4a3912f0ef/";
 
@@ -74,7 +79,42 @@ mod tests {
     fn test_iterate_database() {
         let db = rocksdb::DB::open_for_read_only(&Options::default(), DBPATH, true).unwrap();
         let genesis_ledger: RocksDbGenesisLedger<20> = RocksDbGenesisLedger::new(&db);
-        assert_eq!(genesis_ledger.accounts().count(), 1676); // successfully read the correct number of accounts
-        assert!(genesis_ledger.accounts().all(|e| e.is_ok())) // All deserialied sucessfully
+        let accounts: Vec<_> = genesis_ledger.accounts().collect();
+        assert_eq!(accounts.len(), 1676); // successfully read the correct number of accounts
+        assert!(genesis_ledger.accounts().all(|e| e.is_ok())); // All deserialied sucessfully
+
+        let mut expected_account_hashes = Vec::with_capacity(genesis_ledger.accounts().count());
+        let mut expected_root_height = 0;
+        let mut expected_root_hash: Option<Fp> = None;
+        for (key, value) in db
+            .iterator(IteratorMode::Start)
+            .take_while(|(key, _)| key[0] < 0xfe)
+        {
+            let height = key[0];
+            let hash: Fp = BigInteger256::read(&value[2..]).unwrap().into();
+            if height > expected_root_height {
+                expected_root_height = height;
+                expected_root_hash = Some(hash);
+            }
+            if height == 0 {
+                expected_account_hashes.push(hash);
+            }
+        }
+
+        let mut merkle_ledger = genesis_ledger.to_mina_merkle_ledger();
+        assert!(expected_root_hash.is_some());
+        assert_eq!(merkle_ledger.height(), expected_root_height as u32);
+
+        // TODO: Change this to assert_eq! when Hashable is completely implemented for Account
+        assert_ne!(merkle_ledger.root(), expected_root_hash);
+        assert_eq!(accounts.len(), expected_account_hashes.len());
+        for (i, account) in accounts.into_iter().enumerate() {
+            assert!(account.is_ok());
+            let account = account.unwrap();
+            let hash = MinaLedgerMerkleHasher::hash(&account, MerkleTreeNodeMetadata::new(0, 1));
+            let hash_expected = expected_account_hashes[i];
+            // TODO: Change this to assert_eq! when Hashable is completely implemented for Account
+            assert_ne!(hash, hash_expected);
+        }
     }
 }

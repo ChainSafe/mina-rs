@@ -7,7 +7,20 @@
 //! is also a way to initially allocate funds to accounts
 //!
 
+use mina_merkle::*;
 use mina_rs_base::account::Account;
+
+/// Type alias for mina merkle ledger hasher
+pub type MinaLedgerMerkleHasher = MinaPoseidonMerkleHasher<Account>;
+
+/// Type alias for mina merkle ledger
+pub type MinaLedgerMerkleTree = MinaMerkleTree<
+    <MinaLedgerMerkleHasher as MerkleHasher>::Item,
+    <MinaLedgerMerkleHasher as MerkleHasher>::Hash,
+    MinaLedgerMerkleHasher,
+    MinaPoseidonMerkleMerger,
+    FixedHeightMode,
+>;
 
 /// A genesis ledger provides access to its accounts by implementing IntoIterator
 /// This implementation must be provided to meet the trait requirements
@@ -30,6 +43,15 @@ where
     /// Return a iterator over the accounts in this genesis ledger without consuming self
     fn accounts(&'a self) -> <&'a Self as IntoIterator>::IntoIter {
         self.into_iter()
+    }
+
+    /// Build mina merkle ledger tree with a fixed height
+    fn to_mina_merkle_ledger(&'a self) -> MinaLedgerMerkleTree {
+        const MINA_LEDGER_HEIGHT: u32 = 20;
+
+        let mut tree = MinaLedgerMerkleTree::new(MINA_LEDGER_HEIGHT);
+        tree.add_batch(self.accounts().flatten());
+        tree
     }
 
     // TODO: Add additional methods when they are required

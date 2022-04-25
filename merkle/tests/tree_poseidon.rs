@@ -6,10 +6,8 @@ mod tests {
     use proof_systems::*;
 
     use ark_ff::{BigInteger256, FromBytes};
-    use lockfree_object_pool::SpinLockObjectPool;
-    use mina_hasher::{create_legacy, Fp, Hashable, PoseidonHasherLegacy, ROInput};
+    use mina_hasher::{Fp, Hashable, ROInput};
     use mina_merkle::*;
-    use once_cell::sync::OnceCell;
     use std::collections::HashMap;
 
     #[derive(Debug, Clone)]
@@ -30,7 +28,6 @@ mod tests {
     }
 
     impl_poseidon_legacy_hasher_pool_provider!(TestLeafNode);
-
     struct TestHasher;
 
     impl MerkleHasher<2> for TestHasher {
