@@ -3,7 +3,6 @@
 
 use clap::{Arg, Command};
 use mina_rs_base::{types::*, *};
-use serde::Deserialize;
 use std::str::FromStr;
 
 const BLOCK_BYTES: &[u8] = include_bytes!("../../../../protocol/test-fixtures/src/data/block1");
@@ -32,8 +31,8 @@ fn main() -> anyhow::Result<()> {
 
 fn cpu_profile_serialization() -> anyhow::Result<ExternalTransition> {
     let mut de = bin_prot::Deserializer::from_reader(BLOCK_BYTES);
-    let et: <ExternalTransition as SerializationTypeAnnotation>::BinProtType =
-        Deserialize::deserialize(&mut de)?;
+    let et: <ExternalTransition as BinProtSerializationType>::T =
+        serde::Deserialize::deserialize(&mut de)?;
     Ok(et.into())
 }
 

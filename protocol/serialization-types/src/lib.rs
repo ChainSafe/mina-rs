@@ -37,8 +37,8 @@ pub mod signatures;
 pub mod staged_ledger_diff;
 pub mod version_bytes;
 
-mod type_annotation;
-pub use type_annotation::TypeAnnotation;
+mod type_annotations;
+pub use type_annotations::*;
 
 /// Version 1 serialization types for the Mina protocol
 pub mod v1 {

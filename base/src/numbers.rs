@@ -3,9 +3,9 @@
 
 //! Newtypes for different numeric types used throughout Mina
 
-use std::fmt;
+use crate::*;
 
-use proof_systems::*;
+use std::fmt;
 
 use derive_deref::Deref;
 use derive_more::From;
