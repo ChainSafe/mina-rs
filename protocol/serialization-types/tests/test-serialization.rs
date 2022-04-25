@@ -613,6 +613,7 @@ where
 macro_rules! block_path_test {
     ($typ:ty, $path:expr) => {
         for block in TEST_BLOCKS.values() {
+            println!("Testing block {}", block.block_name);
             test_in_block::<$typ>(&block.value, &[$path]);
         }
     };
@@ -621,14 +622,15 @@ macro_rules! block_path_test {
 #[macro_export]
 macro_rules! block_sum_path_test {
     ($path:expr, $($typ:ty,)*) => {
-        for (i, block) in TEST_BLOCKS.values().enumerate() {
+        for block in TEST_BLOCKS.values() {
+            println!("Testing block {}", block.block_name);
             let mut success = 0;
             $(
                 if std::panic::catch_unwind(|| test_in_block::<$typ>(&block.value, &[$path])).is_ok() {
                     success += 1;
                 }
             )*
-            assert_eq!(success, 1, "Block {i} failed");
+            assert_eq!(success, 1, "Failing block: {}", block.block_name);
         }
     };
 }
