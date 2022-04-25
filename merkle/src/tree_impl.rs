@@ -2,20 +2,30 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use super::*;
-use std::marker::PhantomData;
+use std::{cmp::Ordering, marker::PhantomData};
 
 const DEGREE: usize = 2;
+
+// modes of tree operation
+
+#[derive(Default)]
+/// Type state mode for a tree with a fixed height
+pub struct FixedHeightMode(u32);
+#[derive(Default)]
+/// Type state mode for a tree with a variable height that increases as data is added
+pub struct VariableHeightMode;
 
 /// Special complete binary merkle tree that is compatible with
 /// <https://github.com/o1-labs/snarky/blob/master/src/base/merkle_tree.ml>
 /// whose leaf nodes are at the same height
-pub struct MinaMerkleTree<Item, Hash, Hasher, Merger>
+pub struct MinaMerkleTree<Item, Hash, Hasher, Merger, Mode>
 where
     Hasher: MerkleHasher<DEGREE, Item = Item, Hash = Hash>,
     Merger: MerkleMerger<DEGREE, Hash = Hash>,
     Hash: Clone,
 {
-    height: u32,
+    mode: Mode,
+    variable_height: u32,
     leafs: Vec<(Item, Option<Hash>)>,
     nodes: Vec<Option<Hash>>,
 
@@ -23,17 +33,40 @@ where
     _pd_merger: PhantomData<Merger>,
 }
 
-impl<Item, Hash, Hasher, Merger> MinaMerkleTree<Item, Hash, Hasher, Merger>
+impl<Item, Hash, Hasher, Merger> MinaMerkleTree<Item, Hash, Hasher, Merger, FixedHeightMode>
 where
     Hasher: MerkleHasher<DEGREE, Item = Item, Hash = Hash>,
     Merger: MerkleMerger<DEGREE, Hash = Hash>,
     Hash: Clone,
 {
-    /// Creates a new instance of [MinaMerkleTree]
+    /// Creates a new instance of a fixed height MinaMerkleTree
+    pub fn new(height: u32) -> Self {
+        Self {
+            mode: FixedHeightMode(height),
+            ..Default::default()
+        }
+    }
+}
+
+impl<Item, Hash, Hasher, Merger> MinaMerkleTree<Item, Hash, Hasher, Merger, VariableHeightMode>
+where
+    Hasher: MerkleHasher<DEGREE, Item = Item, Hash = Hash>,
+    Merger: MerkleMerger<DEGREE, Hash = Hash>,
+    Hash: Clone,
+{
+    /// Creates a new instance of a variable height MinaMerkletree
     pub fn new() -> Self {
         Default::default()
     }
+}
 
+impl<Item, Hash, Hasher, Merger, Mode> MinaMerkleTree<Item, Hash, Hasher, Merger, Mode>
+where
+    Hasher: MerkleHasher<DEGREE, Item = Item, Hash = Hash>,
+    Merger: MerkleMerger<DEGREE, Hash = Hash>,
+    Hash: Clone,
+    Mode: Default,
+{
     /// Creates a new instance of [MinaMerkleTree] with estimated capacity of leaves
     pub fn with_capacity(capacity: usize) -> Self {
         let potential_height = calculate_height(capacity);
@@ -74,7 +107,7 @@ where
                 let right_hash = self.calculate_hash_if_needed(right);
                 let hash = Merger::merge(
                     [left_hash, right_hash],
-                    MerkleTreeNodeMetadata::new(index, self.height),
+                    MerkleTreeNodeMetadata::new(index, self.variable_height),
                 );
                 self.nodes[index] = hash.clone();
                 hash
@@ -87,7 +120,7 @@ where
                     None => {
                         let node_hash = Some(Hasher::hash(
                             data,
-                            MerkleTreeNodeMetadata::new(index, self.height),
+                            MerkleTreeNodeMetadata::new(index, self.variable_height),
                         ));
                         *hash = node_hash.clone();
                         node_hash
@@ -101,7 +134,8 @@ where
     }
 }
 
-impl<Item, Hash, Hasher, Merger> MerkleTree<DEGREE> for MinaMerkleTree<Item, Hash, Hasher, Merger>
+impl<Item, Hash, Hasher, Merger> MerkleTree<DEGREE>
+    for MinaMerkleTree<Item, Hash, Hasher, Merger, VariableHeightMode>
 where
     Hasher: MerkleHasher<DEGREE, Item = Item, Hash = Hash>,
     Merger: MerkleMerger<DEGREE, Hash = Hash>,
@@ -111,7 +145,7 @@ where
     type Hash = Hash;
 
     fn height(&self) -> u32 {
-        self.height
+        self.variable_height
     }
 
     fn count(&self) -> usize {
@@ -123,28 +157,7 @@ where
     }
 
     fn add_batch(&mut self, items: impl IntoIterator<Item = Self::Item>) {
-        let mut leaves: Vec<_> = items
-            .into_iter()
-            .map(|item| {
-                (
-                    // Tree height might be changed, do not calculate hash here.
-                    item, None,
-                )
-            })
-            .collect();
-        let new_leaf_count = self.leafs.len() + leaves.len();
-        let new_height = calculate_height(new_leaf_count);
-        if new_height != self.height {
-            let new_node_count = calculate_node_count(new_height);
-            self.height = new_height;
-            self.nodes = vec![None; new_node_count];
-        } else {
-            let start = self.nodes.len() + self.leafs.len();
-            for i in start..(start + leaves.len()) {
-                self.clear_dirty_hashes(i);
-            }
-        }
-        self.leafs.append(&mut leaves);
+        add_batch(self, items)
     }
 
     fn add(&mut self, item: Self::Item) {
@@ -152,21 +165,101 @@ where
     }
 }
 
-impl<Item, Hash, Hasher, Merger> Default for MinaMerkleTree<Item, Hash, Hasher, Merger>
+impl<Item, Hash, Hasher, Merger> MerkleTree<DEGREE>
+    for MinaMerkleTree<Item, Hash, Hasher, Merger, FixedHeightMode>
 where
     Hasher: MerkleHasher<DEGREE, Item = Item, Hash = Hash>,
     Merger: MerkleMerger<DEGREE, Hash = Hash>,
     Hash: Clone,
 {
+    type Item = Item;
+    type Hash = Hash;
+
+    fn height(&self) -> u32 {
+        self.mode.0
+    }
+
+    fn count(&self) -> usize {
+        self.leafs.len()
+    }
+
+    fn root(&mut self) -> Option<Self::Hash> {
+        let mut hash = self.calculate_hash_if_needed(0);
+        let fixed_height = self.mode.0;
+        match fixed_height.cmp(&self.variable_height) {
+            Ordering::Less => panic!(
+                "fixed_height {fixed_height} should not be smaller than current height {}",
+                self.variable_height,
+            ),
+            Ordering::Equal => hash,
+            Ordering::Greater => {
+                for h in (self.variable_height + 1)..=fixed_height {
+                    hash = Merger::merge([hash, None], MerkleTreeNodeMetadata::new(0, h));
+                }
+                hash
+            }
+        }
+    }
+
+    fn add_batch(&mut self, items: impl IntoIterator<Item = Self::Item>) {
+        add_batch(self, items)
+    }
+
+    fn add(&mut self, item: Self::Item) {
+        self.add_batch(vec![item])
+    }
+}
+
+impl<Item, Hash, Hasher, Merger, Mode> Default for MinaMerkleTree<Item, Hash, Hasher, Merger, Mode>
+where
+    Hasher: MerkleHasher<DEGREE, Item = Item, Hash = Hash>,
+    Merger: MerkleMerger<DEGREE, Hash = Hash>,
+    Hash: Clone,
+    Mode: Default,
+{
     fn default() -> Self {
         Self {
-            height: 0,
+            mode: Default::default(),
+            variable_height: 0,
             leafs: Vec::new(),
             nodes: Vec::new(),
             _pd_hasher: Default::default(),
             _pd_merger: Default::default(),
         }
     }
+}
+
+fn add_batch<Item, Hash, Hasher, Merger, Mode>(
+    tree: &mut MinaMerkleTree<Item, Hash, Hasher, Merger, Mode>,
+    items: impl IntoIterator<Item = Item>,
+) where
+    Hasher: MerkleHasher<DEGREE, Item = Item, Hash = Hash>,
+    Merger: MerkleMerger<DEGREE, Hash = Hash>,
+    Hash: Clone,
+    Mode: Default,
+{
+    let mut leaves: Vec<_> = items
+        .into_iter()
+        .map(|item| {
+            (
+                // Tree height might be changed, do not calculate hash here.
+                item, None,
+            )
+        })
+        .collect();
+    let new_leaf_count = tree.leafs.len() + leaves.len();
+    let new_height = calculate_height(new_leaf_count);
+    if new_height != tree.variable_height {
+        let new_node_count = calculate_node_count(new_height);
+        tree.variable_height = new_height;
+        tree.nodes = vec![None; new_node_count];
+    } else {
+        let start = tree.nodes.len() + tree.leafs.len();
+        for i in start..(start + leaves.len()) {
+            tree.clear_dirty_hashes(i);
+        }
+    }
+    tree.leafs.append(&mut leaves);
 }
 
 fn calculate_height(size: usize) -> u32 {
