@@ -25,7 +25,7 @@ where
     Hash: Clone,
 {
     mode: Mode,
-    height: u32,
+    variable_height: u32,
     leafs: Vec<(Item, Option<Hash>)>,
     nodes: Vec<Option<Hash>>,
 
@@ -107,7 +107,7 @@ where
                 let right_hash = self.calculate_hash_if_needed(right);
                 let hash = Merger::merge(
                     [left_hash, right_hash],
-                    MerkleTreeNodeMetadata::new(index, self.height),
+                    MerkleTreeNodeMetadata::new(index, self.variable_height),
                 );
                 self.nodes[index] = hash.clone();
                 hash
@@ -120,7 +120,7 @@ where
                     None => {
                         let node_hash = Some(Hasher::hash(
                             data,
-                            MerkleTreeNodeMetadata::new(index, self.height),
+                            MerkleTreeNodeMetadata::new(index, self.variable_height),
                         ));
                         *hash = node_hash.clone();
                         node_hash
@@ -145,7 +145,7 @@ where
     type Hash = Hash;
 
     fn height(&self) -> u32 {
-        self.height
+        self.variable_height
     }
 
     fn count(&self) -> usize {
@@ -176,7 +176,7 @@ where
     type Hash = Hash;
 
     fn height(&self) -> u32 {
-        self.height
+        self.mode.0
     }
 
     fn count(&self) -> usize {
@@ -186,14 +186,14 @@ where
     fn root(&mut self) -> Option<Self::Hash> {
         let mut hash = self.calculate_hash_if_needed(0);
         let fixed_height = self.mode.0;
-        match fixed_height.cmp(&self.height) {
+        match fixed_height.cmp(&self.variable_height) {
             Ordering::Less => panic!(
                 "fixed_height {fixed_height} should not be smaller than current height {}",
-                self.height,
+                self.variable_height,
             ),
             Ordering::Equal => hash,
             Ordering::Greater => {
-                for h in (self.height + 1)..=fixed_height {
+                for h in (self.variable_height + 1)..=fixed_height {
                     hash = Merger::merge([hash, None], MerkleTreeNodeMetadata::new(0, h));
                 }
                 hash
@@ -220,7 +220,7 @@ where
     fn default() -> Self {
         Self {
             mode: Default::default(),
-            height: 0,
+            variable_height: 0,
             leafs: Vec::new(),
             nodes: Vec::new(),
             _pd_hasher: Default::default(),
@@ -249,9 +249,9 @@ fn add_batch<Item, Hash, Hasher, Merger, Mode>(
         .collect();
     let new_leaf_count = tree.leafs.len() + leaves.len();
     let new_height = calculate_height(new_leaf_count);
-    if new_height != tree.height {
+    if new_height != tree.variable_height {
         let new_node_count = calculate_node_count(new_height);
-        tree.height = new_height;
+        tree.variable_height = new_height;
         tree.nodes = vec![None; new_node_count];
     } else {
         let start = tree.nodes.len() + tree.leafs.len();

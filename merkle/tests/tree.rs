@@ -72,6 +72,8 @@ mod tests {
         let mut tree = TestFixedHeightMerkleTree::new(3);
         let v: Vec<i64> = (0..10).map(|i| i).collect();
         tree.add_batch(v);
+        assert_eq!(tree.height(), 3);
+        assert_eq!(tree.count(), 10);
         _ = tree.root();
     }
 
@@ -81,6 +83,8 @@ mod tests {
             let mut tree = TestFixedHeightMerkleTree::new(h);
             let v: Vec<i64> = (0..10).map(|i| i).collect();
             tree.add_batch(v);
+            assert_eq!(tree.height(), h);
+            assert_eq!(tree.count(), 10);
             assert!(tree.root().is_some())
         }
     }
