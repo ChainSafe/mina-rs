@@ -46,6 +46,15 @@ mod tests {
         <TestHasher as MerkleHasher>::Hash,
         TestHasher,
         MinaPoseidonMerkleMerger,
+        VariableHeightMode,
+    >;
+
+    type TestFixedHeightMerkleTree = MinaMerkleTree<
+        <TestHasher as MerkleHasher>::Item,
+        <TestHasher as MerkleHasher>::Hash,
+        TestHasher,
+        MinaPoseidonMerkleMerger,
+        FixedHeightMode,
     >;
 
     // The test case is from genesis ledger
@@ -123,7 +132,7 @@ mod tests {
         use rocksdb::*;
 
         let fixed_height = 20;
-        let mut merkle_ledger = TestMerkleTree::new().with_fixed_height(fixed_height);
+        let mut merkle_ledger = TestFixedHeightMerkleTree::new(fixed_height);
 
         // TODO: Use API from DbBackedGenesisLedger to iterate over hash nodes
         let db =

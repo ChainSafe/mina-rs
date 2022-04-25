@@ -22,6 +22,7 @@
 
 #[cfg(test)]
 mod tests {
+    
     use mina_merkle::*;
 
     struct TestHasher;
@@ -55,12 +56,21 @@ mod tests {
         <TestHasher as MerkleHasher>::Hash,
         TestHasher,
         TestMerger,
+        VariableHeightMode,
+    >;
+
+    type TestFixedHeightMerkleTree = MinaMerkleTree<
+        <TestHasher as MerkleHasher>::Item,
+        <TestHasher as MerkleHasher>::Hash,
+        TestHasher,
+        TestMerger,
+        FixedHeightMode,
     >;
 
     #[test]
     #[should_panic]
     fn test_mina_merkle_tree_with_bad_fixed_height() {
-        let mut tree = TestMerkleTree::new().with_fixed_height(3);
+        let mut tree = TestFixedHeightMerkleTree::new(3);
         let v: Vec<i64> = (0..10).map(|i| i).collect();
         tree.add_batch(v);
         _ = tree.root();
@@ -68,12 +78,10 @@ mod tests {
 
     #[test]
     fn test_mina_merkle_tree_with_good_fixed_height() {
-        let mut tree = TestMerkleTree::new();
-        let v: Vec<i64> = (0..10).map(|i| i).collect();
-        tree.add_batch(v);
-        assert!(tree.root().is_some());
         for h in 4..10 {
-            tree = tree.with_fixed_height(h);
+            let mut tree = TestFixedHeightMerkleTree::new(h);
+            let v: Vec<i64> = (0..10).map(|i| i).collect();
+            tree.add_batch(v);
             assert!(tree.root().is_some())
         }
     }
