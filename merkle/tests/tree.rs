@@ -22,7 +22,6 @@
 
 #[cfg(test)]
 mod tests {
-    
     use mina_merkle::*;
 
     struct TestHasher;
