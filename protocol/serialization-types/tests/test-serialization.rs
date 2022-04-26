@@ -565,10 +565,14 @@ fn test_in_block_ensure_empty(block: &bin_prot::Value, paths: &[&str]) {
         let val = select_path(block, path);
 
         let mut bytes = vec![];
-        bin_prot::to_writer(&mut bytes, val).expect(&format!(
-            "Failed writing bin-prot encoded data\npath: {}\ndata: {:#?}",
-            path, val
-        ));
+        bin_prot::to_writer(&mut bytes, val)
+            .map_err(|err| {
+                format!(
+                    "Failed writing bin-prot encoded data, err: {err}\npath: {path}\ndata: {:?}",
+                    val
+                )
+            })
+            .unwrap();
         assert_eq!(bytes.len(), 0, "path: {}\ndata: {:#?}", path, val);
     }
 }
@@ -598,7 +602,6 @@ fn test_in_block<'a, T: Serialize + Deserialize<'a>>(block: &bin_prot::Value, pa
                 )
             })
             .unwrap();
-
         // serialize back to binary and ensure it matches
         let mut re_bytes = vec![];
         to_writer(&mut re_bytes, &re_val)
@@ -609,7 +612,6 @@ fn test_in_block<'a, T: Serialize + Deserialize<'a>>(block: &bin_prot::Value, pa
                 )
             })
             .unwrap();
-
         assert_eq!(bytes, re_bytes, "path: {}\ndata: {:#?}", path, val);
     }
 }
@@ -627,8 +629,13 @@ where
 macro_rules! block_path_test {
     ($typ:ty, $path:expr) => {
         for block in TEST_BLOCKS.values() {
-            println!("Testing block {}", block.block_name);
+            let start = std::time::Instant::now();
             test_in_block::<$typ>(&block.value, &[$path]);
+            println!(
+                "block {} duration {:?}",
+                block.block_name,
+                std::time::Instant::now() - start,
+            );
         }
     };
 }
