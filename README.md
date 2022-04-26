@@ -12,7 +12,7 @@ An implementation of Mina protocol in Rust, with focus on web and Wasm compatibi
 
 ** As you can probably tell this is a WIP! Don't use for anything yet **
 
-Rust doc of `main` branch can be found [here](https://chainsafe.github.io/mina-rs/rustdoc/index.html)
+Rust doc of `main` branch can be found [here](https://chainsafe.github.io/mina-rs/rustdoc/)
 
 ## Building
 

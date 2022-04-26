@@ -123,11 +123,6 @@ jobs:
           sudo apt-get install -y valgrind graphviz
           sudo pip install gprof2dot
           ./scripts/profiler.sh
-      - uses: peaceiris/actions-gh-pages@v3
-        # if: ${{ github.ref == 'refs/heads/main' }}
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./target/doc
       - uses: actions/upload-artifact@v2
         with:
           name: criterion
@@ -262,7 +257,7 @@ jobs:
   gh-pages:
     env:
       # https://doc.rust-lang.org/nightly/rustdoc/unstable-features.html#--index-page-provide-a-top-level-landing-page-for-docs
-      RUSTDOCFLAGS: "-Zunstable-options --enable-index-page --show-coverage"
+      RUSTDOCFLAGS: "-Zunstable-options --enable-index-page"
     runs-on: ubuntu-latest
     steps:
       - run: lscpu
@@ -276,18 +271,19 @@ jobs:
             ~/.cargo/registry/cache/
             ~/.cargo/git/db/
             target/
-          key: ${{ runner.os }}-x86_64-cargo-${{ hashFiles('**/Cargo.lock') }}
+          key: ${{ runner.os }}-gh-pages-cargo-${{ hashFiles('**/Cargo.lock') }}
       - uses: actions-rs/toolchain@v1
         with:
           profile: minimal
           toolchain: nightly
           components:
           override: true
-      - run: cargo doc --workspace --no-deps --all-features
-      - run: mkdir -p /tmp/gh-pages/
-      - run: mv ./target/doc /tmp/gh-pages/rustdoc
+      - run: cargo +nightly doc --workspace --all-features --no-deps
+      - run: mkdir -p ./gh-pages/
+      - run: mv ./target/doc ./gh-pages/rustdoc
+      - run: ls -al ./gh-pages/rustdoc
       - uses: peaceiris/actions-gh-pages@v3
-        # if: ${{ github.ref == 'refs/heads/main' }}
+        if: ${{ github.ref == 'refs/heads/main' }}
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: /tmp/gh-pages
+          publish_dir: ./gh-pages
