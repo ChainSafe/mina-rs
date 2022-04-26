@@ -1,0 +1,4 @@
+(function() {var implementors = {};
+implementors["bin_prot_checker"] = [{"text":"impl <a class=\"trait\" href=\"https://doc.rust-lang.org/nightly/core/str/traits/trait.FromStr.html\" title=\"trait core::str::traits::FromStr\">FromStr</a> for <a class=\"enum\" href=\"bin_prot_checker/enum.Test.html\" title=\"enum bin_prot_checker::Test\">Test</a>","synthetic":false,"types":["bin_prot_checker::Test"]}];
+implementors["mina_rs_base"] = [{"text":"impl <a class=\"trait\" href=\"https://doc.rust-lang.org/nightly/core/str/traits/trait.FromStr.html\" title=\"trait core::str::traits::FromStr\">FromStr</a> for <a class=\"struct\" href=\"mina_rs_base/numbers/struct.Amount.html\" title=\"struct mina_rs_base::numbers::Amount\">Amount</a>","synthetic":false,"types":["mina_rs_base::numbers::Amount"]}];
+if (window.register_implementors) {window.register_implementors(implementors);} else {window.pending_implementors = implementors;}})()

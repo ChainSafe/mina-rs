@@ -1,0 +1,3 @@
+(function() {var implementors = {};
+implementors["bin_prot_checker"] = [{"text":"impl <a class=\"trait\" href=\"https://doc.rust-lang.org/nightly/alloc/string/trait.ToString.html\" title=\"trait alloc::string::ToString\">ToString</a> for <a class=\"enum\" href=\"bin_prot_checker/enum.Test.html\" title=\"enum bin_prot_checker::Test\">Test</a>","synthetic":false,"types":["bin_prot_checker::Test"]}];
+if (window.register_implementors) {window.register_implementors(implementors);} else {window.pending_implementors = implementors;}})()

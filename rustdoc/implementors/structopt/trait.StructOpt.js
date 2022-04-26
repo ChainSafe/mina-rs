@@ -1,0 +1,3 @@
+(function() {var implementors = {};
+implementors["bin_prot_checker"] = [{"text":"impl StructOpt for <a class=\"struct\" href=\"bin_prot_checker/struct.Opt.html\" title=\"struct bin_prot_checker::Opt\">Opt</a>","synthetic":false,"types":["bin_prot_checker::Opt"]},{"text":"impl StructOpt for <a class=\"enum\" href=\"bin_prot_checker/enum.Subcommand.html\" title=\"enum bin_prot_checker::Subcommand\">Subcommand</a>","synthetic":false,"types":["bin_prot_checker::Subcommand"]}];
+if (window.register_implementors) {window.register_implementors(implementors);} else {window.pending_implementors = implementors;}})()

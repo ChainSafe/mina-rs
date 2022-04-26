@@ -1,0 +1,196 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `protocol/serialization-types/src/lib.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>lib.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script src="../../crates.js"></script><script defer src="../../main.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script>
+    <noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../mina_serialization_types/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div>
+        </a><h2 class="location"></h2>
+    </nav>
+    <nav class="sidebar"><a class="sidebar-logo" href="../../mina_serialization_types/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div>
+        </a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../mina_serialization_types/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><nav class="sub"><div class="theme-picker hidden"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu" title="themes"><img width="22" height="22" alt="Pick another theme!" src="../../brush.svg"></button><div id="theme-choices" role="menu"></div></div><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><button type="button" id="help-button" title="help">?</button><a id="settings-menu" href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<span id="2">2</span>
+<span id="3">3</span>
+<span id="4">4</span>
+<span id="5">5</span>
+<span id="6">6</span>
+<span id="7">7</span>
+<span id="8">8</span>
+<span id="9">9</span>
+<span id="10">10</span>
+<span id="11">11</span>
+<span id="12">12</span>
+<span id="13">13</span>
+<span id="14">14</span>
+<span id="15">15</span>
+<span id="16">16</span>
+<span id="17">17</span>
+<span id="18">18</span>
+<span id="19">19</span>
+<span id="20">20</span>
+<span id="21">21</span>
+<span id="22">22</span>
+<span id="23">23</span>
+<span id="24">24</span>
+<span id="25">25</span>
+<span id="26">26</span>
+<span id="27">27</span>
+<span id="28">28</span>
+<span id="29">29</span>
+<span id="30">30</span>
+<span id="31">31</span>
+<span id="32">32</span>
+<span id="33">33</span>
+<span id="34">34</span>
+<span id="35">35</span>
+<span id="36">36</span>
+<span id="37">37</span>
+<span id="38">38</span>
+<span id="39">39</span>
+<span id="40">40</span>
+<span id="41">41</span>
+<span id="42">42</span>
+<span id="43">43</span>
+<span id="44">44</span>
+<span id="45">45</span>
+<span id="46">46</span>
+<span id="47">47</span>
+<span id="48">48</span>
+<span id="49">49</span>
+<span id="50">50</span>
+<span id="51">51</span>
+<span id="52">52</span>
+<span id="53">53</span>
+<span id="54">54</span>
+<span id="55">55</span>
+<span id="56">56</span>
+<span id="57">57</span>
+<span id="58">58</span>
+<span id="59">59</span>
+<span id="60">60</span>
+<span id="61">61</span>
+<span id="62">62</span>
+<span id="63">63</span>
+<span id="64">64</span>
+<span id="65">65</span>
+<span id="66">66</span>
+<span id="67">67</span>
+<span id="68">68</span>
+<span id="69">69</span>
+<span id="70">70</span>
+<span id="71">71</span>
+<span id="72">72</span>
+<span id="73">73</span>
+<span id="74">74</span>
+<span id="75">75</span>
+<span id="76">76</span>
+<span id="77">77</span>
+<span id="78">78</span>
+<span id="79">79</span>
+<span id="80">80</span>
+<span id="81">81</span>
+<span id="82">82</span>
+<span id="83">83</span>
+<span id="84">84</span>
+<span id="85">85</span>
+<span id="86">86</span>
+<span id="87">87</span>
+<span id="88">88</span>
+<span id="89">89</span>
+<span id="90">90</span>
+<span id="91">91</span>
+<span id="92">92</span>
+<span id="93">93</span>
+<span id="94">94</span>
+</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems</span>
+<span class="comment">// SPDX-License-Identifier: Apache-2.0</span>
+
+<span class="doccomment">//!</span>
+<span class="doccomment">//! This crate provides a number of types that capture shape of the data structures used by Mina protocol</span>
+<span class="doccomment">//! for communicating between nodes.</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! When used with the serde enabled [bin-prot](https://crates.io/crates/bin-prot) crate</span>
+<span class="doccomment">//! this allows for serializing and deserializing Mina protocol wire messages.</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! This crate contains no code outside of autogenerated serde implementations. It is for reading serialized</span>
+<span class="doccomment">//! data into strongly typed structures only.</span>
+<span class="doccomment">//!</span>
+
+<span class="attribute">#![<span class="ident">deny</span>(<span class="ident">warnings</span>)]</span>
+<span class="attribute">#![<span class="ident">deny</span>(<span class="ident">missing_docs</span>)]</span>
+
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">account</span>;
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">blockchain_state</span>;
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">bulletproof_challenges</span>;
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">common</span>;
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">consensus_state</span>;
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">delta_transition_chain_proof</span>;
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">epoch_data</span>;
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">external_transition</span>;
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">field_and_curve_elements</span>;
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">global_slot</span>;
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">opening_proof</span>;
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">proof_evaluations</span>;
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">proof_messages</span>;
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">protocol_constants</span>;
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">protocol_state</span>;
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">protocol_state_body</span>;
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">protocol_state_proof</span>;
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">protocol_version</span>;
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">signatures</span>;
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">staged_ledger_diff</span>;
+
+<span class="kw">mod</span> <span class="ident">type_annotations</span>;
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">type_annotations</span>::<span class="kw-2">*</span>;
+
+<span class="doccomment">/// Version 1 serialization types for the Mina protocol</span>
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">v1</span> {
+    <span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="kw">super</span>::account</span>::{
+        <span class="ident">AccountV1</span>, <span class="ident">AuthRequiredV1</span>, <span class="ident">PermissionsV1</span>, <span class="ident">TimingV1</span>, <span class="ident">TokenPermissionsV1</span>,
+    };
+    <span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="kw">super</span>::blockchain_state</span>::{
+        <span class="ident">BlockchainStateV1</span>, <span class="ident">NonSnarkStagedLedgerHashV1</span>, <span class="ident">StagedLedgerHashV1</span>,
+    };
+    <span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="kw">super</span>::bulletproof_challenges</span>::{
+        <span class="ident">BulletproofChallengeTuple17V1</span>, <span class="ident">BulletproofChallengeTuple18V1</span>, <span class="ident">BulletproofChallengeV1</span>,
+        <span class="ident">BulletproofChallengesV1</span>, <span class="ident">BulletproofPreChallengeV1</span>, <span class="ident">ProofStateBulletproofChallengesV1</span>,
+        <span class="ident">ScalarChallengeVector2V1</span>,
+    };
+    <span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="kw">super</span>::common</span>::{
+        <span class="ident">AccountNonceV1</span>, <span class="ident">AmountV1</span>, <span class="ident">BigInt256</span>, <span class="ident">BlockTimeV1</span>, <span class="ident">ByteVecV1</span>, <span class="ident">CharV1</span>, <span class="ident">DeltaV1</span>, <span class="ident">ExtendedU32</span>,
+        <span class="ident">ExtendedU64</span>, <span class="ident">ExtendedU64_2</span>, <span class="ident">ExtendedU64_3</span>, <span class="ident">GlobalSlotNumberV1</span>, <span class="ident">Hash2V1</span>, <span class="ident">HashV1</span>, <span class="ident">Hex64V1</span>,
+        <span class="ident">LengthV1</span>, <span class="ident">TokenIdV1</span>,
+    };
+    <span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="kw">super</span>::consensus_state</span>::{<span class="ident">ConsensusStateV1</span>, <span class="ident">VrfOutputTruncatedV1</span>};
+    <span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="kw">super</span>::delta_transition_chain_proof::DeltaTransitionChainProof</span>;
+    <span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="kw">super</span>::epoch_data</span>::{<span class="ident">EpochDataV1</span>, <span class="ident">EpochLedgerV1</span>};
+    <span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="kw">super</span>::external_transition::ExternalTransitionV1</span>;
+    <span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="kw">super</span>::field_and_curve_elements</span>::{
+        <span class="ident">ECPointV1</span>, <span class="ident">ECPointVecV1</span>, <span class="ident">FieldElement</span>, <span class="ident">FieldElementVecV1</span>, <span class="ident">FiniteECPoint</span>,
+        <span class="ident">FiniteECPointPairVecV1</span>, <span class="ident">FiniteECPointVecV1</span>, <span class="ident">InnerCurveScalar</span>,
+    };
+    <span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="kw">super</span>::global_slot::GlobalSlotV1</span>;
+    <span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="kw">super</span>::opening_proof::OpeningProofV1</span>;
+    <span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="kw">super</span>::proof_evaluations::ProofEvaluationsV1</span>;
+    <span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="kw">super</span>::proof_messages</span>::{
+        <span class="ident">ProofMessageWithDegreeBoundV1</span>, <span class="ident">ProofMessageWithoutDegreeBoundListV1</span>, <span class="ident">ProofMessagesV1</span>,
+    };
+    <span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="kw">super</span>::protocol_constants::ProtocolConstantsV1</span>;
+    <span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="kw">super</span>::protocol_state::ProtocolStateV1</span>;
+    <span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="kw">super</span>::protocol_state_body::ProtocolStateBodyV1</span>;
+    <span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="kw">super</span>::protocol_state_proof</span>::{
+        <span class="ident">PairingBasedV1</span>, <span class="ident">PlonkV1</span>, <span class="ident">PrevEvalsV1</span>, <span class="ident">PrevXHatV1</span>, <span class="ident">ProofOpeningsV1</span>,
+        <span class="ident">ProofStateDeferredValuesV1</span>, <span class="ident">ProofStatePairingBasedV1</span>, <span class="ident">ProofStateV1</span>, <span class="ident">ProofStatementV1</span>,
+        <span class="ident">ProofV1</span>, <span class="ident">ProtocolStateProofV1</span>, <span class="ident">ShiftedValueV1</span>, <span class="ident">SpongeDigestBeforeEvaluationsV1</span>,
+    };
+    <span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="kw">super</span>::protocol_version::ProtocolVersionV1</span>;
+    <span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="kw">super</span>::signatures</span>::{<span class="ident">PublicKey2V1</span>, <span class="ident">PublicKeyV1</span>, <span class="ident">SignatureV1</span>};
+    <span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="kw">super</span>::staged_ledger_diff</span>::{
+        <span class="ident">CoinBaseBalanceDataV1</span>, <span class="ident">CoinBaseFeeTransferV1</span>, <span class="ident">CoinBaseV1</span>, <span class="ident">FeeTransferBalanceDataV1</span>,
+        <span class="ident">InternalCommandBalanceDataV1</span>, <span class="ident">PaymentPayloadV1</span>, <span class="ident">SignedCommandFeeTokenV1</span>,
+        <span class="ident">SignedCommandMemoV1</span>, <span class="ident">SignedCommandPayloadBodyV1</span>, <span class="ident">SignedCommandPayloadCommonV1</span>,
+        <span class="ident">SignedCommandPayloadV1</span>, <span class="ident">SignedCommandV1</span>, <span class="ident">StagedLedgerDiffTupleV1</span>, <span class="ident">StagedLedgerDiffV1</span>,
+        <span class="ident">StagedLedgerPreDiffOneV1</span>, <span class="ident">StagedLedgerPreDiffTwoV1</span>, <span class="ident">TransactionSnarkWork</span>,
+        <span class="ident">TransactionStatusAppliedV1</span>, <span class="ident">TransactionStatusAuxiliaryDataV1</span>,
+        <span class="ident">TransactionStatusBalanceDataV1</span>, <span class="ident">TransactionStatusV1</span>, <span class="ident">UserCommandV1</span>,
+        <span class="ident">UserCommandWithStatusV1</span>,
+    };
+}
+</code></pre></div>
+</section><section id="search" class="content hidden"></section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_serialization_types" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.62.0-nightly (de1026a67 2022-04-23)" ></div>
+</body></html>

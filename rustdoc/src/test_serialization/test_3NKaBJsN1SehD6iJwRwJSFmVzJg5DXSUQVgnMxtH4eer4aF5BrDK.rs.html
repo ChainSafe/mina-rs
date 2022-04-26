@@ -1,0 +1,744 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `protocol/test-serialization/src/test_3NKaBJsN1SehD6iJwRwJSFmVzJg5DXSUQVgnMxtH4eer4aF5BrDK.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>test_3NKaBJsN1SehD6iJwRwJSFmVzJg5DXSUQVgnMxtH4eer4aF5BrDK.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script src="../../crates.js"></script><script defer src="../../main.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script>
+    <noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../test_serialization/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div>
+        </a><h2 class="location"></h2>
+    </nav>
+    <nav class="sidebar"><a class="sidebar-logo" href="../../test_serialization/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div>
+        </a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../test_serialization/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><nav class="sub"><div class="theme-picker hidden"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu" title="themes"><img width="22" height="22" alt="Pick another theme!" src="../../brush.svg"></button><div id="theme-choices" role="menu"></div></div><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><button type="button" id="help-button" title="help">?</button><a id="settings-menu" href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<span id="2">2</span>
+<span id="3">3</span>
+<span id="4">4</span>
+<span id="5">5</span>
+<span id="6">6</span>
+<span id="7">7</span>
+<span id="8">8</span>
+<span id="9">9</span>
+<span id="10">10</span>
+<span id="11">11</span>
+<span id="12">12</span>
+<span id="13">13</span>
+<span id="14">14</span>
+<span id="15">15</span>
+<span id="16">16</span>
+<span id="17">17</span>
+<span id="18">18</span>
+<span id="19">19</span>
+<span id="20">20</span>
+<span id="21">21</span>
+<span id="22">22</span>
+<span id="23">23</span>
+<span id="24">24</span>
+<span id="25">25</span>
+<span id="26">26</span>
+<span id="27">27</span>
+<span id="28">28</span>
+<span id="29">29</span>
+<span id="30">30</span>
+<span id="31">31</span>
+<span id="32">32</span>
+<span id="33">33</span>
+<span id="34">34</span>
+<span id="35">35</span>
+<span id="36">36</span>
+<span id="37">37</span>
+<span id="38">38</span>
+<span id="39">39</span>
+<span id="40">40</span>
+<span id="41">41</span>
+<span id="42">42</span>
+<span id="43">43</span>
+<span id="44">44</span>
+<span id="45">45</span>
+<span id="46">46</span>
+<span id="47">47</span>
+<span id="48">48</span>
+<span id="49">49</span>
+<span id="50">50</span>
+<span id="51">51</span>
+<span id="52">52</span>
+<span id="53">53</span>
+<span id="54">54</span>
+<span id="55">55</span>
+<span id="56">56</span>
+<span id="57">57</span>
+<span id="58">58</span>
+<span id="59">59</span>
+<span id="60">60</span>
+<span id="61">61</span>
+<span id="62">62</span>
+<span id="63">63</span>
+<span id="64">64</span>
+<span id="65">65</span>
+<span id="66">66</span>
+<span id="67">67</span>
+<span id="68">68</span>
+<span id="69">69</span>
+<span id="70">70</span>
+<span id="71">71</span>
+<span id="72">72</span>
+<span id="73">73</span>
+<span id="74">74</span>
+<span id="75">75</span>
+<span id="76">76</span>
+<span id="77">77</span>
+<span id="78">78</span>
+<span id="79">79</span>
+<span id="80">80</span>
+<span id="81">81</span>
+<span id="82">82</span>
+<span id="83">83</span>
+<span id="84">84</span>
+<span id="85">85</span>
+<span id="86">86</span>
+<span id="87">87</span>
+<span id="88">88</span>
+<span id="89">89</span>
+<span id="90">90</span>
+<span id="91">91</span>
+<span id="92">92</span>
+<span id="93">93</span>
+<span id="94">94</span>
+<span id="95">95</span>
+<span id="96">96</span>
+<span id="97">97</span>
+<span id="98">98</span>
+<span id="99">99</span>
+<span id="100">100</span>
+<span id="101">101</span>
+<span id="102">102</span>
+<span id="103">103</span>
+<span id="104">104</span>
+<span id="105">105</span>
+<span id="106">106</span>
+<span id="107">107</span>
+<span id="108">108</span>
+<span id="109">109</span>
+<span id="110">110</span>
+<span id="111">111</span>
+<span id="112">112</span>
+<span id="113">113</span>
+<span id="114">114</span>
+<span id="115">115</span>
+<span id="116">116</span>
+<span id="117">117</span>
+<span id="118">118</span>
+<span id="119">119</span>
+<span id="120">120</span>
+<span id="121">121</span>
+<span id="122">122</span>
+<span id="123">123</span>
+<span id="124">124</span>
+<span id="125">125</span>
+<span id="126">126</span>
+<span id="127">127</span>
+<span id="128">128</span>
+<span id="129">129</span>
+<span id="130">130</span>
+<span id="131">131</span>
+<span id="132">132</span>
+<span id="133">133</span>
+<span id="134">134</span>
+<span id="135">135</span>
+<span id="136">136</span>
+<span id="137">137</span>
+<span id="138">138</span>
+<span id="139">139</span>
+<span id="140">140</span>
+<span id="141">141</span>
+<span id="142">142</span>
+<span id="143">143</span>
+<span id="144">144</span>
+<span id="145">145</span>
+<span id="146">146</span>
+<span id="147">147</span>
+<span id="148">148</span>
+<span id="149">149</span>
+<span id="150">150</span>
+<span id="151">151</span>
+<span id="152">152</span>
+<span id="153">153</span>
+<span id="154">154</span>
+<span id="155">155</span>
+<span id="156">156</span>
+<span id="157">157</span>
+<span id="158">158</span>
+<span id="159">159</span>
+<span id="160">160</span>
+<span id="161">161</span>
+<span id="162">162</span>
+<span id="163">163</span>
+<span id="164">164</span>
+<span id="165">165</span>
+<span id="166">166</span>
+<span id="167">167</span>
+<span id="168">168</span>
+<span id="169">169</span>
+<span id="170">170</span>
+<span id="171">171</span>
+<span id="172">172</span>
+<span id="173">173</span>
+<span id="174">174</span>
+<span id="175">175</span>
+<span id="176">176</span>
+<span id="177">177</span>
+<span id="178">178</span>
+<span id="179">179</span>
+<span id="180">180</span>
+<span id="181">181</span>
+<span id="182">182</span>
+<span id="183">183</span>
+<span id="184">184</span>
+<span id="185">185</span>
+<span id="186">186</span>
+<span id="187">187</span>
+<span id="188">188</span>
+<span id="189">189</span>
+<span id="190">190</span>
+<span id="191">191</span>
+<span id="192">192</span>
+<span id="193">193</span>
+<span id="194">194</span>
+<span id="195">195</span>
+<span id="196">196</span>
+<span id="197">197</span>
+<span id="198">198</span>
+<span id="199">199</span>
+<span id="200">200</span>
+<span id="201">201</span>
+<span id="202">202</span>
+<span id="203">203</span>
+<span id="204">204</span>
+<span id="205">205</span>
+<span id="206">206</span>
+<span id="207">207</span>
+<span id="208">208</span>
+<span id="209">209</span>
+<span id="210">210</span>
+<span id="211">211</span>
+<span id="212">212</span>
+<span id="213">213</span>
+<span id="214">214</span>
+<span id="215">215</span>
+<span id="216">216</span>
+<span id="217">217</span>
+<span id="218">218</span>
+<span id="219">219</span>
+<span id="220">220</span>
+<span id="221">221</span>
+<span id="222">222</span>
+<span id="223">223</span>
+<span id="224">224</span>
+<span id="225">225</span>
+<span id="226">226</span>
+<span id="227">227</span>
+<span id="228">228</span>
+<span id="229">229</span>
+<span id="230">230</span>
+<span id="231">231</span>
+<span id="232">232</span>
+<span id="233">233</span>
+<span id="234">234</span>
+<span id="235">235</span>
+<span id="236">236</span>
+<span id="237">237</span>
+<span id="238">238</span>
+<span id="239">239</span>
+<span id="240">240</span>
+<span id="241">241</span>
+<span id="242">242</span>
+<span id="243">243</span>
+<span id="244">244</span>
+<span id="245">245</span>
+<span id="246">246</span>
+<span id="247">247</span>
+<span id="248">248</span>
+<span id="249">249</span>
+<span id="250">250</span>
+<span id="251">251</span>
+<span id="252">252</span>
+<span id="253">253</span>
+<span id="254">254</span>
+<span id="255">255</span>
+<span id="256">256</span>
+<span id="257">257</span>
+<span id="258">258</span>
+<span id="259">259</span>
+<span id="260">260</span>
+<span id="261">261</span>
+<span id="262">262</span>
+<span id="263">263</span>
+<span id="264">264</span>
+<span id="265">265</span>
+<span id="266">266</span>
+<span id="267">267</span>
+<span id="268">268</span>
+<span id="269">269</span>
+<span id="270">270</span>
+<span id="271">271</span>
+<span id="272">272</span>
+<span id="273">273</span>
+<span id="274">274</span>
+<span id="275">275</span>
+<span id="276">276</span>
+<span id="277">277</span>
+<span id="278">278</span>
+<span id="279">279</span>
+<span id="280">280</span>
+<span id="281">281</span>
+<span id="282">282</span>
+<span id="283">283</span>
+<span id="284">284</span>
+<span id="285">285</span>
+<span id="286">286</span>
+<span id="287">287</span>
+<span id="288">288</span>
+<span id="289">289</span>
+<span id="290">290</span>
+<span id="291">291</span>
+<span id="292">292</span>
+<span id="293">293</span>
+<span id="294">294</span>
+<span id="295">295</span>
+<span id="296">296</span>
+<span id="297">297</span>
+<span id="298">298</span>
+<span id="299">299</span>
+<span id="300">300</span>
+<span id="301">301</span>
+<span id="302">302</span>
+<span id="303">303</span>
+<span id="304">304</span>
+<span id="305">305</span>
+<span id="306">306</span>
+<span id="307">307</span>
+<span id="308">308</span>
+<span id="309">309</span>
+<span id="310">310</span>
+<span id="311">311</span>
+<span id="312">312</span>
+<span id="313">313</span>
+<span id="314">314</span>
+<span id="315">315</span>
+<span id="316">316</span>
+<span id="317">317</span>
+<span id="318">318</span>
+<span id="319">319</span>
+<span id="320">320</span>
+<span id="321">321</span>
+<span id="322">322</span>
+<span id="323">323</span>
+<span id="324">324</span>
+<span id="325">325</span>
+<span id="326">326</span>
+<span id="327">327</span>
+<span id="328">328</span>
+<span id="329">329</span>
+<span id="330">330</span>
+<span id="331">331</span>
+<span id="332">332</span>
+<span id="333">333</span>
+<span id="334">334</span>
+<span id="335">335</span>
+<span id="336">336</span>
+<span id="337">337</span>
+<span id="338">338</span>
+<span id="339">339</span>
+<span id="340">340</span>
+<span id="341">341</span>
+<span id="342">342</span>
+<span id="343">343</span>
+<span id="344">344</span>
+<span id="345">345</span>
+<span id="346">346</span>
+<span id="347">347</span>
+<span id="348">348</span>
+<span id="349">349</span>
+<span id="350">350</span>
+<span id="351">351</span>
+<span id="352">352</span>
+<span id="353">353</span>
+<span id="354">354</span>
+<span id="355">355</span>
+<span id="356">356</span>
+<span id="357">357</span>
+<span id="358">358</span>
+<span id="359">359</span>
+<span id="360">360</span>
+<span id="361">361</span>
+<span id="362">362</span>
+<span id="363">363</span>
+<span id="364">364</span>
+<span id="365">365</span>
+<span id="366">366</span>
+<span id="367">367</span>
+<span id="368">368</span>
+</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems</span>
+<span class="comment">// SPDX-License-Identifier: Apache-2.0</span>
+
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
+<span class="kw">mod</span> <span class="ident">tests</span> {
+    <span class="kw">use</span> <span class="ident">anyhow::bail</span>;
+    <span class="kw">use</span> <span class="ident">mina_crypto::hash</span>::<span class="kw-2">*</span>;
+    <span class="kw">use</span> <span class="ident">mina_crypto::prelude</span>::<span class="kw-2">*</span>;
+    <span class="kw">use</span> <span class="ident">mina_rs_base::types</span>::<span class="kw-2">*</span>;
+    <span class="kw">use</span> <span class="ident">mina_serialization_types::v1::ExternalTransitionV1</span>;
+    <span class="kw">use</span> <span class="ident">pretty_assertions::assert_eq</span>;
+    <span class="kw">use</span> <span class="ident">test_fixtures</span>::<span class="kw-2">*</span>;
+    <span class="kw">use</span> <span class="ident">time::macros</span>::<span class="kw-2">*</span>;
+    <span class="kw">use</span> <span class="ident">wasm_bindgen_test</span>::<span class="kw-2">*</span>;
+
+    <span class="kw">use</span> <span class="ident">proof_systems::mina_signer::CompressedPubKey</span>;
+    <span class="kw">use</span> <span class="ident">proof_systems::o1_utils::field_helpers::FieldHelpers</span>;
+
+    <span class="attribute">#[<span class="ident">wasm_bindgen_test</span>]</span>
+    <span class="kw">fn</span> <span class="ident">test_block_wasm</span>() {
+        <span class="ident">test_block</span>().<span class="ident">unwrap</span>()
+    }
+
+    <span class="comment">// https://minaexplorer.com/block/3NKaBJsN1SehD6iJwRwJSFmVzJg5DXSUQVgnMxtH4eer4aF5BrDK</span>
+    <span class="comment">// https://storage.googleapis.com/mina_network_block_data/mainnet-77748-3NKaBJsN1SehD6iJwRwJSFmVzJg5DXSUQVgnMxtH4eer4aF5BrDK.json</span>
+    <span class="attribute">#[<span class="ident">test</span>]</span>
+    <span class="kw">fn</span> <span class="ident">test_block</span>() -&gt; <span class="ident">anyhow::Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
+        <span class="kw">let</span> <span class="ident">et</span>: <span class="ident">ExternalTransitionV1</span> <span class="op">=</span> <span class="ident">TEST_BLOCKS</span>
+            .<span class="ident">get</span>(<span class="string">&quot;3NKaBJsN1SehD6iJwRwJSFmVzJg5DXSUQVgnMxtH4eer4aF5BrDK.hex&quot;</span>)
+            .<span class="ident">unwrap</span>()
+            .<span class="ident">external_transitionv1</span>()<span class="question-mark">?</span>;
+
+        <span class="kw">let</span> <span class="ident">protocol_state</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">et</span>.<span class="number">0</span>.<span class="ident">t</span>.<span class="ident">protocol_state</span>;
+        <span class="macro">assert_eq!</span>(
+            <span class="ident">StateHash::from</span>(<span class="ident">protocol_state</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">previous_state_hash</span>.<span class="ident">clone</span>()).<span class="ident">to_base58_string</span>(),
+            <span class="string">&quot;3NKDdX6eVtAgmmTVxaFLnnPPrsGKgVepG2k5cf8HocgSw6ps8Sww&quot;</span>
+        );
+
+        <span class="kw">let</span> <span class="ident">body</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">et</span>.<span class="number">0</span>.<span class="ident">t</span>.<span class="ident">protocol_state</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">body</span>;
+        <span class="macro">assert_eq!</span>(
+            <span class="ident">StateHash::from</span>(<span class="ident">body</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">genesis_state_hash</span>.<span class="ident">clone</span>()).<span class="ident">to_base58_string</span>(),
+            <span class="string">&quot;3NKeMoncuHab5ScarV5ViyF16cJPT4taWNSaTLS64Dp67wuXigPZ&quot;</span>
+        );
+        <span class="kw">let</span> <span class="ident">blockchain_state</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">body</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">blockchain_state</span>;
+        <span class="kw">let</span> <span class="ident">non_snark</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">blockchain_state</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">staged_ledger_hash</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">non_snark</span>;
+        <span class="macro">assert_eq!</span>(
+            <span class="ident">LedgerHash::from</span>(<span class="ident">non_snark</span>.<span class="ident">t</span>.<span class="ident">ledger_hash</span>.<span class="ident">clone</span>()).<span class="ident">to_base58_string</span>(),
+            <span class="string">&quot;jwD5Kx1GtLKJGSWufhkvCn8m7EFLm2LmAM7neyzLtTiN8wyn2po&quot;</span>
+        );
+
+        <span class="kw">let</span> <span class="ident">bytes</span> <span class="op">=</span> <span class="ident">bs58::decode</span>(<span class="string">&quot;UworXDykADr3Lte856ePMsdawpTVhKLKT9Y3UKha7Tpbt4V1JP&quot;</span>)
+            .<span class="ident">into_vec</span>()
+            .<span class="ident">unwrap</span>();
+        <span class="macro">assert_eq!</span>(<span class="ident">non_snark</span>.<span class="ident">t</span>.<span class="ident">aux_hash</span>.<span class="ident">t</span>[..], <span class="ident">bytes</span>[<span class="number">1</span>..<span class="number">33</span>]);
+        <span class="macro">assert_eq!</span>(
+            <span class="ident">AuxHash::from</span>(<span class="ident">non_snark</span>.<span class="ident">t</span>.<span class="ident">aux_hash</span>.<span class="ident">t</span>.<span class="ident">clone</span>()).<span class="ident">to_base58_string</span>(),
+            <span class="string">&quot;UworXDykADr3Lte856ePMsdawpTVhKLKT9Y3UKha7Tpbt4V1JP&quot;</span>
+        );
+
+        <span class="kw">let</span> <span class="ident">bytes</span> <span class="op">=</span> <span class="ident">bs58::decode</span>(<span class="string">&quot;XbwfEKZjgcZiyDhHRZjHUx72TuxpnuzLPwVYpVWkMAAXkSy7go&quot;</span>)
+            .<span class="ident">into_vec</span>()
+            .<span class="ident">unwrap</span>();
+        <span class="macro">assert_eq!</span>(<span class="ident">non_snark</span>.<span class="ident">t</span>.<span class="ident">pending_coinbase_aux</span>.<span class="ident">t</span>[..], <span class="ident">bytes</span>[<span class="number">1</span>..<span class="number">33</span>]);
+        <span class="macro">assert_eq!</span>(
+            <span class="ident">PendingCoinbaseAuxHash</span>(<span class="ident">non_snark</span>.<span class="ident">t</span>.<span class="ident">pending_coinbase_aux</span>.<span class="ident">t</span>.<span class="ident">clone</span>()).<span class="ident">to_base58_string</span>(),
+            <span class="string">&quot;XbwfEKZjgcZiyDhHRZjHUx72TuxpnuzLPwVYpVWkMAAXkSy7go&quot;</span>
+        );
+
+        <span class="macro">assert_eq!</span>(
+            <span class="ident">CoinBaseHash::from</span>(
+                <span class="ident">blockchain_state</span>
+                    .<span class="ident">t</span>
+                    .<span class="ident">t</span>
+                    .<span class="ident">staged_ledger_hash</span>
+                    .<span class="ident">t</span>
+                    .<span class="ident">t</span>
+                    .<span class="ident">pending_coinbase_hash</span>
+                    .<span class="ident">t</span>
+                    .<span class="ident">clone</span>()
+            )
+            .<span class="ident">to_base58_string</span>(),
+            <span class="string">&quot;2mzpdUi5ddLicLGUns4iYFiNahL5B5cPkTUot83v2moNtr4mzRYf&quot;</span>
+        );
+        <span class="macro">assert_eq!</span>(
+            <span class="ident">SnarkedLedgerHash::from</span>(<span class="ident">blockchain_state</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">snarked_ledger_hash</span>.<span class="ident">clone</span>())
+                .<span class="ident">to_base58_string</span>(),
+            <span class="string">&quot;jxkQm8ge9sYPwPyUYUMZ6wr7SQ6Pit5szbRvPmEzYKQQZAnACyC&quot;</span>
+        );
+        <span class="macro">assert_eq!</span>(
+            <span class="ident">SnarkedLedgerHash::from</span>(<span class="ident">blockchain_state</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">genesis_ledger_hash</span>.<span class="ident">clone</span>())
+                .<span class="ident">to_base58_string</span>(),
+            <span class="string">&quot;jx7buQVWFLsXTtzRgSxbYcT8EYLS8KCZbLrfDcJxMtyy4thw2Ee&quot;</span>
+        );
+        <span class="macro">assert_eq!</span>(<span class="ident">blockchain_state</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">snarked_next_available_token</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">t</span>, <span class="number">2</span>);
+        <span class="macro">assert_eq!</span>(
+            <span class="ident">BlockTime::from</span>(<span class="ident">blockchain_state</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">timestamp</span>.<span class="ident">clone</span>()).<span class="ident">epoch_millis</span>(),
+            <span class="number">1636092900000</span>
+        );
+        <span class="macro">assert_eq!</span>(
+            <span class="ident">BlockTime::from</span>(<span class="ident">blockchain_state</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">timestamp</span>.<span class="ident">clone</span>()).<span class="ident">datetime</span>(),
+            <span class="macro">datetime!</span>(<span class="number">2021</span><span class="op">-</span><span class="number">11</span><span class="op">-</span><span class="number">05</span> <span class="number">06</span>:<span class="number">15</span>:<span class="number">00</span> <span class="ident">UTC</span>)
+        );
+
+        <span class="kw">let</span> <span class="ident">consensus_state</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">body</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">consensus_state</span>;
+        <span class="macro">assert_eq!</span>(<span class="ident">consensus_state</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">blockchain_length</span>.<span class="ident">t</span>.<span class="ident">t</span>, <span class="number">77748</span>);
+        <span class="macro">assert_eq!</span>(<span class="ident">consensus_state</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">epoch_count</span>.<span class="ident">t</span>.<span class="ident">t</span>, <span class="number">15</span>);
+        <span class="macro">assert_eq!</span>(<span class="ident">consensus_state</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">min_window_density</span>.<span class="ident">t</span>.<span class="ident">t</span>, <span class="number">33</span>);
+        <span class="macro">assert_eq!</span>(
+            <span class="ident">ConsensusState::from</span>(<span class="ident">consensus_state</span>.<span class="ident">clone</span>()).<span class="ident">sub_window_densities</span>(),
+            <span class="macro">vec!</span>[<span class="number">6</span>, <span class="number">1</span>, <span class="number">3</span>, <span class="number">5</span>, <span class="number">4</span>, <span class="number">3</span>, <span class="number">5</span>, <span class="number">7</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>,]
+        );
+
+        <span class="kw">let</span> <span class="ident">bytes</span> <span class="op">=</span> <span class="ident">base64::decode_config</span>(
+            <span class="string">&quot;WNAmmaRL7XzyhZHiz276MbnBv4YUIJRGf9P_Xu0RBAA=&quot;</span>,
+            <span class="ident">base64::URL_SAFE</span>,
+        )
+        .<span class="ident">unwrap</span>();
+        <span class="macro">assert_eq!</span>(
+            <span class="ident">VrfOutputTruncated::from</span>(<span class="ident">consensus_state</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">last_vrf_output</span>.<span class="ident">t</span>.<span class="ident">clone</span>()).<span class="ident">as_ref</span>(),
+            <span class="kw-2">&amp;</span><span class="ident">bytes</span>[..]
+        );
+
+        <span class="macro">assert_eq!</span>(
+            <span class="ident">Amount::from</span>(<span class="ident">consensus_state</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">total_currency</span>.<span class="ident">t</span>.<span class="ident">t</span>).<span class="ident">to_string</span>(),
+            <span class="string">&quot;867667132.840039233&quot;</span>
+        );
+        <span class="macro">assert_eq!</span>(
+            <span class="ident">consensus_state</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">curr_global_slot</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">slot_number</span>.<span class="ident">t</span>.<span class="ident">t</span>,
+            <span class="number">111965</span>
+        );
+        <span class="macro">assert_eq!</span>(
+            <span class="ident">consensus_state</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">curr_global_slot</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">slots_per_epoch</span>.<span class="ident">t</span>.<span class="ident">t</span>,
+            <span class="number">7140</span>
+        );
+        <span class="macro">assert_eq!</span>(<span class="ident">consensus_state</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">global_slot_since_genesis</span>.<span class="ident">t</span>.<span class="ident">t</span>, <span class="number">111965</span>);
+
+        <span class="kw">let</span> <span class="ident">staking_epoch_data</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">consensus_state</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">staking_epoch_data</span>;
+        <span class="macro">assert_eq!</span>(
+            <span class="ident">LedgerHash::from</span>(<span class="ident">staking_epoch_data</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">ledger</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">hash</span>.<span class="ident">clone</span>()).<span class="ident">to_base58_string</span>(),
+            <span class="string">&quot;jxn15ATGoe4WGgYpbssxJH9XW8NXRDy22WvSsBqvMqcnLPgPAwN&quot;</span>
+        );
+        <span class="macro">assert_eq!</span>(
+            <span class="ident">Amount::from</span>(<span class="ident">staking_epoch_data</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">ledger</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">total_currency</span>.<span class="ident">t</span>.<span class="ident">t</span>).<span class="ident">to_string</span>(),
+            <span class="string">&quot;861208012.840039233&quot;</span>
+        );
+        <span class="macro">assert_eq!</span>(
+            <span class="ident">EpochSeed::from</span>(<span class="ident">staking_epoch_data</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">seed</span>.<span class="ident">clone</span>()).<span class="ident">to_base58_string</span>(),
+            <span class="string">&quot;2vao4i3odTHZVRbEhdkKvLoD1rW2UuiVaayVFosYtkghABg29o7i&quot;</span>
+        );
+        <span class="macro">assert_eq!</span>(
+            <span class="ident">StateHash::from</span>(<span class="ident">staking_epoch_data</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">start_checkpoint</span>.<span class="ident">clone</span>()).<span class="ident">to_base58_string</span>(),
+            <span class="string">&quot;3NLM6x7j2Z68e8gGspyvc1aU884uU6yWkwz9aW127BFckn9b5uvo&quot;</span>
+        );
+        <span class="macro">assert_eq!</span>(
+            <span class="ident">StateHash::from</span>(<span class="ident">staking_epoch_data</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">lock_checkpoint</span>.<span class="ident">clone</span>()).<span class="ident">to_base58_string</span>(),
+            <span class="string">&quot;3NLiFhztdCsuWSociNGMspidiYkyqNKZw6ufH7jqbgQtEgGtBb2P&quot;</span>
+        );
+        <span class="macro">assert_eq!</span>(<span class="ident">staking_epoch_data</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">epoch_length</span>.<span class="ident">t</span>.<span class="ident">t</span>, <span class="number">4697</span>);
+
+        <span class="kw">let</span> <span class="ident">next_epoch_data</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">consensus_state</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">next_epoch_data</span>;
+        <span class="macro">assert_eq!</span>(
+            <span class="ident">LedgerHash::from</span>(<span class="ident">next_epoch_data</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">ledger</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">hash</span>.<span class="ident">clone</span>()).<span class="ident">to_base58_string</span>(),
+            <span class="string">&quot;jwAXd4GZgxE3YCwqs99g4MpLNiEV2ZfZPstyah4jxo753AVgL6R&quot;</span>
+        );
+        <span class="macro">assert_eq!</span>(
+            <span class="ident">Amount::from</span>(<span class="ident">next_epoch_data</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">ledger</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">total_currency</span>.<span class="ident">t</span>.<span class="ident">t</span>).<span class="ident">to_string</span>(),
+            <span class="string">&quot;864998092.840039233&quot;</span>
+        );
+        <span class="macro">assert_eq!</span>(
+            <span class="ident">EpochSeed::from</span>(<span class="ident">next_epoch_data</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">seed</span>.<span class="ident">clone</span>()).<span class="ident">to_base58_string</span>(),
+            <span class="string">&quot;2vbUkQGF5swXK7PNaAJDUQirW1fbZiUJDzbBKwfPGdJXZiryburD&quot;</span>
+        );
+        <span class="macro">assert_eq!</span>(
+            <span class="ident">StateHash::from</span>(<span class="ident">next_epoch_data</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">start_checkpoint</span>.<span class="ident">clone</span>()).<span class="ident">to_base58_string</span>(),
+            <span class="string">&quot;3NLkdXKqoHfwZ5jT1uxSY3eoFy3C2jpAUFZ1Y6eSMsE66MNJqErx&quot;</span>
+        );
+        <span class="macro">assert_eq!</span>(
+            <span class="ident">StateHash::from</span>(<span class="ident">next_epoch_data</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">lock_checkpoint</span>.<span class="ident">clone</span>()).<span class="ident">to_base58_string</span>(),
+            <span class="string">&quot;3NLW5kBi9nXDzzdr2C3p9X6QaKaASMaVHp3otwreKXKJToUNK7yu&quot;</span>
+        );
+        <span class="macro">assert_eq!</span>(<span class="ident">next_epoch_data</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">epoch_length</span>.<span class="ident">t</span>.<span class="ident">t</span>, <span class="number">3285</span>);
+
+        <span class="macro">assert_eq!</span>(
+            <span class="ident">consensus_state</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">has_ancestor_in_same_checkpoint_window</span>,
+            <span class="bool-val">true</span>
+        );
+        <span class="macro">assert_eq!</span>(
+            <span class="ident">CompressedPubKey::from</span>(<span class="ident">consensus_state</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">block_stake_winner</span>.<span class="ident">clone</span>()).<span class="ident">into_address</span>(),
+            <span class="string">&quot;B62qmsYXFNNE565yv7bEMPsPnpRCsMErf7J2v5jMnuKQ1jgwZS8BzXS&quot;</span>
+        );
+        <span class="macro">assert_eq!</span>(
+            <span class="ident">CompressedPubKey::from</span>(<span class="ident">consensus_state</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">block_creator</span>.<span class="ident">clone</span>()).<span class="ident">into_address</span>(),
+            <span class="string">&quot;B62qpge4uMq4Vv5Rvc8Gw9qSquUYd6xoW1pz7HQkMSHm6h1o7pvLPAN&quot;</span>
+        );
+        <span class="macro">assert_eq!</span>(
+            <span class="ident">CompressedPubKey::from</span>(<span class="ident">consensus_state</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">coinbase_receiver</span>.<span class="ident">clone</span>()).<span class="ident">into_address</span>(),
+            <span class="string">&quot;B62qk9WYHu2PBYv4EyEubnVQURcwpiV2ysuYYoMdwi8YTnwZQ7H4bLM&quot;</span>
+        );
+        <span class="macro">assert_eq!</span>(<span class="ident">consensus_state</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">supercharge_coinbase</span>, <span class="bool-val">false</span>);
+
+        <span class="kw">let</span> <span class="ident">bytes</span> <span class="op">=</span> <span class="ident">bs58::decode</span>(<span class="string">&quot;B62qpge4uMq4Vv5Rvc8Gw9qSquUYd6xoW1pz7HQkMSHm6h1o7pvLPAN&quot;</span>)
+            .<span class="ident">into_vec</span>()
+            .<span class="ident">unwrap</span>();
+        <span class="comment">// TODO: Validate full bytes vec with salted mainnet signature</span>
+        <span class="macro">assert_eq!</span>(<span class="ident">consensus_state</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">block_creator</span>.<span class="number">0</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">x</span>[..], <span class="ident">bytes</span>[<span class="number">3</span>..<span class="number">35</span>]);
+
+        <span class="macro">assert_eq!</span>(
+            <span class="ident">Amount::from</span>(<span class="ident">consensus_state</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">total_currency</span>.<span class="ident">t</span>.<span class="ident">t</span>).<span class="ident">to_string</span>(),
+            <span class="string">&quot;867667132.840039233&quot;</span>
+        );
+
+        <span class="kw">let</span> <span class="ident">constants</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">body</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">constants</span>;
+        <span class="macro">assert_eq!</span>(<span class="ident">constants</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">k</span>.<span class="ident">t</span>.<span class="ident">t</span>, <span class="number">290</span>);
+        <span class="macro">assert_eq!</span>(<span class="ident">constants</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">slots_per_epoch</span>.<span class="ident">t</span>.<span class="ident">t</span>, <span class="number">7140</span>);
+        <span class="macro">assert_eq!</span>(<span class="ident">constants</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">slots_per_sub_window</span>.<span class="ident">t</span>.<span class="ident">t</span>, <span class="number">7</span>);
+        <span class="macro">assert_eq!</span>(<span class="ident">constants</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">delta</span>.<span class="ident">t</span>.<span class="ident">t</span>, <span class="number">0</span>);
+        <span class="macro">assert_eq!</span>(
+            <span class="ident">BlockTime::from</span>(<span class="ident">constants</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">genesis_state_timestamp</span>.<span class="ident">clone</span>()).<span class="ident">epoch_millis</span>(),
+            <span class="number">1615939200000</span>
+        );
+
+        <span class="comment">/*
+        TODO: Verify protocol_state_proof
+        AQEBAQEBAQEBAQABAfyCZ8XD4he3QAH80HIgGfAezhgAAQH8k9ybHSm_cswB_JQesWKV8mPiAAEB_CFDKDlOgTyvAfxQGTylbUUpgAABAAEB_IlOihwF_6cPAfy8HOdGfm3muwABACNq3aIW99rvmPThUJOt7sTCDHKGhd14jtt6WT6kuFYzAQCn9Tpe5H8iu4eCAUs2O4jrZQzs6DrhpxGQc6AzAkteOQEAAQH8xQZ4fhDIOj4B_F6Fr8O5CTsMAAEBAQEAAQH8Qm91cFzlxuYB_Cz4ZjYnTwVyAAEBAAEB_OZAKPtMoib5AfzQLLCTKmHongABAQABAfyG02v2I-l6jAH8iEeTiKBbKjkAAQEAAQH84lhBVf2xpzEB_BHUmoZUZqv_AAEBAAEB_OFYodLGFJH-AfzMLIm8ErnpVAABAQABAfxMGNX65P-rNgH8MeXQ9yLbruwAAQEAAQH8-fFQ7ZTD2TwB_EPopZeAO7DyAAEBAAEB_AVFodFdv3riAfxCkBzGujjAjgABAQABAfyFmgu3zzh_iwH8a-3QksBFIDoAAQEAAQH8EyV9kj2hjxgB_Cjq1rVlPnA2AAEBAAEB_DFjvfxSXfMNAfwQ03vM-qWnKgABAQABAfw9u8uYpRjVGwH8auCvoVqVrO4AAQEAAQH8_4zOksnfvWkB_H0-zs3vUPLwAAEBAAEB_Np8pO8v4SKuAfw9_QTgxhgP6QABAQABAfxOPTWunUVTRAH8IJwLvYO0jRoAAQEAAQH8NWq1qzPRU3IB_M1l0lZM_zlnAAEBAAEB_J2IofKS20MhAfyT6M0RL_FNXwABAQABAfzc3NisCDJ9cAH8mHqRgVdvGJ8AAAEAAQEB_Oc4nCuNu3lxAfyS4L6rm1VgHAH8Fi1AkXr5xRwB_H-LBb1N9VI7AAGVHNYP3HXWMiP5EYHwdZSahxjzCaid3EcbBzc1l2mSIFiwoLM6mA3b-sLAjDM00_Mv1kn8JdKSBz7XFUBdx9wFAQEBAQEBAAEB_H_cKwozftw5AfxzlUcCknjPGgABAQABAfyHYkiXOVf-rAH8wIdrKUAWuH4AAQEAAQH8yiZH-pNlO5QB_EkFjtbxE2TbAAEBAAEB_Ob-bwZ88i3EAfyyVmk5Zf4CbAABAQABAfwz3DYG5_0-ygH8FxZPvQICA64AAQEAAQH8cbO-YveQxEEB_E41RZxRqpJlAAEBAAEB_Oo1cWmj6IExAfwkIdFslaKGqAABAQABAfxKgrUH7qwW9QH8uHoxdQDJBAMAAQEAAQH8LW1TBwUeAfgB_BOTZGJKRlWrAAEBAAEB_OJQNmjd_rBbAfwX_tnoJBlnZAABAQABAfzR__6qjUF5QQH82cvkkjXbCtsAAQEAAQH86Fufzsl-WBsB_Niuie-SE0TFAAEBAAEB_ARddbjD5m0TAfyrzYXQSzCS-QABAQABAfyUxo3LqdBbmAH8lwAIZXaO4B8AAQEAAQH8ERPxGwUJEQAB_AYX7pGEDNoxAAEBAAEB_Gn4iXcgSl-uAfzthAXwXkQ10QABAQABAfzPbCxIxDk6WgH8EdD4I5p-FrIAAAEBAQEBAAEB_PRiou0KbJASAfwzYzmUKFHRKgABAQABAfz3c_qAAg-WyQH83ZszarSNKcsAAQEAAQH8HsHUvGwApOUB_Eqiqp5SyuCHAAEBAAEB_P4hxMctvUjRAfxnHuBu_HXT4QABAQABAfymfTactcwx1gH8Icp3IyaujmAAAQEAAQH8cDGngppKGzoB_MylECYCZqXGAAEBAAEB_Cxrkn7squFFAfzvzIGxZqssMwABAQABAfx4bvwgL0G5wwH8HuPWD2rzWHgAAQEAAQH8J-gjjF9EPfYB_LaiHNuAl65mAAEBAAEB_B5av2NUMr-2AfzMwUabw05SRQABAQABAfxILOUvISw1mgH8_lcHUNvTXp0AAQEAAQH8ASWoSqRxiCQB_MC-AL-kH_i7AAEBAAEB_LESBxwvL7WUAfy5GKn8G6fgOAABAQABAfwgtHDI3HuiSwH8DSB2EBWXgvwAAQEAAQH8J51m68nA0wkB_PcjXo2cmFjiAAEBAAEB_GhNOayv4cvqAfy76E0UHLopBQABAQABAfzgUeAo4PO5ugH8VpiUeeuLT1YAAAABAAECSDA5pdNBwJPjnxV4iNvGpdfmkzXqi8Uc11QcnW_7DBp8lKx_rowAATmxVG6S4JppbpZbJU3aZZXPa52AkyJmOLFkcQJiRYmrPagLNz8DTCQsdcQnFXLM-2f8qO2q3iMFgWeOOsZ4WXrHUsaCLimDl5zUjJo9vLv14lmN-lZ08gYBAgEBAQEAAQH8_p0afZ5vlFsB_J5qFOanysI0AAEBAAEB_AdAbP5WNI7FAfxSJQ6tLG4rcwABAQABAfyVnS4O4rVdaQH8xQbAV7LRwqcAAQEAAQH8osKaiVy12owB_O5aOFBJp21xAAEBAAEB_AaY9zrzAK7lAfwYyRPFhYzZVAABAQABAfxgblAzm_WBbQH8dOLDRt4RoM0AAQEAAQH8hyrBb9OhscUB_K2obrL_-efFAAEBAAEB_DjNh4bpMmpoAfxu_IqqVSc9FwABAQABAfyjLEwAcNxsFAH82DQn99QzR00AAQEAAQH8Yr3wmuuScUsB_AZpD-r3hK06AAEBAAEB_KOcxwA41xDdAfyx4TP4C6FIJwABAQABAfyfNjNgByGJAgH8GH8XNjCbmxsAAQEAAQH8jv8noOn7nvMB_CKCmA5iH59oAAEBAAEB_DpP60G3dOMXAfxXNTEcN1JMggABAQABAfxAM3V-VupUlwH8kc83OahzhmIAAQEAAQH80Ck9Sa9pkfIB_AslFCAAktlfAAEBAAEB_Kvb_sxftPaSAfxhccxlfGMskAABAQABAfz85W87LwKKvwH8G6-4q4yIrK0AAAEBAQEAAQH8DMVpym0zoQgB_IuGEn36D_DDAAEBAAEB_IkAs_6a1ot7AfwRKLlqjdLzswABAQABAfzBBzWGcLjPcwH8nOfrwyXsm3IAAQEAAQH8JU-rVyi2WwoB_PKA6zqDmK-xAAEBAAEB_Lkqp1a0cHOtAfz8nvHVI_lPNgABAQABAfwAfC-OYhyHWQH8h8wmonP2x5wAAQEAAQH8r_K2nh2CVCMB_H71ffbRa7nVAAEBAAEB_PaGkKDQ93sUAfxoKiRAzmJeYgABAQABAfwOrVYyYxvGrwH8--EfoRBygAkAAQEAAQH8kUGsyr4eWPkB_KbJtz6Z1R5XAAEBAAEB_L3DZM2jUE6qAfxoxf7BCucU2AABAQABAfxt3l6C36wdsgH8pQfbxReiCP4AAQEAAQH8f6rm6dYPToIB_Cx_uU6YOvb8AAEBAAEB_MoEG3EriDHDAfwpJq62x6w5kQABAQABAfzvUYH9R48P3AH8h5U7xEN6qQAAAQEAAQH8vzKG0R7YOGAB_KsFqqJwvLP5AAEBAAEB_FpHr-Xg0nWUAfz20sOuAqfL0QABAQABAfwEfC359g94vgH8VOL7MpFYPeEAAAEBAQHFn4aQFgBI2GDXcPdOc1EsQZ8KS4vGw9hYCk2yDF5eOgEBbVGq6-0G0nSa8ok7FYnvnJ0ObTJ9hN1K1DzP_I-pzTMBATzZ-9xtoegAWYXcFBvq2o0RwFpAXF_bYcNv_MBJDfcmAQF7f6cCIRNEB9wpHd3XiN9QuLeKiuPquoBTLaJT_ECpCQEFvCv5PCUdi9A-RQnu66Y8oaW6qAxQ3dSPBK4Ox3c3EQN0zzBbePrf-8hTsYmRUAEeHxFi6X_NzApRJWLEZjh3IhDCvj6Bp2c2V1PavlSytfPc9Wwgeyxz-eIngUJt16wTVSH3tu47eimSxtXKqyXtgbSqOzxFEYmJCUHHJi0c9y-nEpaXbUtL7BCGwlaB-EXsQqTXAbIHsfKHhPAsuCEmCwEBlq4Pa9LiSB9sBxPIpfnjs5edIjzY2_Uju71rcd74OyQBAW-qp5OUEo9NggJljqLtU5ceSwaAo6jWY0FYiRkxRWMsAQH_v28Lo818reRiIpPUzqASYqKfNzC9iCO9e0HrHsuaBgEBARbL0NaRWMlSRSNMwZSy2vAqL3hHkv8YHzIzfXSUDpcWAQHSsSQdmUVrzE7AUA9zE8FeBYsyVqQQc3uomyt0uUA_GQEBgfTYznuyfPGxd8FzYqkBK3K5oVIOyDrcoL0gzaHgdikBAa4RUMme42bKeyFk-VyqqLPkCx8zQmB4oWHEEIpHuUglAQUSwDH34aFmRzn7SNFtkNC_16Jwb4a1nkd08VF5TtTpC-uYI6IvmSYJ7dKT1Ssk8uMSxwLSZ6BvEwHKJYvkiFUg2NsVQPCI6y9CMWXCqJ5tOiszxg0NspVeqIirAdI7lSrCEC6dorSiWhCOWBqbIwuTWG0JxbRf0ycocIL_bn8wB3uGYDCFBppUdlyeF8aLTizxdwIEZj6T0fUQKnRXT5g8AQGf1ntCuVPIcWo9lPqo6X2o5jIn7MGXk79PDhFUFt7WKwEBdGzyhvuJq52Q_NxWtbRWlaS3MwV3AHlVl3B3kEES_ygBASvjkoZC7RU35xoFHO64IPg6c0gkM_yhEftfZPQluh0RAbeKnQYvN0EJX-66eBul89XsW31TIGqowlTG01BFjD4vn07NlTCZSMYyww4uN7mRaFmcwhxYTDQrmM2flLHiJygBAQEBAQGfP1pCUlwOROtFqeGJJtcHb_EKynWbDnyrfJl5UiHfEzJ2QnMnfUrdwLZ11u5Fohfv5XafLPiEo6HEi0-IuucfAQEBpfcr70oGQ6bxfJJMoYIdJMjFi7i3v5QTRn2pcB0StCfuMMY6dMQGIhXVlprtegvZpLVf4CtbEsmNlkZgkPvfLQEBATCbkGfPJXmYLZh9f1-rbjFv9MIe6a95LYnY59XPmbEZeBfbIhvlXAXlz6BEHCTFI7YPp6tNpGWyU93dpfsHxQYBAQHqidH0Z7L0IenfN2sRvlVvkN85TzqZR_WCjLEgr_AsD5OhrP5-aJu_uaLSRrNIkn8afmBeIlzofrlcqV_nR1seAQEFAQH8O7Vl94cFJ-ZNBc_33ZVXpzbq1tVqEhdyPCRwWw9VIq7AB-ZtWeg_ECXqEHl5IeCvD8QP242QUQMXCBJTIy4uAQHaaMCPDiSXHgS_LIp0MpyHU6t2mwCFGUGlhGwcbEJvGnOUqL2N020CaLCAPUF15Zinb6IW8nXQYmLiZEJ2lGU9AQGbdpiCw8zAwluQAvZoM9npleYDyFUW1IIw481ZXOJbFz8-HIgq0mr-nLnRYdjUZVBtuYaIYQ04QLGnFrVfjBE6AQGLwg5R7sxYXxdJlI0tDgwL7tgfT5WR5Rt7rj5RogItKtaoodbHKyCfhJh2p2QIJntKav6GliWDxDYZw7wrdEkyAQFe6Xd0k6s8GC0ip6f4lhJNqn1BPF81S-il3wf3xF0qJq7My9qUxZYX9bJc9AGMD0wppdp0LNTai2W1NaxrsH0WAQHkXRP-sMZNWysvjxx2IhYuvsHk8ets0kLvSmbth0vNHuoOlLBdjdJ9bY5t3YBgZKFO2hDwQMGRUsmeJfqbHlsYAQEBETmpTk_ctjxQ90WTO4-XpvMyBBI5PQdONBINVFTWiaAQLMMB971ymI8aUfH8qCQYBYMWje0COObe5RQUCUUsnTtGzmd15bzD4b9crydQDDm9Rh7EZAfi6KaVCEZ-XVnIDIs0dwWPZlnoZ5mnkVNzxGzAWpQmEzOwmPRaVo7Ratkl2rB20vP-C60MOUWdzBxBOJt-_7EpXDmTqHb6dXVJEQqJsjdoO77zNdOfZWLmNkxSyWRzi2WL9zIVtmL4hazBHmj5cFiYs1hSIlL-OOERQw72A3IeF0Byxs6K_x907Us7W4QVhWX1W92Js51NqDwKRtOxQwgBywOVuXYvEJUNPwouMMPjOlQfJsCedQiGDTA64rlShqPmnXBSWqBiDFPQAtg0_OQJntqy7i2sXTay8J0l7FP7ZU3RP3aeLQ6mgUMIXn7dKP9t2_IhUsz8-_wzi-fjc9r93ifnkXWt4VBTxSql_CgRJy0Eiv0hyT7qKbrog1FbZnFZMXU9PdO1LDrSEgecDFJlyfdJ1NcXsxCMNTscc65vagWfloZhPsHujzYQY4E8ifUQ6t4JFgbL5CXvaxmGqhJGUmEL42D-NM5iRD37JgPubfB9FVsRnKaOHZJfA0kYdqwKHUSL05mJ9Yi2PgmajUYltW_QIHKHqzgYqji_AcTNIu3CCRU_bGqjHkARtb2CwXRr0Xgw99qUCy70eVPMGf-j7W0-yFxaH18CXQXgRYKEqIVXfNN638j0SRPNQHCNbWkcwtTk2kBzt3MeGx5zCgfx8YendUuGXlZw6TFrzJFMUyZp6KJnJ70EMeIzHZ7wMy_xFKAyTOyuEYcZZbE8Vo0_vr3N9TJNLhVAfAbyek0NE9pG0BgAJ-ves5oKXidg1dLo9BJZi6e87cEHIQKh666w-0g_ymwFfzZvWTJlT8vYhbYcl6fiQYWWmFYvovHYojyJ713XAiHj-jdwpofGwPMffcgHfNhYsdXI8AIz6vIE7sSKvqzVdBwEETGbKvFc4zaXIOPLRDxNRz3INYXUIxBjYtlogbAhSfLvZ8SqawiZdsrF1INUC1M9xgMcNTHncQOkXt5gDmeYEl4LgNzVlWv_830vJtyhBU7SIRY96i-FBsH8pv4WrmrDuCpNK8jY-Gr4tCX3It3nrRPjMdTXI9WDkaCYFD4wH4tIGiKf0J18AOYHY3j7GU_UQtYVRUsHLwL2RNEFH_kFC23kCMLUuJi4u1SICYuMCR34dwOSwsZ_RSbD40MgPHjfnKyMg-QjhkRlB59uiOb3nPJjHnSWPNEw2zKISUCKRTjqqbrGEn_syQO2ElhFnqQ7iT8FOcGY0PRYFFoHWayaYQYPVGhOMmheixy5dSAyZiWosDzswuuvM8Rgv8eRhd6W25U06Z9ydYyeMDxEd-Cnt453FWVjzxYeDBrb4u2AmWfeaMYL3Hh89YNwTEzkPnprfZAXTeOyalroTehMXHDB93Lve9y6oPfijKK0UWGojtpS6SJTMoWR-xt1vYQaK9RYoqwjDUsbNQjJA8189reG9l9lBppzM9o7Qq8C46goOwxiIY9hvJzrnvxRSy33JNm1ixkm33V27WzIW2sGd3gCeezqj_TwmwMat9BIO-Ptsfe8JhtJREpg066xqxzNVExc0AkhGydU7EqQZqxRuG-lIOqHME1uLttrFFx0EflHp7AizgQhOhDpYOH3Ke9D3tZ95AU7itWJntEx8msnSdFDyj4H_X8ao6CAgi-0yb4VvK32SDD1NkGuWTtjTlBX2VZdHZYm8Lf97MXqObN1gYEas8S0L3ZhJ8u5j567aDL9nUFTVVzYOdAySOQlxyu4KNQl4OkwgdTEzMXJNQcc294zlTA0LrUgEAQolCeXizaF7jZN5CX9BL7agtDcwaofK2pwkaFY5GSECQK-5QY5Cdcnfi9SHo6W_cxz0likUQwfIfVq5LeznnZFy2QFqROSg09s8Pgbw2Aelzme165-aJ-yNhEwNKsIhmJFVS0c3s7pGlpIjAGxCyr2nTZ7VHj7lrmU3CYMiosh-V4icMbKLe-pIDzKB0TRiDVbrdyZ1x_-sGez12L31lQfcudJ5v2ExYjDjbU9paZsmJraFSjihI3acpVGLy6ydI8PFx6svxSYbKNjPBvbDu7GIDdieNht17sr3C1JpIC-4R-7p5K1C7PYcuBTKsf9pxexFEI_WWfAeN1r1eB0hUtq44NhrAYGY2qYw-IjxtqjM5lrZ0XSIaXAQ6uuAby79b90ZDkHVkYx29FLWD3sLXHmewEyhyPES0l8TjpzaQKYkDWR8fDEHoQGq1aJBwKa1Mn8mumMfPsubyF4IyY8AbbH5NYGCwzlXlQgTSMyHBHngavy-QhYqExy1Q4QFLwS8DxzU3MTOzNec3m-8Q2H3XEE9pMnXUroNvB5J6syvXJEYRwg8YkTXyYypW1pEx0ofo-SQrRFSCRlaacHcufnQuidpZ9m2Ram5GzujrI2qxYjOBWDN7XbS3SM5pasX5fFtZjGJ6X8Z-HRK7XE0SZLEIE_Nnuc7jvFBDS5cu9xKfj-d33CHMu9ynoC4uWyOU6J_yoOxUO1WMw1J8sEfUT4MkOPqepUJfXCWIpZ5-YcCUsqFALnjMrDrocLyNNqye3zeiM0llom7GRBUARVOgu_qhSAH0FwZSIatvelXDBuApqMgFvAeggcd9JAWgU2OLVjYrRpgAyoQCzBAqlfK7LsgXmqfrtz3EqiyEkHSywoKzH-95N_3PGIjCLVgI--das5IptlDWz8-ee5L3i93zKWaV3iXdw9B7eAhwum0yw7AL2dAzE9VJgSJcGHU8kFOHj35LCcxzfzpSDSSXvx8Lgs0SpghNUavKyFS7vi7Dg5rdy37t4BqMnw8S-kwc5EHlK9QetaIv01qd52w-8tsCDkBzucUuYEOwUx6Uq2Qfnp74SlgcrFA4sMWX5hHvaTPXZgNUv9hDNtkjR4_dST8MM6CnSbv-8Jor_UVwEujxcC5HnJGFfYExH0Jm1u0jMbhmI3QbDHOQrfTax4tz8FvzYOosD9oTx3a5dzZGis0lg1LmHkSANhH6jVRqhVFtRHLa-FJjMD7gfiGsaAatUvCAIxcwSuMTWIGGoyu_Vz71IWFvJBPy3mP8Ra-0EnSoMwpJfCxhRMo4ChHp496YEIXjsBAQGNLFJlMmvlQ6YgKkOW9pIxPZotU-RsGTBsBHLYdOLoBQEBwMMUpUByzCsqdYI1wF6oEQEUigFzKgHQhpFTYxP0TikBAdVYrhqiidw3x0M84ho_ykA5Ph07lB9x51DEgWJ_1Qo-AQE_6YNIoiucwXuJv31YfNndNc8rlyL_xwZV39ZgwAi6EAEFyIoZCDiAPKraviC9UJdejvMFKbF0VZjnJpR-e_mbcwJSJiqKkHUXurAV9pX3OCHT_d7cKLPMKdk6Y0wTfeZnOjhJZ2lA1nydyKOvXFe4NbG2y-B2YLto9ltTcMBnpHESnmiOlLnJ9SBAGn53tyO8NFCbaYOotdk6kX-w025lZgEmMfMCNQnzQbGxlLEKQfgEctbYL6srOH7_XE1q1maNEgEB2L8vfqhGnOmHtnrUvbuRgI7-yehGTbmHRgh4x_v2FxsBAcR3N0sBitbxFMa4KkSgXqacq9eLEDHqjSYIRalJCyohAQHHTt8lq8MBA_YDZiTSj99YlWtuqIfXExIxjkFuwCMCAgEBAYcIdlceER2FdlvmvQF_1-W7HAWmOkuOgYJ5QWGlVcoTAQFgV1jdtyt2TFI_JxH2iPKiKxb3zcOdNhq-of3uAccsPQEB4Ur6Qh8bgnRGlcLLZO9CEI7z3SnSMIecjGpNhMN3vR8BAVCqxM0Xc-97TiJIMP1aHnyDl9FBWxDArbwMrX6Y1B09AQWNiu9uQVYKOuEGxn8RR5lKzcB4tWGBYfzqdDiGKWtuA6LdAl_GNhcaKFqcOXIlpBfWxoGrulQ1XCm2DGRfjMMCLC0fgP3HHguoR6Arm8BkACEfaZs_ab67TCLAqxJVlA-CNJifmJwzz9yddf6LOv1g6ood1Muof6Er7LxPZuUMK3Pvwy1KfrmIV0-8nsmlm3yZH4jGnL_mpHmtgsLXMFYaAQGa3zfDzMfvLJlT4JOPU035rQAOHxBbVNoyCt1NyWMEKQEBd34Ufr46TGmGtWKhOK5OeO8Abr3374M2D-mUmc_aaTkBAbD8EL0Bt2M-EUCmKUd3EzbN_7BHivzQedBvurXzOXAD
+        */</span>
+
+        <span class="macro">assert!</span>(
+            <span class="kw-2">&amp;</span><span class="ident">StagedLedgerDiffTuple::from</span>(<span class="ident">et</span>.<span class="number">0</span>.<span class="ident">t</span>.<span class="ident">staged_ledger_diff</span>.<span class="ident">t</span>.<span class="ident">diff</span>.<span class="ident">clone</span>())
+                .<span class="ident">diff_one</span>()
+                .<span class="ident">is_none</span>()
+        );
+        <span class="kw">let</span> <span class="ident">commands</span> <span class="op">=</span> <span class="ident">StagedLedgerDiffTuple::from</span>(<span class="ident">et</span>.<span class="number">0</span>.<span class="ident">t</span>.<span class="ident">staged_ledger_diff</span>.<span class="ident">t</span>.<span class="ident">diff</span>.<span class="ident">clone</span>())
+            .<span class="ident">diff_two</span>()
+            .<span class="ident">commands</span>
+            .<span class="ident">clone</span>();
+        <span class="macro">assert_eq!</span>(<span class="ident">commands</span>.<span class="ident">len</span>(), <span class="number">3</span>);
+
+        <span class="kw">match</span> <span class="kw-2">&amp;</span><span class="ident">commands</span>[<span class="number">0</span>].<span class="ident">data</span> {
+            <span class="ident">UserCommand::SignedCommand</span>(<span class="ident">command</span>) =&gt; {
+                <span class="kw">let</span> <span class="ident">bytes</span> <span class="op">=</span> <span class="ident">bs58::decode</span>(<span class="string">&quot;B62qoSuxNqwogusxxZbs3gpJUxCCN4GZEv21FX8S2DtNpToLgKnrexM&quot;</span>)
+                    .<span class="ident">into_vec</span>()
+                    .<span class="ident">unwrap</span>();
+                <span class="macro">assert_eq!</span>(<span class="ident">command</span>.<span class="ident">signer</span>.<span class="ident">x</span>.<span class="ident">to_bytes</span>(), <span class="ident">bytes</span>[<span class="number">3</span>..<span class="number">35</span>]);
+
+                <span class="kw">let</span> <span class="ident">bytes</span> <span class="op">=</span> <span class="ident">bs58::decode</span>(<span class="string">&quot;7mXTB1bcHYLJTmTfMtTboo4FSGStvera3z2wd6qjSxhpz1hZFMZZjcyaWAFEmZhgbq6DqVqGsNodnYKsCbMAq7D8yWo5bRSd&quot;</span>)
+                    .<span class="ident">into_vec</span>()
+                    .<span class="ident">unwrap</span>();
+                <span class="macro">assert_eq!</span>(<span class="ident">command</span>.<span class="ident">signature</span>.<span class="ident">rx</span>.<span class="ident">to_bytes</span>(), <span class="kw-2">&amp;</span><span class="ident">bytes</span>[<span class="number">2</span>..<span class="number">34</span>]);
+                <span class="macro">assert_eq!</span>(<span class="ident">command</span>.<span class="ident">signature</span>.<span class="ident">s</span>.<span class="ident">to_bytes</span>(), <span class="kw-2">&amp;</span><span class="ident">bytes</span>[<span class="number">34</span>..<span class="number">66</span>]);
+
+                <span class="macro">assert_eq!</span>(<span class="ident">command</span>.<span class="ident">payload</span>.<span class="ident">common</span>.<span class="ident">nonce</span>.<span class="number">0</span>, <span class="number">5694</span>);
+                <span class="macro">assert_eq!</span>(
+                    <span class="ident">command</span>.<span class="ident">payload</span>.<span class="ident">common</span>.<span class="ident">memo</span>.<span class="number">0</span>,
+                    <span class="ident">SignedCommandMemo::try_from</span>(<span class="string">&quot;FPayment&quot;</span>).<span class="ident">unwrap</span>().<span class="number">0</span>,
+                );
+                <span class="macro">assert_eq!</span>(<span class="ident">command</span>.<span class="ident">payload</span>.<span class="ident">common</span>.<span class="ident">fee</span>.<span class="ident">to_string</span>(), <span class="string">&quot;0.010000000&quot;</span>);
+                <span class="macro">assert_eq!</span>(<span class="ident">command</span>.<span class="ident">payload</span>.<span class="ident">common</span>.<span class="ident">fee_token</span>.<span class="number">0</span>, <span class="number">1</span>);
+                <span class="comment">// FIXME: Fix valid_util (Extended_U32)</span>
+                <span class="comment">// assert_eq!(command.payload.common.valid_until.0, 4294967295);</span>
+                <span class="kw">match</span> <span class="kw-2">&amp;</span><span class="ident">command</span>.<span class="ident">payload</span>.<span class="ident">body</span> {
+                    <span class="ident">SignedCommandPayloadBody::PaymentPayload</span>(<span class="ident">body</span>) =&gt; {
+                        <span class="macro">assert_eq!</span>(<span class="ident">body</span>.<span class="ident">amount</span>.<span class="ident">to_string</span>(), <span class="string">&quot;0.027370000&quot;</span>);
+                        <span class="kw">let</span> <span class="ident">bytes</span> <span class="op">=</span>
+                            <span class="ident">bs58::decode</span>(<span class="string">&quot;B62qoSuxNqwogusxxZbs3gpJUxCCN4GZEv21FX8S2DtNpToLgKnrexM&quot;</span>)
+                                .<span class="ident">into_vec</span>()
+                                .<span class="ident">unwrap</span>();
+                        <span class="comment">// TODO: Validate full bytes vec with salted mainnet signature</span>
+                        <span class="macro">assert_eq!</span>(<span class="ident">body</span>.<span class="ident">source_pk</span>.<span class="ident">x</span>.<span class="ident">to_bytes</span>(), <span class="ident">bytes</span>[<span class="number">3</span>..<span class="number">35</span>]);
+                        <span class="kw">let</span> <span class="ident">bytes</span> <span class="op">=</span>
+                            <span class="ident">bs58::decode</span>(<span class="string">&quot;B62qn2MtuQ9GyyVnotUHB9Ehp9EZre5m6TYpGx64tBCDHHBZFZRURnL&quot;</span>)
+                                .<span class="ident">into_vec</span>()
+                                .<span class="ident">unwrap</span>();
+                        <span class="comment">// TODO: Validate full bytes vec with salted mainnet signature</span>
+                        <span class="macro">assert_eq!</span>(<span class="ident">body</span>.<span class="ident">receiver_pk</span>.<span class="ident">x</span>.<span class="ident">to_bytes</span>(), <span class="ident">bytes</span>[<span class="number">3</span>..<span class="number">35</span>]);
+                        <span class="macro">assert_eq!</span>(<span class="ident">body</span>.<span class="ident">token_id</span>.<span class="number">0</span>, <span class="number">1</span>);
+                    }
+                    <span class="kw">_</span> =&gt; <span class="macro">bail!</span>(
+                        <span class="string">&quot;PaymentPayload expected, but found: {:#?}&quot;</span>,
+                        <span class="ident">command</span>.<span class="ident">payload</span>.<span class="ident">body</span>
+                    ),
+                };
+            }
+            <span class="kw">_</span> =&gt; <span class="macro">bail!</span>(<span class="string">&quot;SignedCommand expected, but found: {:#?}&quot;</span>, <span class="ident">commands</span>[<span class="number">0</span>].<span class="ident">data</span>),
+        }
+
+        <span class="kw">match</span> <span class="kw-2">&amp;</span><span class="ident">commands</span>[<span class="number">0</span>].<span class="ident">status</span> {
+            <span class="ident">TransactionStatus::Applied</span>(<span class="ident">applied</span>) =&gt; {
+                <span class="kw">let</span> <span class="ident">auxiliary_data</span> <span class="op">=</span> <span class="ident">applied</span>.<span class="ident">auxiliary_data</span>();
+                <span class="macro">assert!</span>(<span class="ident">auxiliary_data</span>.<span class="ident">fee_payer_account_creation_fee_paid</span>.<span class="ident">is_none</span>());
+                <span class="macro">assert!</span>(<span class="ident">auxiliary_data</span>.<span class="ident">receiver_account_creation_fee_paid</span>.<span class="ident">is_none</span>());
+                <span class="macro">assert!</span>(<span class="ident">auxiliary_data</span>.<span class="ident">created_token</span>.<span class="ident">is_none</span>());
+
+                <span class="kw">let</span> <span class="ident">balance_data</span> <span class="op">=</span> <span class="ident">applied</span>.<span class="ident">balance_data</span>();
+                <span class="macro">assert!</span>(<span class="ident">balance_data</span>.<span class="ident">fee_payer_balance</span>.<span class="ident">is_some</span>());
+                <span class="macro">assert_eq!</span>(<span class="ident">balance_data</span>.<span class="ident">fee_payer_balance</span>.<span class="ident">unwrap</span>().<span class="number">0</span>, <span class="number">59778375293571</span>);
+                <span class="macro">assert!</span>(<span class="ident">balance_data</span>.<span class="ident">source_balance</span>.<span class="ident">is_some</span>());
+                <span class="macro">assert_eq!</span>(<span class="ident">balance_data</span>.<span class="ident">source_balance</span>.<span class="ident">unwrap</span>().<span class="number">0</span>, <span class="number">59778375293571</span>);
+                <span class="macro">assert!</span>(<span class="ident">balance_data</span>.<span class="ident">receiver_balance</span>.<span class="ident">is_some</span>());
+                <span class="macro">assert_eq!</span>(<span class="ident">balance_data</span>.<span class="ident">receiver_balance</span>.<span class="ident">unwrap</span>().<span class="number">0</span>, <span class="number">11241317900</span>);
+            }
+            <span class="kw">_</span> =&gt; <span class="macro">bail!</span>(
+                <span class="string">&quot;TransactionStatus::Applied expected, but found: {:#?}&quot;</span>,
+                <span class="ident">commands</span>[<span class="number">0</span>].<span class="ident">status</span>
+            ),
+        }
+
+        <span class="kw">let</span> <span class="ident">coinbase</span> <span class="op">=</span> <span class="ident">StagedLedgerDiffTuple::from</span>(<span class="ident">et</span>.<span class="number">0</span>.<span class="ident">t</span>.<span class="ident">staged_ledger_diff</span>.<span class="ident">t</span>.<span class="ident">diff</span>.<span class="ident">clone</span>())
+            .<span class="ident">diff_two</span>()
+            .<span class="ident">coinbase</span>
+            .<span class="ident">clone</span>();
+        <span class="kw">match</span> <span class="ident">coinbase</span> {
+            <span class="ident">CoinBase::One</span>(<span class="kw">_</span>) =&gt; {}
+            <span class="kw">_</span> =&gt; <span class="macro">bail!</span>(<span class="string">&quot;CoinBase::One expected, but found: {:#?}&quot;</span>, <span class="ident">coinbase</span>),
+        };
+
+        <span class="kw">let</span> <span class="ident">internal_commands</span> <span class="op">=</span>
+            <span class="ident">StagedLedgerDiffTuple::from</span>(<span class="ident">et</span>.<span class="number">0</span>.<span class="ident">t</span>.<span class="ident">staged_ledger_diff</span>.<span class="ident">t</span>.<span class="ident">diff</span>.<span class="ident">clone</span>())
+                .<span class="ident">diff_two</span>()
+                .<span class="ident">internal_command_balances</span>
+                .<span class="ident">clone</span>();
+        <span class="macro">assert_eq!</span>(<span class="ident">internal_commands</span>.<span class="ident">len</span>(), <span class="number">2</span>);
+        <span class="kw">match</span> <span class="kw-2">&amp;</span><span class="ident">internal_commands</span>[<span class="number">0</span>] {
+            <span class="ident">InternalCommandBalanceData::CoinBase</span>(<span class="ident">cb</span>) =&gt; {
+                <span class="macro">assert!</span>(<span class="ident">cb</span>.<span class="ident">fee_transfer_receiver_balance</span>.<span class="ident">is_none</span>());
+                <span class="macro">assert_eq!</span>(<span class="ident">cb</span>.<span class="ident">coinbase_receiver_balance</span>.<span class="number">0</span>, <span class="number">20203793056339</span>);
+            }
+            <span class="kw">_</span> =&gt; {
+                <span class="macro">bail!</span>(<span class="string">&quot;CoinBase expected, but found: {:#?}&quot;</span>, <span class="ident">internal_commands</span>[<span class="number">0</span>])
+            }
+        };
+
+        <span class="kw">match</span> <span class="kw-2">&amp;</span><span class="ident">internal_commands</span>[<span class="number">1</span>] {
+            <span class="ident">InternalCommandBalanceData::FeeTransfer</span>(<span class="ident">ft</span>) =&gt; {
+                <span class="macro">assert_eq!</span>(<span class="ident">ft</span>.<span class="ident">receiver1_balance</span>.<span class="number">0</span>, <span class="number">20203805056339</span>);
+                <span class="macro">assert!</span>(<span class="ident">ft</span>.<span class="ident">receiver2_balance</span>.<span class="ident">is_none</span>());
+            }
+            <span class="kw">_</span> =&gt; {
+                <span class="macro">bail!</span>(
+                    <span class="string">&quot;FeeTransfer expected, but found: {:#?}&quot;</span>,
+                    <span class="ident">internal_commands</span>[<span class="number">1</span>]
+                )
+            }
+        };
+
+        <span class="kw">let</span> <span class="ident">bytes</span> <span class="op">=</span> <span class="ident">bs58::decode</span>(<span class="string">&quot;jwHLk8kaC6B45K3sjuX2sM38649VtfpUAteTfKFQMPcqTeXjGiT&quot;</span>)
+            .<span class="ident">into_vec</span>()
+            .<span class="ident">unwrap</span>();
+        <span class="macro">assert_eq!</span>(
+            <span class="ident">et</span>.<span class="number">0</span>.<span class="ident">t</span>.<span class="ident">delta_transition_chain_proof</span>.<span class="number">0</span>.<span class="ident">t</span>.<span class="ident">as_ref</span>()[..],
+            <span class="ident">bytes</span>[<span class="number">2</span>..<span class="number">34</span>]
+        );
+        <span class="comment">// FIXME: Version byte here disagrees with what is being used for genesis block</span>
+        <span class="comment">// Note that version byte is not part of binprot binary, it&#39;s only used for bs58 representation</span>
+        <span class="comment">// assert_eq!(</span>
+        <span class="comment">//     et.delta_transition_chain_proof.0.into(.clone()).to_base58_string(),</span>
+        <span class="comment">//     &quot;jwHLk8kaC6B45K3sjuX2sM38649VtfpUAteTfKFQMPcqTeXjGiT&quot;</span>
+        <span class="comment">// );</span>
+        <span class="macro">assert_eq!</span>(<span class="ident">et</span>.<span class="number">0</span>.<span class="ident">t</span>.<span class="ident">current_protocol_version</span>.<span class="ident">t</span>.<span class="ident">major</span>, <span class="number">2</span>);
+        <span class="macro">assert_eq!</span>(<span class="ident">et</span>.<span class="number">0</span>.<span class="ident">t</span>.<span class="ident">current_protocol_version</span>.<span class="ident">t</span>.<span class="ident">minor</span>, <span class="number">0</span>);
+        <span class="macro">assert_eq!</span>(<span class="ident">et</span>.<span class="number">0</span>.<span class="ident">t</span>.<span class="ident">current_protocol_version</span>.<span class="ident">t</span>.<span class="ident">patch</span>, <span class="number">0</span>);
+        <span class="macro">assert_eq!</span>(
+            <span class="ident">et</span>.<span class="number">0</span>.<span class="ident">t</span>.<span class="ident">current_protocol_version</span>,
+            <span class="ident">ProtocolVersion::default</span>().<span class="ident">into</span>()
+        );
+        <span class="macro">assert_eq!</span>(<span class="ident">et</span>.<span class="number">0</span>.<span class="ident">t</span>.<span class="ident">proposed_protocol_version_opt</span>, <span class="prelude-val">None</span>);
+        <span class="prelude-val">Ok</span>(())
+    }
+}
+</code></pre></div>
+</section><section id="search" class="content hidden"></section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="test_serialization" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.62.0-nightly (de1026a67 2022-04-23)" ></div>
+</body></html>
