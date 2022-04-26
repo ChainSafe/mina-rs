@@ -10,7 +10,6 @@ env:
   CARGO_INCREMENTAL: 1
   # Investigate why it does not build with this flag
   # RUSTFLAGS: -Ctarget-cpu=native
-  RUSTDOCFLAGS: "--enable-index-page -Zunstable-options"
 
 jobs:
   checks:
@@ -261,6 +260,9 @@ jobs:
           chmod +x codecov
           ./codecov -f lcov.info -Z
   gh-pages:
+    env:
+      # https://doc.rust-lang.org/nightly/rustdoc/unstable-features.html#--index-page-provide-a-top-level-landing-page-for-docs
+      RUSTDOCFLAGS: "-Zunstable-options --enable-index-page --show-coverage"
     runs-on: ubuntu-latest
     steps:
       - run: lscpu
@@ -281,7 +283,7 @@ jobs:
           toolchain: nightly
           components:
           override: true
-      - run: cargo doc --all --no-deps
+      - run: cargo doc --workspace --no-deps --all-features
       - run: mkdir -p /tmp/gh-pages/
       - run: mv ./target/doc /tmp/gh-pages/rustdoc
       - uses: peaceiris/actions-gh-pages@v3
