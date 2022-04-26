@@ -1,0 +1,1 @@
+initSidebarItems({"constant":[["BLOCK_LAYOUT",""],["VERIFICATION_KEY",""]],"macro":[["load_test_blocks",""]],"struct":[["BLOCK_RULE",""],["BlockFixture",""],["GENESIS_BLOCK_DEVNET",""],["GENESIS_BLOCK_MAINNET",""],["TEST_BLOCKS",""]]});

@@ -1,0 +1,1 @@
+initSidebarItems({"enum":[["BulletproofPreChallenge",""]],"struct":[["BulletproofChallenge",""],["BulletproofChallengeTuple17",""],["BulletproofChallengeTuple18",""],["BulletproofChallenges",""],["ProofStateBulletproofChallenges",""],["ScalarChallengeVector2",""]]});

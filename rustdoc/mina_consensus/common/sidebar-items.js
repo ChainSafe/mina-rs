@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["ConsensusConstants","Type that defines constant values for mina consensus calculation"],["ProtocolStateChain","A chain of [ProtocolState]"]],"trait":[["Chain","Trait that represents a chain of block data structure"],["Consensus","A trait that defines operations for consensus calculation"]]});

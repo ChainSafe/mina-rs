@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["BlockchainState","Mina blockchain state struct"],["NonSnarkStagedLedgerHash","Non-snarked ledger hash"],["StagedLedgerHash","Staged ledger hash structure"]],"type":[["BlockchainStateV1","Mina blockchain state struct (v1)"],["NonSnarkStagedLedgerHashV1","Non-snarked ledger hash (v1)"],["StagedLedgerHashV1","Staged ledger hash structure (v1)"]]});

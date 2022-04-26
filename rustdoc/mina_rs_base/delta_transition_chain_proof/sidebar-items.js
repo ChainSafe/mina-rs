@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["DeltaTransitionChainProof","Proof that the block was produced within the allotted slot time"]]});

@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["Data","Data associated with a verification key"],["VerificationKey","Public data required to verify a Mina snark"]]});

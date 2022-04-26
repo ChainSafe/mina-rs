@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["GlobalSlot","A global slot"]],"type":[["GlobalSlotV1","A global slot (v1)"]]});

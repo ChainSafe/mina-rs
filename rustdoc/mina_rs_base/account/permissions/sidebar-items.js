@@ -1,0 +1,1 @@
+initSidebarItems({"enum":[["AuthRequired","The level of auth required to perform a particular action with an account"]],"struct":[["Permissions","Permissions associated with the account"]]});

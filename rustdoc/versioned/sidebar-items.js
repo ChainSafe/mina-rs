@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["Versioned","A generic version wrapper around another type"]]});

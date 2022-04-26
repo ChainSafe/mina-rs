@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["ProtocolState","This structure can be thought of like the block header. It contains the most essential information of a block."]],"type":[["ProtocolStateV1","This structure can be thought of like the block header. It contains the most essential information of a block (v1)"]]});

@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["ProtocolConstants","Constants that define the consensus parameters"],["ProtocolState","This structure can be thought of like the block header. It contains the most essential information of a block."],["ProtocolStateBody","Body of the protocol state"]],"trait":[["Header","Implementing types have some notion of height and can return it"]]});

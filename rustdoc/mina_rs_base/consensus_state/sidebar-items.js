@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["ConsensusState","This structure encapsulates the succinct state of the consensus protocol."],["VrfOutputTruncated","Wrapper struct for the output for a VRF"]]});

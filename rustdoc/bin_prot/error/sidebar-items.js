@@ -1,0 +1,1 @@
+initSidebarItems({"enum":[["Error","Error type for BinProt serialization and deserialization"]],"type":[["Result","A result whose error type is `Error`."]]});

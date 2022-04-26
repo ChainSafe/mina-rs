@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["CompressedCurvePoint","An EC point stored in compressed form containing only the x coordinate and one extra bit"],["PublicKey2V1","Public key (v1) with an extra version byte"],["PublicKeyV1","Public key (v1)"],["SignatureV1","Signature (v1)"]]});
