@@ -10,6 +10,7 @@ env:
   CARGO_INCREMENTAL: 1
   # Investigate why it does not build with this flag
   # RUSTFLAGS: -Ctarget-cpu=native
+  RUSTDOCFLAGS: "--enable-index-page -Zunstable-options"
 
 jobs:
   checks:
@@ -115,8 +116,6 @@ jobs:
           # fail-on-alert: true
       - run: cat ./.cache/benchmark-data.json
       - run: cargo bench --all-features --manifest-path apps/Cargo.toml
-      - run: cargo doc --no-deps --release --all-features
-      - run: cargo doc --no-deps --release --all-features --manifest-path apps/Cargo.toml
       - run: cargo clippy --release --all-features -- --deny warnings
       - run: cargo clippy --release --all-features --manifest-path apps/Cargo.toml -- --deny warnings
       - name: Run profilers
@@ -130,13 +129,6 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./target/doc
-      - uses: actions/upload-artifact@v2
-        with:
-          name: doc
-          path: |
-            target/doc/**/*
-            apps/target/doc/**/*
-          if-no-files-found: error
       - uses: actions/upload-artifact@v2
         with:
           name: criterion
@@ -177,9 +169,6 @@ jobs:
       - run: cargo clippy --release --all-features --target wasm32-unknown-unknown -- --deny warnings
       - run: cargo clippy --release --all-features --target wasm32-unknown-unknown --manifest-path apps/Cargo.toml -- --deny warnings
       - run: cargo clippy --release --all-features --target wasm32-unknown-unknown --manifest-path apps/wasm/Cargo.toml -- --deny warnings
-      - run: cargo doc --no-deps --release --all-features --target wasm32-unknown-unknown
-      - run: cargo doc --no-deps --release --all-features --target wasm32-unknown-unknown --manifest-path apps/Cargo.toml
-      - run: cargo doc --no-deps --release --all-features --target wasm32-unknown-unknown --manifest-path apps/wasm/Cargo.toml
       - name: Install wasm-pack
         run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
       - name: wasm-pack tests for test-serialization
@@ -271,3 +260,32 @@ jobs:
           curl -Os https://uploader.codecov.io/latest/linux/codecov
           chmod +x codecov
           ./codecov -f lcov.info -Z
+  gh-pages:
+    runs-on: ubuntu-latest
+    steps:
+      - run: lscpu
+      - uses: actions/checkout@v2
+      - run: cat .github/cargo-config > $HOME/.cargo/config
+      - uses: actions/cache@v2
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            target/
+          key: ${{ runner.os }}-x86_64-cargo-${{ hashFiles('**/Cargo.lock') }}
+      - uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: nightly
+          components:
+          override: true
+      - run: cargo doc --all --no-deps
+      - run: mkdir -p /tmp/gh-pages/
+      - run: mv ./target/doc /tmp/gh-pages/rustdoc
+      - uses: peaceiris/actions-gh-pages@v3
+        # if: ${{ github.ref == 'refs/heads/main' }}
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: /tmp/gh-pages
