@@ -47,6 +47,7 @@ where
 
     /// Build mina merkle ledger tree with a fixed height
     fn to_mina_merkle_ledger(&'a self) -> MinaLedgerMerkleTree {
+        // ledger_depth is defined at <https://github.com/MinaProtocol/mina/blob/develop/docs/specs/types_and_structures/serialized_key.md#constraint_constants>
         const MINA_LEDGER_HEIGHT: u32 = 20;
 
         let mut tree = MinaLedgerMerkleTree::new(MINA_LEDGER_HEIGHT);

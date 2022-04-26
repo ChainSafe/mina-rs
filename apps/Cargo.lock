@@ -683,6 +683,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "lockfree-object-pool"
+version = "0.1.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "8166fbddef141acbea89cf3425ed97d4c22d14a68161977fc01c301175a4fb89"
+
+[[package]]
 name = "log"
 version = "0.4.16"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -746,6 +752,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "mina-merkle"
+version = "0.1.0"
+dependencies = [
+ "ark-ff",
+ "lockfree-object-pool",
+ "once_cell",
+ "proof-systems",
+]
+
+[[package]]
 name = "mina-rs-base"
 version = "0.1.0"
 dependencies = [
@@ -758,6 +774,7 @@ dependencies = [
  "getrandom",
  "hex",
  "mina-crypto",
+ "mina-merkle",
  "mina-serialization-types",
  "num",
  "proof-systems",
@@ -864,9 +881,9 @@ dependencies = [
 
 [[package]]
 name = "num-iter"
-version = "0.1.42"
+version = "0.1.43"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b2021c8337a54d21aca0d59a92577a029af9431cb59b909b03252b9c164fad59"
+checksum = "7d03e6c028c5dc5cac6e2dec0efda81fc887605bb3d884578bb6d6bf7514e252"
 dependencies = [
  "autocfg",
  "num-integer",
