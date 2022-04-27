@@ -1,7 +1,9 @@
 // Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
+//!
 //! Implements common APIs for the blockchain in the context of consensus.
+//!
 
 use crate::error::ConsensusError;
 use hex::ToHex;
@@ -11,6 +13,7 @@ use mina_rs_base::global_slot::GlobalSlot;
 use mina_rs_base::protocol_state::{Header, ProtocolState};
 use mina_rs_base::types::{BlockTime, Length};
 
+/// Type that defines constant values for mina consensus calculation
 // TODO: derive from protocol constants
 pub struct ConsensusConstants {
     /// Point of finality (number of confirmations)
@@ -30,6 +33,7 @@ pub struct ConsensusConstants {
 }
 
 impl ConsensusConstants {
+    /// Pre-defined constant values for mainnet
     pub fn mainnet() -> Self {
         Self {
             k: Length(290),
@@ -42,19 +46,23 @@ impl ConsensusConstants {
         }
     }
 
+    /// Pre-defined constant values for devnet
     pub fn devnet() -> Self {
         todo!()
     }
 }
 
+/// A chain of [ProtocolState]
 #[derive(Debug, Default)]
 // TODO: replace vec element with ExternalTransition
 pub struct ProtocolStateChain(pub Vec<ProtocolState>);
 
+/// Trait that represents a chain of block data structure
 pub trait Chain<T>
 where
     T: Header,
 {
+    /// Pushes an item into the chain
     fn push(&mut self, new: T) -> Result<(), ConsensusError>;
     /// This function returns the last block of a given chain.
     /// The input is a chain C and the output is last block of C
@@ -77,6 +85,7 @@ where
     /// This function returns hash of the top block's protocol state for a given chain.
     /// The input is a chain C and the output is the hash.
     fn state_hash(&self) -> Option<StateHash>;
+    /// Gets [ProtocolState] of the genesis block
     fn genesis_block(&self) -> Option<&ProtocolState>;
 }
 
@@ -138,7 +147,9 @@ impl Chain<ProtocolState> for ProtocolStateChain {
     }
 }
 
+/// A trait that defines operations for consensus calculation
 pub trait Consensus {
+    /// Chain type
     type Chain;
     /// Top level API to select between chains during a fork.
     fn select_secure_chain<'a>(
