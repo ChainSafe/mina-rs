@@ -4,6 +4,7 @@
 use crate::types::*;
 use mina_serialization_types::{json::*, v1::*};
 use versioned::impl_from_for_ext_type;
+use versioned::Versioned;
 
 mod account;
 mod bulletproof_challenges;

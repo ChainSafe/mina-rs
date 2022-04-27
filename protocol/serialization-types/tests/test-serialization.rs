@@ -640,6 +640,8 @@ macro_rules! block_path_test {
     };
 }
 
+// This is introduced to support `block_sum_path_test`
+// match a given path to CoinBase::Zero which is an empty variant
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct DummyEmptyVariant;
 
