@@ -1,10 +1,14 @@
 // Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
+//!
+//! This modules contains all genesis block related stuff
+//!
+
 mod config;
 pub use config::*;
 use mina_rs_base::types::*;
-pub mod genesis_impl;
+mod genesis_impl;
 
 /// Trait for genesis block initialization logic
 /// # Example
@@ -15,5 +19,6 @@ pub mod genesis_impl;
 /// let genesis_devnet = ExternalTransition::from_genesis_config(&DEVNET_CONFIG);
 /// ```
 pub trait Genesis {
+    /// Constructs a genesis block from config
     fn from_genesis_config(config: &GenesisInitConfig) -> ExternalTransition;
 }
