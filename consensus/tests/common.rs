@@ -3,10 +3,12 @@
 
 #[cfg(test)]
 mod tests {
-    use hex::ToHex;
+    use lockfree_object_pool::SpinLockObjectPool;
     use mina_consensus::{common::*, error::ConsensusError};
-    use mina_crypto::hash::*;
     use mina_rs_base::types::*;
+    use once_cell::sync::OnceCell;
+    use proof_systems::mina_hasher::PoseidonHasherKimchi;
+    use proof_systems::mina_hasher::{create_kimchi, Hasher};
     use wasm_bindgen_test::*;
 
     #[test]
@@ -115,15 +117,13 @@ mod tests {
         let mut b0: ProtocolState = Default::default();
         b0.body.consensus_state.blockchain_length = Length(0);
         c.push(b0.clone()).unwrap();
+        static HASHER_POOL: OnceCell<SpinLockObjectPool<PoseidonHasherKimchi<VrfOutputTruncated>>> =
+            OnceCell::new();
+        let pool =
+            HASHER_POOL.get_or_init(|| SpinLockObjectPool::new(|| create_kimchi(()), |_| ()));
+        let mut hasher = pool.pull();
 
-        let expected = Some(
-            b0.body
-                .consensus_state
-                .last_vrf_output
-                .hash()
-                .as_ref()
-                .encode_hex(),
-        );
+        let expected = Some(hasher.hash(&b0.body.consensus_state.last_vrf_output));
         assert_eq!(expected, c.last_vrf_hash());
     }
 
@@ -233,24 +233,26 @@ mod tests {
 
     #[test]
     #[wasm_bindgen_test]
-    //Same BlockChain length but different last vrf output
-    //Chain A: https://storage.googleapis.com/mina_network_block_data/mainnet-113267-3NKtqqstB6h8SVNQCtspFisjUwCTqoQ6cC1KGvb6kx6n2dqKkiZS.json
-    //Chain B: https://storage.googleapis.com/mina_network_block_data/mainnet-113267-3NLenrog9wkiJMoA774T9VraqSUGhCuhbDLj3JKbEzomNdjr78G8.json
-    fn test_longer_chain_with_same_chain_length_diff_last_vrf_output() {
+    // Same BlockChain length but greater last vrf output of candidate chain
+    // Chain A: https://storage.googleapis.com/mina_network_block_data/mainnet-117896-3NKjZ5fjms6BMaH4aq7DopPGyMY7PbG6vhRsX5XnYRxih8i9G7dj.json
+    // Chain B: https://storage.googleapis.com/mina_network_block_data/mainnet-117896-3NKrv92FYZFHRNUJxiP7VGeRx3MeDY2iffFjUWXTPoXJorsS63ba.json
+    // Current chain: Chain A
+    // Candidate chains: [Chain B] (Greater Last VRF output)
+    fn test_longer_chain_with_same_chain_length_greater_last_vrf_output() {
         let mut chain_a = ProtocolStateChain::default();
         let mut consensus_state = ConsensusState::default();
-        consensus_state.blockchain_length = Length(113267);
+        consensus_state.blockchain_length = Length(117896);
         consensus_state.last_vrf_output =
-            VrfOutputTruncated::from("r0K80Xsb44NLx_pBjI9UQtt6a1N-RWym8VxVTY4pAAA=");
+            VrfOutputTruncated::from("ZYmm1mr8vJ6F-1pOKgmF1yAF41Z9onq1Je5PoKSBAwA=");
         let mut prot_state = ProtocolState::default();
         prot_state.body.consensus_state = consensus_state;
         chain_a.push(prot_state).unwrap();
 
         let mut chain_b = ProtocolStateChain::default();
         let mut consensus_state = ConsensusState::default();
-        consensus_state.blockchain_length = Length(113267);
+        consensus_state.blockchain_length = Length(117896);
         consensus_state.last_vrf_output =
-            VrfOutputTruncated::from("kKr83LYd7DyFupRAPh5Dh9eWM1teSEs5VjU4XId2DgA=");
+            VrfOutputTruncated::from("2NKoDSWzMLQZTqGY_VrLJNQEZs5jwjCQWp5jnLkGBAA=");
         let mut prot_state = ProtocolState::default();
         prot_state.body.consensus_state = consensus_state;
         chain_b.push(prot_state).unwrap();
@@ -260,8 +262,9 @@ mod tests {
         let result_state = select_result.0.get(0).unwrap();
         assert_eq!(
             result_state.body.consensus_state.last_vrf_output,
-            VrfOutputTruncated::from("kKr83LYd7DyFupRAPh5Dh9eWM1teSEs5VjU4XId2DgA=")
+            VrfOutputTruncated::from("2NKoDSWzMLQZTqGY_VrLJNQEZs5jwjCQWp5jnLkGBAA=")
         );
+        assert_eq!(result_state, chain_b.0.get(0).unwrap());
     }
 
     #[test]
