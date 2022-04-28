@@ -16,12 +16,27 @@ use crate::hash::Hash;
 use crate::impl_bs58;
 use derive_more::From;
 use mina_serialization_types::v1::{ByteVecV1, HashV1};
+use proof_systems::mina_hasher::{Hashable, ROInput};
 use serde::{Deserialize, Serialize};
 
 pub(crate) type HashBytes = Box<[u8]>;
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize, From, PartialOrd)]
 pub(crate) struct BaseHash([u8; 32]);
+
+impl Hashable for BaseHash {
+    type D = ();
+
+    fn to_roinput(&self) -> ROInput {
+        let mut roi = ROInput::new();
+        roi.append_bytes(&self.0);
+        roi
+    }
+
+    fn domain_string(_: Self::D) -> Option<String> {
+        None
+    }
+}
 
 impl From<HashBytes> for BaseHash {
     // TODO: Figure out how to do this without a copy and still have BaseHash serializable
@@ -58,6 +73,20 @@ pub struct StateHash(BaseHash);
 
 impl_bs58!(StateHash, version_bytes::STATE_HASH);
 
+impl Hashable for StateHash {
+    type D = ();
+
+    fn to_roinput(&self) -> ROInput {
+        let mut roi = ROInput::new();
+        roi.append_hashable(&self.0);
+        roi
+    }
+
+    fn domain_string(_: Self::D) -> Option<String> {
+        None
+    }
+}
+
 impl From<HashBytes> for StateHash {
     fn from(b: HashBytes) -> Self {
         Self(BaseHash::from(b))
@@ -86,6 +115,20 @@ pub struct LedgerHash(BaseHash);
 
 impl_bs58!(LedgerHash, version_bytes::LEDGER_HASH);
 
+impl Hashable for LedgerHash {
+    type D = ();
+
+    fn to_roinput(&self) -> ROInput {
+        let mut roi = ROInput::new();
+        roi.append_hashable(&self.0);
+        roi
+    }
+
+    fn domain_string(_: Self::D) -> Option<String> {
+        None
+    }
+}
+
 impl From<HashV1> for LedgerHash {
     fn from(h: HashV1) -> Self {
         Self(BaseHash(h.t))
@@ -112,6 +155,20 @@ pub struct CoinBaseHash(BaseHash);
 
 impl_bs58!(CoinBaseHash, 12);
 
+impl Hashable for CoinBaseHash {
+    type D = ();
+
+    fn to_roinput(&self) -> ROInput {
+        let mut roi = ROInput::new();
+        roi.append_hashable(&self.0);
+        roi
+    }
+
+    fn domain_string(_: Self::D) -> Option<String> {
+        None
+    }
+}
+
 impl From<HashV1> for CoinBaseHash {
     fn from(h: HashV1) -> Self {
         Self(BaseHash(h.t))
@@ -122,6 +179,20 @@ impl From<HashV1> for CoinBaseHash {
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct EpochSeed(BaseHash);
+
+impl Hashable for EpochSeed {
+    type D = ();
+
+    fn to_roinput(&self) -> ROInput {
+        let mut roi = ROInput::new();
+        roi.append_hashable(&self.0);
+        roi
+    }
+
+    fn domain_string(_: Self::D) -> Option<String> {
+        None
+    }
+}
 
 impl_bs58!(EpochSeed, version_bytes::EPOCH_SEED);
 
@@ -146,6 +217,20 @@ impl From<HashV1> for EpochSeed {
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct SnarkedLedgerHash(BaseHash);
 
+impl Hashable for SnarkedLedgerHash {
+    type D = ();
+
+    fn to_roinput(&self) -> ROInput {
+        let mut roi = ROInput::new();
+        roi.append_hashable(&self.0);
+        roi
+    }
+
+    fn domain_string(_: Self::D) -> Option<String> {
+        None
+    }
+}
+
 impl_bs58!(SnarkedLedgerHash, version_bytes::LEDGER_HASH);
 
 impl From<HashV1> for SnarkedLedgerHash {
@@ -162,6 +247,21 @@ pub struct StagedLedgerHash {
     pub pending_coinbase_hash: CoinBaseHash,
 }
 
+impl Hashable for StagedLedgerHash {
+    type D = ();
+
+    fn to_roinput(&self) -> ROInput {
+        let mut roi = ROInput::new();
+        roi.append_hashable(&self.non_snark);
+        roi.append_hashable(&self.pending_coinbase_hash);
+        roi
+    }
+
+    fn domain_string(_: Self::D) -> Option<String> {
+        None
+    }
+}
+
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct NonSnarkStagedLedgerHash {
     pub ledger_hash: LedgerHash,
@@ -169,8 +269,38 @@ pub struct NonSnarkStagedLedgerHash {
     pub pending_coinbase_aux: PendingCoinbaseAuxHash,
 }
 
+impl Hashable for NonSnarkStagedLedgerHash {
+    type D = ();
+
+    fn to_roinput(&self) -> ROInput {
+        let mut roi = ROInput::new();
+        roi.append_hashable(&self.ledger_hash);
+        roi.append_hashable(&self.aux_hash);
+        roi.append_hashable(&self.pending_coinbase_aux);
+        roi
+    }
+
+    fn domain_string(_: Self::D) -> Option<String> {
+        None
+    }
+}
+
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct AuxHash(pub Vec<u8>);
+
+impl Hashable for AuxHash {
+    type D = ();
+
+    fn to_roinput(&self) -> ROInput {
+        let mut roi = ROInput::new();
+        roi.append_bytes(&self.0);
+        roi
+    }
+
+    fn domain_string(_: Self::D) -> Option<String> {
+        None
+    }
+}
 
 impl Base58Encodable for AuxHash {
     const VERSION_BYTE: u8 = version_bytes::STAGED_LEDGER_HASH_AUX_HASH;
@@ -197,6 +327,20 @@ impl AsRef<[u8]> for AuxHash {
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct PendingCoinbaseAuxHash(pub Vec<u8>);
+
+impl Hashable for PendingCoinbaseAuxHash {
+    type D = ();
+
+    fn to_roinput(&self) -> ROInput {
+        let mut roi = ROInput::new();
+        roi.append_bytes(&self.0);
+        roi
+    }
+
+    fn domain_string(_: Self::D) -> Option<String> {
+        None
+    }
+}
 
 impl Base58Encodable for PendingCoinbaseAuxHash {
     const VERSION_BYTE: u8 = version_bytes::STAGED_LEDGER_HASH_PENDING_COINBASE_AUX;
