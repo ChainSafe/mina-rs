@@ -22,7 +22,7 @@ pub type ProofMessagesV1 = Versioned<ProofMessages, 1>;
 
 pub type ProofMessageWithoutDegreeBoundListV1 = Versioned<Versioned<Vec<FiniteECPoint>, 1>, 1>;
 
-#[derive(Clone, Debug, Serialize, Deserialize, Default, PartialEq)]
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub struct ProofMessageWithDegreeBound {
     pub unshifted: ECPointVecV1,
     pub shifted: ECPointV1,

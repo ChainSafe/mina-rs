@@ -3,13 +3,15 @@
 
 //! Newtypes for different numeric types used throughout Mina
 
+use crate::*;
+
 use std::fmt;
 
 use derive_deref::Deref;
 use derive_more::From;
 use mina_crypto::{hex::skip_0x_prefix_when_needed, prelude::*};
+use mina_hasher::{Hashable, ROInput};
 use num::Integer;
-use proof_systems::mina_hasher::{Hashable, ROInput};
 use thiserror::Error;
 use time::Duration;
 
@@ -85,7 +87,6 @@ pub struct ExtendedU64(pub u64);
 /// ```
 #[derive(Copy, Clone, PartialEq, Debug, Hash, Default, From)]
 #[from(forward)]
-
 pub struct Amount(pub u64);
 
 impl fmt::Display for Amount {

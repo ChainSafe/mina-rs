@@ -2,29 +2,25 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::types::*;
-use mina_serialization_types::{
-    account::{TimedData, TimedDataV1},
-    v1::*,
-};
+use mina_serialization_types::{account::TimedData, v1::*};
 use versioned::Versioned;
 
 impl From<Account> for AccountV1 {
     fn from(t: Account) -> Self {
-        AccountV1::new(Versioned::new(Versioned::new(
-            mina_serialization_types::account::Account {
-                public_key: t.public_key.into(),
-                token_id: t.token_id.into(),
-                token_permissions: t.token_permissions.into(),
-                balance: t.balance.into(),
-                nonce: t.nonce.into(),
-                receipt_chain_hash: t.receipt_chain_hash.into_inner().into(),
-                delegate: t.delegate.map(Into::into),
-                voting_for: t.voting_for.into(),
-                timing: t.timing.into(),
-                permissions: t.permissions.into(),
-                snapp: t.snapp.map(Into::into),
-            },
-        )))
+        mina_serialization_types::account::Account {
+            public_key: t.public_key.into(),
+            token_id: t.token_id.into(),
+            token_permissions: t.token_permissions.into(),
+            balance: t.balance.into(),
+            nonce: t.nonce.into(),
+            receipt_chain_hash: t.receipt_chain_hash.into_inner().into(),
+            delegate: t.delegate.map(Into::into),
+            voting_for: t.voting_for.into(),
+            timing: t.timing.into(),
+            permissions: t.permissions.into(),
+            snapp: t.snapp.map(Into::into),
+        }
+        .into()
     }
 }
 impl From<AccountV1> for Account {
@@ -52,11 +48,12 @@ impl From<TokenPermissions> for TokenPermissionsV1 {
         match t {
             TokenPermissions::TokenOwned {
                 disable_new_accounts,
-            } => Self::new(Versioned::new(TP::TokenOwned {
+            } => TP::TokenOwned {
                 disable_new_accounts,
-            })),
+            }
+            .into(),
             TokenPermissions::NotOwned { account_disabled } => {
-                Self::new(Versioned::new(TP::NotOwned { account_disabled }))
+                TP::NotOwned { account_disabled }.into()
             }
         }
     }
@@ -79,20 +76,24 @@ impl From<Timing> for TimingV1 {
     fn from(t: Timing) -> Self {
         use mina_serialization_types::account::Timing as TP;
         match t {
-            Timing::Untimed => Self::new(Versioned::new(TP::Untimed)),
+            Timing::Untimed => TP::Untimed.into(),
             Timing::Timed {
                 initial_minimum_balance,
                 cliff_time,
                 cliff_amount,
                 vesting_increment,
                 vesting_period,
-            } => Self::new(Versioned::new(TP::Timed(TimedDataV1::new(TimedData {
-                initial_minimum_balance: initial_minimum_balance.into(),
-                cliff_time: cliff_time.into(),
-                cliff_amount: cliff_amount.into(),
-                vesting_increment: vesting_increment.into(),
-                vesting_period: vesting_period.into(),
-            })))),
+            } => TP::Timed(
+                TimedData {
+                    initial_minimum_balance: initial_minimum_balance.into(),
+                    cliff_time: cliff_time.into(),
+                    cliff_amount: cliff_amount.into(),
+                    vesting_increment: vesting_increment.into(),
+                    vesting_period: vesting_period.into(),
+                }
+                .into(),
+            )
+            .into(),
         }
     }
 }
@@ -124,17 +125,16 @@ impl From<TimingV1> for Timing {
 
 impl From<Permissions> for PermissionsV1 {
     fn from(t: Permissions) -> Self {
-        PermissionsV1::new(Versioned::new(
-            mina_serialization_types::account::Permissions {
-                stake: t.stake,
-                edit_state: t.edit_state.into(),
-                send: t.send.into(),
-                receive: t.receive.into(),
-                set_delegate: t.set_delegate.into(),
-                set_permissions: t.set_permissions.into(),
-                set_verification_key: t.set_verification_key.into(),
-            },
-        ))
+        mina_serialization_types::account::Permissions {
+            stake: t.stake,
+            edit_state: t.edit_state.into(),
+            send: t.send.into(),
+            receive: t.receive.into(),
+            set_delegate: t.set_delegate.into(),
+            set_permissions: t.set_permissions.into(),
+            set_verification_key: t.set_verification_key.into(),
+        }
+        .into()
     }
 }
 impl From<PermissionsV1> for Permissions {

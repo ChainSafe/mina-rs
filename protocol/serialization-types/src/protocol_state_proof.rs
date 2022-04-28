@@ -121,3 +121,33 @@ pub struct ProofOpenings {
 }
 
 pub type ProofOpeningsV1 = Versioned<ProofOpenings, 1>;
+
+/// SNARK proof of the protocol state at some point in time
+/// that is convertible from / to the mina specific json representation
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
+pub struct ProtocolStateProofJson {}
+
+impl From<ProtocolStateProofJson> for ProtocolStateProofV1 {
+    fn from(t: ProtocolStateProofJson) -> Self {
+        let t: ProtocolStateProof = t.into();
+        t.into()
+    }
+}
+
+impl From<ProtocolStateProofV1> for ProtocolStateProofJson {
+    fn from(t: ProtocolStateProofV1) -> Self {
+        t.t.t.t.t.into()
+    }
+}
+
+impl From<ProtocolStateProofJson> for ProtocolStateProof {
+    fn from(_t: ProtocolStateProofJson) -> Self {
+        unimplemented!()
+    }
+}
+
+impl From<ProtocolStateProof> for ProtocolStateProofJson {
+    fn from(_t: ProtocolStateProof) -> Self {
+        unimplemented!()
+    }
+}
