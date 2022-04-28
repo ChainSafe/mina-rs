@@ -8,8 +8,6 @@ pub mod permissions;
 pub mod timing;
 pub mod token_permissions;
 
-use proof_systems::*;
-
 use crate::{types::*, *};
 
 pub use permissions::{AuthRequired, Permissions};
@@ -18,7 +16,7 @@ pub use token_permissions::TokenPermissions;
 
 use mina_crypto::hash::{ChainHash, StateHash};
 use mina_hasher::ROInput;
-use mina_serialization_types::v1::*;
+use mina_serialization_types::v1::AccountV1;
 use proof_systems::mina_signer::CompressedPubKey;
 
 /// An account identified by its public key and token ID. Multiple accounts may

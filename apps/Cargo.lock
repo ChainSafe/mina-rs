@@ -724,6 +724,7 @@ dependencies = [
  "hex",
  "mina-serialization-types",
  "num",
+ "proof-systems",
  "serde",
  "thiserror",
  "versioned",
@@ -802,6 +803,8 @@ name = "mina-serialization-types"
 version = "0.1.0"
 dependencies = [
  "bin-prot",
+ "bs58",
+ "derive_more",
  "proof-systems",
  "serde",
  "versioned",

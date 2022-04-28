@@ -15,9 +15,10 @@ use crate::base58::{version_bytes, Base58Encodable};
 use crate::hash::Hash;
 use crate::impl_bs58;
 use derive_more::From;
-use mina_serialization_types::v1::{ByteVecV1, HashV1};
+use mina_serialization_types::{json::*, v1::*};
 use proof_systems::mina_hasher::{Hashable, ROInput};
 use serde::{Deserialize, Serialize};
+use versioned::*;
 
 pub(crate) type HashBytes = Box<[u8]>;
 
@@ -41,9 +42,8 @@ impl Hashable for BaseHash {
 impl From<HashBytes> for BaseHash {
     // TODO: Figure out how to do this without a copy and still have BaseHash serializable
     fn from(b: HashBytes) -> Self {
-        let mut o = BaseHash::default();
-        o.0.copy_from_slice(&b);
-        o
+        let b: &[u8] = &b;
+        b.into()
     }
 }
 
@@ -67,11 +67,36 @@ impl AsRef<[u8; 32]> for BaseHash {
     }
 }
 
+impl_from_for_newtype!(BaseHash, HashV1);
+
+impl From<HashV1> for BaseHash {
+    fn from(h: HashV1) -> Self {
+        Self(h.t)
+    }
+}
+
+#[macro_export]
+macro_rules! impl_from_for_hash {
+    ($t:ty, $tv:ty) => {
+        impl From<$tv> for $t {
+            fn from(h: $tv) -> Self {
+                let base: BaseHash = h.into();
+                Self(base)
+            }
+        }
+    };
+}
+
 //////////////////////////////////////////////////////////////////////////
-#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize, PartialOrd)]
+#[derive(
+    Clone, Default, Debug, PartialEq, Serialize, Deserialize, PartialOrd, derive_more::From,
+)]
 pub struct StateHash(BaseHash);
 
 impl_bs58!(StateHash, version_bytes::STATE_HASH);
+impl_from_for_hash!(StateHash, HashBytes);
+impl_from_for_hash!(StateHash, HashV1);
+impl_from_for_newtype!(StateHash, HashV1);
 
 impl Hashable for StateHash {
     type D = ();
@@ -87,33 +112,20 @@ impl Hashable for StateHash {
     }
 }
 
-impl From<HashBytes> for StateHash {
-    fn from(b: HashBytes) -> Self {
-        Self(BaseHash::from(b))
-    }
-}
-
-impl From<HashV1> for StateHash {
-    fn from(h: HashV1) -> Self {
-        Self(BaseHash(h.t))
-    }
-}
-impl From<StateHash> for HashV1 {
-    fn from(h: StateHash) -> Self {
-        Self::new(h.0 .0)
-    }
-}
-
 impl Hash for StateHash {
     const PREFIX: &'static HashPrefix = PROTOCOL_STATE;
 }
 
 //////////////////////////////////////////////////////////////////////////
 
-#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize, derive_more::From)]
 pub struct LedgerHash(BaseHash);
 
 impl_bs58!(LedgerHash, version_bytes::LEDGER_HASH);
+impl_from_for_hash!(LedgerHash, HashBytes);
+impl_from_for_hash!(LedgerHash, HashV1);
+impl_from_for_newtype!(LedgerHash, HashV1);
+impl_from_for_ext_type_generic!(LedgerHash, HashV1, LedgerHashV1Json);
 
 impl Hashable for LedgerHash {
     type D = ();
@@ -129,24 +141,16 @@ impl Hashable for LedgerHash {
     }
 }
 
-impl From<HashV1> for LedgerHash {
-    fn from(h: HashV1) -> Self {
-        Self(BaseHash(h.t))
-    }
-}
-
 //////////////////////////////////////////////////////////////////////////
 
-#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize, derive_more::From)]
 pub struct ChainHash(BaseHash);
 
 impl_bs58!(ChainHash, version_bytes::LEDGER_HASH);
-
-impl From<HashV1> for ChainHash {
-    fn from(h: HashV1) -> Self {
-        Self(BaseHash(h.t))
-    }
-}
+impl_from_for_hash!(ChainHash, HashBytes);
+impl_from_for_hash!(ChainHash, HashV1);
+impl_from_for_newtype!(ChainHash, HashV1);
+impl_from_for_ext_type_generic!(ChainHash, HashV1, ChainHashV1Json);
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -154,6 +158,10 @@ impl From<HashV1> for ChainHash {
 pub struct CoinBaseHash(BaseHash);
 
 impl_bs58!(CoinBaseHash, 12);
+impl_from_for_hash!(CoinBaseHash, HashBytes);
+impl_from_for_hash!(CoinBaseHash, HashV1);
+impl_from_for_newtype!(CoinBaseHash, HashV1);
+impl_from_for_ext_type_generic!(CoinBaseHash, HashV1, CoinBaseHashV1Json);
 
 impl Hashable for CoinBaseHash {
     type D = ();
@@ -169,16 +177,16 @@ impl Hashable for CoinBaseHash {
     }
 }
 
-impl From<HashV1> for CoinBaseHash {
-    fn from(h: HashV1) -> Self {
-        Self(BaseHash(h.t))
-    }
-}
-
 //////////////////////////////////////////////////////////////////////////
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct EpochSeed(BaseHash);
+
+impl_bs58!(EpochSeed, version_bytes::EPOCH_SEED);
+impl_from_for_hash!(EpochSeed, HashBytes);
+impl_from_for_hash!(EpochSeed, HashV1);
+impl_from_for_newtype!(EpochSeed, HashV1);
+impl_from_for_ext_type_generic!(EpochSeed, HashV1, EpochSeedHashV1Json);
 
 impl Hashable for EpochSeed {
     type D = ();
@@ -194,28 +202,20 @@ impl Hashable for EpochSeed {
     }
 }
 
-impl_bs58!(EpochSeed, version_bytes::EPOCH_SEED);
-
-impl From<HashBytes> for EpochSeed {
-    fn from(b: HashBytes) -> Self {
-        Self(BaseHash::from(b))
-    }
-}
-
 impl Hash for EpochSeed {
     const PREFIX: &'static HashPrefix = EPOCH_SEED;
-}
-
-impl From<HashV1> for EpochSeed {
-    fn from(h: HashV1) -> Self {
-        Self(BaseHash(h.t))
-    }
 }
 
 //////////////////////////////////////////////////////////////////////////
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct SnarkedLedgerHash(BaseHash);
+
+impl_bs58!(SnarkedLedgerHash, version_bytes::LEDGER_HASH);
+impl_from_for_hash!(SnarkedLedgerHash, HashBytes);
+impl_from_for_hash!(SnarkedLedgerHash, HashV1);
+impl_from_for_newtype!(SnarkedLedgerHash, HashV1);
+impl_from_for_ext_type_generic!(SnarkedLedgerHash, HashV1, LedgerHashV1Json);
 
 impl Hashable for SnarkedLedgerHash {
     type D = ();
@@ -228,14 +228,6 @@ impl Hashable for SnarkedLedgerHash {
 
     fn domain_string(_: Self::D) -> Option<String> {
         None
-    }
-}
-
-impl_bs58!(SnarkedLedgerHash, version_bytes::LEDGER_HASH);
-
-impl From<HashV1> for SnarkedLedgerHash {
-    fn from(h: HashV1) -> Self {
-        Self(BaseHash(h.t))
     }
 }
 
@@ -285,7 +277,8 @@ impl Hashable for NonSnarkStagedLedgerHash {
     }
 }
 
-#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize, derive_more::From)]
+#[from(forward)]
 pub struct AuxHash(pub Vec<u8>);
 
 impl Hashable for AuxHash {
@@ -311,21 +304,10 @@ impl Base58Encodable for AuxHash {
     }
 }
 
-impl From<Vec<u8>> for AuxHash {
-    fn from(h: Vec<u8>) -> Self {
-        Self(h)
-    }
-}
-
-impl AsRef<[u8]> for AuxHash {
-    fn as_ref(&self) -> &[u8] {
-        self.0.as_ref()
-    }
-}
-
 //////////////////////////////////////////////////////////////////////////
 
-#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize, derive_more::From)]
+#[from(forward)]
 pub struct PendingCoinbaseAuxHash(pub Vec<u8>);
 
 impl Hashable for PendingCoinbaseAuxHash {
@@ -351,45 +333,26 @@ impl Base58Encodable for PendingCoinbaseAuxHash {
     }
 }
 
-impl From<Vec<u8>> for PendingCoinbaseAuxHash {
-    fn from(h: Vec<u8>) -> Self {
-        Self(h)
-    }
-}
-
-impl From<ByteVecV1> for PendingCoinbaseAuxHash {
-    fn from(h: ByteVecV1) -> Self {
-        Self(h.t)
-    }
-}
-
 //////////////////////////////////////////////////////////////////////////
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct VrfOutputHash(BaseHash);
 
 impl_bs58!(VrfOutputHash, version_bytes::VRF_TRUNCATED_OUTPUT);
-
-impl From<HashBytes> for VrfOutputHash {
-    fn from(b: HashBytes) -> Self {
-        Self(BaseHash::from(b))
-    }
-}
+impl_from_for_hash!(VrfOutputHash, HashBytes);
+impl_from_for_hash!(VrfOutputHash, HashV1);
+impl_from_for_newtype!(VrfOutputHash, HashV1);
 
 impl Hash for VrfOutputHash {
     const PREFIX: &'static HashPrefix = VRF_OUTPUT;
-}
-
-impl From<HashV1> for VrfOutputHash {
-    fn from(h: HashV1) -> Self {
-        Self(BaseHash(h.t))
-    }
 }
 
 //////////////////////////////////////////////////////////////////////////
 
 #[cfg(test)]
 pub mod test {
+
+    use mina_serialization_types::json::*;
 
     use super::*;
 
@@ -411,10 +374,72 @@ pub mod test {
     }
 
     #[test]
+    fn ledger_hash_json_roundtrip() -> anyhow::Result<()> {
+        let s = "jxV4SS44wHUVrGEucCsfxLisZyUC5QddsiokGH3kz5xm2hJWZ25";
+        let s_json = format!("\"{s}\"");
+        let json: LedgerHashV1Json = serde_json::from_str(&s_json)?;
+        let h: LedgerHash = json.into();
+        assert_eq!(h.to_base58_string(), s);
+        let json: LedgerHashV1Json = h.into();
+        assert_eq!(serde_json::to_string(&json)?, s_json);
+        Ok(())
+    }
+
+    #[test]
     fn coinbase_hash_from_base58() {
         let s = "2n1tLdP2gkifmyVmrmzYXTS4ohPbZPJn6Qq4x55ywrbRWB4543cC";
         let h = CoinBaseHash::from_base58(s).unwrap();
         assert_eq!(h.to_base58_string(), s);
+    }
+
+    #[test]
+    fn coinbase_hash_json_roundtrip() -> anyhow::Result<()> {
+        let s = "2n1tLdP2gkifmyVmrmzYXTS4ohPbZPJn6Qq4x55ywrbRWB4543cC";
+        let s_json = format!("\"{s}\"");
+        let json: CoinBaseHashV1Json = serde_json::from_str(&s_json)?;
+        let h: CoinBaseHash = json.into();
+        assert_eq!(h.to_base58_string(), s);
+        let json: CoinBaseHashV1Json = h.into();
+        assert_eq!(serde_json::to_string(&json)?, s_json);
+        Ok(())
+    }
+
+    #[test]
+    fn epoch_seed_from_base58() {
+        let s = "2va9BGv9JrLTtrzZttiEMDYw1Zj6a6EHzXjmP9evHDTG3oEquURA";
+        let h = EpochSeed::from_base58(s).unwrap();
+        assert_eq!(h.to_base58_string(), s);
+    }
+
+    #[test]
+    fn epoch_seed_hash_json_roundtrip() -> anyhow::Result<()> {
+        let s = "2va9BGv9JrLTtrzZttiEMDYw1Zj6a6EHzXjmP9evHDTG3oEquURA";
+        let s_json = format!("\"{s}\"");
+        let json: EpochSeedHashV1Json = serde_json::from_str(&s_json)?;
+        let h: EpochSeed = json.into();
+        assert_eq!(h.to_base58_string(), s);
+        let json: EpochSeedHashV1Json = h.into();
+        assert_eq!(serde_json::to_string(&json)?, s_json);
+        Ok(())
+    }
+
+    #[test]
+    fn snarked_ledger_hash_from_base58() {
+        let s = "jx7buQVWFLsXTtzRgSxbYcT8EYLS8KCZbLrfDcJxMtyy4thw2Ee";
+        let h = SnarkedLedgerHash::from_base58(s).unwrap();
+        assert_eq!(h.to_base58_string(), s);
+    }
+
+    #[test]
+    fn snarked_ledger_hash_json_roundtrip() -> anyhow::Result<()> {
+        let s = "jx7buQVWFLsXTtzRgSxbYcT8EYLS8KCZbLrfDcJxMtyy4thw2Ee";
+        let s_json = format!("\"{s}\"");
+        let json: LedgerHashV1Json = serde_json::from_str(&s_json)?;
+        let h: SnarkedLedgerHash = json.into();
+        assert_eq!(h.to_base58_string(), s);
+        let json: LedgerHashV1Json = h.into();
+        assert_eq!(serde_json::to_string(&json)?, s_json);
+        Ok(())
     }
 
     #[test]

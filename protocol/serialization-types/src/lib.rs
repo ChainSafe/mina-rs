@@ -35,6 +35,7 @@ pub mod protocol_state_proof;
 pub mod protocol_version;
 pub mod signatures;
 pub mod staged_ledger_diff;
+pub mod version_bytes;
 
 mod type_annotations;
 pub use type_annotations::*;
@@ -91,4 +92,18 @@ pub mod v1 {
         TransactionStatusBalanceDataV1, TransactionStatusV1, UserCommandV1,
         UserCommandWithStatusV1,
     };
+}
+
+/// json serialization types for the Mina protocol
+pub mod json {
+    use super::*;
+
+    pub use common::{ChainHashV1Json, CoinBaseHashV1Json, EpochSeedHashV1Json, LedgerHashV1Json};
+    pub use delta_transition_chain_proof::DeltaTransitionChainProofJson;
+    pub use external_transition::ExternalTransitionJson;
+    pub use protocol_state::ProtocolStateJson;
+    pub use protocol_state_body::ProtocolStateBodyJson;
+    pub use protocol_state_proof::ProtocolStateProofJson;
+    pub use protocol_version::ProtocolVersionJson;
+    pub use staged_ledger_diff::StagedLedgerDiffJson;
 }
