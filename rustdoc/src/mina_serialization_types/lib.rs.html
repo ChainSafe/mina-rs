@@ -97,6 +97,21 @@
 <span id="92">92</span>
 <span id="93">93</span>
 <span id="94">94</span>
+<span id="95">95</span>
+<span id="96">96</span>
+<span id="97">97</span>
+<span id="98">98</span>
+<span id="99">99</span>
+<span id="100">100</span>
+<span id="101">101</span>
+<span id="102">102</span>
+<span id="103">103</span>
+<span id="104">104</span>
+<span id="105">105</span>
+<span id="106">106</span>
+<span id="107">107</span>
+<span id="108">108</span>
+<span id="109">109</span>
 </pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems</span>
 <span class="comment">// SPDX-License-Identifier: Apache-2.0</span>
 
@@ -134,6 +149,7 @@
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">protocol_version</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">signatures</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">staged_ledger_diff</span>;
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">version_bytes</span>;
 
 <span class="kw">mod</span> <span class="ident">type_annotations</span>;
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">type_annotations</span>::<span class="kw-2">*</span>;
@@ -190,6 +206,20 @@
         <span class="ident">TransactionStatusBalanceDataV1</span>, <span class="ident">TransactionStatusV1</span>, <span class="ident">UserCommandV1</span>,
         <span class="ident">UserCommandWithStatusV1</span>,
     };
+}
+
+<span class="doccomment">/// json serialization types for the Mina protocol</span>
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">json</span> {
+    <span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
+
+    <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">common</span>::{<span class="ident">ChainHashV1Json</span>, <span class="ident">CoinBaseHashV1Json</span>, <span class="ident">EpochSeedHashV1Json</span>, <span class="ident">LedgerHashV1Json</span>};
+    <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">delta_transition_chain_proof::DeltaTransitionChainProofJson</span>;
+    <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">external_transition::ExternalTransitionJson</span>;
+    <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">protocol_state::ProtocolStateJson</span>;
+    <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">protocol_state_body::ProtocolStateBodyJson</span>;
+    <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">protocol_state_proof::ProtocolStateProofJson</span>;
+    <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">protocol_version::ProtocolVersionJson</span>;
+    <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">staged_ledger_diff::StagedLedgerDiffJson</span>;
 }
 </code></pre></div>
 </section><section id="search" class="content hidden"></section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_serialization_types" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.62.0-nightly (69a5d2481 2022-04-27)" ></div>

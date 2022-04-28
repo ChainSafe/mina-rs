@@ -177,26 +177,18 @@
 <span id="172">172</span>
 <span id="173">173</span>
 <span id="174">174</span>
-<span id="175">175</span>
-<span id="176">176</span>
-<span id="177">177</span>
-<span id="178">178</span>
-<span id="179">179</span>
-<span id="180">180</span>
 </pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems</span>
 <span class="comment">// SPDX-License-Identifier: Apache-2.0</span>
 
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::types</span>::<span class="kw-2">*</span>;
 <span class="kw">use</span> <span class="ident">mina_serialization_types::v1</span>::<span class="kw-2">*</span>;
-<span class="kw">use</span> <span class="ident">versioned::Versioned</span>;
 
 <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">BulletproofChallenge</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">BulletproofChallengeV1</span> {
     <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">t</span>: <span class="ident">BulletproofChallenge</span>) -&gt; <span class="self">Self</span> {
-        <span class="ident">BulletproofChallengeV1::new</span>(
-            <span class="ident">mina_serialization_types::bulletproof_challenges::BulletproofChallenge</span> {
-                <span class="ident">prechallenge</span>: <span class="ident">t</span>.<span class="ident">prechallenge</span>.<span class="ident">into</span>(),
-            },
-        )
+        <span class="ident">mina_serialization_types::bulletproof_challenges::BulletproofChallenge</span> {
+            <span class="ident">prechallenge</span>: <span class="ident">t</span>.<span class="ident">prechallenge</span>.<span class="ident">into</span>(),
+        }
+        .<span class="ident">into</span>()
     }
 }
 <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">BulletproofChallengeV1</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">BulletproofChallenge</span> {
@@ -209,7 +201,7 @@
 
 <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">BulletproofChallenges</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">BulletproofChallengesV1</span> {
     <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">t</span>: <span class="ident">BulletproofChallenges</span>) -&gt; <span class="self">Self</span> {
-        <span class="ident">Versioned::new</span>(<span class="ident">t</span>.<span class="number">0</span>.<span class="ident">into_iter</span>().<span class="ident">map</span>(<span class="ident">Into::into</span>).<span class="ident">collect</span>())
+        <span class="ident">t</span>.<span class="number">0</span>.<span class="ident">into_iter</span>().<span class="ident">map</span>(<span class="ident">Into::into</span>).<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>().<span class="ident">into</span>()
     }
 }
 <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">BulletproofChallengesV1</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">BulletproofChallenges</span> {
@@ -220,7 +212,7 @@
 
 <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">ProofStateBulletproofChallenges</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ProofStateBulletproofChallengesV1</span> {
     <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">t</span>: <span class="ident">ProofStateBulletproofChallenges</span>) -&gt; <span class="self">Self</span> {
-        <span class="ident">ProofStateBulletproofChallengesV1::new</span>((<span class="ident">t</span>.<span class="number">0</span> .<span class="number">0</span>.<span class="ident">into</span>(), <span class="ident">t</span>.<span class="number">0</span> .<span class="number">1</span>.<span class="ident">into</span>(), ()))
+        (<span class="ident">t</span>.<span class="number">0</span> .<span class="number">0</span>.<span class="ident">into</span>(), <span class="ident">t</span>.<span class="number">0</span> .<span class="number">1</span>.<span class="ident">into</span>(), ()).<span class="ident">into</span>()
     }
 }
 <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">ProofStateBulletproofChallengesV1</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ProofStateBulletproofChallenges</span> {
@@ -231,29 +223,28 @@
 
 <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">BulletproofChallengeTuple18</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">BulletproofChallengeTuple18V1</span> {
     <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">t</span>: <span class="ident">BulletproofChallengeTuple18</span>) -&gt; <span class="self">Self</span> {
-        <span class="ident">BulletproofChallengeTuple18V1::new</span>(<span class="ident">Versioned::new</span>(
-            <span class="ident">mina_serialization_types::bulletproof_challenges::BulletproofChallengeTuple18</span>(
-                <span class="ident">t</span>.<span class="number">0</span>.<span class="ident">into</span>(),
-                <span class="ident">t</span>.<span class="number">1</span>.<span class="ident">into</span>(),
-                <span class="ident">t</span>.<span class="number">2</span>.<span class="ident">into</span>(),
-                <span class="ident">t</span>.<span class="number">3</span>.<span class="ident">into</span>(),
-                <span class="ident">t</span>.<span class="number">4</span>.<span class="ident">into</span>(),
-                <span class="ident">t</span>.<span class="number">5</span>.<span class="ident">into</span>(),
-                <span class="ident">t</span>.<span class="number">6</span>.<span class="ident">into</span>(),
-                <span class="ident">t</span>.<span class="number">7</span>.<span class="ident">into</span>(),
-                <span class="ident">t</span>.<span class="number">8</span>.<span class="ident">into</span>(),
-                <span class="ident">t</span>.<span class="number">9</span>.<span class="ident">into</span>(),
-                <span class="ident">t</span>.<span class="number">10</span>.<span class="ident">into</span>(),
-                <span class="ident">t</span>.<span class="number">11</span>.<span class="ident">into</span>(),
-                <span class="ident">t</span>.<span class="number">12</span>.<span class="ident">into</span>(),
-                <span class="ident">t</span>.<span class="number">13</span>.<span class="ident">into</span>(),
-                <span class="ident">t</span>.<span class="number">14</span>.<span class="ident">into</span>(),
-                <span class="ident">t</span>.<span class="number">15</span>.<span class="ident">into</span>(),
-                <span class="ident">t</span>.<span class="number">16</span>.<span class="ident">into</span>(),
-                <span class="ident">t</span>.<span class="number">17</span>.<span class="ident">into</span>(),
-                (),
-            ),
-        ))
+        <span class="ident">mina_serialization_types::bulletproof_challenges::BulletproofChallengeTuple18</span>(
+            <span class="ident">t</span>.<span class="number">0</span>.<span class="ident">into</span>(),
+            <span class="ident">t</span>.<span class="number">1</span>.<span class="ident">into</span>(),
+            <span class="ident">t</span>.<span class="number">2</span>.<span class="ident">into</span>(),
+            <span class="ident">t</span>.<span class="number">3</span>.<span class="ident">into</span>(),
+            <span class="ident">t</span>.<span class="number">4</span>.<span class="ident">into</span>(),
+            <span class="ident">t</span>.<span class="number">5</span>.<span class="ident">into</span>(),
+            <span class="ident">t</span>.<span class="number">6</span>.<span class="ident">into</span>(),
+            <span class="ident">t</span>.<span class="number">7</span>.<span class="ident">into</span>(),
+            <span class="ident">t</span>.<span class="number">8</span>.<span class="ident">into</span>(),
+            <span class="ident">t</span>.<span class="number">9</span>.<span class="ident">into</span>(),
+            <span class="ident">t</span>.<span class="number">10</span>.<span class="ident">into</span>(),
+            <span class="ident">t</span>.<span class="number">11</span>.<span class="ident">into</span>(),
+            <span class="ident">t</span>.<span class="number">12</span>.<span class="ident">into</span>(),
+            <span class="ident">t</span>.<span class="number">13</span>.<span class="ident">into</span>(),
+            <span class="ident">t</span>.<span class="number">14</span>.<span class="ident">into</span>(),
+            <span class="ident">t</span>.<span class="number">15</span>.<span class="ident">into</span>(),
+            <span class="ident">t</span>.<span class="number">16</span>.<span class="ident">into</span>(),
+            <span class="ident">t</span>.<span class="number">17</span>.<span class="ident">into</span>(),
+            (),
+        )
+        .<span class="ident">into</span>()
     }
 }
 <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">BulletproofChallengeTuple18V1</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">BulletproofChallengeTuple18</span> {
@@ -284,28 +275,27 @@
 
 <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">BulletproofChallengeTuple17</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">BulletproofChallengeTuple17V1</span> {
     <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">t</span>: <span class="ident">BulletproofChallengeTuple17</span>) -&gt; <span class="self">Self</span> {
-        <span class="ident">BulletproofChallengeTuple17V1::new</span>(<span class="ident">Versioned::new</span>(<span class="ident">Versioned::new</span>(
-            <span class="ident">mina_serialization_types::bulletproof_challenges::BulletproofChallengeTuple17</span>(
-                <span class="ident">t</span>.<span class="number">0</span>.<span class="ident">into</span>(),
-                <span class="ident">t</span>.<span class="number">1</span>.<span class="ident">into</span>(),
-                <span class="ident">t</span>.<span class="number">2</span>.<span class="ident">into</span>(),
-                <span class="ident">t</span>.<span class="number">3</span>.<span class="ident">into</span>(),
-                <span class="ident">t</span>.<span class="number">4</span>.<span class="ident">into</span>(),
-                <span class="ident">t</span>.<span class="number">5</span>.<span class="ident">into</span>(),
-                <span class="ident">t</span>.<span class="number">6</span>.<span class="ident">into</span>(),
-                <span class="ident">t</span>.<span class="number">7</span>.<span class="ident">into</span>(),
-                <span class="ident">t</span>.<span class="number">8</span>.<span class="ident">into</span>(),
-                <span class="ident">t</span>.<span class="number">9</span>.<span class="ident">into</span>(),
-                <span class="ident">t</span>.<span class="number">10</span>.<span class="ident">into</span>(),
-                <span class="ident">t</span>.<span class="number">11</span>.<span class="ident">into</span>(),
-                <span class="ident">t</span>.<span class="number">12</span>.<span class="ident">into</span>(),
-                <span class="ident">t</span>.<span class="number">13</span>.<span class="ident">into</span>(),
-                <span class="ident">t</span>.<span class="number">14</span>.<span class="ident">into</span>(),
-                <span class="ident">t</span>.<span class="number">15</span>.<span class="ident">into</span>(),
-                <span class="ident">t</span>.<span class="number">16</span>.<span class="ident">into</span>(),
-                (),
-            ),
-        )))
+        <span class="ident">mina_serialization_types::bulletproof_challenges::BulletproofChallengeTuple17</span>(
+            <span class="ident">t</span>.<span class="number">0</span>.<span class="ident">into</span>(),
+            <span class="ident">t</span>.<span class="number">1</span>.<span class="ident">into</span>(),
+            <span class="ident">t</span>.<span class="number">2</span>.<span class="ident">into</span>(),
+            <span class="ident">t</span>.<span class="number">3</span>.<span class="ident">into</span>(),
+            <span class="ident">t</span>.<span class="number">4</span>.<span class="ident">into</span>(),
+            <span class="ident">t</span>.<span class="number">5</span>.<span class="ident">into</span>(),
+            <span class="ident">t</span>.<span class="number">6</span>.<span class="ident">into</span>(),
+            <span class="ident">t</span>.<span class="number">7</span>.<span class="ident">into</span>(),
+            <span class="ident">t</span>.<span class="number">8</span>.<span class="ident">into</span>(),
+            <span class="ident">t</span>.<span class="number">9</span>.<span class="ident">into</span>(),
+            <span class="ident">t</span>.<span class="number">10</span>.<span class="ident">into</span>(),
+            <span class="ident">t</span>.<span class="number">11</span>.<span class="ident">into</span>(),
+            <span class="ident">t</span>.<span class="number">12</span>.<span class="ident">into</span>(),
+            <span class="ident">t</span>.<span class="number">13</span>.<span class="ident">into</span>(),
+            <span class="ident">t</span>.<span class="number">14</span>.<span class="ident">into</span>(),
+            <span class="ident">t</span>.<span class="number">15</span>.<span class="ident">into</span>(),
+            <span class="ident">t</span>.<span class="number">16</span>.<span class="ident">into</span>(),
+            (),
+        )
+        .<span class="ident">into</span>()
     }
 }
 <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">BulletproofChallengeTuple17V1</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">BulletproofChallengeTuple17</span> {
@@ -337,9 +327,7 @@
     <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">t</span>: <span class="ident">BulletproofPreChallenge</span>) -&gt; <span class="self">Self</span> {
         <span class="kw">use</span> <span class="ident">mina_serialization_types::bulletproof_challenges::BulletproofPreChallenge</span> <span class="kw">as</span> <span class="ident">PC</span>;
         <span class="kw">match</span> <span class="ident">t</span> {
-            <span class="ident">BulletproofPreChallenge::ScalarChallenge</span>(<span class="ident">v</span>) =&gt; {
-                <span class="ident">Versioned::new</span>(<span class="ident">PC::ScalarChallenge</span>(<span class="ident">v</span>.<span class="ident">into</span>()))
-            }
+            <span class="ident">BulletproofPreChallenge::ScalarChallenge</span>(<span class="ident">v</span>) =&gt; <span class="ident">PC::ScalarChallenge</span>(<span class="ident">v</span>.<span class="ident">into</span>()).<span class="ident">into</span>(),
         }
     }
 }
@@ -355,7 +343,7 @@
 
 <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">ScalarChallengeVector2</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ScalarChallengeVector2V1</span> {
     <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">t</span>: <span class="ident">ScalarChallengeVector2</span>) -&gt; <span class="self">Self</span> {
-        <span class="ident">ScalarChallengeVector2V1::new</span>((<span class="ident">t</span>.<span class="number">0</span> .<span class="number">0</span>.<span class="ident">into</span>(), <span class="ident">t</span>.<span class="number">0</span> .<span class="number">1</span>.<span class="ident">into</span>(), ()))
+        (<span class="ident">t</span>.<span class="number">0</span> .<span class="number">0</span>.<span class="ident">into</span>(), <span class="ident">t</span>.<span class="number">0</span> .<span class="number">1</span>.<span class="ident">into</span>(), ()).<span class="ident">into</span>()
     }
 }
 <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">ScalarChallengeVector2V1</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ScalarChallengeVector2</span> {

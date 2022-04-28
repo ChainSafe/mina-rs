@@ -87,8 +87,6 @@
 <span id="82">82</span>
 <span id="83">83</span>
 <span id="84">84</span>
-<span id="85">85</span>
-<span id="86">86</span>
 </pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems</span>
 <span class="comment">// SPDX-License-Identifier: Apache-2.0</span>
 
@@ -99,8 +97,6 @@
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">timing</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">token_permissions</span>;
 
-<span class="kw">use</span> <span class="ident">proof_systems</span>::<span class="kw-2">*</span>;
-
 <span class="kw">use</span> <span class="kw">crate</span>::{<span class="ident">types</span>::<span class="kw-2">*</span>, <span class="kw-2">*</span>};
 
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">permissions</span>::{<span class="ident">AuthRequired</span>, <span class="ident">Permissions</span>};
@@ -109,7 +105,7 @@
 
 <span class="kw">use</span> <span class="ident">mina_crypto::hash</span>::{<span class="ident">ChainHash</span>, <span class="ident">StateHash</span>};
 <span class="kw">use</span> <span class="ident">mina_hasher::ROInput</span>;
-<span class="kw">use</span> <span class="ident">mina_serialization_types::v1</span>::<span class="kw-2">*</span>;
+<span class="kw">use</span> <span class="ident">mina_serialization_types::v1::AccountV1</span>;
 <span class="kw">use</span> <span class="ident">proof_systems::mina_signer::CompressedPubKey</span>;
 
 <span class="doccomment">/// An account identified by its public key and token ID. Multiple accounts may</span>

@@ -678,34 +678,12 @@
 <span id="673">673</span>
 <span id="674">674</span>
 <span id="675">675</span>
-<span id="676">676</span>
-<span id="677">677</span>
-<span id="678">678</span>
-<span id="679">679</span>
-<span id="680">680</span>
-<span id="681">681</span>
-<span id="682">682</span>
-<span id="683">683</span>
-<span id="684">684</span>
-<span id="685">685</span>
-<span id="686">686</span>
-<span id="687">687</span>
-<span id="688">688</span>
-<span id="689">689</span>
-<span id="690">690</span>
-<span id="691">691</span>
-<span id="692">692</span>
-<span id="693">693</span>
-<span id="694">694</span>
-<span id="695">695</span>
-<span id="696">696</span>
-<span id="697">697</span>
 </pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems</span>
 <span class="comment">// SPDX-License-Identifier: Apache-2.0</span>
 
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::types</span>::<span class="kw-2">*</span>;
-<span class="kw">use</span> <span class="ident">mina_serialization_types::v1</span>::<span class="kw-2">*</span>;
-<span class="kw">use</span> <span class="ident">versioned::Versioned</span>;
+<span class="kw">use</span> <span class="ident">mina_serialization_types</span>::{<span class="ident">json</span>::<span class="kw-2">*</span>, <span class="ident">v1</span>::<span class="kw-2">*</span>};
+<span class="kw">use</span> <span class="ident">versioned::impl_from_for_ext_type</span>;
 
 <span class="kw">mod</span> <span class="ident">account</span>;
 <span class="kw">mod</span> <span class="ident">bulletproof_challenges</span>;
@@ -715,7 +693,7 @@
 
 <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">ExternalTransition</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ExternalTransitionV1</span> {
     <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">t</span>: <span class="ident">ExternalTransition</span>) -&gt; <span class="self">Self</span> {
-        <span class="ident">ExternalTransitionV1</span>(<span class="ident">Versioned::new</span>(
+        <span class="ident">ExternalTransitionV1</span>(
             <span class="ident">mina_serialization_types::external_transition::ExternalTransition</span> {
                 <span class="ident">protocol_state</span>: <span class="ident">t</span>.<span class="ident">protocol_state</span>.<span class="ident">into</span>(),
                 <span class="ident">protocol_state_proof</span>: <span class="ident">t</span>.<span class="ident">protocol_state_proof</span>.<span class="ident">into</span>(),
@@ -724,8 +702,9 @@
                 <span class="ident">current_protocol_version</span>: <span class="ident">t</span>.<span class="ident">current_protocol_version</span>.<span class="ident">into</span>(),
                 <span class="ident">proposed_protocol_version_opt</span>: <span class="ident">t</span>.<span class="ident">proposed_protocol_version_opt</span>.<span class="ident">map</span>(<span class="ident">Into::into</span>),
                 <span class="ident">validation_callback</span>: (),
-            },
-        ))
+            }
+            .<span class="ident">into</span>(),
+        )
     }
 }
 <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">ExternalTransitionV1</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ExternalTransition</span> {
@@ -740,18 +719,22 @@
         }
     }
 }
+<span class="macro">impl_from_for_ext_type!</span>(
+    <span class="ident">ExternalTransition</span>,
+    <span class="ident">ExternalTransitionV1</span>,
+    <span class="ident">ExternalTransitionJson</span>
+);
 
 <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">BlockchainState</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">BlockchainStateV1</span> {
     <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">t</span>: <span class="ident">BlockchainState</span>) -&gt; <span class="self">Self</span> {
-        <span class="ident">BlockchainStateV1::new</span>(<span class="ident">Versioned::new</span>(
-            <span class="ident">mina_serialization_types::blockchain_state::BlockchainState</span> {
-                <span class="ident">staged_ledger_hash</span>: <span class="ident">t</span>.<span class="ident">staged_ledger_hash</span>.<span class="ident">into</span>(),
-                <span class="ident">snarked_ledger_hash</span>: <span class="ident">t</span>.<span class="ident">snarked_ledger_hash</span>.<span class="ident">into_inner</span>().<span class="ident">into</span>(),
-                <span class="ident">genesis_ledger_hash</span>: <span class="ident">t</span>.<span class="ident">genesis_ledger_hash</span>.<span class="ident">into_inner</span>().<span class="ident">into</span>(),
-                <span class="ident">snarked_next_available_token</span>: <span class="ident">t</span>.<span class="ident">snarked_next_available_token</span>.<span class="ident">into</span>(),
-                <span class="ident">timestamp</span>: <span class="ident">Versioned::new</span>(<span class="ident">Versioned::new</span>(<span class="ident">t</span>.<span class="ident">timestamp</span>.<span class="number">0</span>)),
-            },
-        ))
+        <span class="ident">mina_serialization_types::blockchain_state::BlockchainState</span> {
+            <span class="ident">staged_ledger_hash</span>: <span class="ident">t</span>.<span class="ident">staged_ledger_hash</span>.<span class="ident">into</span>(),
+            <span class="ident">snarked_ledger_hash</span>: <span class="ident">t</span>.<span class="ident">snarked_ledger_hash</span>.<span class="ident">into_inner</span>().<span class="ident">into</span>(),
+            <span class="ident">genesis_ledger_hash</span>: <span class="ident">t</span>.<span class="ident">genesis_ledger_hash</span>.<span class="ident">into_inner</span>().<span class="ident">into</span>(),
+            <span class="ident">snarked_next_available_token</span>: <span class="ident">t</span>.<span class="ident">snarked_next_available_token</span>.<span class="ident">into</span>(),
+            <span class="ident">timestamp</span>: <span class="ident">t</span>.<span class="ident">timestamp</span>.<span class="number">0</span>.<span class="ident">into</span>(),
+        }
+        .<span class="ident">into</span>()
     }
 }
 <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">BlockchainStateV1</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">BlockchainState</span> {
@@ -765,15 +748,15 @@
         }
     }
 }
+<span class="comment">// impl_from_for_ext_type!(BlockchainState, BlockchainStateV1, BlockchainStateJson);</span>
 
 <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">GlobalSlot</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">GlobalSlotV1</span> {
     <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">t</span>: <span class="ident">GlobalSlot</span>) -&gt; <span class="self">Self</span> {
-        <span class="ident">GlobalSlotV1::new</span>(<span class="ident">Versioned::new</span>(
-            <span class="ident">mina_serialization_types::global_slot::GlobalSlot</span> {
-                <span class="ident">slot_number</span>: <span class="ident">t</span>.<span class="ident">slot_number</span>.<span class="ident">into</span>(),
-                <span class="ident">slots_per_epoch</span>: <span class="ident">t</span>.<span class="ident">slots_per_epoch</span>.<span class="ident">into</span>(),
-            },
-        ))
+        <span class="ident">mina_serialization_types::global_slot::GlobalSlot</span> {
+            <span class="ident">slot_number</span>: <span class="ident">t</span>.<span class="ident">slot_number</span>.<span class="ident">into</span>(),
+            <span class="ident">slots_per_epoch</span>: <span class="ident">t</span>.<span class="ident">slots_per_epoch</span>.<span class="ident">into</span>(),
+        }
+        .<span class="ident">into</span>()
     }
 }
 <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">GlobalSlotV1</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">GlobalSlot</span> {
@@ -787,12 +770,11 @@
 
 <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">EpochLedger</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">EpochLedgerV1</span> {
     <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">t</span>: <span class="ident">EpochLedger</span>) -&gt; <span class="self">Self</span> {
-        <span class="ident">EpochLedgerV1::new</span>(<span class="ident">Versioned::new</span>(
-            <span class="ident">mina_serialization_types::epoch_data::EpochLedger</span> {
-                <span class="ident">hash</span>: <span class="ident">t</span>.<span class="ident">hash</span>.<span class="ident">into_inner</span>().<span class="ident">into</span>(),
-                <span class="ident">total_currency</span>: <span class="ident">t</span>.<span class="ident">total_currency</span>.<span class="ident">into</span>(),
-            },
-        ))
+        <span class="ident">mina_serialization_types::epoch_data::EpochLedger</span> {
+            <span class="ident">hash</span>: <span class="ident">t</span>.<span class="ident">hash</span>.<span class="ident">into_inner</span>().<span class="ident">into</span>(),
+            <span class="ident">total_currency</span>: <span class="ident">t</span>.<span class="ident">total_currency</span>.<span class="ident">into</span>(),
+        }
+        .<span class="ident">into</span>()
     }
 }
 <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">EpochLedgerV1</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">EpochLedger</span> {
@@ -806,15 +788,14 @@
 
 <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">EpochData</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">EpochDataV1</span> {
     <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">t</span>: <span class="ident">EpochData</span>) -&gt; <span class="self">Self</span> {
-        <span class="ident">EpochDataV1::new</span>(<span class="ident">Versioned::new</span>(
-            <span class="ident">mina_serialization_types::epoch_data::EpochData</span> {
-                <span class="ident">ledger</span>: <span class="ident">t</span>.<span class="ident">ledger</span>.<span class="ident">into</span>(),
-                <span class="ident">seed</span>: <span class="ident">t</span>.<span class="ident">seed</span>.<span class="ident">into_inner</span>().<span class="ident">into</span>(),
-                <span class="ident">start_checkpoint</span>: <span class="ident">t</span>.<span class="ident">start_checkpoint</span>.<span class="ident">into</span>(),
-                <span class="ident">lock_checkpoint</span>: <span class="ident">t</span>.<span class="ident">lock_checkpoint</span>.<span class="ident">into</span>(),
-                <span class="ident">epoch_length</span>: <span class="ident">t</span>.<span class="ident">epoch_length</span>.<span class="ident">into</span>(),
-            },
-        ))
+        <span class="ident">mina_serialization_types::epoch_data::EpochData</span> {
+            <span class="ident">ledger</span>: <span class="ident">t</span>.<span class="ident">ledger</span>.<span class="ident">into</span>(),
+            <span class="ident">seed</span>: <span class="ident">t</span>.<span class="ident">seed</span>.<span class="ident">into_inner</span>().<span class="ident">into</span>(),
+            <span class="ident">start_checkpoint</span>: <span class="ident">t</span>.<span class="ident">start_checkpoint</span>.<span class="ident">into</span>(),
+            <span class="ident">lock_checkpoint</span>: <span class="ident">t</span>.<span class="ident">lock_checkpoint</span>.<span class="ident">into</span>(),
+            <span class="ident">epoch_length</span>: <span class="ident">t</span>.<span class="ident">epoch_length</span>.<span class="ident">into</span>(),
+        }
+        .<span class="ident">into</span>()
     }
 }
 <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">EpochDataV1</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">EpochData</span> {
@@ -831,25 +812,24 @@
 
 <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">ConsensusState</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ConsensusStateV1</span> {
     <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">t</span>: <span class="ident">ConsensusState</span>) -&gt; <span class="self">Self</span> {
-        <span class="ident">ConsensusStateV1::new</span>(<span class="ident">Versioned::new</span>(
-            <span class="ident">mina_serialization_types::consensus_state::ConsensusState</span> {
-                <span class="ident">blockchain_length</span>: <span class="ident">t</span>.<span class="ident">blockchain_length</span>.<span class="ident">into</span>(),
-                <span class="ident">epoch_count</span>: <span class="ident">t</span>.<span class="ident">epoch_count</span>.<span class="ident">into</span>(),
-                <span class="ident">min_window_density</span>: <span class="ident">t</span>.<span class="ident">min_window_density</span>.<span class="ident">into</span>(),
-                <span class="ident">sub_window_densities</span>: <span class="ident">t</span>.<span class="ident">sub_window_densities</span>.<span class="ident">into_iter</span>().<span class="ident">map</span>(<span class="ident">Into::into</span>).<span class="ident">collect</span>(),
-                <span class="ident">last_vrf_output</span>: <span class="ident">t</span>.<span class="ident">last_vrf_output</span>.<span class="number">0</span>.<span class="ident">into</span>(),
-                <span class="ident">total_currency</span>: <span class="ident">t</span>.<span class="ident">total_currency</span>.<span class="ident">into</span>(),
-                <span class="ident">curr_global_slot</span>: <span class="ident">t</span>.<span class="ident">curr_global_slot</span>.<span class="ident">into</span>(),
-                <span class="ident">global_slot_since_genesis</span>: <span class="ident">t</span>.<span class="ident">global_slot_since_genesis</span>.<span class="ident">into</span>(),
-                <span class="ident">staking_epoch_data</span>: <span class="ident">t</span>.<span class="ident">staking_epoch_data</span>.<span class="ident">into</span>(),
-                <span class="ident">next_epoch_data</span>: <span class="ident">t</span>.<span class="ident">next_epoch_data</span>.<span class="ident">into</span>(),
-                <span class="ident">has_ancestor_in_same_checkpoint_window</span>: <span class="ident">t</span>.<span class="ident">has_ancestor_in_same_checkpoint_window</span>,
-                <span class="ident">block_stake_winner</span>: <span class="ident">t</span>.<span class="ident">block_stake_winner</span>.<span class="ident">into</span>(),
-                <span class="ident">block_creator</span>: <span class="ident">t</span>.<span class="ident">block_creator</span>.<span class="ident">into</span>(),
-                <span class="ident">coinbase_receiver</span>: <span class="ident">t</span>.<span class="ident">coinbase_receiver</span>.<span class="ident">into</span>(),
-                <span class="ident">supercharge_coinbase</span>: <span class="ident">t</span>.<span class="ident">supercharge_coinbase</span>,
-            },
-        ))
+        <span class="ident">mina_serialization_types::consensus_state::ConsensusState</span> {
+            <span class="ident">blockchain_length</span>: <span class="ident">t</span>.<span class="ident">blockchain_length</span>.<span class="ident">into</span>(),
+            <span class="ident">epoch_count</span>: <span class="ident">t</span>.<span class="ident">epoch_count</span>.<span class="ident">into</span>(),
+            <span class="ident">min_window_density</span>: <span class="ident">t</span>.<span class="ident">min_window_density</span>.<span class="ident">into</span>(),
+            <span class="ident">sub_window_densities</span>: <span class="ident">t</span>.<span class="ident">sub_window_densities</span>.<span class="ident">into_iter</span>().<span class="ident">map</span>(<span class="ident">Into::into</span>).<span class="ident">collect</span>(),
+            <span class="ident">last_vrf_output</span>: <span class="ident">t</span>.<span class="ident">last_vrf_output</span>.<span class="number">0</span>.<span class="ident">into</span>(),
+            <span class="ident">total_currency</span>: <span class="ident">t</span>.<span class="ident">total_currency</span>.<span class="ident">into</span>(),
+            <span class="ident">curr_global_slot</span>: <span class="ident">t</span>.<span class="ident">curr_global_slot</span>.<span class="ident">into</span>(),
+            <span class="ident">global_slot_since_genesis</span>: <span class="ident">t</span>.<span class="ident">global_slot_since_genesis</span>.<span class="ident">into</span>(),
+            <span class="ident">staking_epoch_data</span>: <span class="ident">t</span>.<span class="ident">staking_epoch_data</span>.<span class="ident">into</span>(),
+            <span class="ident">next_epoch_data</span>: <span class="ident">t</span>.<span class="ident">next_epoch_data</span>.<span class="ident">into</span>(),
+            <span class="ident">has_ancestor_in_same_checkpoint_window</span>: <span class="ident">t</span>.<span class="ident">has_ancestor_in_same_checkpoint_window</span>,
+            <span class="ident">block_stake_winner</span>: <span class="ident">t</span>.<span class="ident">block_stake_winner</span>.<span class="ident">into</span>(),
+            <span class="ident">block_creator</span>: <span class="ident">t</span>.<span class="ident">block_creator</span>.<span class="ident">into</span>(),
+            <span class="ident">coinbase_receiver</span>: <span class="ident">t</span>.<span class="ident">coinbase_receiver</span>.<span class="ident">into</span>(),
+            <span class="ident">supercharge_coinbase</span>: <span class="ident">t</span>.<span class="ident">supercharge_coinbase</span>,
+        }
+        .<span class="ident">into</span>()
     }
 }
 <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">ConsensusStateV1</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ConsensusState</span> {
@@ -882,17 +862,14 @@
 
 <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">ProtocolConstants</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ProtocolConstantsV1</span> {
     <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">t</span>: <span class="ident">ProtocolConstants</span>) -&gt; <span class="self">Self</span> {
-        <span class="ident">ProtocolConstantsV1::new</span>(<span class="ident">Versioned::new</span>(
-            <span class="ident">mina_serialization_types::protocol_constants::ProtocolConstants</span> {
-                <span class="ident">k</span>: <span class="ident">t</span>.<span class="ident">k</span>.<span class="ident">into</span>(),
-                <span class="ident">slots_per_epoch</span>: <span class="ident">t</span>.<span class="ident">slots_per_epoch</span>.<span class="ident">into</span>(),
-                <span class="ident">slots_per_sub_window</span>: <span class="ident">t</span>.<span class="ident">slots_per_sub_window</span>.<span class="ident">into</span>(),
-                <span class="ident">delta</span>: <span class="ident">t</span>.<span class="ident">delta</span>.<span class="ident">into</span>(),
-                <span class="ident">genesis_state_timestamp</span>: <span class="ident">Versioned::new</span>(<span class="ident">Versioned::new</span>(
-                    <span class="ident">t</span>.<span class="ident">genesis_state_timestamp</span>.<span class="number">0</span>,
-                )),
-            },
-        ))
+        <span class="ident">mina_serialization_types::protocol_constants::ProtocolConstants</span> {
+            <span class="ident">k</span>: <span class="ident">t</span>.<span class="ident">k</span>.<span class="ident">into</span>(),
+            <span class="ident">slots_per_epoch</span>: <span class="ident">t</span>.<span class="ident">slots_per_epoch</span>.<span class="ident">into</span>(),
+            <span class="ident">slots_per_sub_window</span>: <span class="ident">t</span>.<span class="ident">slots_per_sub_window</span>.<span class="ident">into</span>(),
+            <span class="ident">delta</span>: <span class="ident">t</span>.<span class="ident">delta</span>.<span class="ident">into</span>(),
+            <span class="ident">genesis_state_timestamp</span>: <span class="ident">t</span>.<span class="ident">genesis_state_timestamp</span>.<span class="number">0</span>.<span class="ident">into</span>(),
+        }
+        .<span class="ident">into</span>()
     }
 }
 <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">ProtocolConstantsV1</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ProtocolConstants</span> {
@@ -909,14 +886,13 @@
 
 <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">ProtocolStateBody</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ProtocolStateBodyV1</span> {
     <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">t</span>: <span class="ident">ProtocolStateBody</span>) -&gt; <span class="self">Self</span> {
-        <span class="ident">ProtocolStateBodyV1::new</span>(<span class="ident">Versioned::new</span>(
-            <span class="ident">mina_serialization_types::protocol_state_body::ProtocolStateBody</span> {
-                <span class="ident">genesis_state_hash</span>: <span class="ident">t</span>.<span class="ident">genesis_state_hash</span>.<span class="ident">into</span>(),
-                <span class="ident">blockchain_state</span>: <span class="ident">t</span>.<span class="ident">blockchain_state</span>.<span class="ident">into</span>(),
-                <span class="ident">consensus_state</span>: <span class="ident">t</span>.<span class="ident">consensus_state</span>.<span class="ident">into</span>(),
-                <span class="ident">constants</span>: <span class="ident">t</span>.<span class="ident">constants</span>.<span class="ident">into</span>(),
-            },
-        ))
+        <span class="ident">mina_serialization_types::protocol_state_body::ProtocolStateBody</span> {
+            <span class="ident">genesis_state_hash</span>: <span class="ident">t</span>.<span class="ident">genesis_state_hash</span>.<span class="ident">into</span>(),
+            <span class="ident">blockchain_state</span>: <span class="ident">t</span>.<span class="ident">blockchain_state</span>.<span class="ident">into</span>(),
+            <span class="ident">consensus_state</span>: <span class="ident">t</span>.<span class="ident">consensus_state</span>.<span class="ident">into</span>(),
+            <span class="ident">constants</span>: <span class="ident">t</span>.<span class="ident">constants</span>.<span class="ident">into</span>(),
+        }
+        .<span class="ident">into</span>()
     }
 }
 <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">ProtocolStateBodyV1</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ProtocolStateBody</span> {
@@ -929,15 +905,19 @@
         }
     }
 }
+<span class="macro">impl_from_for_ext_type!</span>(
+    <span class="ident">ProtocolStateBody</span>,
+    <span class="ident">ProtocolStateBodyV1</span>,
+    <span class="ident">ProtocolStateBodyJson</span>
+);
 
 <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">ProtocolState</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ProtocolStateV1</span> {
     <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">t</span>: <span class="ident">ProtocolState</span>) -&gt; <span class="self">Self</span> {
-        <span class="ident">ProtocolStateV1::new</span>(<span class="ident">Versioned::new</span>(
-            <span class="ident">mina_serialization_types::protocol_state::ProtocolState</span> {
-                <span class="ident">previous_state_hash</span>: <span class="ident">t</span>.<span class="ident">previous_state_hash</span>.<span class="ident">into</span>(),
-                <span class="ident">body</span>: <span class="ident">t</span>.<span class="ident">body</span>.<span class="ident">into</span>(),
-            },
-        ))
+        <span class="ident">mina_serialization_types::protocol_state::ProtocolState</span> {
+            <span class="ident">previous_state_hash</span>: <span class="ident">t</span>.<span class="ident">previous_state_hash</span>.<span class="ident">into</span>(),
+            <span class="ident">body</span>: <span class="ident">t</span>.<span class="ident">body</span>.<span class="ident">into</span>(),
+        }
+        .<span class="ident">into</span>()
     }
 }
 <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">ProtocolStateV1</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ProtocolState</span> {
@@ -948,17 +928,17 @@
         }
     }
 }
+<span class="macro">impl_from_for_ext_type!</span>(<span class="ident">ProtocolState</span>, <span class="ident">ProtocolStateV1</span>, <span class="ident">ProtocolStateJson</span>);
 
 <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">PaymentPayload</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">PaymentPayloadV1</span> {
     <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">t</span>: <span class="ident">PaymentPayload</span>) -&gt; <span class="self">Self</span> {
-        <span class="ident">PaymentPayloadV1::new</span>(<span class="ident">Versioned::new</span>(
-            <span class="ident">mina_serialization_types::staged_ledger_diff::PaymentPayload</span> {
-                <span class="ident">source_pk</span>: <span class="ident">t</span>.<span class="ident">source_pk</span>.<span class="ident">into</span>(),
-                <span class="ident">receiver_pk</span>: <span class="ident">t</span>.<span class="ident">receiver_pk</span>.<span class="ident">into</span>(),
-                <span class="ident">token_id</span>: <span class="ident">t</span>.<span class="ident">token_id</span>.<span class="ident">into</span>(),
-                <span class="ident">amount</span>: <span class="ident">t</span>.<span class="ident">amount</span>.<span class="ident">into</span>(),
-            },
-        ))
+        <span class="ident">mina_serialization_types::staged_ledger_diff::PaymentPayload</span> {
+            <span class="ident">source_pk</span>: <span class="ident">t</span>.<span class="ident">source_pk</span>.<span class="ident">into</span>(),
+            <span class="ident">receiver_pk</span>: <span class="ident">t</span>.<span class="ident">receiver_pk</span>.<span class="ident">into</span>(),
+            <span class="ident">token_id</span>: <span class="ident">t</span>.<span class="ident">token_id</span>.<span class="ident">into</span>(),
+            <span class="ident">amount</span>: <span class="ident">t</span>.<span class="ident">amount</span>.<span class="ident">into</span>(),
+        }
+        .<span class="ident">into</span>()
     }
 }
 <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">PaymentPayloadV1</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">PaymentPayload</span> {
@@ -976,9 +956,7 @@
     <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">t</span>: <span class="ident">SignedCommandPayloadBody</span>) -&gt; <span class="self">Self</span> {
         <span class="kw">use</span> <span class="ident">mina_serialization_types::staged_ledger_diff::SignedCommandPayloadBody</span> <span class="kw">as</span> <span class="ident">b</span>;
         <span class="kw">match</span> <span class="ident">t</span> {
-            <span class="ident">SignedCommandPayloadBody::PaymentPayload</span>(<span class="ident">pp</span>) =&gt; {
-                <span class="ident"><span class="self">Self</span>::new</span>(<span class="ident">Versioned::new</span>(<span class="ident">b::PaymentPayload</span>(<span class="ident">pp</span>.<span class="ident">into</span>())))
-            }
+            <span class="ident">SignedCommandPayloadBody::PaymentPayload</span>(<span class="ident">pp</span>) =&gt; <span class="ident">b::PaymentPayload</span>(<span class="ident">pp</span>.<span class="ident">into</span>()).<span class="ident">into</span>(),
         }
     }
 }
@@ -1000,16 +978,15 @@
 
 <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">SignedCommandPayloadCommon</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">SignedCommandPayloadCommonV1</span> {
     <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">t</span>: <span class="ident">SignedCommandPayloadCommon</span>) -&gt; <span class="self">Self</span> {
-        <span class="ident">SignedCommandPayloadCommonV1::new</span>(<span class="ident">Versioned::new</span>(<span class="ident">Versioned::new</span>(
-            <span class="ident">mina_serialization_types::staged_ledger_diff::SignedCommandPayloadCommon</span> {
-                <span class="ident">fee</span>: <span class="ident">t</span>.<span class="ident">fee</span>.<span class="ident">into</span>(),
-                <span class="ident">fee_token</span>: <span class="ident">t</span>.<span class="ident">fee_token</span>.<span class="ident">into</span>(),
-                <span class="ident">fee_payer_pk</span>: <span class="ident">t</span>.<span class="ident">fee_payer_pk</span>.<span class="ident">into</span>(),
-                <span class="ident">nonce</span>: <span class="ident">Versioned::new</span>(<span class="ident">Versioned::new</span>(<span class="ident">t</span>.<span class="ident">nonce</span>.<span class="number">0</span> <span class="kw">as</span> <span class="ident">i32</span>)),
-                <span class="ident">valid_until</span>: <span class="ident">Versioned::new</span>(<span class="ident">Versioned::new</span>(<span class="ident">t</span>.<span class="ident">valid_until</span>.<span class="number">0</span> <span class="kw">as</span> <span class="ident">i32</span>)),
-                <span class="ident">memo</span>: <span class="ident">t</span>.<span class="ident">memo</span>.<span class="ident">into</span>(),
-            },
-        )))
+        <span class="ident">mina_serialization_types::staged_ledger_diff::SignedCommandPayloadCommon</span> {
+            <span class="ident">fee</span>: <span class="ident">t</span>.<span class="ident">fee</span>.<span class="ident">into</span>(),
+            <span class="ident">fee_token</span>: <span class="ident">t</span>.<span class="ident">fee_token</span>.<span class="ident">into</span>(),
+            <span class="ident">fee_payer_pk</span>: <span class="ident">t</span>.<span class="ident">fee_payer_pk</span>.<span class="ident">into</span>(),
+            <span class="ident">nonce</span>: (<span class="ident">t</span>.<span class="ident">nonce</span>.<span class="number">0</span> <span class="kw">as</span> <span class="ident">i32</span>).<span class="ident">into</span>(),
+            <span class="ident">valid_until</span>: (<span class="ident">t</span>.<span class="ident">valid_until</span>.<span class="number">0</span> <span class="kw">as</span> <span class="ident">i32</span>).<span class="ident">into</span>(),
+            <span class="ident">memo</span>: <span class="ident">t</span>.<span class="ident">memo</span>.<span class="ident">into</span>(),
+        }
+        .<span class="ident">into</span>()
     }
 }
 <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">SignedCommandPayloadCommonV1</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">SignedCommandPayloadCommon</span> {
@@ -1027,12 +1004,11 @@
 
 <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">SignedCommandPayload</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">SignedCommandPayloadV1</span> {
     <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">t</span>: <span class="ident">SignedCommandPayload</span>) -&gt; <span class="self">Self</span> {
-        <span class="ident">SignedCommandPayloadV1::new</span>(<span class="ident">Versioned::new</span>(
-            <span class="ident">mina_serialization_types::staged_ledger_diff::SignedCommandPayload</span> {
-                <span class="ident">common</span>: <span class="ident">t</span>.<span class="ident">common</span>.<span class="ident">into</span>(),
-                <span class="ident">body</span>: <span class="ident">t</span>.<span class="ident">body</span>.<span class="ident">into</span>(),
-            },
-        ))
+        <span class="ident">mina_serialization_types::staged_ledger_diff::SignedCommandPayload</span> {
+            <span class="ident">common</span>: <span class="ident">t</span>.<span class="ident">common</span>.<span class="ident">into</span>(),
+            <span class="ident">body</span>: <span class="ident">t</span>.<span class="ident">body</span>.<span class="ident">into</span>(),
+        }
+        .<span class="ident">into</span>()
     }
 }
 <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">SignedCommandPayloadV1</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">SignedCommandPayload</span> {
@@ -1046,13 +1022,12 @@
 
 <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">SignedCommand</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">SignedCommandV1</span> {
     <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">t</span>: <span class="ident">SignedCommand</span>) -&gt; <span class="self">Self</span> {
-        <span class="ident">SignedCommandV1::new</span>(<span class="ident">Versioned::new</span>(
-            <span class="ident">mina_serialization_types::staged_ledger_diff::SignedCommand</span> {
-                <span class="ident">payload</span>: <span class="ident">t</span>.<span class="ident">payload</span>.<span class="ident">into</span>(),
-                <span class="ident">signer</span>: <span class="ident">t</span>.<span class="ident">signer</span>.<span class="ident">into</span>(),
-                <span class="ident">signature</span>: <span class="ident">t</span>.<span class="ident">signature</span>.<span class="ident">into</span>(),
-            },
-        ))
+        <span class="ident">mina_serialization_types::staged_ledger_diff::SignedCommand</span> {
+            <span class="ident">payload</span>: <span class="ident">t</span>.<span class="ident">payload</span>.<span class="ident">into</span>(),
+            <span class="ident">signer</span>: <span class="ident">t</span>.<span class="ident">signer</span>.<span class="ident">into</span>(),
+            <span class="ident">signature</span>: <span class="ident">t</span>.<span class="ident">signature</span>.<span class="ident">into</span>(),
+        }
+        .<span class="ident">into</span>()
     }
 }
 <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">SignedCommandV1</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">SignedCommand</span> {
@@ -1069,9 +1044,7 @@
     <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">t</span>: <span class="ident">UserCommand</span>) -&gt; <span class="self">Self</span> {
         <span class="kw">use</span> <span class="ident">mina_serialization_types::staged_ledger_diff::UserCommand</span> <span class="kw">as</span> <span class="ident">UC</span>;
         <span class="kw">match</span> <span class="ident">t</span> {
-            <span class="ident">UserCommand::SignedCommand</span>(<span class="ident">sc</span>) =&gt; {
-                <span class="ident"><span class="self">Self</span>::new</span>(<span class="ident">Versioned::new</span>(<span class="ident">UC::SignedCommand</span>(<span class="ident">sc</span>.<span class="ident">into</span>())))
-            }
+            <span class="ident">UserCommand::SignedCommand</span>(<span class="ident">sc</span>) =&gt; <span class="ident">UC::SignedCommand</span>(<span class="ident">sc</span>.<span class="ident">into</span>()).<span class="ident">into</span>(),
         }
     }
 }
@@ -1087,19 +1060,12 @@
 
 <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">TransactionStatusBalanceData</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">TransactionStatusBalanceDataV1</span> {
     <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">t</span>: <span class="ident">TransactionStatusBalanceData</span>) -&gt; <span class="self">Self</span> {
-        <span class="ident">TransactionStatusBalanceDataV1::new</span>(
-            <span class="ident">mina_serialization_types::staged_ledger_diff::TransactionStatusBalanceData</span> {
-                <span class="ident">fee_payer_balance</span>: <span class="ident">t</span>
-                    .<span class="ident">fee_payer_balance</span>
-                    .<span class="ident">map</span>(<span class="op">|</span><span class="ident">v</span><span class="op">|</span> <span class="ident">ExtendedU64_3::new</span>(<span class="ident">Versioned::new</span>(<span class="ident">Versioned::new</span>(<span class="ident">v</span>.<span class="number">0</span>)))),
-                <span class="ident">source_balance</span>: <span class="ident">t</span>
-                    .<span class="ident">source_balance</span>
-                    .<span class="ident">map</span>(<span class="op">|</span><span class="ident">v</span><span class="op">|</span> <span class="ident">ExtendedU64_3::new</span>(<span class="ident">Versioned::new</span>(<span class="ident">Versioned::new</span>(<span class="ident">v</span>.<span class="number">0</span>)))),
-                <span class="ident">receiver_balance</span>: <span class="ident">t</span>
-                    .<span class="ident">receiver_balance</span>
-                    .<span class="ident">map</span>(<span class="op">|</span><span class="ident">v</span><span class="op">|</span> <span class="ident">ExtendedU64_3::new</span>(<span class="ident">Versioned::new</span>(<span class="ident">Versioned::new</span>(<span class="ident">v</span>.<span class="number">0</span>)))),
-            },
-        )
+        <span class="ident">mina_serialization_types::staged_ledger_diff::TransactionStatusBalanceData</span> {
+            <span class="ident">fee_payer_balance</span>: <span class="ident">t</span>.<span class="ident">fee_payer_balance</span>.<span class="ident">map</span>(<span class="op">|</span><span class="ident">v</span><span class="op">|</span> <span class="ident">v</span>.<span class="number">0</span>.<span class="ident">into</span>()),
+            <span class="ident">source_balance</span>: <span class="ident">t</span>.<span class="ident">source_balance</span>.<span class="ident">map</span>(<span class="op">|</span><span class="ident">v</span><span class="op">|</span> <span class="ident">v</span>.<span class="number">0</span>.<span class="ident">into</span>()),
+            <span class="ident">receiver_balance</span>: <span class="ident">t</span>.<span class="ident">receiver_balance</span>.<span class="ident">map</span>(<span class="op">|</span><span class="ident">v</span><span class="op">|</span> <span class="ident">v</span>.<span class="number">0</span>.<span class="ident">into</span>()),
+        }
+        .<span class="ident">into</span>()
     }
 }
 <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">TransactionStatusBalanceDataV1</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">TransactionStatusBalanceData</span> {
@@ -1114,17 +1080,16 @@
 
 <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">TransactionStatusAuxiliaryData</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">TransactionStatusAuxiliaryDataV1</span> {
     <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">t</span>: <span class="ident">TransactionStatusAuxiliaryData</span>) -&gt; <span class="self">Self</span> {
-        <span class="ident">TransactionStatusAuxiliaryDataV1::new</span>(
-            <span class="ident">mina_serialization_types::staged_ledger_diff::TransactionStatusAuxiliaryData</span> {
-                <span class="ident">fee_payer_account_creation_fee_paid</span>: <span class="ident">t</span>
-                    .<span class="ident">fee_payer_account_creation_fee_paid</span>
-                    .<span class="ident">map</span>(<span class="ident">Into::into</span>),
-                <span class="ident">receiver_account_creation_fee_paid</span>: <span class="ident">t</span>
-                    .<span class="ident">receiver_account_creation_fee_paid</span>
-                    .<span class="ident">map</span>(<span class="ident">Into::into</span>),
-                <span class="ident">created_token</span>: <span class="ident">t</span>.<span class="ident">created_token</span>.<span class="ident">map</span>(<span class="ident">Into::into</span>),
-            },
-        )
+        <span class="ident">mina_serialization_types::staged_ledger_diff::TransactionStatusAuxiliaryData</span> {
+            <span class="ident">fee_payer_account_creation_fee_paid</span>: <span class="ident">t</span>
+                .<span class="ident">fee_payer_account_creation_fee_paid</span>
+                .<span class="ident">map</span>(<span class="ident">Into::into</span>),
+            <span class="ident">receiver_account_creation_fee_paid</span>: <span class="ident">t</span>
+                .<span class="ident">receiver_account_creation_fee_paid</span>
+                .<span class="ident">map</span>(<span class="ident">Into::into</span>),
+            <span class="ident">created_token</span>: <span class="ident">t</span>.<span class="ident">created_token</span>.<span class="ident">map</span>(<span class="ident">Into::into</span>),
+        }
+        .<span class="ident">into</span>()
     }
 }
 <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">TransactionStatusAuxiliaryDataV1</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">TransactionStatusAuxiliaryData</span> {
@@ -1174,12 +1139,11 @@
 
 <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">UserCommandWithStatus</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">UserCommandWithStatusV1</span> {
     <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">t</span>: <span class="ident">UserCommandWithStatus</span>) -&gt; <span class="self">Self</span> {
-        <span class="ident">UserCommandWithStatusV1::new</span>(
-            <span class="ident">mina_serialization_types::staged_ledger_diff::UserCommandWithStatus</span> {
-                <span class="ident">data</span>: <span class="ident">t</span>.<span class="ident">data</span>.<span class="ident">into</span>(),
-                <span class="ident">status</span>: <span class="ident">t</span>.<span class="ident">status</span>.<span class="ident">into</span>(),
-            },
-        )
+        <span class="ident">mina_serialization_types::staged_ledger_diff::UserCommandWithStatus</span> {
+            <span class="ident">data</span>: <span class="ident">t</span>.<span class="ident">data</span>.<span class="ident">into</span>(),
+            <span class="ident">status</span>: <span class="ident">t</span>.<span class="ident">status</span>.<span class="ident">into</span>(),
+        }
+        .<span class="ident">into</span>()
     }
 }
 <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">UserCommandWithStatusV1</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">UserCommandWithStatus</span> {
@@ -1193,12 +1157,11 @@
 
 <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">CoinBaseFeeTransfer</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">CoinBaseFeeTransferV1</span> {
     <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">t</span>: <span class="ident">CoinBaseFeeTransfer</span>) -&gt; <span class="self">Self</span> {
-        <span class="ident">CoinBaseFeeTransferV1::new</span>(<span class="ident">Versioned::new</span>(
-            <span class="ident">mina_serialization_types::staged_ledger_diff::CoinBaseFeeTransfer</span> {
-                <span class="ident">receiver_pk</span>: <span class="ident">t</span>.<span class="ident">receiver_pk</span>.<span class="ident">into</span>(),
-                <span class="ident">fee</span>: <span class="ident">t</span>.<span class="ident">fee</span>.<span class="ident">into</span>(),
-            },
-        ))
+        <span class="ident">mina_serialization_types::staged_ledger_diff::CoinBaseFeeTransfer</span> {
+            <span class="ident">receiver_pk</span>: <span class="ident">t</span>.<span class="ident">receiver_pk</span>.<span class="ident">into</span>(),
+            <span class="ident">fee</span>: <span class="ident">t</span>.<span class="ident">fee</span>.<span class="ident">into</span>(),
+        }
+        .<span class="ident">into</span>()
     }
 }
 <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">CoinBaseFeeTransferV1</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">CoinBaseFeeTransfer</span> {
@@ -1234,16 +1197,11 @@
 
 <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">CoinBaseBalanceData</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">CoinBaseBalanceDataV1</span> {
     <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">t</span>: <span class="ident">CoinBaseBalanceData</span>) -&gt; <span class="self">Self</span> {
-        <span class="ident">CoinBaseBalanceDataV1::new</span>(
-            <span class="ident">mina_serialization_types::staged_ledger_diff::CoinBaseBalanceData</span> {
-                <span class="ident">coinbase_receiver_balance</span>: <span class="ident">ExtendedU64_3::new</span>(<span class="ident">Versioned::new</span>(<span class="ident">Versioned::new</span>(
-                    <span class="ident">t</span>.<span class="ident">coinbase_receiver_balance</span>.<span class="number">0</span>,
-                ))),
-                <span class="ident">fee_transfer_receiver_balance</span>: <span class="ident">t</span>
-                    .<span class="ident">fee_transfer_receiver_balance</span>
-                    .<span class="ident">map</span>(<span class="op">|</span><span class="ident">v</span><span class="op">|</span> <span class="ident">ExtendedU64_3::new</span>(<span class="ident">Versioned::new</span>(<span class="ident">Versioned::new</span>(<span class="ident">v</span>.<span class="number">0</span>)))),
-            },
-        )
+        <span class="ident">mina_serialization_types::staged_ledger_diff::CoinBaseBalanceData</span> {
+            <span class="ident">coinbase_receiver_balance</span>: <span class="ident">t</span>.<span class="ident">coinbase_receiver_balance</span>.<span class="number">0</span>.<span class="ident">into</span>(),
+            <span class="ident">fee_transfer_receiver_balance</span>: <span class="ident">t</span>.<span class="ident">fee_transfer_receiver_balance</span>.<span class="ident">map</span>(<span class="op">|</span><span class="ident">v</span><span class="op">|</span> <span class="ident">v</span>.<span class="number">0</span>.<span class="ident">into</span>()),
+        }
+        .<span class="ident">into</span>()
     }
 }
 <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">CoinBaseBalanceDataV1</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">CoinBaseBalanceData</span> {
@@ -1260,16 +1218,11 @@
 
 <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">FeeTransferBalanceData</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">FeeTransferBalanceDataV1</span> {
     <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">t</span>: <span class="ident">FeeTransferBalanceData</span>) -&gt; <span class="self">Self</span> {
-        <span class="ident">FeeTransferBalanceDataV1::new</span>(
-            <span class="ident">mina_serialization_types::staged_ledger_diff::FeeTransferBalanceData</span> {
-                <span class="ident">receiver1_balance</span>: <span class="ident">ExtendedU64_3::new</span>(<span class="ident">Versioned::new</span>(<span class="ident">Versioned::new</span>(
-                    <span class="ident">t</span>.<span class="ident">receiver1_balance</span>.<span class="number">0</span>,
-                ))),
-                <span class="ident">receiver2_balance</span>: <span class="ident">t</span>
-                    .<span class="ident">receiver2_balance</span>
-                    .<span class="ident">map</span>(<span class="op">|</span><span class="ident">v</span><span class="op">|</span> <span class="ident">ExtendedU64_3::new</span>(<span class="ident">Versioned::new</span>(<span class="ident">Versioned::new</span>(<span class="ident">v</span>.<span class="number">0</span>)))),
-            },
-        )
+        <span class="ident">mina_serialization_types::staged_ledger_diff::FeeTransferBalanceData</span> {
+            <span class="ident">receiver1_balance</span>: <span class="ident">t</span>.<span class="ident">receiver1_balance</span>.<span class="number">0</span>.<span class="ident">into</span>(),
+            <span class="ident">receiver2_balance</span>: <span class="ident">t</span>.<span class="ident">receiver2_balance</span>.<span class="ident">map</span>(<span class="op">|</span><span class="ident">v</span><span class="op">|</span> <span class="ident">v</span>.<span class="number">0</span>.<span class="ident">into</span>()),
+        }
+        .<span class="ident">into</span>()
     }
 }
 <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">FeeTransferBalanceDataV1</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">FeeTransferBalanceData</span> {
@@ -1305,18 +1258,17 @@
 
 <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">StagedLedgerPreDiffTwo</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">StagedLedgerPreDiffTwoV1</span> {
     <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">t</span>: <span class="ident">StagedLedgerPreDiffTwo</span>) -&gt; <span class="self">Self</span> {
-        <span class="ident">StagedLedgerPreDiffTwoV1::new</span>(<span class="ident">Versioned::new</span>(
-            <span class="ident">mina_serialization_types::staged_ledger_diff::StagedLedgerPreDiffTwo</span> {
-                <span class="ident">completed_works</span>: <span class="ident">t</span>.<span class="ident">completed_works</span>.<span class="ident">into_iter</span>().<span class="ident">map</span>(<span class="ident">Into::into</span>).<span class="ident">collect</span>(),
-                <span class="ident">commands</span>: <span class="ident">t</span>.<span class="ident">commands</span>.<span class="ident">into_iter</span>().<span class="ident">map</span>(<span class="ident">Into::into</span>).<span class="ident">collect</span>(),
-                <span class="ident">coinbase</span>: <span class="ident">t</span>.<span class="ident">coinbase</span>.<span class="ident">into</span>(),
-                <span class="ident">internal_command_balances</span>: <span class="ident">t</span>
-                    .<span class="ident">internal_command_balances</span>
-                    .<span class="ident">into_iter</span>()
-                    .<span class="ident">map</span>(<span class="ident">Into::into</span>)
-                    .<span class="ident">collect</span>(),
-            },
-        ))
+        <span class="ident">mina_serialization_types::staged_ledger_diff::StagedLedgerPreDiffTwo</span> {
+            <span class="ident">completed_works</span>: <span class="ident">t</span>.<span class="ident">completed_works</span>.<span class="ident">into_iter</span>().<span class="ident">map</span>(<span class="ident">Into::into</span>).<span class="ident">collect</span>(),
+            <span class="ident">commands</span>: <span class="ident">t</span>.<span class="ident">commands</span>.<span class="ident">into_iter</span>().<span class="ident">map</span>(<span class="ident">Into::into</span>).<span class="ident">collect</span>(),
+            <span class="ident">coinbase</span>: <span class="ident">t</span>.<span class="ident">coinbase</span>.<span class="ident">into</span>(),
+            <span class="ident">internal_command_balances</span>: <span class="ident">t</span>
+                .<span class="ident">internal_command_balances</span>
+                .<span class="ident">into_iter</span>()
+                .<span class="ident">map</span>(<span class="ident">Into::into</span>)
+                .<span class="ident">collect</span>(),
+        }
+        .<span class="ident">into</span>()
     }
 }
 <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">StagedLedgerPreDiffTwoV1</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">StagedLedgerPreDiffTwo</span> {
@@ -1338,7 +1290,7 @@
 
 <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">StagedLedgerDiffTuple</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">StagedLedgerDiffTupleV1</span> {
     <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">t</span>: <span class="ident">StagedLedgerDiffTuple</span>) -&gt; <span class="self">Self</span> {
-        <span class="ident">StagedLedgerDiffTupleV1::new</span>((<span class="ident">t</span>.<span class="number">0</span> .<span class="number">0</span>.<span class="ident">into</span>(), <span class="ident">t</span>.<span class="number">0</span> .<span class="number">1</span>))
+        (<span class="ident">t</span>.<span class="number">0</span> .<span class="number">0</span>.<span class="ident">into</span>(), <span class="ident">t</span>.<span class="number">0</span> .<span class="number">1</span>).<span class="ident">into</span>()
     }
 }
 <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">StagedLedgerDiffTupleV1</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">StagedLedgerDiffTuple</span> {
@@ -1349,11 +1301,10 @@
 
 <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">StagedLedgerDiff</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">StagedLedgerDiffV1</span> {
     <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">t</span>: <span class="ident">StagedLedgerDiff</span>) -&gt; <span class="self">Self</span> {
-        <span class="ident">StagedLedgerDiffV1::new</span>(
-            <span class="ident">mina_serialization_types::staged_ledger_diff::StagedLedgerDiff</span> {
-                <span class="ident">diff</span>: <span class="ident">t</span>.<span class="ident">diff</span>.<span class="ident">into</span>(),
-            },
-        )
+        <span class="ident">mina_serialization_types::staged_ledger_diff::StagedLedgerDiff</span> {
+            <span class="ident">diff</span>: <span class="ident">t</span>.<span class="ident">diff</span>.<span class="ident">into</span>(),
+        }
+        .<span class="ident">into</span>()
     }
 }
 <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">StagedLedgerDiffV1</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">StagedLedgerDiff</span> {
@@ -1363,6 +1314,7 @@
         }
     }
 }
+<span class="macro">impl_from_for_ext_type!</span>(<span class="ident">StagedLedgerDiff</span>, <span class="ident">StagedLedgerDiffV1</span>, <span class="ident">StagedLedgerDiffJson</span>);
 
 <span class="kw">use</span> <span class="ident">mina_serialization_types::delta_transition_chain_proof::DeltaTransitionChainProof</span> <span class="kw">as</span> <span class="ident">DeltaTransitionChainProofV1</span>;
 
@@ -1376,16 +1328,20 @@
         <span class="self">Self</span>(<span class="ident">t</span>.<span class="number">0</span>.<span class="ident">into</span>(), <span class="ident">t</span>.<span class="number">1</span>.<span class="ident">into_iter</span>().<span class="ident">map</span>(<span class="ident">Into::into</span>).<span class="ident">collect</span>())
     }
 }
+<span class="macro">impl_from_for_ext_type!</span>(
+    <span class="ident"><span class="kw">crate</span>::types::DeltaTransitionChainProof</span>,
+    <span class="ident">DeltaTransitionChainProofV1</span>,
+    <span class="ident">DeltaTransitionChainProofJson</span>
+);
 
 <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">ProtocolVersion</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ProtocolVersionV1</span> {
     <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">t</span>: <span class="ident">ProtocolVersion</span>) -&gt; <span class="self">Self</span> {
-        <span class="ident">ProtocolVersionV1::new</span>(
-            <span class="ident">mina_serialization_types::protocol_version::ProtocolVersion</span> {
-                <span class="ident">major</span>: <span class="ident">t</span>.<span class="ident">major</span>,
-                <span class="ident">minor</span>: <span class="ident">t</span>.<span class="ident">minor</span>,
-                <span class="ident">patch</span>: <span class="ident">t</span>.<span class="ident">patch</span>,
-            },
-        )
+        <span class="ident">mina_serialization_types::protocol_version::ProtocolVersion</span> {
+            <span class="ident">major</span>: <span class="ident">t</span>.<span class="ident">major</span>,
+            <span class="ident">minor</span>: <span class="ident">t</span>.<span class="ident">minor</span>,
+            <span class="ident">patch</span>: <span class="ident">t</span>.<span class="ident">patch</span>,
+        }
+        .<span class="ident">into</span>()
     }
 }
 <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">ProtocolVersionV1</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ProtocolVersion</span> {

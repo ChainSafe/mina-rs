@@ -1,1 +1,1 @@
-initSidebarItems({"struct":[["ProtocolVersion","Defines a version of the Mina protocol in semver format"]],"type":[["ProtocolVersionV1","Defines a version of the Mina protocol in semver format (v1)"]]});
+initSidebarItems({"struct":[["ProtocolVersion","Defines a version of the Mina protocol in semver format"]],"type":[["ProtocolVersionJson","ProtocolVersion that is convertible from / to the mina specific json representation"],["ProtocolVersionV1","Defines a version of the Mina protocol in semver format (v1)"]]});

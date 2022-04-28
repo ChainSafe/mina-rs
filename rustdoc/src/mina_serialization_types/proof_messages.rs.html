@@ -58,7 +58,7 @@
 
 <span class="kw">pub</span> <span class="kw">type</span> <span class="ident">ProofMessageWithoutDegreeBoundListV1</span> <span class="op">=</span> <span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">FiniteECPoint</span><span class="op">&gt;</span>, <span class="number">1</span><span class="op">&gt;</span>, <span class="number">1</span><span class="op">&gt;</span>;
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">Default</span>, <span class="ident">PartialEq</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">PartialEq</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ProofMessageWithDegreeBound</span> {
     <span class="kw">pub</span> <span class="ident">unshifted</span>: <span class="ident">ECPointVecV1</span>,
     <span class="kw">pub</span> <span class="ident">shifted</span>: <span class="ident">ECPointV1</span>,

@@ -1,0 +1,1 @@
+initSidebarItems({"constant":[["COINBASE_HASH","base58 version check byte for coinbase hash"],["EPOCH_SEED","base58 version check byte for epoch seed hash"],["LEDGER_HASH","base58 version check byte for ledger hash"]]});

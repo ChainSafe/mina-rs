@@ -283,18 +283,21 @@
 <span id="278">278</span>
 <span id="279">279</span>
 <span id="280">280</span>
+<span id="281">281</span>
 </pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems</span>
 <span class="comment">// SPDX-License-Identifier: Apache-2.0</span>
 
 <span class="doccomment">//! Newtypes for different numeric types used throughout Mina</span>
+
+<span class="kw">use</span> <span class="kw">crate</span>::<span class="kw-2">*</span>;
 
 <span class="kw">use</span> <span class="ident">std::fmt</span>;
 
 <span class="kw">use</span> <span class="ident">derive_deref::Deref</span>;
 <span class="kw">use</span> <span class="ident">derive_more::From</span>;
 <span class="kw">use</span> <span class="ident">mina_crypto</span>::{<span class="ident">hex::skip_0x_prefix_when_needed</span>, <span class="ident">prelude</span>::<span class="kw-2">*</span>};
+<span class="kw">use</span> <span class="ident">mina_hasher</span>::{<span class="ident">Hashable</span>, <span class="ident">ROInput</span>};
 <span class="kw">use</span> <span class="ident">num::Integer</span>;
-<span class="kw">use</span> <span class="ident">proof_systems::mina_hasher</span>::{<span class="ident">Hashable</span>, <span class="ident">ROInput</span>};
 <span class="kw">use</span> <span class="ident">thiserror::Error</span>;
 <span class="kw">use</span> <span class="ident">time::Duration</span>;
 
@@ -370,7 +373,6 @@
 <span class="doccomment">/// ```</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Copy</span>, <span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>, <span class="ident">Hash</span>, <span class="ident">Default</span>, <span class="ident">From</span>)]</span>
 <span class="attribute">#[<span class="ident">from</span>(<span class="ident">forward</span>)]</span>
-
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Amount</span>(<span class="kw">pub</span> <span class="ident">u64</span>);
 
 <span class="kw">impl</span> <span class="ident">fmt::Display</span> <span class="kw">for</span> <span class="ident">Amount</span> {

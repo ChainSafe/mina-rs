@@ -1,1 +1,1 @@
-initSidebarItems({"struct":[["DeltaTransitionChainProof","Proof that the block was produced within the allotted slot time"]]});
+initSidebarItems({"struct":[["DeltaTransitionChainProof","Proof that the block was produced within the allotted slot time"],["DeltaTransitionChainProofJson","Proof that the block was produced within the allotted slot time that is convertible from / to the mina specific json representation"]]});

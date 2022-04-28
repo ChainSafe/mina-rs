@@ -46,25 +46,20 @@
 <span id="41">41</span>
 <span id="42">42</span>
 <span id="43">43</span>
-<span id="44">44</span>
-<span id="45">45</span>
-<span id="46">46</span>
 </pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems</span>
 <span class="comment">// SPDX-License-Identifier: Apache-2.0</span>
 
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::hash</span>::{<span class="ident">NonSnarkStagedLedgerHash</span>, <span class="ident">StagedLedgerHash</span>};
 <span class="kw">use</span> <span class="ident">mina_serialization_types::v1</span>::{<span class="ident">NonSnarkStagedLedgerHashV1</span>, <span class="ident">StagedLedgerHashV1</span>};
-<span class="kw">use</span> <span class="ident">versioned::Versioned</span>;
 
 <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">NonSnarkStagedLedgerHash</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">NonSnarkStagedLedgerHashV1</span> {
     <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">t</span>: <span class="ident">NonSnarkStagedLedgerHash</span>) -&gt; <span class="self">Self</span> {
-        <span class="ident">NonSnarkStagedLedgerHashV1::new</span>(
-            <span class="ident">mina_serialization_types::blockchain_state::NonSnarkStagedLedgerHash</span> {
-                <span class="ident">ledger_hash</span>: <span class="ident">t</span>.<span class="ident">ledger_hash</span>.<span class="ident">into_inner</span>().<span class="ident">into</span>(),
-                <span class="ident">aux_hash</span>: <span class="ident">t</span>.<span class="ident">aux_hash</span>.<span class="number">0</span>.<span class="ident">into</span>(),
-                <span class="ident">pending_coinbase_aux</span>: <span class="ident">t</span>.<span class="ident">pending_coinbase_aux</span>.<span class="number">0</span>.<span class="ident">into</span>(),
-            },
-        )
+        <span class="ident">mina_serialization_types::blockchain_state::NonSnarkStagedLedgerHash</span> {
+            <span class="ident">ledger_hash</span>: <span class="ident">t</span>.<span class="ident">ledger_hash</span>.<span class="ident">into_inner</span>().<span class="ident">into</span>(),
+            <span class="ident">aux_hash</span>: <span class="ident">t</span>.<span class="ident">aux_hash</span>.<span class="number">0</span>.<span class="ident">into</span>(),
+            <span class="ident">pending_coinbase_aux</span>: <span class="ident">t</span>.<span class="ident">pending_coinbase_aux</span>.<span class="number">0</span>.<span class="ident">into</span>(),
+        }
+        .<span class="ident">into</span>()
     }
 }
 <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">NonSnarkStagedLedgerHashV1</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">NonSnarkStagedLedgerHash</span> {
@@ -79,12 +74,11 @@
 
 <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">StagedLedgerHash</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">StagedLedgerHashV1</span> {
     <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">t</span>: <span class="ident">StagedLedgerHash</span>) -&gt; <span class="self">Self</span> {
-        <span class="ident">StagedLedgerHashV1::new</span>(<span class="ident">Versioned::new</span>(
-            <span class="ident">mina_serialization_types::blockchain_state::StagedLedgerHash</span> {
-                <span class="ident">non_snark</span>: <span class="ident">t</span>.<span class="ident">non_snark</span>.<span class="ident">into</span>(),
-                <span class="ident">pending_coinbase_hash</span>: <span class="ident">Versioned::new</span>(<span class="ident">t</span>.<span class="ident">pending_coinbase_hash</span>.<span class="ident">into_inner</span>().<span class="ident">into</span>()),
-            },
-        ))
+        <span class="ident">mina_serialization_types::blockchain_state::StagedLedgerHash</span> {
+            <span class="ident">non_snark</span>: <span class="ident">t</span>.<span class="ident">non_snark</span>.<span class="ident">into</span>(),
+            <span class="ident">pending_coinbase_hash</span>: <span class="ident">t</span>.<span class="ident">pending_coinbase_hash</span>.<span class="ident">into_inner</span>().<span class="ident">into</span>(),
+        }
+        .<span class="ident">into</span>()
     }
 }
 <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">StagedLedgerHashV1</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">StagedLedgerHash</span> {

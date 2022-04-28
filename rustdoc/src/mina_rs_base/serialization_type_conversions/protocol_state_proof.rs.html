@@ -364,15 +364,6 @@
 <span id="359">359</span>
 <span id="360">360</span>
 <span id="361">361</span>
-<span id="362">362</span>
-<span id="363">363</span>
-<span id="364">364</span>
-<span id="365">365</span>
-<span id="366">366</span>
-<span id="367">367</span>
-<span id="368">368</span>
-<span id="369">369</span>
-<span id="370">370</span>
 </pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems</span>
 <span class="comment">// SPDX-License-Identifier: Apache-2.0</span>
 
@@ -381,16 +372,14 @@
 };
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::types</span>::<span class="kw-2">*</span>;
 <span class="kw">use</span> <span class="ident">mina_serialization_types::v1</span>::<span class="kw-2">*</span>;
-<span class="kw">use</span> <span class="ident">versioned::Versioned</span>;
 
 <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">ProofMessageWithDegreeBound</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ProofMessageWithDegreeBoundV1</span> {
     <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">t</span>: <span class="ident">ProofMessageWithDegreeBound</span>) -&gt; <span class="self">Self</span> {
-        <span class="ident">ProofMessageWithDegreeBoundV1::new</span>(
-            <span class="ident">mina_serialization_types::proof_messages::ProofMessageWithDegreeBound</span> {
-                <span class="ident">unshifted</span>: <span class="ident">t</span>.<span class="ident">unshifted</span>.<span class="ident">into</span>(),
-                <span class="ident">shifted</span>: <span class="ident">t</span>.<span class="ident">shifted</span>.<span class="ident">into</span>(),
-            },
-        )
+        <span class="ident">mina_serialization_types::proof_messages::ProofMessageWithDegreeBound</span> {
+            <span class="ident">unshifted</span>: <span class="ident">t</span>.<span class="ident">unshifted</span>.<span class="ident">into</span>(),
+            <span class="ident">shifted</span>: <span class="ident">t</span>.<span class="ident">shifted</span>.<span class="ident">into</span>(),
+        }
+        .<span class="ident">into</span>()
     }
 }
 <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">ProofMessageWithDegreeBoundV1</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ProofMessageWithDegreeBound</span> {
@@ -404,9 +393,7 @@
 
 <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">ProofMessageWithoutDegreeBoundList</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ProofMessageWithoutDegreeBoundListV1</span> {
     <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">t</span>: <span class="ident">ProofMessageWithoutDegreeBoundList</span>) -&gt; <span class="self">Self</span> {
-        <span class="ident">ProofMessageWithoutDegreeBoundListV1::new</span>(<span class="ident">Versioned::new</span>(
-            <span class="ident">t</span>.<span class="number">0</span>.<span class="ident">into_iter</span>().<span class="ident">map</span>(<span class="ident">Into::into</span>).<span class="ident">collect</span>(),
-        ))
+        <span class="ident">t</span>.<span class="number">0</span>.<span class="ident">into_iter</span>().<span class="ident">map</span>(<span class="ident">Into::into</span>).<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>().<span class="ident">into</span>()
     }
 }
 <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">ProofMessageWithoutDegreeBoundListV1</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ProofMessageWithoutDegreeBoundList</span> {
@@ -417,13 +404,14 @@
 
 <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">ProofMessages</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ProofMessagesV1</span> {
     <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">t</span>: <span class="ident">ProofMessages</span>) -&gt; <span class="self">Self</span> {
-        <span class="ident">ProofMessagesV1::new</span>(<span class="ident">mina_serialization_types::proof_messages::ProofMessages</span> {
+        <span class="ident">mina_serialization_types::proof_messages::ProofMessages</span> {
             <span class="ident">l_comm</span>: <span class="ident">t</span>.<span class="ident">l_comm</span>.<span class="ident">into</span>(),
             <span class="ident">r_comm</span>: <span class="ident">t</span>.<span class="ident">r_comm</span>.<span class="ident">into</span>(),
             <span class="ident">o_comm</span>: <span class="ident">t</span>.<span class="ident">o_comm</span>.<span class="ident">into</span>(),
             <span class="ident">z_comm</span>: <span class="ident">t</span>.<span class="ident">z_comm</span>.<span class="ident">into</span>(),
             <span class="ident">t_comm</span>: <span class="ident">t</span>.<span class="ident">t_comm</span>.<span class="ident">into</span>(),
-        })
+        }
+        .<span class="ident">into</span>()
     }
 }
 <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">ProofMessagesV1</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ProofMessages</span> {
@@ -440,18 +428,17 @@
 
 <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">ProofEvaluations</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ProofEvaluationsV1</span> {
     <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">t</span>: <span class="ident">ProofEvaluations</span>) -&gt; <span class="self">Self</span> {
-        <span class="ident">ProofEvaluationsV1::new</span>(
-            <span class="ident">mina_serialization_types::proof_evaluations::ProofEvaluations</span> {
-                <span class="ident">l</span>: <span class="ident">t</span>.<span class="ident">l</span>.<span class="ident">into</span>(),
-                <span class="ident">r</span>: <span class="ident">t</span>.<span class="ident">r</span>.<span class="ident">into</span>(),
-                <span class="ident">o</span>: <span class="ident">t</span>.<span class="ident">o</span>.<span class="ident">into</span>(),
-                <span class="ident">z</span>: <span class="ident">t</span>.<span class="ident">z</span>.<span class="ident">into</span>(),
-                <span class="ident">t</span>: <span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">into</span>(),
-                <span class="ident">f</span>: <span class="ident">t</span>.<span class="ident">f</span>.<span class="ident">into</span>(),
-                <span class="ident">sigma1</span>: <span class="ident">t</span>.<span class="ident">sigma1</span>.<span class="ident">into</span>(),
-                <span class="ident">sigma2</span>: <span class="ident">t</span>.<span class="ident">sigma2</span>.<span class="ident">into</span>(),
-            },
-        )
+        <span class="ident">mina_serialization_types::proof_evaluations::ProofEvaluations</span> {
+            <span class="ident">l</span>: <span class="ident">t</span>.<span class="ident">l</span>.<span class="ident">into</span>(),
+            <span class="ident">r</span>: <span class="ident">t</span>.<span class="ident">r</span>.<span class="ident">into</span>(),
+            <span class="ident">o</span>: <span class="ident">t</span>.<span class="ident">o</span>.<span class="ident">into</span>(),
+            <span class="ident">z</span>: <span class="ident">t</span>.<span class="ident">z</span>.<span class="ident">into</span>(),
+            <span class="ident">t</span>: <span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">into</span>(),
+            <span class="ident">f</span>: <span class="ident">t</span>.<span class="ident">f</span>.<span class="ident">into</span>(),
+            <span class="ident">sigma1</span>: <span class="ident">t</span>.<span class="ident">sigma1</span>.<span class="ident">into</span>(),
+            <span class="ident">sigma2</span>: <span class="ident">t</span>.<span class="ident">sigma2</span>.<span class="ident">into</span>(),
+        }
+        .<span class="ident">into</span>()
     }
 }
 <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">ProofEvaluationsV1</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ProofEvaluations</span> {
@@ -471,13 +458,14 @@
 
 <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">OpeningProof</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">OpeningProofV1</span> {
     <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">t</span>: <span class="ident">OpeningProof</span>) -&gt; <span class="self">Self</span> {
-        <span class="ident">OpeningProofV1::new</span>(<span class="ident">mina_serialization_types::opening_proof::OpeningProof</span> {
+        <span class="ident">mina_serialization_types::opening_proof::OpeningProof</span> {
             <span class="ident">lr</span>: <span class="ident">t</span>.<span class="ident">lr</span>.<span class="ident">into</span>(),
             <span class="ident">z_1</span>: <span class="ident">t</span>.<span class="ident">z_1</span>.<span class="number">0</span>,
             <span class="ident">z_2</span>: <span class="ident">t</span>.<span class="ident">z_2</span>.<span class="number">0</span>,
             <span class="ident">delta</span>: <span class="ident">t</span>.<span class="ident">delta</span>.<span class="ident">into</span>(),
             <span class="ident">sg</span>: <span class="ident">t</span>.<span class="ident">sg</span>.<span class="ident">into</span>(),
-        })
+        }
+        .<span class="ident">into</span>()
     }
 }
 <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">OpeningProofV1</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">OpeningProof</span> {
@@ -494,12 +482,11 @@
 
 <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">ProofOpenings</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ProofOpeningsV1</span> {
     <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">t</span>: <span class="ident">ProofOpenings</span>) -&gt; <span class="self">Self</span> {
-        <span class="ident">ProofOpeningsV1::new</span>(
-            <span class="ident">mina_serialization_types::protocol_state_proof::ProofOpenings</span> {
-                <span class="ident">proof</span>: <span class="ident">t</span>.<span class="ident">proof</span>.<span class="ident">into</span>(),
-                <span class="ident">evals</span>: (<span class="ident">t</span>.<span class="ident">evals</span>.<span class="number">0</span>.<span class="ident">into</span>(), <span class="ident">t</span>.<span class="ident">evals</span>.<span class="number">1</span>.<span class="ident">into</span>()),
-            },
-        )
+        <span class="ident">mina_serialization_types::protocol_state_proof::ProofOpenings</span> {
+            <span class="ident">proof</span>: <span class="ident">t</span>.<span class="ident">proof</span>.<span class="ident">into</span>(),
+            <span class="ident">evals</span>: (<span class="ident">t</span>.<span class="ident">evals</span>.<span class="number">0</span>.<span class="ident">into</span>(), <span class="ident">t</span>.<span class="ident">evals</span>.<span class="number">1</span>.<span class="ident">into</span>()),
+        }
+        .<span class="ident">into</span>()
     }
 }
 <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">ProofOpeningsV1</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ProofOpenings</span> {
@@ -513,12 +500,11 @@
 
 <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">Proof</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ProofV1</span> {
     <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">t</span>: <span class="ident">Proof</span>) -&gt; <span class="self">Self</span> {
-        <span class="ident">ProofV1::new</span>(<span class="ident">Versioned::new</span>(
-            <span class="ident">mina_serialization_types::protocol_state_proof::Proof</span> {
-                <span class="ident">messages</span>: <span class="ident">t</span>.<span class="ident">messages</span>.<span class="ident">into</span>(),
-                <span class="ident">openings</span>: <span class="ident">t</span>.<span class="ident">openings</span>.<span class="ident">into</span>(),
-            },
-        ))
+        <span class="ident">mina_serialization_types::protocol_state_proof::Proof</span> {
+            <span class="ident">messages</span>: <span class="ident">t</span>.<span class="ident">messages</span>.<span class="ident">into</span>(),
+            <span class="ident">openings</span>: <span class="ident">t</span>.<span class="ident">openings</span>.<span class="ident">into</span>(),
+        }
+        .<span class="ident">into</span>()
     }
 }
 <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">ProofV1</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Proof</span> {
@@ -554,13 +540,12 @@
 
 <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">PairingBased</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">PairingBasedV1</span> {
     <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">t</span>: <span class="ident">PairingBased</span>) -&gt; <span class="self">Self</span> {
-        <span class="ident">PairingBasedV1::new</span>(
-            <span class="ident">mina_serialization_types::protocol_state_proof::PairingBased</span> {
-                <span class="ident">app_state</span>: (),
-                <span class="ident">sg</span>: <span class="ident">t</span>.<span class="ident">sg</span>.<span class="ident">into</span>(),
-                <span class="ident">old_bulletproof_challenges</span>: <span class="ident">t</span>.<span class="ident">old_bulletproof_challenges</span>.<span class="ident">into</span>(),
-            },
-        )
+        <span class="ident">mina_serialization_types::protocol_state_proof::PairingBased</span> {
+            <span class="ident">app_state</span>: (),
+            <span class="ident">sg</span>: <span class="ident">t</span>.<span class="ident">sg</span>.<span class="ident">into</span>(),
+            <span class="ident">old_bulletproof_challenges</span>: <span class="ident">t</span>.<span class="ident">old_bulletproof_challenges</span>.<span class="ident">into</span>(),
+        }
+        .<span class="ident">into</span>()
     }
 }
 <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">PairingBasedV1</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">PairingBased</span> {
@@ -575,12 +560,11 @@
 
 <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">ProofStatePairingBased</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ProofStatePairingBasedV1</span> {
     <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">t</span>: <span class="ident">ProofStatePairingBased</span>) -&gt; <span class="self">Self</span> {
-        <span class="ident">ProofStatePairingBasedV1::new</span>(
-            <span class="ident">mina_serialization_types::protocol_state_proof::ProofStatePairingBased</span> {
-                <span class="ident">sg</span>: <span class="ident">t</span>.<span class="ident">sg</span>.<span class="ident">into</span>(),
-                <span class="ident">old_bulletproof_challenges</span>: <span class="ident">t</span>.<span class="ident">old_bulletproof_challenges</span>.<span class="ident">into</span>(),
-            },
-        )
+        <span class="ident">mina_serialization_types::protocol_state_proof::ProofStatePairingBased</span> {
+            <span class="ident">sg</span>: <span class="ident">t</span>.<span class="ident">sg</span>.<span class="ident">into</span>(),
+            <span class="ident">old_bulletproof_challenges</span>: <span class="ident">t</span>.<span class="ident">old_bulletproof_challenges</span>.<span class="ident">into</span>(),
+        }
+        .<span class="ident">into</span>()
     }
 }
 <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">ProofStatePairingBasedV1</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ProofStatePairingBased</span> {
@@ -594,15 +578,14 @@
 
 <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">SpongeDigestBeforeEvaluations</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">SpongeDigestBeforeEvaluationsV1</span> {
     <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">t</span>: <span class="ident">SpongeDigestBeforeEvaluations</span>) -&gt; <span class="self">Self</span> {
-        <span class="ident">SpongeDigestBeforeEvaluationsV1::new</span>(<span class="ident">Versioned::new</span>(
-            <span class="ident">mina_serialization_types::protocol_state_proof::SpongeDigestBeforeEvaluations</span>((
-                <span class="ident">t</span>.<span class="number">0</span> .<span class="number">0</span>.<span class="ident">into</span>(),
-                <span class="ident">t</span>.<span class="number">0</span> .<span class="number">1</span>.<span class="ident">into</span>(),
-                <span class="ident">t</span>.<span class="number">0</span> .<span class="number">2</span>.<span class="ident">into</span>(),
-                <span class="ident">t</span>.<span class="number">0</span> .<span class="number">3</span>.<span class="ident">into</span>(),
-                (),
-            )),
+        <span class="ident">mina_serialization_types::protocol_state_proof::SpongeDigestBeforeEvaluations</span>((
+            <span class="ident">t</span>.<span class="number">0</span> .<span class="number">0</span>.<span class="ident">into</span>(),
+            <span class="ident">t</span>.<span class="number">0</span> .<span class="number">1</span>.<span class="ident">into</span>(),
+            <span class="ident">t</span>.<span class="number">0</span> .<span class="number">2</span>.<span class="ident">into</span>(),
+            <span class="ident">t</span>.<span class="number">0</span> .<span class="number">3</span>.<span class="ident">into</span>(),
+            (),
         ))
+        .<span class="ident">into</span>()
     }
 }
 <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">SpongeDigestBeforeEvaluationsV1</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">SpongeDigestBeforeEvaluations</span> {
@@ -637,12 +620,13 @@
 
 <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">Plonk</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">PlonkV1</span> {
     <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">t</span>: <span class="ident">Plonk</span>) -&gt; <span class="self">Self</span> {
-        <span class="ident">PlonkV1::new</span>(<span class="ident">mina_serialization_types::protocol_state_proof::Plonk</span> {
+        <span class="ident">mina_serialization_types::protocol_state_proof::Plonk</span> {
             <span class="ident">alpha</span>: <span class="ident">t</span>.<span class="ident">alpha</span>.<span class="ident">into</span>(),
             <span class="ident">beta</span>: <span class="ident">t</span>.<span class="ident">beta</span>.<span class="ident">into</span>(),
             <span class="ident">gamma</span>: <span class="ident">t</span>.<span class="ident">gamma</span>.<span class="ident">into</span>(),
             <span class="ident">zeta</span>: <span class="ident">t</span>.<span class="ident">zeta</span>.<span class="ident">into</span>(),
-        })
+        }
+        .<span class="ident">into</span>()
     }
 }
 <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">PlonkV1</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Plonk</span> {
@@ -658,16 +642,15 @@
 
 <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">ProofStateDeferredValues</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ProofStateDeferredValuesV1</span> {
     <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">t</span>: <span class="ident">ProofStateDeferredValues</span>) -&gt; <span class="self">Self</span> {
-        <span class="ident">ProofStateDeferredValuesV1::new</span>(
-            <span class="ident">mina_serialization_types::protocol_state_proof::ProofStateDeferredValues</span> {
-                <span class="ident">plonk</span>: <span class="ident">t</span>.<span class="ident">plonk</span>.<span class="ident">into</span>(),
-                <span class="ident">combined_inner_product</span>: <span class="ident">t</span>.<span class="ident">combined_inner_product</span>.<span class="ident">into</span>(),
-                <span class="ident">b</span>: <span class="ident">t</span>.<span class="ident">b</span>.<span class="ident">into</span>(),
-                <span class="ident">xi</span>: <span class="ident">t</span>.<span class="ident">xi</span>.<span class="ident">into</span>(),
-                <span class="ident">bulletproof_challenges</span>: <span class="ident">t</span>.<span class="ident">bulletproof_challenges</span>.<span class="ident">into</span>(),
-                <span class="ident">which_branch</span>: <span class="ident">t</span>.<span class="ident">which_branch</span>.<span class="number">0</span>.<span class="ident">into</span>(),
-            },
-        )
+        <span class="ident">mina_serialization_types::protocol_state_proof::ProofStateDeferredValues</span> {
+            <span class="ident">plonk</span>: <span class="ident">t</span>.<span class="ident">plonk</span>.<span class="ident">into</span>(),
+            <span class="ident">combined_inner_product</span>: <span class="ident">t</span>.<span class="ident">combined_inner_product</span>.<span class="ident">into</span>(),
+            <span class="ident">b</span>: <span class="ident">t</span>.<span class="ident">b</span>.<span class="ident">into</span>(),
+            <span class="ident">xi</span>: <span class="ident">t</span>.<span class="ident">xi</span>.<span class="ident">into</span>(),
+            <span class="ident">bulletproof_challenges</span>: <span class="ident">t</span>.<span class="ident">bulletproof_challenges</span>.<span class="ident">into</span>(),
+            <span class="ident">which_branch</span>: <span class="ident">t</span>.<span class="ident">which_branch</span>.<span class="number">0</span>.<span class="ident">into</span>(),
+        }
+        .<span class="ident">into</span>()
     }
 }
 <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">ProofStateDeferredValuesV1</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ProofStateDeferredValues</span> {
@@ -685,11 +668,12 @@
 
 <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">ProofState</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ProofStateV1</span> {
     <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">t</span>: <span class="ident">ProofState</span>) -&gt; <span class="self">Self</span> {
-        <span class="ident">ProofStateV1::new</span>(<span class="ident">mina_serialization_types::protocol_state_proof::ProofState</span> {
+        <span class="ident">mina_serialization_types::protocol_state_proof::ProofState</span> {
             <span class="ident">deferred_values</span>: <span class="ident">t</span>.<span class="ident">deferred_values</span>.<span class="ident">into</span>(),
             <span class="ident">sponge_digest_before_evaluations</span>: <span class="ident">t</span>.<span class="ident">sponge_digest_before_evaluations</span>.<span class="ident">into</span>(),
             <span class="ident">me_only</span>: <span class="ident">t</span>.<span class="ident">me_only</span>.<span class="ident">into</span>(),
-        })
+        }
+        .<span class="ident">into</span>()
     }
 }
 <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">ProofStateV1</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ProofState</span> {
@@ -704,12 +688,11 @@
 
 <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">ProofStatement</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ProofStatementV1</span> {
     <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">t</span>: <span class="ident">ProofStatement</span>) -&gt; <span class="self">Self</span> {
-        <span class="ident">ProofStatementV1::new</span>(<span class="ident">Versioned::new</span>(
-            <span class="ident">mina_serialization_types::protocol_state_proof::ProofStatement</span> {
-                <span class="ident">proof_state</span>: <span class="ident">t</span>.<span class="ident">proof_state</span>.<span class="ident">into</span>(),
-                <span class="ident">pass_through</span>: <span class="ident">t</span>.<span class="ident">pass_through</span>.<span class="ident">into</span>(),
-            },
-        ))
+        <span class="ident">mina_serialization_types::protocol_state_proof::ProofStatement</span> {
+            <span class="ident">proof_state</span>: <span class="ident">t</span>.<span class="ident">proof_state</span>.<span class="ident">into</span>(),
+            <span class="ident">pass_through</span>: <span class="ident">t</span>.<span class="ident">pass_through</span>.<span class="ident">into</span>(),
+        }
+        .<span class="ident">into</span>()
     }
 }
 <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">ProofStatementV1</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ProofStatement</span> {
@@ -723,14 +706,13 @@
 
 <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">ProtocolStateProof</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ProtocolStateProofV1</span> {
     <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">t</span>: <span class="ident">ProtocolStateProof</span>) -&gt; <span class="self">Self</span> {
-        <span class="ident">ProtocolStateProofV1::new</span>(<span class="ident">Versioned::new</span>(<span class="ident">Versioned::new</span>(<span class="ident">Versioned::new</span>(
-            <span class="ident">mina_serialization_types::protocol_state_proof::ProtocolStateProof</span> {
-                <span class="ident">statement</span>: <span class="ident">t</span>.<span class="ident">statement</span>.<span class="ident">into</span>(),
-                <span class="ident">prev_evals</span>: <span class="ident">t</span>.<span class="ident">prev_evals</span>.<span class="ident">into</span>(),
-                <span class="ident">prev_x_hat</span>: <span class="ident">t</span>.<span class="ident">prev_x_hat</span>.<span class="ident">into</span>(),
-                <span class="ident">proof</span>: <span class="ident">t</span>.<span class="ident">proof</span>.<span class="ident">into</span>(),
-            },
-        ))))
+        <span class="ident">mina_serialization_types::protocol_state_proof::ProtocolStateProof</span> {
+            <span class="ident">statement</span>: <span class="ident">t</span>.<span class="ident">statement</span>.<span class="ident">into</span>(),
+            <span class="ident">prev_evals</span>: <span class="ident">t</span>.<span class="ident">prev_evals</span>.<span class="ident">into</span>(),
+            <span class="ident">prev_x_hat</span>: <span class="ident">t</span>.<span class="ident">prev_x_hat</span>.<span class="ident">into</span>(),
+            <span class="ident">proof</span>: <span class="ident">t</span>.<span class="ident">proof</span>.<span class="ident">into</span>(),
+        }
+        .<span class="ident">into</span>()
     }
 }
 <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">ProtocolStateProofV1</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ProtocolStateProof</span> {

@@ -52,6 +52,9 @@
 <span id="47">47</span>
 <span id="48">48</span>
 <span id="49">49</span>
+<span id="50">50</span>
+<span id="51">51</span>
+<span id="52">52</span>
 </pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems</span>
 <span class="comment">// SPDX-License-Identifier: Apache-2.0</span>
 
@@ -80,6 +83,9 @@
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">staged_ledger_diff</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">user_commands</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">verification_key</span>;
+
+<span class="doccomment">/// Import all crates from proof_systems</span>
+<span class="kw">use</span> <span class="ident">proof_systems</span>::<span class="kw-2">*</span>;
 
 <span class="doccomment">/// Re-export serialization type annotations</span>
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">mina_serialization_types</span>::{<span class="ident">BinProtSerializationType</span>, <span class="ident">JsonSerializationType</span>};

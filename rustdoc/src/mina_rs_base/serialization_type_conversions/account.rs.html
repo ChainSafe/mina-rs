@@ -186,29 +186,25 @@
 <span class="comment">// SPDX-License-Identifier: Apache-2.0</span>
 
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::types</span>::<span class="kw-2">*</span>;
-<span class="kw">use</span> <span class="ident">mina_serialization_types</span>::{
-    <span class="ident">account</span>::{<span class="ident">TimedData</span>, <span class="ident">TimedDataV1</span>},
-    <span class="ident">v1</span>::<span class="kw-2">*</span>,
-};
+<span class="kw">use</span> <span class="ident">mina_serialization_types</span>::{<span class="ident">account::TimedData</span>, <span class="ident">v1</span>::<span class="kw-2">*</span>};
 <span class="kw">use</span> <span class="ident">versioned::Versioned</span>;
 
 <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">Account</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">AccountV1</span> {
     <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">t</span>: <span class="ident">Account</span>) -&gt; <span class="self">Self</span> {
-        <span class="ident">AccountV1::new</span>(<span class="ident">Versioned::new</span>(<span class="ident">Versioned::new</span>(
-            <span class="ident">mina_serialization_types::account::Account</span> {
-                <span class="ident">public_key</span>: <span class="ident">t</span>.<span class="ident">public_key</span>.<span class="ident">into</span>(),
-                <span class="ident">token_id</span>: <span class="ident">t</span>.<span class="ident">token_id</span>.<span class="ident">into</span>(),
-                <span class="ident">token_permissions</span>: <span class="ident">t</span>.<span class="ident">token_permissions</span>.<span class="ident">into</span>(),
-                <span class="ident">balance</span>: <span class="ident">t</span>.<span class="ident">balance</span>.<span class="ident">into</span>(),
-                <span class="ident">nonce</span>: <span class="ident">t</span>.<span class="ident">nonce</span>.<span class="ident">into</span>(),
-                <span class="ident">receipt_chain_hash</span>: <span class="ident">t</span>.<span class="ident">receipt_chain_hash</span>.<span class="ident">into_inner</span>().<span class="ident">into</span>(),
-                <span class="ident">delegate</span>: <span class="ident">t</span>.<span class="ident">delegate</span>.<span class="ident">map</span>(<span class="ident">Into::into</span>),
-                <span class="ident">voting_for</span>: <span class="ident">t</span>.<span class="ident">voting_for</span>.<span class="ident">into</span>(),
-                <span class="ident">timing</span>: <span class="ident">t</span>.<span class="ident">timing</span>.<span class="ident">into</span>(),
-                <span class="ident">permissions</span>: <span class="ident">t</span>.<span class="ident">permissions</span>.<span class="ident">into</span>(),
-                <span class="ident">snapp</span>: <span class="ident">t</span>.<span class="ident">snapp</span>.<span class="ident">map</span>(<span class="ident">Into::into</span>),
-            },
-        )))
+        <span class="ident">mina_serialization_types::account::Account</span> {
+            <span class="ident">public_key</span>: <span class="ident">t</span>.<span class="ident">public_key</span>.<span class="ident">into</span>(),
+            <span class="ident">token_id</span>: <span class="ident">t</span>.<span class="ident">token_id</span>.<span class="ident">into</span>(),
+            <span class="ident">token_permissions</span>: <span class="ident">t</span>.<span class="ident">token_permissions</span>.<span class="ident">into</span>(),
+            <span class="ident">balance</span>: <span class="ident">t</span>.<span class="ident">balance</span>.<span class="ident">into</span>(),
+            <span class="ident">nonce</span>: <span class="ident">t</span>.<span class="ident">nonce</span>.<span class="ident">into</span>(),
+            <span class="ident">receipt_chain_hash</span>: <span class="ident">t</span>.<span class="ident">receipt_chain_hash</span>.<span class="ident">into_inner</span>().<span class="ident">into</span>(),
+            <span class="ident">delegate</span>: <span class="ident">t</span>.<span class="ident">delegate</span>.<span class="ident">map</span>(<span class="ident">Into::into</span>),
+            <span class="ident">voting_for</span>: <span class="ident">t</span>.<span class="ident">voting_for</span>.<span class="ident">into</span>(),
+            <span class="ident">timing</span>: <span class="ident">t</span>.<span class="ident">timing</span>.<span class="ident">into</span>(),
+            <span class="ident">permissions</span>: <span class="ident">t</span>.<span class="ident">permissions</span>.<span class="ident">into</span>(),
+            <span class="ident">snapp</span>: <span class="ident">t</span>.<span class="ident">snapp</span>.<span class="ident">map</span>(<span class="ident">Into::into</span>),
+        }
+        .<span class="ident">into</span>()
     }
 }
 <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">AccountV1</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Account</span> {
@@ -236,11 +232,12 @@
         <span class="kw">match</span> <span class="ident">t</span> {
             <span class="ident">TokenPermissions::TokenOwned</span> {
                 <span class="ident">disable_new_accounts</span>,
-            } =&gt; <span class="ident"><span class="self">Self</span>::new</span>(<span class="ident">Versioned::new</span>(<span class="ident">TP::TokenOwned</span> {
+            } =&gt; <span class="ident">TP::TokenOwned</span> {
                 <span class="ident">disable_new_accounts</span>,
-            })),
+            }
+            .<span class="ident">into</span>(),
             <span class="ident">TokenPermissions::NotOwned</span> { <span class="ident">account_disabled</span> } =&gt; {
-                <span class="ident"><span class="self">Self</span>::new</span>(<span class="ident">Versioned::new</span>(<span class="ident">TP::NotOwned</span> { <span class="ident">account_disabled</span> }))
+                <span class="ident">TP::NotOwned</span> { <span class="ident">account_disabled</span> }.<span class="ident">into</span>()
             }
         }
     }
@@ -263,20 +260,24 @@
     <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">t</span>: <span class="ident">Timing</span>) -&gt; <span class="self">Self</span> {
         <span class="kw">use</span> <span class="ident">mina_serialization_types::account::Timing</span> <span class="kw">as</span> <span class="ident">TP</span>;
         <span class="kw">match</span> <span class="ident">t</span> {
-            <span class="ident">Timing::Untimed</span> =&gt; <span class="ident"><span class="self">Self</span>::new</span>(<span class="ident">Versioned::new</span>(<span class="ident">TP::Untimed</span>)),
+            <span class="ident">Timing::Untimed</span> =&gt; <span class="ident">TP::Untimed</span>.<span class="ident">into</span>(),
             <span class="ident">Timing::Timed</span> {
                 <span class="ident">initial_minimum_balance</span>,
                 <span class="ident">cliff_time</span>,
                 <span class="ident">cliff_amount</span>,
                 <span class="ident">vesting_increment</span>,
                 <span class="ident">vesting_period</span>,
-            } =&gt; <span class="ident"><span class="self">Self</span>::new</span>(<span class="ident">Versioned::new</span>(<span class="ident">TP::Timed</span>(<span class="ident">TimedDataV1::new</span>(<span class="ident">TimedData</span> {
-                <span class="ident">initial_minimum_balance</span>: <span class="ident">initial_minimum_balance</span>.<span class="ident">into</span>(),
-                <span class="ident">cliff_time</span>: <span class="ident">cliff_time</span>.<span class="ident">into</span>(),
-                <span class="ident">cliff_amount</span>: <span class="ident">cliff_amount</span>.<span class="ident">into</span>(),
-                <span class="ident">vesting_increment</span>: <span class="ident">vesting_increment</span>.<span class="ident">into</span>(),
-                <span class="ident">vesting_period</span>: <span class="ident">vesting_period</span>.<span class="ident">into</span>(),
-            })))),
+            } =&gt; <span class="ident">TP::Timed</span>(
+                <span class="ident">TimedData</span> {
+                    <span class="ident">initial_minimum_balance</span>: <span class="ident">initial_minimum_balance</span>.<span class="ident">into</span>(),
+                    <span class="ident">cliff_time</span>: <span class="ident">cliff_time</span>.<span class="ident">into</span>(),
+                    <span class="ident">cliff_amount</span>: <span class="ident">cliff_amount</span>.<span class="ident">into</span>(),
+                    <span class="ident">vesting_increment</span>: <span class="ident">vesting_increment</span>.<span class="ident">into</span>(),
+                    <span class="ident">vesting_period</span>: <span class="ident">vesting_period</span>.<span class="ident">into</span>(),
+                }
+                .<span class="ident">into</span>(),
+            )
+            .<span class="ident">into</span>(),
         }
     }
 }
@@ -308,17 +309,16 @@
 
 <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">Permissions</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">PermissionsV1</span> {
     <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">t</span>: <span class="ident">Permissions</span>) -&gt; <span class="self">Self</span> {
-        <span class="ident">PermissionsV1::new</span>(<span class="ident">Versioned::new</span>(
-            <span class="ident">mina_serialization_types::account::Permissions</span> {
-                <span class="ident">stake</span>: <span class="ident">t</span>.<span class="ident">stake</span>,
-                <span class="ident">edit_state</span>: <span class="ident">t</span>.<span class="ident">edit_state</span>.<span class="ident">into</span>(),
-                <span class="ident">send</span>: <span class="ident">t</span>.<span class="ident">send</span>.<span class="ident">into</span>(),
-                <span class="ident">receive</span>: <span class="ident">t</span>.<span class="ident">receive</span>.<span class="ident">into</span>(),
-                <span class="ident">set_delegate</span>: <span class="ident">t</span>.<span class="ident">set_delegate</span>.<span class="ident">into</span>(),
-                <span class="ident">set_permissions</span>: <span class="ident">t</span>.<span class="ident">set_permissions</span>.<span class="ident">into</span>(),
-                <span class="ident">set_verification_key</span>: <span class="ident">t</span>.<span class="ident">set_verification_key</span>.<span class="ident">into</span>(),
-            },
-        ))
+        <span class="ident">mina_serialization_types::account::Permissions</span> {
+            <span class="ident">stake</span>: <span class="ident">t</span>.<span class="ident">stake</span>,
+            <span class="ident">edit_state</span>: <span class="ident">t</span>.<span class="ident">edit_state</span>.<span class="ident">into</span>(),
+            <span class="ident">send</span>: <span class="ident">t</span>.<span class="ident">send</span>.<span class="ident">into</span>(),
+            <span class="ident">receive</span>: <span class="ident">t</span>.<span class="ident">receive</span>.<span class="ident">into</span>(),
+            <span class="ident">set_delegate</span>: <span class="ident">t</span>.<span class="ident">set_delegate</span>.<span class="ident">into</span>(),
+            <span class="ident">set_permissions</span>: <span class="ident">t</span>.<span class="ident">set_permissions</span>.<span class="ident">into</span>(),
+            <span class="ident">set_verification_key</span>: <span class="ident">t</span>.<span class="ident">set_verification_key</span>.<span class="ident">into</span>(),
+        }
+        .<span class="ident">into</span>()
     }
 }
 <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">PermissionsV1</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Permissions</span> {
