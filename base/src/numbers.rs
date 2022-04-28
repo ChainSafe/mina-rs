@@ -10,9 +10,8 @@ use std::fmt;
 use derive_deref::Deref;
 use derive_more::From;
 use mina_crypto::{hex::skip_0x_prefix_when_needed, prelude::*};
-use mina_hasher::ROInput;
+use mina_hasher::{Hashable, ROInput};
 use num::Integer;
-
 use thiserror::Error;
 use time::Duration;
 
@@ -23,7 +22,7 @@ use crate::constants::MINA_PRECISION;
 /// Newtype for TokenIds
 pub struct TokenId(pub u64);
 
-impl mina_hasher::Hashable for TokenId {
+impl Hashable for TokenId {
     type D = ();
 
     fn to_roinput(&self) -> ROInput {
@@ -41,6 +40,20 @@ impl mina_hasher::Hashable for TokenId {
 #[from(forward)]
 /// Represents the length of something (e.g. an epoch or window)
 pub struct Length(pub u32);
+
+impl Hashable for Length {
+    type D = ();
+
+    fn to_roinput(&self) -> ROInput {
+        let mut roi = ROInput::new();
+        roi.append_u32(self.0);
+        roi
+    }
+
+    fn domain_string(_: Self::D) -> Option<String> {
+        None
+    }
+}
 
 #[derive(Clone, PartialEq, PartialOrd, Debug, Hash, Copy, Default, From)]
 #[from(forward)]
@@ -83,7 +96,7 @@ impl fmt::Display for Amount {
     }
 }
 
-impl mina_hasher::Hashable for Amount {
+impl Hashable for Amount {
     type D = ();
 
     fn to_roinput(&self) -> ROInput {
@@ -136,7 +149,7 @@ impl std::str::FromStr for Amount {
 pub struct AccountNonce(pub u32);
 
 /// Consensus slot index
-#[derive(Copy, Clone, PartialEq, Debug, Hash, Default, From)]
+#[derive(Copy, Clone, PartialEq, Debug, Hash, Default, From, Deref)]
 #[from(forward)]
 pub struct GlobalSlotNumber(pub u32);
 
@@ -158,9 +171,37 @@ pub struct Hex64(pub i64);
 /// A single char defined by a single byte (not variable length like a Rust char)
 pub struct Char(pub u8);
 
+impl Hashable for GlobalSlotNumber {
+    type D = ();
+
+    fn to_roinput(&self) -> ROInput {
+        let mut roi = ROInput::new();
+        roi.append_u32(self.0);
+        roi
+    }
+
+    fn domain_string(_: Self::D) -> Option<String> {
+        None
+    }
+}
+
 #[derive(Clone, PartialEq, Debug, Hash, Default, From)]
 /// Block time numeric type
 pub struct BlockTime(pub u64);
+
+impl Hashable for BlockTime {
+    type D = ();
+
+    fn to_roinput(&self) -> ROInput {
+        let mut roi = ROInput::new();
+        roi.append_u64(self.0);
+        roi
+    }
+
+    fn domain_string(_: Self::D) -> Option<String> {
+        None
+    }
+}
 
 impl BlockTime {
     /// Unix timestamp conversion (seconds since the unix epoch)

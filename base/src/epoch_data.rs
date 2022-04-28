@@ -5,6 +5,7 @@
 
 use crate::numbers::{Amount, Length};
 use mina_crypto::hash::*;
+use proof_systems::mina_hasher::{Hashable, ROInput};
 
 #[derive(Clone, Default, PartialEq, Debug)]
 /// Epoch Ledger
@@ -13,6 +14,21 @@ pub struct EpochLedger {
     pub hash: LedgerHash,
     /// The total currency in circulation after the block was produced. New issuance is via the coinbase reward and new account fees can reduce the total issuance.
     pub total_currency: Amount,
+}
+
+impl Hashable for EpochLedger {
+    type D = ();
+
+    fn to_roinput(&self) -> ROInput {
+        let mut roi = ROInput::new();
+        roi.append_hashable(&self.hash);
+        roi.append_hashable(&self.total_currency);
+        roi
+    }
+
+    fn domain_string(_: Self::D) -> Option<String> {
+        None
+    }
 }
 
 #[derive(Clone, Default, PartialEq, Debug)]
@@ -28,4 +44,22 @@ pub struct EpochData {
     pub lock_checkpoint: StateHash,
     /// Length of an epoch
     pub epoch_length: Length,
+}
+
+impl Hashable for EpochData {
+    type D = ();
+
+    fn to_roinput(&self) -> ROInput {
+        let mut roi = ROInput::new();
+        roi.append_hashable(&self.ledger);
+        roi.append_hashable(&self.seed);
+        roi.append_hashable(&self.start_checkpoint);
+        roi.append_hashable(&self.lock_checkpoint);
+        roi.append_hashable(&self.epoch_length);
+        roi
+    }
+
+    fn domain_string(_: Self::D) -> Option<String> {
+        None
+    }
 }
