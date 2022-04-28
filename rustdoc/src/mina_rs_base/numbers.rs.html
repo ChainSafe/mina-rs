@@ -244,6 +244,45 @@
 <span id="239">239</span>
 <span id="240">240</span>
 <span id="241">241</span>
+<span id="242">242</span>
+<span id="243">243</span>
+<span id="244">244</span>
+<span id="245">245</span>
+<span id="246">246</span>
+<span id="247">247</span>
+<span id="248">248</span>
+<span id="249">249</span>
+<span id="250">250</span>
+<span id="251">251</span>
+<span id="252">252</span>
+<span id="253">253</span>
+<span id="254">254</span>
+<span id="255">255</span>
+<span id="256">256</span>
+<span id="257">257</span>
+<span id="258">258</span>
+<span id="259">259</span>
+<span id="260">260</span>
+<span id="261">261</span>
+<span id="262">262</span>
+<span id="263">263</span>
+<span id="264">264</span>
+<span id="265">265</span>
+<span id="266">266</span>
+<span id="267">267</span>
+<span id="268">268</span>
+<span id="269">269</span>
+<span id="270">270</span>
+<span id="271">271</span>
+<span id="272">272</span>
+<span id="273">273</span>
+<span id="274">274</span>
+<span id="275">275</span>
+<span id="276">276</span>
+<span id="277">277</span>
+<span id="278">278</span>
+<span id="279">279</span>
+<span id="280">280</span>
 </pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems</span>
 <span class="comment">// SPDX-License-Identifier: Apache-2.0</span>
 
@@ -251,14 +290,11 @@
 
 <span class="kw">use</span> <span class="ident">std::fmt</span>;
 
-<span class="kw">use</span> <span class="ident">proof_systems</span>::<span class="kw-2">*</span>;
-
 <span class="kw">use</span> <span class="ident">derive_deref::Deref</span>;
 <span class="kw">use</span> <span class="ident">derive_more::From</span>;
 <span class="kw">use</span> <span class="ident">mina_crypto</span>::{<span class="ident">hex::skip_0x_prefix_when_needed</span>, <span class="ident">prelude</span>::<span class="kw-2">*</span>};
-<span class="kw">use</span> <span class="ident">mina_hasher::ROInput</span>;
 <span class="kw">use</span> <span class="ident">num::Integer</span>;
-
+<span class="kw">use</span> <span class="ident">proof_systems::mina_hasher</span>::{<span class="ident">Hashable</span>, <span class="ident">ROInput</span>};
 <span class="kw">use</span> <span class="ident">thiserror::Error</span>;
 <span class="kw">use</span> <span class="ident">time::Duration</span>;
 
@@ -269,7 +305,7 @@
 <span class="doccomment">/// Newtype for TokenIds</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">TokenId</span>(<span class="kw">pub</span> <span class="ident">u64</span>);
 
-<span class="kw">impl</span> <span class="ident">mina_hasher::Hashable</span> <span class="kw">for</span> <span class="ident">TokenId</span> {
+<span class="kw">impl</span> <span class="ident">Hashable</span> <span class="kw">for</span> <span class="ident">TokenId</span> {
     <span class="kw">type</span> <span class="ident">D</span> <span class="op">=</span> ();
 
     <span class="kw">fn</span> <span class="ident">to_roinput</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">ROInput</span> {
@@ -287,6 +323,20 @@
 <span class="attribute">#[<span class="ident">from</span>(<span class="ident">forward</span>)]</span>
 <span class="doccomment">/// Represents the length of something (e.g. an epoch or window)</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Length</span>(<span class="kw">pub</span> <span class="ident">u32</span>);
+
+<span class="kw">impl</span> <span class="ident">Hashable</span> <span class="kw">for</span> <span class="ident">Length</span> {
+    <span class="kw">type</span> <span class="ident">D</span> <span class="op">=</span> ();
+
+    <span class="kw">fn</span> <span class="ident">to_roinput</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">ROInput</span> {
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">roi</span> <span class="op">=</span> <span class="ident">ROInput::new</span>();
+        <span class="ident">roi</span>.<span class="ident">append_u32</span>(<span class="self">self</span>.<span class="number">0</span>);
+        <span class="ident">roi</span>
+    }
+
+    <span class="kw">fn</span> <span class="ident">domain_string</span>(<span class="kw">_</span>: <span class="ident"><span class="self">Self</span>::D</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> {
+        <span class="prelude-val">None</span>
+    }
+}
 
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">PartialOrd</span>, <span class="ident">Debug</span>, <span class="ident">Hash</span>, <span class="ident">Copy</span>, <span class="ident">Default</span>, <span class="ident">From</span>)]</span>
 <span class="attribute">#[<span class="ident">from</span>(<span class="ident">forward</span>)]</span>
@@ -330,7 +380,7 @@
     }
 }
 
-<span class="kw">impl</span> <span class="ident">mina_hasher::Hashable</span> <span class="kw">for</span> <span class="ident">Amount</span> {
+<span class="kw">impl</span> <span class="ident">Hashable</span> <span class="kw">for</span> <span class="ident">Amount</span> {
     <span class="kw">type</span> <span class="ident">D</span> <span class="op">=</span> ();
 
     <span class="kw">fn</span> <span class="ident">to_roinput</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">ROInput</span> {
@@ -383,7 +433,7 @@
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">AccountNonce</span>(<span class="kw">pub</span> <span class="ident">u32</span>);
 
 <span class="doccomment">/// Consensus slot index</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Copy</span>, <span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>, <span class="ident">Hash</span>, <span class="ident">Default</span>, <span class="ident">From</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Copy</span>, <span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>, <span class="ident">Hash</span>, <span class="ident">Default</span>, <span class="ident">From</span>, <span class="ident">Deref</span>)]</span>
 <span class="attribute">#[<span class="ident">from</span>(<span class="ident">forward</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">GlobalSlotNumber</span>(<span class="kw">pub</span> <span class="ident">u32</span>);
 
@@ -405,9 +455,37 @@
 <span class="doccomment">/// A single char defined by a single byte (not variable length like a Rust char)</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Char</span>(<span class="kw">pub</span> <span class="ident">u8</span>);
 
+<span class="kw">impl</span> <span class="ident">Hashable</span> <span class="kw">for</span> <span class="ident">GlobalSlotNumber</span> {
+    <span class="kw">type</span> <span class="ident">D</span> <span class="op">=</span> ();
+
+    <span class="kw">fn</span> <span class="ident">to_roinput</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">ROInput</span> {
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">roi</span> <span class="op">=</span> <span class="ident">ROInput::new</span>();
+        <span class="ident">roi</span>.<span class="ident">append_u32</span>(<span class="self">self</span>.<span class="number">0</span>);
+        <span class="ident">roi</span>
+    }
+
+    <span class="kw">fn</span> <span class="ident">domain_string</span>(<span class="kw">_</span>: <span class="ident"><span class="self">Self</span>::D</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> {
+        <span class="prelude-val">None</span>
+    }
+}
+
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>, <span class="ident">Hash</span>, <span class="ident">Default</span>, <span class="ident">From</span>)]</span>
 <span class="doccomment">/// Block time numeric type</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">BlockTime</span>(<span class="kw">pub</span> <span class="ident">u64</span>);
+
+<span class="kw">impl</span> <span class="ident">Hashable</span> <span class="kw">for</span> <span class="ident">BlockTime</span> {
+    <span class="kw">type</span> <span class="ident">D</span> <span class="op">=</span> ();
+
+    <span class="kw">fn</span> <span class="ident">to_roinput</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">ROInput</span> {
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">roi</span> <span class="op">=</span> <span class="ident">ROInput::new</span>();
+        <span class="ident">roi</span>.<span class="ident">append_u64</span>(<span class="self">self</span>.<span class="number">0</span>);
+        <span class="ident">roi</span>
+    }
+
+    <span class="kw">fn</span> <span class="ident">domain_string</span>(<span class="kw">_</span>: <span class="ident"><span class="self">Self</span>::D</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> {
+        <span class="prelude-val">None</span>
+    }
+}
 
 <span class="kw">impl</span> <span class="ident">BlockTime</span> {
     <span class="doccomment">/// Unix timestamp conversion (seconds since the unix epoch)</span>
@@ -486,5 +564,5 @@
     }
 }
 </code></pre></div>
-</section><section id="search" class="content hidden"></section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_rs_base" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.62.0-nightly (082e4ca49 2022-04-26)" ></div>
+</section><section id="search" class="content hidden"></section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_rs_base" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.62.0-nightly (69a5d2481 2022-04-27)" ></div>
 </body></html>

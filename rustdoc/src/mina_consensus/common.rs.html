@@ -334,6 +334,12 @@
 <span id="329">329</span>
 <span id="330">330</span>
 <span id="331">331</span>
+<span id="332">332</span>
+<span id="333">333</span>
+<span id="334">334</span>
+<span id="335">335</span>
+<span id="336">336</span>
+<span id="337">337</span>
 </pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems</span>
 <span class="comment">// SPDX-License-Identifier: Apache-2.0</span>
 
@@ -342,12 +348,16 @@
 <span class="doccomment">//!</span>
 
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::error::ConsensusError</span>;
-<span class="kw">use</span> <span class="ident">hex::ToHex</span>;
-<span class="kw">use</span> <span class="ident">mina_crypto::hash</span>::{<span class="ident">Hashable</span>, <span class="ident">StateHash</span>};
+<span class="kw">use</span> <span class="ident">lockfree_object_pool::SpinLockObjectPool</span>;
 <span class="kw">use</span> <span class="ident">mina_rs_base::consensus_state::ConsensusState</span>;
+<span class="kw">use</span> <span class="ident">mina_rs_base::consensus_state::VrfOutputTruncated</span>;
 <span class="kw">use</span> <span class="ident">mina_rs_base::global_slot::GlobalSlot</span>;
 <span class="kw">use</span> <span class="ident">mina_rs_base::protocol_state</span>::{<span class="ident">Header</span>, <span class="ident">ProtocolState</span>};
 <span class="kw">use</span> <span class="ident">mina_rs_base::types</span>::{<span class="ident">BlockTime</span>, <span class="ident">Length</span>};
+<span class="kw">use</span> <span class="ident">once_cell::sync::OnceCell</span>;
+<span class="kw">use</span> <span class="ident">proof_systems::mina_hasher::Fp</span>;
+<span class="kw">use</span> <span class="ident">proof_systems::mina_hasher::PoseidonHasherKimchi</span>;
+<span class="kw">use</span> <span class="ident">proof_systems::mina_hasher</span>::{<span class="ident">create_kimchi</span>, <span class="ident">Hasher</span>};
 
 <span class="doccomment">/// Type that defines constant values for mina consensus calculation</span>
 <span class="comment">// TODO: derive from protocol constants</span>
@@ -417,10 +427,10 @@
     <span class="kw">fn</span> <span class="ident">length</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">usize</span>;
     <span class="doccomment">/// This function returns the hex digest of the hash of the last VRF output</span>
     <span class="doccomment">///  of a given chain. The input is a chain C and the output is the hash digest.</span>
-    <span class="kw">fn</span> <span class="ident">last_vrf_hash</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>;
+    <span class="kw">fn</span> <span class="ident">last_vrf_hash</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Fp</span><span class="op">&gt;</span>;
     <span class="doccomment">/// This function returns hash of the top block&#39;s protocol state for a given chain.</span>
     <span class="doccomment">/// The input is a chain C and the output is the hash.</span>
-    <span class="kw">fn</span> <span class="ident">state_hash</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">StateHash</span><span class="op">&gt;</span>;
+    <span class="kw">fn</span> <span class="ident">state_hash</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Fp</span><span class="op">&gt;</span>;
     <span class="doccomment">/// Gets [ProtocolState] of the genesis block</span>
     <span class="kw">fn</span> <span class="ident">genesis_block</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">ProtocolState</span><span class="op">&gt;</span>;
 }
@@ -465,21 +475,23 @@
         <span class="self">self</span>.<span class="number">0</span>.<span class="ident">len</span>()
     }
 
-    <span class="kw">fn</span> <span class="ident">last_vrf_hash</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="ident">top</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">s</span><span class="op">|</span> {
-            <span class="ident">s</span>.<span class="ident">body</span>
-                .<span class="ident">consensus_state</span>
-                .<span class="ident">last_vrf_output</span>
-                .<span class="ident">hash</span>()
-                .<span class="ident">as_ref</span>()
-                .<span class="ident">encode_hex</span>::<span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>()
-        })
+    <span class="kw">fn</span> <span class="ident">last_vrf_hash</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Fp</span><span class="op">&gt;</span> {
+        <span class="kw">static</span> <span class="ident">HASHER_POOL</span>: <span class="ident">OnceCell</span><span class="op">&lt;</span><span class="ident">SpinLockObjectPool</span><span class="op">&lt;</span><span class="ident">PoseidonHasherKimchi</span><span class="op">&lt;</span><span class="ident">VrfOutputTruncated</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="op">=</span>
+            <span class="ident">OnceCell::new</span>();
+        <span class="kw">let</span> <span class="ident">pool</span> <span class="op">=</span>
+            <span class="ident">HASHER_POOL</span>.<span class="ident">get_or_init</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">SpinLockObjectPool::new</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">create_kimchi</span>(()), <span class="op">|</span><span class="kw">_</span><span class="op">|</span> ()));
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">hasher</span> <span class="op">=</span> <span class="ident">pool</span>.<span class="ident">pull</span>();
+        <span class="self">self</span>.<span class="ident">top</span>()
+            .<span class="ident">map</span>(<span class="op">|</span><span class="ident">s</span><span class="op">|</span> <span class="ident">hasher</span>.<span class="ident">hash</span>(<span class="kw-2">&amp;</span><span class="ident">s</span>.<span class="ident">body</span>.<span class="ident">consensus_state</span>.<span class="ident">last_vrf_output</span>))
     }
 
-    <span class="comment">// FIXME: this currently returns a blake2b hash. It should</span>
-    <span class="comment">// return a poseidon hash according to: https://github.com/MinaProtocol/mina/blob/32f529d8d8d712a44ee75be66061ce08cbdc8924/docs/specs/consensus/README.md#517-hashstate</span>
-    <span class="kw">fn</span> <span class="ident">state_hash</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">StateHash</span><span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="ident">top</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">s</span><span class="op">|</span> <span class="ident">s</span>.<span class="ident">hash</span>())
+    <span class="kw">fn</span> <span class="ident">state_hash</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Fp</span><span class="op">&gt;</span> {
+        <span class="kw">static</span> <span class="ident">HASHER_POOL</span>: <span class="ident">OnceCell</span><span class="op">&lt;</span><span class="ident">SpinLockObjectPool</span><span class="op">&lt;</span><span class="ident">PoseidonHasherKimchi</span><span class="op">&lt;</span><span class="ident">ProtocolState</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="op">=</span>
+            <span class="ident">OnceCell::new</span>();
+        <span class="kw">let</span> <span class="ident">pool</span> <span class="op">=</span>
+            <span class="ident">HASHER_POOL</span>.<span class="ident">get_or_init</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">SpinLockObjectPool::new</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">create_kimchi</span>(()), <span class="op">|</span><span class="kw">_</span><span class="op">|</span> ()));
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">hasher</span> <span class="op">=</span> <span class="ident">pool</span>.<span class="ident">pull</span>();
+        <span class="self">self</span>.<span class="ident">top</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">s</span><span class="op">|</span> <span class="ident">hasher</span>.<span class="ident">hash</span>(<span class="ident">s</span>))
     }
 }
 
@@ -666,5 +678,5 @@
     }
 }
 </code></pre></div>
-</section><section id="search" class="content hidden"></section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_consensus" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.62.0-nightly (082e4ca49 2022-04-26)" ></div>
+</section><section id="search" class="content hidden"></section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_consensus" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.62.0-nightly (69a5d2481 2022-04-27)" ></div>
 </body></html>
