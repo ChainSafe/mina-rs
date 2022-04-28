@@ -5,6 +5,7 @@
 
 use crate::numbers::{BlockTime, TokenId};
 use mina_crypto::hash::*;
+use proof_systems::mina_hasher::{Hashable, ROInput};
 
 #[derive(Clone, Default, Debug, PartialEq)]
 /// Mina blockchain state struct
@@ -19,4 +20,22 @@ pub struct BlockchainState {
     pub snarked_next_available_token: TokenId,
     /// Timestamps for blocks
     pub timestamp: BlockTime,
+}
+
+impl Hashable for BlockchainState {
+    type D = ();
+
+    fn to_roinput(&self) -> ROInput {
+        let mut roi = ROInput::new();
+        roi.append_hashable(&self.staged_ledger_hash);
+        roi.append_hashable(&self.snarked_ledger_hash);
+        roi.append_hashable(&self.genesis_ledger_hash);
+        roi.append_hashable(&self.snarked_next_available_token);
+        roi.append_hashable(&self.timestamp);
+        roi
+    }
+
+    fn domain_string(_: Self::D) -> Option<String> {
+        None
+    }
 }
