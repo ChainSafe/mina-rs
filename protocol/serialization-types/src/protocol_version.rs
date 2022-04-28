@@ -19,3 +19,12 @@ pub struct ProtocolVersion {
 
 /// Defines a version of the Mina protocol in semver format (v1)
 pub type ProtocolVersionV1 = Versioned<ProtocolVersion, 1>;
+
+/// ProtocolVersion that is convertible from / to the mina specific json representation
+pub type ProtocolVersionJson = ProtocolVersion;
+
+impl From<ProtocolVersionV1> for ProtocolVersionJson {
+    fn from(t: ProtocolVersionV1) -> Self {
+        t.t
+    }
+}

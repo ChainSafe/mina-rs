@@ -27,6 +27,9 @@ pub mod staged_ledger_diff;
 pub mod user_commands;
 pub mod verification_key;
 
+/// Import all crates from proof_systems
+use proof_systems::*;
+
 /// Re-export serialization type annotations
 pub use mina_serialization_types::{BinProtSerializationType, JsonSerializationType};
 

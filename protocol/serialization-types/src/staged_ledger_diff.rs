@@ -199,3 +199,33 @@ pub struct FeeTransferBalanceData {
 }
 
 pub type FeeTransferBalanceDataV1 = Versioned<FeeTransferBalanceData, 1>;
+
+/// Top level wrapper type for a StagedLedgerDiff
+/// that is convertible from / to the mina specific json representation
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
+pub struct StagedLedgerDiffJson {}
+
+impl From<StagedLedgerDiffJson> for StagedLedgerDiffV1 {
+    fn from(t: StagedLedgerDiffJson) -> Self {
+        let t: StagedLedgerDiff = t.into();
+        t.into()
+    }
+}
+
+impl From<StagedLedgerDiffV1> for StagedLedgerDiffJson {
+    fn from(t: StagedLedgerDiffV1) -> Self {
+        t.t.into()
+    }
+}
+
+impl From<StagedLedgerDiffJson> for StagedLedgerDiff {
+    fn from(_t: StagedLedgerDiffJson) -> Self {
+        unimplemented!()
+    }
+}
+
+impl From<StagedLedgerDiff> for StagedLedgerDiffJson {
+    fn from(_t: StagedLedgerDiff) -> Self {
+        unimplemented!()
+    }
+}
