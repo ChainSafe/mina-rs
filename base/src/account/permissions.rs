@@ -3,6 +3,8 @@
 
 //! Account based permissions
 
+use mina_serialization_types_macros::AutoFrom;
+
 /// The level of auth required to perform a particular action with an account
 #[derive(Clone, Debug)]
 pub enum AuthRequired {
@@ -21,7 +23,8 @@ pub enum AuthRequired {
 }
 
 /// Permissions associated with the account
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, AutoFrom)]
+#[auto_from(mina_serialization_types::account::Permissions)]
 pub struct Permissions {
     /// If the account can stake
     pub stake: bool,

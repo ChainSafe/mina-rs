@@ -167,7 +167,6 @@ pub struct Hex64(pub i64);
 
 #[derive(Clone, PartialEq, Debug, Hash, Default, From)]
 #[from(forward)]
-
 /// A single char defined by a single byte (not variable length like a Rust char)
 pub struct Char(pub u8);
 
@@ -243,8 +242,7 @@ impl From<mina_serialization_types::v1::BlockTimeV1> for BlockTime {
 /// Time span between two block time instants
 pub struct BlockTimeSpan(pub u64);
 
-#[derive(Clone, Default, PartialEq, Debug, From)]
-#[from(forward)]
+#[derive(Clone, Default, PartialEq, Debug, From, derive_more::Into)]
 /// Mina 256 bit Bit Integer type
 pub struct BigInt256(pub [u8; 32]);
 

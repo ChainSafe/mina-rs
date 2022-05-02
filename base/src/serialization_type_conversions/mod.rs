@@ -656,20 +656,11 @@ impl_from_for_ext_type!(
 
 impl From<ProtocolVersion> for ProtocolVersionV1 {
     fn from(t: ProtocolVersion) -> Self {
-        mina_serialization_types::protocol_version::ProtocolVersion {
-            major: t.major,
-            minor: t.minor,
-            patch: t.patch,
-        }
-        .into()
+        mina_serialization_types::protocol_version::ProtocolVersion::from(t).into()
     }
 }
 impl From<ProtocolVersionV1> for ProtocolVersion {
     fn from(t: ProtocolVersionV1) -> Self {
-        ProtocolVersion {
-            major: t.t.major,
-            minor: t.t.minor,
-            patch: t.t.patch,
-        }
+        t.t.into()
     }
 }

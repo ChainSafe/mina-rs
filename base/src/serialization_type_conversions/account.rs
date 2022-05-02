@@ -13,7 +13,7 @@ impl From<Account> for AccountV1 {
             token_permissions: t.token_permissions.into(),
             balance: t.balance.into(),
             nonce: t.nonce.into(),
-            receipt_chain_hash: t.receipt_chain_hash.into_inner().into(),
+            receipt_chain_hash: t.receipt_chain_hash.into(),
             delegate: t.delegate.map(Into::into),
             voting_for: t.voting_for.into(),
             timing: t.timing.into(),
@@ -125,29 +125,12 @@ impl From<TimingV1> for Timing {
 
 impl From<Permissions> for PermissionsV1 {
     fn from(t: Permissions) -> Self {
-        mina_serialization_types::account::Permissions {
-            stake: t.stake,
-            edit_state: t.edit_state.into(),
-            send: t.send.into(),
-            receive: t.receive.into(),
-            set_delegate: t.set_delegate.into(),
-            set_permissions: t.set_permissions.into(),
-            set_verification_key: t.set_verification_key.into(),
-        }
-        .into()
+        mina_serialization_types::account::Permissions::from(t).into()
     }
 }
 impl From<PermissionsV1> for Permissions {
     fn from(t: PermissionsV1) -> Self {
-        Self {
-            stake: t.t.t.stake,
-            edit_state: t.t.t.edit_state.into(),
-            send: t.t.t.send.into(),
-            receive: t.t.t.receive.into(),
-            set_delegate: t.t.t.set_delegate.into(),
-            set_permissions: t.t.t.set_permissions.into(),
-            set_verification_key: t.t.t.set_verification_key.into(),
-        }
+        t.t.t.into()
     }
 }
 

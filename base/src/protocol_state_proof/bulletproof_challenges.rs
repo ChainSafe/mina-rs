@@ -2,8 +2,10 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::types::Hex64;
+use mina_serialization_types_macros::AutoFrom;
 
-#[derive(Clone, Default, PartialEq, Debug)]
+#[derive(Clone, Default, PartialEq, Debug, AutoFrom)]
+#[auto_from(mina_serialization_types::bulletproof_challenges::BulletproofChallenge)]
 pub struct BulletproofChallenge {
     pub prechallenge: BulletproofPreChallenge,
 }

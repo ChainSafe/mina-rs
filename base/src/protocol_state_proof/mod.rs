@@ -10,6 +10,7 @@
 use crate::numbers::{BigInt256, Char, Hex64};
 
 pub mod proof_messages;
+use mina_serialization_types_macros::AutoFrom;
 pub use proof_messages::ProofMessages;
 
 pub mod proof_evaluations;
@@ -31,7 +32,8 @@ pub use field_and_curve_elements::{
     FiniteECPointPairVec, FiniteECPointVec,
 };
 
-#[derive(Clone, Default, PartialEq, Debug)]
+#[derive(Clone, Default, PartialEq, Debug, AutoFrom)]
+#[auto_from(mina_serialization_types::protocol_state_proof::ProtocolStateProof)]
 /// SNARK proof of the protocol state at some point in time
 pub struct ProtocolStateProof {
     pub statement: ProofStatement,
@@ -40,13 +42,15 @@ pub struct ProtocolStateProof {
     pub proof: Proof,
 }
 
-#[derive(Clone, Default, PartialEq, Debug)]
+#[derive(Clone, Default, PartialEq, Debug, AutoFrom)]
+#[auto_from(mina_serialization_types::protocol_state_proof::ProofStatement)]
 pub struct ProofStatement {
     pub proof_state: ProofState,
     pub pass_through: PairingBased,
 }
 
-#[derive(Clone, Default, PartialEq, Debug)]
+#[derive(Clone, Default, PartialEq, Debug, AutoFrom)]
+#[auto_from(mina_serialization_types::protocol_state_proof::ProofState)]
 pub struct ProofState {
     pub deferred_values: ProofStateDeferredValues,
     pub sponge_digest_before_evaluations: SpongeDigestBeforeEvaluations,
@@ -63,7 +67,8 @@ pub struct ProofStateDeferredValues {
     pub which_branch: Char,
 }
 
-#[derive(Clone, Default, PartialEq, Debug)]
+#[derive(Clone, Default, PartialEq, Debug, AutoFrom)]
+#[auto_from(mina_serialization_types::protocol_state_proof::Plonk)]
 pub struct Plonk {
     pub alpha: BulletproofPreChallenge,
     pub beta: ScalarChallengeVector2,
@@ -86,13 +91,15 @@ impl Default for ShiftedValue {
 #[derive(Clone, Default, PartialEq, Debug)]
 pub struct SpongeDigestBeforeEvaluations(pub (Hex64, Hex64, Hex64, Hex64, ()));
 
-#[derive(Clone, Default, PartialEq, Debug)]
+#[derive(Clone, Default, PartialEq, Debug, AutoFrom)]
+#[auto_from(mina_serialization_types::protocol_state_proof::ProofStatePairingBased)]
 pub struct ProofStatePairingBased {
     pub sg: FiniteECPoint,
     pub old_bulletproof_challenges: ProofStateBulletproofChallenges,
 }
 
-#[derive(Clone, Default, PartialEq, Debug)]
+#[derive(Clone, Default, PartialEq, Debug, AutoFrom)]
+#[auto_from(mina_serialization_types::protocol_state_proof::PairingBased)]
 pub struct PairingBased {
     pub app_state: (),
     pub sg: FiniteECPointVec,
@@ -105,7 +112,8 @@ pub struct PrevEvals(pub (ProofEvaluations, ProofEvaluations));
 #[derive(Clone, Default, PartialEq, Debug)]
 pub struct PrevXHat(pub FiniteECPoint);
 
-#[derive(Clone, Default, PartialEq, Debug)]
+#[derive(Clone, Default, PartialEq, Debug, AutoFrom)]
+#[auto_from(mina_serialization_types::protocol_state_proof::Proof)]
 pub struct Proof {
     pub messages: ProofMessages,
     pub openings: ProofOpenings,
