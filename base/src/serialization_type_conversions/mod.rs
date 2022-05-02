@@ -3,7 +3,7 @@
 
 use crate::types::*;
 use mina_serialization_types::{json::*, v1::*};
-use versioned::impl_from_for_ext_type;
+use versioned::*;
 
 mod account;
 mod bulletproof_challenges;
@@ -11,35 +11,13 @@ mod field_and_curve_elements;
 mod numbers;
 mod protocol_state_proof;
 
-impl From<ExternalTransition> for ExternalTransitionV1 {
-    fn from(t: ExternalTransition) -> Self {
-        ExternalTransitionV1(
-            mina_serialization_types::external_transition::ExternalTransition {
-                protocol_state: t.protocol_state.into(),
-                protocol_state_proof: t.protocol_state_proof.into(),
-                staged_ledger_diff: t.staged_ledger_diff.into(),
-                delta_transition_chain_proof: t.delta_transition_chain_proof.into(),
-                current_protocol_version: t.current_protocol_version.into(),
-                proposed_protocol_version_opt: t.proposed_protocol_version_opt.map(Into::into),
-                validation_callback: (),
-            }
-            .into(),
-        )
-    }
-}
-impl From<ExternalTransitionV1> for ExternalTransition {
-    fn from(t: ExternalTransitionV1) -> Self {
-        Self {
-            protocol_state: t.0.t.protocol_state.into(),
-            protocol_state_proof: t.0.t.protocol_state_proof.into(),
-            staged_ledger_diff: t.0.t.staged_ledger_diff.into(),
-            delta_transition_chain_proof: t.0.t.delta_transition_chain_proof.into(),
-            current_protocol_version: t.0.t.current_protocol_version.into(),
-            proposed_protocol_version_opt: t.0.t.proposed_protocol_version_opt.map(Into::into),
-        }
-    }
-}
-impl_from_for_ext_type!(
+impl_from_for_versioned_with_proxy!(
+    ExternalTransition,
+    mina_serialization_types::external_transition::ExternalTransition,
+    ExternalTransitionV1
+);
+
+impl_from_with_proxy!(
     ExternalTransition,
     ExternalTransitionV1,
     ExternalTransitionJson
@@ -68,7 +46,6 @@ impl From<BlockchainStateV1> for BlockchainState {
         }
     }
 }
-// impl_from_for_ext_type!(BlockchainState, BlockchainStateV1, BlockchainStateJson);
 
 impl From<GlobalSlot> for GlobalSlotV1 {
     fn from(t: GlobalSlot) -> Self {
@@ -225,7 +202,7 @@ impl From<ProtocolStateBodyV1> for ProtocolStateBody {
         }
     }
 }
-impl_from_for_ext_type!(
+impl_from_with_proxy!(
     ProtocolStateBody,
     ProtocolStateBodyV1,
     ProtocolStateBodyJson
@@ -248,7 +225,7 @@ impl From<ProtocolStateV1> for ProtocolState {
         }
     }
 }
-impl_from_for_ext_type!(ProtocolState, ProtocolStateV1, ProtocolStateJson);
+impl_from_with_proxy!(ProtocolState, ProtocolStateV1, ProtocolStateJson);
 
 impl From<PaymentPayload> for PaymentPayloadV1 {
     fn from(t: PaymentPayload) -> Self {
@@ -634,7 +611,7 @@ impl From<StagedLedgerDiffV1> for StagedLedgerDiff {
         }
     }
 }
-impl_from_for_ext_type!(StagedLedgerDiff, StagedLedgerDiffV1, StagedLedgerDiffJson);
+impl_from_with_proxy!(StagedLedgerDiff, StagedLedgerDiffV1, StagedLedgerDiffJson);
 
 use mina_serialization_types::delta_transition_chain_proof::DeltaTransitionChainProof as DeltaTransitionChainProofV1;
 
@@ -648,7 +625,7 @@ impl From<DeltaTransitionChainProofV1> for crate::types::DeltaTransitionChainPro
         Self(t.0.into(), t.1.into_iter().map(Into::into).collect())
     }
 }
-impl_from_for_ext_type!(
+impl_from_with_proxy!(
     crate::types::DeltaTransitionChainProof,
     DeltaTransitionChainProofV1,
     DeltaTransitionChainProofJson

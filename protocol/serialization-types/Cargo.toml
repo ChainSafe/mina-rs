@@ -8,6 +8,7 @@ license = "Apache-2.0"
 
 [dependencies]
 bin-prot = {path = "../bin-prot"}
+mina-serialization-types-macros = {path = "../serialization-types-macros"}
 proof-systems = {path = "../../proof-systems-shim"}
 versioned = {path = "../versioned"}
 

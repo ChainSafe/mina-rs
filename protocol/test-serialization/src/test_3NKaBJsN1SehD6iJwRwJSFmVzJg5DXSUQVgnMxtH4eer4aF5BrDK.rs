@@ -30,13 +30,13 @@ mod tests {
             .unwrap()
             .external_transitionv1()?;
 
-        let protocol_state = &et.0.t.protocol_state;
+        let protocol_state = &et.t.protocol_state;
         assert_eq!(
             StateHash::from(protocol_state.t.t.previous_state_hash.clone()).to_base58_string(),
             "3NKDdX6eVtAgmmTVxaFLnnPPrsGKgVepG2k5cf8HocgSw6ps8Sww"
         );
 
-        let body = &et.0.t.protocol_state.t.t.body;
+        let body = &et.t.protocol_state.t.t.body;
         assert_eq!(
             StateHash::from(body.t.t.genesis_state_hash.clone()).to_base58_string(),
             "3NKeMoncuHab5ScarV5ViyF16cJPT4taWNSaTLS64Dp67wuXigPZ"
@@ -225,11 +225,11 @@ mod tests {
         */
 
         assert!(
-            &StagedLedgerDiffTuple::from(et.0.t.staged_ledger_diff.t.diff.clone())
+            &StagedLedgerDiffTuple::from(et.t.staged_ledger_diff.t.diff.clone())
                 .diff_one()
                 .is_none()
         );
-        let commands = StagedLedgerDiffTuple::from(et.0.t.staged_ledger_diff.t.diff.clone())
+        let commands = StagedLedgerDiffTuple::from(et.t.staged_ledger_diff.t.diff.clone())
             .diff_two()
             .commands
             .clone();
@@ -304,7 +304,7 @@ mod tests {
             ),
         }
 
-        let coinbase = StagedLedgerDiffTuple::from(et.0.t.staged_ledger_diff.t.diff.clone())
+        let coinbase = StagedLedgerDiffTuple::from(et.t.staged_ledger_diff.t.diff.clone())
             .diff_two()
             .coinbase
             .clone();
@@ -313,11 +313,10 @@ mod tests {
             _ => bail!("CoinBase::One expected, but found: {:#?}", coinbase),
         };
 
-        let internal_commands =
-            StagedLedgerDiffTuple::from(et.0.t.staged_ledger_diff.t.diff.clone())
-                .diff_two()
-                .internal_command_balances
-                .clone();
+        let internal_commands = StagedLedgerDiffTuple::from(et.t.staged_ledger_diff.t.diff.clone())
+            .diff_two()
+            .internal_command_balances
+            .clone();
         assert_eq!(internal_commands.len(), 2);
         match &internal_commands[0] {
             InternalCommandBalanceData::CoinBase(cb) => {
@@ -346,7 +345,7 @@ mod tests {
             .into_vec()
             .unwrap();
         assert_eq!(
-            et.0.t.delta_transition_chain_proof.0.t.as_ref()[..],
+            et.t.delta_transition_chain_proof.0.t.as_ref()[..],
             bytes[2..34]
         );
         // FIXME: Version byte here disagrees with what is being used for genesis block
@@ -355,14 +354,14 @@ mod tests {
         //     et.delta_transition_chain_proof.0.into(.clone()).to_base58_string(),
         //     "jwHLk8kaC6B45K3sjuX2sM38649VtfpUAteTfKFQMPcqTeXjGiT"
         // );
-        assert_eq!(et.0.t.current_protocol_version.t.major, 2);
-        assert_eq!(et.0.t.current_protocol_version.t.minor, 0);
-        assert_eq!(et.0.t.current_protocol_version.t.patch, 0);
+        assert_eq!(et.t.current_protocol_version.t.major, 2);
+        assert_eq!(et.t.current_protocol_version.t.minor, 0);
+        assert_eq!(et.t.current_protocol_version.t.patch, 0);
         assert_eq!(
-            et.0.t.current_protocol_version,
+            et.t.current_protocol_version,
             ProtocolVersion::default().into()
         );
-        assert_eq!(et.0.t.proposed_protocol_version_opt, None);
+        assert_eq!(et.t.proposed_protocol_version_opt, None);
         Ok(())
     }
 }

@@ -6,9 +6,11 @@
 use crate::{types::*, *};
 
 use mina_serialization_types::{json::ExternalTransitionJson, v1::ExternalTransitionV1};
+use mina_serialization_types_macros::AutoFrom;
 
 /// This structure represents a mina block
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq, AutoFrom)]
+#[auto_from(mina_serialization_types::external_transition::ExternalTransition)]
 /// This structure represents a mina block received from an external block producer
 pub struct ExternalTransition {
     /// The blockchain state, including consensus and the ledger
@@ -23,6 +25,8 @@ pub struct ExternalTransition {
     pub current_protocol_version: ProtocolVersion,
     /// Proposed protocol version
     pub proposed_protocol_version_opt: Option<ProtocolVersion>,
+    /// Validation callback
+    pub validation_callback: (),
 }
 
 impl BinProtSerializationType for ExternalTransition {

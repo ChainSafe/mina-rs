@@ -3,17 +3,13 @@
 
 use crate::types::*;
 use mina_serialization_types::v1::*;
+use versioned::*;
 
-impl From<BulletproofChallenge> for BulletproofChallengeV1 {
-    fn from(t: BulletproofChallenge) -> Self {
-        mina_serialization_types::bulletproof_challenges::BulletproofChallenge::from(t).into()
-    }
-}
-impl From<BulletproofChallengeV1> for BulletproofChallenge {
-    fn from(t: BulletproofChallengeV1) -> Self {
-        t.t.into()
-    }
-}
+impl_from_for_versioned_with_proxy!(
+    BulletproofChallenge,
+    mina_serialization_types::bulletproof_challenges::BulletproofChallenge,
+    BulletproofChallengeV1
+);
 
 impl From<BulletproofChallenges> for BulletproofChallengesV1 {
     fn from(t: BulletproofChallenges) -> Self {

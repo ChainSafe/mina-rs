@@ -10,6 +10,7 @@ pub mod token_permissions;
 
 use crate::{types::*, *};
 
+use mina_serialization_types_macros::AutoFrom;
 pub use permissions::{AuthRequired, Permissions};
 pub use timing::Timing;
 pub use token_permissions::TokenPermissions;
@@ -24,7 +25,8 @@ use proof_systems::mina_signer::CompressedPubKey;
 ///
 /// Accounts can also be Snapps in which case snapp data is required and proofs must
 /// be provided to perform certain actions
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, AutoFrom)]
+#[auto_from(mina_serialization_types::account::Account)]
 pub struct Account {
     /// Account public key
     pub public_key: CompressedPubKey,

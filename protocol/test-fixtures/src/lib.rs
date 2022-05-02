@@ -3,7 +3,7 @@
 
 #![deny(warnings)]
 
-use bin_prot::{encodable::BinProtEncodable, BinProtRule, Deserializer};
+use bin_prot::{BinProtRule, Deserializer};
 use lazy_static::lazy_static;
 use mina_serialization_types::v1::ExternalTransitionV1;
 use serde::Deserialize;
@@ -53,9 +53,7 @@ pub struct BlockFixture {
 
 impl BlockFixture {
     pub fn external_transitionv1(&self) -> anyhow::Result<ExternalTransitionV1> {
-        Ok(ExternalTransitionV1::try_decode_binprot(
-            self.bytes.as_slice(),
-        )?)
+        Ok(bin_prot::from_reader(self.bytes.as_slice())?)
     }
 }
 

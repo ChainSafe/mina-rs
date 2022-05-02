@@ -6,7 +6,7 @@
 #![allow(missing_docs)] // Don't actually know what many of the types fields are for yet
 
 use serde::{Deserialize, Serialize};
-use versioned::Versioned;
+use versioned::*;
 
 use crate::v1::OpeningProofV1;
 use crate::v1::ProofEvaluationsV1;
@@ -127,19 +127,6 @@ pub type ProofOpeningsV1 = Versioned<ProofOpenings, 1>;
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub struct ProtocolStateProofJson {}
 
-impl From<ProtocolStateProofJson> for ProtocolStateProofV1 {
-    fn from(t: ProtocolStateProofJson) -> Self {
-        let t: ProtocolStateProof = t.into();
-        t.into()
-    }
-}
-
-impl From<ProtocolStateProofV1> for ProtocolStateProofJson {
-    fn from(t: ProtocolStateProofV1) -> Self {
-        t.t.t.t.t.into()
-    }
-}
-
 impl From<ProtocolStateProofJson> for ProtocolStateProof {
     fn from(_t: ProtocolStateProofJson) -> Self {
         unimplemented!()
@@ -151,3 +138,9 @@ impl From<ProtocolStateProof> for ProtocolStateProofJson {
         unimplemented!()
     }
 }
+
+impl_from_for_versioned_with_proxy!(
+    ProtocolStateProofJson,
+    ProtocolStateProof,
+    ProtocolStateProofV1
+);

@@ -9,7 +9,7 @@
 use crate::signatures::{PublicKey2V1, PublicKeyV1, SignatureV1};
 use serde::{Deserialize, Serialize};
 
-use versioned::Versioned;
+use versioned::*;
 
 use crate::v1::{AmountV1, ExtendedU32, ExtendedU64_2, ExtendedU64_3};
 
@@ -205,19 +205,6 @@ pub type FeeTransferBalanceDataV1 = Versioned<FeeTransferBalanceData, 1>;
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub struct StagedLedgerDiffJson {}
 
-impl From<StagedLedgerDiffJson> for StagedLedgerDiffV1 {
-    fn from(t: StagedLedgerDiffJson) -> Self {
-        let t: StagedLedgerDiff = t.into();
-        t.into()
-    }
-}
-
-impl From<StagedLedgerDiffV1> for StagedLedgerDiffJson {
-    fn from(t: StagedLedgerDiffV1) -> Self {
-        t.t.into()
-    }
-}
-
 impl From<StagedLedgerDiffJson> for StagedLedgerDiff {
     fn from(_t: StagedLedgerDiffJson) -> Self {
         unimplemented!()
@@ -229,3 +216,5 @@ impl From<StagedLedgerDiff> for StagedLedgerDiffJson {
         unimplemented!()
     }
 }
+
+impl_from_for_versioned_with_proxy!(StagedLedgerDiffJson, StagedLedgerDiff, StagedLedgerDiffV1);

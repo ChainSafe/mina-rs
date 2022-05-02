@@ -5,7 +5,7 @@
 
 use serde::{Deserialize, Serialize};
 
-use versioned::Versioned;
+use versioned::*;
 
 use crate::v1::{BlockchainStateV1, ConsensusStateV1, HashV1, ProtocolConstantsV1};
 
@@ -30,19 +30,6 @@ pub type ProtocolStateBodyV1 = Versioned<Versioned<ProtocolStateBody, 1>, 1>;
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub struct ProtocolStateBodyJson {}
 
-impl From<ProtocolStateBodyJson> for ProtocolStateBodyV1 {
-    fn from(t: ProtocolStateBodyJson) -> Self {
-        let t: ProtocolStateBody = t.into();
-        t.into()
-    }
-}
-
-impl From<ProtocolStateBodyV1> for ProtocolStateBodyJson {
-    fn from(t: ProtocolStateBodyV1) -> Self {
-        t.t.t.into()
-    }
-}
-
 impl From<ProtocolStateBodyJson> for ProtocolStateBody {
     fn from(_t: ProtocolStateBodyJson) -> Self {
         unimplemented!()
@@ -54,3 +41,9 @@ impl From<ProtocolStateBody> for ProtocolStateBodyJson {
         unimplemented!()
     }
 }
+
+impl_from_for_versioned_with_proxy!(
+    ProtocolStateBodyJson,
+    ProtocolStateBody,
+    ProtocolStateBodyV1
+);

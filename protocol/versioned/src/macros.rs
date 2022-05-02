@@ -24,43 +24,70 @@ macro_rules! impl_from_for_newtype {
     };
 }
 
-/// Macro that implements [From] trait for the extension type
-/// that is convertible from and to the versioned type
+/// Macro that implements [From] trait for 2-way conversion
+/// between the orignal type and the target type, using the
+/// intermidate type that is convertible from and to both
+/// orignal and target types
 #[macro_export]
-macro_rules! impl_from_for_ext_type {
-    ($t:ty, $tv:ty, $t2:ty) => {
+macro_rules! impl_from_with_proxy {
+    ($t:ty, $ti:ty, $t2:ty) => {
         impl From<$t> for $t2 {
             fn from(t: $t) -> Self {
-                let versioned: $tv = t.into();
-                versioned.into()
+                let intermidate: $ti = t.into();
+                intermidate.into()
             }
         }
 
         impl From<$t2> for $t {
             fn from(t: $t2) -> Self {
-                let versioned: $tv = t.into();
-                versioned.into()
+                let intermidate: $ti = t.into();
+                intermidate.into()
             }
         }
     };
 }
 
-/// Macro that implements [From] trait for the generic extension type
-/// that is convertible from and to the versioned type
+/// Macro that implements [From] trait for 2-way conversion
+/// between the orignal type and the versioned target type, using the
+/// intermidate type that is convertible from and to both
+/// orignal and target types
 #[macro_export]
-macro_rules! impl_from_for_ext_type_generic {
-    ($t:ty, $tv:ty, $t2:ty) => {
+macro_rules! impl_from_for_versioned_with_proxy {
+    ($t:ty, $ti:ty, $t2:ty) => {
         impl From<$t> for $t2 {
             fn from(t: $t) -> Self {
-                let versioned: $tv = t.into();
-                versioned.into()
+                let intermidate: $ti = t.into();
+                intermidate.into()
             }
         }
 
         impl From<$t2> for $t {
             fn from(t: $t2) -> Self {
-                let (versioned,): ($tv,) = t.into();
-                versioned.into()
+                let (intermidate,): ($ti,) = t.into();
+                intermidate.into()
+            }
+        }
+    };
+}
+
+/// Macro that implements [From] trait for 2-way conversion
+/// between the orignal type and the generic target type, using the
+/// intermidate type that is convertible from and to both
+/// orignal and target types
+#[macro_export]
+macro_rules! impl_from_for_generic_with_proxy {
+    ($t:ty, $ti:ty, $t2:ty) => {
+        impl From<$t> for $t2 {
+            fn from(t: $t) -> Self {
+                let intermidate: $ti = t.into();
+                intermidate.into()
+            }
+        }
+
+        impl From<$t2> for $t {
+            fn from(t: $t2) -> Self {
+                let (intermidate,): ($ti,) = t.into();
+                intermidate.into()
             }
         }
     };

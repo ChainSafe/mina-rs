@@ -30,9 +30,8 @@ fn main() -> anyhow::Result<()> {
 }
 
 fn cpu_profile_serialization() -> anyhow::Result<ExternalTransition> {
-    let mut de = bin_prot::Deserializer::from_reader(BLOCK_BYTES);
     let et: <ExternalTransition as BinProtSerializationType>::T =
-        serde::Deserialize::deserialize(&mut de)?;
+        bin_prot::from_reader(BLOCK_BYTES)?;
     Ok(et.into())
 }
 

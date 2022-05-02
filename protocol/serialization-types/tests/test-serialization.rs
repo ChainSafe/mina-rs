@@ -4,7 +4,6 @@
 #[cfg(all(test, feature = "browser"))]
 wasm_bindgen_test::wasm_bindgen_test_configure!(run_in_browser);
 
-use bin_prot::encodable::BinProtEncodable;
 use bin_prot::{from_reader, to_writer, Value};
 use mina_serialization_types::v1::*;
 use pretty_assertions::assert_eq;
@@ -19,26 +18,6 @@ fn test_external_transition() {
     block_path_test_batch! {
         ExternalTransitionV1 => ""
     }
-}
-
-#[test]
-#[wasm_bindgen_test]
-fn test_external_transition_preallocate_buffer_bytes() {
-    let max_bytes = TEST_BLOCKS
-        .values()
-        .map(|v| v.bytes.len())
-        .max()
-        .unwrap_or_default();
-    assert!(
-        max_bytes <= ExternalTransitionV1::PREALLOCATE_BUFFER_BYTES,
-        "max_bytes:{}",
-        max_bytes
-    );
-    assert!(
-        max_bytes * 12 / 10 > ExternalTransitionV1::PREALLOCATE_BUFFER_BYTES,
-        "max_bytes:{}",
-        max_bytes
-    );
 }
 
 #[test]

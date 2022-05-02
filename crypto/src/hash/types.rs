@@ -119,7 +119,7 @@ pub struct LedgerHash(BaseHash);
 
 impl_bs58!(LedgerHash, version_bytes::LEDGER_HASH);
 impl_from_for_hash!(LedgerHash, HashV1);
-impl_from_for_ext_type_generic!(LedgerHash, HashV1, LedgerHashV1Json);
+impl_from_for_generic_with_proxy!(LedgerHash, HashV1, LedgerHashV1Json);
 
 impl Hashable for LedgerHash {
     type D = ();
@@ -142,7 +142,7 @@ pub struct ChainHash(BaseHash);
 
 impl_bs58!(ChainHash, version_bytes::LEDGER_HASH);
 impl_from_for_hash!(ChainHash, HashV1);
-impl_from_for_ext_type_generic!(ChainHash, HashV1, ChainHashV1Json);
+impl_from_for_generic_with_proxy!(ChainHash, HashV1, ChainHashV1Json);
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -151,7 +151,7 @@ pub struct CoinBaseHash(BaseHash);
 
 impl_bs58!(CoinBaseHash, 12);
 impl_from_for_hash!(CoinBaseHash, HashV1);
-impl_from_for_ext_type_generic!(CoinBaseHash, HashV1, CoinBaseHashV1Json);
+impl_from_for_generic_with_proxy!(CoinBaseHash, HashV1, CoinBaseHashV1Json);
 
 impl Hashable for CoinBaseHash {
     type D = ();
@@ -174,7 +174,7 @@ pub struct EpochSeed(BaseHash);
 
 impl_bs58!(EpochSeed, version_bytes::EPOCH_SEED);
 impl_from_for_hash!(EpochSeed, HashV1);
-impl_from_for_ext_type_generic!(EpochSeed, HashV1, EpochSeedHashV1Json);
+impl_from_for_generic_with_proxy!(EpochSeed, HashV1, EpochSeedHashV1Json);
 
 impl Hashable for EpochSeed {
     type D = ();
@@ -201,7 +201,7 @@ pub struct SnarkedLedgerHash(BaseHash);
 
 impl_bs58!(SnarkedLedgerHash, version_bytes::LEDGER_HASH);
 impl_from_for_hash!(SnarkedLedgerHash, HashV1);
-impl_from_for_ext_type_generic!(SnarkedLedgerHash, HashV1, LedgerHashV1Json);
+impl_from_for_generic_with_proxy!(SnarkedLedgerHash, HashV1, LedgerHashV1Json);
 
 impl Hashable for SnarkedLedgerHash {
     type D = ();

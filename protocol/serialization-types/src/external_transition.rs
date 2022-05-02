@@ -3,6 +3,7 @@
 
 //! Mina ExternalTransition
 
+use mina_serialization_types_macros::AutoFrom;
 use serde::{Deserialize, Serialize};
 
 use crate::{
@@ -16,7 +17,7 @@ use crate::{
         StagedLedgerDiffV1,
     },
 };
-use versioned::Versioned;
+use versioned::*;
 
 /// This structure represents a mina block received from an external block producer
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
@@ -40,16 +41,12 @@ pub struct ExternalTransition {
 }
 
 /// Versioned structure to use externally
-#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
-pub struct ExternalTransitionV1(pub Versioned<ExternalTransition, 1>);
-
-impl bin_prot::encodable::BinProtEncodable for ExternalTransitionV1 {
-    const PREALLOCATE_BUFFER_BYTES: usize = 13 * 1024;
-}
+pub type ExternalTransitionV1 = Versioned<ExternalTransition, 1>;
 
 /// This structure represents a mina block received from an external block producer
 /// that is convertible from / to the mina specific json representation
-#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq, AutoFrom)]
+#[auto_from(ExternalTransition)]
 pub struct ExternalTransitionJson {
     /// The blockchain state, including consensus and the ledger
     pub protocol_state: ProtocolStateJson,
@@ -69,43 +66,8 @@ pub struct ExternalTransitionJson {
     pub validation_callback: (),
 }
 
-impl From<ExternalTransitionJson> for ExternalTransitionV1 {
-    fn from(t: ExternalTransitionJson) -> Self {
-        let t: ExternalTransition = t.into();
-        Self(t.into())
-    }
-}
-
-impl From<ExternalTransitionV1> for ExternalTransitionJson {
-    fn from(t: ExternalTransitionV1) -> Self {
-        t.0.t.into()
-    }
-}
-
-impl From<ExternalTransitionJson> for ExternalTransition {
-    fn from(t: ExternalTransitionJson) -> Self {
-        Self {
-            protocol_state: t.protocol_state.into(),
-            protocol_state_proof: t.protocol_state_proof.into(),
-            staged_ledger_diff: t.staged_ledger_diff.into(),
-            delta_transition_chain_proof: t.delta_transition_chain_proof.into(),
-            current_protocol_version: t.current_protocol_version.into(),
-            proposed_protocol_version_opt: t.proposed_protocol_version_opt.map(|i| i.into()),
-            validation_callback: t.validation_callback,
-        }
-    }
-}
-
-impl From<ExternalTransition> for ExternalTransitionJson {
-    fn from(t: ExternalTransition) -> Self {
-        Self {
-            protocol_state: t.protocol_state.into(),
-            protocol_state_proof: t.protocol_state_proof.into(),
-            staged_ledger_diff: t.staged_ledger_diff.into(),
-            delta_transition_chain_proof: t.delta_transition_chain_proof.into(),
-            current_protocol_version: t.current_protocol_version.into(),
-            proposed_protocol_version_opt: t.proposed_protocol_version_opt.map(|i| i.into()),
-            validation_callback: t.validation_callback,
-        }
-    }
-}
+impl_from_for_versioned_with_proxy!(
+    ExternalTransitionJson,
+    ExternalTransition,
+    ExternalTransitionV1
+);

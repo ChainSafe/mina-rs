@@ -40,15 +40,10 @@ mod tests {
     use crate::hash::prefixes::PROTOCOL_STATE;
     use crate::hash::types::BaseHash;
     use crate::impl_bs58_for_binprot;
-    use bin_prot::encodable::BinProtEncodable;
     use serde::Deserialize;
 
     #[derive(Clone, Serialize, Deserialize, PartialEq, Debug)]
     struct TestHash(BaseHash);
-
-    impl BinProtEncodable for TestHash {
-        const PREALLOCATE_BUFFER_BYTES: usize = 64;
-    }
 
     impl_bs58_for_binprot!(TestHash, version_bytes::STATE_HASH);
 

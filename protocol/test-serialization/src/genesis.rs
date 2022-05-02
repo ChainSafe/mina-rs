@@ -4,7 +4,6 @@
 #[cfg(test)]
 mod tests {
     use super::super::tests::select_path;
-    use bin_prot::encodable::BinProtEncodable;
     use mina_consensus::genesis::*;
     use mina_crypto::prelude::*;
     use mina_rs_base::types::*;
@@ -28,7 +27,8 @@ mod tests {
 
     fn test_genesis_roundtrip(genesis_fixture: &BlockFixture) {
         let genesis = genesis_fixture.external_transitionv1().unwrap();
-        let output = genesis.try_encode_binprot().unwrap();
+        let mut output: Vec<u8> = Vec::new();
+        bin_prot::to_writer(&mut output, &genesis).unwrap();
         assert_eq!(genesis_fixture.bytes, output)
     }
 
@@ -39,7 +39,7 @@ mod tests {
             ExternalTransitionV1::from(ExternalTransition::from_genesis_config(&MAINNET_CONFIG)),
             GENESIS_BLOCK_MAINNET.external_transitionv1().unwrap(),
         ] {
-            let protocol_state_proof = &et.0.t.protocol_state_proof;
+            let protocol_state_proof = &et.t.protocol_state_proof;
             let ev0: ProofEvaluations = protocol_state_proof
                 .t
                 .t
@@ -92,7 +92,8 @@ mod tests {
     ) {
         let genesis: ExternalTransitionV1 =
             ExternalTransition::from_genesis_config(genesis_init_config).into();
-        let output = genesis.try_encode_binprot().unwrap();
+        let mut output: Vec<u8> = Vec::new();
+        bin_prot::to_writer(&mut output, &genesis).unwrap();
         assert_eq!(genesis_fixture.bytes, output)
     }
 
@@ -116,34 +117,34 @@ mod tests {
             &genesis,
             &fixture,
             "t/protocol_state/t/t/previous_state_hash",
-            |b| &b.0.t.protocol_state.t.t.previous_state_hash,
+            |b| &b.t.protocol_state.t.t.previous_state_hash,
         );
         test_path(
             &genesis,
             &fixture,
             "t/protocol_state/t/t/body/t/t/genesis_state_hash",
-            |b| &b.0.t.protocol_state.t.t.body.t.t.genesis_state_hash,
+            |b| &b.t.protocol_state.t.t.body.t.t.genesis_state_hash,
         );
         test_path(
             &genesis,
             &fixture,
             "t/protocol_state/t/t/body/t/t/blockchain_state",
-            |b| &b.0.t.protocol_state.t.t.body.t.t.blockchain_state,
+            |b| &b.t.protocol_state.t.t.body.t.t.blockchain_state,
         );
         test_path(
             &genesis,
             &fixture,
             "t/protocol_state/t/t/body/t/t/consensus_state",
-            |b| &b.0.t.protocol_state.t.t.body.t.t.consensus_state,
+            |b| &b.t.protocol_state.t.t.body.t.t.consensus_state,
         );
         test_path(
             &genesis,
             &fixture,
             "t/protocol_state/t/t/body/t/t/constants",
-            |b| &b.0.t.protocol_state.t.t.body.t.t.constants,
+            |b| &b.t.protocol_state.t.t.body.t.t.constants,
         );
         test_path(&genesis, &fixture, "t/protocol_state", |b| {
-            &b.0.t.protocol_state
+            &b.t.protocol_state
         });
 
         test_path(
@@ -151,8 +152,7 @@ mod tests {
             &fixture,
             "t/protocol_state_proof/t/t/t/t/statement/t/t/proof_state/t/deferred_values",
             |b| {
-                &b.0.t
-                    .protocol_state_proof
+                &b.t.protocol_state_proof
                     .t
                     .t
                     .t
@@ -169,15 +169,14 @@ mod tests {
             &genesis,
             &fixture,
             "t/protocol_state_proof/t/t/t/t/statement/t/t/proof_state/t/sponge_digest_before_evaluations",
-            |b| &b.0.t.protocol_state_proof.t.t.t.t.statement.t.t.proof_state.t.sponge_digest_before_evaluations,
+            |b| &b.t.protocol_state_proof.t.t.t.t.statement.t.t.proof_state.t.sponge_digest_before_evaluations,
         );
         test_path(
             &genesis,
             &fixture,
             "t/protocol_state_proof/t/t/t/t/statement/t/t/proof_state/t/me_only",
             |b| {
-                &b.0.t
-                    .protocol_state_proof
+                &b.t.protocol_state_proof
                     .t
                     .t
                     .t
@@ -194,56 +193,44 @@ mod tests {
             &genesis,
             &fixture,
             "t/protocol_state_proof/t/t/t/t/statement/t/t/proof_state",
-            |b| &b.0.t.protocol_state_proof.t.t.t.t.statement.t.t.proof_state,
+            |b| &b.t.protocol_state_proof.t.t.t.t.statement.t.t.proof_state,
         );
         test_path(
             &genesis,
             &fixture,
             "t/protocol_state_proof/t/t/t/t/statement/t/t/pass_through",
-            |b| {
-                &b.0.t
-                    .protocol_state_proof
-                    .t
-                    .t
-                    .t
-                    .t
-                    .statement
-                    .t
-                    .t
-                    .pass_through
-            },
+            |b| &b.t.protocol_state_proof.t.t.t.t.statement.t.t.pass_through,
         );
         test_path(
             &genesis,
             &fixture,
             "t/protocol_state_proof/t/t/t/t/statement",
-            |b| &b.0.t.protocol_state_proof.t.t.t.t.statement,
+            |b| &b.t.protocol_state_proof.t.t.t.t.statement,
         );
         test_path(
             &genesis,
             &fixture,
             "t/protocol_state_proof/t/t/t/t/prev_evals",
-            |b| &b.0.t.protocol_state_proof.t.t.t.t.prev_evals,
+            |b| &b.t.protocol_state_proof.t.t.t.t.prev_evals,
         );
         test_path(
             &genesis,
             &fixture,
             "t/protocol_state_proof/t/t/t/t/prev_x_hat",
-            |b| &b.0.t.protocol_state_proof.t.t.t.t.prev_x_hat,
+            |b| &b.t.protocol_state_proof.t.t.t.t.prev_x_hat,
         );
         test_path(
             &genesis,
             &fixture,
             "t/protocol_state_proof/t/t/t/t/proof/t/t/messages",
-            |b| &b.0.t.protocol_state_proof.t.t.t.t.proof.t.t.messages,
+            |b| &b.t.protocol_state_proof.t.t.t.t.proof.t.t.messages,
         );
         test_path(
             &genesis,
             &fixture,
             "t/protocol_state_proof/t/t/t/t/proof/t/t/openings/t/proof/t/lr",
             |b| {
-                &b.0.t
-                    .protocol_state_proof
+                &b.t.protocol_state_proof
                     .t
                     .t
                     .t
@@ -262,74 +249,48 @@ mod tests {
             &genesis,
             &fixture,
             "t/protocol_state_proof/t/t/t/t/proof/t/t/openings/t/proof",
-            |b| {
-                &b.0.t
-                    .protocol_state_proof
-                    .t
-                    .t
-                    .t
-                    .t
-                    .proof
-                    .t
-                    .t
-                    .openings
-                    .t
-                    .proof
-            },
+            |b| &b.t.protocol_state_proof.t.t.t.t.proof.t.t.openings.t.proof,
         );
         test_path(
             &genesis,
             &fixture,
             "t/protocol_state_proof/t/t/t/t/proof/t/t/openings/t/evals",
-            |b| {
-                &b.0.t
-                    .protocol_state_proof
-                    .t
-                    .t
-                    .t
-                    .t
-                    .proof
-                    .t
-                    .t
-                    .openings
-                    .t
-                    .evals
-            },
+            |b| &b.t.protocol_state_proof.t.t.t.t.proof.t.t.openings.t.evals,
         );
         test_path(
             &genesis,
             &fixture,
             "t/protocol_state_proof/t/t/t/t/proof/t/t/openings",
-            |b| &b.0.t.protocol_state_proof.t.t.t.t.proof.t.t.openings,
+            |b| &b.t.protocol_state_proof.t.t.t.t.proof.t.t.openings,
         );
         test_path(
             &genesis,
             &fixture,
             "t/protocol_state_proof/t/t/t/t/proof",
-            |b| &b.0.t.protocol_state_proof.t.t.t.t.proof,
+            |b| &b.t.protocol_state_proof.t.t.t.t.proof,
         );
         test_path(&genesis, &fixture, "t/protocol_state_proof", |b| {
-            &b.0.t.protocol_state_proof
+            &b.t.protocol_state_proof
         });
 
         test_path(&genesis, &fixture, "t/staged_ledger_diff", |b| {
-            &b.0.t.staged_ledger_diff
+            &b.t.staged_ledger_diff
         });
 
         test_path(&genesis, &fixture, "t/delta_transition_chain_proof", |b| {
-            &b.0.t.delta_transition_chain_proof
+            &b.t.delta_transition_chain_proof
         });
 
         test_path(&genesis, &fixture, "t/current_protocol_version", |b| {
-            &b.0.t.current_protocol_version
+            &b.t.current_protocol_version
         });
 
         test_path(&genesis, &fixture, "t/proposed_protocol_version_opt", |b| {
-            &b.0.t.proposed_protocol_version_opt
+            &b.t.proposed_protocol_version_opt
         });
 
         test_path(&genesis, &fixture, "t/validation_callback", |b| {
-            &b.0.t.validation_callback
+            &b.t.validation_callback
         });
     }
 

@@ -3,44 +3,19 @@
 
 use crate::types::*;
 use mina_serialization_types::{account::TimedData, v1::*};
-use versioned::Versioned;
+use versioned::*;
 
-impl From<Account> for AccountV1 {
-    fn from(t: Account) -> Self {
-        mina_serialization_types::account::Account {
-            public_key: t.public_key.into(),
-            token_id: t.token_id.into(),
-            token_permissions: t.token_permissions.into(),
-            balance: t.balance.into(),
-            nonce: t.nonce.into(),
-            receipt_chain_hash: t.receipt_chain_hash.into(),
-            delegate: t.delegate.map(Into::into),
-            voting_for: t.voting_for.into(),
-            timing: t.timing.into(),
-            permissions: t.permissions.into(),
-            snapp: t.snapp.map(Into::into),
-        }
-        .into()
-    }
-}
-impl From<AccountV1> for Account {
-    fn from(t: AccountV1) -> Self {
-        let t = t.t.t.t;
-        Self {
-            public_key: t.public_key.into(),
-            token_id: t.token_id.t.t.t.into(),
-            token_permissions: t.token_permissions.into(),
-            balance: t.balance.t.t.into(),
-            nonce: t.nonce.t.t.into(),
-            receipt_chain_hash: t.receipt_chain_hash.into(),
-            delegate: t.delegate.map(Into::into),
-            voting_for: t.voting_for.into(),
-            timing: t.timing.into(),
-            permissions: t.permissions.into(),
-            snapp: t.snapp.map(Into::into),
-        }
-    }
-}
+impl_from_for_versioned_with_proxy!(
+    Account,
+    mina_serialization_types::account::Account,
+    AccountV1
+);
+
+impl_from_for_versioned_with_proxy!(
+    Permissions,
+    mina_serialization_types::account::Permissions,
+    PermissionsV1
+);
 
 impl From<TokenPermissions> for TokenPermissionsV1 {
     fn from(t: TokenPermissions) -> Self {
@@ -120,17 +95,6 @@ impl From<TimingV1> for Timing {
                 vesting_period: vesting_period.into(),
             },
         }
-    }
-}
-
-impl From<Permissions> for PermissionsV1 {
-    fn from(t: Permissions) -> Self {
-        mina_serialization_types::account::Permissions::from(t).into()
-    }
-}
-impl From<PermissionsV1> for Permissions {
-    fn from(t: PermissionsV1) -> Self {
-        t.t.t.into()
     }
 }
 
