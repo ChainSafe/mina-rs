@@ -11,10 +11,7 @@ const BLAKE_HASH_SIZE: usize = 32;
 
 /// Trait that any internal hash wrapper type must implement
 /// This defines the prefix that is added to the data prior to it being hashed
-pub trait Hash
-where
-    Self: From<Box<[u8]>>,
-{
+pub trait Hash {
     const PREFIX: &'static HashPrefix;
 }
 
@@ -25,7 +22,7 @@ where
 ///
 pub trait Hashable<OutputType>: Sized + Serialize
 where
-    OutputType: Hash,
+    OutputType: Hash + From<Box<[u8]>>,
 {
     fn hash(&self) -> OutputType {
         // this is known to be a valid hash size
@@ -41,7 +38,7 @@ mod tests {
     use super::*;
     use crate::base58::{version_bytes, Base58Encodable};
     use crate::hash::prefixes::PROTOCOL_STATE;
-    use crate::hash::types::{BaseHash, HashBytes};
+    use crate::hash::types::BaseHash;
     use crate::impl_bs58_for_binprot;
     use bin_prot::encodable::BinProtEncodable;
     use serde::Deserialize;
@@ -55,8 +52,8 @@ mod tests {
 
     impl_bs58_for_binprot!(TestHash, version_bytes::STATE_HASH);
 
-    impl From<HashBytes> for TestHash {
-        fn from(b: HashBytes) -> Self {
+    impl From<Box<[u8]>> for TestHash {
+        fn from(b: Box<[u8]>) -> Self {
             Self(BaseHash::from(b))
         }
     }

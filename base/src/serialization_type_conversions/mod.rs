@@ -110,7 +110,7 @@ impl From<EpochData> for EpochDataV1 {
     fn from(t: EpochData) -> Self {
         mina_serialization_types::epoch_data::EpochData {
             ledger: t.ledger.into(),
-            seed: t.seed.into_inner().into(),
+            seed: t.seed.into(),
             start_checkpoint: t.start_checkpoint.into(),
             lock_checkpoint: t.lock_checkpoint.into(),
             epoch_length: t.epoch_length.into(),

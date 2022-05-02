@@ -20,8 +20,6 @@ use proof_systems::mina_hasher::{Hashable, ROInput};
 use serde::{Deserialize, Serialize};
 use versioned::*;
 
-pub(crate) type HashBytes = Box<[u8]>;
-
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize, From, PartialOrd)]
 pub(crate) struct BaseHash([u8; 32]);
 
@@ -39,9 +37,9 @@ impl Hashable for BaseHash {
     }
 }
 
-impl From<HashBytes> for BaseHash {
+impl From<Box<[u8]>> for BaseHash {
     // TODO: Figure out how to do this without a copy and still have BaseHash serializable
-    fn from(b: HashBytes) -> Self {
+    fn from(b: Box<[u8]>) -> Self {
         let b: &[u8] = &b;
         b.into()
     }
@@ -69,15 +67,15 @@ impl AsRef<[u8; 32]> for BaseHash {
 
 impl_from_for_newtype!(BaseHash, HashV1);
 
-impl From<HashV1> for BaseHash {
-    fn from(h: HashV1) -> Self {
-        Self(h.t)
-    }
-}
-
 #[macro_export]
 macro_rules! impl_from_for_hash {
     ($t:ty, $tv:ty) => {
+        impl From<$t> for $tv {
+            fn from(t: $t) -> Self {
+                t.0.into()
+            }
+        }
+
         impl From<$tv> for $t {
             fn from(h: $tv) -> Self {
                 let base: BaseHash = h.into();
@@ -94,9 +92,7 @@ macro_rules! impl_from_for_hash {
 pub struct StateHash(BaseHash);
 
 impl_bs58!(StateHash, version_bytes::STATE_HASH);
-impl_from_for_hash!(StateHash, HashBytes);
 impl_from_for_hash!(StateHash, HashV1);
-impl_from_for_newtype!(StateHash, HashV1);
 
 impl Hashable for StateHash {
     type D = ();
@@ -122,9 +118,7 @@ impl Hash for StateHash {
 pub struct LedgerHash(BaseHash);
 
 impl_bs58!(LedgerHash, version_bytes::LEDGER_HASH);
-impl_from_for_hash!(LedgerHash, HashBytes);
 impl_from_for_hash!(LedgerHash, HashV1);
-impl_from_for_newtype!(LedgerHash, HashV1);
 impl_from_for_ext_type_generic!(LedgerHash, HashV1, LedgerHashV1Json);
 
 impl Hashable for LedgerHash {
@@ -147,9 +141,7 @@ impl Hashable for LedgerHash {
 pub struct ChainHash(BaseHash);
 
 impl_bs58!(ChainHash, version_bytes::LEDGER_HASH);
-impl_from_for_hash!(ChainHash, HashBytes);
 impl_from_for_hash!(ChainHash, HashV1);
-impl_from_for_newtype!(ChainHash, HashV1);
 impl_from_for_ext_type_generic!(ChainHash, HashV1, ChainHashV1Json);
 
 //////////////////////////////////////////////////////////////////////////
@@ -158,9 +150,7 @@ impl_from_for_ext_type_generic!(ChainHash, HashV1, ChainHashV1Json);
 pub struct CoinBaseHash(BaseHash);
 
 impl_bs58!(CoinBaseHash, 12);
-impl_from_for_hash!(CoinBaseHash, HashBytes);
 impl_from_for_hash!(CoinBaseHash, HashV1);
-impl_from_for_newtype!(CoinBaseHash, HashV1);
 impl_from_for_ext_type_generic!(CoinBaseHash, HashV1, CoinBaseHashV1Json);
 
 impl Hashable for CoinBaseHash {
@@ -183,9 +173,7 @@ impl Hashable for CoinBaseHash {
 pub struct EpochSeed(BaseHash);
 
 impl_bs58!(EpochSeed, version_bytes::EPOCH_SEED);
-impl_from_for_hash!(EpochSeed, HashBytes);
 impl_from_for_hash!(EpochSeed, HashV1);
-impl_from_for_newtype!(EpochSeed, HashV1);
 impl_from_for_ext_type_generic!(EpochSeed, HashV1, EpochSeedHashV1Json);
 
 impl Hashable for EpochSeed {
@@ -212,9 +200,7 @@ impl Hash for EpochSeed {
 pub struct SnarkedLedgerHash(BaseHash);
 
 impl_bs58!(SnarkedLedgerHash, version_bytes::LEDGER_HASH);
-impl_from_for_hash!(SnarkedLedgerHash, HashBytes);
 impl_from_for_hash!(SnarkedLedgerHash, HashV1);
-impl_from_for_newtype!(SnarkedLedgerHash, HashV1);
 impl_from_for_ext_type_generic!(SnarkedLedgerHash, HashV1, LedgerHashV1Json);
 
 impl Hashable for SnarkedLedgerHash {
@@ -278,7 +264,6 @@ impl Hashable for NonSnarkStagedLedgerHash {
 }
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize, derive_more::From)]
-#[from(forward)]
 pub struct AuxHash(pub Vec<u8>);
 
 impl Hashable for AuxHash {
@@ -307,7 +292,6 @@ impl Base58Encodable for AuxHash {
 //////////////////////////////////////////////////////////////////////////
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize, derive_more::From)]
-#[from(forward)]
 pub struct PendingCoinbaseAuxHash(pub Vec<u8>);
 
 impl Hashable for PendingCoinbaseAuxHash {
@@ -339,9 +323,7 @@ impl Base58Encodable for PendingCoinbaseAuxHash {
 pub struct VrfOutputHash(BaseHash);
 
 impl_bs58!(VrfOutputHash, version_bytes::VRF_TRUNCATED_OUTPUT);
-impl_from_for_hash!(VrfOutputHash, HashBytes);
 impl_from_for_hash!(VrfOutputHash, HashV1);
-impl_from_for_newtype!(VrfOutputHash, HashV1);
 
 impl Hash for VrfOutputHash {
     const PREFIX: &'static HashPrefix = VRF_OUTPUT;

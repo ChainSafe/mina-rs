@@ -61,10 +61,25 @@ impl<T, const V: u16> From<T> for Versioned<T, V> {
     }
 }
 
+impl<T, const V: u16> From<Versioned<T, V>> for (T,) {
+    #[inline]
+    fn from(t: Versioned<T, V>) -> Self {
+        (t.t,)
+    }
+}
+
 impl<T, const V1: u16, const V2: u16> From<T> for Versioned<Versioned<T, V1>, V2> {
     #[inline]
     fn from(t: T) -> Self {
         let t: Versioned<T, V1> = t.into();
+        t.into()
+    }
+}
+
+impl<T, const V1: u16, const V2: u16> From<Versioned<Versioned<T, V1>, V2>> for (T,) {
+    #[inline]
+    fn from(t: Versioned<Versioned<T, V1>, V2>) -> Self {
+        let (t,): (Versioned<T, V1>,) = t.into();
         t.into()
     }
 }
@@ -79,12 +94,32 @@ impl<T, const V1: u16, const V2: u16, const V3: u16> From<T>
     }
 }
 
+impl<T, const V1: u16, const V2: u16, const V3: u16>
+    From<Versioned<Versioned<Versioned<T, V1>, V2>, V3>> for (T,)
+{
+    #[inline]
+    fn from(t: Versioned<Versioned<Versioned<T, V1>, V2>, V3>) -> Self {
+        let (t,): (Versioned<Versioned<T, V1>, V2>,) = t.into();
+        t.into()
+    }
+}
+
 impl<T, const V1: u16, const V2: u16, const V3: u16, const V4: u16> From<T>
     for Versioned<Versioned<Versioned<Versioned<T, V1>, V2>, V3>, V4>
 {
     #[inline]
     fn from(t: T) -> Self {
         let t: Versioned<Versioned<Versioned<T, V1>, V2>, V3> = t.into();
+        t.into()
+    }
+}
+
+impl<T, const V1: u16, const V2: u16, const V3: u16, const V4: u16>
+    From<Versioned<Versioned<Versioned<Versioned<T, V1>, V2>, V3>, V4>> for (T,)
+{
+    #[inline]
+    fn from(t: Versioned<Versioned<Versioned<Versioned<T, V1>, V2>, V3>, V4>) -> Self {
+        let (t,): (Versioned<Versioned<Versioned<T, V1>, V2>, V3>,) = t.into();
         t.into()
     }
 }

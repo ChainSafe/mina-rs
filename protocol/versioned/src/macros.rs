@@ -10,22 +10,17 @@
 macro_rules! impl_from_for_newtype {
     ($t:ty, $tv:ty) => {
         impl From<$t> for $tv {
-            fn from(h: $t) -> Self {
-                h.0.into()
+            fn from(t: $t) -> Self {
+                t.0.into()
             }
         }
 
-        // This is already implemented by
-        //
-        // #derive[derive_more::From]
-        // [from(forward)]
-        //
-        // impl From<$tv> for $t {
-        //     fn from(h: $tv) -> Self {
-        //         let base: $t = h.into();
-        //         Self(base)
-        //     }
-        // }
+        impl From<$tv> for $t {
+            fn from(t: $tv) -> Self {
+                let (t,) = t.into();
+                Self(t)
+            }
+        }
     };
 }
 
