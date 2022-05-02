@@ -47,8 +47,7 @@ impl TryFrom<SecretBox> for SecretBoxJson {
     type Error = Error;
     fn try_from(sb: SecretBox) -> Result<SecretBoxJson, Self::Error> {
         let pwsalt = {
-            // 16 is sufficient here, alloc array on stack instead
-            // let mut buf = vec![0; self.pwsalt.len()];
+            // 16 is sufficient here
             let mut buf = [0; 16];
             let bytes = sb
                 .pwsalt
