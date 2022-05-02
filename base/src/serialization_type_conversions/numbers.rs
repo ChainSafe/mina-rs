@@ -3,12 +3,13 @@
 
 use crate::numbers::*;
 use mina_serialization_types::v1::{
-    AccountNonceV1, AmountV1, BlockTimeV1, DeltaV1, ExtendedU32 as ExtendedU32V1,
-    GlobalSlotNumberV1, Hex64V1, LengthV1, TokenIdV1,
+    AccountNonceV1, AmountV1, BlockTimeV1, CharV1, DeltaV1, ExtendedU32 as ExtendedU32V1,
+    ExtendedU64_3, GlobalSlotNumberV1, Hex64V1, LengthV1, TokenIdV1,
 };
 use versioned::impl_from_for_newtype;
 
 impl_from_for_newtype!(Amount, AmountV1);
+impl_from_for_newtype!(Amount, ExtendedU64_3);
 
 impl_from_for_newtype!(Length, LengthV1);
 
@@ -25,3 +26,5 @@ impl_from_for_newtype!(BlockTime, BlockTimeV1);
 impl_from_for_newtype!(GlobalSlotNumber, GlobalSlotNumberV1);
 
 impl_from_for_newtype!(Hex64, Hex64V1);
+
+impl_from_for_newtype!(Char, CharV1);

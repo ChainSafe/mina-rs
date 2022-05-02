@@ -86,9 +86,7 @@ macro_rules! impl_from_for_hash {
 }
 
 //////////////////////////////////////////////////////////////////////////
-#[derive(
-    Clone, Default, Debug, PartialEq, Serialize, Deserialize, PartialOrd, derive_more::From,
-)]
+#[derive(Clone, Default, Debug, PartialEq, PartialOrd, derive_more::From)]
 pub struct StateHash(BaseHash);
 
 impl_bs58!(StateHash, version_bytes::STATE_HASH);
@@ -137,7 +135,7 @@ impl Hashable for LedgerHash {
 
 //////////////////////////////////////////////////////////////////////////
 
-#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize, derive_more::From)]
+#[derive(Clone, Default, Debug, PartialEq, derive_more::From)]
 pub struct ChainHash(BaseHash);
 
 impl_bs58!(ChainHash, version_bytes::LEDGER_HASH);
@@ -169,7 +167,7 @@ impl Hashable for CoinBaseHash {
 
 //////////////////////////////////////////////////////////////////////////
 
-#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Default, Debug, PartialEq)]
 pub struct EpochSeed(BaseHash);
 
 impl_bs58!(EpochSeed, version_bytes::EPOCH_SEED);
@@ -196,7 +194,7 @@ impl Hash for EpochSeed {
 
 //////////////////////////////////////////////////////////////////////////
 
-#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Default, Debug, PartialEq)]
 pub struct SnarkedLedgerHash(BaseHash);
 
 impl_bs58!(SnarkedLedgerHash, version_bytes::LEDGER_HASH);
@@ -219,7 +217,7 @@ impl Hashable for SnarkedLedgerHash {
 
 //////////////////////////////////////////////////////////////////////////
 
-#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Default, Debug, PartialEq)]
 pub struct StagedLedgerHash {
     pub non_snark: NonSnarkStagedLedgerHash,
     pub pending_coinbase_hash: CoinBaseHash,
@@ -240,7 +238,7 @@ impl Hashable for StagedLedgerHash {
     }
 }
 
-#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Default, Debug, PartialEq)]
 pub struct NonSnarkStagedLedgerHash {
     pub ledger_hash: LedgerHash,
     pub aux_hash: AuxHash,
@@ -319,7 +317,7 @@ impl Base58Encodable for PendingCoinbaseAuxHash {
 
 //////////////////////////////////////////////////////////////////////////
 
-#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Default, Debug, PartialEq)]
 pub struct VrfOutputHash(BaseHash);
 
 impl_bs58!(VrfOutputHash, version_bytes::VRF_TRUNCATED_OUTPUT);

@@ -10,14 +10,19 @@ use crate::{
 };
 use derive_more::From;
 use mina_crypto::prelude::*;
+use mina_serialization_types::v1::VrfOutputTruncatedV1;
+use mina_serialization_types_macros::AutoFrom;
 use proof_systems::mina_hasher::{Hashable, ROInput};
 use proof_systems::mina_signer::CompressedPubKey;
 use serde::Serialize;
 use smart_default::SmartDefault;
+use versioned::*;
 
 /// Wrapper struct for the output for a VRF
 #[derive(Clone, Default, PartialEq, Debug, From, Serialize)]
 pub struct VrfOutputTruncated(pub Vec<u8>);
+
+impl_from_for_newtype!(VrfOutputTruncated, VrfOutputTruncatedV1);
 
 impl Hashable for VrfOutputTruncated {
     type D = ();
@@ -56,7 +61,8 @@ impl AsRef<[u8]> for VrfOutputTruncated {
 /// approach where the future stake distribution snapshot is prepared by the current consensus epoch.
 ///
 /// Samasika prepares the past for the future! This future state is stored in the next_epoch_data field.
-#[derive(Clone, Debug, PartialEq, SmartDefault)]
+#[derive(Clone, Debug, PartialEq, SmartDefault, AutoFrom)]
+#[auto_from(mina_serialization_types::consensus_state::ConsensusState)]
 pub struct ConsensusState {
     /// Height of block
     pub blockchain_length: Length,

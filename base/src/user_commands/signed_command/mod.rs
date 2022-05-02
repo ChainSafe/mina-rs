@@ -9,6 +9,7 @@ use crate::numbers::{AccountNonce, Amount, GlobalSlotNumber, TokenId};
 use crate::user_commands::memo::SignedCommandMemo;
 use crate::user_commands::payment::PaymentPayload;
 
+use mina_serialization_types_macros::AutoFrom;
 use proof_systems::mina_hasher::{Hashable, ROInput};
 use proof_systems::mina_signer::{CompressedPubKey, Keypair, NetworkId, Signature, Signer};
 
@@ -16,7 +17,8 @@ const TAG_BITS: usize = 3;
 const PAYMENT_TX_TAG: [bool; TAG_BITS] = [false, false, false];
 
 /// Top level signed command type
-#[derive(Clone, PartialEq, Debug)]
+#[derive(Clone, PartialEq, Debug, AutoFrom)]
+#[auto_from(mina_serialization_types::staged_ledger_diff::SignedCommand)]
 pub struct SignedCommand {
     /// The payload to sign
     pub payload: SignedCommandPayload,
@@ -46,7 +48,8 @@ impl SignedCommand {
 }
 
 /// The part of a signed command that needs to be serialized and signed
-#[derive(Clone, PartialEq, Debug)]
+#[derive(Clone, PartialEq, Debug, AutoFrom)]
+#[auto_from(mina_serialization_types::staged_ledger_diff::SignedCommandPayload)]
 pub struct SignedCommandPayload {
     /// Fields common to all command types
     pub common: SignedCommandPayloadCommon,

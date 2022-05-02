@@ -57,7 +57,8 @@ pub struct ProofState {
     pub me_only: ProofStatePairingBased,
 }
 
-#[derive(Clone, Default, PartialEq, Debug)]
+#[derive(Clone, Default, PartialEq, Debug, AutoFrom)]
+#[auto_from(mina_serialization_types::protocol_state_proof::ProofStateDeferredValues)]
 pub struct ProofStateDeferredValues {
     pub plonk: Plonk,
     pub combined_inner_product: ShiftedValue,

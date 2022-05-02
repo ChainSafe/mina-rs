@@ -29,13 +29,13 @@ pub fn auto_from_macro(input: TokenStream) -> TokenStream {
                     return ts;
                 }
             }
-            syn::Fields::Unnamed(unnamed) => {
-                _ = unnamed;
+            syn::Fields::Unnamed(_) => {
+                unimplemented!();
             }
             _ => {}
         },
         syn::Data::Enum(_) => {
-            unimplemented!()
+            unimplemented!();
         }
         _ => {}
     };

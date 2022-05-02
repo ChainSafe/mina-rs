@@ -5,10 +5,12 @@
 
 use crate::numbers::{Amount, TokenId};
 
+use mina_serialization_types_macros::AutoFrom;
 use proof_systems::mina_signer::CompressedPubKey;
 
 /// The data specific to payload commands
-#[derive(Clone, PartialEq, Debug)]
+#[derive(Clone, PartialEq, Debug, AutoFrom)]
+#[auto_from(mina_serialization_types::staged_ledger_diff::PaymentPayload)]
 pub struct PaymentPayload {
     /// Account to transfer from
     pub source_pk: CompressedPubKey,
