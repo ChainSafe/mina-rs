@@ -36,11 +36,10 @@ where
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::base58::version_bytes;
     use crate::hash::prefixes::PROTOCOL_STATE;
     use crate::hash::types::BaseHash;
     use crate::{impl_bs58_json, impl_from_for_hash};
-    use mina_serialization_types::{json::*, v1::*};
+    use mina_serialization_types::{json::*, v1::*, version_bytes};
     use versioned::*;
 
     #[derive(Clone, PartialEq, Debug)]

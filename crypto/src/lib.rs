@@ -15,7 +15,6 @@ pub mod hex;
 mod serialization_type_conversions;
 
 pub mod prelude {
-    pub use crate::base58::Base58Encodable;
     pub use crate::base64::Base64Encodable;
     pub use crate::hex::HexEncodable;
 }
