@@ -15,7 +15,8 @@ pub struct ProofMessages {
     pub t_comm: ProofMessageWithDegreeBound,
 }
 
-#[derive(Clone, Default, PartialEq, Debug)]
+#[derive(Clone, Default, PartialEq, Debug, AutoFrom)]
+#[auto_from(mina_serialization_types::proof_messages::ProofMessageWithoutDegreeBoundList)]
 pub struct ProofMessageWithoutDegreeBoundList(pub Vec<FiniteECPoint>);
 
 #[derive(Clone, Default, PartialEq, Debug, AutoFrom)]

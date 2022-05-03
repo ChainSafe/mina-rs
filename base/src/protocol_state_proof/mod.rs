@@ -77,8 +77,8 @@ pub struct Plonk {
     pub zeta: BulletproofPreChallenge,
 }
 
-#[derive(Clone, PartialEq, Debug)]
-#[non_exhaustive]
+#[derive(Clone, PartialEq, Debug, AutoFrom)]
+#[auto_from(mina_serialization_types::protocol_state_proof::ShiftedValue)]
 pub enum ShiftedValue {
     ShiftedValue(BigInt256),
 }
@@ -89,8 +89,9 @@ impl Default for ShiftedValue {
     }
 }
 
-#[derive(Clone, Default, PartialEq, Debug)]
-pub struct SpongeDigestBeforeEvaluations(pub (Hex64, Hex64, Hex64, Hex64, ()));
+#[derive(Clone, Default, PartialEq, Debug, AutoFrom)]
+#[auto_from(mina_serialization_types::protocol_state_proof::SpongeDigestBeforeEvaluations)]
+pub struct SpongeDigestBeforeEvaluations(pub Hex64, pub Hex64, pub Hex64, pub Hex64, pub ());
 
 #[derive(Clone, Default, PartialEq, Debug, AutoFrom)]
 #[auto_from(mina_serialization_types::protocol_state_proof::ProofStatePairingBased)]
@@ -107,10 +108,12 @@ pub struct PairingBased {
     pub old_bulletproof_challenges: BulletproofChallenges,
 }
 
-#[derive(Clone, Default, PartialEq, Debug)]
-pub struct PrevEvals(pub (ProofEvaluations, ProofEvaluations));
+#[derive(Clone, Default, PartialEq, Debug, AutoFrom)]
+#[auto_from(mina_serialization_types::protocol_state_proof::PrevEvals)]
+pub struct PrevEvals(pub ProofEvaluations, pub ProofEvaluations);
 
-#[derive(Clone, Default, PartialEq, Debug)]
+#[derive(Clone, Default, PartialEq, Debug, AutoFrom)]
+#[auto_from(mina_serialization_types::protocol_state_proof::PrevXHat)]
 pub struct PrevXHat(pub FiniteECPoint);
 
 #[derive(Clone, Default, PartialEq, Debug, AutoFrom)]
@@ -120,8 +123,13 @@ pub struct Proof {
     pub openings: ProofOpenings,
 }
 
-#[derive(Clone, Default, PartialEq, Debug)]
+#[derive(Clone, Default, PartialEq, Debug, AutoFrom)]
+#[auto_from(mina_serialization_types::protocol_state_proof::ProofOpeningsEvals)]
+pub struct ProofOpeningsEvals(pub ProofEvaluations, pub ProofEvaluations);
+
+#[derive(Clone, Default, PartialEq, Debug, AutoFrom)]
+#[auto_from(mina_serialization_types::protocol_state_proof::ProofOpenings)]
 pub struct ProofOpenings {
     pub proof: OpeningProof,
-    pub evals: (ProofEvaluations, ProofEvaluations),
+    pub evals: ProofOpeningsEvals,
 }

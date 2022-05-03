@@ -10,6 +10,7 @@ pub mod payment;
 pub mod signed_command;
 
 pub use memo::SignedCommandMemo;
+use mina_serialization_types_macros::AutoFrom;
 pub use payment::PaymentPayload;
 pub use signed_command::{
     SignedCommand, SignedCommandPayload, SignedCommandPayloadBody, SignedCommandPayloadCommon,
@@ -17,8 +18,8 @@ pub use signed_command::{
 
 /// The top level user command type
 /// This is the output of the command builders
-#[derive(Clone, PartialEq, Debug)]
-#[non_exhaustive]
+#[derive(Clone, PartialEq, Debug, AutoFrom)]
+#[auto_from(mina_serialization_types::staged_ledger_diff::UserCommand)]
 pub enum UserCommand {
     /// A command signed by a private key
     SignedCommand(SignedCommand),

@@ -14,8 +14,12 @@ pub type FieldElement = BigInt256;
 /// Wrapper type for field element denoting it is on the curves scalar field
 pub type InnerCurveScalar = BigInt256;
 
+/// Vector of finite field elements
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
+pub struct FieldElementVec(pub Vec<FieldElement>);
+
 /// Vector of finite field elements (v1)
-pub type FieldElementVecV1 = Versioned<Vec<FieldElement>, 1>;
+pub type FieldElementVecV1 = Versioned<FieldElementVec, 1>;
 
 /// An elliptic curve point defined over a base field with elements that fit in a BigInt256
 /// This is a Finite elliptic curve point as this type cannot be used to encode the point-at-infinity
@@ -30,10 +34,15 @@ pub struct FiniteECPointVec(pub Vec<FiniteECPoint>);
 pub type FiniteECPointVecV1 = Versioned<FiniteECPointVec, 1>;
 
 /// Pair if finite EC Points
-pub type FiniteECPointPair = (FiniteECPoint, FiniteECPoint);
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
+pub struct FiniteECPointPair(pub FiniteECPoint, pub FiniteECPoint);
+
+/// Vector of 2-tuples of finite EC points
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
+pub struct FiniteECPointPairVec(pub Vec<FiniteECPointPair>);
 
 /// Vector of 2-tuples of finite EC points (with version number)
-pub type FiniteECPointPairVecV1 = Versioned<Vec<FiniteECPointPair>, 1>;
+pub type FiniteECPointPairVecV1 = Versioned<FiniteECPointPairVec, 1>;
 
 /// Elliptic curve point that can either be the coordinates of a point on the curve
 /// OR it can be the point-at-infinity

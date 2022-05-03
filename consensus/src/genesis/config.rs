@@ -255,7 +255,7 @@ impl GenesisInitConfig {
                 ProofStateBulletproofChallenges(t17.clone(), t17, ())
             };
 
-            p.prev_evals.0 .0 = (|| {
+            p.prev_evals.0 = (|| {
                 Ok::<_, hex::FromHexError>(ProofEvaluations {
                     l: FieldElementVec::try_from_hex(
                         "0x0e5019ef595b796f872edae874df3e6bd1e94424aed7ba4d7ac5fe5ae2252415",
@@ -292,7 +292,7 @@ impl GenesisInitConfig {
             })()
             .expect(ERR_FAIL_TO_DECODE_HEX);
 
-            p.prev_evals.0 .1 = (|| {
+            p.prev_evals.1 = (|| {
                 Ok::<_, hex::FromHexError>(ProofEvaluations {
                     l: FieldElementVec::try_from_hex(
                         "0xac5d1055e6dc85e696cde2e4cd58e4117556622de616c04b3427ebcf4e792139",

@@ -17,7 +17,10 @@ pub struct BulletproofChallenge {
 
 pub type BulletproofChallengeV1 = Versioned<BulletproofChallenge, 1>;
 
-pub type BulletproofChallengesV1 = Versioned<Vec<BulletproofChallengeTuple18V1>, 1>;
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
+pub struct BulletproofChallenges(pub Vec<BulletproofChallengeTuple18V1>);
+
+pub type BulletproofChallengesV1 = Versioned<BulletproofChallenges, 1>;
 
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub struct ProofStateBulletproofChallenges(
@@ -81,7 +84,6 @@ pub struct BulletproofChallengeTuple18(
 pub type BulletproofChallengeTuple18V1 = Versioned<Versioned<BulletproofChallengeTuple18, 1>, 1>;
 
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
-#[non_exhaustive]
 pub enum BulletproofPreChallenge {
     ScalarChallenge(ScalarChallengeVector2V1),
 }

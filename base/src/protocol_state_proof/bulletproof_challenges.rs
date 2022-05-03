@@ -18,7 +18,8 @@ impl BulletproofChallenge {
     }
 }
 
-#[derive(Clone, Default, PartialEq, Debug)]
+#[derive(Clone, Default, PartialEq, Debug, AutoFrom)]
+#[auto_from(mina_serialization_types::bulletproof_challenges::BulletproofChallenges)]
 pub struct BulletproofChallenges(pub Vec<BulletproofChallengeTuple18>);
 
 #[derive(Clone, Default, PartialEq, Debug, AutoFrom)]
@@ -127,8 +128,8 @@ impl BulletproofChallengeTuple18 {
     }
 }
 
-#[derive(Clone, PartialEq, Debug)]
-#[non_exhaustive]
+#[derive(Clone, PartialEq, Debug, AutoFrom)]
+#[auto_from(mina_serialization_types::bulletproof_challenges::BulletproofPreChallenge)]
 pub enum BulletproofPreChallenge {
     ScalarChallenge(ScalarChallengeVector2),
 }

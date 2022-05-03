@@ -274,13 +274,8 @@ mod tests {
                         assert_eq!(body.receiver_pk.x.to_bytes(), bytes[3..35]);
                         assert_eq!(body.token_id.0, 1);
                     }
-                    _ => bail!(
-                        "PaymentPayload expected, but found: {:#?}",
-                        command.payload.body
-                    ),
                 };
             }
-            _ => bail!("SignedCommand expected, but found: {:#?}", commands[0].data),
         }
 
         match &commands[0].status {
@@ -298,10 +293,6 @@ mod tests {
                 assert!(balance_data.receiver_balance.is_some());
                 assert_eq!(balance_data.receiver_balance.unwrap().0, 11241317900);
             }
-            _ => bail!(
-                "TransactionStatus::Applied expected, but found: {:#?}",
-                commands[0].status
-            ),
         }
 
         let coinbase = StagedLedgerDiffTuple::from(et.t.staged_ledger_diff.t.diff.clone())

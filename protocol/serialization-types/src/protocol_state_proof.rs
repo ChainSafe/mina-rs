@@ -72,7 +72,6 @@ pub struct Plonk {
 pub type PlonkV1 = Versioned<Plonk, 1>;
 
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
-#[non_exhaustive]
 pub enum ShiftedValue {
     ShiftedValue(BigInt256),
 }
@@ -80,7 +79,13 @@ pub enum ShiftedValue {
 pub type ShiftedValueV1 = Versioned<ShiftedValue, 1>;
 
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
-pub struct SpongeDigestBeforeEvaluations(pub (Hex64V1, Hex64V1, Hex64V1, Hex64V1, ()));
+pub struct SpongeDigestBeforeEvaluations(
+    pub Hex64V1,
+    pub Hex64V1,
+    pub Hex64V1,
+    pub Hex64V1,
+    pub (),
+);
 
 pub type SpongeDigestBeforeEvaluationsV1 =
     Versioned<Versioned<SpongeDigestBeforeEvaluations, 1>, 1>;
@@ -102,9 +107,15 @@ pub struct PairingBased {
 
 pub type PairingBasedV1 = Versioned<PairingBased, 1>;
 
-pub type PrevEvalsV1 = Versioned<(ProofEvaluationsV1, ProofEvaluationsV1), 1>;
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
+pub struct PrevEvals(pub ProofEvaluationsV1, pub ProofEvaluationsV1);
 
-pub type PrevXHatV1 = Versioned<FiniteECPoint, 1>;
+pub type PrevEvalsV1 = Versioned<PrevEvals, 1>;
+
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
+pub struct PrevXHat(pub FiniteECPoint);
+
+pub type PrevXHatV1 = Versioned<PrevXHat, 1>;
 
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub struct Proof {
@@ -115,9 +126,12 @@ pub struct Proof {
 pub type ProofV1 = Versioned<Versioned<Proof, 1>, 1>;
 
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
+pub struct ProofOpeningsEvals(pub ProofEvaluationsV1, pub ProofEvaluationsV1);
+
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub struct ProofOpenings {
     pub proof: OpeningProofV1,
-    pub evals: (ProofEvaluationsV1, ProofEvaluationsV1),
+    pub evals: ProofOpeningsEvals,
 }
 
 pub type ProofOpeningsV1 = Versioned<ProofOpenings, 1>;

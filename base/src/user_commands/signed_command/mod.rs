@@ -125,8 +125,8 @@ pub struct SignedCommandPayloadCommon {
 }
 
 /// Enum of variable fields in a signed command
-#[derive(Clone, PartialEq, Debug)]
-#[non_exhaustive]
+#[derive(Clone, PartialEq, Debug, AutoFrom)]
+#[auto_from(mina_serialization_types::staged_ledger_diff::SignedCommandPayloadBody)]
 pub enum SignedCommandPayloadBody {
     /// Payment transfer fields
     PaymentPayload(PaymentPayload),

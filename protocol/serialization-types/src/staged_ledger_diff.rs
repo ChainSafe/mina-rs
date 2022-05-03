@@ -53,7 +53,6 @@ pub struct UserCommandWithStatus {
 pub type UserCommandWithStatusV1 = Versioned<UserCommandWithStatus, 1>;
 
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
-#[non_exhaustive]
 pub enum UserCommand {
     SignedCommand(SignedCommandV1),
     // FIXME: other variants are not covered by current test block
@@ -92,7 +91,6 @@ pub type SignedCommandPayloadCommonV1 =
     Versioned<Versioned<Versioned<SignedCommandPayloadCommon, 1>, 1>, 1>;
 
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
-#[non_exhaustive]
 pub enum SignedCommandPayloadBody {
     PaymentPayload(PaymentPayloadV1),
     // FIXME: other variants are not covered by current test block
@@ -121,7 +119,6 @@ pub type SignedCommandMemoV1 = Versioned<SignedCommandMemo, 1>;
 pub type SnappCommand = Versioned<Versioned<(), 1>, 1>;
 
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
-#[non_exhaustive]
 pub enum TransactionStatus {
     Applied(TransactionStatusAppliedV1),
     // FIXME: other variants are not covered by current test block
@@ -180,7 +177,6 @@ pub struct CoinBaseFeeTransfer {
 pub type CoinBaseFeeTransferV1 = Versioned<Versioned<CoinBaseFeeTransfer, 1>, 1>;
 
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
-#[non_exhaustive]
 pub enum InternalCommandBalanceData {
     CoinBase(CoinBaseBalanceDataV1),
     FeeTransfer(FeeTransferBalanceDataV1),
