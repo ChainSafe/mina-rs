@@ -3,7 +3,7 @@
 
 //! Newtypes for different numeric types used throughout Mina
 
-use crate::*;
+use crate::{constants::*, *};
 
 use std::fmt;
 
@@ -14,8 +14,6 @@ use mina_hasher::{Hashable, ROInput};
 use num::Integer;
 use thiserror::Error;
 use time::Duration;
-
-use crate::constants::MINA_PRECISION;
 
 #[derive(Clone, Default, PartialEq, Debug, Hash, From)]
 /// Newtype for TokenIds
