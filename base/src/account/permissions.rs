@@ -6,7 +6,8 @@
 use mina_serialization_types_macros::AutoFrom;
 
 /// The level of auth required to perform a particular action with an account
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, AutoFrom)]
+#[auto_from(mina_serialization_types::account::AuthRequired)]
 pub enum AuthRequired {
     /// None required
     None,

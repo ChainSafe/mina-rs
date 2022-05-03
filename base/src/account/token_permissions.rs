@@ -3,8 +3,11 @@
 
 //! Account token permissions
 
+use mina_serialization_types_macros::AutoFrom;
+
 /// Need to learn exactly what this is..
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, AutoFrom)]
+#[auto_from(mina_serialization_types::account::TokenPermissions)]
 pub enum TokenPermissions {
     /// Account owns a token
     TokenOwned {

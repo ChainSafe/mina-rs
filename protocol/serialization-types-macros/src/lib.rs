@@ -5,7 +5,7 @@ mod auto_from;
 
 use proc_macro::TokenStream;
 use quote::quote;
-use syn::{parse_macro_input, DeriveInput, FieldsNamed, FieldsUnnamed};
+use syn::{parse_macro_input, DataEnum, DeriveInput, FieldsNamed, FieldsUnnamed};
 
 #[proc_macro_derive(AutoFrom, attributes(auto_from))]
 pub fn auto_from_macro(input: TokenStream) -> TokenStream {
@@ -42,8 +42,12 @@ pub fn auto_from_macro(input: TokenStream) -> TokenStream {
             }
             _ => {}
         },
-        syn::Data::Enum(_) => {
-            unimplemented!();
+        syn::Data::Enum(DataEnum { variants, .. }) => {
+            if let Some(ts) =
+                auto_from::auto_from_for_enum(&ident, target_types.as_slice(), variants)
+            {
+                return ts;
+            }
         }
         _ => {}
     };

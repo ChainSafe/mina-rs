@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::*;
-use syn::{punctuated::Punctuated, AttrStyle, Attribute, Field, Token};
+use syn::{punctuated::Punctuated, AttrStyle, Attribute, Field, Fields, Token, Variant};
 
 pub fn parse_types_from_attr(attributes: &[Attribute]) -> Vec<proc_macro2::TokenStream> {
     let mut target_types: Vec<proc_macro2::TokenStream> = Vec::new();
@@ -135,6 +135,82 @@ pub fn auto_from_for_struct_with_unnamed_fields(
                     Self (
                         #(#pos_token_stream,) *
                     )
+                }
+            }
+        }
+        .into();
+        output.extend(ts);
+        output.extend(impl_from_for_versioned(ident, target_type));
+    }
+
+    Some(output)
+}
+
+pub fn auto_from_for_enum(
+    ident: &proc_macro2::Ident,
+    target_types: &[proc_macro2::TokenStream],
+    variants: Punctuated<Variant, Token![,]>,
+) -> Option<TokenStream> {
+    let mut variant_token_streams: Vec<proc_macro2::TokenStream> =
+        Vec::with_capacity(variants.len());
+    for v in variants {
+        let ident = &v.ident;
+        match v.fields.len() {
+            0 => variant_token_streams.push(quote! {
+                Other::#ident => Self::#ident
+            }),
+            fields_len => {
+                match v.fields {
+                    Fields::Unnamed(_) => {
+                        let mut lhs_idents = Vec::with_capacity(fields_len);
+                        for i in 0..fields_len {
+                            lhs_idents.push(proc_macro2::Ident::new(
+                                &format!("v{i}"),
+                                proc_macro2::Span::call_site(),
+                            ));
+                        }
+                        variant_token_streams.push(quote! {
+                            // TODO: handle Vec and Option
+                            Other::#ident(#(#lhs_idents,) *) => Self::#ident(#(#lhs_idents.into(),) *)
+                        });
+                    }
+                    Fields::Named(FieldsNamed { named, .. }) => {
+                        let mut lhs_idents = Vec::with_capacity(fields_len);
+                        for f in named {
+                            lhs_idents.push(f.ident);
+                        }
+                        variant_token_streams.push(quote! {
+                            // TODO: handle Vec and Option
+                            Other::#ident{#(#lhs_idents,) *} => Self::#ident{#(#lhs_idents: #lhs_idents.into(),) *}
+                        });
+                    }
+                    _ => {}
+                }
+            }
+        }
+    }
+
+    if variant_token_streams.is_empty() {
+        return None;
+    }
+    let mut output = TokenStream::default();
+    for target_type in target_types {
+        let ts: TokenStream = quote! {
+            impl ::std::convert::From<#ident> for #target_type {
+                fn from(item: #ident) -> Self {
+                    use #ident as Other;
+                    match item {
+                        #(#variant_token_streams,) *
+                    }
+                }
+            }
+
+            impl ::std::convert::From<#target_type> for #ident {
+                fn from(item: #target_type) -> Self {
+                    use #target_type as Other;
+                    match item {
+                        #(#variant_token_streams,) *
+                    }
                 }
             }
         }

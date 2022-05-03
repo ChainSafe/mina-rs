@@ -5,7 +5,6 @@ use crate::types::*;
 use mina_serialization_types::{json::*, v1::*};
 use versioned::*;
 
-mod account;
 mod bulletproof_challenges;
 mod field_and_curve_elements;
 mod numbers;
