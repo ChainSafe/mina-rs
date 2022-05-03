@@ -22,3 +22,12 @@ pub const EPOCH_SEED: u8 = 0x0d;
 
 /// base58 version check byte for state hash
 pub const STATE_HASH: u8 = 0x10;
+
+/// base58 version check byte for vrf output hash
+pub const VRF_TRUNCATED_OUTPUT: u8 = 0x15;
+
+/// base58 version check byte for aux hash
+pub const STAGED_LEDGER_HASH_AUX_HASH: u8 = 0x0E;
+
+/// base58 version check byte for pending coinbase aux hash
+pub const STAGED_LEDGER_HASH_PENDING_COINBASE_AUX: u8 = 0x0F;

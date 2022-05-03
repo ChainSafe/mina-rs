@@ -63,7 +63,84 @@ pub type BigInt256 = [u8; 32];
 /// Vector of bytes with a version number. Also encodes its own length when encoded using bin-prot
 pub type ByteVecV1 = Versioned<Vec<u8>, 1>;
 
-/// A wrapper of versioned type that is base58 encodable with an optional version byte
+/// A wrapper of versioned type that is base58 encodable
+#[derive(Debug, Clone, PartialEq, derive_more::From)]
+pub struct Base58EncodableType<const VERSION_BYTE: u8, T>(pub T);
+
+impl<const VERSION_BYTE: u8, T> Base58EncodableType<VERSION_BYTE, T>
+where
+    T: From<Vec<u8>>,
+{
+    /// Decode input base58 encoded bytes into [Base58EncodableType]
+    pub fn from_base58(input: impl AsRef<[u8]>) -> Result<Self, crate::errors::Error> {
+        let bytes: Vec<u8> = bs58::decode(input)
+            .with_check(Some(VERSION_BYTE))
+            .into_vec()
+            .map_err(crate::errors::Error::Base58DecodeError)?;
+        // skip the version check byte
+        let mut v: Vec<u8> = Vec::with_capacity(bytes.len() - 1);
+        v.extend_from_slice(&bytes[1..]);
+        Ok(Self(v.into()))
+    }
+}
+
+impl<const VERSION_BYTE: u8, T> Base58EncodableType<VERSION_BYTE, T>
+where
+    T: Serialize + AsRef<[u8]>,
+{
+    /// Encode inner data with version check byte into [Vec<u8>]
+    pub fn to_base58(&self) -> Result<Vec<u8>, crate::errors::Error> {
+        Ok(self.to_base58_builder().into_vec())
+    }
+
+    /// Encode inner data with version check byte into [String]
+    pub fn to_base58_string(&self) -> Result<String, crate::errors::Error> {
+        Ok(self.to_base58_builder().into_string())
+    }
+
+    /// Encode inner data with version check byte into [EncodeBuilder]
+    fn to_base58_builder(&self) -> EncodeBuilder<'static, &[u8]> {
+        let bytes: &[u8] = self.0.as_ref();
+        bs58::encode(bytes).with_check_version(VERSION_BYTE)
+    }
+}
+
+impl<const VERSION_BYTE: u8, T> From<Base58EncodableType<VERSION_BYTE, T>> for (T,) {
+    fn from(i: Base58EncodableType<VERSION_BYTE, T>) -> Self {
+        (i.0,)
+    }
+}
+
+impl<const VERSION_BYTE: u8, T> Serialize for Base58EncodableType<VERSION_BYTE, T>
+where
+    T: Serialize + AsRef<[u8]>,
+{
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        let s = self
+            .to_base58_string()
+            .map_err(<S::Error as serde::ser::Error>::custom)?;
+        serializer.serialize_str(&s)
+    }
+}
+
+impl<'de, const VERSION_BYTE: u8, T> Deserialize<'de> for Base58EncodableType<VERSION_BYTE, T>
+where
+    T: Deserialize<'de> + From<Vec<u8>>,
+{
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        let s =
+            String::deserialize(deserializer).map_err(<D::Error as serde::de::Error>::custom)?;
+        Self::from_base58(s).map_err(<D::Error as serde::de::Error>::custom)
+    }
+}
+
+/// A wrapper of versioned type that is base58 encodable with an version byte
 #[derive(Debug, Clone, PartialEq, derive_more::From)]
 pub struct Base58EncodableVersionedType<const VERSION_BYTE: u8, T>(pub T);
 
@@ -163,3 +240,13 @@ pub type EpochSeedHashV1Json = HashV1Json<{ version_bytes::EPOCH_SEED }>;
 
 /// base58 string representation of a state hash
 pub type StateHashV1Json = HashV1Json<{ version_bytes::STATE_HASH }>;
+
+/// base58 string representation of a vrf output hash
+pub type VrfOutputHashV1Json = HashV1Json<{ version_bytes::VRF_TRUNCATED_OUTPUT }>;
+
+/// base58 string representation of a aux hash
+pub type AuxHashJson = Base58EncodableType<{ version_bytes::STAGED_LEDGER_HASH_AUX_HASH }, Vec<u8>>;
+
+/// base58 string representation of a pending coinbase aux hash
+pub type PendingCoinbaseAuxHashJson =
+    Base58EncodableType<{ version_bytes::STAGED_LEDGER_HASH_PENDING_COINBASE_AUX }, Vec<u8>>;

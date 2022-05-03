@@ -36,16 +36,19 @@ where
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::base58::{version_bytes, Base58Encodable};
+    use crate::base58::version_bytes;
     use crate::hash::prefixes::PROTOCOL_STATE;
     use crate::hash::types::BaseHash;
-    use crate::impl_bs58_for_binprot;
-    use serde::Deserialize;
+    use crate::{impl_bs58_json, impl_from_for_hash};
+    use mina_serialization_types::{json::*, v1::*};
+    use versioned::*;
 
-    #[derive(Clone, Serialize, Deserialize, PartialEq, Debug)]
+    #[derive(Clone, PartialEq, Debug)]
     struct TestHash(BaseHash);
-
-    impl_bs58_for_binprot!(TestHash, version_bytes::STATE_HASH);
+    type TestHashV1Json = HashV1Json<{ version_bytes::STATE_HASH }>;
+    impl_from_for_hash!(TestHash, HashV1);
+    impl_from_for_generic_with_proxy!(TestHash, HashV1, TestHashV1Json);
+    impl_bs58_json!(TestHash, TestHashV1Json);
 
     impl From<Box<[u8]>> for TestHash {
         fn from(b: Box<[u8]>) -> Self {
@@ -72,9 +75,13 @@ mod tests {
         let t = TestType(123);
         let h = t.hash();
         assert_eq!(
-            h.to_base58_string(),
-            "Zbx5bAfiyj8yPh8nhXEW3et2TEbnZvEPrShQxTaJaLX3cvPPZV"
-        )
+            h.to_base58_string().unwrap(),
+            "3NLXw1spzQFnLEJGQQKVyykTFExSBjLuhfEU32Fez3odCwY3A4Yc"
+        );
+        assert_eq!(
+            h,
+            TestHash::from_base58("3NLXw1spzQFnLEJGQQKVyykTFExSBjLuhfEU32Fez3odCwY3A4Yc").unwrap()
+        );
     }
 
     #[test]

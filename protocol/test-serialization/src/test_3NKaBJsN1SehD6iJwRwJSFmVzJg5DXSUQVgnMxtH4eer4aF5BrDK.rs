@@ -5,7 +5,6 @@
 mod tests {
     use anyhow::bail;
     use mina_crypto::hash::*;
-    use mina_crypto::prelude::*;
     use mina_rs_base::types::*;
     use mina_serialization_types::v1::ExternalTransitionV1;
     use pretty_assertions::assert_eq;
@@ -53,7 +52,7 @@ mod tests {
             .unwrap();
         assert_eq!(non_snark.t.aux_hash.t[..], bytes[1..33]);
         assert_eq!(
-            AuxHash::from(non_snark.t.aux_hash.t.clone()).to_base58_string(),
+            AuxHash::from(non_snark.t.aux_hash.t.clone()).to_base58_string()?,
             "UworXDykADr3Lte856ePMsdawpTVhKLKT9Y3UKha7Tpbt4V1JP"
         );
 
@@ -62,7 +61,8 @@ mod tests {
             .unwrap();
         assert_eq!(non_snark.t.pending_coinbase_aux.t[..], bytes[1..33]);
         assert_eq!(
-            PendingCoinbaseAuxHash(non_snark.t.pending_coinbase_aux.t.clone()).to_base58_string(),
+            PendingCoinbaseAuxHash(non_snark.t.pending_coinbase_aux.t.clone())
+                .to_base58_string()?,
             "XbwfEKZjgcZiyDhHRZjHUx72TuxpnuzLPwVYpVWkMAAXkSy7go"
         );
 

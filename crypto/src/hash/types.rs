@@ -11,9 +11,8 @@
 //!
 
 use super::prefixes::*;
-use crate::base58::{version_bytes, Base58Encodable};
 use crate::hash::Hash;
-use crate::{impl_bs58, impl_bs58_json};
+use crate::impl_bs58_json;
 use derive_more::From;
 use mina_serialization_types::{json::*, v1::*};
 use proof_systems::mina_hasher::{Hashable, ROInput};
@@ -267,6 +266,9 @@ impl Hashable for NonSnarkStagedLedgerHash {
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize, derive_more::From)]
 pub struct AuxHash(pub Vec<u8>);
 
+impl_from_for_newtype!(AuxHash, AuxHashJson);
+impl_bs58_json!(AuxHash, AuxHashJson);
+
 impl Hashable for AuxHash {
     type D = ();
 
@@ -281,19 +283,13 @@ impl Hashable for AuxHash {
     }
 }
 
-impl Base58Encodable for AuxHash {
-    const VERSION_BYTE: u8 = version_bytes::STAGED_LEDGER_HASH_AUX_HASH;
-    const MINA_VERSION_BYTE_COUNT: usize = 0;
-
-    fn write_encodable_bytes(&self, output: &mut Vec<u8>) {
-        output.extend(self.0.as_slice());
-    }
-}
-
 //////////////////////////////////////////////////////////////////////////
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize, derive_more::From)]
 pub struct PendingCoinbaseAuxHash(pub Vec<u8>);
+
+impl_from_for_newtype!(PendingCoinbaseAuxHash, PendingCoinbaseAuxHashJson);
+impl_bs58_json!(PendingCoinbaseAuxHash, PendingCoinbaseAuxHashJson);
 
 impl Hashable for PendingCoinbaseAuxHash {
     type D = ();
@@ -309,22 +305,14 @@ impl Hashable for PendingCoinbaseAuxHash {
     }
 }
 
-impl Base58Encodable for PendingCoinbaseAuxHash {
-    const VERSION_BYTE: u8 = version_bytes::STAGED_LEDGER_HASH_PENDING_COINBASE_AUX;
-    const MINA_VERSION_BYTE_COUNT: usize = 0;
-
-    fn write_encodable_bytes(&self, output: &mut Vec<u8>) {
-        output.extend(self.0.as_slice());
-    }
-}
-
 //////////////////////////////////////////////////////////////////////////
 
 #[derive(Clone, Default, Debug, PartialEq)]
 pub struct VrfOutputHash(BaseHash);
 
-impl_bs58!(VrfOutputHash, version_bytes::VRF_TRUNCATED_OUTPUT);
 impl_from_for_hash!(VrfOutputHash, HashV1);
+impl_from_for_generic_with_proxy!(VrfOutputHash, HashV1, VrfOutputHashV1Json);
+impl_bs58_json!(VrfOutputHash, VrfOutputHashV1Json);
 
 impl Hash for VrfOutputHash {
     const PREFIX: &'static HashPrefix = VRF_OUTPUT;

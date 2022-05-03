@@ -48,62 +48,6 @@ pub trait Base58Encodable {
 }
 
 #[macro_export]
-macro_rules! impl_bs58_for_binprot {
-    ($ty:ty, $expr:expr) => {
-        impl Base58Encodable for $ty {
-            const VERSION_BYTE: u8 = $expr;
-            const MINA_VERSION_BYTE_COUNT: usize = 0;
-
-            fn write_encodable_bytes(&self, output: &mut Vec<u8>) {
-                bin_prot::to_writer(output, self)
-                    .expect("Failed to serialize struct into binprot format");
-            }
-        }
-
-        impl TryFrom<Vec<u8>> for $ty {
-            type Error = bin_prot::error::Error;
-            fn try_from(h: Vec<u8>) -> Result<Self, Self::Error> {
-                bin_prot::from_reader(h.as_slice())
-            }
-        }
-    };
-}
-
-#[macro_export]
-macro_rules! impl_bs58_full {
-    ($ty:ty, $expr:expr, $expr2:expr) => {
-        impl Base58Encodable for $ty {
-            const VERSION_BYTE: u8 = $expr;
-            const MINA_VERSION_BYTE_COUNT: usize = $expr2;
-
-            fn write_encodable_bytes(&self, output: &mut Vec<u8>) {
-                output.extend(self.as_ref());
-            }
-        }
-
-        impl From<Vec<u8>> for $ty {
-            fn from(h: Vec<u8>) -> Self {
-                let mut b32 = [0; 32];
-                b32.copy_from_slice(h.as_slice());
-                Self(b32.into())
-            }
-        }
-
-        impl AsRef<[u8]> for $ty {
-            fn as_ref(&self) -> &[u8] {
-                self.0.as_ref()
-            }
-        }
-
-        impl $ty {
-            pub fn into_inner(self) -> [u8; 32] {
-                self.0 .0
-            }
-        }
-    };
-}
-
-#[macro_export]
 macro_rules! impl_bs58_json {
     ($ty:ty, $ty_json:ty) => {
         impl $ty {
@@ -127,12 +71,5 @@ macro_rules! impl_bs58_json {
                 self.clone().into_base58_string()
             }
         }
-    };
-}
-
-#[macro_export]
-macro_rules! impl_bs58 {
-    ($ty:ty, $expr:expr) => {
-        crate::impl_bs58_full!($ty, $expr, 1);
     };
 }
