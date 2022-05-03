@@ -99,8 +99,8 @@ pub struct TransactionStatusBalanceData {
     pub receiver_balance: Option<Amount>,
 }
 
-#[derive(Clone, PartialEq, Debug)]
-#[non_exhaustive]
+#[derive(Clone, PartialEq, Debug, AutoFrom)]
+#[auto_from(mina_serialization_types::staged_ledger_diff::CoinBase)]
 pub enum CoinBase {
     Zero,
     // FIXME: other variants are not covered by current test block

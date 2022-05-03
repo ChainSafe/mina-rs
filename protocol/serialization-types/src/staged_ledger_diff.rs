@@ -151,7 +151,6 @@ pub struct TransactionStatusBalanceData {
 pub type TransactionStatusBalanceDataV1 = Versioned<TransactionStatusBalanceData, 1>;
 
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
-#[non_exhaustive]
 pub enum CoinBase {
     Zero,
     // FIXME: other variants are not covered by current test block

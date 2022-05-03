@@ -159,34 +159,71 @@ pub fn auto_from_for_enum(
             0 => variant_token_streams.push(quote! {
                 Other::#ident => Self::#ident
             }),
-            fields_len => {
-                match v.fields {
-                    Fields::Unnamed(_) => {
-                        let mut lhs_idents = Vec::with_capacity(fields_len);
-                        for i in 0..fields_len {
-                            lhs_idents.push(proc_macro2::Ident::new(
-                                &format!("v{i}"),
-                                proc_macro2::Span::call_site(),
-                            ));
+            fields_len => match v.fields {
+                Fields::Unnamed(FieldsUnnamed { unnamed, .. }) => {
+                    let mut lhs_idents = Vec::with_capacity(fields_len);
+                    let mut rhs_convert = Vec::with_capacity(fields_len);
+                    'outer_unnamed: for (i, f) in unnamed.into_iter().enumerate() {
+                        let ident = proc_macro2::Ident::new(
+                            &format!("v{i}"),
+                            proc_macro2::Span::call_site(),
+                        );
+                        lhs_idents.push(ident.clone());
+                        if let syn::Type::Path(type_path) = f.ty {
+                            for seg in type_path.path.segments {
+                                match seg.ident.to_string().as_str() {
+                                    "Vec" => {
+                                        rhs_convert.push(quote! {#ident.into_iter().map(::std::convert::Into::into).collect()});
+                                        continue 'outer_unnamed;
+                                    }
+                                    "Option" => {
+                                        rhs_convert
+                                            .push(quote! {#ident.map(::std::convert::Into::into)});
+                                        continue 'outer_unnamed;
+                                    }
+                                    _ => {}
+                                };
+                            }
                         }
-                        variant_token_streams.push(quote! {
-                            // TODO: handle Vec and Option
-                            Other::#ident(#(#lhs_idents,) *) => Self::#ident(#(#lhs_idents.into(),) *)
-                        });
+
+                        rhs_convert.push(quote! {#ident.into()});
                     }
-                    Fields::Named(FieldsNamed { named, .. }) => {
-                        let mut lhs_idents = Vec::with_capacity(fields_len);
-                        for f in named {
-                            lhs_idents.push(f.ident);
-                        }
-                        variant_token_streams.push(quote! {
-                            // TODO: handle Vec and Option
-                            Other::#ident{#(#lhs_idents,) *} => Self::#ident{#(#lhs_idents: #lhs_idents.into(),) *}
-                        });
-                    }
-                    _ => {}
+                    variant_token_streams.push(quote! {
+                        Other::#ident(#(#lhs_idents,) *) => Self::#ident(#(#rhs_convert,) *)
+                    });
                 }
-            }
+                Fields::Named(FieldsNamed { named, .. }) => {
+                    let mut lhs_idents = Vec::with_capacity(fields_len);
+                    let mut rhs_convert = Vec::with_capacity(fields_len);
+                    'outer_named: for f in named {
+                        if let Some(ident) = f.ident {
+                            lhs_idents.push(ident.clone());
+                            if let syn::Type::Path(type_path) = f.ty {
+                                for seg in type_path.path.segments {
+                                    match seg.ident.to_string().as_str() {
+                                        "Vec" => {
+                                            rhs_convert.push(quote! {#ident: #ident.into_iter().map(::std::convert::Into::into).collect()});
+                                            continue 'outer_named;
+                                        }
+                                        "Option" => {
+                                            rhs_convert.push(
+                                                    quote! {#ident: #ident.map(::std::convert::Into::into)},
+                                                );
+                                            continue 'outer_named;
+                                        }
+                                        _ => {}
+                                    };
+                                }
+                            }
+                            rhs_convert.push(quote! {#ident: #ident.into()});
+                        }
+                    }
+                    variant_token_streams.push(quote! {
+                        Other::#ident{#(#lhs_idents,) *} => Self::#ident{#(#rhs_convert,) *}
+                    });
+                }
+                _ => {}
+            },
         }
     }
 

@@ -14,18 +14,30 @@ mod tests {
     enum Foo {
         V1,
         V2(i64),
-        V3(i64, i64),
-        V4 { f1: i64 },
-        V5 { f1: i64, f2: i64 },
+        V3(i64, Option<i64>, Vec<i64>),
+        V4 {
+            f1: i64,
+        },
+        V5 {
+            f1: i64,
+            f2: Option<i64>,
+            f3: Vec<i64>,
+        },
     }
 
     #[derive(Debug, Clone, PartialEq)]
     enum Bar {
         V1,
         V2(I64),
-        V3(I64, I64),
-        V4 { f1: I64 },
-        V5 { f1: I64, f2: I64 },
+        V3(I64, Option<I64>, Vec<I64>),
+        V4 {
+            f1: I64,
+        },
+        V5 {
+            f1: I64,
+            f2: Option<I64>,
+            f3: Vec<I64>,
+        },
     }
 
     type BarV1 = Versioned<Bar, 1>;
@@ -34,9 +46,13 @@ mod tests {
     fn enum_roundtrip() {
         enum_roundtrip_inner(Foo::V1);
         enum_roundtrip_inner(Foo::V2(1));
-        enum_roundtrip_inner(Foo::V3(2, 3));
-        enum_roundtrip_inner(Foo::V4 { f1: 4 });
-        enum_roundtrip_inner(Foo::V5 { f1: 5, f2: 6 });
+        enum_roundtrip_inner(Foo::V3(2, Some(3), vec![4, 5]));
+        enum_roundtrip_inner(Foo::V4 { f1: 6 });
+        enum_roundtrip_inner(Foo::V5 {
+            f1: 7,
+            f2: Some(8),
+            f3: vec![9, 10, 11],
+        });
     }
 
     fn enum_roundtrip_inner(foo: Foo) {
