@@ -5,7 +5,7 @@
 
 use bs58::encode::EncodeBuilder;
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
-use versioned::Versioned;
+use versioned::*;
 
 use crate::version_bytes;
 
@@ -24,8 +24,17 @@ pub type BlockTimeV1 = Versioned<Versioned<u64, 1>, 1>;
 /// u64 representing an account nonce (v1) // This should also be an extendedu32
 pub type AccountNonceV1 = Versioned<Versioned<u32, 1>, 1>;
 
+/// u32 wrapper
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq, derive_more::From)]
+pub struct U32(pub u32);
+
+/// u64 wrapper
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq, derive_more::From)]
+pub struct U64(pub u64);
+
 /// u32 representing a length (v1)
 pub type LengthV1 = Versioned<Versioned<u32, 1>, 1>;
+impl_from_for_newtype!(U32, LengthV1);
 
 /// u32 representing a delta (i.e. difference) (v1)
 pub type DeltaV1 = Versioned<Versioned<u32, 1>, 1>;
@@ -35,6 +44,7 @@ pub type GlobalSlotNumberV1 = Versioned<Versioned<u32, 1>, 1>;
 
 /// u64 representing an amount of currency (v1)
 pub type AmountV1 = Versioned<Versioned<u64, 1>, 1>;
+impl_from_for_newtype!(U64, AmountV1);
 
 // FIXME: 255 255 cannot be deserialized to u32, use i32 for now
 // Note: Extended_Uint32 is not defined in bin_prot, but comes from mina

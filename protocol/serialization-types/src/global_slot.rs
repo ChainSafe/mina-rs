@@ -3,10 +3,14 @@
 
 //! Structure of a global slot
 
+use mina_serialization_types_macros::AutoFrom;
 use serde::{Deserialize, Serialize};
 use versioned::Versioned;
 
-use crate::v1::{GlobalSlotNumberV1, LengthV1};
+use crate::{
+    common::U32,
+    v1::{GlobalSlotNumberV1, LengthV1},
+};
 
 /// A global slot
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
@@ -19,3 +23,13 @@ pub struct GlobalSlot {
 
 /// A global slot (v1)
 pub type GlobalSlotV1 = Versioned<Versioned<GlobalSlot, 1>, 1>;
+
+/// A global slot (json)
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq, AutoFrom)]
+#[auto_from(GlobalSlot)]
+pub struct GlobalSlotJson {
+    /// The global slot number of a chain or block
+    pub slot_number: U32,
+    /// Number of slots per epoch
+    pub slots_per_epoch: U32,
+}

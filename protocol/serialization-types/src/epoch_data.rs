@@ -3,6 +3,7 @@
 
 //! Types and functions related to the EpochData structure
 
+use mina_serialization_types_macros::AutoFrom;
 use serde::{Deserialize, Serialize};
 
 use crate::v1::{AmountV1, HashV1, LengthV1};
@@ -37,3 +38,19 @@ pub struct EpochData {
 
 /// Epoch data (v1)
 pub type EpochDataV1 = Versioned<Versioned<EpochData, 1>, 1>;
+
+/// Epoch data (json)
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq, AutoFrom)]
+#[auto_from(EpochData)]
+pub struct EpochDataJson {
+    /// Epoch Ledger, contains ledger related data for the epoch
+    pub ledger: EpochLedgerV1,
+    ///  Initialize the random number generator
+    pub seed: HashV1,
+    /// State hash of first block of epoch
+    pub start_checkpoint: HashV1,
+    /// State hash of last known block in the first 2/3 of epoch (excluding the current state)
+    pub lock_checkpoint: HashV1,
+    /// Length of an epoch
+    pub epoch_length: LengthV1,
+}

@@ -3,7 +3,14 @@
 
 //! Types and funcions related to the Mina consensus state
 
-use crate::v1::*;
+use crate::{
+    common::{U32, U64},
+    epoch_data::EpochDataJson,
+    global_slot::GlobalSlotJson,
+    signatures::PublicKeyJson,
+    v1::*,
+};
+use mina_serialization_types_macros::AutoFrom;
 use serde::{Deserialize, Serialize};
 use versioned::*;
 
@@ -13,6 +20,11 @@ pub struct VrfOutputTruncated(pub Vec<u8>);
 
 /// Wrapper struct for the output for a VRF, with version
 pub type VrfOutputTruncatedV1 = Versioned<VrfOutputTruncated, 1>;
+
+/// Wrapper struct for the output for a VRF (json)
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq, AutoFrom)]
+#[auto_from(VrfOutputTruncated)]
+pub struct VrfOutputTruncatedJson(pub Vec<u8>);
 
 /// This structure encapsulates the succinct state of the consensus protocol.
 ///
@@ -61,19 +73,37 @@ pub struct ConsensusState {
 pub type ConsensusStateV1 = Versioned<Versioned<ConsensusState, 1>, 1>;
 
 /// json protocol version of the consensus state
-#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
-pub struct ConsensusStateJson {}
-
-impl From<ConsensusStateJson> for ConsensusState {
-    fn from(_: ConsensusStateJson) -> Self {
-        unimplemented!()
-    }
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq, AutoFrom)]
+#[auto_from(ConsensusState)]
+pub struct ConsensusStateJson {
+    /// Height of block
+    pub blockchain_length: U32,
+    /// Epoch number
+    pub epoch_count: U32,
+    /// Minimum window density oberved on the chain
+    pub min_window_density: U32,
+    /// Current sliding window of densities
+    pub sub_window_densities: Vec<U32>,
+    /// Additional VRS output from leader (for seeding Random Oracle)
+    pub last_vrf_output: VrfOutputTruncatedJson,
+    /// Total supply of currency
+    pub total_currency: U64,
+    /// Current global slot number relative to the current hard fork
+    pub curr_global_slot: GlobalSlotJson,
+    /// Absolute global slot number since genesis
+    pub global_slot_since_genesis: U32,
+    /// Epoch data for previous epoch
+    pub staking_epoch_data: EpochDataJson,
+    /// Epoch data for current epoch
+    pub next_epoch_data: EpochDataJson,
+    /// If the block has an ancestor in the same checkpoint window
+    pub has_ancestor_in_same_checkpoint_window: bool,
+    /// Compressed public key of winning account
+    pub block_stake_winner: PublicKeyJson,
+    /// Compressed public key of the block producer
+    pub block_creator: PublicKeyJson,
+    /// Compresed public key of account receiving the block reward
+    pub coinbase_receiver: PublicKeyJson,
+    /// true if block_stake_winner has no locked tokens, false otherwise
+    pub supercharge_coinbase: bool,
 }
-
-impl From<ConsensusState> for ConsensusStateJson {
-    fn from(_: ConsensusState) -> Self {
-        unimplemented!()
-    }
-}
-
-impl_from_for_versioned_with_proxy!(ConsensusStateJson, ConsensusState, ConsensusStateV1);

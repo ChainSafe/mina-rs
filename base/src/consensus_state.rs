@@ -10,10 +10,12 @@ use crate::{
 };
 use derive_more::From;
 use mina_crypto::prelude::*;
+use mina_serialization_types::{json::*, v1::*, *};
 use mina_serialization_types_macros::AutoFrom;
 use proof_systems::mina_hasher::{Hashable, ROInput};
 use proof_systems::mina_signer::CompressedPubKey;
 use smart_default::SmartDefault;
+use versioned::*;
 
 /// Wrapper struct for the output for a VRF
 #[derive(Clone, Default, PartialEq, Debug, From, AutoFrom)]
@@ -131,3 +133,13 @@ impl ConsensusState {
         self.sub_window_densities.iter().map(|i| i.0).collect()
     }
 }
+
+impl BinProtSerializationType for ConsensusState {
+    type T = ConsensusStateV1;
+}
+
+impl JsonSerializationType for ConsensusState {
+    type T = ConsensusStateJson;
+}
+
+impl_from_with_proxy!(ConsensusState, ConsensusStateV1, ConsensusStateJson);
