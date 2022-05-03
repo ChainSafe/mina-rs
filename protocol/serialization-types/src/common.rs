@@ -3,6 +3,7 @@
 
 //! Some basic versioned types used throughout
 
+use bs58::encode::EncodeBuilder;
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
 use versioned::Versioned;
 
@@ -66,6 +67,47 @@ pub type ByteVecV1 = Versioned<Vec<u8>, 1>;
 #[derive(Debug, Clone, PartialEq, derive_more::From)]
 pub struct Base58EncodableVersionedType<const VERSION_BYTE: u8, T>(pub T);
 
+impl<'de, const VERSION_BYTE: u8, T> Base58EncodableVersionedType<VERSION_BYTE, T>
+where
+    T: Deserialize<'de>,
+{
+    /// Decode input base58 encoded bytes into [Base58EncodableVersionedType]
+    pub fn from_base58(input: impl AsRef<[u8]>) -> Result<Self, crate::errors::Error> {
+        let bytes: Vec<u8> = bs58::decode(input)
+            .with_check(Some(VERSION_BYTE))
+            .into_vec()
+            .map_err(crate::errors::Error::Base58DecodeError)?;
+        // skip the version check byte
+        let data: T =
+            bin_prot::from_reader(&bytes[1..]).map_err(crate::errors::Error::BinProtError)?;
+        Ok(Self(data))
+    }
+}
+
+impl<const VERSION_BYTE: u8, T> Base58EncodableVersionedType<VERSION_BYTE, T>
+where
+    T: Serialize,
+{
+    /// Encode inner data with version check byte into [Vec<u8>]
+    pub fn to_base58(&self) -> Result<Vec<u8>, bin_prot::error::Error> {
+        let builder = self.to_base58_builder()?;
+        Ok(builder.into_vec())
+    }
+
+    /// Encode inner data with version check byte into [String]
+    pub fn to_base58_string(&self) -> Result<String, bin_prot::error::Error> {
+        let builder = self.to_base58_builder()?;
+        Ok(builder.into_string())
+    }
+
+    /// Encode inner data with version check byte into [EncodeBuilder]
+    fn to_base58_builder(&self) -> Result<EncodeBuilder<'static, Vec<u8>>, bin_prot::error::Error> {
+        let mut buf = Vec::new();
+        bin_prot::to_writer(&mut buf, &self.0)?;
+        Ok(bs58::encode(buf).with_check_version(VERSION_BYTE))
+    }
+}
+
 impl<const VERSION_BYTE: u8, T> From<Base58EncodableVersionedType<VERSION_BYTE, T>> for (T,) {
     fn from(i: Base58EncodableVersionedType<VERSION_BYTE, T>) -> Self {
         (i.0,)
@@ -80,11 +122,9 @@ where
     where
         S: Serializer,
     {
-        let mut buf = Vec::new();
-        bin_prot::to_writer(&mut buf, &self.0).map_err(<S::Error as serde::ser::Error>::custom)?;
-        let s = bs58::encode(buf)
-            .with_check_version(VERSION_BYTE)
-            .into_string();
+        let s = self
+            .to_base58_string()
+            .map_err(<S::Error as serde::ser::Error>::custom)?;
         serializer.serialize_str(&s)
     }
 }
@@ -100,14 +140,7 @@ where
     {
         let s =
             String::deserialize(deserializer).map_err(<D::Error as serde::de::Error>::custom)?;
-        let bytes: Vec<u8> = bs58::decode(s)
-            .with_check(Some(VERSION_BYTE))
-            .into_vec()
-            .map_err(<D::Error as serde::de::Error>::custom)?;
-        // skip the version check byte
-        let data: T =
-            bin_prot::from_reader(&bytes[1..]).map_err(<D::Error as serde::de::Error>::custom)?;
-        Ok(Base58EncodableVersionedType::<VERSION_BYTE, T>(data))
+        Self::from_base58(s).map_err(<D::Error as serde::de::Error>::custom)
     }
 }
 

@@ -22,6 +22,7 @@ pub mod common;
 pub mod consensus_state;
 pub mod delta_transition_chain_proof;
 pub mod epoch_data;
+pub mod errors;
 pub mod external_transition;
 pub mod field_and_curve_elements;
 pub mod global_slot;
