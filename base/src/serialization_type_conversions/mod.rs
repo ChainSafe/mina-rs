@@ -17,90 +17,6 @@ impl_from_with_proxy!(
     ExternalTransitionJson
 );
 
-impl From<BlockchainState> for BlockchainStateV1 {
-    fn from(t: BlockchainState) -> Self {
-        mina_serialization_types::blockchain_state::BlockchainState {
-            staged_ledger_hash: t.staged_ledger_hash.into(),
-            snarked_ledger_hash: t.snarked_ledger_hash.into(),
-            genesis_ledger_hash: t.genesis_ledger_hash.into(),
-            snarked_next_available_token: t.snarked_next_available_token.into(),
-            timestamp: t.timestamp.0.into(),
-        }
-        .into()
-    }
-}
-impl From<BlockchainStateV1> for BlockchainState {
-    fn from(t: BlockchainStateV1) -> Self {
-        Self {
-            staged_ledger_hash: t.t.t.staged_ledger_hash.into(),
-            snarked_ledger_hash: t.t.t.snarked_ledger_hash.into(),
-            genesis_ledger_hash: t.t.t.genesis_ledger_hash.into(),
-            snarked_next_available_token: t.t.t.snarked_next_available_token.t.t.t.into(),
-            timestamp: t.t.t.timestamp.into(),
-        }
-    }
-}
-
-impl From<GlobalSlot> for GlobalSlotV1 {
-    fn from(t: GlobalSlot) -> Self {
-        mina_serialization_types::global_slot::GlobalSlot {
-            slot_number: t.slot_number.into(),
-            slots_per_epoch: t.slots_per_epoch.into(),
-        }
-        .into()
-    }
-}
-impl From<GlobalSlotV1> for GlobalSlot {
-    fn from(t: GlobalSlotV1) -> Self {
-        Self {
-            slot_number: t.t.t.slot_number.t.t.into(),
-            slots_per_epoch: t.t.t.slots_per_epoch.t.t.into(),
-        }
-    }
-}
-
-impl From<EpochLedger> for EpochLedgerV1 {
-    fn from(t: EpochLedger) -> Self {
-        mina_serialization_types::epoch_data::EpochLedger {
-            hash: t.hash.into(),
-            total_currency: t.total_currency.into(),
-        }
-        .into()
-    }
-}
-impl From<EpochLedgerV1> for EpochLedger {
-    fn from(t: EpochLedgerV1) -> Self {
-        Self {
-            hash: t.t.t.hash.into(),
-            total_currency: t.t.t.total_currency.t.t.into(),
-        }
-    }
-}
-
-impl From<EpochData> for EpochDataV1 {
-    fn from(t: EpochData) -> Self {
-        mina_serialization_types::epoch_data::EpochData {
-            ledger: t.ledger.into(),
-            seed: t.seed.into(),
-            start_checkpoint: t.start_checkpoint.into(),
-            lock_checkpoint: t.lock_checkpoint.into(),
-            epoch_length: t.epoch_length.into(),
-        }
-        .into()
-    }
-}
-impl From<EpochDataV1> for EpochData {
-    fn from(t: EpochDataV1) -> Self {
-        Self {
-            ledger: t.t.t.ledger.into(),
-            seed: t.t.t.seed.into(),
-            start_checkpoint: t.t.t.start_checkpoint.into(),
-            lock_checkpoint: t.t.t.lock_checkpoint.into(),
-            epoch_length: t.t.t.epoch_length.t.t.into(),
-        }
-    }
-}
-
 impl_from_with_proxy!(
     ProtocolStateBody,
     ProtocolStateBodyV1,
@@ -127,38 +43,6 @@ impl From<SignedCommandPayloadBodyV1> for SignedCommandPayloadBody {
     }
 }
 
-impl From<SignedCommandMemo> for SignedCommandMemoV1 {
-    fn from(t: SignedCommandMemo) -> Self {
-        Self::new(t.0)
-    }
-}
-
-impl From<SignedCommandPayloadCommon> for SignedCommandPayloadCommonV1 {
-    fn from(t: SignedCommandPayloadCommon) -> Self {
-        mina_serialization_types::staged_ledger_diff::SignedCommandPayloadCommon {
-            fee: t.fee.into(),
-            fee_token: t.fee_token.into(),
-            fee_payer_pk: t.fee_payer_pk.into(),
-            nonce: (t.nonce.0 as i32).into(),
-            valid_until: (t.valid_until.0 as i32).into(),
-            memo: t.memo.into(),
-        }
-        .into()
-    }
-}
-impl From<SignedCommandPayloadCommonV1> for SignedCommandPayloadCommon {
-    fn from(t: SignedCommandPayloadCommonV1) -> Self {
-        Self {
-            fee: t.t.t.t.fee.t.t.into(),
-            fee_token: t.t.t.t.fee_token.t.t.t.into(),
-            fee_payer_pk: t.t.t.t.fee_payer_pk.into(),
-            nonce: AccountNonce(t.t.t.t.nonce.t.t as u32), // TODO - remove these casts once ExtendedU32 is properly handled
-            valid_until: GlobalSlotNumber(t.t.t.t.valid_until.t.t as u32),
-            memo: t.t.t.t.memo.t.into(),
-        }
-    }
-}
-
 impl From<UserCommand> for UserCommandV1 {
     fn from(t: UserCommand) -> Self {
         use mina_serialization_types::staged_ledger_diff::UserCommand as UC;
@@ -174,17 +58,6 @@ impl From<UserCommandV1> for UserCommand {
             UC::SignedCommand(sc) => Self::SignedCommand(sc.into()),
             _ => unimplemented!(),
         }
-    }
-}
-
-impl From<TransactionStatusApplied> for TransactionStatusAppliedV1 {
-    fn from(t: TransactionStatusApplied) -> Self {
-        TransactionStatusAppliedV1((t.0 .0.into(), t.0 .1.into()))
-    }
-}
-impl From<TransactionStatusAppliedV1> for TransactionStatusApplied {
-    fn from(t: TransactionStatusAppliedV1) -> Self {
-        Self((t.0 .0.into(), t.0 .1.into()))
     }
 }
 
@@ -247,17 +120,6 @@ impl From<InternalCommandBalanceDataV1> for InternalCommandBalanceData {
             BD::FeeTransfer(data) => Self::FeeTransfer(data.into()),
             _ => unimplemented!(),
         }
-    }
-}
-
-impl From<StagedLedgerDiffTuple> for StagedLedgerDiffTupleV1 {
-    fn from(t: StagedLedgerDiffTuple) -> Self {
-        (t.0 .0.into(), t.0 .1).into()
-    }
-}
-impl From<StagedLedgerDiffTupleV1> for StagedLedgerDiffTuple {
-    fn from(t: StagedLedgerDiffTupleV1) -> Self {
-        StagedLedgerDiffTuple((t.t.0.into(), t.t.1))
     }
 }
 

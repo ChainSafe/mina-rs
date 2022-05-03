@@ -5,9 +5,11 @@
 
 use crate::numbers::{BlockTime, TokenId};
 use mina_crypto::hash::*;
+use mina_serialization_types_macros::AutoFrom;
 use proof_systems::mina_hasher::{Hashable, ROInput};
 
-#[derive(Clone, Default, Debug, PartialEq)]
+#[derive(Clone, Default, Debug, PartialEq, AutoFrom)]
+#[auto_from(mina_serialization_types::blockchain_state::BlockchainState)]
 /// Mina blockchain state struct
 pub struct BlockchainState {
     /// Hash of the proposed next state of the blockchain

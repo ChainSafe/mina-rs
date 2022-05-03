@@ -21,18 +21,20 @@ pub struct StagedLedgerDiff {
     pub diff: StagedLedgerDiffTuple,
 }
 
-#[derive(Clone, PartialEq, Debug, Default)]
+#[derive(Clone, PartialEq, Debug, Default, AutoFrom)]
+#[auto_from(mina_serialization_types::staged_ledger_diff::StagedLedgerDiffTuple)]
 pub struct StagedLedgerDiffTuple(
-    pub(crate) (StagedLedgerPreDiffTwo, Option<StagedLedgerPreDiffOne>),
+    pub(crate) StagedLedgerPreDiffTwo,
+    pub(crate) Option<StagedLedgerPreDiffOne>,
 );
 
 impl StagedLedgerDiffTuple {
     pub fn diff_two(&self) -> &StagedLedgerPreDiffTwo {
-        &self.0 .0
+        &self.0
     }
 
     pub fn diff_one(&self) -> &Option<StagedLedgerPreDiffOne> {
-        &self.0 .1
+        &self.1
     }
 }
 
@@ -64,18 +66,20 @@ pub enum TransactionStatus {
     // FIXME: other variants are not covered by current test block
 }
 
-#[derive(Clone, PartialEq, Debug)]
+#[derive(Clone, PartialEq, Debug, AutoFrom)]
+#[auto_from(mina_serialization_types::staged_ledger_diff::TransactionStatusAppliedV1)]
 pub struct TransactionStatusApplied(
-    pub (TransactionStatusAuxiliaryData, TransactionStatusBalanceData),
+    pub TransactionStatusAuxiliaryData,
+    pub TransactionStatusBalanceData,
 );
 
 impl TransactionStatusApplied {
     pub fn auxiliary_data(&self) -> &TransactionStatusAuxiliaryData {
-        &self.0 .0
+        &self.0
     }
 
     pub fn balance_data(&self) -> &TransactionStatusBalanceData {
-        &self.0 .1
+        &self.1
     }
 }
 

@@ -8,7 +8,11 @@ use serde::{Deserialize, Serialize};
 use versioned::Versioned;
 
 /// Wrapper struct for the output for a VRF
-pub type VrfOutputTruncatedV1 = Versioned<Vec<u8>, 1>;
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
+pub struct VrfOutputTruncated(pub Vec<u8>);
+
+/// Wrapper struct for the output for a VRF, with version
+pub type VrfOutputTruncatedV1 = Versioned<VrfOutputTruncated, 1>;
 
 /// This structure encapsulates the succinct state of the consensus protocol.
 ///

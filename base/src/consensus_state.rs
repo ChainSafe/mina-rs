@@ -10,19 +10,15 @@ use crate::{
 };
 use derive_more::From;
 use mina_crypto::prelude::*;
-use mina_serialization_types::v1::VrfOutputTruncatedV1;
 use mina_serialization_types_macros::AutoFrom;
 use proof_systems::mina_hasher::{Hashable, ROInput};
 use proof_systems::mina_signer::CompressedPubKey;
-use serde::Serialize;
 use smart_default::SmartDefault;
-use versioned::*;
 
 /// Wrapper struct for the output for a VRF
-#[derive(Clone, Default, PartialEq, Debug, From, Serialize)]
+#[derive(Clone, Default, PartialEq, Debug, From, AutoFrom)]
+#[auto_from(mina_serialization_types::consensus_state::VrfOutputTruncated)]
 pub struct VrfOutputTruncated(pub Vec<u8>);
-
-impl_from_for_newtype!(VrfOutputTruncated, VrfOutputTruncatedV1);
 
 impl Hashable for VrfOutputTruncated {
     type D = ();

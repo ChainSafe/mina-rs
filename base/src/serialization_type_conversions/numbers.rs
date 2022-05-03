@@ -20,10 +20,30 @@ impl_from_for_newtype!(ExtendedU32, ExtendedU32V1);
 impl_from_for_newtype!(TokenId, TokenIdV1);
 
 impl_from_for_newtype!(AccountNonce, AccountNonceV1);
+impl From<AccountNonce> for ExtendedU32V1 {
+    fn from(t: AccountNonce) -> Self {
+        (t.0 as i32).into()
+    }
+}
+impl From<ExtendedU32V1> for AccountNonce {
+    fn from(t: ExtendedU32V1) -> Self {
+        Self(t.t.t as u32)
+    }
+}
 
 impl_from_for_newtype!(BlockTime, BlockTimeV1);
 
 impl_from_for_newtype!(GlobalSlotNumber, GlobalSlotNumberV1);
+impl From<GlobalSlotNumber> for ExtendedU32V1 {
+    fn from(t: GlobalSlotNumber) -> Self {
+        (t.0 as i32).into()
+    }
+}
+impl From<ExtendedU32V1> for GlobalSlotNumber {
+    fn from(t: ExtendedU32V1) -> Self {
+        Self(t.t.t as u32)
+    }
+}
 
 impl_from_for_newtype!(Hex64, Hex64V1);
 

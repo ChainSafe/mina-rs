@@ -107,7 +107,8 @@ impl Hashable for SignedCommandPayload {
 }
 
 /// Common fields required by all signed commands
-#[derive(Clone, PartialEq, Debug)]
+#[derive(Clone, PartialEq, Debug, AutoFrom)]
+#[auto_from(mina_serialization_types::staged_ledger_diff::SignedCommandPayloadCommon)]
 pub struct SignedCommandPayloadCommon {
     /// Amount paid in fees to include this command in a block
     pub fee: Amount,

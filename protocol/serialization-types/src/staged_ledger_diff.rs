@@ -21,8 +21,13 @@ pub struct StagedLedgerDiff {
 
 pub type StagedLedgerDiffV1 = Versioned<StagedLedgerDiff, 1>;
 
-pub type StagedLedgerDiffTupleV1 =
-    Versioned<(StagedLedgerPreDiffTwoV1, Option<StagedLedgerPreDiffOneV1>), 1>;
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
+pub struct StagedLedgerDiffTuple(
+    pub StagedLedgerPreDiffTwoV1,
+    pub Option<StagedLedgerPreDiffOneV1>,
+);
+
+pub type StagedLedgerDiffTupleV1 = Versioned<StagedLedgerDiffTuple, 1>;
 
 // FIXME: No test coverage yet
 pub type StagedLedgerPreDiffOneV1 = ();
@@ -107,7 +112,10 @@ pub type PaymentPayloadV1 = Versioned<Versioned<PaymentPayload, 1>, 1>;
 
 pub type SignedCommandFeeTokenV1 = Versioned<Versioned<Versioned<u64, 1>, 1>, 1>;
 
-pub type SignedCommandMemoV1 = Versioned<Vec<u8>, 1>;
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
+pub struct SignedCommandMemo(pub Vec<u8>);
+
+pub type SignedCommandMemoV1 = Versioned<SignedCommandMemo, 1>;
 
 // FIXME: No test coverage yet
 pub type SnappCommand = Versioned<Versioned<(), 1>, 1>;
@@ -123,10 +131,8 @@ pub type TransactionStatusV1 = Versioned<TransactionStatus, 1>;
 
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub struct TransactionStatusAppliedV1(
-    pub  (
-        TransactionStatusAuxiliaryDataV1,
-        TransactionStatusBalanceDataV1,
-    ),
+    pub TransactionStatusAuxiliaryDataV1,
+    pub TransactionStatusBalanceDataV1,
 );
 
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
