@@ -26,6 +26,7 @@ pub mod errors;
 pub mod external_transition;
 pub mod field_and_curve_elements;
 pub mod global_slot;
+pub mod macros;
 pub mod opening_proof;
 pub mod proof_evaluations;
 pub mod proof_messages;

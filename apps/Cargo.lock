@@ -720,6 +720,7 @@ dependencies = [
  "num",
  "proof-systems",
  "serde",
+ "serde_json",
  "thiserror",
  "versioned",
 ]
@@ -792,6 +793,7 @@ dependencies = [
  "mina-serialization-types-macros",
  "proof-systems",
  "serde",
+ "serde_json",
  "thiserror",
  "versioned",
 ]

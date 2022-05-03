@@ -29,10 +29,10 @@ pub struct ExternalTransition {
     pub validation_callback: (),
 }
 
-impl BinProtSerializationType for ExternalTransition {
+impl BinProtSerializationType<'_> for ExternalTransition {
     type T = ExternalTransitionV1;
 }
 
-impl JsonSerializationType for ExternalTransition {
+impl JsonSerializationType<'_> for ExternalTransition {
     type T = ExternalTransitionJson;
 }

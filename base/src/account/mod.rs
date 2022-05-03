@@ -53,7 +53,7 @@ pub struct Account {
     pub snapp: Option<()>,
 }
 
-impl BinProtSerializationType for Account {
+impl BinProtSerializationType<'_> for Account {
     type T = AccountV1;
 }
 

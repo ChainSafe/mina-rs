@@ -30,9 +30,7 @@ fn main() -> anyhow::Result<()> {
 }
 
 fn cpu_profile_serialization() -> anyhow::Result<ExternalTransition> {
-    let et: <ExternalTransition as BinProtSerializationType>::T =
-        bin_prot::from_reader(BLOCK_BYTES)?;
-    Ok(et.into())
+    Ok(<ExternalTransition as BinProtSerializationType>::try_from_binprot(BLOCK_BYTES)?)
 }
 
 fn heap_profile_serialization() -> anyhow::Result<ExternalTransition> {

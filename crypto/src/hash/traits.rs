@@ -38,8 +38,8 @@ mod tests {
     use super::*;
     use crate::hash::prefixes::PROTOCOL_STATE;
     use crate::hash::types::BaseHash;
-    use crate::{impl_bs58_json, impl_from_for_hash};
-    use mina_serialization_types::{json::*, v1::*, version_bytes};
+    use crate::impl_from_for_hash;
+    use mina_serialization_types::{impl_strconv_via_json, json::*, v1::*, version_bytes};
     use versioned::*;
 
     #[derive(Clone, PartialEq, Debug)]
@@ -47,7 +47,7 @@ mod tests {
     type TestHashV1Json = HashV1Json<{ version_bytes::STATE_HASH }>;
     impl_from_for_hash!(TestHash, HashV1);
     impl_from_for_generic_with_proxy!(TestHash, HashV1, TestHashV1Json);
-    impl_bs58_json!(TestHash, TestHashV1Json);
+    impl_strconv_via_json!(TestHash, TestHashV1Json);
 
     impl From<Box<[u8]>> for TestHash {
         fn from(b: Box<[u8]>) -> Self {
@@ -74,12 +74,12 @@ mod tests {
         let t = TestType(123);
         let h = t.hash();
         assert_eq!(
-            h.to_base58_string().unwrap(),
-            "3NLXw1spzQFnLEJGQQKVyykTFExSBjLuhfEU32Fez3odCwY3A4Yc"
+            h,
+            TestHash::try_from("3NLXw1spzQFnLEJGQQKVyykTFExSBjLuhfEU32Fez3odCwY3A4Yc").unwrap()
         );
         assert_eq!(
-            h,
-            TestHash::from_base58("3NLXw1spzQFnLEJGQQKVyykTFExSBjLuhfEU32Fez3odCwY3A4Yc").unwrap()
+            String::try_from(h).unwrap(),
+            "3NLXw1spzQFnLEJGQQKVyykTFExSBjLuhfEU32Fez3odCwY3A4Yc"
         );
     }
 

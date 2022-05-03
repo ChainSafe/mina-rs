@@ -16,12 +16,17 @@ mod tests {
             let versioned = block.external_transitionv1().unwrap();
 
             let et: ExternalTransition = versioned.clone().into();
-            let versioned2: <ExternalTransition as BinProtSerializationType>::T = et.into();
+            let et2: ExternalTransition =
+                <ExternalTransition as BinProtSerializationType>::try_from_binprot(
+                    block.bytes.as_slice(),
+                )
+                .unwrap();
+            assert_eq!(et, et2);
+            let versioned2: <ExternalTransition as BinProtSerializationType>::T = et.clone().into();
             assert_eq!(versioned, versioned2);
 
-            let mut bytes = Vec::with_capacity(block.bytes.len());
-            bin_prot::to_writer(&mut bytes, &versioned).unwrap();
-            assert_eq!(bytes.as_slice(), block.bytes.as_slice(),);
+            let bytes = et.try_into_binprot().unwrap();
+            assert_eq!(bytes.as_slice(), block.bytes.as_slice());
         }
     }
 }

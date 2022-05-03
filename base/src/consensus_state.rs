@@ -134,11 +134,11 @@ impl ConsensusState {
     }
 }
 
-impl BinProtSerializationType for ConsensusState {
+impl BinProtSerializationType<'_> for ConsensusState {
     type T = ConsensusStateV1;
 }
 
-impl JsonSerializationType for ConsensusState {
+impl JsonSerializationType<'_> for ConsensusState {
     type T = ConsensusStateJson;
 }
 

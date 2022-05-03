@@ -48,14 +48,14 @@ mod tests {
         b.body.consensus_state.next_epoch_data = EpochData::default();
         a.body.consensus_state.curr_global_slot.slot_number = GlobalSlotNumber(7140);
         b.body.consensus_state.next_epoch_data.lock_checkpoint =
-            StateHash::from_base58("3NKmKfm2RSTfA1w5mNSJRLoyAQgcRhWjH5qdNynchHar4kBmJPbW").unwrap();
+            StateHash::try_from("3NKmKfm2RSTfA1w5mNSJRLoyAQgcRhWjH5qdNynchHar4kBmJPbW").unwrap();
         b.body.consensus_state.next_epoch_data.start_checkpoint =
-            StateHash::from_base58("3NKmKfm2RSTfA1w5mNSJRLoyAQgcRhWjH5qdNynchHar4kBmJPbW").unwrap();
+            StateHash::try_from("3NKmKfm2RSTfA1w5mNSJRLoyAQgcRhWjH5qdNynchHar4kBmJPbW").unwrap();
 
         b.body.consensus_state.staking_epoch_data.lock_checkpoint =
-            StateHash::from_base58("3NLWRuFB7G8CPkizXnRwpAUcQu5cAS5RTWE5vhWL1XBE47oEJ2kn").unwrap();
+            StateHash::try_from("3NLWRuFB7G8CPkizXnRwpAUcQu5cAS5RTWE5vhWL1XBE47oEJ2kn").unwrap();
         b.body.consensus_state.staking_epoch_data.start_checkpoint =
-            StateHash::from_base58("3NK2tkzqqK5spR2sZ7tujjqPksL45M3UUrcA4WhCkeiPtnugyE2x").unwrap();
+            StateHash::try_from("3NK2tkzqqK5spR2sZ7tujjqPksL45M3UUrcA4WhCkeiPtnugyE2x").unwrap();
 
         assert!(!chain_a.is_short_range(&chain_b).unwrap());
     }
@@ -87,14 +87,14 @@ mod tests {
         a.body.consensus_state.epoch_count = Length(0);
         a.body.consensus_state.next_epoch_data = EpochData::default();
         a.body.consensus_state.next_epoch_data.lock_checkpoint =
-            StateHash::from_base58("3NLWRuFB7G8CPkizXnRwpAUcQu5cAS5RTWE5vhWL1XBE47oEJ2kn").unwrap();
+            StateHash::try_from("3NLWRuFB7G8CPkizXnRwpAUcQu5cAS5RTWE5vhWL1XBE47oEJ2kn").unwrap();
         a.body.consensus_state.next_epoch_data.start_checkpoint =
-            StateHash::from_base58("3NK2tkzqqK5spR2sZ7tujjqPksL45M3UUrcA4WhCkeiPtnugyE2x").unwrap();
+            StateHash::try_from("3NK2tkzqqK5spR2sZ7tujjqPksL45M3UUrcA4WhCkeiPtnugyE2x").unwrap();
 
         a.body.consensus_state.staking_epoch_data.lock_checkpoint =
-            StateHash::from_base58("3NK2tkzqqK5spR2sZ7tujjqPksL45M3UUrcA4WhCkeiPtnugyE2x").unwrap();
+            StateHash::try_from("3NK2tkzqqK5spR2sZ7tujjqPksL45M3UUrcA4WhCkeiPtnugyE2x").unwrap();
         a.body.consensus_state.staking_epoch_data.start_checkpoint =
-            StateHash::from_base58("3NK2tkzqqK5spR2sZ7tujjqPksL45M3UUrcA4WhCkeiPtnugyE2x").unwrap();
+            StateHash::try_from("3NK2tkzqqK5spR2sZ7tujjqPksL45M3UUrcA4WhCkeiPtnugyE2x").unwrap();
         a.body.consensus_state.curr_global_slot = GlobalSlot::default();
         a.body.consensus_state.curr_global_slot.slot_number = GlobalSlotNumber(7139);
         a.body.consensus_state.curr_global_slot.slots_per_epoch = Length(7140);
@@ -124,14 +124,14 @@ mod tests {
         b.body.consensus_state.epoch_count = Length(1);
         b.body.consensus_state.next_epoch_data = EpochData::default();
         b.body.consensus_state.next_epoch_data.lock_checkpoint =
-            StateHash::from_base58("3NKmKfm2RSTfA1w5mNSJRLoyAQgcRhWjH5qdNynchHar4kBmJPbW").unwrap();
+            StateHash::try_from("3NKmKfm2RSTfA1w5mNSJRLoyAQgcRhWjH5qdNynchHar4kBmJPbW").unwrap();
         b.body.consensus_state.next_epoch_data.start_checkpoint =
-            StateHash::from_base58("3NKmKfm2RSTfA1w5mNSJRLoyAQgcRhWjH5qdNynchHar4kBmJPbW").unwrap();
+            StateHash::try_from("3NKmKfm2RSTfA1w5mNSJRLoyAQgcRhWjH5qdNynchHar4kBmJPbW").unwrap();
 
         b.body.consensus_state.staking_epoch_data.lock_checkpoint =
-            StateHash::from_base58("3NLWRuFB7G8CPkizXnRwpAUcQu5cAS5RTWE5vhWL1XBE47oEJ2kn").unwrap();
+            StateHash::try_from("3NLWRuFB7G8CPkizXnRwpAUcQu5cAS5RTWE5vhWL1XBE47oEJ2kn").unwrap();
         b.body.consensus_state.staking_epoch_data.start_checkpoint =
-            StateHash::from_base58("3NK2tkzqqK5spR2sZ7tujjqPksL45M3UUrcA4WhCkeiPtnugyE2x").unwrap();
+            StateHash::try_from("3NK2tkzqqK5spR2sZ7tujjqPksL45M3UUrcA4WhCkeiPtnugyE2x").unwrap();
         b.body.consensus_state.curr_global_slot = GlobalSlot::default();
         b.body.consensus_state.curr_global_slot.slot_number = GlobalSlotNumber(7140);
         b.body.consensus_state.curr_global_slot.slots_per_epoch = Length(7140);
@@ -166,14 +166,14 @@ mod tests {
         a.body.consensus_state.epoch_count = Length(0);
         a.body.consensus_state.next_epoch_data = EpochData::default();
         a.body.consensus_state.next_epoch_data.lock_checkpoint =
-            StateHash::from_base58("3NLWRuFB7G8CPkizXnRwpAUcQu5cAS5RTWE5vhWL1XBE47oEJ2kn").unwrap();
+            StateHash::try_from("3NLWRuFB7G8CPkizXnRwpAUcQu5cAS5RTWE5vhWL1XBE47oEJ2kn").unwrap();
         a.body.consensus_state.next_epoch_data.start_checkpoint =
-            StateHash::from_base58("3NK2tkzqqK5spR2sZ7tujjqPksL45M3UUrcA4WhCkeiPtnugyE2x").unwrap();
+            StateHash::try_from("3NK2tkzqqK5spR2sZ7tujjqPksL45M3UUrcA4WhCkeiPtnugyE2x").unwrap();
 
         a.body.consensus_state.staking_epoch_data.lock_checkpoint =
-            StateHash::from_base58("3NK2tkzqqK5spR2sZ7tujjqPksL45M3UUrcA4WhCkeiPtnugyE2x").unwrap();
+            StateHash::try_from("3NK2tkzqqK5spR2sZ7tujjqPksL45M3UUrcA4WhCkeiPtnugyE2x").unwrap();
         a.body.consensus_state.staking_epoch_data.start_checkpoint =
-            StateHash::from_base58("3NK2tkzqqK5spR2sZ7tujjqPksL45M3UUrcA4WhCkeiPtnugyE2x").unwrap();
+            StateHash::try_from("3NK2tkzqqK5spR2sZ7tujjqPksL45M3UUrcA4WhCkeiPtnugyE2x").unwrap();
         a.body.consensus_state.curr_global_slot = GlobalSlot::default();
         a.body.consensus_state.curr_global_slot.slot_number = GlobalSlotNumber(6839);
         a.body.consensus_state.curr_global_slot.slots_per_epoch = Length(7140);
@@ -203,14 +203,14 @@ mod tests {
         b.body.consensus_state.epoch_count = Length(22);
         b.body.consensus_state.next_epoch_data = EpochData::default();
         b.body.consensus_state.next_epoch_data.lock_checkpoint =
-            StateHash::from_base58("3NKPqRTPrJJVyrb4RKMikfJG9WabCV1fH6aw2p62dEKNpf1aVeTy").unwrap();
+            StateHash::try_from("3NKPqRTPrJJVyrb4RKMikfJG9WabCV1fH6aw2p62dEKNpf1aVeTy").unwrap();
         b.body.consensus_state.next_epoch_data.start_checkpoint =
-            StateHash::from_base58("3NLuG9aJEm4xm4tNEzYKM88aNksquUvPbmdACgf7kQnhCBEcE2gJ").unwrap();
+            StateHash::try_from("3NLuG9aJEm4xm4tNEzYKM88aNksquUvPbmdACgf7kQnhCBEcE2gJ").unwrap();
 
         b.body.consensus_state.staking_epoch_data.lock_checkpoint =
-            StateHash::from_base58("3NKW9MqYePrfK48ZAn3iu7iDDc17wZkTmzo5tHQ96bvG1gUfG9Dv").unwrap();
+            StateHash::try_from("3NKW9MqYePrfK48ZAn3iu7iDDc17wZkTmzo5tHQ96bvG1gUfG9Dv").unwrap();
         b.body.consensus_state.staking_epoch_data.start_checkpoint =
-            StateHash::from_base58("3NKcySpVjMsrLpCHYvzmEvap4HUhSdws8HU7fv5cL3wgamYVzQts").unwrap();
+            StateHash::try_from("3NKcySpVjMsrLpCHYvzmEvap4HUhSdws8HU7fv5cL3wgamYVzQts").unwrap();
         b.body.consensus_state.curr_global_slot = GlobalSlot::default();
         b.body.consensus_state.curr_global_slot.slot_number = GlobalSlotNumber(1577);
         b.body.consensus_state.curr_global_slot.slots_per_epoch = Length(7140);
