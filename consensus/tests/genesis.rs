@@ -9,10 +9,14 @@ mod tests {
     use time::macros::*;
     use wasm_bindgen_test::*;
 
+    #[wasm_bindgen_test]
+    fn test_genesis_mainnet_wasm() {
+        test_genesis_mainnet().unwrap()
+    }
+
     // https://github.com/MinaProtocol/mina/tree/feature/9665-spec-ouroboros-samasika-checkpointing/docs/specs/consensus#611-genesis-block
     #[test]
-    #[wasm_bindgen_test]
-    fn test_genesis_mainnet() {
+    fn test_genesis_mainnet() -> anyhow::Result<()> {
         let et = ExternalTransition::from_genesis_config(&MAINNET_CONFIG);
 
         let bs = &et.protocol_state.body.blockchain_state;
@@ -36,7 +40,7 @@ mod tests {
             bs.staged_ledger_hash
                 .non_snark
                 .ledger_hash
-                .to_base58_string(),
+                .to_base58_string()?,
             "jx7buQVWFLsXTtzRgSxbYcT8EYLS8KCZbLrfDcJxMtyy4thw2Ee"
         );
 
@@ -51,7 +55,7 @@ mod tests {
         );
         assert_eq!(
             cs.last_vrf_output.0,
-            base64::decode("NfThG1r1GxQuhaGLSJWGxcpv24SudtXG4etB0TnGqwg=").unwrap()
+            base64::decode("NfThG1r1GxQuhaGLSJWGxcpv24SudtXG4etB0TnGqwg=")?
         );
         assert_eq!(cs.total_currency.to_string(), "805385692.840039233");
         assert_eq!(cs.curr_global_slot.slot_number, 0_u32.into());
@@ -61,7 +65,7 @@ mod tests {
         {
             let sed = &cs.staking_epoch_data;
             assert_eq!(
-                sed.ledger.hash.to_base58_string(),
+                sed.ledger.hash.to_base58_string()?,
                 "jx7buQVWFLsXTtzRgSxbYcT8EYLS8KCZbLrfDcJxMtyy4thw2Ee"
             );
             assert_eq!(sed.ledger.total_currency.0, 805385692840039233);
@@ -82,7 +86,7 @@ mod tests {
         {
             let ned = &cs.next_epoch_data;
             assert_eq!(
-                ned.ledger.hash.to_base58_string(),
+                ned.ledger.hash.to_base58_string()?,
                 "jx7buQVWFLsXTtzRgSxbYcT8EYLS8KCZbLrfDcJxMtyy4thw2Ee"
             );
             assert_eq!(ned.ledger.total_currency.0, 805385692840039233);
@@ -123,5 +127,7 @@ mod tests {
             et.protocol_state.body.genesis_state_hash.to_base58_string(),
             "3NLoKn22eMnyQ7rxh5pxB6vBA3XhSAhhrf7akdqS6HbAKD14Dh1d"
         );
+
+        Ok(())
     }
 }

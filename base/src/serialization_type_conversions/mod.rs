@@ -68,7 +68,7 @@ impl From<GlobalSlotV1> for GlobalSlot {
 impl From<EpochLedger> for EpochLedgerV1 {
     fn from(t: EpochLedger) -> Self {
         mina_serialization_types::epoch_data::EpochLedger {
-            hash: t.hash.into_inner().into(),
+            hash: t.hash.into(),
             total_currency: t.total_currency.into(),
         }
         .into()

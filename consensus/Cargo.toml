@@ -15,20 +15,17 @@ browser = []
 [dependencies]
 mina-crypto = {version = "0.1.0", path = "../crypto"}
 mina-rs-base = {version = "0.1.0", path = "../base"}
+proof-systems = {path = "../proof-systems-shim"}
 
 bs58 = {version = "0.4", features = ["check"]}
 hex = "0.4"
 lazy_static = "1"
-thiserror = "1"
 lockfree-object-pool = "0.1"
 once_cell = "1"
-
-
-proof-systems = { path = "../proof-systems-shim" }
+thiserror = "1"
 
 [dev-dependencies]
+anyhow = "1"
 base64 = "0.13"
 time = {version = "0.3", features = ["macros"]}
 wasm-bindgen-test = "0.3"
-
-

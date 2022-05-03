@@ -44,7 +44,7 @@ mod tests {
         let blockchain_state = &body.t.t.blockchain_state;
         let non_snark = &blockchain_state.t.t.staged_ledger_hash.t.t.non_snark;
         assert_eq!(
-            LedgerHash::from(non_snark.t.ledger_hash.clone()).to_base58_string(),
+            LedgerHash::from(non_snark.t.ledger_hash.clone()).to_base58_string()?,
             "jwD5Kx1GtLKJGSWufhkvCn8m7EFLm2LmAM7neyzLtTiN8wyn2po"
         );
 
@@ -136,7 +136,7 @@ mod tests {
 
         let staking_epoch_data = &consensus_state.t.t.staking_epoch_data;
         assert_eq!(
-            LedgerHash::from(staking_epoch_data.t.t.ledger.t.t.hash.clone()).to_base58_string(),
+            LedgerHash::from(staking_epoch_data.t.t.ledger.t.t.hash.clone()).to_base58_string()?,
             "jxn15ATGoe4WGgYpbssxJH9XW8NXRDy22WvSsBqvMqcnLPgPAwN"
         );
         assert_eq!(
@@ -159,7 +159,7 @@ mod tests {
 
         let next_epoch_data = &consensus_state.t.t.next_epoch_data;
         assert_eq!(
-            LedgerHash::from(next_epoch_data.t.t.ledger.t.t.hash.clone()).to_base58_string(),
+            LedgerHash::from(next_epoch_data.t.t.ledger.t.t.hash.clone()).to_base58_string()?,
             "jwAXd4GZgxE3YCwqs99g4MpLNiEV2ZfZPstyah4jxo753AVgL6R"
         );
         assert_eq!(

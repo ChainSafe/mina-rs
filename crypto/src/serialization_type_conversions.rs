@@ -7,7 +7,7 @@ use mina_serialization_types::v1::{NonSnarkStagedLedgerHashV1, StagedLedgerHashV
 impl From<NonSnarkStagedLedgerHash> for NonSnarkStagedLedgerHashV1 {
     fn from(t: NonSnarkStagedLedgerHash) -> Self {
         mina_serialization_types::blockchain_state::NonSnarkStagedLedgerHash {
-            ledger_hash: t.ledger_hash.into_inner().into(),
+            ledger_hash: t.ledger_hash.into(),
             aux_hash: t.aux_hash.0.into(),
             pending_coinbase_aux: t.pending_coinbase_aux.0.into(),
         }

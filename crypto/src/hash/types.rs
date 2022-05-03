@@ -13,7 +13,7 @@
 use super::prefixes::*;
 use crate::base58::{version_bytes, Base58Encodable};
 use crate::hash::Hash;
-use crate::impl_bs58;
+use crate::{impl_bs58, impl_bs58_json};
 use derive_more::From;
 use mina_serialization_types::{json::*, v1::*};
 use proof_systems::mina_hasher::{Hashable, ROInput};
@@ -115,9 +115,9 @@ impl Hash for StateHash {
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize, derive_more::From)]
 pub struct LedgerHash(BaseHash);
 
-impl_bs58!(LedgerHash, version_bytes::LEDGER_HASH);
 impl_from_for_hash!(LedgerHash, HashV1);
 impl_from_for_generic_with_proxy!(LedgerHash, HashV1, LedgerHashV1Json);
+impl_bs58_json!(LedgerHash, LedgerHashV1Json);
 
 impl Hashable for LedgerHash {
     type D = ();
@@ -343,14 +343,14 @@ pub mod test {
             17, 245, 30, 111, 61, 210, 168, 20, 160, 79, 111, 37, 167, 2,
         ];
         let h = LedgerHash(BaseHash(bytes));
-        println!("{}", h.to_base58_string())
+        println!("{}", h.to_base58_string().unwrap())
     }
 
     #[test]
     fn ledger_hash_from_base58() {
         let s = "jxV4SS44wHUVrGEucCsfxLisZyUC5QddsiokGH3kz5xm2hJWZ25";
         let h = LedgerHash::from_base58(s).unwrap();
-        assert_eq!(h.to_base58_string(), s);
+        assert_eq!(h.to_base58_string().unwrap(), s);
     }
 
     #[test]
@@ -359,7 +359,7 @@ pub mod test {
         let s_json = format!("\"{s}\"");
         let json: LedgerHashV1Json = serde_json::from_str(&s_json)?;
         let h: LedgerHash = json.into();
-        assert_eq!(h.to_base58_string(), s);
+        assert_eq!(h.to_base58_string().unwrap(), s);
         let json: LedgerHashV1Json = h.into();
         assert_eq!(serde_json::to_string(&json)?, s_json);
         Ok(())
@@ -432,7 +432,7 @@ pub mod test {
         let h = LedgerHash(BaseHash(bytes));
         assert_eq!(
             h.clone(),
-            LedgerHash::from_base58(h.to_base58_string()).unwrap()
+            LedgerHash::from_base58(h.to_base58_string().unwrap()).unwrap()
         )
     }
 }

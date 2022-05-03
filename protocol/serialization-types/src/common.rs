@@ -89,13 +89,15 @@ where
     T: Serialize,
 {
     /// Encode inner data with version check byte into [Vec<u8>]
-    pub fn to_base58(&self) -> Result<Vec<u8>, bin_prot::error::Error> {
-        let builder = self.to_base58_builder()?;
+    pub fn to_base58(&self) -> Result<Vec<u8>, crate::errors::Error> {
+        let builder = self
+            .to_base58_builder()
+            .map_err(crate::errors::Error::BinProtError)?;
         Ok(builder.into_vec())
     }
 
     /// Encode inner data with version check byte into [String]
-    pub fn to_base58_string(&self) -> Result<String, bin_prot::error::Error> {
+    pub fn to_base58_string(&self) -> Result<String, crate::errors::Error> {
         let builder = self.to_base58_builder()?;
         Ok(builder.into_string())
     }
