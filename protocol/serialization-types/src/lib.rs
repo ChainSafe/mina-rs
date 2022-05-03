@@ -34,6 +34,7 @@ pub mod protocol_state_body;
 pub mod protocol_state_proof;
 pub mod protocol_version;
 pub mod signatures;
+pub mod snark_work;
 pub mod staged_ledger_diff;
 pub mod version_bytes;
 
@@ -82,15 +83,18 @@ pub mod v1 {
     };
     pub use super::protocol_version::ProtocolVersionV1;
     pub use super::signatures::{PublicKey2V1, PublicKeyV1, SignatureV1};
+    pub use super::snark_work::{
+        FeeExcessV1, LedgerProofV1, OneORTwoV1, PendingCoinbaseStackStateV1, PendingCoinbaseV1,
+        SgnTypeV1, SignedV1, StateStackV1, StatementV1, TransactionSnarkV1, TransactionSnarkWorkV1,
+    };
     pub use super::staged_ledger_diff::{
         CoinBaseBalanceDataV1, CoinBaseFeeTransferV1, CoinBaseV1, FeeTransferBalanceDataV1,
         InternalCommandBalanceDataV1, PaymentPayloadV1, SignedCommandFeeTokenV1,
         SignedCommandMemoV1, SignedCommandPayloadBodyV1, SignedCommandPayloadCommonV1,
         SignedCommandPayloadV1, SignedCommandV1, StagedLedgerDiffTupleV1, StagedLedgerDiffV1,
-        StagedLedgerPreDiffOneV1, StagedLedgerPreDiffTwoV1, TransactionSnarkWork,
-        TransactionStatusAppliedV1, TransactionStatusAuxiliaryDataV1,
-        TransactionStatusBalanceDataV1, TransactionStatusV1, UserCommandV1,
-        UserCommandWithStatusV1,
+        StagedLedgerPreDiffOneV1, StagedLedgerPreDiffTwoV1, TransactionStatusAppliedV1,
+        TransactionStatusAuxiliaryDataV1, TransactionStatusBalanceDataV1, TransactionStatusV1,
+        UserCommandV1, UserCommandWithStatusV1,
     };
 }
 

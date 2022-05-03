@@ -44,7 +44,7 @@ pub struct ExternalTransition {
 pub struct ExternalTransitionV1(pub Versioned<ExternalTransition, 1>);
 
 impl bin_prot::encodable::BinProtEncodable for ExternalTransitionV1 {
-    const PREALLOCATE_BUFFER_BYTES: usize = 13 * 1024;
+    const PREALLOCATE_BUFFER_BYTES: usize = 1800 * 1024;
 }
 
 /// This structure represents a mina block received from an external block producer

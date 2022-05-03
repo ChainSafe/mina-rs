@@ -3,6 +3,7 @@
 
 //! Serialization for BinProt following the standard serde module layout
 
+use crate::caml_hash_variant;
 use crate::error::{Error, Result};
 use crate::WriteBinProtExt;
 use serde::ser;
@@ -38,8 +39,11 @@ where
     // are an index and if they are larger than 1 byte they are a polyvar.
     // IMPORTANT: This could bug out in the case that a polyvar hash is zero in all places except the lowest byte.
     // The probability of this happening is vanishingly small but something to be aware of.
-    fn write_variant_index_or_tag(&mut self, index: u32) -> Result<()> {
-        if let Ok(b) = check_variant_index(index) {
+    fn write_variant_index_or_tag(&mut self, name: &str, variant: &str, index: u32) -> Result<()> {
+        if name == "Polyvar" {
+            self.writer
+                .bin_write_polyvar_tag(caml_hash_variant(variant))?;
+        } else if let Ok(b) = check_variant_index(index) {
             // it is a sum variant
             self.writer.bin_write_variant_index(b)?;
         } else {
@@ -265,47 +269,47 @@ where
     // first followed by the data
     fn serialize_unit_variant(
         self,
-        _name: &'static str,
+        name: &'static str,
         variant_index: u32,
-        _variant: &'static str,
+        variant: &'static str,
     ) -> Result<()> {
-        self.write_variant_index_or_tag(variant_index)
+        self.write_variant_index_or_tag(name, variant, variant_index)
     }
 
     fn serialize_tuple_variant(
         self,
-        _name: &'static str,
+        name: &'static str,
         variant_index: u32,
-        _variant: &'static str,
+        variant: &'static str,
         _len: usize,
     ) -> Result<Self::SerializeTupleVariant> {
-        self.write_variant_index_or_tag(variant_index)?;
+        self.write_variant_index_or_tag(name, variant, variant_index)?;
         Ok(self)
     }
 
     fn serialize_struct_variant(
         self,
-        _name: &'static str,
+        name: &'static str,
         variant_index: u32,
-        _variant: &'static str,
+        variant: &'static str,
         _len: usize,
     ) -> Result<Self::SerializeStructVariant> {
-        self.write_variant_index_or_tag(variant_index)?;
+        self.write_variant_index_or_tag(name, variant, variant_index)?;
         Ok(self)
     }
 
     // These are enum variants like Some(value)
     fn serialize_newtype_variant<T>(
         self,
-        _name: &'static str,
+        name: &'static str,
         variant_index: u32,
-        _variant: &'static str,
+        variant: &'static str,
         value: &T,
     ) -> Result<()>
     where
         T: ?Sized + Serialize,
     {
-        self.write_variant_index_or_tag(variant_index)?;
+        self.write_variant_index_or_tag(name, variant, variant_index)?;
         value.serialize(self)
     }
 }
