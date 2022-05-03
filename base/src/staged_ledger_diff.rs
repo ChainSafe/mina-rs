@@ -8,6 +8,7 @@
 #![allow(missing_docs)]
 
 use crate::numbers::Amount;
+use crate::snark_work::TransactionSnarkWork;
 use crate::types::TokenId;
 use crate::user_commands::UserCommand;
 
@@ -38,8 +39,13 @@ impl StagedLedgerDiffTuple {
     }
 }
 
-// FIXME: No test coverage yet
-pub type StagedLedgerPreDiffOne = ();
+#[derive(Clone, PartialEq, Debug, Default)]
+pub struct StagedLedgerPreDiffOne {
+    pub completed_works: Vec<TransactionSnarkWork>,
+    pub commands: Vec<UserCommandWithStatus>,
+    pub coinbase: CoinBase,
+    pub internal_command_balances: Vec<InternalCommandBalanceData>,
+}
 
 #[derive(Clone, PartialEq, Debug, Default, AutoFrom)]
 #[auto_from(mina_serialization_types::staged_ledger_diff::StagedLedgerPreDiffTwo)]
@@ -49,8 +55,6 @@ pub struct StagedLedgerPreDiffTwo {
     pub coinbase: CoinBase,
     pub internal_command_balances: Vec<InternalCommandBalanceData>,
 }
-
-pub type TransactionSnarkWork = ();
 
 #[derive(Clone, PartialEq, Debug, AutoFrom)]
 #[auto_from(mina_serialization_types::staged_ledger_diff::UserCommandWithStatus)]

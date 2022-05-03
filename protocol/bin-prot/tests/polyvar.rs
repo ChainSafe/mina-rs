@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use bin_prot::error::Error;
+use bin_prot::to_writer;
 use bin_prot::Deserializer;
 use serde::{Deserialize, Serialize};
 
@@ -38,7 +39,11 @@ fn test_polyvar_variant_none() {
     let tag = 1741061553_u32.to_le_bytes();
     let mut de = Deserializer::from_reader(tag.as_slice());
     let result: TestPolyvar = Deserialize::deserialize(&mut de).expect("Failed to deserialize");
-    assert_eq!(result, TestPolyvar::VariantNone)
+    assert_eq!(result, TestPolyvar::VariantNone);
+
+    let mut re_bytes = vec![];
+    to_writer(&mut re_bytes, &result).unwrap();
+    assert_eq!(tag, re_bytes[..]);
 }
 
 #[test]
@@ -49,7 +54,11 @@ fn test_polyvar_variant_one() {
 
     let mut de = Deserializer::from_reader(data.as_slice());
     let result: TestPolyvar = Deserialize::deserialize(&mut de).expect("Failed to deserialize");
-    assert_eq!(result, TestPolyvar::VariantOne(true))
+    assert_eq!(result, TestPolyvar::VariantOne(true));
+
+    let mut re_bytes = vec![];
+    to_writer(&mut re_bytes, &result).unwrap();
+    assert_eq!(data[..5], re_bytes[..]);
 }
 
 #[test]
@@ -60,7 +69,11 @@ fn test_polyvar_variant_two() {
 
     let mut de = Deserializer::from_reader(data.as_slice());
     let result: TestPolyvar = Deserialize::deserialize(&mut de).expect("Failed to deserialize");
-    assert_eq!(result, TestPolyvar::VariantTwo(TestPolyvar2::SomeVariant))
+    assert_eq!(result, TestPolyvar::VariantTwo(TestPolyvar2::SomeVariant));
+
+    let mut re_bytes = vec![];
+    to_writer(&mut re_bytes, &result).unwrap();
+    assert_eq!(data, re_bytes[..]);
 }
 
 #[test]
