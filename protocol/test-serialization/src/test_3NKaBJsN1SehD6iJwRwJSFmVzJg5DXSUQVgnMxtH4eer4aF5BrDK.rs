@@ -50,18 +50,18 @@ mod tests {
         let bytes = bs58::decode("UworXDykADr3Lte856ePMsdawpTVhKLKT9Y3UKha7Tpbt4V1JP")
             .into_vec()
             .unwrap();
-        assert_eq!(non_snark.t.aux_hash.t[..], bytes[1..33]);
+        assert_eq!(non_snark.t.aux_hash.t.0[..], bytes[1..33]);
         assert_eq!(
-            AuxHash::from(non_snark.t.aux_hash.t.clone()).to_base58_string()?,
+            AuxHash::from(non_snark.t.aux_hash.t.0.clone()).to_base58_string()?,
             "UworXDykADr3Lte856ePMsdawpTVhKLKT9Y3UKha7Tpbt4V1JP"
         );
 
         let bytes = bs58::decode("XbwfEKZjgcZiyDhHRZjHUx72TuxpnuzLPwVYpVWkMAAXkSy7go")
             .into_vec()
             .unwrap();
-        assert_eq!(non_snark.t.pending_coinbase_aux.t[..], bytes[1..33]);
+        assert_eq!(non_snark.t.pending_coinbase_aux.t.0[..], bytes[1..33]);
         assert_eq!(
-            PendingCoinbaseAuxHash(non_snark.t.pending_coinbase_aux.t.clone())
+            PendingCoinbaseAuxHash(non_snark.t.pending_coinbase_aux.t.0.clone())
                 .to_base58_string()?,
             "XbwfEKZjgcZiyDhHRZjHUx72TuxpnuzLPwVYpVWkMAAXkSy7go"
         );

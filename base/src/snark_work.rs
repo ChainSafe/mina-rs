@@ -8,7 +8,6 @@ use crate::types::*;
 use mina_crypto::hash::*;
 use mina_serialization_types_macros::AutoFrom;
 use proof_systems::mina_signer::CompressedPubKey;
-use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Debug, PartialEq)]
 pub struct TransactionSnarkWork {
@@ -30,7 +29,12 @@ pub struct TransactionSnark {
     pub transaction_snark_proof: ProtocolStateProof,
 }
 
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq, AutoFrom)]
+#[auto_from(mina_serialization_types::common::ByteVec)]
+pub struct ByteVec(pub Vec<u8>);
+
+#[derive(Clone, Debug, PartialEq, AutoFrom)]
+#[auto_from(mina_serialization_types::snark_work::Statement)]
 pub struct Statement {
     pub source: StateHash,
     pub target: StateHash,
@@ -39,28 +43,32 @@ pub struct Statement {
     pub fee_excess: FeeExcess,
     pub next_available_token_before: TokenId,
     pub next_available_token_after: TokenId,
-    pub sok_digest: Vec<u8>,
+    pub sok_digest: ByteVec,
 }
 
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq, AutoFrom)]
+#[auto_from(mina_serialization_types::snark_work::PendingCoinbaseStackState)]
 pub struct PendingCoinbaseStackState {
     pub source: PendingCoinbase,
     pub target: PendingCoinbase,
 }
 
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq, AutoFrom)]
+#[auto_from(mina_serialization_types::snark_work::PendingCoinbase)]
 pub struct PendingCoinbase {
     pub data_stack: StateHash,
     pub state_stack: StateStack,
 }
 
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq, AutoFrom)]
+#[auto_from(mina_serialization_types::snark_work::StateStack)]
 pub struct StateStack {
     pub init: StateHash,
     pub curr: StateHash,
 }
 
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq, AutoFrom)]
+#[auto_from(mina_serialization_types::snark_work::FeeExcess)]
 pub struct FeeExcess {
     pub fee_token_l: TokenId,
     pub fee_excess_l: Signed,
@@ -75,7 +83,7 @@ pub struct Signed {
     pub sgn: SgnType,
 }
 
-#[derive(Clone, Debug, Serialize, Deserialize, PartialEq, AutoFrom)]
+#[derive(Clone, Debug, PartialEq, AutoFrom)]
 #[auto_from(mina_serialization_types::snark_work::SgnType)]
 pub enum SgnType {
     Pos,

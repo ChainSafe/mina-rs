@@ -70,8 +70,12 @@ pub type CharV1 = Versioned<u8, 1>;
 /// 32 bytes representing a BigInt256
 pub type BigInt256 = [u8; 32];
 
+/// Wrapper of Vec<u8>
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq, derive_more::From)]
+pub struct ByteVec(pub Vec<u8>);
+
 /// Vector of bytes with a version number. Also encodes its own length when encoded using bin-prot
-pub type ByteVecV1 = Versioned<Vec<u8>, 1>;
+pub type ByteVecV1 = Versioned<ByteVec, 1>;
 
 /// A wrapper of versioned type that is base58 encodable
 #[derive(Debug, Clone, PartialEq, derive_more::From)]
