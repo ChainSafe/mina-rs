@@ -11,7 +11,7 @@ use crate::{
     v1::*,
 };
 use mina_serialization_types_macros::AutoFrom;
-use serde::{Deserialize, Serialize};
+use serde::{Deserialize, Deserializer, Serialize, Serializer};
 use versioned::*;
 
 /// Wrapper struct for the output for a VRF
@@ -22,9 +22,32 @@ pub struct VrfOutputTruncated(pub Vec<u8>);
 pub type VrfOutputTruncatedV1 = Versioned<VrfOutputTruncated, 1>;
 
 /// Wrapper struct for the output for a VRF (json)
-#[derive(Clone, Debug, Serialize, Deserialize, PartialEq, AutoFrom)]
+#[derive(Clone, Debug, PartialEq, AutoFrom)]
 #[auto_from(VrfOutputTruncated)]
 pub struct VrfOutputTruncatedJson(pub Vec<u8>);
+
+impl Serialize for VrfOutputTruncatedJson {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        let s = base64::encode_config(self.0.as_slice(), base64::URL_SAFE);
+        serializer.serialize_str(&s)
+    }
+}
+
+impl<'de> Deserialize<'de> for VrfOutputTruncatedJson {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        let s = String::deserialize(deserializer)?;
+        Ok(Self(
+            base64::decode_config(s, base64::URL_SAFE)
+                .map_err(<D::Error as serde::de::Error>::custom)?,
+        ))
+    }
+}
 
 /// This structure encapsulates the succinct state of the consensus protocol.
 ///

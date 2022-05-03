@@ -242,8 +242,14 @@ mod tests {
         let mut chain_a = ProtocolStateChain::default();
         let mut consensus_state = ConsensusState::default();
         consensus_state.blockchain_length = Length(117896);
-        consensus_state.last_vrf_output =
-            VrfOutputTruncated::from("ZYmm1mr8vJ6F-1pOKgmF1yAF41Z9onq1Je5PoKSBAwA=");
+        // BUGBUG: This should be base64 decoded
+        consensus_state.last_vrf_output = VrfOutputTruncated(
+            "ZYmm1mr8vJ6F-1pOKgmF1yAF41Z9onq1Je5PoKSBAwA="
+                .as_bytes()
+                .to_vec(),
+        );
+        // VrfOutputTruncated::try_from("ZYmm1mr8vJ6F-1pOKgmF1yAF41Z9onq1Je5PoKSBAwA=")
+        //     .unwrap();
         let mut prot_state = ProtocolState::default();
         prot_state.body.consensus_state = consensus_state;
         chain_a.push(prot_state).unwrap();
@@ -251,8 +257,14 @@ mod tests {
         let mut chain_b = ProtocolStateChain::default();
         let mut consensus_state = ConsensusState::default();
         consensus_state.blockchain_length = Length(117896);
-        consensus_state.last_vrf_output =
-            VrfOutputTruncated::from("2NKoDSWzMLQZTqGY_VrLJNQEZs5jwjCQWp5jnLkGBAA=");
+        // BUGBUG: This should be base64 decoded
+        consensus_state.last_vrf_output = VrfOutputTruncated(
+            "2NKoDSWzMLQZTqGY_VrLJNQEZs5jwjCQWp5jnLkGBAA="
+                .as_bytes()
+                .to_vec(),
+        );
+        // VrfOutputTruncated::try_from("2NKoDSWzMLQZTqGY_VrLJNQEZs5jwjCQWp5jnLkGBAA=")
+        //     .unwrap();
         let mut prot_state = ProtocolState::default();
         prot_state.body.consensus_state = consensus_state;
         chain_b.push(prot_state).unwrap();
@@ -262,7 +274,14 @@ mod tests {
         let result_state = select_result.0.get(0).unwrap();
         assert_eq!(
             result_state.body.consensus_state.last_vrf_output,
-            VrfOutputTruncated::from("2NKoDSWzMLQZTqGY_VrLJNQEZs5jwjCQWp5jnLkGBAA=")
+            // BUGBUG: This should be base64 decoded
+            VrfOutputTruncated(
+                "2NKoDSWzMLQZTqGY_VrLJNQEZs5jwjCQWp5jnLkGBAA="
+                    .as_bytes()
+                    .to_vec(),
+            ),
+            // VrfOutputTruncated::try_from("2NKoDSWzMLQZTqGY_VrLJNQEZs5jwjCQWp5jnLkGBAA=")
+            //     .unwrap()
         );
         assert_eq!(result_state, chain_b.0.get(0).unwrap());
     }

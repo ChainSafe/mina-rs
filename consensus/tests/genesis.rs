@@ -48,8 +48,8 @@ mod tests {
             vec![1, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7]
         );
         assert_eq!(
-            cs.last_vrf_output.0,
-            base64::decode("NfThG1r1GxQuhaGLSJWGxcpv24SudtXG4etB0TnGqwg=")?
+            &String::try_from(cs.last_vrf_output.clone())?,
+            "NfThG1r1GxQuhaGLSJWGxcpv24SudtXG4etB0TnGqwg="
         );
         assert_eq!(cs.total_currency.to_string(), "805385692.840039233");
         assert_eq!(cs.curr_global_slot.slot_number, 0_u32.into());

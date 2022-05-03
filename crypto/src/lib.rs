@@ -8,12 +8,10 @@
 
 #![deny(warnings)]
 
-pub mod base64;
 pub mod hash;
 pub mod hex;
 mod serialization_type_conversions;
 
 pub mod prelude {
-    pub use crate::base64::Base64Encodable;
     pub use crate::hex::HexEncodable;
 }

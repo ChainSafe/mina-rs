@@ -49,18 +49,16 @@ mod tests {
             "jwD5Kx1GtLKJGSWufhkvCn8m7EFLm2LmAM7neyzLtTiN8wyn2po"
         );
 
-        let bytes = bs58::decode("UworXDykADr3Lte856ePMsdawpTVhKLKT9Y3UKha7Tpbt4V1JP")
-            .into_vec()
-            .unwrap();
+        let bytes =
+            bs58::decode("UworXDykADr3Lte856ePMsdawpTVhKLKT9Y3UKha7Tpbt4V1JP").into_vec()?;
         assert_eq!(non_snark.t.aux_hash.t.0[..], bytes[1..33]);
         assert_eq!(
             &String::try_from(&AuxHash::from(non_snark.t.aux_hash.t.0.clone()))?,
             "UworXDykADr3Lte856ePMsdawpTVhKLKT9Y3UKha7Tpbt4V1JP"
         );
 
-        let bytes = bs58::decode("XbwfEKZjgcZiyDhHRZjHUx72TuxpnuzLPwVYpVWkMAAXkSy7go")
-            .into_vec()
-            .unwrap();
+        let bytes =
+            bs58::decode("XbwfEKZjgcZiyDhHRZjHUx72TuxpnuzLPwVYpVWkMAAXkSy7go").into_vec()?;
         assert_eq!(non_snark.t.pending_coinbase_aux.t.0[..], bytes[1..33]);
         assert_eq!(
             &String::try_from(&PendingCoinbaseAuxHash(
@@ -114,14 +112,11 @@ mod tests {
             vec![6, 1, 3, 5, 4, 3, 5, 7, 4, 5, 6,]
         );
 
-        let bytes = base64::decode_config(
-            "WNAmmaRL7XzyhZHiz276MbnBv4YUIJRGf9P_Xu0RBAA=",
-            base64::URL_SAFE,
-        )
-        .unwrap();
         assert_eq!(
-            VrfOutputTruncated::from(consensus_state.t.t.last_vrf_output.t.clone()).as_ref(),
-            &bytes[..]
+            &String::try_from(VrfOutputTruncated::from(
+                consensus_state.t.t.last_vrf_output.clone()
+            ))?,
+            "WNAmmaRL7XzyhZHiz276MbnBv4YUIJRGf9P_Xu0RBAA="
         );
 
         assert_eq!(
@@ -214,9 +209,8 @@ mod tests {
         );
         assert_eq!(consensus_state.t.t.supercharge_coinbase, false);
 
-        let bytes = bs58::decode("B62qpge4uMq4Vv5Rvc8Gw9qSquUYd6xoW1pz7HQkMSHm6h1o7pvLPAN")
-            .into_vec()
-            .unwrap();
+        let bytes =
+            bs58::decode("B62qpge4uMq4Vv5Rvc8Gw9qSquUYd6xoW1pz7HQkMSHm6h1o7pvLPAN").into_vec()?;
         // TODO: Validate full bytes vec with salted mainnet signature
         assert_eq!(consensus_state.t.t.block_creator.0.t.t.x[..], bytes[3..35]);
 
@@ -254,20 +248,18 @@ mod tests {
         match &commands[0].data {
             UserCommand::SignedCommand(command) => {
                 let bytes = bs58::decode("B62qoSuxNqwogusxxZbs3gpJUxCCN4GZEv21FX8S2DtNpToLgKnrexM")
-                    .into_vec()
-                    .unwrap();
+                    .into_vec()?;
                 assert_eq!(command.signer.x.to_bytes(), bytes[3..35]);
 
                 let bytes = bs58::decode("7mXTB1bcHYLJTmTfMtTboo4FSGStvera3z2wd6qjSxhpz1hZFMZZjcyaWAFEmZhgbq6DqVqGsNodnYKsCbMAq7D8yWo5bRSd")
-                    .into_vec()
-                    .unwrap();
+                    .into_vec()?;
                 assert_eq!(command.signature.rx.to_bytes(), &bytes[2..34]);
                 assert_eq!(command.signature.s.to_bytes(), &bytes[34..66]);
 
                 assert_eq!(command.payload.common.nonce.0, 5694);
                 assert_eq!(
                     command.payload.common.memo.0,
-                    SignedCommandMemo::try_from("FPayment").unwrap().0,
+                    SignedCommandMemo::try_from("FPayment")?.0,
                 );
                 assert_eq!(command.payload.common.fee.to_string(), "0.010000000");
                 assert_eq!(command.payload.common.fee_token.0, 1);
@@ -278,14 +270,12 @@ mod tests {
                         assert_eq!(body.amount.to_string(), "0.027370000");
                         let bytes =
                             bs58::decode("B62qoSuxNqwogusxxZbs3gpJUxCCN4GZEv21FX8S2DtNpToLgKnrexM")
-                                .into_vec()
-                                .unwrap();
+                                .into_vec()?;
                         // TODO: Validate full bytes vec with salted mainnet signature
                         assert_eq!(body.source_pk.x.to_bytes(), bytes[3..35]);
                         let bytes =
                             bs58::decode("B62qn2MtuQ9GyyVnotUHB9Ehp9EZre5m6TYpGx64tBCDHHBZFZRURnL")
-                                .into_vec()
-                                .unwrap();
+                                .into_vec()?;
                         // TODO: Validate full bytes vec with salted mainnet signature
                         assert_eq!(body.receiver_pk.x.to_bytes(), bytes[3..35]);
                         assert_eq!(body.token_id.0, 1);
@@ -348,9 +338,8 @@ mod tests {
             }
         };
 
-        let bytes = bs58::decode("jwHLk8kaC6B45K3sjuX2sM38649VtfpUAteTfKFQMPcqTeXjGiT")
-            .into_vec()
-            .unwrap();
+        let bytes =
+            bs58::decode("jwHLk8kaC6B45K3sjuX2sM38649VtfpUAteTfKFQMPcqTeXjGiT").into_vec()?;
         assert_eq!(
             et.t.delta_transition_chain_proof.0.t.as_ref()[..],
             bytes[2..34]

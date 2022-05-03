@@ -9,7 +9,6 @@ use crate::{
     numbers::{Amount, GlobalSlotNumber, Length},
 };
 use derive_more::From;
-use mina_crypto::prelude::*;
 use mina_serialization_types::{json::*, v1::*, *};
 use mina_serialization_types_macros::AutoFrom;
 use proof_systems::mina_hasher::{Hashable, ROInput};
@@ -20,7 +19,10 @@ use versioned::*;
 /// Wrapper struct for the output for a VRF
 #[derive(Clone, Default, PartialEq, Debug, From, AutoFrom)]
 #[auto_from(mina_serialization_types::consensus_state::VrfOutputTruncated)]
+#[auto_from(mina_serialization_types::consensus_state::VrfOutputTruncatedJson)]
 pub struct VrfOutputTruncated(pub Vec<u8>);
+
+impl_strconv_via_json!(VrfOutputTruncated, VrfOutputTruncatedJson);
 
 impl Hashable for VrfOutputTruncated {
     type D = ();
@@ -36,20 +38,6 @@ impl Hashable for VrfOutputTruncated {
     }
 }
 
-impl Base64Encodable for VrfOutputTruncated {}
-
-impl From<&str> for VrfOutputTruncated {
-    fn from(s: &str) -> Self {
-        VrfOutputTruncated(s.as_bytes().to_vec())
-    }
-}
-
-impl AsRef<[u8]> for VrfOutputTruncated {
-    fn as_ref(&self) -> &[u8] {
-        self.0.as_slice()
-    }
-}
-
 /// This structure encapsulates the succinct state of the consensus protocol.
 ///
 /// The stake distribution information is contained by the staking_epoch_data field.
@@ -61,6 +49,7 @@ impl AsRef<[u8]> for VrfOutputTruncated {
 /// Samasika prepares the past for the future! This future state is stored in the next_epoch_data field.
 #[derive(Clone, Debug, PartialEq, SmartDefault, AutoFrom)]
 #[auto_from(mina_serialization_types::consensus_state::ConsensusState)]
+// #[auto_from(mina_serialization_types::consensus_state::ConsensusStateJson)]
 pub struct ConsensusState {
     /// Height of block
     pub blockchain_length: Length,
@@ -96,6 +85,8 @@ pub struct ConsensusState {
     /// true if block_stake_winner has no locked tokens, false otherwise
     pub supercharge_coinbase: bool,
 }
+
+impl_from_with_proxy!(ConsensusState, ConsensusStateV1, ConsensusStateJson);
 
 impl Hashable for ConsensusState {
     type D = ();
@@ -141,5 +132,3 @@ impl BinProtSerializationType<'_> for ConsensusState {
 impl JsonSerializationType<'_> for ConsensusState {
     type T = ConsensusStateJson;
 }
-
-impl_from_with_proxy!(ConsensusState, ConsensusStateV1, ConsensusStateJson);

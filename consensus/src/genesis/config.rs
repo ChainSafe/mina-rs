@@ -475,7 +475,7 @@ impl GenesisInitConfig {
 
         Self {
             sub_windows_per_window: 11,
-            last_vrf_output: VrfOutputTruncated::try_from_base64(
+            last_vrf_output: VrfOutputTruncated::try_from(
                 "NfThG1r1GxQuhaGLSJWGxcpv24SudtXG4etB0TnGqwg=",
             )
             .expect(ERR_FAIL_TO_DECODE_B64),
