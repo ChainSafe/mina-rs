@@ -566,24 +566,36 @@ fn test_in_block<'a, T: Serialize + Deserialize<'a>>(block: &bin_prot::Value, pa
 
         // write to binary then deserialize into T
         let mut bytes = vec![];
-        bin_prot::to_writer(&mut bytes, val).expect(&format!(
-            "Failed writing bin-prot encoded data\npath: {}\ndata: {:#?}",
-            path, val
-        ));
-        let re_val: T = from_reader(bytes.as_slice()).expect(&format!(
-            "Could not deserialize type\npath: {}\nbytes({}): {:?}\ndata: {:#?}",
-            path,
-            bytes.len(),
-            bytes,
-            val
-        ));
+        bin_prot::to_writer(&mut bytes, val)
+            .map_err(|err| {
+                format!(
+                    "Failed writing bin-prot encoded data, err:{err}\npath: {path}\ndata: {:?}",
+                    val
+                )
+            })
+            .unwrap();
+        let re_val: T = from_reader(bytes.as_slice())
+            .map_err(|err| {
+                format!(
+                    "Could not deserialize type, err:{err}\npath: {}\nbytes({}): {:?}\ndata: {:?}",
+                    path,
+                    bytes.len(),
+                    bytes,
+                    val
+                )
+            })
+            .unwrap();
 
         // serialize back to binary and ensure it matches
         let mut re_bytes = vec![];
-        to_writer(&mut re_bytes, &re_val).expect(&format!(
-            "Failed writing bin-prot encoded data\npath: {}\ndata: {:#?}",
-            path, val
-        ));
+        to_writer(&mut re_bytes, &re_val)
+            .map_err(|err| {
+                format!(
+                    "Failed writing bin-prot encoded data, err: {err}\npath: {path}\ndata: {:?}",
+                    val
+                )
+            })
+            .unwrap();
 
         assert_eq!(bytes, re_bytes, "path: {}\ndata: {:#?}", path, val);
     }

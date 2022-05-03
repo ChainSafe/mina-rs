@@ -175,6 +175,11 @@ jobs:
           cd consensus
           wasm-pack test --node --release
           wasm-pack test --headless --chrome --release --features browser
+      - name: wasm-pack tests for secrets
+        run: |
+          cd secrets
+          wasm-pack test --node --release
+          wasm-pack test --headless --chrome --release --features browser
   node:
     runs-on: ubuntu-latest
     steps:
