@@ -59,8 +59,8 @@ pub fn auto_from_for_struct_with_named_fields(
                 fn from(item: #ident) -> Self {
                     Self {
                         #(#field_idents: item.#field_idents.into(),) *
-                        #(#vec_field_idents: item.#vec_field_idents.into_iter().map(Into::into).collect(),) *
-                        #(#option_field_idents: item.#option_field_idents.map(Into::into),) *
+                        #(#vec_field_idents: item.#vec_field_idents.into_iter().map(::std::convert::Into::into).collect(),) *
+                        #(#option_field_idents: item.#option_field_idents.map(::std::convert::Into::into),) *
                     }
                 }
             }
@@ -69,8 +69,8 @@ pub fn auto_from_for_struct_with_named_fields(
                 fn from(item: #target_type) -> Self {
                     Self {
                         #(#field_idents: item.#field_idents.into(),) *
-                        #(#vec_field_idents: item.#vec_field_idents.into_iter().map(Into::into).collect(),) *
-                        #(#option_field_idents: item.#option_field_idents.map(Into::into),) *
+                        #(#vec_field_idents: item.#vec_field_idents.into_iter().map(::std::convert::Into::into).collect(),) *
+                        #(#option_field_idents: item.#option_field_idents.map(::std::convert::Into::into),) *
                     }
                 }
             }
@@ -87,17 +87,35 @@ pub fn auto_from_for_struct_with_unnamed_fields(
     target_types: &[proc_macro2::TokenStream],
     named: Punctuated<Field, Token![,]>,
 ) -> Option<TokenStream> {
-    let mut pos_idents = Vec::new();
-    for f in named {
+    let mut pos_token_stream: Vec<proc_macro2::TokenStream> = Vec::new();
+    'outer: for f in named {
         if f.ident.is_none() {
-            // pos_idents.push(proc_macro2::Ident::new(
-            //     &format!("{}", pos_idents.len()),
-            //     proc_macro2::Span::call_site(),
-            // ));
-            pos_idents.push(format!("{}", pos_idents.len()));
+            let pos = proc_macro2::Literal::usize_unsuffixed(pos_token_stream.len());
+
+            if let syn::Type::Path(type_path) = f.ty {
+                for seg in type_path.path.segments {
+                    match seg.ident.to_string().as_str() {
+                        "Vec" => {
+                            pos_token_stream.push(
+                                quote! {item.#pos.into_iter().map(::std::convert::Into::into).collect()}
+                                    .into(),
+                            );
+                            continue 'outer;
+                        }
+                        "Option" => {
+                            pos_token_stream
+                                .push(quote! {item.#pos.map(::std::convert::Into::into)}.into());
+                            continue 'outer;
+                        }
+                        _ => {}
+                    };
+                }
+            }
+
+            pos_token_stream.push(quote! {item.#pos.into()}.into());
         }
     }
-    if pos_idents.is_empty() {
+    if pos_token_stream.is_empty() {
         return None;
     }
     let mut output = TokenStream::default();
@@ -107,7 +125,7 @@ pub fn auto_from_for_struct_with_unnamed_fields(
             impl ::std::convert::From<#ident> for #target_type {
                 fn from(item: #ident) -> Self {
                     Self (
-                        #(item.#pos_idents.into(),) *
+                        #(#pos_token_stream,) *
                     )
                 }
             }
@@ -115,7 +133,7 @@ pub fn auto_from_for_struct_with_unnamed_fields(
             impl ::std::convert::From<#target_type> for #ident {
                 fn from(item: #target_type) -> Self {
                     Self (
-                        #(item.#pos_idents.into(),) *
+                        #(#pos_token_stream,) *
                     )
                 }
             }

@@ -26,7 +26,8 @@ pub struct ProofStateBulletproofChallenges(
     pub (BulletproofChallengeTuple17, BulletproofChallengeTuple17, ()),
 );
 
-#[derive(Clone, Default, PartialEq, Debug)]
+#[derive(Clone, Default, PartialEq, Debug, AutoFrom)]
+#[auto_from(mina_serialization_types::bulletproof_challenges::BulletproofChallengeTuple17)]
 pub struct BulletproofChallengeTuple17(
     pub BulletproofChallenge,
     pub BulletproofChallenge,
@@ -73,7 +74,8 @@ impl BulletproofChallengeTuple17 {
     }
 }
 
-#[derive(Clone, Default, PartialEq, Debug)]
+#[derive(Clone, Default, PartialEq, Debug, AutoFrom)]
+#[auto_from(mina_serialization_types::bulletproof_challenges::BulletproofChallengeTuple18)]
 pub struct BulletproofChallengeTuple18(
     pub BulletproofChallenge,
     pub BulletproofChallenge,

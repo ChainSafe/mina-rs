@@ -33,107 +33,17 @@ impl From<ProofStateBulletproofChallengesV1> for ProofStateBulletproofChallenges
     }
 }
 
-impl From<BulletproofChallengeTuple18> for BulletproofChallengeTuple18V1 {
-    fn from(t: BulletproofChallengeTuple18) -> Self {
-        mina_serialization_types::bulletproof_challenges::BulletproofChallengeTuple18(
-            t.0.into(),
-            t.1.into(),
-            t.2.into(),
-            t.3.into(),
-            t.4.into(),
-            t.5.into(),
-            t.6.into(),
-            t.7.into(),
-            t.8.into(),
-            t.9.into(),
-            t.10.into(),
-            t.11.into(),
-            t.12.into(),
-            t.13.into(),
-            t.14.into(),
-            t.15.into(),
-            t.16.into(),
-            t.17.into(),
-            (),
-        )
-        .into()
-    }
-}
-impl From<BulletproofChallengeTuple18V1> for BulletproofChallengeTuple18 {
-    fn from(t: BulletproofChallengeTuple18V1) -> Self {
-        Self(
-            t.t.t.0.into(),
-            t.t.t.1.into(),
-            t.t.t.2.into(),
-            t.t.t.3.into(),
-            t.t.t.4.into(),
-            t.t.t.5.into(),
-            t.t.t.6.into(),
-            t.t.t.7.into(),
-            t.t.t.8.into(),
-            t.t.t.9.into(),
-            t.t.t.10.into(),
-            t.t.t.11.into(),
-            t.t.t.12.into(),
-            t.t.t.13.into(),
-            t.t.t.14.into(),
-            t.t.t.15.into(),
-            t.t.t.16.into(),
-            t.t.t.17.into(),
-            (),
-        )
-    }
-}
+impl_from_for_versioned_with_proxy!(
+    BulletproofChallengeTuple17,
+    mina_serialization_types::bulletproof_challenges::BulletproofChallengeTuple17,
+    BulletproofChallengeTuple17V1
+);
 
-impl From<BulletproofChallengeTuple17> for BulletproofChallengeTuple17V1 {
-    fn from(t: BulletproofChallengeTuple17) -> Self {
-        mina_serialization_types::bulletproof_challenges::BulletproofChallengeTuple17(
-            t.0.into(),
-            t.1.into(),
-            t.2.into(),
-            t.3.into(),
-            t.4.into(),
-            t.5.into(),
-            t.6.into(),
-            t.7.into(),
-            t.8.into(),
-            t.9.into(),
-            t.10.into(),
-            t.11.into(),
-            t.12.into(),
-            t.13.into(),
-            t.14.into(),
-            t.15.into(),
-            t.16.into(),
-            (),
-        )
-        .into()
-    }
-}
-impl From<BulletproofChallengeTuple17V1> for BulletproofChallengeTuple17 {
-    fn from(t: BulletproofChallengeTuple17V1) -> Self {
-        Self(
-            t.t.t.t.0.into(),
-            t.t.t.t.1.into(),
-            t.t.t.t.2.into(),
-            t.t.t.t.3.into(),
-            t.t.t.t.4.into(),
-            t.t.t.t.5.into(),
-            t.t.t.t.6.into(),
-            t.t.t.t.7.into(),
-            t.t.t.t.8.into(),
-            t.t.t.t.9.into(),
-            t.t.t.t.10.into(),
-            t.t.t.t.11.into(),
-            t.t.t.t.12.into(),
-            t.t.t.t.13.into(),
-            t.t.t.t.14.into(),
-            t.t.t.t.15.into(),
-            t.t.t.t.16.into(),
-            (),
-        )
-    }
-}
+impl_from_for_versioned_with_proxy!(
+    BulletproofChallengeTuple18,
+    mina_serialization_types::bulletproof_challenges::BulletproofChallengeTuple18,
+    BulletproofChallengeTuple18V1
+);
 
 impl From<BulletproofPreChallenge> for BulletproofPreChallengeV1 {
     fn from(t: BulletproofPreChallenge) -> Self {
