@@ -252,7 +252,7 @@ impl GenesisInitConfig {
                     3229587527204030387,
                     6616313680930013725,
                 ]);
-                ProofStateBulletproofChallenges((t17.clone(), t17, ()))
+                ProofStateBulletproofChallenges(t17.clone(), t17, ())
             };
 
             p.prev_evals.0 .0 = (|| {

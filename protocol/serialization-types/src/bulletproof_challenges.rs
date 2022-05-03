@@ -19,14 +19,14 @@ pub type BulletproofChallengeV1 = Versioned<BulletproofChallenge, 1>;
 
 pub type BulletproofChallengesV1 = Versioned<Vec<BulletproofChallengeTuple18V1>, 1>;
 
-pub type ProofStateBulletproofChallengesV1 = Versioned<
-    (
-        BulletproofChallengeTuple17V1,
-        BulletproofChallengeTuple17V1,
-        (),
-    ),
-    1,
->;
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
+pub struct ProofStateBulletproofChallenges(
+    pub BulletproofChallengeTuple17V1,
+    pub BulletproofChallengeTuple17V1,
+    pub (),
+);
+
+pub type ProofStateBulletproofChallengesV1 = Versioned<ProofStateBulletproofChallenges, 1>;
 
 // TODO - see if this can be rewritten with const generics over an array
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
@@ -88,4 +88,7 @@ pub enum BulletproofPreChallenge {
 
 pub type BulletproofPreChallengeV1 = Versioned<BulletproofPreChallenge, 1>;
 
-pub type ScalarChallengeVector2V1 = Versioned<(Hex64V1, Hex64V1, ()), 1>;
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
+pub struct ScalarChallengeVector2(pub Hex64V1, pub Hex64V1, pub ());
+
+pub type ScalarChallengeVector2V1 = Versioned<ScalarChallengeVector2, 1>;

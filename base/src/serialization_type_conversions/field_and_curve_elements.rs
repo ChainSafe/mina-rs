@@ -1,10 +1,9 @@
 // Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
-use crate::types::FiniteECPoint;
 use crate::types::*;
-use mina_serialization_types::v1::FiniteECPoint as FiniteECPointV1;
 use mina_serialization_types::v1::*;
+use versioned::*;
 
 impl From<FieldElementVec> for FieldElementVecV1 {
     fn from(t: FieldElementVec) -> Self {
@@ -35,38 +34,17 @@ impl From<FiniteECPointPairVecV1> for FiniteECPointPairVec {
     }
 }
 
-impl From<ECPointVec> for ECPointVecV1 {
-    fn from(t: ECPointVec) -> Self {
-        t.0.into_iter().map(Into::into).collect::<Vec<_>>().into()
-    }
-}
-impl From<ECPointVecV1> for ECPointVec {
-    fn from(t: ECPointVecV1) -> Self {
-        Self(t.t.into_iter().map(Into::into).collect())
-    }
-}
+impl_from_for_versioned_with_proxy!(
+    ECPointVec,
+    mina_serialization_types::field_and_curve_elements::ECPointVec,
+    ECPointVecV1
+);
 
-impl From<FiniteECPointVec> for FiniteECPointVecV1 {
-    fn from(t: FiniteECPointVec) -> Self {
-        t.0.into_iter().map(Into::into).collect::<Vec<_>>().into()
-    }
-}
-impl From<FiniteECPointVecV1> for FiniteECPointVec {
-    fn from(t: FiniteECPointVecV1) -> Self {
-        Self(t.t.into_iter().map(Into::into).collect())
-    }
-}
-
-impl From<FiniteECPoint> for FiniteECPointV1 {
-    fn from(t: FiniteECPoint) -> Self {
-        Self(t.0 .0, t.1 .0)
-    }
-}
-impl From<FiniteECPointV1> for FiniteECPoint {
-    fn from(t: FiniteECPointV1) -> Self {
-        Self(t.0.into(), t.1.into())
-    }
-}
+impl_from_for_versioned_with_proxy!(
+    FiniteECPointVec,
+    mina_serialization_types::field_and_curve_elements::FiniteECPointVec,
+    FiniteECPointVecV1
+);
 
 impl From<ECPoint> for ECPointV1 {
     fn from(t: ECPoint) -> Self {

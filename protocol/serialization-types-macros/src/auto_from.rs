@@ -98,13 +98,12 @@ pub fn auto_from_for_struct_with_unnamed_fields(
                         "Vec" => {
                             pos_token_stream.push(
                                 quote! {item.#pos.into_iter().map(::std::convert::Into::into).collect()}
-                                    .into(),
                             );
                             continue 'outer;
                         }
                         "Option" => {
                             pos_token_stream
-                                .push(quote! {item.#pos.map(::std::convert::Into::into)}.into());
+                                .push(quote! {item.#pos.map(::std::convert::Into::into)});
                             continue 'outer;
                         }
                         _ => {}
@@ -112,7 +111,7 @@ pub fn auto_from_for_struct_with_unnamed_fields(
                 }
             }
 
-            pos_token_stream.push(quote! {item.#pos.into()}.into());
+            pos_token_stream.push(quote! {item.#pos.into()});
         }
     }
     if pos_token_stream.is_empty() {

@@ -22,8 +22,12 @@ pub type FieldElementVecV1 = Versioned<Vec<FieldElement>, 1>;
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub struct FiniteECPoint(pub FieldElement, pub FieldElement);
 
+/// Vector of finite EC points
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
+pub struct FiniteECPointVec(pub Vec<FiniteECPoint>);
+
 /// Vector of finite EC points (with version number)
-pub type FiniteECPointVecV1 = Versioned<Vec<FiniteECPoint>, 1>;
+pub type FiniteECPointVecV1 = Versioned<FiniteECPointVec, 1>;
 
 /// Pair if finite EC Points
 pub type FiniteECPointPair = (FiniteECPoint, FiniteECPoint);
@@ -51,5 +55,9 @@ impl Default for ECPoint {
 /// OR it can be the point-at-infinity (v1)
 pub type ECPointV1 = Versioned<ECPoint, 1>;
 
+/// Vector of EC points
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
+pub struct ECPointVec(pub Vec<ECPointV1>);
+
 /// Vector of EC points (with version number defined in the WireType)
-pub type ECPointVecV1 = Versioned<Vec<ECPointV1>, 1>;
+pub type ECPointVecV1 = Versioned<ECPointVec, 1>;

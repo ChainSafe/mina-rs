@@ -22,16 +22,11 @@ impl From<BulletproofChallengesV1> for BulletproofChallenges {
     }
 }
 
-impl From<ProofStateBulletproofChallenges> for ProofStateBulletproofChallengesV1 {
-    fn from(t: ProofStateBulletproofChallenges) -> Self {
-        (t.0 .0.into(), t.0 .1.into(), ()).into()
-    }
-}
-impl From<ProofStateBulletproofChallengesV1> for ProofStateBulletproofChallenges {
-    fn from(t: ProofStateBulletproofChallengesV1) -> Self {
-        Self((t.t.0.into(), t.t.1.into(), ()))
-    }
-}
+impl_from_for_versioned_with_proxy!(
+    ProofStateBulletproofChallenges,
+    mina_serialization_types::bulletproof_challenges::ProofStateBulletproofChallenges,
+    ProofStateBulletproofChallengesV1
+);
 
 impl_from_for_versioned_with_proxy!(
     BulletproofChallengeTuple17,
@@ -63,13 +58,8 @@ impl From<BulletproofPreChallengeV1> for BulletproofPreChallenge {
     }
 }
 
-impl From<ScalarChallengeVector2> for ScalarChallengeVector2V1 {
-    fn from(t: ScalarChallengeVector2) -> Self {
-        (t.0 .0.into(), t.0 .1.into(), ()).into()
-    }
-}
-impl From<ScalarChallengeVector2V1> for ScalarChallengeVector2 {
-    fn from(t: ScalarChallengeVector2V1) -> Self {
-        Self((t.t.0.t.into(), t.t.1.t.into(), ()))
-    }
-}
+impl_from_for_versioned_with_proxy!(
+    ScalarChallengeVector2,
+    mina_serialization_types::bulletproof_challenges::ScalarChallengeVector2,
+    ScalarChallengeVector2V1
+);

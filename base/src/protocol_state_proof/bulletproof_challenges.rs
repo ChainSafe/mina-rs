@@ -21,9 +21,12 @@ impl BulletproofChallenge {
 #[derive(Clone, Default, PartialEq, Debug)]
 pub struct BulletproofChallenges(pub Vec<BulletproofChallengeTuple18>);
 
-#[derive(Clone, Default, PartialEq, Debug)]
+#[derive(Clone, Default, PartialEq, Debug, AutoFrom)]
+#[auto_from(mina_serialization_types::bulletproof_challenges::ProofStateBulletproofChallenges)]
 pub struct ProofStateBulletproofChallenges(
-    pub (BulletproofChallengeTuple17, BulletproofChallengeTuple17, ()),
+    pub BulletproofChallengeTuple17,
+    pub BulletproofChallengeTuple17,
+    pub (),
 );
 
 #[derive(Clone, Default, PartialEq, Debug, AutoFrom)]
@@ -136,12 +139,13 @@ impl BulletproofPreChallenge {
     }
 }
 
-#[derive(Clone, Default, PartialEq, Debug)]
-pub struct ScalarChallengeVector2(pub (Hex64, Hex64, ()));
+#[derive(Clone, Default, PartialEq, Debug, AutoFrom)]
+#[auto_from(mina_serialization_types::bulletproof_challenges::ScalarChallengeVector2)]
+pub struct ScalarChallengeVector2(pub Hex64, pub Hex64, pub ());
 
 impl ScalarChallengeVector2 {
     pub fn new(a: i64, b: i64) -> Self {
-        Self((a.into(), b.into(), ()))
+        Self(a.into(), b.into(), ())
     }
 }
 
