@@ -112,6 +112,10 @@
 <span id="107">107</span>
 <span id="108">108</span>
 <span id="109">109</span>
+<span id="110">110</span>
+<span id="111">111</span>
+<span id="112">112</span>
+<span id="113">113</span>
 </pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems</span>
 <span class="comment">// SPDX-License-Identifier: Apache-2.0</span>
 
@@ -148,6 +152,7 @@
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">protocol_state_proof</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">protocol_version</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">signatures</span>;
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">snark_work</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">staged_ledger_diff</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">version_bytes</span>;
 
@@ -196,15 +201,18 @@
     };
     <span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="kw">super</span>::protocol_version::ProtocolVersionV1</span>;
     <span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="kw">super</span>::signatures</span>::{<span class="ident">PublicKey2V1</span>, <span class="ident">PublicKeyV1</span>, <span class="ident">SignatureV1</span>};
+    <span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="kw">super</span>::snark_work</span>::{
+        <span class="ident">FeeExcessV1</span>, <span class="ident">LedgerProofV1</span>, <span class="ident">OneORTwoV1</span>, <span class="ident">PendingCoinbaseStackStateV1</span>, <span class="ident">PendingCoinbaseV1</span>,
+        <span class="ident">SgnTypeV1</span>, <span class="ident">SignedV1</span>, <span class="ident">StateStackV1</span>, <span class="ident">StatementV1</span>, <span class="ident">TransactionSnarkV1</span>, <span class="ident">TransactionSnarkWorkV1</span>,
+    };
     <span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="kw">super</span>::staged_ledger_diff</span>::{
         <span class="ident">CoinBaseBalanceDataV1</span>, <span class="ident">CoinBaseFeeTransferV1</span>, <span class="ident">CoinBaseV1</span>, <span class="ident">FeeTransferBalanceDataV1</span>,
         <span class="ident">InternalCommandBalanceDataV1</span>, <span class="ident">PaymentPayloadV1</span>, <span class="ident">SignedCommandFeeTokenV1</span>,
         <span class="ident">SignedCommandMemoV1</span>, <span class="ident">SignedCommandPayloadBodyV1</span>, <span class="ident">SignedCommandPayloadCommonV1</span>,
         <span class="ident">SignedCommandPayloadV1</span>, <span class="ident">SignedCommandV1</span>, <span class="ident">StagedLedgerDiffTupleV1</span>, <span class="ident">StagedLedgerDiffV1</span>,
-        <span class="ident">StagedLedgerPreDiffOneV1</span>, <span class="ident">StagedLedgerPreDiffTwoV1</span>, <span class="ident">TransactionSnarkWork</span>,
-        <span class="ident">TransactionStatusAppliedV1</span>, <span class="ident">TransactionStatusAuxiliaryDataV1</span>,
-        <span class="ident">TransactionStatusBalanceDataV1</span>, <span class="ident">TransactionStatusV1</span>, <span class="ident">UserCommandV1</span>,
-        <span class="ident">UserCommandWithStatusV1</span>,
+        <span class="ident">StagedLedgerPreDiffOneV1</span>, <span class="ident">StagedLedgerPreDiffTwoV1</span>, <span class="ident">TransactionStatusAppliedV1</span>,
+        <span class="ident">TransactionStatusAuxiliaryDataV1</span>, <span class="ident">TransactionStatusBalanceDataV1</span>, <span class="ident">TransactionStatusV1</span>,
+        <span class="ident">UserCommandV1</span>, <span class="ident">UserCommandWithStatusV1</span>,
     };
 }
 

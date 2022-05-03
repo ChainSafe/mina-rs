@@ -234,6 +234,11 @@
 <span id="229">229</span>
 <span id="230">230</span>
 <span id="231">231</span>
+<span id="232">232</span>
+<span id="233">233</span>
+<span id="234">234</span>
+<span id="235">235</span>
+<span id="236">236</span>
 </pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems</span>
 <span class="comment">// SPDX-License-Identifier: Apache-2.0</span>
 
@@ -243,6 +248,7 @@
 <span class="attribute">#![<span class="ident">allow</span>(<span class="ident">missing_docs</span>)]</span> <span class="comment">// Don&#39;t actually know what many of the types fields are for yet</span>
 
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::signatures</span>::{<span class="ident">PublicKey2V1</span>, <span class="ident">PublicKeyV1</span>, <span class="ident">SignatureV1</span>};
+<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::snark_work::TransactionSnarkWorkV1</span>;
 <span class="kw">use</span> <span class="ident">serde</span>::{<span class="ident">Deserialize</span>, <span class="ident">Serialize</span>};
 
 <span class="kw">use</span> <span class="ident">versioned::Versioned</span>;
@@ -260,14 +266,18 @@
 <span class="kw">pub</span> <span class="kw">type</span> <span class="ident">StagedLedgerDiffTupleV1</span> <span class="op">=</span>
     <span class="ident">Versioned</span><span class="op">&lt;</span>(<span class="ident">StagedLedgerPreDiffTwoV1</span>, <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">StagedLedgerPreDiffOneV1</span><span class="op">&gt;</span>), <span class="number">1</span><span class="op">&gt;</span>;
 
-<span class="comment">// FIXME: No test coverage yet</span>
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">StagedLedgerPreDiffOneV1</span> <span class="op">=</span> ();
-
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">TransactionSnarkWork</span> <span class="op">=</span> ();
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">PartialEq</span>)]</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">StagedLedgerPreDiffOne</span> {
+    <span class="kw">pub</span> <span class="ident">completed_works</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">TransactionSnarkWorkV1</span><span class="op">&gt;</span>,
+    <span class="kw">pub</span> <span class="ident">commands</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">UserCommandWithStatusV1</span><span class="op">&gt;</span>,
+    <span class="kw">pub</span> <span class="ident">coinbase</span>: <span class="ident">CoinBaseV1</span>,
+    <span class="kw">pub</span> <span class="ident">internal_command_balances</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">InternalCommandBalanceDataV1</span><span class="op">&gt;</span>,
+}
+<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">StagedLedgerPreDiffOneV1</span> <span class="op">=</span> <span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">StagedLedgerPreDiffOne</span>, <span class="number">1</span><span class="op">&gt;</span>, <span class="number">1</span><span class="op">&gt;</span>;
 
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">PartialEq</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">StagedLedgerPreDiffTwo</span> {
-    <span class="kw">pub</span> <span class="ident">completed_works</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">TransactionSnarkWork</span><span class="op">&gt;</span>,
+    <span class="kw">pub</span> <span class="ident">completed_works</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">TransactionSnarkWorkV1</span><span class="op">&gt;</span>,
     <span class="kw">pub</span> <span class="ident">commands</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">UserCommandWithStatusV1</span><span class="op">&gt;</span>,
     <span class="kw">pub</span> <span class="ident">coinbase</span>: <span class="ident">CoinBaseV1</span>,
     <span class="kw">pub</span> <span class="ident">internal_command_balances</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">InternalCommandBalanceDataV1</span><span class="op">&gt;</span>,

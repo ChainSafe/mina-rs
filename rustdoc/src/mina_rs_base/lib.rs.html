@@ -55,6 +55,8 @@
 <span id="50">50</span>
 <span id="51">51</span>
 <span id="52">52</span>
+<span id="53">53</span>
+<span id="54">54</span>
 </pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems</span>
 <span class="comment">// SPDX-License-Identifier: Apache-2.0</span>
 
@@ -80,6 +82,7 @@
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">protocol_state_proof</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">protocol_version</span>;
 <span class="kw">mod</span> <span class="ident">serialization_type_conversions</span>;
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">snark_work</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">staged_ledger_diff</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">user_commands</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">verification_key</span>;
@@ -103,6 +106,7 @@
     <span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="kw">super</span>::protocol_state</span>::<span class="kw-2">*</span>;
     <span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="kw">super</span>::protocol_state_proof</span>::<span class="kw-2">*</span>;
     <span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="kw">super</span>::protocol_version</span>::<span class="kw-2">*</span>;
+    <span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="kw">super</span>::snark_work</span>::<span class="kw-2">*</span>;
     <span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="kw">super</span>::staged_ledger_diff</span>::<span class="kw-2">*</span>;
     <span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="kw">super</span>::user_commands</span>::<span class="kw-2">*</span>;
     <span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="kw">super</span>::verification_key</span>::<span class="kw-2">*</span>;

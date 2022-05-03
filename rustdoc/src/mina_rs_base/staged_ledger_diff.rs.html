@@ -136,6 +136,10 @@
 <span id="131">131</span>
 <span id="132">132</span>
 <span id="133">133</span>
+<span id="134">134</span>
+<span id="135">135</span>
+<span id="136">136</span>
+<span id="137">137</span>
 </pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems</span>
 <span class="comment">// SPDX-License-Identifier: Apache-2.0</span>
 
@@ -146,6 +150,7 @@
 <span class="attribute">#![<span class="ident">allow</span>(<span class="ident">missing_docs</span>)]</span>
 
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::numbers::Amount</span>;
+<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::snark_work::TransactionSnarkWork</span>;
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::types::TokenId</span>;
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::user_commands::UserCommand</span>;
 
@@ -172,8 +177,13 @@
     }
 }
 
-<span class="comment">// FIXME: No test coverage yet</span>
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">StagedLedgerPreDiffOne</span> <span class="op">=</span> ();
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>, <span class="ident">Default</span>)]</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">StagedLedgerPreDiffOne</span> {
+    <span class="kw">pub</span> <span class="ident">completed_works</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">TransactionSnarkWork</span><span class="op">&gt;</span>,
+    <span class="kw">pub</span> <span class="ident">commands</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">UserCommandWithStatus</span><span class="op">&gt;</span>,
+    <span class="kw">pub</span> <span class="ident">coinbase</span>: <span class="ident">CoinBase</span>,
+    <span class="kw">pub</span> <span class="ident">internal_command_balances</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">InternalCommandBalanceData</span><span class="op">&gt;</span>,
+}
 
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>, <span class="ident">Default</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">StagedLedgerPreDiffTwo</span> {
@@ -182,8 +192,6 @@
     <span class="kw">pub</span> <span class="ident">coinbase</span>: <span class="ident">CoinBase</span>,
     <span class="kw">pub</span> <span class="ident">internal_command_balances</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">InternalCommandBalanceData</span><span class="op">&gt;</span>,
 }
-
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">TransactionSnarkWork</span> <span class="op">=</span> ();
 
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">UserCommandWithStatus</span> {

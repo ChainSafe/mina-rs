@@ -160,7 +160,7 @@
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ExternalTransitionV1</span>(<span class="kw">pub</span> <span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">ExternalTransition</span>, <span class="number">1</span><span class="op">&gt;</span>);
 
 <span class="kw">impl</span> <span class="ident">bin_prot::encodable::BinProtEncodable</span> <span class="kw">for</span> <span class="ident">ExternalTransitionV1</span> {
-    <span class="kw">const</span> <span class="ident">PREALLOCATE_BUFFER_BYTES</span>: <span class="ident">usize</span> <span class="op">=</span> <span class="number">13</span> <span class="op">*</span> <span class="number">1024</span>;
+    <span class="kw">const</span> <span class="ident">PREALLOCATE_BUFFER_BYTES</span>: <span class="ident">usize</span> <span class="op">=</span> <span class="number">1800</span> <span class="op">*</span> <span class="number">1024</span>;
 }
 
 <span class="doccomment">/// This structure represents a mina block received from an external block producer</span>
