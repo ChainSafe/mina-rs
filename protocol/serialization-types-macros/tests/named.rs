@@ -38,7 +38,7 @@ mod tests {
     }
 
     #[test]
-    fn roundtrip() {
+    fn struct_with_named_fields_roundtrip() {
         let foo = Foo {
             f1: 3,
             f2: 4,

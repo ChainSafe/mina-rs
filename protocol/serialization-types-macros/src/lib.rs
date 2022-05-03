@@ -5,7 +5,7 @@ mod auto_from;
 
 use proc_macro::TokenStream;
 use quote::quote;
-use syn::{parse_macro_input, DeriveInput, FieldsNamed};
+use syn::{parse_macro_input, DeriveInput, FieldsNamed, FieldsUnnamed};
 
 #[proc_macro_derive(AutoFrom, attributes(auto_from))]
 pub fn auto_from_macro(input: TokenStream) -> TokenStream {
@@ -23,14 +23,22 @@ pub fn auto_from_macro(input: TokenStream) -> TokenStream {
     match data {
         syn::Data::Struct(s) => match s.fields {
             syn::Fields::Named(FieldsNamed { named, .. }) => {
-                if let Some(ts) =
-                    auto_from::auto_from_for_struct(&ident, target_types.as_slice(), named)
-                {
+                if let Some(ts) = auto_from::auto_from_for_struct_with_named_fields(
+                    &ident,
+                    target_types.as_slice(),
+                    named,
+                ) {
                     return ts;
                 }
             }
-            syn::Fields::Unnamed(_) => {
-                unimplemented!();
+            syn::Fields::Unnamed(FieldsUnnamed { unnamed, .. }) => {
+                if let Some(ts) = auto_from::auto_from_for_struct_with_unnamed_fields(
+                    &ident,
+                    target_types.as_slice(),
+                    unnamed,
+                ) {
+                    return ts;
+                }
             }
             _ => {}
         },
