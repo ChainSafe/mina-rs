@@ -103,6 +103,7 @@ pub mod json {
         AuxHashJson, ChainHashV1Json, CoinBaseHashV1Json, EpochSeedHashV1Json, HashV1Json,
         LedgerHashV1Json, PendingCoinbaseAuxHashJson, StateHashV1Json, VrfOutputHashV1Json,
     };
+    pub use consensus_state::ConsensusStateJson;
     pub use delta_transition_chain_proof::DeltaTransitionChainProofJson;
     pub use external_transition::ExternalTransitionJson;
     pub use protocol_state::ProtocolStateJson;

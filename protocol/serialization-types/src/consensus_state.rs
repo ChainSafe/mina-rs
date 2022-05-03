@@ -3,9 +3,9 @@
 
 //! Types and funcions related to the Mina consensus state
 
-use crate::v1::{AmountV1, EpochDataV1, GlobalSlotNumberV1, GlobalSlotV1, LengthV1, PublicKeyV1};
+use crate::v1::*;
 use serde::{Deserialize, Serialize};
-use versioned::Versioned;
+use versioned::*;
 
 /// Wrapper struct for the output for a VRF
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
@@ -59,3 +59,21 @@ pub struct ConsensusState {
 
 /// V1 protocol version of the consensus state
 pub type ConsensusStateV1 = Versioned<Versioned<ConsensusState, 1>, 1>;
+
+/// json protocol version of the consensus state
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
+pub struct ConsensusStateJson {}
+
+impl From<ConsensusStateJson> for ConsensusState {
+    fn from(_: ConsensusStateJson) -> Self {
+        unimplemented!()
+    }
+}
+
+impl From<ConsensusState> for ConsensusStateJson {
+    fn from(_: ConsensusState) -> Self {
+        unimplemented!()
+    }
+}
+
+impl_from_for_versioned_with_proxy!(ConsensusStateJson, ConsensusState, ConsensusStateV1);
