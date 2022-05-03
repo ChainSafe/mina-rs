@@ -4,7 +4,6 @@
 #[cfg(test)]
 mod tests {
     use mina_consensus::genesis::*;
-    use mina_crypto::prelude::*;
     use mina_rs_base::types::*;
     use time::macros::*;
     use wasm_bindgen_test::*;
@@ -74,11 +73,11 @@ mod tests {
                 "2va9BGv9JrLTtrzZttiEMDYw1Zj6a6EHzXjmP9evHDTG3oEquURA"
             );
             assert_eq!(
-                sed.start_checkpoint.to_base58_string(),
+                sed.start_checkpoint.to_base58_string()?,
                 "3NK2tkzqqK5spR2sZ7tujjqPksL45M3UUrcA4WhCkeiPtnugyE2x"
             );
             assert_eq!(
-                sed.lock_checkpoint.to_base58_string(),
+                sed.lock_checkpoint.to_base58_string()?,
                 "3NK2tkzqqK5spR2sZ7tujjqPksL45M3UUrcA4WhCkeiPtnugyE2x"
             );
             assert_eq!(sed.epoch_length, 1_u32.into());
@@ -95,11 +94,11 @@ mod tests {
                 "2vaRh7FQ5wSzmpFReF9gcRKjv48CcJvHs25aqb3SSZiPgHQBy5Dt"
             );
             assert_eq!(
-                ned.start_checkpoint.to_base58_string(),
+                ned.start_checkpoint.to_base58_string()?,
                 "3NK2tkzqqK5spR2sZ7tujjqPksL45M3UUrcA4WhCkeiPtnugyE2x"
             );
             assert_eq!(
-                ned.lock_checkpoint.to_base58_string(),
+                ned.lock_checkpoint.to_base58_string()?,
                 "3NLoKn22eMnyQ7rxh5pxB6vBA3XhSAhhrf7akdqS6HbAKD14Dh1d"
             );
             assert_eq!(ned.epoch_length, 2_u32.into());
@@ -120,11 +119,14 @@ mod tests {
         );
         assert_eq!(cs.supercharge_coinbase, true);
         assert_eq!(
-            et.protocol_state.previous_state_hash.to_base58_string(),
+            et.protocol_state.previous_state_hash.to_base58_string()?,
             "3NLoKn22eMnyQ7rxh5pxB6vBA3XhSAhhrf7akdqS6HbAKD14Dh1d"
         );
         assert_eq!(
-            et.protocol_state.body.genesis_state_hash.to_base58_string(),
+            et.protocol_state
+                .body
+                .genesis_state_hash
+                .to_base58_string()?,
             "3NLoKn22eMnyQ7rxh5pxB6vBA3XhSAhhrf7akdqS6HbAKD14Dh1d"
         );
 

@@ -15,7 +15,7 @@ mod tests {
         common::*,
         genesis::{Genesis, MAINNET_CONFIG},
     };
-    use mina_crypto::{hash::*, prelude::*};
+    use mina_crypto::hash::*;
     use mina_rs_base::types::*;
     use wasm_bindgen_test::*;
 

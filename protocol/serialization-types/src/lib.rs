@@ -99,7 +99,9 @@ pub mod v1 {
 pub mod json {
     use super::*;
 
-    pub use common::{ChainHashV1Json, CoinBaseHashV1Json, EpochSeedHashV1Json, LedgerHashV1Json};
+    pub use common::{
+        ChainHashV1Json, CoinBaseHashV1Json, EpochSeedHashV1Json, LedgerHashV1Json, StateHashV1Json,
+    };
     pub use delta_transition_chain_proof::DeltaTransitionChainProofJson;
     pub use external_transition::ExternalTransitionJson;
     pub use protocol_state::ProtocolStateJson;

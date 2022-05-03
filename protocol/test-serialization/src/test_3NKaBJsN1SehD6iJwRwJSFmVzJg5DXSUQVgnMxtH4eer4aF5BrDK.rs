@@ -32,13 +32,13 @@ mod tests {
 
         let protocol_state = &et.t.protocol_state;
         assert_eq!(
-            StateHash::from(protocol_state.t.t.previous_state_hash.clone()).to_base58_string(),
+            StateHash::from(protocol_state.t.t.previous_state_hash.clone()).to_base58_string()?,
             "3NKDdX6eVtAgmmTVxaFLnnPPrsGKgVepG2k5cf8HocgSw6ps8Sww"
         );
 
         let body = &et.t.protocol_state.t.t.body;
         assert_eq!(
-            StateHash::from(body.t.t.genesis_state_hash.clone()).to_base58_string(),
+            StateHash::from(body.t.t.genesis_state_hash.clone()).to_base58_string()?,
             "3NKeMoncuHab5ScarV5ViyF16cJPT4taWNSaTLS64Dp67wuXigPZ"
         );
         let blockchain_state = &body.t.t.blockchain_state;
@@ -148,11 +148,11 @@ mod tests {
             "2vao4i3odTHZVRbEhdkKvLoD1rW2UuiVaayVFosYtkghABg29o7i"
         );
         assert_eq!(
-            StateHash::from(staking_epoch_data.t.t.start_checkpoint.clone()).to_base58_string(),
+            StateHash::from(staking_epoch_data.t.t.start_checkpoint.clone()).to_base58_string()?,
             "3NLM6x7j2Z68e8gGspyvc1aU884uU6yWkwz9aW127BFckn9b5uvo"
         );
         assert_eq!(
-            StateHash::from(staking_epoch_data.t.t.lock_checkpoint.clone()).to_base58_string(),
+            StateHash::from(staking_epoch_data.t.t.lock_checkpoint.clone()).to_base58_string()?,
             "3NLiFhztdCsuWSociNGMspidiYkyqNKZw6ufH7jqbgQtEgGtBb2P"
         );
         assert_eq!(staking_epoch_data.t.t.epoch_length.t.t, 4697);
@@ -171,11 +171,11 @@ mod tests {
             "2vbUkQGF5swXK7PNaAJDUQirW1fbZiUJDzbBKwfPGdJXZiryburD"
         );
         assert_eq!(
-            StateHash::from(next_epoch_data.t.t.start_checkpoint.clone()).to_base58_string(),
+            StateHash::from(next_epoch_data.t.t.start_checkpoint.clone()).to_base58_string()?,
             "3NLkdXKqoHfwZ5jT1uxSY3eoFy3C2jpAUFZ1Y6eSMsE66MNJqErx"
         );
         assert_eq!(
-            StateHash::from(next_epoch_data.t.t.lock_checkpoint.clone()).to_base58_string(),
+            StateHash::from(next_epoch_data.t.t.lock_checkpoint.clone()).to_base58_string()?,
             "3NLW5kBi9nXDzzdr2C3p9X6QaKaASMaVHp3otwreKXKJToUNK7yu"
         );
         assert_eq!(next_epoch_data.t.t.epoch_length.t.t, 3285);

@@ -90,8 +90,9 @@ macro_rules! impl_from_for_hash {
 #[derive(Clone, Default, Debug, PartialEq, PartialOrd, derive_more::From)]
 pub struct StateHash(BaseHash);
 
-impl_bs58!(StateHash, version_bytes::STATE_HASH);
 impl_from_for_hash!(StateHash, HashV1);
+impl_from_for_generic_with_proxy!(StateHash, HashV1, StateHashV1Json);
+impl_bs58_json!(StateHash, StateHashV1Json);
 
 impl Hashable for StateHash {
     type D = ();
