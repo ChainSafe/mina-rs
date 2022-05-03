@@ -9,29 +9,28 @@ use mina_crypto::hash::*;
 use mina_serialization_types_macros::AutoFrom;
 use proof_systems::mina_signer::CompressedPubKey;
 
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq, AutoFrom)]
+#[auto_from(mina_serialization_types::snark_work::TransactionSnarkWork)]
 pub struct TransactionSnarkWork {
     pub fee: Amount,
     pub proofs: OneORTwo,
     pub prover: CompressedPubKey,
 }
 
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq, AutoFrom)]
+#[auto_from(mina_serialization_types::snark_work::OneORTwo)]
 pub enum OneORTwo {
     // Versioned 1 byte
     One(Box<TransactionSnark>),
     Two(Box<TransactionSnark>, Box<TransactionSnark>),
 }
 
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq, AutoFrom)]
+#[auto_from(mina_serialization_types::snark_work::TransactionSnark)]
 pub struct TransactionSnark {
     pub statement: Statement,
     pub transaction_snark_proof: ProtocolStateProof,
 }
-
-#[derive(Clone, Debug, PartialEq, AutoFrom)]
-#[auto_from(mina_serialization_types::common::ByteVec)]
-pub struct ByteVec(pub Vec<u8>);
 
 #[derive(Clone, Debug, PartialEq, AutoFrom)]
 #[auto_from(mina_serialization_types::snark_work::Statement)]

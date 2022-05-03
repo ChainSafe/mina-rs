@@ -39,7 +39,8 @@ impl StagedLedgerDiffTuple {
     }
 }
 
-#[derive(Clone, PartialEq, Debug, Default)]
+#[derive(Clone, PartialEq, Debug, Default, AutoFrom)]
+#[auto_from(mina_serialization_types::staged_ledger_diff::StagedLedgerPreDiffOne)]
 pub struct StagedLedgerPreDiffOne {
     pub completed_works: Vec<TransactionSnarkWork>,
     pub commands: Vec<UserCommandWithStatus>,

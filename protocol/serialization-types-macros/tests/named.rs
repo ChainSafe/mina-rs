@@ -17,6 +17,7 @@ mod tests {
         f3: i64,
         f4: Vec<i64>,
         f5: Option<i64>,
+        f6: Box<i64>,
     }
 
     #[derive(Debug, Clone, PartialEq)]
@@ -26,6 +27,7 @@ mod tests {
         pub f3: I64,
         f4: Vec<I64>,
         f5: Option<I64>,
+        f6: Box<I64>,
     }
 
     #[derive(Debug, Clone, PartialEq)]
@@ -35,6 +37,7 @@ mod tests {
         f3: I64,
         f4: Vec<I64>,
         f5: Option<I64>,
+        f6: Box<I64>,
     }
 
     type BarV1 = ::versioned::Versioned<Bar, 1>;
@@ -48,6 +51,7 @@ mod tests {
             f3: 5,
             f4: vec![7, 8, 9],
             f5: Some(10),
+            f6: Box::new(11),
         };
 
         let bar: Bar = foo.clone().into();
@@ -67,6 +71,7 @@ mod tests {
             f3: 5,
             f4: vec![7, 8, 9],
             f5: Some(10),
+            f6: Box::new(11),
         };
 
         let bar: BarV1 = foo.clone().into();

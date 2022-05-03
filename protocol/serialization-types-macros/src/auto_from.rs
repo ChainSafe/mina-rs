@@ -28,6 +28,7 @@ pub fn auto_from_for_struct_with_named_fields(
     let mut field_idents = Vec::new();
     let mut vec_field_idents = Vec::new();
     let mut option_field_idents = Vec::new();
+    let mut boxed_field_idents = Vec::new();
     'outer: for f in named {
         if let Some(ident) = f.ident {
             if let syn::Type::Path(type_path) = f.ty {
@@ -41,6 +42,10 @@ pub fn auto_from_for_struct_with_named_fields(
                             option_field_idents.push(ident);
                             continue 'outer;
                         }
+                        "Box" => {
+                            boxed_field_idents.push(ident);
+                            continue 'outer;
+                        }
                         _ => {}
                     };
                 }
@@ -48,7 +53,11 @@ pub fn auto_from_for_struct_with_named_fields(
             field_idents.push(ident);
         }
     }
-    if field_idents.is_empty() && vec_field_idents.is_empty() && option_field_idents.is_empty() {
+    if field_idents.is_empty()
+        && vec_field_idents.is_empty()
+        && option_field_idents.is_empty()
+        && boxed_field_idents.is_empty()
+    {
         return None;
     }
     let mut output = TokenStream::default();
@@ -61,6 +70,7 @@ pub fn auto_from_for_struct_with_named_fields(
                         #(#field_idents: item.#field_idents.into(),) *
                         #(#vec_field_idents: item.#vec_field_idents.into_iter().map(::std::convert::Into::into).collect(),) *
                         #(#option_field_idents: item.#option_field_idents.map(::std::convert::Into::into),) *
+                        #(#boxed_field_idents: ::std::boxed::Box::new((*item.#boxed_field_idents).into()),) *
                     }
                 }
             }
@@ -71,6 +81,7 @@ pub fn auto_from_for_struct_with_named_fields(
                         #(#field_idents: item.#field_idents.into(),) *
                         #(#vec_field_idents: item.#vec_field_idents.into_iter().map(::std::convert::Into::into).collect(),) *
                         #(#option_field_idents: item.#option_field_idents.map(::std::convert::Into::into),) *
+                        #(#boxed_field_idents: ::std::boxed::Box::new((*item.#boxed_field_idents).into()),) *
                     }
                 }
             }
@@ -105,6 +116,11 @@ pub fn auto_from_for_struct_with_unnamed_fields(
                         "Option" => {
                             pos_token_stream
                                 .push(quote! {item.#pos.map(::std::convert::Into::into)});
+                            continue 'outer;
+                        }
+                        "Box" => {
+                            pos_token_stream
+                                .push(quote! {::std::boxed::Box::new((*item.#pos).into())});
                             continue 'outer;
                         }
                         _ => {}
@@ -181,6 +197,12 @@ pub fn auto_from_for_enum(
                                             .push(quote! {#ident.map(::std::convert::Into::into)});
                                         continue 'outer_unnamed;
                                     }
+                                    "Box" => {
+                                        rhs_convert.push(
+                                            quote! {::std::boxed::Box::new((*#ident).into())},
+                                        );
+                                        continue 'outer_unnamed;
+                                    }
                                     _ => {}
                                 };
                             }
@@ -209,6 +231,12 @@ pub fn auto_from_for_enum(
                                             rhs_convert.push(
                                                     quote! {#ident: #ident.map(::std::convert::Into::into)},
                                                 );
+                                            continue 'outer_named;
+                                        }
+                                        "Box" => {
+                                            rhs_convert.push(
+                                                quote! {#ident: ::std::boxed::Box::new((*#ident).into())},
+                                            );
                                             continue 'outer_named;
                                         }
                                         _ => {}
