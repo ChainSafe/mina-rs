@@ -5,18 +5,6 @@ use crate::types::*;
 use mina_serialization_types::{account::TimedData, v1::*};
 use versioned::*;
 
-impl_from_for_versioned_with_proxy!(
-    Account,
-    mina_serialization_types::account::Account,
-    AccountV1
-);
-
-impl_from_for_versioned_with_proxy!(
-    Permissions,
-    mina_serialization_types::account::Permissions,
-    PermissionsV1
-);
-
 impl From<TokenPermissions> for TokenPermissionsV1 {
     fn from(t: TokenPermissions) -> Self {
         use mina_serialization_types::account::TokenPermissions as TP;

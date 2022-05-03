@@ -1,18 +1,9 @@
 // Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
-use crate::types::proof_messages::{
-    ProofMessageWithDegreeBound, ProofMessageWithoutDegreeBoundList,
-};
+use crate::types::proof_messages::ProofMessageWithoutDegreeBoundList;
 use crate::types::*;
 use mina_serialization_types::v1::*;
-use versioned::*;
-
-impl_from_for_versioned_with_proxy!(
-    ProofMessageWithDegreeBound,
-    mina_serialization_types::proof_messages::ProofMessageWithDegreeBound,
-    ProofMessageWithDegreeBoundV1
-);
 
 impl From<ProofMessageWithoutDegreeBoundList> for ProofMessageWithoutDegreeBoundListV1 {
     fn from(t: ProofMessageWithoutDegreeBoundList) -> Self {
@@ -24,24 +15,6 @@ impl From<ProofMessageWithoutDegreeBoundListV1> for ProofMessageWithoutDegreeBou
         Self(t.t.t.into_iter().map(Into::into).collect())
     }
 }
-
-impl_from_for_versioned_with_proxy!(
-    ProofMessages,
-    mina_serialization_types::proof_messages::ProofMessages,
-    ProofMessagesV1
-);
-
-impl_from_for_versioned_with_proxy!(
-    ProofEvaluations,
-    mina_serialization_types::proof_evaluations::ProofEvaluations,
-    ProofEvaluationsV1
-);
-
-impl_from_for_versioned_with_proxy!(
-    OpeningProof,
-    mina_serialization_types::opening_proof::OpeningProof,
-    OpeningProofV1
-);
 
 impl From<ProofOpenings> for ProofOpeningsV1 {
     fn from(t: ProofOpenings) -> Self {
@@ -60,12 +33,6 @@ impl From<ProofOpeningsV1> for ProofOpenings {
         }
     }
 }
-
-impl_from_for_versioned_with_proxy!(
-    Proof,
-    mina_serialization_types::protocol_state_proof::Proof,
-    ProofV1
-);
 
 impl From<PrevXHat> for PrevXHatV1 {
     fn from(t: PrevXHat) -> Self {
@@ -88,18 +55,6 @@ impl From<PrevEvalsV1> for PrevEvals {
         Self((t.t.0.into(), t.t.1.into()))
     }
 }
-
-impl_from_for_versioned_with_proxy!(
-    PairingBased,
-    mina_serialization_types::protocol_state_proof::PairingBased,
-    PairingBasedV1
-);
-
-impl_from_for_versioned_with_proxy!(
-    ProofStatePairingBased,
-    mina_serialization_types::protocol_state_proof::ProofStatePairingBased,
-    ProofStatePairingBasedV1
-);
 
 impl From<SpongeDigestBeforeEvaluations> for SpongeDigestBeforeEvaluationsV1 {
     fn from(t: SpongeDigestBeforeEvaluations) -> Self {
@@ -142,33 +97,3 @@ impl From<ShiftedValueV1> for ShiftedValue {
         }
     }
 }
-
-impl_from_for_versioned_with_proxy!(
-    Plonk,
-    mina_serialization_types::protocol_state_proof::Plonk,
-    PlonkV1
-);
-
-impl_from_for_versioned_with_proxy!(
-    ProofStateDeferredValues,
-    mina_serialization_types::protocol_state_proof::ProofStateDeferredValues,
-    ProofStateDeferredValuesV1
-);
-
-impl_from_for_versioned_with_proxy!(
-    ProofState,
-    mina_serialization_types::protocol_state_proof::ProofState,
-    ProofStateV1
-);
-
-impl_from_for_versioned_with_proxy!(
-    ProofStatement,
-    mina_serialization_types::protocol_state_proof::ProofStatement,
-    ProofStatementV1
-);
-
-impl_from_for_versioned_with_proxy!(
-    ProtocolStateProof,
-    mina_serialization_types::protocol_state_proof::ProtocolStateProof,
-    ProtocolStateProofV1
-);

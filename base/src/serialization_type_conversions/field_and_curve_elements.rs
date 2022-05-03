@@ -3,7 +3,6 @@
 
 use crate::types::*;
 use mina_serialization_types::v1::*;
-use versioned::*;
 
 impl From<FieldElementVec> for FieldElementVecV1 {
     fn from(t: FieldElementVec) -> Self {
@@ -33,18 +32,6 @@ impl From<FiniteECPointPairVecV1> for FiniteECPointPairVec {
         )
     }
 }
-
-impl_from_for_versioned_with_proxy!(
-    ECPointVec,
-    mina_serialization_types::field_and_curve_elements::ECPointVec,
-    ECPointVecV1
-);
-
-impl_from_for_versioned_with_proxy!(
-    FiniteECPointVec,
-    mina_serialization_types::field_and_curve_elements::FiniteECPointVec,
-    FiniteECPointVecV1
-);
 
 impl From<ECPoint> for ECPointV1 {
     fn from(t: ECPoint) -> Self {

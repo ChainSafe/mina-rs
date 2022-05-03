@@ -3,13 +3,6 @@
 
 use crate::types::*;
 use mina_serialization_types::v1::*;
-use versioned::*;
-
-impl_from_for_versioned_with_proxy!(
-    BulletproofChallenge,
-    mina_serialization_types::bulletproof_challenges::BulletproofChallenge,
-    BulletproofChallengeV1
-);
 
 impl From<BulletproofChallenges> for BulletproofChallengesV1 {
     fn from(t: BulletproofChallenges) -> Self {
@@ -21,24 +14,6 @@ impl From<BulletproofChallengesV1> for BulletproofChallenges {
         Self(t.t.into_iter().map(Into::into).collect())
     }
 }
-
-impl_from_for_versioned_with_proxy!(
-    ProofStateBulletproofChallenges,
-    mina_serialization_types::bulletproof_challenges::ProofStateBulletproofChallenges,
-    ProofStateBulletproofChallengesV1
-);
-
-impl_from_for_versioned_with_proxy!(
-    BulletproofChallengeTuple17,
-    mina_serialization_types::bulletproof_challenges::BulletproofChallengeTuple17,
-    BulletproofChallengeTuple17V1
-);
-
-impl_from_for_versioned_with_proxy!(
-    BulletproofChallengeTuple18,
-    mina_serialization_types::bulletproof_challenges::BulletproofChallengeTuple18,
-    BulletproofChallengeTuple18V1
-);
 
 impl From<BulletproofPreChallenge> for BulletproofPreChallengeV1 {
     fn from(t: BulletproofPreChallenge) -> Self {
@@ -57,9 +32,3 @@ impl From<BulletproofPreChallengeV1> for BulletproofPreChallenge {
         }
     }
 }
-
-impl_from_for_versioned_with_proxy!(
-    ScalarChallengeVector2,
-    mina_serialization_types::bulletproof_challenges::ScalarChallengeVector2,
-    ScalarChallengeVector2V1
-);

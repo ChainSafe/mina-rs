@@ -65,9 +65,3 @@ pub struct ExternalTransitionJson {
     /// serialization requirements
     pub validation_callback: (),
 }
-
-impl_from_for_versioned_with_proxy!(
-    ExternalTransitionJson,
-    ExternalTransition,
-    ExternalTransitionV1
-);

@@ -77,6 +77,7 @@ pub fn auto_from_for_struct_with_named_fields(
         }
         .into();
         output.extend(ts);
+        output.extend(impl_from_for_versioned(ident, target_type));
     }
 
     Some(output)
@@ -139,7 +140,79 @@ pub fn auto_from_for_struct_with_unnamed_fields(
         }
         .into();
         output.extend(ts);
+        output.extend(impl_from_for_versioned(ident, target_type));
     }
 
     Some(output)
+}
+
+fn impl_from_for_versioned(
+    ident: &proc_macro2::Ident,
+    target_type: &proc_macro2::TokenStream,
+) -> TokenStream {
+    quote! {
+        impl<const V: u16> ::std::convert::From<#ident> for ::versioned::Versioned<#target_type, V> {
+            #[inline]
+            fn from(t: #ident) -> Self {
+                let t: #target_type = t.into();
+                t.into()
+            }
+        }
+
+        impl<const V: u16> ::std::convert::From<::versioned::Versioned<#target_type, V>> for #ident {
+            #[inline]
+            fn from(t: ::versioned::Versioned<#target_type, V>) -> Self {
+                let (t,): (#target_type,) = t.into();
+                t.into()
+            }
+        }
+
+        impl<const V1: u16, const V2: u16> ::std::convert::From<#ident> for ::versioned::Versioned<::versioned::Versioned<#target_type, V1>, V2> {
+            #[inline]
+            fn from(t: #ident) -> Self {
+                let t: #target_type = t.into();
+                t.into()
+            }
+        }
+
+        impl<const V1: u16, const V2: u16> ::std::convert::From<::versioned::Versioned<::versioned::Versioned<#target_type, V1>, V2>> for #ident {
+            #[inline]
+            fn from(t: ::versioned::Versioned<::versioned::Versioned<#target_type, V1>, V2>) -> Self {
+                let (t,): (#target_type,) = t.into();
+                t.into()
+            }
+        }
+
+        impl<const V1: u16, const V2: u16, const V3: u16> ::std::convert::From<#ident> for ::versioned::Versioned<::versioned::Versioned<::versioned::Versioned<#target_type, V1>, V2>, V3> {
+            #[inline]
+            fn from(t: #ident) -> Self {
+                let t: #target_type = t.into();
+                t.into()
+            }
+        }
+
+        impl<const V1: u16, const V2: u16, const V3: u16> ::std::convert::From<::versioned::Versioned<::versioned::Versioned<::versioned::Versioned<#target_type, V1>, V2>, V3>> for #ident {
+            #[inline]
+            fn from(t: ::versioned::Versioned<::versioned::Versioned<::versioned::Versioned<#target_type, V1>, V2>, V3>) -> Self {
+                let (t,): (#target_type,) = t.into();
+                t.into()
+            }
+        }
+
+        impl<const V1: u16, const V2: u16, const V3: u16, const V4: u16> ::std::convert::From<#ident> for ::versioned::Versioned<::versioned::Versioned<::versioned::Versioned<::versioned::Versioned<#target_type, V1>, V2>, V3>, V4> {
+            #[inline]
+            fn from(t: #ident) -> Self {
+                let t: #target_type = t.into();
+                t.into()
+            }
+        }
+
+        impl<const V1: u16, const V2: u16, const V3: u16, const V4: u16> ::std::convert::From<::versioned::Versioned<::versioned::Versioned<::versioned::Versioned<::versioned::Versioned<#target_type, V1>, V2>, V3>, V4>> for #ident {
+            #[inline]
+            fn from(t: ::versioned::Versioned<::versioned::Versioned<::versioned::Versioned<::versioned::Versioned<#target_type, V1>, V2>, V3>, V4>) -> Self {
+                let (t,): (#target_type,) = t.into();
+                t.into()
+            }
+        }
+    }.into()
 }

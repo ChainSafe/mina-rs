@@ -11,12 +11,6 @@ mod field_and_curve_elements;
 mod numbers;
 mod protocol_state_proof;
 
-impl_from_for_versioned_with_proxy!(
-    ExternalTransition,
-    mina_serialization_types::external_transition::ExternalTransition,
-    ExternalTransitionV1
-);
-
 impl_from_with_proxy!(
     ExternalTransition,
     ExternalTransitionV1,
@@ -107,43 +101,13 @@ impl From<EpochDataV1> for EpochData {
     }
 }
 
-impl_from_for_versioned_with_proxy!(
-    ConsensusState,
-    mina_serialization_types::consensus_state::ConsensusState,
-    ConsensusStateV1
-);
-
-impl_from_for_versioned_with_proxy!(
-    ProtocolConstants,
-    mina_serialization_types::protocol_constants::ProtocolConstants,
-    ProtocolConstantsV1
-);
-
-impl_from_for_versioned_with_proxy!(
-    ProtocolStateBody,
-    mina_serialization_types::protocol_state_body::ProtocolStateBody,
-    ProtocolStateBodyV1
-);
-
 impl_from_with_proxy!(
     ProtocolStateBody,
     ProtocolStateBodyV1,
     ProtocolStateBodyJson
 );
 
-impl_from_for_versioned_with_proxy!(
-    ProtocolState,
-    mina_serialization_types::protocol_state::ProtocolState,
-    ProtocolStateV1
-);
-
 impl_from_with_proxy!(ProtocolState, ProtocolStateV1, ProtocolStateJson);
-
-impl_from_for_versioned_with_proxy!(
-    PaymentPayload,
-    mina_serialization_types::staged_ledger_diff::PaymentPayload,
-    PaymentPayloadV1
-);
 
 impl From<SignedCommandPayloadBody> for SignedCommandPayloadBodyV1 {
     fn from(t: SignedCommandPayloadBody) -> Self {
@@ -195,18 +159,6 @@ impl From<SignedCommandPayloadCommonV1> for SignedCommandPayloadCommon {
     }
 }
 
-impl_from_for_versioned_with_proxy!(
-    SignedCommandPayload,
-    mina_serialization_types::staged_ledger_diff::SignedCommandPayload,
-    SignedCommandPayloadV1
-);
-
-impl_from_for_versioned_with_proxy!(
-    SignedCommand,
-    mina_serialization_types::staged_ledger_diff::SignedCommand,
-    SignedCommandV1
-);
-
 impl From<UserCommand> for UserCommandV1 {
     fn from(t: UserCommand) -> Self {
         use mina_serialization_types::staged_ledger_diff::UserCommand as UC;
@@ -224,18 +176,6 @@ impl From<UserCommandV1> for UserCommand {
         }
     }
 }
-
-impl_from_for_versioned_with_proxy!(
-    TransactionStatusBalanceData,
-    mina_serialization_types::staged_ledger_diff::TransactionStatusBalanceData,
-    TransactionStatusBalanceDataV1
-);
-
-impl_from_for_versioned_with_proxy!(
-    TransactionStatusAuxiliaryData,
-    mina_serialization_types::staged_ledger_diff::TransactionStatusAuxiliaryData,
-    TransactionStatusAuxiliaryDataV1
-);
 
 impl From<TransactionStatusApplied> for TransactionStatusAppliedV1 {
     fn from(t: TransactionStatusApplied) -> Self {
@@ -266,18 +206,6 @@ impl From<TransactionStatusV1> for TransactionStatus {
     }
 }
 
-impl_from_for_versioned_with_proxy!(
-    UserCommandWithStatus,
-    mina_serialization_types::staged_ledger_diff::UserCommandWithStatus,
-    UserCommandWithStatusV1
-);
-
-impl_from_for_versioned_with_proxy!(
-    CoinBaseFeeTransfer,
-    mina_serialization_types::staged_ledger_diff::CoinBaseFeeTransfer,
-    CoinBaseFeeTransferV1
-);
-
 impl From<CoinBase> for CoinBaseV1 {
     fn from(t: CoinBase) -> Self {
         use mina_serialization_types::staged_ledger_diff::CoinBase as CB;
@@ -299,18 +227,6 @@ impl From<CoinBaseV1> for CoinBase {
         }
     }
 }
-
-impl_from_for_versioned_with_proxy!(
-    CoinBaseBalanceData,
-    mina_serialization_types::staged_ledger_diff::CoinBaseBalanceData,
-    CoinBaseBalanceDataV1
-);
-
-impl_from_for_versioned_with_proxy!(
-    FeeTransferBalanceData,
-    mina_serialization_types::staged_ledger_diff::FeeTransferBalanceData,
-    FeeTransferBalanceDataV1
-);
 
 impl From<InternalCommandBalanceData> for InternalCommandBalanceDataV1 {
     fn from(t: InternalCommandBalanceData) -> Self {
@@ -334,12 +250,6 @@ impl From<InternalCommandBalanceDataV1> for InternalCommandBalanceData {
     }
 }
 
-impl_from_for_versioned_with_proxy!(
-    StagedLedgerPreDiffTwo,
-    mina_serialization_types::staged_ledger_diff::StagedLedgerPreDiffTwo,
-    StagedLedgerPreDiffTwoV1
-);
-
 impl From<StagedLedgerDiffTuple> for StagedLedgerDiffTupleV1 {
     fn from(t: StagedLedgerDiffTuple) -> Self {
         (t.0 .0.into(), t.0 .1).into()
@@ -350,12 +260,6 @@ impl From<StagedLedgerDiffTupleV1> for StagedLedgerDiffTuple {
         StagedLedgerDiffTuple((t.t.0.into(), t.t.1))
     }
 }
-
-impl_from_for_versioned_with_proxy!(
-    StagedLedgerDiff,
-    mina_serialization_types::staged_ledger_diff::StagedLedgerDiff,
-    StagedLedgerDiffV1
-);
 
 impl_from_with_proxy!(StagedLedgerDiff, StagedLedgerDiffV1, StagedLedgerDiffJson);
 
@@ -375,10 +279,4 @@ impl_from_with_proxy!(
     crate::types::DeltaTransitionChainProof,
     DeltaTransitionChainProofV1,
     DeltaTransitionChainProofJson
-);
-
-impl_from_for_versioned_with_proxy!(
-    ProtocolVersion,
-    mina_serialization_types::protocol_version::ProtocolVersion,
-    ProtocolVersionV1
 );

@@ -37,6 +37,9 @@ mod tests {
         f5: Option<I64>,
     }
 
+    type BarV1 = ::versioned::Versioned<Bar, 1>;
+    type Bar2V1 = ::versioned::Versioned<BarV1, 1>;
+
     #[test]
     fn struct_with_named_fields_roundtrip() {
         let foo = Foo {
@@ -49,6 +52,25 @@ mod tests {
 
         let bar: Bar = foo.clone().into();
         let bar2: Bar2 = foo.clone().into();
+        let foo_from_bar: Foo = bar.into();
+        let foo_from_bar2: Foo = bar2.into();
+
+        assert_eq!(foo, foo_from_bar);
+        assert_eq!(foo, foo_from_bar2);
+    }
+
+    #[test]
+    fn struct_with_named_fields_roundtrip_versioned() {
+        let foo = Foo {
+            f1: 3,
+            f2: 4,
+            f3: 5,
+            f4: vec![7, 8, 9],
+            f5: Some(10),
+        };
+
+        let bar: BarV1 = foo.clone().into();
+        let bar2: Bar2V1 = foo.clone().into();
         let foo_from_bar: Foo = bar.into();
         let foo_from_bar2: Foo = bar2.into();
 
