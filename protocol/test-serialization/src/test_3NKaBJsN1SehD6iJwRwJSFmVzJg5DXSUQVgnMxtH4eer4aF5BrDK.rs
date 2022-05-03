@@ -78,17 +78,17 @@ mod tests {
                     .t
                     .clone()
             )
-            .to_base58_string(),
+            .to_base58_string()?,
             "2mzpdUi5ddLicLGUns4iYFiNahL5B5cPkTUot83v2moNtr4mzRYf"
         );
         assert_eq!(
             SnarkedLedgerHash::from(blockchain_state.t.t.snarked_ledger_hash.clone())
-                .to_base58_string(),
+                .to_base58_string()?,
             "jxkQm8ge9sYPwPyUYUMZ6wr7SQ6Pit5szbRvPmEzYKQQZAnACyC"
         );
         assert_eq!(
             SnarkedLedgerHash::from(blockchain_state.t.t.genesis_ledger_hash.clone())
-                .to_base58_string(),
+                .to_base58_string()?,
             "jx7buQVWFLsXTtzRgSxbYcT8EYLS8KCZbLrfDcJxMtyy4thw2Ee"
         );
         assert_eq!(blockchain_state.t.t.snarked_next_available_token.t.t.t, 2);
@@ -144,7 +144,7 @@ mod tests {
             "861208012.840039233"
         );
         assert_eq!(
-            EpochSeed::from(staking_epoch_data.t.t.seed.clone()).to_base58_string(),
+            EpochSeed::from(staking_epoch_data.t.t.seed.clone()).to_base58_string()?,
             "2vao4i3odTHZVRbEhdkKvLoD1rW2UuiVaayVFosYtkghABg29o7i"
         );
         assert_eq!(
@@ -167,7 +167,7 @@ mod tests {
             "864998092.840039233"
         );
         assert_eq!(
-            EpochSeed::from(next_epoch_data.t.t.seed.clone()).to_base58_string(),
+            EpochSeed::from(next_epoch_data.t.t.seed.clone()).to_base58_string()?,
             "2vbUkQGF5swXK7PNaAJDUQirW1fbZiUJDzbBKwfPGdJXZiryburD"
         );
         assert_eq!(

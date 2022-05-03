@@ -23,17 +23,17 @@ mod tests {
         assert_eq!(bs.timestamp.datetime(), datetime!(2021-03-17 00:00:0 UTC));
         assert_eq!(bs.snarked_next_available_token.0, 2);
         assert_eq!(
-            bs.snarked_ledger_hash.to_base58_string(),
+            bs.snarked_ledger_hash.to_base58_string()?,
             "jx7buQVWFLsXTtzRgSxbYcT8EYLS8KCZbLrfDcJxMtyy4thw2Ee"
         );
         assert_eq!(
-            bs.genesis_ledger_hash.to_base58_string(),
+            bs.genesis_ledger_hash.to_base58_string()?,
             "jx7buQVWFLsXTtzRgSxbYcT8EYLS8KCZbLrfDcJxMtyy4thw2Ee"
         );
         assert_eq!(
             bs.staged_ledger_hash
                 .pending_coinbase_hash
-                .to_base58_string(),
+                .to_base58_string()?,
             "2n1tLdP2gkifmyVmrmzYXTS4ohPbZPJn6Qq4x55ywrbRWB4543cC"
         );
         assert_eq!(
@@ -70,7 +70,7 @@ mod tests {
             );
             assert_eq!(sed.ledger.total_currency.0, 805385692840039233);
             assert_eq!(
-                sed.seed.to_base58_string(),
+                sed.seed.to_base58_string()?,
                 "2va9BGv9JrLTtrzZttiEMDYw1Zj6a6EHzXjmP9evHDTG3oEquURA"
             );
             assert_eq!(
@@ -91,7 +91,7 @@ mod tests {
             );
             assert_eq!(ned.ledger.total_currency.0, 805385692840039233);
             assert_eq!(
-                ned.seed.to_base58_string(),
+                ned.seed.to_base58_string()?,
                 "2vaRh7FQ5wSzmpFReF9gcRKjv48CcJvHs25aqb3SSZiPgHQBy5Dt"
             );
             assert_eq!(

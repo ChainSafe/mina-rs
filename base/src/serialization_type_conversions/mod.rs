@@ -27,8 +27,8 @@ impl From<BlockchainState> for BlockchainStateV1 {
     fn from(t: BlockchainState) -> Self {
         mina_serialization_types::blockchain_state::BlockchainState {
             staged_ledger_hash: t.staged_ledger_hash.into(),
-            snarked_ledger_hash: t.snarked_ledger_hash.into_inner().into(),
-            genesis_ledger_hash: t.genesis_ledger_hash.into_inner().into(),
+            snarked_ledger_hash: t.snarked_ledger_hash.into(),
+            genesis_ledger_hash: t.genesis_ledger_hash.into(),
             snarked_next_available_token: t.snarked_next_available_token.into(),
             timestamp: t.timestamp.0.into(),
         }

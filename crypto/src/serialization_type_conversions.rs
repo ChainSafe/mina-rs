@@ -28,7 +28,7 @@ impl From<StagedLedgerHash> for StagedLedgerHashV1 {
     fn from(t: StagedLedgerHash) -> Self {
         mina_serialization_types::blockchain_state::StagedLedgerHash {
             non_snark: t.non_snark.into(),
-            pending_coinbase_hash: t.pending_coinbase_hash.into_inner().into(),
+            pending_coinbase_hash: t.pending_coinbase_hash.into(),
         }
         .into()
     }

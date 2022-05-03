@@ -66,6 +66,7 @@ impl AsRef<[u8; 32]> for BaseHash {
 }
 
 impl_from_for_newtype!(BaseHash, HashV1);
+impl_from_for_newtype!(BaseHash, Hash2V1);
 
 #[macro_export]
 macro_rules! impl_from_for_hash {
@@ -138,18 +139,19 @@ impl Hashable for LedgerHash {
 #[derive(Clone, Default, Debug, PartialEq, derive_more::From)]
 pub struct ChainHash(BaseHash);
 
-impl_bs58!(ChainHash, version_bytes::LEDGER_HASH);
 impl_from_for_hash!(ChainHash, HashV1);
 impl_from_for_generic_with_proxy!(ChainHash, HashV1, ChainHashV1Json);
+impl_bs58_json!(ChainHash, ChainHashV1Json);
 
 //////////////////////////////////////////////////////////////////////////
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct CoinBaseHash(BaseHash);
 
-impl_bs58!(CoinBaseHash, 12);
 impl_from_for_hash!(CoinBaseHash, HashV1);
+impl_from_for_hash!(CoinBaseHash, Hash2V1);
 impl_from_for_generic_with_proxy!(CoinBaseHash, HashV1, CoinBaseHashV1Json);
+impl_bs58_json!(CoinBaseHash, CoinBaseHashV1Json);
 
 impl Hashable for CoinBaseHash {
     type D = ();
@@ -170,9 +172,9 @@ impl Hashable for CoinBaseHash {
 #[derive(Clone, Default, Debug, PartialEq)]
 pub struct EpochSeed(BaseHash);
 
-impl_bs58!(EpochSeed, version_bytes::EPOCH_SEED);
 impl_from_for_hash!(EpochSeed, HashV1);
 impl_from_for_generic_with_proxy!(EpochSeed, HashV1, EpochSeedHashV1Json);
+impl_bs58_json!(EpochSeed, EpochSeedHashV1Json);
 
 impl Hashable for EpochSeed {
     type D = ();
@@ -197,9 +199,9 @@ impl Hash for EpochSeed {
 #[derive(Clone, Default, Debug, PartialEq)]
 pub struct SnarkedLedgerHash(BaseHash);
 
-impl_bs58!(SnarkedLedgerHash, version_bytes::LEDGER_HASH);
 impl_from_for_hash!(SnarkedLedgerHash, HashV1);
 impl_from_for_generic_with_proxy!(SnarkedLedgerHash, HashV1, LedgerHashV1Json);
+impl_bs58_json!(SnarkedLedgerHash, LedgerHashV1Json);
 
 impl Hashable for SnarkedLedgerHash {
     type D = ();
@@ -369,7 +371,7 @@ pub mod test {
     fn coinbase_hash_from_base58() {
         let s = "2n1tLdP2gkifmyVmrmzYXTS4ohPbZPJn6Qq4x55ywrbRWB4543cC";
         let h = CoinBaseHash::from_base58(s).unwrap();
-        assert_eq!(h.to_base58_string(), s);
+        assert_eq!(h.to_base58_string().unwrap(), s);
     }
 
     #[test]
@@ -378,7 +380,7 @@ pub mod test {
         let s_json = format!("\"{s}\"");
         let json: CoinBaseHashV1Json = serde_json::from_str(&s_json)?;
         let h: CoinBaseHash = json.into();
-        assert_eq!(h.to_base58_string(), s);
+        assert_eq!(h.to_base58_string().unwrap(), s);
         let json: CoinBaseHashV1Json = h.into();
         assert_eq!(serde_json::to_string(&json)?, s_json);
         Ok(())
@@ -388,7 +390,7 @@ pub mod test {
     fn epoch_seed_from_base58() {
         let s = "2va9BGv9JrLTtrzZttiEMDYw1Zj6a6EHzXjmP9evHDTG3oEquURA";
         let h = EpochSeed::from_base58(s).unwrap();
-        assert_eq!(h.to_base58_string(), s);
+        assert_eq!(h.to_base58_string().unwrap(), s);
     }
 
     #[test]
@@ -397,7 +399,7 @@ pub mod test {
         let s_json = format!("\"{s}\"");
         let json: EpochSeedHashV1Json = serde_json::from_str(&s_json)?;
         let h: EpochSeed = json.into();
-        assert_eq!(h.to_base58_string(), s);
+        assert_eq!(h.to_base58_string()?, s);
         let json: EpochSeedHashV1Json = h.into();
         assert_eq!(serde_json::to_string(&json)?, s_json);
         Ok(())
@@ -407,7 +409,7 @@ pub mod test {
     fn snarked_ledger_hash_from_base58() {
         let s = "jx7buQVWFLsXTtzRgSxbYcT8EYLS8KCZbLrfDcJxMtyy4thw2Ee";
         let h = SnarkedLedgerHash::from_base58(s).unwrap();
-        assert_eq!(h.to_base58_string(), s);
+        assert_eq!(h.to_base58_string().unwrap(), s);
     }
 
     #[test]
@@ -416,7 +418,7 @@ pub mod test {
         let s_json = format!("\"{s}\"");
         let json: LedgerHashV1Json = serde_json::from_str(&s_json)?;
         let h: SnarkedLedgerHash = json.into();
-        assert_eq!(h.to_base58_string(), s);
+        assert_eq!(h.to_base58_string()?, s);
         let json: LedgerHashV1Json = h.into();
         assert_eq!(serde_json::to_string(&json)?, s_json);
         Ok(())
