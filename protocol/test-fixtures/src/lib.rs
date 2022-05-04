@@ -21,7 +21,7 @@ lazy_static! {
             .unwrap()
             .bin_prot_rule
     };
-    pub static ref GENESIS_BLOCK_MAINNET_JSON: serde_json::Value = serde_json::from_str(include_str!("data/genesis-3NKeMoncuHab5ScarV5ViyF16cJPT4taWNSaTLS64Dp67wuXigPZ.json")).unwrap();
+    pub static ref GENESIS_BLOCK_MAINNET_JSON: serde_json::Value = serde_json::from_slice(include_bytes!("data/genesis-3NKeMoncuHab5ScarV5ViyF16cJPT4taWNSaTLS64Dp67wuXigPZ.json")).unwrap();
     pub static ref GENESIS_BLOCK_MAINNET: BlockFixture = load_test_block_hex("genesis-3NKeMoncuHab5ScarV5ViyF16cJPT4taWNSaTLS64Dp67wuXigPZ.hex", include_str!("data/genesis-3NKeMoncuHab5ScarV5ViyF16cJPT4taWNSaTLS64Dp67wuXigPZ.hex"));
     // FIXME: Update this with real devnet genesis block
     pub static ref GENESIS_BLOCK_DEVNET: BlockFixture = load_test_block_hex("genesis-3NKeMoncuHab5ScarV5ViyF16cJPT4taWNSaTLS64Dp67wuXigPZ.hex", include_str!("data/genesis-3NKeMoncuHab5ScarV5ViyF16cJPT4taWNSaTLS64Dp67wuXigPZ.hex"));
@@ -38,6 +38,14 @@ lazy_static! {
         "data/3NLvrNK6rmWnxEkGZo1y4KYjsSTcgVx7gwen2aR2kTWmRDTNoSu8.hex"
         "data/3NK9fHpzfPWhuxFhQ9Dau1X1JWtstB6kGC4xrurSPU1kctMCsU9U.hex"
         "data/3NKapQX5Qe8f4BEZGWxVSWKQvKNnkvPXNLq5KDHCV1qoPzV5Y3Wu.hex"
+    );
+    pub static ref JSON_TEST_BLOCKS: HashMap<String, serde_json::Value> = load_json_test_blocks!(
+        "data/genesis-3NKeMoncuHab5ScarV5ViyF16cJPT4taWNSaTLS64Dp67wuXigPZ.json",
+        "data/mainnet-117896-3NKrv92FYZFHRNUJxiP7VGeRx3MeDY2iffFjUWXTPoXJorsS63ba.json"
+        "data/mainnet-117896-3NKjZ5fjms6BMaH4aq7DopPGyMY7PbG6vhRsX5XnYRxih8i9G7dj.json"
+        "data/mainnet-116121-3NK6myZRzc3GvS5iydv88on2XTEU2btYrjMVkgtbuoeXASRipSa6.json"
+        "data/mainnet-77749-3NK3P5bJHhqR7xkZBquGGfq3sERUeXNYNma5YXRMjgCNsTJRZpgL.json"
+        "data/mainnet-77748-3NKaBJsN1SehD6iJwRwJSFmVzJg5DXSUQVgnMxtH4eer4aF5BrDK.json"
     );
 }
 
@@ -94,6 +102,21 @@ macro_rules! load_test_blocks {
                 let file_name = $lt.split('/').last().unwrap().into();
                 let bytes = include_bytes!($lt);
                 let block = load_test_block($lt, bytes);
+                temp_map.insert(file_name, block);
+            )*
+            temp_map
+        }
+    };
+}
+
+#[macro_export]
+macro_rules! load_json_test_blocks {
+    ( $( $lt:literal $(,)?) * ) => {
+        {
+            let mut temp_map = HashMap::new();
+            $(
+                let file_name = $lt.split('/').last().unwrap().into();
+                let block: serde_json::Value = serde_json::from_slice(include_bytes!($lt)).map_err(|err|format!("Errer loading {}: {err}", $lt)).unwrap();
                 temp_map.insert(file_name, block);
             )*
             temp_map
