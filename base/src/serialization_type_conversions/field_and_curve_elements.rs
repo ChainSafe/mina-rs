@@ -5,11 +5,10 @@ use crate::types::FiniteECPoint;
 use crate::types::*;
 use mina_serialization_types::v1::FiniteECPoint as FiniteECPointV1;
 use mina_serialization_types::v1::*;
-use versioned::Versioned;
 
 impl From<FieldElementVec> for FieldElementVecV1 {
     fn from(t: FieldElementVec) -> Self {
-        Versioned::new(t.0.into_iter().map(|v| v.0).collect())
+        t.0.into_iter().map(|v| v.0).collect::<Vec<_>>().into()
     }
 }
 impl From<FieldElementVecV1> for FieldElementVec {
@@ -20,11 +19,10 @@ impl From<FieldElementVecV1> for FieldElementVec {
 
 impl From<FiniteECPointPairVec> for FiniteECPointPairVecV1 {
     fn from(t: FiniteECPointPairVec) -> Self {
-        Versioned::new(
-            t.0.into_iter()
-                .map(|(v1, v2)| (v1.into(), v2.into()))
-                .collect(),
-        )
+        t.0.into_iter()
+            .map(|(v1, v2)| (v1.into(), v2.into()))
+            .collect::<Vec<_>>()
+            .into()
     }
 }
 impl From<FiniteECPointPairVecV1> for FiniteECPointPairVec {
@@ -39,7 +37,7 @@ impl From<FiniteECPointPairVecV1> for FiniteECPointPairVec {
 
 impl From<ECPointVec> for ECPointVecV1 {
     fn from(t: ECPointVec) -> Self {
-        Versioned::new(t.0.into_iter().map(Into::into).collect())
+        t.0.into_iter().map(Into::into).collect::<Vec<_>>().into()
     }
 }
 impl From<ECPointVecV1> for ECPointVec {
@@ -50,7 +48,7 @@ impl From<ECPointVecV1> for ECPointVec {
 
 impl From<FiniteECPointVec> for FiniteECPointVecV1 {
     fn from(t: FiniteECPointVec) -> Self {
-        Versioned::new(t.0.into_iter().map(Into::into).collect())
+        t.0.into_iter().map(Into::into).collect::<Vec<_>>().into()
     }
 }
 impl From<FiniteECPointVecV1> for FiniteECPointVec {
@@ -73,10 +71,11 @@ impl From<FiniteECPointV1> for FiniteECPoint {
 impl From<ECPoint> for ECPointV1 {
     fn from(t: ECPoint) -> Self {
         use mina_serialization_types::field_and_curve_elements::ECPoint as EC;
-        Versioned::new(match t {
+        match t {
             ECPoint::Infinite => EC::Infinite,
             ECPoint::Finite(v) => EC::Finite(v.into()),
-        })
+        }
+        .into()
     }
 }
 impl From<ECPointV1> for ECPoint {

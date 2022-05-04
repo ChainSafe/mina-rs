@@ -3,17 +3,15 @@
 
 use crate::hash::{NonSnarkStagedLedgerHash, StagedLedgerHash};
 use mina_serialization_types::v1::{NonSnarkStagedLedgerHashV1, StagedLedgerHashV1};
-use versioned::Versioned;
 
 impl From<NonSnarkStagedLedgerHash> for NonSnarkStagedLedgerHashV1 {
     fn from(t: NonSnarkStagedLedgerHash) -> Self {
-        NonSnarkStagedLedgerHashV1::new(
-            mina_serialization_types::blockchain_state::NonSnarkStagedLedgerHash {
-                ledger_hash: t.ledger_hash.into_inner().into(),
-                aux_hash: t.aux_hash.0.into(),
-                pending_coinbase_aux: t.pending_coinbase_aux.0.into(),
-            },
-        )
+        mina_serialization_types::blockchain_state::NonSnarkStagedLedgerHash {
+            ledger_hash: t.ledger_hash.into_inner().into(),
+            aux_hash: t.aux_hash.0.into(),
+            pending_coinbase_aux: t.pending_coinbase_aux.0.into(),
+        }
+        .into()
     }
 }
 impl From<NonSnarkStagedLedgerHashV1> for NonSnarkStagedLedgerHash {
@@ -28,12 +26,11 @@ impl From<NonSnarkStagedLedgerHashV1> for NonSnarkStagedLedgerHash {
 
 impl From<StagedLedgerHash> for StagedLedgerHashV1 {
     fn from(t: StagedLedgerHash) -> Self {
-        StagedLedgerHashV1::new(Versioned::new(
-            mina_serialization_types::blockchain_state::StagedLedgerHash {
-                non_snark: t.non_snark.into(),
-                pending_coinbase_hash: Versioned::new(t.pending_coinbase_hash.into_inner().into()),
-            },
-        ))
+        mina_serialization_types::blockchain_state::StagedLedgerHash {
+            non_snark: t.non_snark.into(),
+            pending_coinbase_hash: t.pending_coinbase_hash.into_inner().into(),
+        }
+        .into()
     }
 }
 impl From<StagedLedgerHashV1> for StagedLedgerHash {

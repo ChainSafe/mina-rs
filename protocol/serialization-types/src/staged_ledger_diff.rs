@@ -7,6 +7,7 @@
 #![allow(missing_docs)] // Don't actually know what many of the types fields are for yet
 
 use crate::signatures::{PublicKey2V1, PublicKeyV1, SignatureV1};
+use crate::snark_work::TransactionSnarkWorkV1;
 use serde::{Deserialize, Serialize};
 
 use versioned::Versioned;
@@ -24,14 +25,18 @@ pub type StagedLedgerDiffV1 = Versioned<StagedLedgerDiff, 1>;
 pub type StagedLedgerDiffTupleV1 =
     Versioned<(StagedLedgerPreDiffTwoV1, Option<StagedLedgerPreDiffOneV1>), 1>;
 
-// FIXME: No test coverage yet
-pub type StagedLedgerPreDiffOneV1 = ();
-
-pub type TransactionSnarkWork = ();
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
+pub struct StagedLedgerPreDiffOne {
+    pub completed_works: Vec<TransactionSnarkWorkV1>,
+    pub commands: Vec<UserCommandWithStatusV1>,
+    pub coinbase: CoinBaseV1,
+    pub internal_command_balances: Vec<InternalCommandBalanceDataV1>,
+}
+pub type StagedLedgerPreDiffOneV1 = Versioned<Versioned<StagedLedgerPreDiffOne, 1>, 1>;
 
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub struct StagedLedgerPreDiffTwo {
-    pub completed_works: Vec<TransactionSnarkWork>,
+    pub completed_works: Vec<TransactionSnarkWorkV1>,
     pub commands: Vec<UserCommandWithStatusV1>,
     pub coinbase: CoinBaseV1,
     pub internal_command_balances: Vec<InternalCommandBalanceDataV1>,
@@ -199,3 +204,33 @@ pub struct FeeTransferBalanceData {
 }
 
 pub type FeeTransferBalanceDataV1 = Versioned<FeeTransferBalanceData, 1>;
+
+/// Top level wrapper type for a StagedLedgerDiff
+/// that is convertible from / to the mina specific json representation
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
+pub struct StagedLedgerDiffJson {}
+
+impl From<StagedLedgerDiffJson> for StagedLedgerDiffV1 {
+    fn from(t: StagedLedgerDiffJson) -> Self {
+        let t: StagedLedgerDiff = t.into();
+        t.into()
+    }
+}
+
+impl From<StagedLedgerDiffV1> for StagedLedgerDiffJson {
+    fn from(t: StagedLedgerDiffV1) -> Self {
+        t.t.into()
+    }
+}
+
+impl From<StagedLedgerDiffJson> for StagedLedgerDiff {
+    fn from(_t: StagedLedgerDiffJson) -> Self {
+        unimplemented!()
+    }
+}
+
+impl From<StagedLedgerDiff> for StagedLedgerDiffJson {
+    fn from(_t: StagedLedgerDiff) -> Self {
+        unimplemented!()
+    }
+}

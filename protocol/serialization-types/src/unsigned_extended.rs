@@ -54,7 +54,13 @@ mod extended_u32 {
 	    where
 	        E: de::Error,
 	    {
-	        Ok(value.try_into().unwrap())
+	    	match value.try_into() {
+	    		Ok(v) => Ok(v),
+	    		Err(e) => {
+	    			println!("Cannot deserialize value {}:  {}", value, e);
+	    			panic!()
+	    		}
+	    	}
 	    }
 	}
 

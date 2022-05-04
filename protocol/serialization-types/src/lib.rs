@@ -34,8 +34,13 @@ pub mod protocol_state_body;
 pub mod protocol_state_proof;
 pub mod protocol_version;
 pub mod signatures;
+pub mod snark_work;
 pub mod staged_ledger_diff;
 pub mod unsigned_extended;
+pub mod version_bytes;
+
+mod type_annotations;
+pub use type_annotations::*;
 
 /// Version 1 serialization types for the Mina protocol
 pub mod v1 {
@@ -78,15 +83,32 @@ pub mod v1 {
     };
     pub use super::protocol_version::ProtocolVersionV1;
     pub use super::signatures::{PublicKey2V1, PublicKeyV1, SignatureV1};
+    pub use super::snark_work::{
+        FeeExcessV1, LedgerProofV1, OneORTwoV1, PendingCoinbaseStackStateV1, PendingCoinbaseV1,
+        SgnTypeV1, SignedV1, StateStackV1, StatementV1, TransactionSnarkV1, TransactionSnarkWorkV1,
+    };
     pub use super::staged_ledger_diff::{
         CoinBaseBalanceDataV1, CoinBaseFeeTransferV1, CoinBaseV1, FeeTransferBalanceDataV1,
         InternalCommandBalanceDataV1, PaymentPayloadV1, SignedCommandFeeTokenV1,
         SignedCommandMemoV1, SignedCommandPayloadBodyV1, SignedCommandPayloadCommonV1,
         SignedCommandPayloadV1, SignedCommandV1, StagedLedgerDiffTupleV1, StagedLedgerDiffV1,
-        StagedLedgerPreDiffOneV1, StagedLedgerPreDiffTwoV1, TransactionSnarkWork,
-        TransactionStatusAppliedV1, TransactionStatusAuxiliaryDataV1,
-        TransactionStatusBalanceDataV1, TransactionStatusV1, UserCommandV1,
-        UserCommandWithStatusV1,
+        StagedLedgerPreDiffOneV1, StagedLedgerPreDiffTwoV1, TransactionStatusAppliedV1,
+        TransactionStatusAuxiliaryDataV1, TransactionStatusBalanceDataV1, TransactionStatusV1,
+        UserCommandV1, UserCommandWithStatusV1,
     };
     pub use super::unsigned_extended::{ExtendedU32V1, ExtendedU64, ExtendedU64_2, ExtendedU64_3};
+}
+
+/// json serialization types for the Mina protocol
+pub mod json {
+    use super::*;
+
+    pub use common::{ChainHashV1Json, CoinBaseHashV1Json, EpochSeedHashV1Json, LedgerHashV1Json};
+    pub use delta_transition_chain_proof::DeltaTransitionChainProofJson;
+    pub use external_transition::ExternalTransitionJson;
+    pub use protocol_state::ProtocolStateJson;
+    pub use protocol_state_body::ProtocolStateBodyJson;
+    pub use protocol_state_proof::ProtocolStateProofJson;
+    pub use protocol_version::ProtocolVersionJson;
+    pub use staged_ledger_diff::StagedLedgerDiffJson;
 }

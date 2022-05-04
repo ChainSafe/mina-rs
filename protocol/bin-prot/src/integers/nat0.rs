@@ -46,7 +46,7 @@ where
         E: de::Error,
     {
         let mut rdr = Cursor::new(value);
-        rdr.bin_read_nat0().map_err(|_| de::Error::custom(""))
+        rdr.bin_read_nat0().map_err(de::Error::custom)
     }
 }
 

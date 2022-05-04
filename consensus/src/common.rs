@@ -1,16 +1,23 @@
 // Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
+//!
 //! Implements common APIs for the blockchain in the context of consensus.
+//!
 
 use crate::error::ConsensusError;
-use hex::ToHex;
-use mina_crypto::hash::{Hashable, StateHash};
+use lockfree_object_pool::SpinLockObjectPool;
 use mina_rs_base::consensus_state::ConsensusState;
+use mina_rs_base::consensus_state::VrfOutputTruncated;
 use mina_rs_base::global_slot::GlobalSlot;
 use mina_rs_base::protocol_state::{Header, ProtocolState};
 use mina_rs_base::types::{BlockTime, Length};
+use once_cell::sync::OnceCell;
+use proof_systems::mina_hasher::Fp;
+use proof_systems::mina_hasher::PoseidonHasherKimchi;
+use proof_systems::mina_hasher::{create_kimchi, Hasher};
 
+/// Type that defines constant values for mina consensus calculation
 // TODO: derive from protocol constants
 pub struct ConsensusConstants {
     /// Point of finality (number of confirmations)
@@ -30,6 +37,7 @@ pub struct ConsensusConstants {
 }
 
 impl ConsensusConstants {
+    /// Pre-defined constant values for mainnet
     pub fn mainnet() -> Self {
         Self {
             k: Length(290),
@@ -42,19 +50,23 @@ impl ConsensusConstants {
         }
     }
 
+    /// Pre-defined constant values for devnet
     pub fn devnet() -> Self {
         todo!()
     }
 }
 
+/// A chain of [ProtocolState]
 #[derive(Debug, Default)]
 // TODO: replace vec element with ExternalTransition
 pub struct ProtocolStateChain(pub Vec<ProtocolState>);
 
+/// Trait that represents a chain of block data structure
 pub trait Chain<T>
 where
     T: Header,
 {
+    /// Pushes an item into the chain
     fn push(&mut self, new: T) -> Result<(), ConsensusError>;
     /// This function returns the last block of a given chain.
     /// The input is a chain C and the output is last block of C
@@ -73,10 +85,11 @@ where
     fn length(&self) -> usize;
     /// This function returns the hex digest of the hash of the last VRF output
     ///  of a given chain. The input is a chain C and the output is the hash digest.
-    fn last_vrf_hash(&self) -> Option<String>;
+    fn last_vrf_hash(&self) -> Option<Fp>;
     /// This function returns hash of the top block's protocol state for a given chain.
     /// The input is a chain C and the output is the hash.
-    fn state_hash(&self) -> Option<StateHash>;
+    fn state_hash(&self) -> Option<Fp>;
+    /// Gets [ProtocolState] of the genesis block
     fn genesis_block(&self) -> Option<&ProtocolState>;
 }
 
@@ -120,25 +133,29 @@ impl Chain<ProtocolState> for ProtocolStateChain {
         self.0.len()
     }
 
-    fn last_vrf_hash(&self) -> Option<String> {
-        self.top().map(|s| {
-            s.body
-                .consensus_state
-                .last_vrf_output
-                .hash()
-                .as_ref()
-                .encode_hex::<String>()
-        })
+    fn last_vrf_hash(&self) -> Option<Fp> {
+        static HASHER_POOL: OnceCell<SpinLockObjectPool<PoseidonHasherKimchi<VrfOutputTruncated>>> =
+            OnceCell::new();
+        let pool =
+            HASHER_POOL.get_or_init(|| SpinLockObjectPool::new(|| create_kimchi(()), |_| ()));
+        let mut hasher = pool.pull();
+        self.top()
+            .map(|s| hasher.hash(&s.body.consensus_state.last_vrf_output))
     }
 
-    // FIXME: this currently returns a blake2b hash. It should
-    // return a poseidon hash according to: https://github.com/MinaProtocol/mina/blob/32f529d8d8d712a44ee75be66061ce08cbdc8924/docs/specs/consensus/README.md#517-hashstate
-    fn state_hash(&self) -> Option<StateHash> {
-        self.top().map(|s| s.hash())
+    fn state_hash(&self) -> Option<Fp> {
+        static HASHER_POOL: OnceCell<SpinLockObjectPool<PoseidonHasherKimchi<ProtocolState>>> =
+            OnceCell::new();
+        let pool =
+            HASHER_POOL.get_or_init(|| SpinLockObjectPool::new(|| create_kimchi(()), |_| ()));
+        let mut hasher = pool.pull();
+        self.top().map(|s| hasher.hash(s))
     }
 }
 
+/// A trait that defines operations for consensus calculation
 pub trait Consensus {
+    /// Chain type
     type Chain;
     /// Top level API to select between chains during a fork.
     fn select_secure_chain<'a>(

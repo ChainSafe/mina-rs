@@ -12,6 +12,8 @@
 #![deny(warnings)]
 #![deny(missing_docs)]
 
+pub mod macros;
+
 use serde::{Deserialize, Serialize};
 
 /// A generic version wrapper around another type
@@ -29,7 +31,7 @@ where
 {
     fn default() -> Self {
         Self {
-            version: 1_u16, // 1 is the default version number
+            version: V, // version should always be equal to V
             t: Default::default(),
         }
     }
@@ -53,7 +55,50 @@ impl<T, const V: u16> Versioned<T, V> {
 }
 
 impl<T, const V: u16> From<T> for Versioned<T, V> {
-    fn from(t: T) -> Versioned<T, V> {
-        Self::new(t)
+    #[inline]
+    fn from(t: T) -> Self {
+        Versioned::new(t)
+    }
+}
+
+impl<T, const V1: u16, const V2: u16> From<T> for Versioned<Versioned<T, V1>, V2> {
+    #[inline]
+    fn from(t: T) -> Self {
+        let t: Versioned<T, V1> = t.into();
+        t.into()
+    }
+}
+
+impl<T, const V1: u16, const V2: u16, const V3: u16> From<T>
+    for Versioned<Versioned<Versioned<T, V1>, V2>, V3>
+{
+    #[inline]
+    fn from(t: T) -> Self {
+        let t: Versioned<Versioned<T, V1>, V2> = t.into();
+        t.into()
+    }
+}
+
+impl<T, const V1: u16, const V2: u16, const V3: u16, const V4: u16> From<T>
+    for Versioned<Versioned<Versioned<Versioned<T, V1>, V2>, V3>, V4>
+{
+    #[inline]
+    fn from(t: T) -> Self {
+        let t: Versioned<Versioned<Versioned<T, V1>, V2>, V3> = t.into();
+        t.into()
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_versioned() {
+        type I32V1 = Versioned<i32, 2>;
+
+        let i = I32V1::default();
+        assert_eq!(i.version(), 2);
+        assert_eq!(i.inner(), i32::default());
     }
 }

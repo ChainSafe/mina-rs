@@ -18,9 +18,9 @@ bin-prot = {path = "../bin-prot"}
 mina-consensus = {path = "../../consensus"}
 mina-crypto = {path = "../../crypto"}
 mina-rs-base = {path = "../../base"}
-test-fixtures = {path = "../test-fixtures"}
 mina-serialization-types = {path = "../serialization-types"}
-
+proof-systems = {path = "../../proof-systems-shim"}
+test-fixtures = {path = "../test-fixtures"}
 
 anyhow = "1"
 base64 = "0.13"
@@ -31,8 +31,6 @@ rand = "0.8"
 serde = {version = "1", features = ["derive"]}
 time = {version = "0.3", features = ["macros"]}
 wasm-bindgen-test = "0.3"
-
-proof-systems = { path = "../../proof-systems-shim" }
 
 [profile.bench]
 lto = true
