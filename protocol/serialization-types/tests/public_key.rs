@@ -3,7 +3,6 @@
 
 #[cfg(test)]
 mod tests {
-    use mina_serialization_types::traits::StrConv;
     use proof_systems::mina_signer::CompressedPubKey;
 
     #[test]
@@ -19,8 +18,8 @@ mod tests {
     }
 
     fn public_key_serde_roundtrip_inner(pubkey: &str) -> anyhow::Result<()> {
-        let pk = CompressedPubKey::from_str(pubkey)?;
-        let pubkey_from_key = pk.try_into_string()?;
+        let pk = CompressedPubKey::from_address(pubkey)?;
+        let pubkey_from_key = pk.into_address();
         assert_eq!(pubkey, &pubkey_from_key);
         Ok(())
     }

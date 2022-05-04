@@ -38,7 +38,6 @@ pub mod protocol_version;
 pub mod signatures;
 pub mod snark_work;
 pub mod staged_ledger_diff;
-pub mod traits;
 pub mod version_bytes;
 
 mod type_annotations;

@@ -35,13 +35,6 @@ impl TryFrom<&str> for SignedCommandMemo {
     }
 }
 
-impl TryFrom<String> for SignedCommandMemo {
-    type Error = SignedCommandMemoError;
-    fn try_from(s: String) -> Result<Self, Self::Error> {
-        Self::try_from(s.as_str())
-    }
-}
-
 // TODO impl ToString for SignedCommandMemo
 
 /// Error type for converting memo types

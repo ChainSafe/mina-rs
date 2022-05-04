@@ -3,13 +3,9 @@
 
 //! Signatures and public key types
 
-use std::str::FromStr;
-
 use crate::{
     field_and_curve_elements::{FieldElement, InnerCurveScalar},
     impl_strconv_via_json,
-    traits::StrConv,
-    version_bytes,
 };
 use mina_serialization_types_macros::AutoFrom;
 use proof_systems::mina_signer::CompressedPubKey;
@@ -37,30 +33,14 @@ pub struct PublicKeyJson {
 
 impl_strconv_via_json!(CompressedCurvePoint, PublicKeyJson);
 
-impl StrConv for CompressedPubKey {
-    type Error = serde_json::Error;
-    fn from_str(s: &str) -> Result<Self, Self::Error> {
-        let p = CompressedCurvePoint::from_str(s)?;
-        Ok(p.into())
-    }
-
-    fn try_into_string(self) -> Result<String, Self::Error> {
-        let p: CompressedCurvePoint = self.into();
-        p.try_into()
-    }
-}
-
 impl Serialize for PublicKeyJson {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: Serializer,
     {
-        let v1: PublicKeyV1 = self.clone().into();
-        let mut buf = Vec::new();
-        bin_prot::to_writer(&mut buf, &v1).map_err(<S::Error as serde::ser::Error>::custom)?;
-        let s = bs58::encode(buf)
-            .with_check_version(version_bytes::COMPRESSED_CURVE_POINT)
-            .into_string();
+        let pk: CompressedCurvePoint = self.clone().into();
+        let pk: CompressedPubKey = pk.into();
+        let s = pk.into_address();
         serializer.serialize_str(&s)
     }
 }
@@ -71,14 +51,10 @@ impl<'de> Deserialize<'de> for PublicKeyJson {
         D: Deserializer<'de>,
     {
         let s = String::deserialize(deserializer)?;
-        let bytes: Vec<u8> = bs58::decode(s)
-            .with_check(Some(version_bytes::COMPRESSED_CURVE_POINT))
-            .into_vec()
-            .map_err(<D::Error as serde::de::Error>::custom)?;
-        // skip the version check byte
-        let v1: PublicKeyV1 =
-            bin_prot::from_reader(&bytes[1..]).map_err(<D::Error as serde::de::Error>::custom)?;
-        Ok(v1.into())
+        let pk =
+            CompressedPubKey::from_address(&s).map_err(<D::Error as serde::de::Error>::custom)?;
+        let pk: CompressedCurvePoint = pk.into();
+        Ok(pk.into())
     }
 }
 

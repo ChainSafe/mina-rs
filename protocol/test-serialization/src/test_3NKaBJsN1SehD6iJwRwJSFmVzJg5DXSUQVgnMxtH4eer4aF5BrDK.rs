@@ -1,6 +1,9 @@
 // Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
+#[cfg(all(test, feature = "browser"))]
+wasm_bindgen_test::wasm_bindgen_test_configure!(run_in_browser);
+
 #[cfg(test)]
 mod tests {
     use anyhow::bail;
@@ -46,23 +49,14 @@ mod tests {
             &LedgerHash::from(non_snark.t.ledger_hash.clone()).to_string(),
             "jwD5Kx1GtLKJGSWufhkvCn8m7EFLm2LmAM7neyzLtTiN8wyn2po"
         );
-
-        let bytes =
-            bs58::decode("UworXDykADr3Lte856ePMsdawpTVhKLKT9Y3UKha7Tpbt4V1JP").into_vec()?;
-        assert_eq!(non_snark.t.aux_hash.t.0[..], bytes[1..33]);
         assert_eq!(
             &AuxHash::from(non_snark.t.aux_hash.t.0.clone()).to_string(),
             "UworXDykADr3Lte856ePMsdawpTVhKLKT9Y3UKha7Tpbt4V1JP"
         );
-
-        let bytes =
-            bs58::decode("XbwfEKZjgcZiyDhHRZjHUx72TuxpnuzLPwVYpVWkMAAXkSy7go").into_vec()?;
-        assert_eq!(non_snark.t.pending_coinbase_aux.t.0[..], bytes[1..33]);
         assert_eq!(
             &PendingCoinbaseAuxHash(non_snark.t.pending_coinbase_aux.t.0.clone()).to_string(),
             "XbwfEKZjgcZiyDhHRZjHUx72TuxpnuzLPwVYpVWkMAAXkSy7go"
         );
-
         assert_eq!(
             &CoinBaseHash::from(
                 blockchain_state
@@ -188,10 +182,10 @@ mod tests {
         );
         assert_eq!(consensus_state.t.t.supercharge_coinbase, false);
 
-        let bytes =
-            bs58::decode("B62qpge4uMq4Vv5Rvc8Gw9qSquUYd6xoW1pz7HQkMSHm6h1o7pvLPAN").into_vec()?;
-        // TODO: Validate full bytes vec with salted mainnet signature
-        assert_eq!(consensus_state.t.t.block_creator.0.t.t.x[..], bytes[3..35]);
+        assert_eq!(
+            &CompressedPubKey::from(consensus_state.t.t.block_creator.clone()).into_address(),
+            "B62qpge4uMq4Vv5Rvc8Gw9qSquUYd6xoW1pz7HQkMSHm6h1o7pvLPAN"
+        );
 
         assert_eq!(
             Amount::from(consensus_state.t.t.total_currency.t.t).to_string(),
@@ -226,9 +220,10 @@ mod tests {
 
         match &commands[0].data {
             UserCommand::SignedCommand(command) => {
-                let bytes = bs58::decode("B62qoSuxNqwogusxxZbs3gpJUxCCN4GZEv21FX8S2DtNpToLgKnrexM")
-                    .into_vec()?;
-                assert_eq!(command.signer.x.to_bytes(), bytes[3..35]);
+                assert_eq!(
+                    &CompressedPubKey::from(command.signer.clone()).into_address(),
+                    "B62qoSuxNqwogusxxZbs3gpJUxCCN4GZEv21FX8S2DtNpToLgKnrexM"
+                );
 
                 let bytes = bs58::decode("7mXTB1bcHYLJTmTfMtTboo4FSGStvera3z2wd6qjSxhpz1hZFMZZjcyaWAFEmZhgbq6DqVqGsNodnYKsCbMAq7D8yWo5bRSd")
                     .into_vec()?;
@@ -247,16 +242,14 @@ mod tests {
                 match &command.payload.body {
                     SignedCommandPayloadBody::PaymentPayload(body) => {
                         assert_eq!(body.amount.to_string(), "0.027370000");
-                        let bytes =
-                            bs58::decode("B62qoSuxNqwogusxxZbs3gpJUxCCN4GZEv21FX8S2DtNpToLgKnrexM")
-                                .into_vec()?;
-                        // TODO: Validate full bytes vec with salted mainnet signature
-                        assert_eq!(body.source_pk.x.to_bytes(), bytes[3..35]);
-                        let bytes =
-                            bs58::decode("B62qn2MtuQ9GyyVnotUHB9Ehp9EZre5m6TYpGx64tBCDHHBZFZRURnL")
-                                .into_vec()?;
-                        // TODO: Validate full bytes vec with salted mainnet signature
-                        assert_eq!(body.receiver_pk.x.to_bytes(), bytes[3..35]);
+                        assert_eq!(
+                            &CompressedPubKey::from(body.source_pk.clone()).into_address(),
+                            "B62qoSuxNqwogusxxZbs3gpJUxCCN4GZEv21FX8S2DtNpToLgKnrexM"
+                        );
+                        assert_eq!(
+                            &CompressedPubKey::from(body.receiver_pk.clone()).into_address(),
+                            "B62qn2MtuQ9GyyVnotUHB9Ehp9EZre5m6TYpGx64tBCDHHBZFZRURnL"
+                        );
                         assert_eq!(body.token_id.0, 1);
                     }
                 };
