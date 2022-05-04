@@ -9,6 +9,7 @@ mod tests {
         global_slot::GlobalSlot,
         numbers::Length,
         types::{GlobalSlotNumber, ProtocolState},
+        JsonSerializationType,
     };
     use wasm_bindgen_test::*;
 
@@ -37,8 +38,10 @@ mod tests {
             slots_per_epoch: Length(7140),
         };
 
+        println!("{}", chain_a.clone().try_into_json().unwrap());
+
         let mut prot_state = ProtocolState::default();
-        prot_state.body.consensus_state = chain_a.clone();
+        prot_state.body.consensus_state = chain_a;
         let mut chain_a = ProtocolStateChain::default();
         chain_a.push(prot_state).unwrap();
 

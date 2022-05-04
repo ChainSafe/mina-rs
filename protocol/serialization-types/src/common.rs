@@ -25,12 +25,58 @@ pub type BlockTimeV1 = Versioned<Versioned<u64, 1>, 1>;
 pub type AccountNonceV1 = Versioned<Versioned<u32, 1>, 1>;
 
 /// u32 wrapper
-#[derive(Clone, Debug, Serialize, Deserialize, PartialEq, derive_more::From)]
+#[derive(Clone, Debug, PartialEq, derive_more::From)]
 pub struct U32(pub u32);
 
+impl Serialize for U32 {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        let s = format!("{}", self.0);
+        serializer.serialize_str(&s)
+    }
+}
+
+impl<'de> Deserialize<'de> for U32 {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        let s = String::deserialize(deserializer)?;
+
+        Ok(Self(
+            s.parse().map_err(<D::Error as serde::de::Error>::custom)?,
+        ))
+    }
+}
+
 /// u64 wrapper
-#[derive(Clone, Debug, Serialize, Deserialize, PartialEq, derive_more::From)]
+#[derive(Clone, Debug, PartialEq, derive_more::From)]
 pub struct U64(pub u64);
+
+impl Serialize for U64 {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        let s = format!("{}", self.0);
+        serializer.serialize_str(&s)
+    }
+}
+
+impl<'de> Deserialize<'de> for U64 {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        let s = String::deserialize(deserializer)?;
+
+        Ok(Self(
+            s.parse().map_err(<D::Error as serde::de::Error>::custom)?,
+        ))
+    }
+}
 
 /// u32 representing a length (v1)
 pub type LengthV1 = Versioned<Versioned<u32, 1>, 1>;
@@ -239,6 +285,13 @@ where
 
 /// base58 string representation of a hash
 pub type HashV1Json<const VERSION_BYTE: u8> = Base58EncodableVersionedType<VERSION_BYTE, HashV1>;
+
+impl<const VERSION_BYTE: u8> From<HashV1Json<VERSION_BYTE>> for HashV1 {
+    fn from(i: HashV1Json<VERSION_BYTE>) -> Self {
+        let (h,) = i.into();
+        h
+    }
+}
 
 /// base58 string representation of a ledger hash
 pub type LedgerHashV1Json = HashV1Json<{ version_bytes::LEDGER_HASH }>;

@@ -21,6 +21,7 @@ lazy_static! {
             .unwrap()
             .bin_prot_rule
     };
+    pub static ref GENESIS_BLOCK_MAINNET_JSON: serde_json::Value = serde_json::from_str(include_str!("data/genesis-3NKeMoncuHab5ScarV5ViyF16cJPT4taWNSaTLS64Dp67wuXigPZ.json")).unwrap();
     pub static ref GENESIS_BLOCK_MAINNET: BlockFixture = load_test_block_hex("genesis-3NKeMoncuHab5ScarV5ViyF16cJPT4taWNSaTLS64Dp67wuXigPZ.hex", include_str!("data/genesis-3NKeMoncuHab5ScarV5ViyF16cJPT4taWNSaTLS64Dp67wuXigPZ.hex"));
     // FIXME: Update this with real devnet genesis block
     pub static ref GENESIS_BLOCK_DEVNET: BlockFixture = load_test_block_hex("genesis-3NKeMoncuHab5ScarV5ViyF16cJPT4taWNSaTLS64Dp67wuXigPZ.hex", include_str!("data/genesis-3NKeMoncuHab5ScarV5ViyF16cJPT4taWNSaTLS64Dp67wuXigPZ.hex"));
