@@ -43,16 +43,16 @@ pub struct Permissions {
     pub set_verification_key: AuthRequired,
 }
 
-impl Default for Permissions {
-    fn default() -> Self {
-        Self {
-            stake: true,
-            edit_state: AuthRequired::Signature,
-            send: AuthRequired::Signature,
-            receive: AuthRequired::None,
-            set_delegate: AuthRequired::Signature,
-            set_permissions: AuthRequired::Signature,
-            set_verification_key: AuthRequired::Signature,
-        }
-    }
-}
+// impl Default for Permissions {
+//     fn default() -> Self {
+//         Self {
+//             stake: true,
+//             edit_state: AuthRequired::Signature,
+//             send: AuthRequired::Signature,
+//             receive: AuthRequired::None,
+//             set_delegate: AuthRequired::Signature,
+//             set_permissions: AuthRequired::Signature,
+//             set_verification_key: AuthRequired::Signature,
+//         }
+//     }
+// }

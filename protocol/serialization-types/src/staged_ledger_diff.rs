@@ -10,6 +10,7 @@ use crate::signatures::{PublicKey2V1, PublicKeyV1, SignatureV1};
 use crate::snark_work::TransactionSnarkWorkV1;
 use serde::{Deserialize, Serialize};
 
+use smart_default::SmartDefault;
 use versioned::*;
 
 use crate::v1::{AmountV1, ExtendedU32, ExtendedU64_2, ExtendedU64_3};
@@ -155,18 +156,13 @@ pub struct TransactionStatusBalanceData {
 
 pub type TransactionStatusBalanceDataV1 = Versioned<TransactionStatusBalanceData, 1>;
 
-#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq, SmartDefault)]
 pub enum CoinBase {
+    #[default]
     Zero,
     // FIXME: other variants are not covered by current test block
     One(Option<CoinBaseFeeTransferV1>),
     Two,
-}
-
-impl Default for CoinBase {
-    fn default() -> Self {
-        Self::Zero
-    }
 }
 
 pub type CoinBaseV1 = Versioned<CoinBase, 1>;

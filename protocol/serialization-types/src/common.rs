@@ -148,18 +148,13 @@ impl<const VERSION_BYTE: u8, T> Base58EncodableType<VERSION_BYTE, T>
 where
     T: Serialize + AsRef<[u8]>,
 {
-    /// Encode inner data with version check byte into [Vec<u8>]
-    pub fn to_base58(&self) -> Result<Vec<u8>, crate::errors::Error> {
-        Ok(self.to_base58_builder().into_vec())
-    }
-
     /// Encode inner data with version check byte into [String]
     pub fn to_base58_string(&self) -> Result<String, crate::errors::Error> {
         Ok(self.to_base58_builder().into_string())
     }
 
     /// Encode inner data with version check byte into [EncodeBuilder]
-    fn to_base58_builder(&self) -> EncodeBuilder<'static, &[u8]> {
+    pub fn to_base58_builder(&self) -> EncodeBuilder<'static, &[u8]> {
         let bytes: &[u8] = self.0.as_ref();
         bs58::encode(bytes).with_check_version(VERSION_BYTE)
     }
@@ -225,14 +220,6 @@ impl<const VERSION_BYTE: u8, T> Base58EncodableVersionedType<VERSION_BYTE, T>
 where
     T: Serialize,
 {
-    /// Encode inner data with version check byte into [Vec<u8>]
-    pub fn to_base58(&self) -> Result<Vec<u8>, crate::errors::Error> {
-        let builder = self
-            .to_base58_builder()
-            .map_err(crate::errors::Error::BinProtError)?;
-        Ok(builder.into_vec())
-    }
-
     /// Encode inner data with version check byte into [String]
     pub fn to_base58_string(&self) -> Result<String, crate::errors::Error> {
         let builder = self.to_base58_builder()?;
@@ -240,7 +227,9 @@ where
     }
 
     /// Encode inner data with version check byte into [EncodeBuilder]
-    fn to_base58_builder(&self) -> Result<EncodeBuilder<'static, Vec<u8>>, bin_prot::error::Error> {
+    pub fn to_base58_builder(
+        &self,
+    ) -> Result<EncodeBuilder<'static, Vec<u8>>, bin_prot::error::Error> {
         let mut buf = Vec::new();
         bin_prot::to_writer(&mut buf, &self.0)?;
         Ok(bs58::encode(buf).with_check_version(VERSION_BYTE))

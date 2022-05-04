@@ -14,6 +14,7 @@ use crate::user_commands::UserCommand;
 
 use mina_serialization_types_macros::AutoFrom;
 use proof_systems::mina_signer::CompressedPubKey;
+use smart_default::SmartDefault;
 
 #[derive(Clone, PartialEq, Debug, Default, AutoFrom)]
 #[auto_from(mina_serialization_types::staged_ledger_diff::StagedLedgerDiff)]
@@ -104,19 +105,14 @@ pub struct TransactionStatusBalanceData {
     pub receiver_balance: Option<Amount>,
 }
 
-#[derive(Clone, PartialEq, Debug, AutoFrom)]
+#[derive(Clone, PartialEq, Debug, SmartDefault, AutoFrom)]
 #[auto_from(mina_serialization_types::staged_ledger_diff::CoinBase)]
 pub enum CoinBase {
+    #[default]
     Zero,
     // FIXME: other variants are not covered by current test block
     One(Option<CoinBaseFeeTransfer>),
     Two,
-}
-
-impl Default for CoinBase {
-    fn default() -> Self {
-        Self::Zero
-    }
 }
 
 #[derive(Clone, PartialEq, Debug, AutoFrom)]

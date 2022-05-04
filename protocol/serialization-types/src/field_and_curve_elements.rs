@@ -5,6 +5,7 @@
 
 use crate::v1::BigInt256;
 use serde::{Deserialize, Serialize};
+use smart_default::SmartDefault;
 use versioned::Versioned;
 
 /// Represents an element in a finite field that can be encoded as
@@ -46,18 +47,13 @@ pub type FiniteECPointPairVecV1 = Versioned<FiniteECPointPairVec, 1>;
 
 /// Elliptic curve point that can either be the coordinates of a point on the curve
 /// OR it can be the point-at-infinity
-#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq, SmartDefault)]
 pub enum ECPoint {
     /// The point at infinity
+    #[default]
     Infinite,
     /// Point on the curve
     Finite(FiniteECPoint),
-}
-
-impl Default for ECPoint {
-    fn default() -> Self {
-        Self::Infinite
-    }
 }
 
 /// Elliptic curve point that can either be the coordinates of a point on the curve

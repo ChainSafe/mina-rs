@@ -4,6 +4,7 @@
 //! Account Timing
 
 use mina_serialization_types_macros::AutoFrom;
+use smart_default::SmartDefault;
 
 use crate::numbers::{Amount, BlockTime};
 
@@ -25,17 +26,12 @@ pub struct TimedData {
 
 /// Timing information for an account with regard to when its balance is accessable
 /// This is to allow vesting from an initial genesis allocation
-#[derive(Debug, Clone, AutoFrom)]
+#[derive(Debug, Clone, SmartDefault, AutoFrom)]
 #[auto_from(mina_serialization_types::account::Timing)]
 pub enum Timing {
     /// Account does not have any timing limitations
+    #[default]
     Untimed,
     /// Account does have timing limitations as specified
     Timed(TimedData),
-}
-
-impl Default for Timing {
-    fn default() -> Self {
-        Timing::Untimed
-    }
 }

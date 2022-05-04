@@ -6,6 +6,7 @@ use ark_ec::short_weierstrass_jacobian::GroupAffine;
 use mina_crypto::{hex::skip_0x_prefix_when_needed, prelude::*};
 use mina_serialization_types_macros::AutoFrom;
 use num::Integer;
+use smart_default::SmartDefault;
 
 use crate::numbers::BigInt256;
 
@@ -139,18 +140,13 @@ where
 
 /// Elliptic curve point that can either be the coordinates of a point on the curve
 /// OR it can be the point-at-infinity
-#[derive(Clone, PartialEq, Debug, AutoFrom)]
+#[derive(Clone, PartialEq, Debug, SmartDefault, AutoFrom)]
 #[auto_from(mina_serialization_types::field_and_curve_elements::ECPoint)]
 pub enum ECPoint {
     // elliptic curve point, can be the point at infinity
+    #[default]
     Infinite,
     Finite(FiniteECPoint),
-}
-
-impl Default for ECPoint {
-    fn default() -> Self {
-        Self::Infinite
-    }
 }
 
 impl<P> From<ECPoint> for GroupAffine<P>
