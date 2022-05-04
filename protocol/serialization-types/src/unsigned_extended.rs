@@ -14,7 +14,7 @@ use serde::{Serialize, Deserialize};
 
 /// u32 wrapped in 1 version byte
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
-pub struct ExtendedU32(#[serde(with = "extended_u32")] pub u32);
+pub struct ExtendedU32(#[serde(with = "extended_u32")] u32);
 
 impl TryFrom<i32> for ExtendedU32 {
 	type Error = core::num::TryFromIntError;
@@ -26,6 +26,10 @@ impl TryFrom<i32> for ExtendedU32 {
 
 impl From<u32> for ExtendedU32 {
 	fn from(t: u32) -> Self { Self(t) }
+}
+
+impl From<ExtendedU32> for u32 {
+	fn from(t: ExtendedU32) -> Self { t.0 }
 }
 
 mod extended_u32 {
