@@ -7,7 +7,9 @@ const PROTO_DIR: &str = "proto";
 const OUT_DIR: &str = "src/pb";
 
 fn main() -> anyhow::Result<()> {
-    protobuf_codegen_pure::Codegen::new()
+    protobuf_codegen::Codegen::new()
+        .pure()
+        .customize(protobuf_codegen::Customize::default().gen_mod_rs(false))
         .out_dir(OUT_DIR)
         .inputs(get_inputs()?.as_slice())
         .include("proto")

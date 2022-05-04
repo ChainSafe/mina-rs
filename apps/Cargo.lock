@@ -727,7 +727,7 @@ dependencies = [
 [[package]]
 name = "mina-curves"
 version = "0.1.0"
-source = "git+https://github.com/o1-labs/proof-systems?rev=92bf8597bd351214a5cca14aff6f0036b38dd57a#92bf8597bd351214a5cca14aff6f0036b38dd57a"
+source = "git+https://github.com/o1-labs/proof-systems?rev=b44ceb380b74eb19bc203df384bcb1643fdd83c2#b44ceb380b74eb19bc203df384bcb1643fdd83c2"
 dependencies = [
  "ark-ec",
  "ark-ff",
@@ -736,7 +736,7 @@ dependencies = [
 [[package]]
 name = "mina-hasher"
 version = "0.1.0"
-source = "git+https://github.com/o1-labs/proof-systems?rev=92bf8597bd351214a5cca14aff6f0036b38dd57a#92bf8597bd351214a5cca14aff6f0036b38dd57a"
+source = "git+https://github.com/o1-labs/proof-systems?rev=b44ceb380b74eb19bc203df384bcb1643fdd83c2#b44ceb380b74eb19bc203df384bcb1643fdd83c2"
 dependencies = [
  "ark-ff",
  "bitvec",
@@ -796,7 +796,7 @@ dependencies = [
 [[package]]
 name = "mina-signer"
 version = "0.1.0"
-source = "git+https://github.com/o1-labs/proof-systems?rev=92bf8597bd351214a5cca14aff6f0036b38dd57a#92bf8597bd351214a5cca14aff6f0036b38dd57a"
+source = "git+https://github.com/o1-labs/proof-systems?rev=b44ceb380b74eb19bc203df384bcb1643fdd83c2#b44ceb380b74eb19bc203df384bcb1643fdd83c2"
 dependencies = [
  "ark-ec",
  "ark-ff",
@@ -909,9 +909,9 @@ dependencies = [
 
 [[package]]
 name = "num_threads"
-version = "0.1.5"
+version = "0.1.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "aba1801fb138d8e85e11d0fc70baf4fe1cdfffda7c6cd34a854905df588e5ed0"
+checksum = "2819ce041d2ee131036f4fc9d6ae7ae125a3a40e97ba64d04fe799ad9dabbb44"
 dependencies = [
  "libc",
 ]
@@ -919,7 +919,7 @@ dependencies = [
 [[package]]
 name = "o1-utils"
 version = "0.1.0"
-source = "git+https://github.com/o1-labs/proof-systems?rev=92bf8597bd351214a5cca14aff6f0036b38dd57a#92bf8597bd351214a5cca14aff6f0036b38dd57a"
+source = "git+https://github.com/o1-labs/proof-systems?rev=b44ceb380b74eb19bc203df384bcb1643fdd83c2#b44ceb380b74eb19bc203df384bcb1643fdd83c2"
 dependencies = [
  "ark-ec",
  "ark-ff",
@@ -958,7 +958,7 @@ checksum = "624a8340c38c1b80fd549087862da4ba43e08858af025b236e509b6649fc13d5"
 [[package]]
 name = "oracle"
 version = "0.1.0"
-source = "git+https://github.com/o1-labs/proof-systems?rev=92bf8597bd351214a5cca14aff6f0036b38dd57a#92bf8597bd351214a5cca14aff6f0036b38dd57a"
+source = "git+https://github.com/o1-labs/proof-systems?rev=b44ceb380b74eb19bc203df384bcb1643fdd83c2#b44ceb380b74eb19bc203df384bcb1643fdd83c2"
 dependencies = [
  "ark-ec",
  "ark-ff",
@@ -1263,9 +1263,9 @@ dependencies = [
 
 [[package]]
 name = "serde_json"
-version = "1.0.80"
+version = "1.0.81"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f972498cf015f7c0746cac89ebe1d6ef10c293b94175a243a2d9442c163d9944"
+checksum = "9b7ce2b32a1aed03c558dc61a5cd328f15aff2dbc17daad8fb8af04d2100e15c"
 dependencies = [
  "itoa",
  "ryu",
