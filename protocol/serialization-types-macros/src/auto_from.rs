@@ -1,9 +1,14 @@
 // Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
+//!
+//! Utilities for implementing AutoFrom
+//!
+
 use crate::*;
 use syn::{punctuated::Punctuated, AttrStyle, Attribute, Field, Fields, Token, Variant};
 
+/// Parse the attributed target type(s)
 pub fn parse_types_from_attr(attributes: &[Attribute]) -> Vec<proc_macro2::TokenStream> {
     let mut target_types: Vec<proc_macro2::TokenStream> = Vec::new();
     for attr in attributes {
@@ -20,6 +25,7 @@ pub fn parse_types_from_attr(attributes: &[Attribute]) -> Vec<proc_macro2::Token
     target_types
 }
 
+/// Codegen for structs with named fields
 pub fn auto_from_for_struct_with_named_fields(
     ident: &proc_macro2::Ident,
     target_types: &[proc_macro2::TokenStream],
@@ -94,6 +100,7 @@ pub fn auto_from_for_struct_with_named_fields(
     Some(output)
 }
 
+/// Codegen for structs with unnamed fields
 pub fn auto_from_for_struct_with_unnamed_fields(
     ident: &proc_macro2::Ident,
     target_types: &[proc_macro2::TokenStream],
@@ -162,6 +169,7 @@ pub fn auto_from_for_struct_with_unnamed_fields(
     Some(output)
 }
 
+/// Codegen for enums
 pub fn auto_from_for_enum(
     ident: &proc_macro2::Ident,
     target_types: &[proc_macro2::TokenStream],
@@ -287,6 +295,7 @@ pub fn auto_from_for_enum(
     Some(output)
 }
 
+/// Codegen for versioned target type(s)
 fn impl_from_for_versioned(
     ident: &proc_macro2::Ident,
     target_type: &proc_macro2::TokenStream,
