@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 //!
-//! This crate provide helper procedural macros for type conversions,
+//! This crate provides helper procedural macros for type conversions,
 //! it supports struct(s) with named and unnamed fields, enums.
 //!
 //! # Example
@@ -71,8 +71,8 @@ use quote::quote;
 use syn::{parse_macro_input, DataEnum, DeriveInput, FieldsNamed, FieldsUnnamed};
 
 /// A derive macro that automatically implements [From] trait between the annotated type
-/// and type types including the attributed target type(s) and their versioned types,
-/// when the target target has identical field names with the given one, and each pair of the fields
+/// and types including the attributed target type(s) and their versioned types,
+/// when the target type has identical field names with the annotated one, and each pair of the fields
 /// are convertible between each other
 #[proc_macro_derive(AutoFrom, attributes(auto_from))]
 pub fn auto_from_macro(input: TokenStream) -> TokenStream {
