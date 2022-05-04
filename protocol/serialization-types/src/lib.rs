@@ -115,5 +115,6 @@ pub mod json {
     pub use protocol_state_body::ProtocolStateBodyJson;
     pub use protocol_state_proof::ProtocolStateProofJson;
     pub use protocol_version::ProtocolVersionJson;
+    pub use signatures::PublicKeyJson;
     pub use staged_ledger_diff::StagedLedgerDiffJson;
 }

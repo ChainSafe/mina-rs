@@ -3,9 +3,12 @@
 
 //! Signatures and public key types
 
-use crate::field_and_curve_elements::{FieldElement, InnerCurveScalar};
+use crate::{
+    field_and_curve_elements::{FieldElement, InnerCurveScalar},
+    impl_strconv_via_json, version_bytes,
+};
 use mina_serialization_types_macros::AutoFrom;
-use serde::{Deserialize, Serialize};
+use serde::{Deserialize, Deserializer, Serialize, Serializer};
 use versioned::Versioned;
 
 /// An EC point stored in compressed form containing only the x coordinate and one extra bit
@@ -18,13 +21,47 @@ pub struct CompressedCurvePoint {
 }
 
 /// An EC point stored in compressed form containing only the x coordinate and one extra bit (json)
-#[derive(Clone, Debug, Serialize, Deserialize, PartialEq, AutoFrom)]
+#[derive(Clone, Debug, PartialEq, AutoFrom)]
 #[auto_from(CompressedCurvePoint)]
 pub struct PublicKeyJson {
     /// The x coordinate of the EC point
     pub x: FieldElement,
     /// If the point is odd (or even)
     pub is_odd: bool,
+}
+
+impl_strconv_via_json!(CompressedCurvePoint, PublicKeyJson);
+
+impl Serialize for PublicKeyJson {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        let v1: PublicKeyV1 = self.clone().into();
+        let mut buf = Vec::new();
+        bin_prot::to_writer(&mut buf, &v1).map_err(<S::Error as serde::ser::Error>::custom)?;
+        let s = bs58::encode(buf)
+            .with_check_version(version_bytes::COMPRESSED_CURVE_POINT)
+            .into_string();
+        serializer.serialize_str(&s)
+    }
+}
+
+impl<'de> Deserialize<'de> for PublicKeyJson {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        let s = String::deserialize(deserializer)?;
+        let bytes: Vec<u8> = bs58::decode(s)
+            .with_check(Some(version_bytes::COMPRESSED_CURVE_POINT))
+            .into_vec()
+            .map_err(<D::Error as serde::de::Error>::custom)?;
+        // skip the version check byte
+        let v1: PublicKeyV1 =
+            bin_prot::from_reader(&bytes[1..]).map_err(<D::Error as serde::de::Error>::custom)?;
+        Ok(v1.into())
+    }
 }
 
 /// Public key (v1)

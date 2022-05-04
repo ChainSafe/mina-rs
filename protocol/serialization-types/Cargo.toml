@@ -22,5 +22,6 @@ thiserror = "1"
 [dev-dependencies]
 test-fixtures = {path = "../test-fixtures"}
 
+anyhow = "1"
 pretty_assertions = "1"
 wasm-bindgen-test = "0.3"

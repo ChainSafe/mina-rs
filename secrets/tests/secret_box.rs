@@ -46,8 +46,10 @@ mod tests {
         let pk: PublicKeyV1 = keypair.public.into_compressed().into();
         let pk = pk.0.t.t;
         let pk_expected_bytes = bs58::decode(PUBLIC_KEY).into_vec()?;
+        println!("{:?}", pk_expected_bytes);
         assert_eq!(&pk.x[..], &pk_expected_bytes[3..35]);
         assert_eq!(pk.is_odd as u8, pk_expected_bytes[35]);
+        assert_eq!(pk_expected_bytes.len(), 40);
         Ok(())
     }
 

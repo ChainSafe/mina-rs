@@ -27,6 +27,13 @@ macro_rules! impl_strconv_via_json {
             }
         }
 
+        impl ::std::str::FromStr for $ty {
+            type Err = serde_json::error::Error;
+            fn from_str(s: &str) -> Result<Self, Self::Err> {
+                s.try_into()
+            }
+        }
+
         impl TryFrom<$ty> for String {
             type Error = serde_json::error::Error;
             fn try_from(h: $ty) -> Result<Self, Self::Error> {
