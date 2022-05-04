@@ -11,7 +11,7 @@ use serde::{Deserialize, Serialize};
 
 use versioned::Versioned;
 
-use crate::v1::{AmountV1, ExtendedU32, ExtendedU64_2, ExtendedU64_3};
+use crate::v1::{AmountV1, ExtendedU32V1, ExtendedU64_2, ExtendedU64_3};
 
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 /// Top level wrapper type for a StagedLedgerDiff
@@ -78,8 +78,8 @@ pub struct SignedCommandPayloadCommon {
     pub fee: AmountV1,
     pub fee_token: SignedCommandFeeTokenV1,
     pub fee_payer_pk: PublicKeyV1,
-    pub nonce: ExtendedU32,
-    pub valid_until: ExtendedU32,
+    pub nonce: ExtendedU32V1,
+    pub valid_until: ExtendedU32V1,
     pub memo: SignedCommandMemoV1,
 }
 
