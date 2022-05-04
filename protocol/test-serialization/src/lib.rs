@@ -9,6 +9,7 @@ wasm_bindgen_test::wasm_bindgen_test_configure!(run_in_browser);
 mod e2e;
 mod fuzz;
 mod genesis;
+mod json;
 #[allow(non_snake_case)]
 mod test_3NKaBJsN1SehD6iJwRwJSFmVzJg5DXSUQVgnMxtH4eer4aF5BrDK;
 
