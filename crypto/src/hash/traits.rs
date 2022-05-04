@@ -63,7 +63,7 @@ mod tests {
 
     impl AsRef<[u8]> for TestHash {
         fn as_ref(&self) -> &[u8] {
-            &self.0.as_ref()
+            &self.0 .0.as_ref()
         }
     }
 

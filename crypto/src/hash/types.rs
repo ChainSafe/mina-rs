@@ -19,7 +19,7 @@ use serde::{Deserialize, Serialize};
 use versioned::*;
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize, From, PartialOrd)]
-pub(crate) struct BaseHash([u8; 32]);
+pub(crate) struct BaseHash(pub(crate) [u8; 32]);
 
 impl Hashable for BaseHash {
     type D = ();
@@ -51,17 +51,17 @@ impl<'a> From<&'a [u8]> for BaseHash {
     }
 }
 
-impl AsRef<[u8]> for BaseHash {
-    fn as_ref(&self) -> &[u8] {
-        &self.0
-    }
-}
+// impl AsRef<[u8]> for BaseHash {
+//     fn as_ref(&self) -> &[u8] {
+//         &self.0
+//     }
+// }
 
-impl AsRef<[u8; 32]> for BaseHash {
-    fn as_ref(&self) -> &[u8; 32] {
-        &self.0
-    }
-}
+// impl AsRef<[u8; 32]> for BaseHash {
+//     fn as_ref(&self) -> &[u8; 32] {
+//         &self.0
+//     }
+// }
 
 impl_from_for_newtype!(BaseHash, HashV1);
 impl_from_for_newtype!(BaseHash, Hash2V1);
