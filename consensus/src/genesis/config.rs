@@ -1,6 +1,8 @@
 // Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
+use std::str::FromStr;
+
 use mina_crypto::{hash::*, prelude::*};
 use mina_rs_base::{
     finite_ec_point, finite_ec_point_pair,
@@ -57,16 +59,16 @@ impl GenesisInitConfig {
             let mut data = EpochData::default();
             data.epoch_length.0 = 1;
             data.ledger.hash =
-                LedgerHash::try_from("jx7buQVWFLsXTtzRgSxbYcT8EYLS8KCZbLrfDcJxMtyy4thw2Ee")
+                LedgerHash::from_str("jx7buQVWFLsXTtzRgSxbYcT8EYLS8KCZbLrfDcJxMtyy4thw2Ee")
                     .expect(ERR_FAIL_TO_DECODE_B58);
             data.ledger.total_currency = total_currency;
-            data.seed = EpochSeed::try_from("2va9BGv9JrLTtrzZttiEMDYw1Zj6a6EHzXjmP9evHDTG3oEquURA")
+            data.seed = EpochSeed::from_str("2va9BGv9JrLTtrzZttiEMDYw1Zj6a6EHzXjmP9evHDTG3oEquURA")
                 .expect(ERR_FAIL_TO_DECODE_B58);
             data.start_checkpoint =
-                StateHash::try_from("3NK2tkzqqK5spR2sZ7tujjqPksL45M3UUrcA4WhCkeiPtnugyE2x")
+                StateHash::from_str("3NK2tkzqqK5spR2sZ7tujjqPksL45M3UUrcA4WhCkeiPtnugyE2x")
                     .expect(ERR_FAIL_TO_DECODE_B58);
             data.lock_checkpoint =
-                StateHash::try_from("3NK2tkzqqK5spR2sZ7tujjqPksL45M3UUrcA4WhCkeiPtnugyE2x")
+                StateHash::from_str("3NK2tkzqqK5spR2sZ7tujjqPksL45M3UUrcA4WhCkeiPtnugyE2x")
                     .expect(ERR_FAIL_TO_DECODE_B58);
             data
         };
@@ -75,16 +77,16 @@ impl GenesisInitConfig {
             let mut data = EpochData::default();
             data.epoch_length.0 = 2;
             data.ledger.hash =
-                LedgerHash::try_from("jx7buQVWFLsXTtzRgSxbYcT8EYLS8KCZbLrfDcJxMtyy4thw2Ee")
+                LedgerHash::from_str("jx7buQVWFLsXTtzRgSxbYcT8EYLS8KCZbLrfDcJxMtyy4thw2Ee")
                     .expect(ERR_FAIL_TO_DECODE_B58);
             data.ledger.total_currency = total_currency;
-            data.seed = EpochSeed::try_from("2vaRh7FQ5wSzmpFReF9gcRKjv48CcJvHs25aqb3SSZiPgHQBy5Dt")
+            data.seed = EpochSeed::from_str("2vaRh7FQ5wSzmpFReF9gcRKjv48CcJvHs25aqb3SSZiPgHQBy5Dt")
                 .expect(ERR_FAIL_TO_DECODE_B58);
             data.start_checkpoint =
-                StateHash::try_from("3NK2tkzqqK5spR2sZ7tujjqPksL45M3UUrcA4WhCkeiPtnugyE2x")
+                StateHash::from_str("3NK2tkzqqK5spR2sZ7tujjqPksL45M3UUrcA4WhCkeiPtnugyE2x")
                     .expect(ERR_FAIL_TO_DECODE_B58);
             data.lock_checkpoint =
-                StateHash::try_from("3NLoKn22eMnyQ7rxh5pxB6vBA3XhSAhhrf7akdqS6HbAKD14Dh1d")
+                StateHash::from_str("3NLoKn22eMnyQ7rxh5pxB6vBA3XhSAhhrf7akdqS6HbAKD14Dh1d")
                     .expect(ERR_FAIL_TO_DECODE_B58);
             data
         };
@@ -92,30 +94,30 @@ impl GenesisInitConfig {
         let blockchain_state = BlockchainState {
             timestamp: BlockTime::from_unix_epoch(1615939200),
             snarked_next_available_token: TokenId(2),
-            snarked_ledger_hash: SnarkedLedgerHash::try_from(
+            snarked_ledger_hash: SnarkedLedgerHash::from_str(
                 "jx7buQVWFLsXTtzRgSxbYcT8EYLS8KCZbLrfDcJxMtyy4thw2Ee",
             )
             .expect(ERR_FAIL_TO_DECODE_B58),
-            genesis_ledger_hash: SnarkedLedgerHash::try_from(
+            genesis_ledger_hash: SnarkedLedgerHash::from_str(
                 "jx7buQVWFLsXTtzRgSxbYcT8EYLS8KCZbLrfDcJxMtyy4thw2Ee",
             )
             .expect(ERR_FAIL_TO_DECODE_B58),
             staged_ledger_hash: StagedLedgerHash {
                 non_snark: NonSnarkStagedLedgerHash {
-                    ledger_hash: LedgerHash::try_from(
+                    ledger_hash: LedgerHash::from_str(
                         "jx7buQVWFLsXTtzRgSxbYcT8EYLS8KCZbLrfDcJxMtyy4thw2Ee",
                     )
                     .expect(ERR_FAIL_TO_DECODE_B58),
-                    aux_hash: AuxHash::try_from(
+                    aux_hash: AuxHash::from_str(
                         "UDRUFHSvxUAtV8sh7gzMVPqpbd46roG1wzWR6dYvB6RunPihom",
                     )
                     .expect(ERR_FAIL_TO_DECODE_B58),
-                    pending_coinbase_aux: PendingCoinbaseAuxHash::try_from(
+                    pending_coinbase_aux: PendingCoinbaseAuxHash::from_str(
                         "WAAeUjUnP9Q2JiabhJzJozcjiEmkZe8ob4cfFKSuq6pQSNmHh7",
                     )
                     .expect(ERR_FAIL_TO_DECODE_B58),
                 },
-                pending_coinbase_hash: CoinBaseHash::try_from(
+                pending_coinbase_hash: CoinBaseHash::from_str(
                     "2n1tLdP2gkifmyVmrmzYXTS4ohPbZPJn6Qq4x55ywrbRWB4543cC",
                 )
                 .expect(ERR_FAIL_TO_DECODE_B58),
@@ -475,7 +477,7 @@ impl GenesisInitConfig {
 
         Self {
             sub_windows_per_window: 11,
-            last_vrf_output: VrfOutputTruncated::try_from(
+            last_vrf_output: VrfOutputTruncated::from_str(
                 "NfThG1r1GxQuhaGLSJWGxcpv24SudtXG4etB0TnGqwg=",
             )
             .expect(ERR_FAIL_TO_DECODE_B64),
@@ -508,18 +510,18 @@ impl GenesisInitConfig {
                 "B62qiy32p8kAKnny8ZFwoMhYpBppM1DWVCqAPBYNcXnsAHhnfAAuXgg",
             )
             .expect(ERR_FAIL_TO_DECODE_B58),
-            genesis_state_hash: StateHash::try_from(
+            genesis_state_hash: StateHash::from_str(
                 "3NLoKn22eMnyQ7rxh5pxB6vBA3XhSAhhrf7akdqS6HbAKD14Dh1d",
             )
             .expect(ERR_FAIL_TO_DECODE_B58),
-            previous_state_hash: StateHash::try_from(
+            previous_state_hash: StateHash::from_str(
                 "3NLoKn22eMnyQ7rxh5pxB6vBA3XhSAhhrf7akdqS6HbAKD14Dh1d",
             )
             .expect(ERR_FAIL_TO_DECODE_B58),
             blockchain_state,
             protocol_state_proof,
             delta_transition_chain_proof: (
-                StateHash::try_from("3NLoKn22eMnyQ7rxh5pxB6vBA3XhSAhhrf7akdqS6HbAKD14Dh1d")
+                StateHash::from_str("3NLoKn22eMnyQ7rxh5pxB6vBA3XhSAhhrf7akdqS6HbAKD14Dh1d")
                     .expect(ERR_FAIL_TO_DECODE_B58),
                 Default::default(),
             )

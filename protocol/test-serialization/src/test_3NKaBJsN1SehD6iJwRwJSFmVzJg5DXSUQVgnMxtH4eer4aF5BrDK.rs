@@ -31,21 +31,19 @@ mod tests {
 
         let protocol_state = &et.t.protocol_state;
         assert_eq!(
-            &String::try_from(&StateHash::from(
-                protocol_state.t.t.previous_state_hash.clone()
-            ))?,
+            &StateHash::from(protocol_state.t.t.previous_state_hash.clone()).to_string(),
             "3NKDdX6eVtAgmmTVxaFLnnPPrsGKgVepG2k5cf8HocgSw6ps8Sww"
         );
 
         let body = &et.t.protocol_state.t.t.body;
         assert_eq!(
-            &String::try_from(&StateHash::from(body.t.t.genesis_state_hash.clone()))?,
+            &StateHash::from(body.t.t.genesis_state_hash.clone()).to_string(),
             "3NKeMoncuHab5ScarV5ViyF16cJPT4taWNSaTLS64Dp67wuXigPZ"
         );
         let blockchain_state = &body.t.t.blockchain_state;
         let non_snark = &blockchain_state.t.t.staged_ledger_hash.t.t.non_snark;
         assert_eq!(
-            &String::try_from(LedgerHash::from(non_snark.t.ledger_hash.clone()))?,
+            &LedgerHash::from(non_snark.t.ledger_hash.clone()).to_string(),
             "jwD5Kx1GtLKJGSWufhkvCn8m7EFLm2LmAM7neyzLtTiN8wyn2po"
         );
 
@@ -53,7 +51,7 @@ mod tests {
             bs58::decode("UworXDykADr3Lte856ePMsdawpTVhKLKT9Y3UKha7Tpbt4V1JP").into_vec()?;
         assert_eq!(non_snark.t.aux_hash.t.0[..], bytes[1..33]);
         assert_eq!(
-            &String::try_from(&AuxHash::from(non_snark.t.aux_hash.t.0.clone()))?,
+            &AuxHash::from(non_snark.t.aux_hash.t.0.clone()).to_string(),
             "UworXDykADr3Lte856ePMsdawpTVhKLKT9Y3UKha7Tpbt4V1JP"
         );
 
@@ -61,14 +59,12 @@ mod tests {
             bs58::decode("XbwfEKZjgcZiyDhHRZjHUx72TuxpnuzLPwVYpVWkMAAXkSy7go").into_vec()?;
         assert_eq!(non_snark.t.pending_coinbase_aux.t.0[..], bytes[1..33]);
         assert_eq!(
-            &String::try_from(&PendingCoinbaseAuxHash(
-                non_snark.t.pending_coinbase_aux.t.0.clone()
-            ))?,
+            &PendingCoinbaseAuxHash(non_snark.t.pending_coinbase_aux.t.0.clone()).to_string(),
             "XbwfEKZjgcZiyDhHRZjHUx72TuxpnuzLPwVYpVWkMAAXkSy7go"
         );
 
         assert_eq!(
-            &String::try_from(&CoinBaseHash::from(
+            &CoinBaseHash::from(
                 blockchain_state
                     .t
                     .t
@@ -78,19 +74,16 @@ mod tests {
                     .pending_coinbase_hash
                     .t
                     .clone()
-            ))?,
+            )
+            .to_string(),
             "2mzpdUi5ddLicLGUns4iYFiNahL5B5cPkTUot83v2moNtr4mzRYf"
         );
         assert_eq!(
-            &String::try_from(&SnarkedLedgerHash::from(
-                blockchain_state.t.t.snarked_ledger_hash.clone()
-            ))?,
+            &SnarkedLedgerHash::from(blockchain_state.t.t.snarked_ledger_hash.clone()).to_string(),
             "jxkQm8ge9sYPwPyUYUMZ6wr7SQ6Pit5szbRvPmEzYKQQZAnACyC"
         );
         assert_eq!(
-            &String::try_from(&SnarkedLedgerHash::from(
-                blockchain_state.t.t.genesis_ledger_hash.clone()
-            ))?,
+            &SnarkedLedgerHash::from(blockchain_state.t.t.genesis_ledger_hash.clone()).to_string(),
             "jx7buQVWFLsXTtzRgSxbYcT8EYLS8KCZbLrfDcJxMtyy4thw2Ee"
         );
         assert_eq!(blockchain_state.t.t.snarked_next_available_token.t.t.t, 2);
@@ -113,9 +106,7 @@ mod tests {
         );
 
         assert_eq!(
-            &String::try_from(VrfOutputTruncated::from(
-                consensus_state.t.t.last_vrf_output.clone()
-            ))?,
+            VrfOutputTruncated::from(consensus_state.t.t.last_vrf_output.clone()).to_string(),
             "WNAmmaRL7XzyhZHiz276MbnBv4YUIJRGf9P_Xu0RBAA="
         );
 
@@ -135,9 +126,7 @@ mod tests {
 
         let staking_epoch_data = &consensus_state.t.t.staking_epoch_data;
         assert_eq!(
-            &String::try_from(LedgerHash::from(
-                staking_epoch_data.t.t.ledger.t.t.hash.clone()
-            ))?,
+            LedgerHash::from(staking_epoch_data.t.t.ledger.t.t.hash.clone()).to_string(),
             "jxn15ATGoe4WGgYpbssxJH9XW8NXRDy22WvSsBqvMqcnLPgPAwN"
         );
         assert_eq!(
@@ -145,28 +134,22 @@ mod tests {
             "861208012.840039233"
         );
         assert_eq!(
-            &String::try_from(&EpochSeed::from(staking_epoch_data.t.t.seed.clone()))?,
+            &EpochSeed::from(staking_epoch_data.t.t.seed.clone()).to_string(),
             "2vao4i3odTHZVRbEhdkKvLoD1rW2UuiVaayVFosYtkghABg29o7i"
         );
         assert_eq!(
-            &String::try_from(&StateHash::from(
-                staking_epoch_data.t.t.start_checkpoint.clone()
-            ))?,
+            &StateHash::from(staking_epoch_data.t.t.start_checkpoint.clone()).to_string(),
             "3NLM6x7j2Z68e8gGspyvc1aU884uU6yWkwz9aW127BFckn9b5uvo"
         );
         assert_eq!(
-            &String::try_from(&StateHash::from(
-                staking_epoch_data.t.t.lock_checkpoint.clone()
-            ))?,
+            &StateHash::from(staking_epoch_data.t.t.lock_checkpoint.clone()).to_string(),
             "3NLiFhztdCsuWSociNGMspidiYkyqNKZw6ufH7jqbgQtEgGtBb2P"
         );
         assert_eq!(staking_epoch_data.t.t.epoch_length.t.t, 4697);
 
         let next_epoch_data = &consensus_state.t.t.next_epoch_data;
         assert_eq!(
-            &String::try_from(LedgerHash::from(
-                next_epoch_data.t.t.ledger.t.t.hash.clone()
-            ))?,
+            LedgerHash::from(next_epoch_data.t.t.ledger.t.t.hash.clone()).to_string(),
             "jwAXd4GZgxE3YCwqs99g4MpLNiEV2ZfZPstyah4jxo753AVgL6R"
         );
         assert_eq!(
@@ -174,19 +157,15 @@ mod tests {
             "864998092.840039233"
         );
         assert_eq!(
-            &String::try_from(&EpochSeed::from(next_epoch_data.t.t.seed.clone()))?,
+            &EpochSeed::from(next_epoch_data.t.t.seed.clone()).to_string(),
             "2vbUkQGF5swXK7PNaAJDUQirW1fbZiUJDzbBKwfPGdJXZiryburD"
         );
         assert_eq!(
-            &String::try_from(&StateHash::from(
-                next_epoch_data.t.t.start_checkpoint.clone()
-            ))?,
+            &StateHash::from(next_epoch_data.t.t.start_checkpoint.clone()).to_string(),
             "3NLkdXKqoHfwZ5jT1uxSY3eoFy3C2jpAUFZ1Y6eSMsE66MNJqErx"
         );
         assert_eq!(
-            &String::try_from(&StateHash::from(
-                next_epoch_data.t.t.lock_checkpoint.clone()
-            ))?,
+            &StateHash::from(next_epoch_data.t.t.lock_checkpoint.clone()).to_string(),
             "3NLW5kBi9nXDzzdr2C3p9X6QaKaASMaVHp3otwreKXKJToUNK7yu"
         );
         assert_eq!(next_epoch_data.t.t.epoch_length.t.t, 3285);
@@ -347,7 +326,7 @@ mod tests {
         // FIXME: Version byte here disagrees with what is being used for genesis block
         // Note that version byte is not part of binprot binary, it's only used for bs58 representation
         // assert_eq!(
-        //     &String::try_from(&et.delta_transition_chain_proof.0.into(.clone())),
+        //     &et.delta_transition_chain_proof.0.into(.clone()).to_string(),
         //     "jwHLk8kaC6B45K3sjuX2sM38649VtfpUAteTfKFQMPcqTeXjGiT"
         // );
         assert_eq!(et.t.current_protocol_version.t.major, 2);

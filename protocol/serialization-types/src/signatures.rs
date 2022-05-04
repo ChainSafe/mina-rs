@@ -3,11 +3,16 @@
 
 //! Signatures and public key types
 
+use std::str::FromStr;
+
 use crate::{
     field_and_curve_elements::{FieldElement, InnerCurveScalar},
-    impl_strconv_via_json, version_bytes,
+    impl_strconv_via_json,
+    traits::StrConv,
+    version_bytes,
 };
 use mina_serialization_types_macros::AutoFrom;
+use proof_systems::mina_signer::CompressedPubKey;
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
 use versioned::Versioned;
 
@@ -31,6 +36,19 @@ pub struct PublicKeyJson {
 }
 
 impl_strconv_via_json!(CompressedCurvePoint, PublicKeyJson);
+
+impl StrConv for CompressedPubKey {
+    type Error = serde_json::Error;
+    fn from_str(s: &str) -> Result<Self, Self::Error> {
+        let p = CompressedCurvePoint::from_str(s)?;
+        Ok(p.into())
+    }
+
+    fn try_into_string(self) -> Result<String, Self::Error> {
+        let p: CompressedCurvePoint = self.into();
+        p.try_into()
+    }
+}
 
 impl Serialize for PublicKeyJson {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>

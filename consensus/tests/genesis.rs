@@ -22,19 +22,19 @@ mod tests {
         assert_eq!(bs.timestamp.datetime(), datetime!(2021-03-17 00:00:0 UTC));
         assert_eq!(bs.snarked_next_available_token.0, 2);
         assert_eq!(
-            &String::try_from(&bs.snarked_ledger_hash)?,
+            &bs.snarked_ledger_hash.to_string(),
             "jx7buQVWFLsXTtzRgSxbYcT8EYLS8KCZbLrfDcJxMtyy4thw2Ee"
         );
         assert_eq!(
-            &String::try_from(&bs.genesis_ledger_hash)?,
+            &bs.genesis_ledger_hash.to_string(),
             "jx7buQVWFLsXTtzRgSxbYcT8EYLS8KCZbLrfDcJxMtyy4thw2Ee"
         );
         assert_eq!(
-            &String::try_from(&bs.staged_ledger_hash.pending_coinbase_hash)?,
+            &bs.staged_ledger_hash.pending_coinbase_hash.to_string(),
             "2n1tLdP2gkifmyVmrmzYXTS4ohPbZPJn6Qq4x55ywrbRWB4543cC"
         );
         assert_eq!(
-            &String::try_from(&bs.staged_ledger_hash.non_snark.ledger_hash)?,
+            &bs.staged_ledger_hash.non_snark.ledger_hash.to_string(),
             "jx7buQVWFLsXTtzRgSxbYcT8EYLS8KCZbLrfDcJxMtyy4thw2Ee"
         );
 
@@ -48,7 +48,7 @@ mod tests {
             vec![1, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7]
         );
         assert_eq!(
-            &String::try_from(cs.last_vrf_output.clone())?,
+            cs.last_vrf_output.to_string(),
             "NfThG1r1GxQuhaGLSJWGxcpv24SudtXG4etB0TnGqwg="
         );
         assert_eq!(cs.total_currency.to_string(), "805385692.840039233");
@@ -59,20 +59,20 @@ mod tests {
         {
             let sed = &cs.staking_epoch_data;
             assert_eq!(
-                &String::try_from(sed.ledger.hash.clone())?,
+                &sed.ledger.hash.to_string(),
                 "jx7buQVWFLsXTtzRgSxbYcT8EYLS8KCZbLrfDcJxMtyy4thw2Ee"
             );
             assert_eq!(sed.ledger.total_currency.0, 805385692840039233);
             assert_eq!(
-                &String::try_from(&sed.seed)?,
+                &sed.seed.to_string(),
                 "2va9BGv9JrLTtrzZttiEMDYw1Zj6a6EHzXjmP9evHDTG3oEquURA"
             );
             assert_eq!(
-                &String::try_from(&sed.start_checkpoint)?,
+                &sed.start_checkpoint.to_string(),
                 "3NK2tkzqqK5spR2sZ7tujjqPksL45M3UUrcA4WhCkeiPtnugyE2x"
             );
             assert_eq!(
-                &String::try_from(&sed.lock_checkpoint)?,
+                &sed.lock_checkpoint.to_string(),
                 "3NK2tkzqqK5spR2sZ7tujjqPksL45M3UUrcA4WhCkeiPtnugyE2x"
             );
             assert_eq!(sed.epoch_length, 1_u32.into());
@@ -80,20 +80,20 @@ mod tests {
         {
             let ned = &cs.next_epoch_data;
             assert_eq!(
-                &String::try_from(ned.ledger.hash.clone())?,
+                ned.ledger.hash.to_string(),
                 "jx7buQVWFLsXTtzRgSxbYcT8EYLS8KCZbLrfDcJxMtyy4thw2Ee"
             );
             assert_eq!(ned.ledger.total_currency.0, 805385692840039233);
             assert_eq!(
-                &String::try_from(&ned.seed)?,
+                &ned.seed.to_string(),
                 "2vaRh7FQ5wSzmpFReF9gcRKjv48CcJvHs25aqb3SSZiPgHQBy5Dt"
             );
             assert_eq!(
-                &String::try_from(&ned.start_checkpoint)?,
+                &ned.start_checkpoint.to_string(),
                 "3NK2tkzqqK5spR2sZ7tujjqPksL45M3UUrcA4WhCkeiPtnugyE2x"
             );
             assert_eq!(
-                &String::try_from(&ned.lock_checkpoint)?,
+                &ned.lock_checkpoint.to_string(),
                 "3NLoKn22eMnyQ7rxh5pxB6vBA3XhSAhhrf7akdqS6HbAKD14Dh1d"
             );
             assert_eq!(ned.epoch_length, 2_u32.into());
@@ -114,11 +114,11 @@ mod tests {
         );
         assert_eq!(cs.supercharge_coinbase, true);
         assert_eq!(
-            &String::try_from(&et.protocol_state.previous_state_hash)?,
+            &et.protocol_state.previous_state_hash.to_string(),
             "3NLoKn22eMnyQ7rxh5pxB6vBA3XhSAhhrf7akdqS6HbAKD14Dh1d"
         );
         assert_eq!(
-            &String::try_from(&et.protocol_state.body.genesis_state_hash)?,
+            &et.protocol_state.body.genesis_state_hash.to_string(),
             "3NLoKn22eMnyQ7rxh5pxB6vBA3XhSAhhrf7akdqS6HbAKD14Dh1d"
         );
 

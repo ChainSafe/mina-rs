@@ -35,6 +35,8 @@ where
 
 #[cfg(test)]
 mod tests {
+    use std::str::FromStr;
+
     use super::*;
     use crate::hash::prefixes::PROTOCOL_STATE;
     use crate::hash::types::BaseHash;
@@ -75,10 +77,10 @@ mod tests {
         let h = t.hash();
         assert_eq!(
             h,
-            TestHash::try_from("3NLXw1spzQFnLEJGQQKVyykTFExSBjLuhfEU32Fez3odCwY3A4Yc").unwrap()
+            TestHash::from_str("3NLXw1spzQFnLEJGQQKVyykTFExSBjLuhfEU32Fez3odCwY3A4Yc").unwrap()
         );
         assert_eq!(
-            String::try_from(h).unwrap(),
+            h.to_string(),
             "3NLXw1spzQFnLEJGQQKVyykTFExSBjLuhfEU32Fez3odCwY3A4Yc"
         );
     }

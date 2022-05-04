@@ -248,7 +248,7 @@ mod tests {
                 .as_bytes()
                 .to_vec(),
         );
-        // VrfOutputTruncated::try_from("ZYmm1mr8vJ6F-1pOKgmF1yAF41Z9onq1Je5PoKSBAwA=")
+        // VrfOutputTruncated::from_str("ZYmm1mr8vJ6F-1pOKgmF1yAF41Z9onq1Je5PoKSBAwA=")
         //     .unwrap();
         let mut prot_state = ProtocolState::default();
         prot_state.body.consensus_state = consensus_state;
@@ -263,7 +263,7 @@ mod tests {
                 .as_bytes()
                 .to_vec(),
         );
-        // VrfOutputTruncated::try_from("2NKoDSWzMLQZTqGY_VrLJNQEZs5jwjCQWp5jnLkGBAA=")
+        // VrfOutputTruncated::from_str("2NKoDSWzMLQZTqGY_VrLJNQEZs5jwjCQWp5jnLkGBAA=")
         //     .unwrap();
         let mut prot_state = ProtocolState::default();
         prot_state.body.consensus_state = consensus_state;
@@ -280,7 +280,7 @@ mod tests {
                     .as_bytes()
                     .to_vec(),
             ),
-            // VrfOutputTruncated::try_from("2NKoDSWzMLQZTqGY_VrLJNQEZs5jwjCQWp5jnLkGBAA=")
+            // VrfOutputTruncated::from_str("2NKoDSWzMLQZTqGY_VrLJNQEZs5jwjCQWp5jnLkGBAA=")
             //     .unwrap()
         );
         assert_eq!(result_state, chain_b.0.get(0).unwrap());

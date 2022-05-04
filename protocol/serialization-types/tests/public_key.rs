@@ -3,7 +3,8 @@
 
 #[cfg(test)]
 mod tests {
-    use mina_serialization_types::{json::*, signatures::CompressedCurvePoint};
+    use mina_serialization_types::traits::StrConv;
+    use proof_systems::mina_signer::CompressedPubKey;
 
     #[test]
     fn public_key_serde_roundtrip_mainnet() -> anyhow::Result<()> {
@@ -18,15 +19,9 @@ mod tests {
     }
 
     fn public_key_serde_roundtrip_inner(pubkey: &str) -> anyhow::Result<()> {
-        let json_string = serde_json::to_string(pubkey)?;
-        let json: PublicKeyJson = serde_json::from_str(&json_string)?;
-        let pk: CompressedCurvePoint = json.clone().into();
-        let json_from_key: PublicKeyJson = pk.into();
-        assert_eq!(json, json_from_key);
-        let json_string_from_key = serde_json::to_string(&json_from_key)?;
-        assert_eq!(json_string, json_string_from_key);
-        let pubkey_from_key: &str = serde_json::from_str(&json_string_from_key)?;
-        assert_eq!(pubkey, pubkey_from_key);
+        let pk = CompressedPubKey::from_str(pubkey)?;
+        let pubkey_from_key = pk.try_into_string()?;
+        assert_eq!(pubkey, &pubkey_from_key);
         Ok(())
     }
 }
