@@ -111,6 +111,7 @@ pub mod json {
     pub use consensus_state::{ConsensusStateJson, VrfOutputTruncatedJson};
     pub use delta_transition_chain_proof::DeltaTransitionChainProofJson;
     pub use external_transition::ExternalTransitionJson;
+    pub use protocol_constants::ProtocolConstantsJson;
     pub use protocol_state::ProtocolStateJson;
     pub use protocol_state_body::ProtocolStateBodyJson;
     pub use protocol_state_proof::ProtocolStateProofJson;

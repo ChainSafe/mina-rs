@@ -10,12 +10,14 @@ use crate::{
     numbers::{BlockTime, Length},
 };
 use mina_crypto::hash::StateHash;
+use mina_serialization_types::{json::*, v1::*, *};
 use mina_serialization_types_macros::AutoFrom;
 use proof_systems::mina_hasher::{Hashable, ROInput};
+use versioned::*;
 
+/// Constants that define the consensus parameters
 #[derive(Clone, Default, PartialEq, Debug, AutoFrom)]
 #[auto_from(mina_serialization_types::protocol_constants::ProtocolConstants)]
-/// Constants that define the consensus parameters
 pub struct ProtocolConstants {
     /// Point of finality (number of confirmations)
     pub k: Length,
@@ -28,6 +30,12 @@ pub struct ProtocolConstants {
     /// Timestamp of genesis block in unixtime
     pub genesis_state_timestamp: BlockTime,
 }
+
+impl_from_with_proxy!(
+    ProtocolConstants,
+    ProtocolConstantsV1,
+    ProtocolConstantsJson
+);
 
 impl Hashable for ProtocolConstants {
     type D = ();
@@ -45,6 +53,14 @@ impl Hashable for ProtocolConstants {
     fn domain_string(_: Self::D) -> Option<String> {
         None
     }
+}
+
+impl BinProtSerializationType<'_> for ProtocolConstants {
+    type T = ProtocolConstantsV1;
+}
+
+impl JsonSerializationType<'_> for ProtocolConstants {
+    type T = ProtocolConstantsJson;
 }
 
 #[derive(Clone, Default, Debug, PartialEq, AutoFrom)]

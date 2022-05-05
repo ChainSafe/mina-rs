@@ -7,13 +7,19 @@ wasm_bindgen_test::wasm_bindgen_test_configure!(run_in_browser);
 #[cfg(test)]
 mod tests {
     use crate::*;
-    use mina_rs_base::{types::ConsensusState, JsonSerializationType};
+    use mina_rs_base::{types::*, JsonSerializationType};
     use wasm_bindgen_test::*;
 
     #[test]
     #[wasm_bindgen_test]
     fn consensus_state_json_serde_roundtrip() {
         json_serde_roundtrip!(ConsensusState, "protocol_state/body/consensus_state");
+    }
+
+    #[test]
+    #[wasm_bindgen_test]
+    fn constants_json_serde_roundtrip() {
+        json_serde_roundtrip!(ProtocolConstants, "protocol_state/body/constants");
     }
 
     #[macro_export]

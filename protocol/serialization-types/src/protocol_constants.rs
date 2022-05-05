@@ -3,11 +3,15 @@
 
 //! Types related to the Mina protocol state
 
+use mina_serialization_types_macros::AutoFrom;
 use serde::{Deserialize, Serialize};
 
 use versioned::Versioned;
 
-use crate::v1::{BlockTimeV1, LengthV1};
+use crate::{
+    common::{U32, U64},
+    v1::{BlockTimeV1, LengthV1},
+};
 
 /// Constants that define the consensus parameters
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
@@ -26,3 +30,19 @@ pub struct ProtocolConstants {
 
 /// Constants that define the consensus parameters (v1)
 pub type ProtocolConstantsV1 = Versioned<Versioned<ProtocolConstants, 1>, 1>;
+
+/// Constants that define the consensus parameters (json)
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq, AutoFrom)]
+#[auto_from(ProtocolConstants)]
+pub struct ProtocolConstantsJson {
+    /// Point of finality (number of confirmations)
+    pub k: U32,
+    /// Number of slots per epoch
+    pub slots_per_epoch: U32,
+    /// No of slots in a sub-window = 7
+    pub slots_per_sub_window: U32,
+    /// Maximum permissable delay of packets (in slots after the current)
+    pub delta: U32,
+    /// Timestamp of genesis block in unixtime
+    pub genesis_state_timestamp: U64,
+}
