@@ -57,11 +57,14 @@ pub struct ExternalTransitionJson {
     /// Proof that the block was produced within the allotted slot time
     pub delta_transition_chain_proof: DeltaTransitionChainProofJson,
     /// Current protocol version
+    #[serde(skip)]
     pub current_protocol_version: ProtocolVersionJson,
     /// Proposed protocol version
+    #[serde(skip)]
     pub proposed_protocol_version_opt: Option<ProtocolVersionJson>,
     /// Callback used for validating external transition received over the network.
     /// This is not actually send over the network but requires a unit type to meet the
     /// serialization requirements
+    #[serde(skip)]
     pub validation_callback: (),
 }

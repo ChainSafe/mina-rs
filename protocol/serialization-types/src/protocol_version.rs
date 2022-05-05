@@ -4,16 +4,20 @@
 //! Protocol version structure
 
 use serde::{Deserialize, Serialize};
+use smart_default::SmartDefault;
 use versioned::Versioned;
 
 /// Defines a version of the Mina protocol in semver format
-#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq, SmartDefault)]
 pub struct ProtocolVersion {
     /// Major version number
+    #[default(2)]
     pub major: u32,
     /// Minor version number
+    #[default(0)]
     pub minor: u32,
     /// Patch version number
+    #[default(0)]
     pub patch: u32,
 }
 

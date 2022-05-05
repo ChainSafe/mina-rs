@@ -8,12 +8,11 @@
 
 use crate::signatures::{PublicKey2V1, PublicKeyV1, SignatureV1};
 use crate::snark_work::TransactionSnarkWorkV1;
+use crate::v1::*;
+use mina_serialization_types_macros::AutoFrom;
 use serde::{Deserialize, Serialize};
-
 use smart_default::SmartDefault;
 use versioned::*;
-
-use crate::v1::{AmountV1, ExtendedU32, ExtendedU64_2, ExtendedU64_3};
 
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 /// Top level wrapper type for a StagedLedgerDiff
@@ -21,7 +20,15 @@ pub struct StagedLedgerDiff {
     pub diff: StagedLedgerDiffTupleV1,
 }
 
+/// Top level wrapper type for a StagedLedgerDiff (v1)
 pub type StagedLedgerDiffV1 = Versioned<StagedLedgerDiff, 1>;
+
+/// Top level wrapper type for a StagedLedgerDiff (json)
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq, AutoFrom)]
+#[auto_from(StagedLedgerDiff)]
+pub struct StagedLedgerDiffJson {
+    pub diff: StagedLedgerDiffTupleJson,
+}
 
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub struct StagedLedgerDiffTuple(
@@ -31,6 +38,13 @@ pub struct StagedLedgerDiffTuple(
 
 pub type StagedLedgerDiffTupleV1 = Versioned<StagedLedgerDiffTuple, 1>;
 
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq, AutoFrom)]
+#[auto_from(StagedLedgerDiffTuple)]
+pub struct StagedLedgerDiffTupleJson(
+    pub StagedLedgerPreDiffTwoJson,
+    pub Option<StagedLedgerPreDiffOneJson>,
+);
+
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub struct StagedLedgerPreDiffOne {
     pub completed_works: Vec<TransactionSnarkWorkV1>,
@@ -38,7 +52,17 @@ pub struct StagedLedgerPreDiffOne {
     pub coinbase: CoinBaseV1,
     pub internal_command_balances: Vec<InternalCommandBalanceDataV1>,
 }
+
 pub type StagedLedgerPreDiffOneV1 = Versioned<Versioned<StagedLedgerPreDiffOne, 1>, 1>;
+
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq, AutoFrom)]
+#[auto_from(StagedLedgerPreDiffOne)]
+pub struct StagedLedgerPreDiffOneJson {
+    pub completed_works: Vec<TransactionSnarkWorkV1>,
+    pub commands: Vec<UserCommandWithStatusV1>,
+    pub coinbase: CoinBaseV1,
+    pub internal_command_balances: Vec<InternalCommandBalanceDataV1>,
+}
 
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub struct StagedLedgerPreDiffTwo {
@@ -49,6 +73,15 @@ pub struct StagedLedgerPreDiffTwo {
 }
 
 pub type StagedLedgerPreDiffTwoV1 = Versioned<Versioned<StagedLedgerPreDiffTwo, 1>, 1>;
+
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq, AutoFrom)]
+#[auto_from(StagedLedgerPreDiffTwo)]
+pub struct StagedLedgerPreDiffTwoJson {
+    pub completed_works: Vec<TransactionSnarkWorkV1>,
+    pub commands: Vec<UserCommandWithStatusV1>,
+    pub coinbase: CoinBaseV1,
+    pub internal_command_balances: Vec<InternalCommandBalanceDataV1>,
+}
 
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub struct UserCommandWithStatus {
@@ -201,22 +234,3 @@ pub struct FeeTransferBalanceData {
 }
 
 pub type FeeTransferBalanceDataV1 = Versioned<FeeTransferBalanceData, 1>;
-
-/// Top level wrapper type for a StagedLedgerDiff
-/// that is convertible from / to the mina specific json representation
-#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
-pub struct StagedLedgerDiffJson {}
-
-impl From<StagedLedgerDiffJson> for StagedLedgerDiff {
-    fn from(_t: StagedLedgerDiffJson) -> Self {
-        unimplemented!()
-    }
-}
-
-impl From<StagedLedgerDiff> for StagedLedgerDiffJson {
-    fn from(_t: StagedLedgerDiff) -> Self {
-        unimplemented!()
-    }
-}
-
-impl_from_for_versioned_with_proxy!(StagedLedgerDiffJson, StagedLedgerDiff, StagedLedgerDiffV1);

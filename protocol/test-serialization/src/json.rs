@@ -52,16 +52,25 @@ mod tests {
         json_serde_roundtrip!(DeltaTransitionChainProof, "delta_transition_chain_proof");
     }
 
+    // #[test]
+    // #[wasm_bindgen_test]
+    // fn block_json_serde_roundtrip() {
+    //     json_serde_roundtrip!(ExternalTransition, "");
+    // }
+
     #[macro_export]
     macro_rules! json_serde_roundtrip {
         ($ty: ty, $path: literal) => {
             (|| {
                 for (_, mut json) in test_fixtures::JSON_TEST_BLOCKS.iter() {
-                    for p in $path.split('/') {
-                        json = &json[p];
+                    if $path.len() > 0 {
+                        for p in $path.split('/') {
+                            json = &json[p];
+                        }
                     }
                     let cs = {
                         let json_string = serde_json::to_string_pretty(json)?;
+                        // println!("{json_string}");
                         <$ty>::try_from_json(json_string.as_str())?
                     };
                     let json_string_from_cs = cs.try_into_json()?;
