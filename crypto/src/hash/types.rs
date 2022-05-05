@@ -14,20 +14,9 @@ use super::prefixes::*;
 use crate::hash::Hash;
 use mina_serialization_types::{impl_strconv_via_json, json::*, v1::*};
 use proof_systems::mina_hasher::{Hashable, ROInput};
-use serde::{Deserialize, Serialize};
 use versioned::*;
 
-#[derive(
-    Clone,
-    Default,
-    Debug,
-    PartialEq,
-    Serialize,
-    Deserialize,
-    derive_more::From,
-    derive_more::Into,
-    PartialOrd,
-)]
+#[derive(Clone, Debug, Default, PartialEq, derive_more::From, derive_more::Into)]
 pub(crate) struct BaseHash(pub(crate) [u8; 32]);
 
 impl Hashable for BaseHash {
@@ -82,7 +71,7 @@ macro_rules! impl_from_for_hash {
 }
 
 //////////////////////////////////////////////////////////////////////////
-#[derive(Clone, Default, Debug, PartialEq, PartialOrd, derive_more::From, derive_more::Into)]
+#[derive(Clone, Debug, Default, PartialEq, derive_more::From, derive_more::Into)]
 pub struct StateHash(BaseHash);
 
 impl_from_for_hash!(StateHash, HashV1);
@@ -109,9 +98,7 @@ impl Hash for StateHash {
 
 //////////////////////////////////////////////////////////////////////////
 
-#[derive(
-    Clone, Default, Debug, PartialEq, Serialize, Deserialize, derive_more::From, derive_more::Into,
-)]
+#[derive(Clone, Debug, Default, PartialEq, derive_more::From, derive_more::Into)]
 pub struct LedgerHash(BaseHash);
 
 impl_from_for_hash!(LedgerHash, HashV1);
@@ -143,9 +130,7 @@ impl_strconv_via_json!(ChainHash, ChainHashV1Json);
 
 //////////////////////////////////////////////////////////////////////////
 
-#[derive(
-    Clone, Default, Debug, PartialEq, Serialize, Deserialize, derive_more::From, derive_more::Into,
-)]
+#[derive(Clone, Default, Debug, PartialEq, derive_more::From, derive_more::Into)]
 pub struct CoinBaseHash(BaseHash);
 
 impl_from_for_hash!(CoinBaseHash, HashV1);
@@ -263,9 +248,7 @@ impl Hashable for NonSnarkStagedLedgerHash {
     }
 }
 
-#[derive(
-    Clone, Default, Debug, PartialEq, Serialize, Deserialize, derive_more::From, derive_more::Into,
-)]
+#[derive(Clone, Default, Debug, PartialEq, derive_more::From, derive_more::Into)]
 pub struct AuxHash(pub Vec<u8>);
 
 impl_from_for_newtype!(AuxHash, AuxHashJson);
@@ -287,7 +270,7 @@ impl Hashable for AuxHash {
 
 //////////////////////////////////////////////////////////////////////////
 
-#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize, derive_more::From)]
+#[derive(Clone, Default, Debug, PartialEq, derive_more::From)]
 pub struct PendingCoinbaseAuxHash(pub Vec<u8>);
 
 impl_from_for_newtype!(PendingCoinbaseAuxHash, PendingCoinbaseAuxHashJson);
@@ -330,16 +313,6 @@ pub mod test {
     use mina_serialization_types::{json::*, JsonSerializationType};
 
     use super::*;
-
-    #[test]
-    fn convert_ledger_hash_to_base58() {
-        let bytes = [
-            182, 175, 122, 248, 93, 142, 245, 54, 161, 170, 103, 111, 123, 128, 48, 218, 84, 208,
-            17, 245, 30, 111, 61, 210, 168, 20, 160, 79, 111, 37, 167, 2,
-        ];
-        let h = LedgerHash(BaseHash(bytes));
-        println!("{h}")
-    }
 
     #[test]
     fn ledger_hash_from_base58() {
