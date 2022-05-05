@@ -34,6 +34,12 @@ mod tests {
         json_serde_roundtrip!(ProtocolStateBody, "protocol_state/body");
     }
 
+    #[test]
+    #[wasm_bindgen_test]
+    fn protocol_state_state_json_serde_roundtrip() {
+        json_serde_roundtrip!(ProtocolState, "protocol_state");
+    }
+
     #[macro_export]
     macro_rules! json_serde_roundtrip {
         ($ty: ty, $path: literal) => {

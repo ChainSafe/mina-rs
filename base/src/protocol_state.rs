@@ -73,6 +73,16 @@ pub struct ProtocolState {
     pub body: ProtocolStateBody,
 }
 
+impl_from_with_proxy!(ProtocolState, ProtocolStateV1, ProtocolStateJson);
+
+impl BinProtSerializationType<'_> for ProtocolState {
+    type T = ProtocolStateV1;
+}
+
+impl JsonSerializationType<'_> for ProtocolState {
+    type T = ProtocolStateJson;
+}
+
 impl Hashable for ProtocolState {
     type D = ();
 

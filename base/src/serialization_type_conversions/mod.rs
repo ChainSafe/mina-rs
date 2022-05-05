@@ -13,8 +13,6 @@ impl_from_with_proxy!(
     ExternalTransitionJson
 );
 
-impl_from_with_proxy!(ProtocolState, ProtocolStateV1, ProtocolStateJson);
-
 impl_from_with_proxy!(StagedLedgerDiff, StagedLedgerDiffV1, StagedLedgerDiffJson);
 
 impl_from_with_proxy!(
