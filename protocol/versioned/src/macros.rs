@@ -47,24 +47,34 @@ macro_rules! impl_from_for_newtype {
 }
 
 /// Macro that implements [From] trait for 2-way conversion
-/// between the orignal type and the target type, using the
-/// intermidate type that is convertible from and to both
-/// orignal and target types
+/// between the orignal type and the target json type, via an
+/// intermidate versioned type that is convertible from and to
+/// both orignal and target types.
+/// It also implements BinProtSerializationType and JsonSerializationType
+/// for convenience
 #[macro_export]
 macro_rules! impl_from_with_proxy {
-    ($t:ty, $ti:ty, $t2:ty) => {
-        impl From<$t> for $t2 {
+    ($t:ty, $t_versioned:ty, $t_json:ty) => {
+        impl From<$t> for $t_json {
             fn from(t: $t) -> Self {
-                let intermidate: $ti = t.into();
+                let intermidate: $t_versioned = t.into();
                 intermidate.into()
             }
         }
 
-        impl From<$t2> for $t {
-            fn from(t: $t2) -> Self {
-                let intermidate: $ti = t.into();
+        impl From<$t_json> for $t {
+            fn from(t: $t_json) -> Self {
+                let intermidate: $t_versioned = t.into();
                 intermidate.into()
             }
+        }
+
+        impl mina_serialization_types::BinProtSerializationType<'_> for $t {
+            type T = $t_versioned;
+        }
+
+        impl mina_serialization_types::JsonSerializationType<'_> for $t {
+            type T = $t_json;
         }
     };
 }

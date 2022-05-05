@@ -3,7 +3,7 @@
 
 //! Mina ExternalTransition
 
-use crate::{types::*, *};
+use crate::types::*;
 use mina_serialization_types::{json::*, v1::ExternalTransitionV1};
 use mina_serialization_types_macros::AutoFrom;
 use versioned::*;
@@ -34,11 +34,3 @@ impl_from_with_proxy!(
     ExternalTransitionV1,
     ExternalTransitionJson
 );
-
-impl BinProtSerializationType<'_> for ExternalTransition {
-    type T = ExternalTransitionV1;
-}
-
-impl JsonSerializationType<'_> for ExternalTransition {
-    type T = ExternalTransitionJson;
-}

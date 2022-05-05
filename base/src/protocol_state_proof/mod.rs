@@ -8,7 +8,7 @@
 #![allow(missing_docs)]
 
 use crate::numbers::{BigInt256, Char, Hex64};
-use mina_serialization_types::{json::*, v1::*, *};
+use mina_serialization_types::{json::*, v1::*};
 use mina_serialization_types_macros::*;
 use versioned::*;
 
@@ -49,14 +49,6 @@ impl_from_with_proxy!(
     ProtocolStateProofV1,
     ProtocolStateProofJson
 );
-
-impl BinProtSerializationType<'_> for ProtocolStateProof {
-    type T = ProtocolStateProofV1;
-}
-
-impl JsonSerializationType<'_> for ProtocolStateProof {
-    type T = ProtocolStateProofJson;
-}
 
 #[derive(Clone, Default, PartialEq, Debug, AutoFrom)]
 #[auto_from(mina_serialization_types::protocol_state_proof::ProofStatement)]

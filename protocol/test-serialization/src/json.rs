@@ -52,11 +52,19 @@ mod tests {
         json_serde_roundtrip!(DeltaTransitionChainProof, "delta_transition_chain_proof");
     }
 
-    // #[test]
+    #[test]
     // #[wasm_bindgen_test]
-    // fn block_json_serde_roundtrip() {
-    //     json_serde_roundtrip!(ExternalTransition, "");
-    // }
+    #[should_panic] // Not fully implemented yet
+    fn staged_ledger_diff_json_serde_roundtrip() {
+        json_serde_roundtrip!(StagedLedgerDiff, "staged_ledger_diff");
+    }
+
+    #[test]
+    // #[wasm_bindgen_test]
+    #[should_panic] // Not fully implemented yet
+    fn block_json_serde_roundtrip() {
+        json_serde_roundtrip!(ExternalTransition, "");
+    }
 
     #[macro_export]
     macro_rules! json_serde_roundtrip {

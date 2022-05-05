@@ -86,14 +86,6 @@ pub struct ConsensusState {
 
 impl_from_with_proxy!(ConsensusState, ConsensusStateV1, ConsensusStateJson);
 
-impl BinProtSerializationType<'_> for ConsensusState {
-    type T = ConsensusStateV1;
-}
-
-impl JsonSerializationType<'_> for ConsensusState {
-    type T = ConsensusStateJson;
-}
-
 impl Hashable for ConsensusState {
     type D = ();
 

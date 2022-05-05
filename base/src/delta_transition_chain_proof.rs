@@ -4,7 +4,7 @@
 //! Delta transition chain proof structures and functions
 
 use mina_crypto::hash::*;
-use mina_serialization_types::{json::*, *};
+use mina_serialization_types::json::*;
 use mina_serialization_types_macros::AutoFrom;
 use versioned::*;
 
@@ -18,11 +18,3 @@ impl_from_with_proxy!(
     mina_serialization_types::delta_transition_chain_proof::DeltaTransitionChainProof,
     DeltaTransitionChainProofJson
 );
-
-impl BinProtSerializationType<'_> for DeltaTransitionChainProof {
-    type T = mina_serialization_types::delta_transition_chain_proof::DeltaTransitionChainProof;
-}
-
-impl JsonSerializationType<'_> for DeltaTransitionChainProof {
-    type T = DeltaTransitionChainProofJson;
-}

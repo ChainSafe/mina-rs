@@ -10,7 +10,7 @@ use crate::{
     numbers::{BlockTime, Length},
 };
 use mina_crypto::hash::StateHash;
-use mina_serialization_types::{json::*, v1::*, *};
+use mina_serialization_types::{json::*, v1::*};
 use mina_serialization_types_macros::AutoFrom;
 use proof_systems::mina_hasher::{Hashable, ROInput};
 use versioned::*;
@@ -55,14 +55,6 @@ impl Hashable for ProtocolConstants {
     }
 }
 
-impl BinProtSerializationType<'_> for ProtocolConstants {
-    type T = ProtocolConstantsV1;
-}
-
-impl JsonSerializationType<'_> for ProtocolConstants {
-    type T = ProtocolConstantsJson;
-}
-
 #[derive(Clone, Default, Debug, PartialEq, AutoFrom)]
 #[auto_from(mina_serialization_types::protocol_state::ProtocolState)]
 /// This structure can be thought of like the block header. It contains the most essential information of a block.
@@ -74,14 +66,6 @@ pub struct ProtocolState {
 }
 
 impl_from_with_proxy!(ProtocolState, ProtocolStateV1, ProtocolStateJson);
-
-impl BinProtSerializationType<'_> for ProtocolState {
-    type T = ProtocolStateV1;
-}
-
-impl JsonSerializationType<'_> for ProtocolState {
-    type T = ProtocolStateJson;
-}
 
 impl Hashable for ProtocolState {
     type D = ();
@@ -124,14 +108,6 @@ impl_from_with_proxy!(
     ProtocolStateBodyV1,
     ProtocolStateBodyJson
 );
-
-impl BinProtSerializationType<'_> for ProtocolStateBody {
-    type T = ProtocolStateBodyV1;
-}
-
-impl JsonSerializationType<'_> for ProtocolStateBody {
-    type T = ProtocolStateBodyJson;
-}
 
 impl Hashable for ProtocolStateBody {
     type D = ();
