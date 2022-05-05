@@ -11,10 +11,11 @@ use crate::numbers::Amount;
 use crate::snark_work::TransactionSnarkWork;
 use crate::types::TokenId;
 use crate::user_commands::UserCommand;
-
+use mina_serialization_types::{json::*, v1::*};
 use mina_serialization_types_macros::AutoFrom;
 use proof_systems::mina_signer::CompressedPubKey;
 use smart_default::SmartDefault;
+use versioned::*;
 
 #[derive(Clone, PartialEq, Debug, Default, AutoFrom)]
 #[auto_from(mina_serialization_types::staged_ledger_diff::StagedLedgerDiff)]
@@ -22,6 +23,8 @@ use smart_default::SmartDefault;
 pub struct StagedLedgerDiff {
     pub diff: StagedLedgerDiffTuple,
 }
+
+impl_from_with_proxy!(StagedLedgerDiff, StagedLedgerDiffV1, StagedLedgerDiffJson);
 
 #[derive(Clone, PartialEq, Debug, Default, AutoFrom)]
 #[auto_from(mina_serialization_types::staged_ledger_diff::StagedLedgerDiffTuple)]

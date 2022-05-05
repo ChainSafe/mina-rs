@@ -4,9 +4,9 @@
 //! Mina ExternalTransition
 
 use crate::{types::*, *};
-
-use mina_serialization_types::{json::ExternalTransitionJson, v1::ExternalTransitionV1};
+use mina_serialization_types::{json::*, v1::ExternalTransitionV1};
 use mina_serialization_types_macros::AutoFrom;
+use versioned::*;
 
 /// This structure represents a mina block
 #[derive(Clone, Debug, PartialEq, AutoFrom)]
@@ -28,6 +28,12 @@ pub struct ExternalTransition {
     /// Validation callback
     pub validation_callback: (),
 }
+
+impl_from_with_proxy!(
+    ExternalTransition,
+    ExternalTransitionV1,
+    ExternalTransitionJson
+);
 
 impl BinProtSerializationType<'_> for ExternalTransition {
     type T = ExternalTransitionV1;

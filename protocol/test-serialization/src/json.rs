@@ -46,6 +46,12 @@ mod tests {
         json_serde_roundtrip!(ProtocolStateProof, "protocol_state_proof");
     }
 
+    #[test]
+    #[wasm_bindgen_test]
+    fn delta_transition_chain_proof_json_serde_roundtrip() {
+        json_serde_roundtrip!(DeltaTransitionChainProof, "delta_transition_chain_proof");
+    }
+
     #[macro_export]
     macro_rules! json_serde_roundtrip {
         ($ty: ty, $path: literal) => {
