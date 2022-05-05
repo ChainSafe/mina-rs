@@ -135,6 +135,21 @@ impl std::str::FromStr for Amount {
 #[derive(Copy, Clone, PartialEq, Debug, Default, From, Into)]
 pub struct AccountNonce(pub u32);
 
+impl Hashable for AccountNonce {
+    type D = ();
+
+    fn to_roinput(&self) -> ROInput {
+        let mut roi = ROInput::new();
+        roi.append_u32(self.0);
+
+        roi
+    }
+
+    fn domain_string(_: Self::D) -> Option<String> {
+        None // FIXME
+    }
+}
+
 /// Consensus slot index
 #[derive(Copy, Clone, PartialEq, Debug, Default, From, Into)]
 pub struct GlobalSlotNumber(pub u32);
