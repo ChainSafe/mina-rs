@@ -28,6 +28,12 @@ mod tests {
         json_serde_roundtrip!(BlockchainState, "protocol_state/body/blockchain_state");
     }
 
+    #[test]
+    #[wasm_bindgen_test]
+    fn protocol_state_body_state_json_serde_roundtrip() {
+        json_serde_roundtrip!(ProtocolStateBody, "protocol_state/body");
+    }
+
     #[macro_export]
     macro_rules! json_serde_roundtrip {
         ($ty: ty, $path: literal) => {
@@ -37,7 +43,7 @@ mod tests {
                         json = &json[p];
                     }
                     let cs = {
-                        let json_string = serde_json::to_string(json)?;
+                        let json_string = serde_json::to_string_pretty(json)?;
                         <$ty>::try_from_json(json_string.as_str())?
                     };
                     let json_string_from_cs = cs.try_into_json()?;

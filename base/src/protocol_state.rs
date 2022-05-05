@@ -109,6 +109,20 @@ pub struct ProtocolStateBody {
     pub constants: ProtocolConstants,
 }
 
+impl_from_with_proxy!(
+    ProtocolStateBody,
+    ProtocolStateBodyV1,
+    ProtocolStateBodyJson
+);
+
+impl BinProtSerializationType<'_> for ProtocolStateBody {
+    type T = ProtocolStateBodyV1;
+}
+
+impl JsonSerializationType<'_> for ProtocolStateBody {
+    type T = ProtocolStateBodyJson;
+}
+
 impl Hashable for ProtocolStateBody {
     type D = ();
 
