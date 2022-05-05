@@ -104,6 +104,7 @@ pub mod v1 {
 pub mod json {
     use super::*;
 
+    pub use blockchain_state::BlockchainStateJson;
     pub use common::{
         AuxHashJson, ChainHashV1Json, CoinBaseHashV1Json, EpochSeedHashV1Json, HashV1Json,
         LedgerHashV1Json, PendingCoinbaseAuxHashJson, StateHashV1Json, VrfOutputHashV1Json,

@@ -22,6 +22,12 @@ mod tests {
         json_serde_roundtrip!(ProtocolConstants, "protocol_state/body/constants");
     }
 
+    #[test]
+    #[wasm_bindgen_test]
+    fn blockchain_state_json_serde_roundtrip() {
+        json_serde_roundtrip!(BlockchainState, "protocol_state/body/blockchain_state");
+    }
+
     #[macro_export]
     macro_rules! json_serde_roundtrip {
         ($ty: ty, $path: literal) => {

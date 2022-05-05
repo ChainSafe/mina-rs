@@ -87,6 +87,14 @@ pub struct ConsensusState {
 
 impl_from_with_proxy!(ConsensusState, ConsensusStateV1, ConsensusStateJson);
 
+impl BinProtSerializationType<'_> for ConsensusState {
+    type T = ConsensusStateV1;
+}
+
+impl JsonSerializationType<'_> for ConsensusState {
+    type T = ConsensusStateJson;
+}
+
 impl Hashable for ConsensusState {
     type D = ();
 
@@ -122,12 +130,4 @@ impl ConsensusState {
     pub fn sub_window_densities(&self) -> Vec<u32> {
         self.sub_window_densities.iter().map(|i| i.0).collect()
     }
-}
-
-impl BinProtSerializationType<'_> for ConsensusState {
-    type T = ConsensusStateV1;
-}
-
-impl JsonSerializationType<'_> for ConsensusState {
-    type T = ConsensusStateJson;
 }

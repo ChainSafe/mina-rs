@@ -9,7 +9,6 @@ mod tests {
         global_slot::GlobalSlot,
         numbers::Length,
         types::{GlobalSlotNumber, ProtocolState},
-        JsonSerializationType,
     };
     use wasm_bindgen_test::*;
 

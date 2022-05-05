@@ -5,7 +5,29 @@
 //! Macros that help implement common traits for versioned wrapper types
 //!
 
-/// Macro that implements [From] trait for versioned wrapper
+/// Macro that implements [From] trait for for a struct and its versioned wrapper
+#[macro_export]
+macro_rules! impl_from_versioned {
+    ($t:ty) => {
+        impl<const V: u16> From<::versioned::Versioned<$t, V>> for $t {
+            fn from(t: ::versioned::Versioned<$t, V>) -> Self {
+                let (t,) = t.into();
+                t
+            }
+        }
+
+        impl<const V1: u16, const V2: u16>
+            From<::versioned::Versioned<::versioned::Versioned<$t, V1>, V2>> for $t
+        {
+            fn from(t: ::versioned::Versioned<::versioned::Versioned<$t, V1>, V2>) -> Self {
+                let (t,) = t.into();
+                t
+            }
+        }
+    };
+}
+
+/// Macro that implements [From] trait for a newtype struct and its versioned wrapper
 #[macro_export]
 macro_rules! impl_from_for_newtype {
     ($t:ty, $tv:ty) => {

@@ -5,8 +5,10 @@
 
 use crate::numbers::{BlockTime, TokenId};
 use mina_crypto::hash::*;
+use mina_serialization_types::{json::*, v1::*, *};
 use mina_serialization_types_macros::AutoFrom;
 use proof_systems::mina_hasher::{Hashable, ROInput};
+use versioned::*;
 
 #[derive(Clone, Default, Debug, PartialEq, AutoFrom)]
 #[auto_from(mina_serialization_types::blockchain_state::BlockchainState)]
@@ -22,6 +24,16 @@ pub struct BlockchainState {
     pub snarked_next_available_token: TokenId,
     /// Timestamps for blocks
     pub timestamp: BlockTime,
+}
+
+impl_from_with_proxy!(BlockchainState, BlockchainStateV1, BlockchainStateJson);
+
+impl BinProtSerializationType<'_> for BlockchainState {
+    type T = BlockchainStateV1;
+}
+
+impl JsonSerializationType<'_> for BlockchainState {
+    type T = BlockchainStateJson;
 }
 
 impl Hashable for BlockchainState {

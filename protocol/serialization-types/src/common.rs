@@ -17,6 +17,7 @@ pub type Hash2V1 = Versioned<HashV1, 1>;
 
 /// u64 representing a token ID (v1)
 pub type TokenIdV1 = Versioned<Versioned<Versioned<u64, 1>, 1>, 1>;
+impl_from_for_newtype!(U64, TokenIdV1);
 
 /// u64 representing a block time (v1)
 pub type BlockTimeV1 = Versioned<Versioned<u64, 1>, 1>;
@@ -119,6 +120,8 @@ pub type BigInt256 = [u8; 32];
 /// Wrapper of Vec<u8>
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq, derive_more::From)]
 pub struct ByteVec(pub Vec<u8>);
+
+impl_from_versioned!(ByteVec);
 
 /// Vector of bytes with a version number. Also encodes its own length when encoded using bin-prot
 pub type ByteVecV1 = Versioned<ByteVec, 1>;
@@ -282,6 +285,19 @@ impl<const VERSION_BYTE: u8> From<HashV1Json<VERSION_BYTE>> for HashV1 {
     }
 }
 
+impl<const VERSION_BYTE: u8> From<HashV1Json<VERSION_BYTE>> for Hash2V1 {
+    fn from(i: HashV1Json<VERSION_BYTE>) -> Self {
+        let v1: HashV1 = i.into();
+        v1.into()
+    }
+}
+
+impl<const VERSION_BYTE: u8> From<Hash2V1> for HashV1Json<VERSION_BYTE> {
+    fn from(i: Hash2V1) -> Self {
+        i.t.into()
+    }
+}
+
 /// base58 string representation of a ledger hash
 pub type LedgerHashV1Json = HashV1Json<{ version_bytes::LEDGER_HASH }>;
 
@@ -306,3 +322,17 @@ pub type AuxHashJson = Base58EncodableType<{ version_bytes::STAGED_LEDGER_HASH_A
 /// base58 string representation of a pending coinbase aux hash
 pub type PendingCoinbaseAuxHashJson =
     Base58EncodableType<{ version_bytes::STAGED_LEDGER_HASH_PENDING_COINBASE_AUX }, Vec<u8>>;
+
+impl<const VERSION_BYTE: u8> From<Base58EncodableType<VERSION_BYTE, Vec<u8>>> for ByteVecV1 {
+    fn from(i: Base58EncodableType<VERSION_BYTE, Vec<u8>>) -> Self {
+        let bv: ByteVec = i.0.into();
+        bv.into()
+    }
+}
+
+impl<const VERSION_BYTE: u8> From<ByteVecV1> for Base58EncodableType<VERSION_BYTE, Vec<u8>> {
+    fn from(i: ByteVecV1) -> Self {
+        let bv: ByteVec = i.into();
+        bv.0.into()
+    }
+}
