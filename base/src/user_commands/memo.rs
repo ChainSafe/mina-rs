@@ -3,13 +3,12 @@
 
 //! Commands can include memo fields which contain arbitrary byte data
 //!
-use derive_more::From;
 
 use mina_serialization_types_macros::AutoFrom;
 use thiserror::Error;
 
 /// A memo byte strong for a signed command
-#[derive(Clone, Default, PartialEq, Debug, From, AutoFrom)]
+#[derive(Clone, Default, PartialEq, Debug, derive_more::From, derive_more::Into, AutoFrom)]
 #[auto_from(mina_serialization_types::staged_ledger_diff::SignedCommandMemo)]
 pub struct SignedCommandMemo(pub Vec<u8>);
 

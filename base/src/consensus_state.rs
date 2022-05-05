@@ -8,7 +8,6 @@ use crate::{
     global_slot::GlobalSlot,
     numbers::{Amount, GlobalSlotNumber, Length},
 };
-use derive_more::From;
 use mina_serialization_types::{json::*, v1::*, *};
 use mina_serialization_types_macros::AutoFrom;
 use proof_systems::mina_hasher::{Hashable, ROInput};
@@ -17,7 +16,7 @@ use smart_default::SmartDefault;
 use versioned::*;
 
 /// Wrapper struct for the output for a VRF
-#[derive(Clone, Default, PartialEq, Debug, From, AutoFrom)]
+#[derive(Clone, Default, PartialEq, Debug, derive_more::From, derive_more::Into, AutoFrom)]
 #[auto_from(mina_serialization_types::consensus_state::VrfOutputTruncated)]
 #[auto_from(mina_serialization_types::consensus_state::VrfOutputTruncatedJson)]
 pub struct VrfOutputTruncated(pub Vec<u8>);

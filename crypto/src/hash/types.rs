@@ -12,13 +12,22 @@
 
 use super::prefixes::*;
 use crate::hash::Hash;
-use derive_more::From;
 use mina_serialization_types::{impl_strconv_via_json, json::*, v1::*};
 use proof_systems::mina_hasher::{Hashable, ROInput};
 use serde::{Deserialize, Serialize};
 use versioned::*;
 
-#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize, From, PartialOrd)]
+#[derive(
+    Clone,
+    Default,
+    Debug,
+    PartialEq,
+    Serialize,
+    Deserialize,
+    derive_more::From,
+    derive_more::Into,
+    PartialOrd,
+)]
 pub(crate) struct BaseHash(pub(crate) [u8; 32]);
 
 impl Hashable for BaseHash {
@@ -51,18 +60,6 @@ impl<'a> From<&'a [u8]> for BaseHash {
     }
 }
 
-// impl AsRef<[u8]> for BaseHash {
-//     fn as_ref(&self) -> &[u8] {
-//         &self.0
-//     }
-// }
-
-// impl AsRef<[u8; 32]> for BaseHash {
-//     fn as_ref(&self) -> &[u8; 32] {
-//         &self.0
-//     }
-// }
-
 impl_from_for_newtype!(BaseHash, HashV1);
 impl_from_for_newtype!(BaseHash, Hash2V1);
 
@@ -85,7 +82,7 @@ macro_rules! impl_from_for_hash {
 }
 
 //////////////////////////////////////////////////////////////////////////
-#[derive(Clone, Default, Debug, PartialEq, PartialOrd, derive_more::From)]
+#[derive(Clone, Default, Debug, PartialEq, PartialOrd, derive_more::From, derive_more::Into)]
 pub struct StateHash(BaseHash);
 
 impl_from_for_hash!(StateHash, HashV1);
@@ -112,7 +109,9 @@ impl Hash for StateHash {
 
 //////////////////////////////////////////////////////////////////////////
 
-#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize, derive_more::From)]
+#[derive(
+    Clone, Default, Debug, PartialEq, Serialize, Deserialize, derive_more::From, derive_more::Into,
+)]
 pub struct LedgerHash(BaseHash);
 
 impl_from_for_hash!(LedgerHash, HashV1);
@@ -135,7 +134,7 @@ impl Hashable for LedgerHash {
 
 //////////////////////////////////////////////////////////////////////////
 
-#[derive(Clone, Default, Debug, PartialEq, derive_more::From)]
+#[derive(Clone, Default, Debug, PartialEq, derive_more::From, derive_more::Into)]
 pub struct ChainHash(BaseHash);
 
 impl_from_for_hash!(ChainHash, HashV1);
@@ -144,7 +143,9 @@ impl_strconv_via_json!(ChainHash, ChainHashV1Json);
 
 //////////////////////////////////////////////////////////////////////////
 
-#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(
+    Clone, Default, Debug, PartialEq, Serialize, Deserialize, derive_more::From, derive_more::Into,
+)]
 pub struct CoinBaseHash(BaseHash);
 
 impl_from_for_hash!(CoinBaseHash, HashV1);
@@ -168,7 +169,7 @@ impl Hashable for CoinBaseHash {
 
 //////////////////////////////////////////////////////////////////////////
 
-#[derive(Clone, Default, Debug, PartialEq)]
+#[derive(Clone, Default, Debug, PartialEq, derive_more::From, derive_more::Into)]
 pub struct EpochSeed(BaseHash);
 
 impl_from_for_hash!(EpochSeed, HashV1);
@@ -195,7 +196,7 @@ impl Hash for EpochSeed {
 
 //////////////////////////////////////////////////////////////////////////
 
-#[derive(Clone, Default, Debug, PartialEq)]
+#[derive(Clone, Default, Debug, PartialEq, derive_more::From, derive_more::Into)]
 pub struct SnarkedLedgerHash(BaseHash);
 
 impl_from_for_hash!(SnarkedLedgerHash, HashV1);
@@ -262,7 +263,9 @@ impl Hashable for NonSnarkStagedLedgerHash {
     }
 }
 
-#[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize, derive_more::From)]
+#[derive(
+    Clone, Default, Debug, PartialEq, Serialize, Deserialize, derive_more::From, derive_more::Into,
+)]
 pub struct AuxHash(pub Vec<u8>);
 
 impl_from_for_newtype!(AuxHash, AuxHashJson);
