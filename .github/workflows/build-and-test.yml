@@ -115,8 +115,6 @@ jobs:
           # fail-on-alert: true
       - run: cat ./.cache/benchmark-data.json
       - run: cargo bench --all-features --manifest-path apps/Cargo.toml
-      - run: cargo doc --no-deps --release --all-features
-      - run: cargo doc --no-deps --release --all-features --manifest-path apps/Cargo.toml
       - run: cargo clippy --release --all-features -- --deny warnings
       - run: cargo clippy --release --all-features --manifest-path apps/Cargo.toml -- --deny warnings
       - name: Run profilers
@@ -125,13 +123,6 @@ jobs:
           sudo apt-get install -y valgrind graphviz
           sudo pip install gprof2dot
           ./scripts/profiler.sh
-      - uses: actions/upload-artifact@v2
-        with:
-          name: doc
-          path: |
-            target/doc/**/*
-            apps/target/doc/**/*
-          if-no-files-found: error
       - uses: actions/upload-artifact@v2
         with:
           name: criterion
@@ -172,9 +163,6 @@ jobs:
       - run: cargo clippy --release --all-features --target wasm32-unknown-unknown -- --deny warnings
       - run: cargo clippy --release --all-features --target wasm32-unknown-unknown --manifest-path apps/Cargo.toml -- --deny warnings
       - run: cargo clippy --release --all-features --target wasm32-unknown-unknown --manifest-path apps/wasm/Cargo.toml -- --deny warnings
-      - run: cargo doc --no-deps --release --all-features --target wasm32-unknown-unknown
-      - run: cargo doc --no-deps --release --all-features --target wasm32-unknown-unknown --manifest-path apps/Cargo.toml
-      - run: cargo doc --no-deps --release --all-features --target wasm32-unknown-unknown --manifest-path apps/wasm/Cargo.toml
       - name: Install wasm-pack
         run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
       - name: wasm-pack tests for test-serialization
@@ -185,6 +173,11 @@ jobs:
       - name: wasm-pack tests for consensus
         run: |
           cd consensus
+          wasm-pack test --node --release
+          wasm-pack test --headless --chrome --release --features browser
+      - name: wasm-pack tests for secrets
+        run: |
+          cd secrets
           wasm-pack test --node --release
           wasm-pack test --headless --chrome --release --features browser
   node:
@@ -225,6 +218,11 @@ jobs:
           if-no-files-found: error
       - uses: actions/upload-artifact@v2
         with:
+          name: mvp-chrome-ext-v2
+          path: apps/wasm/mvp/dist/ext-v2/**/*
+          if-no-files-found: error
+      - uses: actions/upload-artifact@v2
+        with:
           name: mvp-web
           path: apps/wasm/mvp/dist/web/**/*
           if-no-files-found: error
@@ -246,7 +244,7 @@ jobs:
       - uses: actions-rs/toolchain@v1
         with:
           profile: minimal
-          toolchain: nightly
+          toolchain: stable
           override: true
           components: llvm-tools-preview
       - uses: taiki-e/install-action@cargo-llvm-cov
@@ -261,3 +259,36 @@ jobs:
           curl -Os https://uploader.codecov.io/latest/linux/codecov
           chmod +x codecov
           ./codecov -f lcov.info -Z
+  gh-pages:
+    env:
+      # https://doc.rust-lang.org/nightly/rustdoc/unstable-features.html#--index-page-provide-a-top-level-landing-page-for-docs
+      RUSTDOCFLAGS: "-Zunstable-options --enable-index-page"
+    runs-on: ubuntu-latest
+    steps:
+      - run: lscpu
+      - uses: actions/checkout@v2
+      - run: cat .github/cargo-config > $HOME/.cargo/config
+      - uses: actions/cache@v2
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            target/
+          key: ${{ runner.os }}-gh-pages-cargo-${{ hashFiles('**/Cargo.lock') }}
+      - uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: nightly
+          components:
+          override: true
+      - run: cargo +nightly doc --workspace --all-features --no-deps
+      - run: mkdir -p ./gh-pages/
+      - run: mv ./target/doc ./gh-pages/rustdoc
+      - run: ls -al ./gh-pages/rustdoc
+      - uses: peaceiris/actions-gh-pages@v3
+        if: ${{ github.ref == 'refs/heads/main' }}
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./gh-pages

@@ -2,7 +2,8 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::types::*;
-use mina_serialization_types::v1::*;
+use mina_serialization_types::{json::*, v1::*};
+use versioned::impl_from_for_ext_type;
 use versioned::Versioned;
 
 mod account;
@@ -13,7 +14,7 @@ mod protocol_state_proof;
 
 impl From<ExternalTransition> for ExternalTransitionV1 {
     fn from(t: ExternalTransition) -> Self {
-        ExternalTransitionV1(Versioned::new(
+        ExternalTransitionV1(
             mina_serialization_types::external_transition::ExternalTransition {
                 protocol_state: t.protocol_state.into(),
                 protocol_state_proof: t.protocol_state_proof.into(),
@@ -22,8 +23,9 @@ impl From<ExternalTransition> for ExternalTransitionV1 {
                 current_protocol_version: t.current_protocol_version.into(),
                 proposed_protocol_version_opt: t.proposed_protocol_version_opt.map(Into::into),
                 validation_callback: (),
-            },
-        ))
+            }
+            .into(),
+        )
     }
 }
 impl From<ExternalTransitionV1> for ExternalTransition {
@@ -38,18 +40,22 @@ impl From<ExternalTransitionV1> for ExternalTransition {
         }
     }
 }
+impl_from_for_ext_type!(
+    ExternalTransition,
+    ExternalTransitionV1,
+    ExternalTransitionJson
+);
 
 impl From<BlockchainState> for BlockchainStateV1 {
     fn from(t: BlockchainState) -> Self {
-        BlockchainStateV1::new(Versioned::new(
-            mina_serialization_types::blockchain_state::BlockchainState {
-                staged_ledger_hash: t.staged_ledger_hash.into(),
-                snarked_ledger_hash: t.snarked_ledger_hash.into_inner().into(),
-                genesis_ledger_hash: t.genesis_ledger_hash.into_inner().into(),
-                snarked_next_available_token: t.snarked_next_available_token.into(),
-                timestamp: Versioned::new(Versioned::new(t.timestamp.0)),
-            },
-        ))
+        mina_serialization_types::blockchain_state::BlockchainState {
+            staged_ledger_hash: t.staged_ledger_hash.into(),
+            snarked_ledger_hash: t.snarked_ledger_hash.into_inner().into(),
+            genesis_ledger_hash: t.genesis_ledger_hash.into_inner().into(),
+            snarked_next_available_token: t.snarked_next_available_token.into(),
+            timestamp: t.timestamp.0.into(),
+        }
+        .into()
     }
 }
 impl From<BlockchainStateV1> for BlockchainState {
@@ -63,15 +69,15 @@ impl From<BlockchainStateV1> for BlockchainState {
         }
     }
 }
+// impl_from_for_ext_type!(BlockchainState, BlockchainStateV1, BlockchainStateJson);
 
 impl From<GlobalSlot> for GlobalSlotV1 {
     fn from(t: GlobalSlot) -> Self {
-        GlobalSlotV1::new(Versioned::new(
-            mina_serialization_types::global_slot::GlobalSlot {
-                slot_number: t.slot_number.into(),
-                slots_per_epoch: t.slots_per_epoch.into(),
-            },
-        ))
+        mina_serialization_types::global_slot::GlobalSlot {
+            slot_number: t.slot_number.into(),
+            slots_per_epoch: t.slots_per_epoch.into(),
+        }
+        .into()
     }
 }
 impl From<GlobalSlotV1> for GlobalSlot {
@@ -85,12 +91,11 @@ impl From<GlobalSlotV1> for GlobalSlot {
 
 impl From<EpochLedger> for EpochLedgerV1 {
     fn from(t: EpochLedger) -> Self {
-        EpochLedgerV1::new(Versioned::new(
-            mina_serialization_types::epoch_data::EpochLedger {
-                hash: t.hash.into_inner().into(),
-                total_currency: t.total_currency.into(),
-            },
-        ))
+        mina_serialization_types::epoch_data::EpochLedger {
+            hash: t.hash.into_inner().into(),
+            total_currency: t.total_currency.into(),
+        }
+        .into()
     }
 }
 impl From<EpochLedgerV1> for EpochLedger {
@@ -104,15 +109,14 @@ impl From<EpochLedgerV1> for EpochLedger {
 
 impl From<EpochData> for EpochDataV1 {
     fn from(t: EpochData) -> Self {
-        EpochDataV1::new(Versioned::new(
-            mina_serialization_types::epoch_data::EpochData {
-                ledger: t.ledger.into(),
-                seed: t.seed.into_inner().into(),
-                start_checkpoint: t.start_checkpoint.into(),
-                lock_checkpoint: t.lock_checkpoint.into(),
-                epoch_length: t.epoch_length.into(),
-            },
-        ))
+        mina_serialization_types::epoch_data::EpochData {
+            ledger: t.ledger.into(),
+            seed: t.seed.into_inner().into(),
+            start_checkpoint: t.start_checkpoint.into(),
+            lock_checkpoint: t.lock_checkpoint.into(),
+            epoch_length: t.epoch_length.into(),
+        }
+        .into()
     }
 }
 impl From<EpochDataV1> for EpochData {
@@ -129,25 +133,24 @@ impl From<EpochDataV1> for EpochData {
 
 impl From<ConsensusState> for ConsensusStateV1 {
     fn from(t: ConsensusState) -> Self {
-        ConsensusStateV1::new(Versioned::new(
-            mina_serialization_types::consensus_state::ConsensusState {
-                blockchain_length: t.blockchain_length.into(),
-                epoch_count: t.epoch_count.into(),
-                min_window_density: t.min_window_density.into(),
-                sub_window_densities: t.sub_window_densities.into_iter().map(Into::into).collect(),
-                last_vrf_output: t.last_vrf_output.0.into(),
-                total_currency: t.total_currency.into(),
-                curr_global_slot: t.curr_global_slot.into(),
-                global_slot_since_genesis: t.global_slot_since_genesis.into(),
-                staking_epoch_data: t.staking_epoch_data.into(),
-                next_epoch_data: t.next_epoch_data.into(),
-                has_ancestor_in_same_checkpoint_window: t.has_ancestor_in_same_checkpoint_window,
-                block_stake_winner: t.block_stake_winner.into(),
-                block_creator: t.block_creator.into(),
-                coinbase_receiver: t.coinbase_receiver.into(),
-                supercharge_coinbase: t.supercharge_coinbase,
-            },
-        ))
+        mina_serialization_types::consensus_state::ConsensusState {
+            blockchain_length: t.blockchain_length.into(),
+            epoch_count: t.epoch_count.into(),
+            min_window_density: t.min_window_density.into(),
+            sub_window_densities: t.sub_window_densities.into_iter().map(Into::into).collect(),
+            last_vrf_output: t.last_vrf_output.0.into(),
+            total_currency: t.total_currency.into(),
+            curr_global_slot: t.curr_global_slot.into(),
+            global_slot_since_genesis: t.global_slot_since_genesis.into(),
+            staking_epoch_data: t.staking_epoch_data.into(),
+            next_epoch_data: t.next_epoch_data.into(),
+            has_ancestor_in_same_checkpoint_window: t.has_ancestor_in_same_checkpoint_window,
+            block_stake_winner: t.block_stake_winner.into(),
+            block_creator: t.block_creator.into(),
+            coinbase_receiver: t.coinbase_receiver.into(),
+            supercharge_coinbase: t.supercharge_coinbase,
+        }
+        .into()
     }
 }
 impl From<ConsensusStateV1> for ConsensusState {
@@ -180,17 +183,14 @@ impl From<ConsensusStateV1> for ConsensusState {
 
 impl From<ProtocolConstants> for ProtocolConstantsV1 {
     fn from(t: ProtocolConstants) -> Self {
-        ProtocolConstantsV1::new(Versioned::new(
-            mina_serialization_types::protocol_constants::ProtocolConstants {
-                k: t.k.into(),
-                slots_per_epoch: t.slots_per_epoch.into(),
-                slots_per_sub_window: t.slots_per_sub_window.into(),
-                delta: t.delta.into(),
-                genesis_state_timestamp: Versioned::new(Versioned::new(
-                    t.genesis_state_timestamp.0,
-                )),
-            },
-        ))
+        mina_serialization_types::protocol_constants::ProtocolConstants {
+            k: t.k.into(),
+            slots_per_epoch: t.slots_per_epoch.into(),
+            slots_per_sub_window: t.slots_per_sub_window.into(),
+            delta: t.delta.into(),
+            genesis_state_timestamp: t.genesis_state_timestamp.0.into(),
+        }
+        .into()
     }
 }
 impl From<ProtocolConstantsV1> for ProtocolConstants {
@@ -207,14 +207,13 @@ impl From<ProtocolConstantsV1> for ProtocolConstants {
 
 impl From<ProtocolStateBody> for ProtocolStateBodyV1 {
     fn from(t: ProtocolStateBody) -> Self {
-        ProtocolStateBodyV1::new(Versioned::new(
-            mina_serialization_types::protocol_state_body::ProtocolStateBody {
-                genesis_state_hash: t.genesis_state_hash.into(),
-                blockchain_state: t.blockchain_state.into(),
-                consensus_state: t.consensus_state.into(),
-                constants: t.constants.into(),
-            },
-        ))
+        mina_serialization_types::protocol_state_body::ProtocolStateBody {
+            genesis_state_hash: t.genesis_state_hash.into(),
+            blockchain_state: t.blockchain_state.into(),
+            consensus_state: t.consensus_state.into(),
+            constants: t.constants.into(),
+        }
+        .into()
     }
 }
 impl From<ProtocolStateBodyV1> for ProtocolStateBody {
@@ -227,15 +226,19 @@ impl From<ProtocolStateBodyV1> for ProtocolStateBody {
         }
     }
 }
+impl_from_for_ext_type!(
+    ProtocolStateBody,
+    ProtocolStateBodyV1,
+    ProtocolStateBodyJson
+);
 
 impl From<ProtocolState> for ProtocolStateV1 {
     fn from(t: ProtocolState) -> Self {
-        ProtocolStateV1::new(Versioned::new(
-            mina_serialization_types::protocol_state::ProtocolState {
-                previous_state_hash: t.previous_state_hash.into(),
-                body: t.body.into(),
-            },
-        ))
+        mina_serialization_types::protocol_state::ProtocolState {
+            previous_state_hash: t.previous_state_hash.into(),
+            body: t.body.into(),
+        }
+        .into()
     }
 }
 impl From<ProtocolStateV1> for ProtocolState {
@@ -246,17 +249,17 @@ impl From<ProtocolStateV1> for ProtocolState {
         }
     }
 }
+impl_from_for_ext_type!(ProtocolState, ProtocolStateV1, ProtocolStateJson);
 
 impl From<PaymentPayload> for PaymentPayloadV1 {
     fn from(t: PaymentPayload) -> Self {
-        PaymentPayloadV1::new(Versioned::new(
-            mina_serialization_types::staged_ledger_diff::PaymentPayload {
-                source_pk: t.source_pk.into(),
-                receiver_pk: t.receiver_pk.into(),
-                token_id: t.token_id.into(),
-                amount: t.amount.into(),
-            },
-        ))
+        mina_serialization_types::staged_ledger_diff::PaymentPayload {
+            source_pk: t.source_pk.into(),
+            receiver_pk: t.receiver_pk.into(),
+            token_id: t.token_id.into(),
+            amount: t.amount.into(),
+        }
+        .into()
     }
 }
 impl From<PaymentPayloadV1> for PaymentPayload {
@@ -274,9 +277,7 @@ impl From<SignedCommandPayloadBody> for SignedCommandPayloadBodyV1 {
     fn from(t: SignedCommandPayloadBody) -> Self {
         use mina_serialization_types::staged_ledger_diff::SignedCommandPayloadBody as b;
         match t {
-            SignedCommandPayloadBody::PaymentPayload(pp) => {
-                Self::new(Versioned::new(b::PaymentPayload(pp.into())))
-            }
+            SignedCommandPayloadBody::PaymentPayload(pp) => b::PaymentPayload(pp.into()).into(),
         }
     }
 }
@@ -298,16 +299,15 @@ impl From<SignedCommandMemo> for SignedCommandMemoV1 {
 
 impl From<SignedCommandPayloadCommon> for SignedCommandPayloadCommonV1 {
     fn from(t: SignedCommandPayloadCommon) -> Self {
-        SignedCommandPayloadCommonV1::new(Versioned::new(Versioned::new(
-            mina_serialization_types::staged_ledger_diff::SignedCommandPayloadCommon {
-                fee: t.fee.into(),
-                fee_token: t.fee_token.into(),
-                fee_payer_pk: t.fee_payer_pk.into(),
-                nonce: t.nonce.into(),
-                valid_until: t.valid_until.into(),
-                memo: t.memo.into(),
-            },
-        )))
+        mina_serialization_types::staged_ledger_diff::SignedCommandPayloadCommon {
+            fee: t.fee.into(),
+            fee_token: t.fee_token.into(),
+            fee_payer_pk: t.fee_payer_pk.into(),
+            nonce: (t.nonce.0 as i32).into(),
+            valid_until: (t.valid_until.0 as i32).into(),
+            memo: t.memo.into(),
+        }
+        .into()
     }
 }
 impl From<SignedCommandPayloadCommonV1> for SignedCommandPayloadCommon {
@@ -316,8 +316,8 @@ impl From<SignedCommandPayloadCommonV1> for SignedCommandPayloadCommon {
             fee: t.t.t.t.fee.t.t.into(),
             fee_token: t.t.t.t.fee_token.t.t.t.into(),
             fee_payer_pk: t.t.t.t.fee_payer_pk.into(),
-            nonce: t.t.t.t.nonce.t.t.into(),
-            valid_until: t.t.t.t.valid_until.t.t.into(),
+            nonce: AccountNonce(t.t.t.t.nonce.t.t as u32), // TODO - remove these casts once ExtendedU32 is properly handled
+            valid_until: GlobalSlotNumber(t.t.t.t.valid_until.t.t as u32),
             memo: t.t.t.t.memo.t.into(),
         }
     }
@@ -325,12 +325,11 @@ impl From<SignedCommandPayloadCommonV1> for SignedCommandPayloadCommon {
 
 impl From<SignedCommandPayload> for SignedCommandPayloadV1 {
     fn from(t: SignedCommandPayload) -> Self {
-        SignedCommandPayloadV1::new(Versioned::new(
-            mina_serialization_types::staged_ledger_diff::SignedCommandPayload {
-                common: t.common.into(),
-                body: t.body.into(),
-            },
-        ))
+        mina_serialization_types::staged_ledger_diff::SignedCommandPayload {
+            common: t.common.into(),
+            body: t.body.into(),
+        }
+        .into()
     }
 }
 impl From<SignedCommandPayloadV1> for SignedCommandPayload {
@@ -344,13 +343,12 @@ impl From<SignedCommandPayloadV1> for SignedCommandPayload {
 
 impl From<SignedCommand> for SignedCommandV1 {
     fn from(t: SignedCommand) -> Self {
-        SignedCommandV1::new(Versioned::new(
-            mina_serialization_types::staged_ledger_diff::SignedCommand {
-                payload: t.payload.into(),
-                signer: t.signer.into(),
-                signature: t.signature.into(),
-            },
-        ))
+        mina_serialization_types::staged_ledger_diff::SignedCommand {
+            payload: t.payload.into(),
+            signer: t.signer.into(),
+            signature: t.signature.into(),
+        }
+        .into()
     }
 }
 impl From<SignedCommandV1> for SignedCommand {
@@ -367,9 +365,7 @@ impl From<UserCommand> for UserCommandV1 {
     fn from(t: UserCommand) -> Self {
         use mina_serialization_types::staged_ledger_diff::UserCommand as UC;
         match t {
-            UserCommand::SignedCommand(sc) => {
-                Self::new(Versioned::new(UC::SignedCommand(sc.into())))
-            }
+            UserCommand::SignedCommand(sc) => UC::SignedCommand(sc.into()).into(),
         }
     }
 }
@@ -385,19 +381,12 @@ impl From<UserCommandV1> for UserCommand {
 
 impl From<TransactionStatusBalanceData> for TransactionStatusBalanceDataV1 {
     fn from(t: TransactionStatusBalanceData) -> Self {
-        TransactionStatusBalanceDataV1::new(
-            mina_serialization_types::staged_ledger_diff::TransactionStatusBalanceData {
-                fee_payer_balance: t
-                    .fee_payer_balance
-                    .map(|v| ExtendedU64_3::new(Versioned::new(Versioned::new(v.0)))),
-                source_balance: t
-                    .source_balance
-                    .map(|v| ExtendedU64_3::new(Versioned::new(Versioned::new(v.0)))),
-                receiver_balance: t
-                    .receiver_balance
-                    .map(|v| ExtendedU64_3::new(Versioned::new(Versioned::new(v.0)))),
-            },
-        )
+        mina_serialization_types::staged_ledger_diff::TransactionStatusBalanceData {
+            fee_payer_balance: t.fee_payer_balance.map(|v| v.0.into()),
+            source_balance: t.source_balance.map(|v| v.0.into()),
+            receiver_balance: t.receiver_balance.map(|v| v.0.into()),
+        }
+        .into()
     }
 }
 impl From<TransactionStatusBalanceDataV1> for TransactionStatusBalanceData {
@@ -412,17 +401,16 @@ impl From<TransactionStatusBalanceDataV1> for TransactionStatusBalanceData {
 
 impl From<TransactionStatusAuxiliaryData> for TransactionStatusAuxiliaryDataV1 {
     fn from(t: TransactionStatusAuxiliaryData) -> Self {
-        TransactionStatusAuxiliaryDataV1::new(
-            mina_serialization_types::staged_ledger_diff::TransactionStatusAuxiliaryData {
-                fee_payer_account_creation_fee_paid: t
-                    .fee_payer_account_creation_fee_paid
-                    .map(Into::into),
-                receiver_account_creation_fee_paid: t
-                    .receiver_account_creation_fee_paid
-                    .map(Into::into),
-                created_token: t.created_token.map(Into::into),
-            },
-        )
+        mina_serialization_types::staged_ledger_diff::TransactionStatusAuxiliaryData {
+            fee_payer_account_creation_fee_paid: t
+                .fee_payer_account_creation_fee_paid
+                .map(Into::into),
+            receiver_account_creation_fee_paid: t
+                .receiver_account_creation_fee_paid
+                .map(Into::into),
+            created_token: t.created_token.map(Into::into),
+        }
+        .into()
     }
 }
 impl From<TransactionStatusAuxiliaryDataV1> for TransactionStatusAuxiliaryData {
@@ -472,12 +460,11 @@ impl From<TransactionStatusV1> for TransactionStatus {
 
 impl From<UserCommandWithStatus> for UserCommandWithStatusV1 {
     fn from(t: UserCommandWithStatus) -> Self {
-        UserCommandWithStatusV1::new(
-            mina_serialization_types::staged_ledger_diff::UserCommandWithStatus {
-                data: t.data.into(),
-                status: t.status.into(),
-            },
-        )
+        mina_serialization_types::staged_ledger_diff::UserCommandWithStatus {
+            data: t.data.into(),
+            status: t.status.into(),
+        }
+        .into()
     }
 }
 impl From<UserCommandWithStatusV1> for UserCommandWithStatus {
@@ -491,12 +478,11 @@ impl From<UserCommandWithStatusV1> for UserCommandWithStatus {
 
 impl From<CoinBaseFeeTransfer> for CoinBaseFeeTransferV1 {
     fn from(t: CoinBaseFeeTransfer) -> Self {
-        CoinBaseFeeTransferV1::new(Versioned::new(
-            mina_serialization_types::staged_ledger_diff::CoinBaseFeeTransfer {
-                receiver_pk: t.receiver_pk.into(),
-                fee: t.fee.into(),
-            },
-        ))
+        mina_serialization_types::staged_ledger_diff::CoinBaseFeeTransfer {
+            receiver_pk: t.receiver_pk.into(),
+            fee: t.fee.into(),
+        }
+        .into()
     }
 }
 impl From<CoinBaseFeeTransferV1> for CoinBaseFeeTransfer {
@@ -532,16 +518,11 @@ impl From<CoinBaseV1> for CoinBase {
 
 impl From<CoinBaseBalanceData> for CoinBaseBalanceDataV1 {
     fn from(t: CoinBaseBalanceData) -> Self {
-        CoinBaseBalanceDataV1::new(
-            mina_serialization_types::staged_ledger_diff::CoinBaseBalanceData {
-                coinbase_receiver_balance: ExtendedU64_3::new(Versioned::new(Versioned::new(
-                    t.coinbase_receiver_balance.0,
-                ))),
-                fee_transfer_receiver_balance: t
-                    .fee_transfer_receiver_balance
-                    .map(|v| ExtendedU64_3::new(Versioned::new(Versioned::new(v.0)))),
-            },
-        )
+        mina_serialization_types::staged_ledger_diff::CoinBaseBalanceData {
+            coinbase_receiver_balance: t.coinbase_receiver_balance.0.into(),
+            fee_transfer_receiver_balance: t.fee_transfer_receiver_balance.map(|v| v.0.into()),
+        }
+        .into()
     }
 }
 impl From<CoinBaseBalanceDataV1> for CoinBaseBalanceData {
@@ -558,16 +539,11 @@ impl From<CoinBaseBalanceDataV1> for CoinBaseBalanceData {
 
 impl From<FeeTransferBalanceData> for FeeTransferBalanceDataV1 {
     fn from(t: FeeTransferBalanceData) -> Self {
-        FeeTransferBalanceDataV1::new(
-            mina_serialization_types::staged_ledger_diff::FeeTransferBalanceData {
-                receiver1_balance: ExtendedU64_3::new(Versioned::new(Versioned::new(
-                    t.receiver1_balance.0,
-                ))),
-                receiver2_balance: t
-                    .receiver2_balance
-                    .map(|v| ExtendedU64_3::new(Versioned::new(Versioned::new(v.0)))),
-            },
-        )
+        mina_serialization_types::staged_ledger_diff::FeeTransferBalanceData {
+            receiver1_balance: t.receiver1_balance.0.into(),
+            receiver2_balance: t.receiver2_balance.map(|v| v.0.into()),
+        }
+        .into()
     }
 }
 impl From<FeeTransferBalanceDataV1> for FeeTransferBalanceData {
@@ -601,10 +577,10 @@ impl From<InternalCommandBalanceDataV1> for InternalCommandBalanceData {
     }
 }
 
-impl From<StagedLedgerPreDiffTwo> for StagedLedgerPreDiffTwoV1 {
-    fn from(t: StagedLedgerPreDiffTwo) -> Self {
-        StagedLedgerPreDiffTwoV1::new(Versioned::new(
-            mina_serialization_types::staged_ledger_diff::StagedLedgerPreDiffTwo {
+impl From<StagedLedgerPreDiffOne> for StagedLedgerPreDiffOneV1 {
+    fn from(t: StagedLedgerPreDiffOne) -> Self {
+        StagedLedgerPreDiffOneV1::new(Versioned::new(
+            mina_serialization_types::staged_ledger_diff::StagedLedgerPreDiffOne {
                 completed_works: t.completed_works.into_iter().map(Into::into).collect(),
                 commands: t.commands.into_iter().map(Into::into).collect(),
                 coinbase: t.coinbase.into(),
@@ -615,6 +591,38 @@ impl From<StagedLedgerPreDiffTwo> for StagedLedgerPreDiffTwoV1 {
                     .collect(),
             },
         ))
+    }
+}
+impl From<StagedLedgerPreDiffOneV1> for StagedLedgerPreDiffOne {
+    fn from(t: StagedLedgerPreDiffOneV1) -> Self {
+        Self {
+            completed_works: t.t.t.completed_works.into_iter().map(Into::into).collect(),
+            commands: t.t.t.commands.into_iter().map(Into::into).collect(),
+            coinbase: t.t.t.coinbase.into(),
+            internal_command_balances: t
+                .t
+                .t
+                .internal_command_balances
+                .into_iter()
+                .map(Into::into)
+                .collect(),
+        }
+    }
+}
+
+impl From<StagedLedgerPreDiffTwo> for StagedLedgerPreDiffTwoV1 {
+    fn from(t: StagedLedgerPreDiffTwo) -> Self {
+        mina_serialization_types::staged_ledger_diff::StagedLedgerPreDiffTwo {
+            completed_works: t.completed_works.into_iter().map(Into::into).collect(),
+            commands: t.commands.into_iter().map(Into::into).collect(),
+            coinbase: t.coinbase.into(),
+            internal_command_balances: t
+                .internal_command_balances
+                .into_iter()
+                .map(Into::into)
+                .collect(),
+        }
+        .into()
     }
 }
 impl From<StagedLedgerPreDiffTwoV1> for StagedLedgerPreDiffTwo {
@@ -634,24 +642,237 @@ impl From<StagedLedgerPreDiffTwoV1> for StagedLedgerPreDiffTwo {
     }
 }
 
+impl From<TransactionSnarkWork> for TransactionSnarkWorkV1 {
+    fn from(t: TransactionSnarkWork) -> Self {
+        TransactionSnarkWorkV1::new(mina_serialization_types::snark_work::TransactionSnarkWork {
+            fee: t.fee.into(),
+            proofs: t.proofs.into(),
+            prover: t.prover.into(),
+        })
+    }
+}
+impl From<TransactionSnarkWorkV1> for TransactionSnarkWork {
+    fn from(t: TransactionSnarkWorkV1) -> Self {
+        Self {
+            fee: t.t.fee.t.t.into(),
+            proofs: t.t.proofs.into(),
+            prover: t.t.prover.into(),
+        }
+    }
+}
+
+impl From<OneORTwo> for OneORTwoV1 {
+    fn from(t: OneORTwo) -> Self {
+        use mina_serialization_types::snark_work::OneORTwo as OT;
+        match t {
+            OneORTwo::One(ts) => {
+                let ts_1 = *ts;
+                Self::new(OT::One(Box::new(Versioned::new(ts_1.into()))))
+            }
+            OneORTwo::Two(ts1, ts2) => {
+                let ts_1 = *ts1;
+                let ts_2 = *ts2;
+                Self::new(OT::Two(
+                    Box::new(Versioned::new(ts_1.into())),
+                    Box::new(Versioned::new(ts_2.into())),
+                ))
+            }
+        }
+    }
+}
+impl From<OneORTwoV1> for OneORTwo {
+    fn from(t: OneORTwoV1) -> Self {
+        use mina_serialization_types::snark_work::OneORTwo;
+        match t.t {
+            OneORTwo::One(ts) => Self::One(Box::new(ts.t.into())),
+            OneORTwo::Two(ts_1, ts_2) => {
+                Self::Two(Box::new(ts_1.t.into()), Box::new(ts_2.t.into()))
+            }
+        }
+    }
+}
+
+impl From<TransactionSnark> for TransactionSnarkV1 {
+    fn from(t: TransactionSnark) -> Self {
+        TransactionSnarkV1::new(mina_serialization_types::snark_work::TransactionSnark {
+            statement: t.statement.into(),
+            transaction_snark_proof: t.transaction_snark_proof.into(),
+        })
+    }
+}
+impl From<TransactionSnarkV1> for TransactionSnark {
+    fn from(t: TransactionSnarkV1) -> Self {
+        Self {
+            statement: t.t.statement.into(),
+            transaction_snark_proof: t.t.transaction_snark_proof.into(),
+        }
+    }
+}
+
+impl From<Statement> for StatementV1 {
+    fn from(t: Statement) -> Self {
+        StatementV1::new(Versioned::new(
+            mina_serialization_types::snark_work::Statement {
+                source: t.source.into(),
+                target: t.target.into(),
+                supply_increase: t.supply_increase.into(),
+                pending_coinbase_stack_state: t.pending_coinbase_stack_state.into(),
+                fee_excess: t.fee_excess.into(),
+                next_available_token_before: t.next_available_token_before.into(),
+                next_available_token_after: t.next_available_token_after.into(),
+                sok_digest: t.sok_digest.into(),
+            },
+        ))
+    }
+}
+impl From<StatementV1> for Statement {
+    fn from(t: StatementV1) -> Self {
+        Self {
+            source: t.t.t.source.into(),
+            target: t.t.t.target.into(),
+            supply_increase: t.t.t.supply_increase.t.t.into(),
+            pending_coinbase_stack_state: t.t.t.pending_coinbase_stack_state.into(),
+            fee_excess: t.t.t.fee_excess.into(),
+            next_available_token_before: t.t.t.next_available_token_before.t.t.t.into(),
+            next_available_token_after: t.t.t.next_available_token_after.t.t.t.into(),
+            sok_digest: t.t.t.sok_digest.t,
+        }
+    }
+}
+
+impl From<PendingCoinbaseStackState> for PendingCoinbaseStackStateV1 {
+    fn from(t: PendingCoinbaseStackState) -> Self {
+        PendingCoinbaseStackStateV1::new(Versioned::new(
+            mina_serialization_types::snark_work::PendingCoinbaseStackState {
+                source: t.source.into(),
+                target: t.target.into(),
+            },
+        ))
+    }
+}
+impl From<PendingCoinbaseStackStateV1> for PendingCoinbaseStackState {
+    fn from(t: PendingCoinbaseStackStateV1) -> Self {
+        Self {
+            source: t.t.t.source.into(),
+            target: t.t.t.target.into(),
+        }
+    }
+}
+
+impl From<PendingCoinbase> for PendingCoinbaseV1 {
+    fn from(t: PendingCoinbase) -> Self {
+        PendingCoinbaseV1::new(Versioned::new(
+            mina_serialization_types::snark_work::PendingCoinbase {
+                data_stack: t.data_stack.into(),
+                state_stack: t.state_stack.into(),
+            },
+        ))
+    }
+}
+impl From<PendingCoinbaseV1> for PendingCoinbase {
+    fn from(t: PendingCoinbaseV1) -> Self {
+        Self {
+            data_stack: t.t.t.data_stack.into(),
+            state_stack: t.t.t.state_stack.into(),
+        }
+    }
+}
+
+impl From<StateStack> for StateStackV1 {
+    fn from(t: StateStack) -> Self {
+        StateStackV1::new(Versioned::new(
+            mina_serialization_types::snark_work::StateStack {
+                init: t.init.into(),
+                curr: t.curr.into(),
+            },
+        ))
+    }
+}
+impl From<StateStackV1> for StateStack {
+    fn from(t: StateStackV1) -> Self {
+        Self {
+            init: t.t.t.init.into(),
+            curr: t.t.t.curr.into(),
+        }
+    }
+}
+
+impl From<FeeExcess> for FeeExcessV1 {
+    fn from(t: FeeExcess) -> Self {
+        FeeExcessV1::new(Versioned::new(
+            mina_serialization_types::snark_work::FeeExcess {
+                fee_token_l: t.fee_token_l.into(),
+                fee_excess_l: t.fee_excess_l.into(),
+                fee_token_r: t.fee_token_r.into(),
+                fee_excess_r: t.fee_excess_r.into(),
+            },
+        ))
+    }
+}
+impl From<FeeExcessV1> for FeeExcess {
+    fn from(t: FeeExcessV1) -> Self {
+        Self {
+            fee_token_l: t.t.t.fee_token_l.t.t.t.into(),
+            fee_excess_l: t.t.t.fee_excess_l.into(),
+            fee_token_r: t.t.t.fee_token_r.t.t.t.into(),
+            fee_excess_r: t.t.t.fee_excess_r.into(),
+        }
+    }
+}
+
+impl From<Signed> for SignedV1 {
+    fn from(t: Signed) -> Self {
+        SignedV1::new(mina_serialization_types::snark_work::Signed {
+            magnitude: t.magnitude.into(),
+            sgn: t.sgn.into(),
+        })
+    }
+}
+impl From<SignedV1> for Signed {
+    fn from(t: SignedV1) -> Self {
+        Self {
+            magnitude: t.t.magnitude.t.t.into(),
+            sgn: t.t.sgn.into(),
+        }
+    }
+}
+
+impl From<SgnType> for SgnTypeV1 {
+    fn from(t: SgnType) -> Self {
+        use mina_serialization_types::snark_work::SgnType as ST;
+        match t {
+            SgnType::Pos => Self::new(ST::Pos),
+            SgnType::Neg => Self::new(ST::Neg),
+        }
+    }
+}
+impl From<SgnTypeV1> for SgnType {
+    fn from(t: SgnTypeV1) -> Self {
+        use mina_serialization_types::snark_work::SgnType;
+        match t.t {
+            SgnType::Pos => Self::Pos,
+            SgnType::Neg => Self::Neg,
+        }
+    }
+}
+
 impl From<StagedLedgerDiffTuple> for StagedLedgerDiffTupleV1 {
     fn from(t: StagedLedgerDiffTuple) -> Self {
-        StagedLedgerDiffTupleV1::new((t.0 .0.into(), t.0 .1))
+        StagedLedgerDiffTupleV1::new((t.0 .0.into(), t.0 .1.map(Into::into)))
     }
 }
 impl From<StagedLedgerDiffTupleV1> for StagedLedgerDiffTuple {
     fn from(t: StagedLedgerDiffTupleV1) -> Self {
-        StagedLedgerDiffTuple((t.t.0.into(), t.t.1))
+        StagedLedgerDiffTuple((t.t.0.into(), t.t.1.map(Into::into)))
     }
 }
 
 impl From<StagedLedgerDiff> for StagedLedgerDiffV1 {
     fn from(t: StagedLedgerDiff) -> Self {
-        StagedLedgerDiffV1::new(
-            mina_serialization_types::staged_ledger_diff::StagedLedgerDiff {
-                diff: t.diff.into(),
-            },
-        )
+        mina_serialization_types::staged_ledger_diff::StagedLedgerDiff {
+            diff: t.diff.into(),
+        }
+        .into()
     }
 }
 impl From<StagedLedgerDiffV1> for StagedLedgerDiff {
@@ -661,6 +882,7 @@ impl From<StagedLedgerDiffV1> for StagedLedgerDiff {
         }
     }
 }
+impl_from_for_ext_type!(StagedLedgerDiff, StagedLedgerDiffV1, StagedLedgerDiffJson);
 
 use mina_serialization_types::delta_transition_chain_proof::DeltaTransitionChainProof as DeltaTransitionChainProofV1;
 
@@ -674,16 +896,20 @@ impl From<DeltaTransitionChainProofV1> for crate::types::DeltaTransitionChainPro
         Self(t.0.into(), t.1.into_iter().map(Into::into).collect())
     }
 }
+impl_from_for_ext_type!(
+    crate::types::DeltaTransitionChainProof,
+    DeltaTransitionChainProofV1,
+    DeltaTransitionChainProofJson
+);
 
 impl From<ProtocolVersion> for ProtocolVersionV1 {
     fn from(t: ProtocolVersion) -> Self {
-        ProtocolVersionV1::new(
-            mina_serialization_types::protocol_version::ProtocolVersion {
-                major: t.major,
-                minor: t.minor,
-                patch: t.patch,
-            },
-        )
+        mina_serialization_types::protocol_version::ProtocolVersion {
+            major: t.major,
+            minor: t.minor,
+            patch: t.patch,
+        }
+        .into()
     }
 }
 impl From<ProtocolVersionV1> for ProtocolVersion {

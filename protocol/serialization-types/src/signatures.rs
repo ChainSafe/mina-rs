@@ -3,7 +3,7 @@
 
 //! Signatures and public key types
 
-use crate::field_and_curve_elements::FieldElement;
+use crate::field_and_curve_elements::{FieldElement, InnerCurveScalar};
 use serde::{Deserialize, Serialize};
 use versioned::Versioned;
 
@@ -16,10 +16,6 @@ pub struct CompressedCurvePoint {
     pub is_odd: bool,
 }
 
-/// Wrapper type for field element denoting it is on the curves scalar field
-#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
-pub struct InnerCurveScalar(pub FieldElement);
-
 /// Public key (v1)
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub struct PublicKeyV1(pub Versioned<Versioned<CompressedCurvePoint, 1>, 1>);
@@ -29,13 +25,13 @@ pub struct PublicKeyV1(pub Versioned<Versioned<CompressedCurvePoint, 1>, 1>);
 pub struct PublicKey2V1(pub Versioned<PublicKeyV1, 1>); // with an extra version wrapper
 
 /// Signature (v1)
-pub type SignatureV1 = Versioned<Versioned<(FieldElement, InnerCurveScalar), 1>, 1>;
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
+pub struct SignatureV1(pub Versioned<Versioned<(FieldElement, InnerCurveScalar), 1>, 1>);
 
 mod conversions {
-    use super::{CompressedCurvePoint, PublicKey2V1, PublicKeyV1};
-    use proof_systems::mina_signer::{BaseField, CompressedPubKey};
+    use super::{CompressedCurvePoint, PublicKey2V1, PublicKeyV1, SignatureV1};
+    use proof_systems::mina_signer::{BaseField, CompressedPubKey, ScalarField, Signature};
     use proof_systems::o1_utils::field_helpers::FieldHelpers;
-    use versioned::Versioned;
 
     impl From<PublicKeyV1> for CompressedPubKey {
         fn from(t: PublicKeyV1) -> Self {
@@ -49,16 +45,17 @@ mod conversions {
     }
     impl From<CompressedPubKey> for PublicKeyV1 {
         fn from(t: CompressedPubKey) -> Self {
-            PublicKeyV1(Versioned::new(Versioned::new(CompressedCurvePoint {
-                // This unwrap of a slice conversion is safe as a CompressedPubKey always has 32 bytes of data which the exact length of
-                // FieldElement
-                x: t.x
-                    .to_bytes()
-                    .as_slice()
-                    .try_into()
-                    .expect("Wrong number of bytes encountered when converting to FieldElement"),
-                is_odd: t.is_odd,
-            })))
+            PublicKeyV1(
+                CompressedCurvePoint {
+                    // This unwrap of a slice conversion is safe as a CompressedPubKey always has 32 bytes of data which the exact length of
+                    // FieldElement
+                    x: t.x.to_bytes().as_slice().try_into().expect(
+                        "Wrong number of bytes encountered when converting to FieldElement",
+                    ),
+                    is_odd: t.is_odd,
+                }
+                .into(),
+            )
         }
     }
 
@@ -69,7 +66,37 @@ mod conversions {
     }
     impl From<CompressedPubKey> for PublicKey2V1 {
         fn from(t: CompressedPubKey) -> Self {
-            PublicKey2V1(Versioned::new(t.into()))
+            let pk: PublicKeyV1 = t.into();
+            Self(pk.into())
+        }
+    }
+
+    impl From<SignatureV1> for Signature {
+        fn from(t: SignatureV1) -> Self {
+            Signature {
+                // This unwrap is safe as a SignatureV1 always has 32 bytes of data and from_bytes does not check if it is on curve
+                rx: BaseField::from_bytes(&t.0.t.t.0)
+                    .expect("Wrong number of bytes encountered when converting to BaseField"),
+                s: ScalarField::from_bytes(&t.0.t.t.1)
+                    .expect("Wrong number of bytes encountered when converting to ScalarField"),
+            }
+        }
+    }
+    impl From<Signature> for SignatureV1 {
+        fn from(t: Signature) -> Self {
+            SignatureV1(
+                (
+                    // This unwrap of a slice conversion is safe as a CompressedPubKey always has 32 bytes of data which the exact length of
+                    // FieldElement
+                    t.rx.to_bytes().as_slice().try_into().expect(
+                        "Wrong number of bytes encountered when converting to FieldElement",
+                    ),
+                    t.s.to_bytes().as_slice().try_into().expect(
+                        "Wrong number of bytes encountered when converting to FieldElement",
+                    ),
+                )
+                    .into(),
+            )
         }
     }
 }

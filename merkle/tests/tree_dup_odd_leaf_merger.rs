@@ -55,6 +55,7 @@ mod tests {
         <TestHasher as MerkleHasher>::Hash,
         TestHasher,
         TestMerger,
+        VariableHeightMode,
     >;
 
     #[test]

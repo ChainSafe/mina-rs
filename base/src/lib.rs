@@ -23,9 +23,16 @@ pub mod protocol_state;
 pub mod protocol_state_proof;
 pub mod protocol_version;
 mod serialization_type_conversions;
+pub mod snark_work;
 pub mod staged_ledger_diff;
 pub mod user_commands;
 pub mod verification_key;
+
+/// Import all crates from proof_systems
+use proof_systems::*;
+
+/// Re-export serialization type annotations
+pub use mina_serialization_types::{BinProtSerializationType, JsonSerializationType};
 
 /// Re-export all the public types under this module for convenience
 pub mod types {
@@ -40,6 +47,7 @@ pub mod types {
     pub use super::protocol_state::*;
     pub use super::protocol_state_proof::*;
     pub use super::protocol_version::*;
+    pub use super::snark_work::*;
     pub use super::staged_ledger_diff::*;
     pub use super::user_commands::*;
     pub use super::verification_key::*;
