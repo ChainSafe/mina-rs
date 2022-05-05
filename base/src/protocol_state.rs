@@ -65,7 +65,6 @@ impl JsonSerializationType<'_> for ProtocolConstants {
 
 #[derive(Clone, Default, Debug, PartialEq, AutoFrom)]
 #[auto_from(mina_serialization_types::protocol_state::ProtocolState)]
-// #[serde(into = "mina_serialization_types::v1::ProtocolStateV1")]
 /// This structure can be thought of like the block header. It contains the most essential information of a block.
 pub struct ProtocolState {
     /// Commitment to previous block (hash of previous protocol state hash and body hash)

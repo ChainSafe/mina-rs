@@ -49,7 +49,6 @@ impl Hashable for VrfOutputTruncated {
 /// Samasika prepares the past for the future! This future state is stored in the next_epoch_data field.
 #[derive(Clone, Debug, PartialEq, SmartDefault, AutoFrom)]
 #[auto_from(mina_serialization_types::consensus_state::ConsensusState)]
-// #[auto_from(mina_serialization_types::consensus_state::ConsensusStateJson)]
 pub struct ConsensusState {
     /// Height of block
     pub blockchain_length: Length,
