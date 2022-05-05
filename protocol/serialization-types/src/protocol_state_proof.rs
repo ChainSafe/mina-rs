@@ -5,20 +5,10 @@
 
 #![allow(missing_docs)] // Don't actually know what many of the types fields are for yet
 
-use serde::{Deserialize, Serialize};
-use versioned::*;
-
-use crate::v1::OpeningProofV1;
-use crate::v1::ProofEvaluationsV1;
-use crate::v1::ProofMessagesV1;
-use crate::v1::{BigInt256, CharV1, Hex64V1};
-
-use crate::v1::{
-    BulletproofChallengeTuple18V1, BulletproofChallengesV1, BulletproofPreChallengeV1,
-    ProofStateBulletproofChallengesV1, ScalarChallengeVector2V1,
-};
-
 use crate::field_and_curve_elements::{FiniteECPoint, FiniteECPointVecV1};
+use crate::v1::*;
+use serde::{Deserialize, Deserializer, Serialize, Serializer};
+use versioned::*;
 
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 /// SNARK proof of the protocol state at some point in time
@@ -29,8 +19,40 @@ pub struct ProtocolStateProof {
     pub proof: ProofV1,
 }
 
+/// SNARK proof of the protocol state at some point in time (v1)
 pub type ProtocolStateProofV1 =
     Versioned<Versioned<Versioned<Versioned<ProtocolStateProof, 1>, 1>, 1>, 1>;
+
+/// SNARK proof of the protocol state at some point in time (json)
+#[derive(Clone, Debug, PartialEq, derive_more::From, derive_more::Into)]
+pub struct ProtocolStateProofJson(pub ProtocolStateProofV1);
+
+impl Serialize for ProtocolStateProofJson {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        let mut bytes: Vec<u8> = Vec::new();
+        bin_prot::to_writer(&mut bytes, &self.0)
+            .map_err(<S::Error as serde::ser::Error>::custom)?;
+        let s = base64::encode_config(bytes, base64::URL_SAFE);
+        serializer.serialize_str(&s)
+    }
+}
+
+impl<'de> Deserialize<'de> for ProtocolStateProofJson {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        let s = String::deserialize(deserializer)?;
+        let bytes = base64::decode_config(s, base64::URL_SAFE)
+            .map_err(<D::Error as serde::de::Error>::custom)?;
+        let t: ProtocolStateProofV1 = bin_prot::from_reader(bytes.as_slice())
+            .map_err(<D::Error as serde::de::Error>::custom)?;
+        Ok(t.into())
+    }
+}
 
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub struct ProofStatement {
@@ -135,26 +157,3 @@ pub struct ProofOpenings {
 }
 
 pub type ProofOpeningsV1 = Versioned<ProofOpenings, 1>;
-
-/// SNARK proof of the protocol state at some point in time
-/// that is convertible from / to the mina specific json representation
-#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
-pub struct ProtocolStateProofJson {}
-
-impl From<ProtocolStateProofJson> for ProtocolStateProof {
-    fn from(_t: ProtocolStateProofJson) -> Self {
-        unimplemented!()
-    }
-}
-
-impl From<ProtocolStateProof> for ProtocolStateProofJson {
-    fn from(_t: ProtocolStateProof) -> Self {
-        unimplemented!()
-    }
-}
-
-impl_from_for_versioned_with_proxy!(
-    ProtocolStateProofJson,
-    ProtocolStateProof,
-    ProtocolStateProofV1
-);

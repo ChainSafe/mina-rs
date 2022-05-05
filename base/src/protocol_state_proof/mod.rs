@@ -8,9 +8,11 @@
 #![allow(missing_docs)]
 
 use crate::numbers::{BigInt256, Char, Hex64};
+use mina_serialization_types::{json::*, v1::*, *};
+use mina_serialization_types_macros::*;
+use versioned::*;
 
 pub mod proof_messages;
-use mina_serialization_types_macros::AutoFrom;
 pub use proof_messages::ProofMessages;
 
 pub mod proof_evaluations;
@@ -40,6 +42,20 @@ pub struct ProtocolStateProof {
     pub prev_evals: PrevEvals,
     pub prev_x_hat: PrevXHat,
     pub proof: Proof,
+}
+
+impl_from_with_proxy!(
+    ProtocolStateProof,
+    ProtocolStateProofV1,
+    ProtocolStateProofJson
+);
+
+impl BinProtSerializationType<'_> for ProtocolStateProof {
+    type T = ProtocolStateProofV1;
+}
+
+impl JsonSerializationType<'_> for ProtocolStateProof {
+    type T = ProtocolStateProofJson;
 }
 
 #[derive(Clone, Default, PartialEq, Debug, AutoFrom)]

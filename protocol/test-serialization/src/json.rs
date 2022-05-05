@@ -7,7 +7,7 @@ wasm_bindgen_test::wasm_bindgen_test_configure!(run_in_browser);
 #[cfg(test)]
 mod tests {
     use crate::*;
-    use mina_rs_base::{types::*, JsonSerializationType};
+    use mina_rs_base::{types::*, *};
     use wasm_bindgen_test::*;
 
     #[test]
@@ -30,14 +30,20 @@ mod tests {
 
     #[test]
     #[wasm_bindgen_test]
-    fn protocol_state_body_state_json_serde_roundtrip() {
+    fn protocol_state_body_json_serde_roundtrip() {
         json_serde_roundtrip!(ProtocolStateBody, "protocol_state/body");
     }
 
     #[test]
     #[wasm_bindgen_test]
-    fn protocol_state_state_json_serde_roundtrip() {
+    fn protocol_state_json_serde_roundtrip() {
         json_serde_roundtrip!(ProtocolState, "protocol_state");
+    }
+
+    #[test]
+    #[wasm_bindgen_test]
+    fn protocol_state_proof_json_serde_roundtrip() {
+        json_serde_roundtrip!(ProtocolStateProof, "protocol_state_proof");
     }
 
     #[macro_export]
