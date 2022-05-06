@@ -2263,9 +2263,9 @@ dependencies = [
 
 [[package]]
 name = "proc-macro2"
-version = "1.0.37"
+version = "1.0.38"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ec757218438d5fda206afc041538b2f6d889286160d649a86a24d37e1235afd1"
+checksum = "9027b48e9d4c9175fa2218adf3557f91c1137021739951d4932f5f8268ac48aa"
 dependencies = [
  "unicode-xid",
 ]
@@ -2348,9 +2348,9 @@ dependencies = [
 
 [[package]]
 name = "protobuf"
-version = "3.0.1"
+version = "3.0.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "430ff91293021cc9369e04edced9594c9c7a03760e62afcf98b0f8ad99a56ef7"
+checksum = "a74937d52a466a535fda2e83f0e575f3ef1b34e4a84545b4a9e418fad32a3b1c"
 dependencies = [
  "bytes",
  "once_cell",
@@ -2360,9 +2360,9 @@ dependencies = [
 
 [[package]]
 name = "protobuf-codegen"
-version = "3.0.1"
+version = "3.0.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f9248f242f2b2915e050852c56058dffe2ea9d71fba735d8eb33be78973b71cd"
+checksum = "a02997c69a76d9dba3124e2041dc7bb32c98e2cc7bbd136950312a819c64f825"
 dependencies = [
  "anyhow",
  "once_cell",
@@ -2375,9 +2375,9 @@ dependencies = [
 
 [[package]]
 name = "protobuf-parse"
-version = "3.0.1"
+version = "3.0.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a7aa0f9769c554c90cb1b28592f7efe03ad2540de046dfa21d89155776c27c29"
+checksum = "3272369e02691aef4ff079ef97bb278afa9d15c21a41fd727654ab712e4bb297"
 dependencies = [
  "anyhow",
  "indexmap",
@@ -2391,9 +2391,9 @@ dependencies = [
 
 [[package]]
 name = "protobuf-support"
-version = "3.0.1"
+version = "3.0.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9553cd16fcb53a9b33da0735313393ba2697d090ae9af4a96f160992513ce8cb"
+checksum = "ebf34636d66670da249c3b6589142e7f0b4918a015ec72fa32102fd43e023b0e"
 dependencies = [
  "thiserror",
 ]
