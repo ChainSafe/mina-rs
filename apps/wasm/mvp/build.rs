@@ -4,11 +4,12 @@
 use walkdir::WalkDir;
 
 const PROTO_DIR: &str = "proto";
-const OUT_DIR: &str = "src/pb";
+const CARGO_OUT_DIR: &str = "protobuf";
 
 fn main() -> anyhow::Result<()> {
-    protobuf_codegen_pure::Codegen::new()
-        .out_dir(OUT_DIR)
+    protobuf_codegen::Codegen::new()
+        .pure()
+        .cargo_out_dir(CARGO_OUT_DIR)
         .inputs(get_inputs()?.as_slice())
         .include("proto")
         .run()?;

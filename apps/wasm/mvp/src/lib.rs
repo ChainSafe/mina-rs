@@ -59,7 +59,7 @@ async fn connect_async(request: &ConnectRequest) -> anyhow::Result<CommonRespons
     }
     Ok({
         let mut r = CommonResponse::new();
-        r.set_success(true);
+        r.success = true;
         r
     })
 }
