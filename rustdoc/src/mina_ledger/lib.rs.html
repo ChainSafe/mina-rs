@@ -27,12 +27,12 @@
 <span class="attribute">#![<span class="ident">deny</span>(<span class="ident">missing_docs</span>)]</span>
 
 <span class="kw">mod</span> <span class="ident">genesis_ledger</span>;
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">genesis_ledger::GenesisLedger</span>;
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">genesis_ledger</span>::{<span class="ident">GenesisLedger</span>, <span class="ident">MinaLedgerMerkleHasher</span>, <span class="ident">MinaLedgerMerkleTree</span>};
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;wasm32&quot;</span>))]</span>
 <span class="kw">mod</span> <span class="ident">rocksdb_genesis_ledger</span>;
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;wasm32&quot;</span>))]</span>
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">rocksdb_genesis_ledger::RocksDbGenesisLedger</span>;
 </code></pre></div>
-</section><section id="search" class="content hidden"></section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_ledger" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.62.0-nightly (bed05e996 2022-05-02)" ></div>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_ledger" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.62.0-nightly (30f386087 2022-05-05)" ></div>
 </body></html>
