@@ -29,5 +29,14 @@ pub mod prefixes;
 
 use proof_systems::*;
 
+/// Re-exports external types that macro implementations depend on,
+/// so that the crate that uses the macros do not need to depend on
+/// these external types
+pub mod macros {
+    pub use lockfree_object_pool;
+    pub use once_cell;
+    pub use proof_systems::*;
+}
+
 const DEFAULT_DEGREE: usize = 2;
 const MINA_POSEIDON_MERKLE_DEGREE: usize = 2;
