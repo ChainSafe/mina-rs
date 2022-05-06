@@ -813,6 +813,7 @@ dependencies = [
  "proof-systems",
  "serde",
  "serde_json",
+ "smart-default",
  "thiserror",
  "versioned",
 ]

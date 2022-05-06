@@ -8,6 +8,7 @@ wasm_bindgen_test::wasm_bindgen_test_configure!(run_in_browser);
 mod tests {
     use crate::*;
     use mina_rs_base::{types::*, *};
+    use std::str::FromStr;
     use wasm_bindgen_test::*;
 
     #[test]
@@ -70,15 +71,26 @@ mod tests {
     macro_rules! json_serde_roundtrip {
         ($ty: ty, $path: literal) => {
             (|| {
-                for (_, mut json) in test_fixtures::JSON_TEST_BLOCKS.iter() {
+                'outer: for (_, mut json) in test_fixtures::JSON_TEST_BLOCKS.iter() {
                     if $path.len() > 0 {
                         for p in $path.split('/') {
-                            json = &json[p];
+                            json = match usize::from_str(p) {
+                                Ok(index) => {
+                                    if let Some(array) = json.as_array() {
+                                        if index >= array.len() {
+                                            continue 'outer;
+                                        }
+                                        &array[index]
+                                    } else {
+                                        panic!("Array expect");
+                                    }
+                                }
+                                _ => &json[p],
+                            };
                         }
                     }
                     let cs = {
                         let json_string = serde_json::to_string_pretty(json)?;
-                        // println!("{json_string}");
                         <$ty>::try_from_json(json_string.as_str())?
                     };
                     let json_string_from_cs = cs.try_into_json()?;
