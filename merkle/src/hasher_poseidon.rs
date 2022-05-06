@@ -20,14 +20,26 @@ pub trait PoseidonLegacyHasherPoolProvider {
 #[macro_export]
 macro_rules! impl_poseidon_legacy_hasher_pool_provider {
     ($t:ty) => {
-        impl PoseidonLegacyHasherPoolProvider for $t {
+        impl mina_merkle::PoseidonLegacyHasherPoolProvider for $t {
             type Item = Self;
 
-            fn get_pool<'a>() -> &'a SpinLockObjectPool<PoseidonHasherLegacy<$t>> {
+            fn get_pool<'a>() -> &'a mina_merkle::macros::lockfree_object_pool::SpinLockObjectPool<
+                mina_merkle::macros::mina_hasher::PoseidonHasherLegacy<$t>,
+            > {
+                use mina_merkle::macros::{
+                    lockfree_object_pool::SpinLockObjectPool,
+                    mina_hasher::{create_legacy, Hashable, PoseidonHasherLegacy},
+                    once_cell::sync::OnceCell,
+                };
+
                 static POOL: OnceCell<SpinLockObjectPool<PoseidonHasherLegacy<$t>>> =
                     OnceCell::new();
-                let pool =
-                    POOL.get_or_init(|| SpinLockObjectPool::new(|| create_legacy(()), |_| ()));
+                let pool = POOL.get_or_init(|| {
+                    SpinLockObjectPool::new(
+                        || create_legacy(<$t as Hashable>::D::default()),
+                        |_| (),
+                    )
+                });
                 pool
             }
         }
