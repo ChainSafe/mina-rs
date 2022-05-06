@@ -67,7 +67,9 @@ pub type TransactionSnarkV1 = Versioned<TransactionSnark, 1>;
 pub struct TransactionSnarkJson {
     // Versioned 1 byte
     pub statement: StatementJson,
-    pub transaction_snark_proof: ProtocolStateProofV1,
+
+    #[serde(rename = "proof")]
+    pub transaction_snark_proof: ProtocolStateProofJson,
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
@@ -92,8 +94,8 @@ pub struct StatementJson {
     pub source: StateHashV1Json,
     pub target: StateHashV1Json,
     pub supply_increase: U64Json,
-    pub pending_coinbase_stack_state: PendingCoinbaseStackStateV1,
-    pub fee_excess: FeeExcessV1,
+    pub pending_coinbase_stack_state: PendingCoinbaseStackStateJson,
+    pub fee_excess: FeeExcessJson,
     pub next_available_token_before: U64Json,
     pub next_available_token_after: U64Json,
     pub sok_digest: ByteVec,
@@ -112,8 +114,8 @@ pub type PendingCoinbaseStackStateV1 = Versioned<Versioned<PendingCoinbaseStackS
 #[auto_from(PendingCoinbaseStackState)]
 pub struct PendingCoinbaseStackStateJson {
     // Versioned 2 byte
-    pub source: PendingCoinbaseV1,
-    pub target: PendingCoinbaseV1,
+    pub source: PendingCoinbaseJson,
+    pub target: PendingCoinbaseJson,
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
@@ -180,6 +182,14 @@ pub struct Signed {
 
 pub type SignedV1 = Versioned<Signed, 1>;
 
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq, AutoFrom)]
+#[auto_from(Signed)]
+pub struct SignedJson {
+    // Versioned 1 byte
+    pub magnitude: U64Json,
+    pub sgn: SgnTypeJson,
+}
+
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub enum SgnType {
     // Versioned 1 byte
@@ -188,3 +198,11 @@ pub enum SgnType {
 }
 
 pub type SgnTypeV1 = Versioned<SgnType, 1>;
+
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq, AutoFrom)]
+#[auto_from(SgnType)]
+pub enum SgnTypeJson {
+    // Versioned 1 byte
+    Pos,
+    Neg,
+}

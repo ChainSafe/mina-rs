@@ -105,6 +105,11 @@ pub mod json {
     use super::*;
 
     pub use blockchain_state::BlockchainStateJson;
+    pub use bulletproof_challenges::{
+        BulletproofChallengeJson, BulletproofChallengeTuple17Json, BulletproofChallengeTuple18Json,
+        BulletproofPreChallengeJson, ProofStateBulletproofChallengesJson,
+        ScalarChallengeVector2Json,
+    };
     pub use common::{
         AuxHashJson, ChainHashV1Json, CoinBaseHashV1Json, EpochSeedHashV1Json, HashV1Json,
         LedgerHashV1Json, PendingCoinbaseAuxHashJson, StateHashV1Json, VrfOutputHashV1Json,
@@ -115,12 +120,16 @@ pub mod json {
     pub use protocol_constants::ProtocolConstantsJson;
     pub use protocol_state::ProtocolStateJson;
     pub use protocol_state_body::ProtocolStateBodyJson;
-    pub use protocol_state_proof::ProtocolStateProofJson;
+    pub use protocol_state_proof::{
+        PairingBasedJson, PlonkJson, ProofStateDeferredValuesJson, ProofStateJson,
+        ProofStatementJson, ProtocolStateProofBase64Json, ProtocolStateProofJson,
+        SpongeDigestBeforeEvaluations,
+    };
     pub use protocol_version::ProtocolVersionJson;
     pub use signatures::PublicKeyJson;
     pub use snark_work::{
-        FeeExcessJson, PendingCoinbaseJson, PendingCoinbaseStackStateJson, StateStackJson,
-        StatementJson, TransactionSnarkJson, TransactionSnarkWorkJson,
+        FeeExcessJson, PendingCoinbaseJson, PendingCoinbaseStackStateJson, SgnTypeJson, SignedJson,
+        StateStackJson, StatementJson, TransactionSnarkJson, TransactionSnarkWorkJson,
     };
-    pub use staged_ledger_diff::StagedLedgerDiffJson;
+    pub use staged_ledger_diff::{CoinBaseJson, StagedLedgerDiffJson};
 }

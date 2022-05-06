@@ -9,7 +9,7 @@ use serde::{Deserialize, Serialize};
 use crate::{
     delta_transition_chain_proof::DeltaTransitionChainProofJson,
     protocol_state::ProtocolStateJson,
-    protocol_state_proof::ProtocolStateProofJson,
+    protocol_state_proof::ProtocolStateProofBase64Json,
     protocol_version::ProtocolVersionJson,
     staged_ledger_diff::StagedLedgerDiffJson,
     v1::{
@@ -51,7 +51,7 @@ pub struct ExternalTransitionJson {
     /// The blockchain state, including consensus and the ledger
     pub protocol_state: ProtocolStateJson,
     /// Proof that the protocol state and entire history of the chain is valid
-    pub protocol_state_proof: ProtocolStateProofJson,
+    pub protocol_state_proof: ProtocolStateProofBase64Json,
     /// Diff of the proposed next state of the blockchain
     pub staged_ledger_diff: StagedLedgerDiffJson,
     /// Proof that the block was produced within the allotted slot time

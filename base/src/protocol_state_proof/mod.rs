@@ -47,7 +47,7 @@ pub struct ProtocolStateProof {
 impl_from_with_proxy!(
     ProtocolStateProof,
     ProtocolStateProofV1,
-    ProtocolStateProofJson
+    ProtocolStateProofBase64Json
 );
 
 #[derive(Clone, Default, PartialEq, Debug, AutoFrom)]

@@ -199,6 +199,16 @@ pub enum CoinBase {
 
 pub type CoinBaseV1 = Versioned<CoinBase, 1>;
 
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq, SmartDefault, AutoFrom)]
+#[auto_from(CoinBase)]
+pub enum CoinBaseJson {
+    #[default]
+    Zero,
+    // FIXME: other variants are not covered by current test block
+    One(Option<CoinBaseFeeTransferV1>),
+    Two,
+}
+
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 // FIXME: No test coverage yet
 pub struct CoinBaseFeeTransfer {

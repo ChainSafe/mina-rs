@@ -81,6 +81,10 @@ impl<'de> Deserialize<'de> for U64Json {
     }
 }
 
+/// i64 wrapper (json)
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, derive_more::From, derive_more::Into)]
+pub struct I64(pub i64);
+
 /// u32 representing a length (v1)
 pub type LengthV1 = Versioned<Versioned<u32, 1>, 1>;
 impl_from_for_newtype!(U32Json, LengthV1);
@@ -112,6 +116,7 @@ pub type ExtendedU64_3 = Versioned<ExtendedU64_2, 1>;
 
 /// Versioned 64 bytes
 pub type Hex64V1 = Versioned<i64, 1>;
+impl_from_for_newtype!(I64, Hex64V1);
 
 /// Versioned char
 pub type CharV1 = Versioned<u8, 1>;
