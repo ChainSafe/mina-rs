@@ -8,7 +8,7 @@ use serde::{Deserialize, Serialize};
 use versioned::Versioned;
 
 use crate::{
-    common::U32,
+    common::U32Json,
     v1::{GlobalSlotNumberV1, LengthV1},
 };
 
@@ -29,7 +29,7 @@ pub type GlobalSlotV1 = Versioned<Versioned<GlobalSlot, 1>, 1>;
 #[auto_from(GlobalSlot)]
 pub struct GlobalSlotJson {
     /// The global slot number of a chain or block
-    pub slot_number: U32,
+    pub slot_number: U32Json,
     /// Number of slots per epoch
-    pub slots_per_epoch: U32,
+    pub slots_per_epoch: U32Json,
 }

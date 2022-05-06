@@ -39,9 +39,9 @@ pub struct BlockchainStateJson {
     /// Hash of the genesis state
     pub genesis_ledger_hash: LedgerHashV1Json,
     /// Check whether the change of the next token ID is consistent.
-    pub snarked_next_available_token: U64,
+    pub snarked_next_available_token: U64Json,
     /// Timestamps for blocks
-    pub timestamp: U64,
+    pub timestamp: U64Json,
 }
 
 /// Staged ledger hash structure

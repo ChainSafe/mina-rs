@@ -4,7 +4,7 @@
 //! Types and funcions related to the Mina consensus state
 
 use crate::{
-    common::{U32, U64},
+    common::{U32Json, U64Json},
     epoch_data::EpochDataJson,
     global_slot::GlobalSlotJson,
     signatures::PublicKeyJson,
@@ -100,21 +100,21 @@ pub type ConsensusStateV1 = Versioned<Versioned<ConsensusState, 1>, 1>;
 #[auto_from(ConsensusState)]
 pub struct ConsensusStateJson {
     /// Height of block
-    pub blockchain_length: U32,
+    pub blockchain_length: U32Json,
     /// Epoch number
-    pub epoch_count: U32,
+    pub epoch_count: U32Json,
     /// Minimum window density oberved on the chain
-    pub min_window_density: U32,
+    pub min_window_density: U32Json,
     /// Current sliding window of densities
-    pub sub_window_densities: Vec<U32>,
+    pub sub_window_densities: Vec<U32Json>,
     /// Additional VRS output from leader (for seeding Random Oracle)
     pub last_vrf_output: VrfOutputTruncatedJson,
     /// Total supply of currency
-    pub total_currency: U64,
+    pub total_currency: U64Json,
     /// Current global slot number relative to the current hard fork
     pub curr_global_slot: GlobalSlotJson,
     /// Absolute global slot number since genesis
-    pub global_slot_since_genesis: U32,
+    pub global_slot_since_genesis: U32Json,
     /// Epoch data for previous epoch
     pub staking_epoch_data: EpochDataJson,
     /// Epoch data for current epoch

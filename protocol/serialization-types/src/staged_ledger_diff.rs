@@ -7,8 +7,7 @@
 #![allow(missing_docs)] // Don't actually know what many of the types fields are for yet
 
 use crate::signatures::{PublicKey2V1, PublicKeyV1, SignatureV1};
-use crate::snark_work::TransactionSnarkWorkV1;
-use crate::v1::*;
+use crate::{json::*, v1::*};
 use mina_serialization_types_macros::AutoFrom;
 use serde::{Deserialize, Serialize};
 use smart_default::SmartDefault;
@@ -77,7 +76,7 @@ pub type StagedLedgerPreDiffTwoV1 = Versioned<Versioned<StagedLedgerPreDiffTwo, 
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq, AutoFrom)]
 #[auto_from(StagedLedgerPreDiffTwo)]
 pub struct StagedLedgerPreDiffTwoJson {
-    pub completed_works: Vec<TransactionSnarkWorkV1>,
+    pub completed_works: Vec<TransactionSnarkWorkJson>,
     pub commands: Vec<UserCommandWithStatusV1>,
     pub coinbase: CoinBaseV1,
     pub internal_command_balances: Vec<InternalCommandBalanceDataV1>,

@@ -7,7 +7,7 @@ use mina_serialization_types_macros::AutoFrom;
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    common::{U32, U64},
+    common::{U32Json, U64Json},
     json::*,
     v1::*,
 };
@@ -32,7 +32,7 @@ pub struct EpochLedgerJson {
     /// A unique identifier of the EpochLedger
     pub hash: LedgerHashV1Json,
     /// The total currency in circulation after the block was produced. New issuance is via the coinbase reward and new account fees can reduce the total issuance.
-    pub total_currency: U64,
+    pub total_currency: U64Json,
 }
 
 /// Epoch data
@@ -66,5 +66,5 @@ pub struct EpochDataJson {
     /// State hash of last known block in the first 2/3 of epoch (excluding the current state)
     pub lock_checkpoint: StateHashV1Json,
     /// Length of an epoch
-    pub epoch_length: U32,
+    pub epoch_length: U32Json,
 }

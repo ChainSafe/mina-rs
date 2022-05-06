@@ -17,7 +17,7 @@ pub type Hash2V1 = Versioned<HashV1, 1>;
 
 /// u64 representing a token ID (v1)
 pub type TokenIdV1 = Versioned<Versioned<Versioned<u64, 1>, 1>, 1>;
-impl_from_for_newtype!(U64, TokenIdV1);
+impl_from_for_newtype!(U64Json, TokenIdV1);
 
 /// u64 representing a block time (v1)
 pub type BlockTimeV1 = Versioned<Versioned<u64, 1>, 1>;
@@ -25,11 +25,12 @@ pub type BlockTimeV1 = Versioned<Versioned<u64, 1>, 1>;
 /// u64 representing an account nonce (v1) // This should also be an extendedu32
 pub type AccountNonceV1 = Versioned<Versioned<u32, 1>, 1>;
 
-/// u32 wrapper
+/// u32 wrapper (json)
+/// Note that integers are represented as string in mina json
 #[derive(Clone, Debug, PartialEq, derive_more::From)]
-pub struct U32(pub u32);
+pub struct U32Json(pub u32);
 
-impl Serialize for U32 {
+impl Serialize for U32Json {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: Serializer,
@@ -39,7 +40,7 @@ impl Serialize for U32 {
     }
 }
 
-impl<'de> Deserialize<'de> for U32 {
+impl<'de> Deserialize<'de> for U32Json {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
         D: Deserializer<'de>,
@@ -52,11 +53,12 @@ impl<'de> Deserialize<'de> for U32 {
     }
 }
 
-/// u64 wrapper
+/// u64 wrapper (json)
+/// Note that integers are represented as string in mina json
 #[derive(Clone, Debug, PartialEq, derive_more::From)]
-pub struct U64(pub u64);
+pub struct U64Json(pub u64);
 
-impl Serialize for U64 {
+impl Serialize for U64Json {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: Serializer,
@@ -66,7 +68,7 @@ impl Serialize for U64 {
     }
 }
 
-impl<'de> Deserialize<'de> for U64 {
+impl<'de> Deserialize<'de> for U64Json {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
         D: Deserializer<'de>,
@@ -81,7 +83,7 @@ impl<'de> Deserialize<'de> for U64 {
 
 /// u32 representing a length (v1)
 pub type LengthV1 = Versioned<Versioned<u32, 1>, 1>;
-impl_from_for_newtype!(U32, LengthV1);
+impl_from_for_newtype!(U32Json, LengthV1);
 
 /// u32 representing a delta (i.e. difference) (v1)
 pub type DeltaV1 = Versioned<Versioned<u32, 1>, 1>;
@@ -91,7 +93,7 @@ pub type GlobalSlotNumberV1 = Versioned<Versioned<u32, 1>, 1>;
 
 /// u64 representing an amount of currency (v1)
 pub type AmountV1 = Versioned<Versioned<u64, 1>, 1>;
-impl_from_for_newtype!(U64, AmountV1);
+impl_from_for_newtype!(U64Json, AmountV1);
 
 // FIXME: 255 255 cannot be deserialized to u32, use i32 for now
 // Note: Extended_Uint32 is not defined in bin_prot, but comes from mina

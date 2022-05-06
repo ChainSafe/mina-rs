@@ -9,7 +9,7 @@ use serde::{Deserialize, Serialize};
 use versioned::Versioned;
 
 use crate::{
-    common::{U32, U64},
+    common::{U32Json, U64Json},
     v1::{BlockTimeV1, LengthV1},
 };
 
@@ -36,13 +36,13 @@ pub type ProtocolConstantsV1 = Versioned<Versioned<ProtocolConstants, 1>, 1>;
 #[auto_from(ProtocolConstants)]
 pub struct ProtocolConstantsJson {
     /// Point of finality (number of confirmations)
-    pub k: U32,
+    pub k: U32Json,
     /// Number of slots per epoch
-    pub slots_per_epoch: U32,
+    pub slots_per_epoch: U32Json,
     /// No of slots in a sub-window = 7
-    pub slots_per_sub_window: U32,
+    pub slots_per_sub_window: U32Json,
     /// Maximum permissable delay of packets (in slots after the current)
-    pub delta: U32,
+    pub delta: U32Json,
     /// Timestamp of genesis block in unixtime
-    pub genesis_state_timestamp: U64,
+    pub genesis_state_timestamp: U64Json,
 }
