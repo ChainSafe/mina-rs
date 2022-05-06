@@ -7,12 +7,18 @@ edition = "2021"
 license = "Apache-2.0"
 
 [dependencies]
-mina-crypto = {path = "../crypto"}
-mina-rs-base = {path = "../base"}
 bin-prot = {path = "../protocol/bin-prot"}
+mina-crypto = {path = "../crypto"}
+mina-merkle = {path = "../merkle"}
+mina-rs-base = {path = "../base"}
 
 thiserror = "1"
 
 # RocksDB cannot build with the wasm target
 [target.'cfg(not(target_arch = "wasm32"))'.dependencies]
 rocksdb = "0.18.0"
+
+[dev-dependencies]
+proof-systems = {path = "../proof-systems-shim"}
+
+ark-ff = "0.3"

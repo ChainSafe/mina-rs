@@ -7,7 +7,7 @@
 #![deny(missing_docs)]
 
 mod genesis_ledger;
-pub use genesis_ledger::GenesisLedger;
+pub use genesis_ledger::{GenesisLedger, MinaLedgerMerkleHasher, MinaLedgerMerkleTree};
 
 #[cfg(not(target_arch = "wasm32"))]
 mod rocksdb_genesis_ledger;

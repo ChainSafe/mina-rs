@@ -16,9 +16,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: lscpu
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - run: cat .github/cargo-config > $HOME/.cargo/config
-      - uses: actions/cache@v2
+      - uses: actions/cache@v3
         with:
           path: |
             ~/.cargo/bin/
@@ -67,9 +67,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: lscpu
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - run: cat .github/cargo-config > $HOME/.cargo/config
-      - uses: actions/cache@v2
+      - uses: actions/cache@v3
         with:
           path: |
             ~/.cargo/bin/
@@ -97,7 +97,7 @@ jobs:
       # https://github.com/benchmark-action/github-action-benchmark/tree/master/examples/criterion-rs
       - run: (cargo bench --all-features --no-fail-fast -- --output-format bencher > bencher.log) || echo ''
       - name: Download previous benchmark data
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: ./.cache
           key: ${{ runner.os }}-benchmark
@@ -123,14 +123,14 @@ jobs:
           sudo apt-get install -y valgrind graphviz
           sudo pip install gprof2dot
           ./scripts/profiler.sh
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: criterion
           path: |
             target/criterion/**/*
             apps/target/criterion/**/*
           if-no-files-found: error
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: profiler-reports
           path: apps/target/release/profiler-reports/**/*
@@ -139,9 +139,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: lscpu
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - run: cat .github/cargo-config > $HOME/.cargo/config
-      - uses: actions/cache@v2
+      - uses: actions/cache@v3
         with:
           path: |
             ~/.cargo/bin/
@@ -184,9 +184,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: lscpu
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - run: cat .github/cargo-config > $HOME/.cargo/config
-      - uses: actions/cache@v2
+      - uses: actions/cache@v3
         with:
           path: |
             ~/.cargo/bin/
@@ -211,17 +211,17 @@ jobs:
       - run: lerna run build
       - run: lerna run test
       - run: lerna run lint
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: mvp-chrome-ext
           path: apps/wasm/mvp/dist/ext/**/*
           if-no-files-found: error
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: mvp-chrome-ext-v2
           path: apps/wasm/mvp/dist/ext-v2/**/*
           if-no-files-found: error
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: mvp-web
           path: apps/wasm/mvp/dist/web/**/*
@@ -230,9 +230,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: lscpu
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - run: cat .github/cargo-config > $HOME/.cargo/config
-      - uses: actions/cache@v2
+      - uses: actions/cache@v3
         with:
           path: |
             ~/.cargo/bin/
@@ -249,7 +249,7 @@ jobs:
           components: llvm-tools-preview
       - uses: taiki-e/install-action@cargo-llvm-cov
       - run: cargo llvm-cov --all-features --lcov --output-path lcov.info
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: lcov.info
           path: lcov.info
@@ -266,9 +266,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: lscpu
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - run: cat .github/cargo-config > $HOME/.cargo/config
-      - uses: actions/cache@v2
+      - uses: actions/cache@v3
         with:
           path: |
             ~/.cargo/bin/
