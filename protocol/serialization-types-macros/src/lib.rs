@@ -107,7 +107,7 @@ pub fn auto_from_macro(input: TokenStream) -> TokenStream {
                     return ts;
                 }
             }
-            _ => {}
+            _ => unimplemented!(),
         },
         syn::Data::Enum(DataEnum { variants, .. }) => {
             if let Some(ts) =
@@ -116,7 +116,7 @@ pub fn auto_from_macro(input: TokenStream) -> TokenStream {
                 return ts;
             }
         }
-        _ => {}
+        _ => unimplemented!(),
     };
 
     Default::default()

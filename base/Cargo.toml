@@ -18,7 +18,6 @@ versioned = {path = "../protocol/versioned"}
 ark-ec = "0.3.0"
 ark-ff = "0.3.0"
 base64 = "0.13"
-derive_deref = "1.1"
 derive_more = "0.99"
 hex = "0.4"
 num = "0.4"
