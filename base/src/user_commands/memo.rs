@@ -44,7 +44,7 @@ impl TryFrom<String> for SignedCommandMemo {
 impl fmt::Display for SignedCommandMemo {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let s = String::from_utf8(self.0[2..].to_vec()).unwrap();
-        write!(f, "{}", s.trim_end_matches("\u{0000}"))
+        write!(f, "{}", s.trim_end_matches('\u{0000}'))
     }
 }
 

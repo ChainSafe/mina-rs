@@ -20,6 +20,7 @@ derive_deref = "1.1"
 derive_more = "0.99"
 hex = "0.4"
 num = "0.4"
+num-bigint = "0.4"
 serde = {version = "1", features = ["derive"]}
 smart-default = "0.6.0"
 thiserror = "1"

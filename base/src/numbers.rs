@@ -3,9 +3,9 @@
 
 //! Newtypes for different numeric types used throughout Mina
 
+use crate::*;
 use core::fmt;
 use core::fmt::Display;
-use crate::*;
 
 use derive_deref::Deref;
 use derive_more::From;

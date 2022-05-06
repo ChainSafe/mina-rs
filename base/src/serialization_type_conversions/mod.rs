@@ -11,6 +11,7 @@ mod bulletproof_challenges;
 mod field_and_curve_elements;
 mod numbers;
 mod protocol_state_proof;
+mod user_commands;
 
 impl From<ExternalTransition> for ExternalTransitionV1 {
     fn from(t: ExternalTransition) -> Self {
@@ -253,7 +254,7 @@ impl_from_for_ext_type!(ProtocolState, ProtocolStateV1, ProtocolStateJson);
 
 impl From<PaymentPayload> for PaymentPayloadV1 {
     fn from(t: PaymentPayload) -> Self {
-        mina_serialization_types::staged_ledger_diff::PaymentPayload {
+        mina_serialization_types::user_commands::PaymentPayload {
             source_pk: t.source_pk.into(),
             receiver_pk: t.receiver_pk.into(),
             token_id: t.token_id.into(),
@@ -275,7 +276,7 @@ impl From<PaymentPayloadV1> for PaymentPayload {
 
 impl From<SignedCommandPayloadBody> for SignedCommandPayloadBodyV1 {
     fn from(t: SignedCommandPayloadBody) -> Self {
-        use mina_serialization_types::staged_ledger_diff::SignedCommandPayloadBody as b;
+        use mina_serialization_types::user_commands::SignedCommandPayloadBody as b;
         match t {
             SignedCommandPayloadBody::PaymentPayload(pp) => b::PaymentPayload(pp.into()).into(),
         }
@@ -283,7 +284,7 @@ impl From<SignedCommandPayloadBody> for SignedCommandPayloadBodyV1 {
 }
 impl From<SignedCommandPayloadBodyV1> for SignedCommandPayloadBody {
     fn from(t: SignedCommandPayloadBodyV1) -> Self {
-        use mina_serialization_types::staged_ledger_diff::SignedCommandPayloadBody as b;
+        use mina_serialization_types::user_commands::SignedCommandPayloadBody as b;
         match t.t.t {
             b::PaymentPayload(pp) => Self::PaymentPayload(pp.into()),
             _ => unimplemented!(),
@@ -299,7 +300,7 @@ impl From<SignedCommandMemo> for SignedCommandMemoV1 {
 
 impl From<SignedCommandPayloadCommon> for SignedCommandPayloadCommonV1 {
     fn from(t: SignedCommandPayloadCommon) -> Self {
-        mina_serialization_types::staged_ledger_diff::SignedCommandPayloadCommon {
+        mina_serialization_types::user_commands::SignedCommandPayloadCommon {
             fee: t.fee.into(),
             fee_token: t.fee_token.into(),
             fee_payer_pk: t.fee_payer_pk.into(),
@@ -325,7 +326,7 @@ impl From<SignedCommandPayloadCommonV1> for SignedCommandPayloadCommon {
 
 impl From<SignedCommandPayload> for SignedCommandPayloadV1 {
     fn from(t: SignedCommandPayload) -> Self {
-        mina_serialization_types::staged_ledger_diff::SignedCommandPayload {
+        mina_serialization_types::user_commands::SignedCommandPayload {
             common: t.common.into(),
             body: t.body.into(),
         }
@@ -343,7 +344,7 @@ impl From<SignedCommandPayloadV1> for SignedCommandPayload {
 
 impl From<SignedCommand> for SignedCommandV1 {
     fn from(t: SignedCommand) -> Self {
-        mina_serialization_types::staged_ledger_diff::SignedCommand {
+        mina_serialization_types::user_commands::SignedCommand {
             payload: t.payload.into(),
             signer: t.signer.into(),
             signature: t.signature.into(),
@@ -363,7 +364,7 @@ impl From<SignedCommandV1> for SignedCommand {
 
 impl From<UserCommand> for UserCommandV1 {
     fn from(t: UserCommand) -> Self {
-        use mina_serialization_types::staged_ledger_diff::UserCommand as UC;
+        use mina_serialization_types::user_commands::UserCommand as UC;
         match t {
             UserCommand::SignedCommand(sc) => UC::SignedCommand(sc.into()).into(),
         }
@@ -371,7 +372,7 @@ impl From<UserCommand> for UserCommandV1 {
 }
 impl From<UserCommandV1> for UserCommand {
     fn from(t: UserCommandV1) -> Self {
-        use mina_serialization_types::staged_ledger_diff::UserCommand as UC;
+        use mina_serialization_types::user_commands::UserCommand as UC;
         match t.t.t {
             UC::SignedCommand(sc) => Self::SignedCommand(sc.into()),
             _ => unimplemented!(),

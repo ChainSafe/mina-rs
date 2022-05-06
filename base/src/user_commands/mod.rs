@@ -10,6 +10,7 @@ pub mod payment;
 pub mod signed_command;
 
 pub use memo::SignedCommandMemo;
+use mina_serialization_types::JsonSerializationType;
 pub use payment::PaymentPayload;
 pub use signed_command::{
     SignedCommand, SignedCommandPayload, SignedCommandPayloadBody, SignedCommandPayloadCommon,
@@ -23,4 +24,8 @@ pub enum UserCommand {
     /// A command signed by a private key
     SignedCommand(SignedCommand),
     // FIXME: other variants are not covered by current test block
+}
+
+impl JsonSerializationType for SignedCommand {
+    type T = mina_serialization_types::json::TransactionJson;
 }
