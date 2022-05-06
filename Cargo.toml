@@ -13,7 +13,6 @@ members = [
   "protocol/test-serialization",
   "protocol/serialization-types",
   "protocol/versioned",
-  "sdk",
   "secrets",
 ]
 # This is still needed for virtual workspaces 
