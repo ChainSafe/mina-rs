@@ -9,7 +9,8 @@ use crate::{
     numbers::{Amount, GlobalSlotNumber, Length},
 };
 use derive_more::From;
-use mina_crypto::{hash::*, prelude::*};
+use mina_crypto::prelude::*;
+use proof_systems::mina_hasher::{Hashable, ROInput};
 use proof_systems::mina_signer::CompressedPubKey;
 use serde::Serialize;
 use smart_default::SmartDefault;
@@ -18,6 +19,20 @@ use smart_default::SmartDefault;
 #[derive(Clone, Default, PartialEq, Debug, From, Serialize)]
 pub struct VrfOutputTruncated(pub Vec<u8>);
 
+impl Hashable for VrfOutputTruncated {
+    type D = ();
+
+    fn to_roinput(&self) -> ROInput {
+        let mut roi = ROInput::new();
+        roi.append_bytes(&self.0);
+        roi
+    }
+
+    fn domain_string(_: Self::D) -> Option<String> {
+        None
+    }
+}
+
 impl Base64Encodable for VrfOutputTruncated {}
 
 impl From<&str> for VrfOutputTruncated {
@@ -25,8 +40,6 @@ impl From<&str> for VrfOutputTruncated {
         VrfOutputTruncated(s.as_bytes().to_vec())
     }
 }
-
-impl Hashable<VrfOutputHash> for VrfOutputTruncated {}
 
 impl AsRef<[u8]> for VrfOutputTruncated {
     fn as_ref(&self) -> &[u8] {
@@ -78,6 +91,36 @@ pub struct ConsensusState {
     pub coinbase_receiver: CompressedPubKey,
     /// true if block_stake_winner has no locked tokens, false otherwise
     pub supercharge_coinbase: bool,
+}
+
+impl Hashable for ConsensusState {
+    type D = ();
+
+    fn to_roinput(&self) -> ROInput {
+        let mut roi = ROInput::new();
+        roi.append_hashable(&self.blockchain_length);
+        roi.append_hashable(&self.epoch_count);
+        roi.append_hashable(&self.min_window_density);
+        for v in &self.sub_window_densities {
+            roi.append_hashable(v);
+        }
+        roi.append_hashable(&self.last_vrf_output);
+        roi.append_hashable(&self.total_currency);
+        roi.append_hashable(&self.curr_global_slot);
+        roi.append_hashable(&self.global_slot_since_genesis);
+        roi.append_hashable(&self.staking_epoch_data);
+        roi.append_hashable(&self.next_epoch_data);
+        roi.append_bool(self.has_ancestor_in_same_checkpoint_window);
+        roi.append_bytes(self.block_stake_winner.into_address().as_bytes());
+        roi.append_bytes(self.block_creator.into_address().as_bytes());
+        roi.append_bytes(self.coinbase_receiver.into_address().as_bytes());
+        roi.append_bool(self.supercharge_coinbase);
+        roi
+    }
+
+    fn domain_string(_: Self::D) -> Option<String> {
+        None
+    }
 }
 
 impl ConsensusState {

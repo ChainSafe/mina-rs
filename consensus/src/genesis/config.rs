@@ -15,10 +15,13 @@ const ERR_FAIL_TO_DECODE_B64: &str = "Failed to decode hash from base64";
 const ERR_FAIL_TO_DECODE_HEX: &str = "Failed to decode hash from hex";
 
 lazy_static::lazy_static! {
+    /// Config instance for initializing genesis block in mainnet
     pub static ref MAINNET_CONFIG: GenesisInitConfig = GenesisInitConfig::mainnet();
+    /// Config instance for initializing genesis block in devnet
     pub static ref DEVNET_CONFIG: GenesisInitConfig = GenesisInitConfig::devnet();
 }
 
+/// Config for initializing genesis block
 pub struct GenesisInitConfig {
     pub(crate) constants: ProtocolConstants,
 

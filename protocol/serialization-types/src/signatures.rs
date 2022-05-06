@@ -32,7 +32,6 @@ mod conversions {
     use super::{CompressedCurvePoint, PublicKey2V1, PublicKeyV1, SignatureV1};
     use proof_systems::mina_signer::{BaseField, CompressedPubKey, ScalarField, Signature};
     use proof_systems::o1_utils::field_helpers::FieldHelpers;
-    use versioned::Versioned;
 
     impl From<PublicKeyV1> for CompressedPubKey {
         fn from(t: PublicKeyV1) -> Self {
@@ -46,16 +45,17 @@ mod conversions {
     }
     impl From<CompressedPubKey> for PublicKeyV1 {
         fn from(t: CompressedPubKey) -> Self {
-            PublicKeyV1(Versioned::new(Versioned::new(CompressedCurvePoint {
-                // This unwrap of a slice conversion is safe as a CompressedPubKey always has 32 bytes of data which the exact length of
-                // FieldElement
-                x: t.x
-                    .to_bytes()
-                    .as_slice()
-                    .try_into()
-                    .expect("Wrong number of bytes encountered when converting to FieldElement"),
-                is_odd: t.is_odd,
-            })))
+            PublicKeyV1(
+                CompressedCurvePoint {
+                    // This unwrap of a slice conversion is safe as a CompressedPubKey always has 32 bytes of data which the exact length of
+                    // FieldElement
+                    x: t.x.to_bytes().as_slice().try_into().expect(
+                        "Wrong number of bytes encountered when converting to FieldElement",
+                    ),
+                    is_odd: t.is_odd,
+                }
+                .into(),
+            )
         }
     }
 
@@ -66,7 +66,8 @@ mod conversions {
     }
     impl From<CompressedPubKey> for PublicKey2V1 {
         fn from(t: CompressedPubKey) -> Self {
-            PublicKey2V1(Versioned::new(t.into()))
+            let pk: PublicKeyV1 = t.into();
+            Self(pk.into())
         }
     }
 
@@ -83,18 +84,19 @@ mod conversions {
     }
     impl From<Signature> for SignatureV1 {
         fn from(t: Signature) -> Self {
-            SignatureV1(Versioned::new(Versioned::new((
-                // This unwrap of a slice conversion is safe as a CompressedPubKey always has 32 bytes of data which the exact length of
-                // FieldElement
-                t.rx.to_bytes()
-                    .as_slice()
-                    .try_into()
-                    .expect("Wrong number of bytes encountered when converting to FieldElement"),
-                t.s.to_bytes()
-                    .as_slice()
-                    .try_into()
-                    .expect("Wrong number of bytes encountered when converting to FieldElement"),
-            ))))
+            SignatureV1(
+                (
+                    // This unwrap of a slice conversion is safe as a CompressedPubKey always has 32 bytes of data which the exact length of
+                    // FieldElement
+                    t.rx.to_bytes().as_slice().try_into().expect(
+                        "Wrong number of bytes encountered when converting to FieldElement",
+                    ),
+                    t.s.to_bytes().as_slice().try_into().expect(
+                        "Wrong number of bytes encountered when converting to FieldElement",
+                    ),
+                )
+                    .into(),
+            )
         }
     }
 }

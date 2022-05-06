@@ -8,10 +8,12 @@ license = "Apache-2.0"
 
 [dependencies]
 bin-prot = {path = "../bin-prot"}
+proof-systems = {path = "../../proof-systems-shim"}
 versioned = {path = "../versioned"}
-serde = {version = "1", features = ["derive"]}
 
-proof-systems = { path = "../../proof-systems-shim" }
+bs58 = {version = "0.4", features = ["check"]}
+derive_more = "0.99"
+serde = {version = "1", features = ["derive"]}
 
 [dev-dependencies]
 test-fixtures = {path = "../test-fixtures"}

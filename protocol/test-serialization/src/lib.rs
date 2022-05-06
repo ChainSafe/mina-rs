@@ -6,6 +6,7 @@
 #[cfg(all(test, feature = "browser"))]
 wasm_bindgen_test::wasm_bindgen_test_configure!(run_in_browser);
 
+mod e2e;
 mod fuzz;
 mod genesis;
 #[allow(non_snake_case)]
@@ -30,7 +31,10 @@ mod tests {
         for p in path_ref.split('/') {
             if p == "[sum]" {
                 match val {
-                    Value::Sum { ref value, .. } => {
+                    Value::Sum {
+                        ref value, index, ..
+                    } => {
+                        println!("Unpacking sum type index {index} for {path_ref}");
                         val = value;
                     }
                     _ => assert!(false, "Sum expected"),

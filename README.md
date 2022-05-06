@@ -12,6 +12,8 @@ An implementation of Mina protocol in Rust, with focus on web and Wasm compatibi
 
 ** As you can probably tell this is a WIP! Don't use for anything yet **
 
+Rust doc of `main` branch can be found [here](https://chainsafe.github.io/mina-rs/rustdoc/)
+
 ## Building
 
 Mina builds with the latest stable version of Rust. See [installation instructions for your OS](https://www.rust-lang.org/tools/install).
@@ -41,6 +43,7 @@ cargo test -p test-serialization
 ```
 
 It is also possible to run the serialization tests in a Wasm environment using wasm-pack. First install wasm-pack with
+
 ```shell
 curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
 ```
@@ -52,10 +55,13 @@ cd protocol/test-serialization
 ```
 
 and then run tests with either
+
 ```shell
 wasm-pack test --node --release
 ```
+
 or
+
 ```shell
 wasm-pack test --headless --chrome --release --features browser
 ```
@@ -65,11 +71,12 @@ wasm-pack test --headless --chrome --release --features browser
 ### Reporting a Security Bug
 
 We take all security issues seriously, if you believe you have found a security issue within a ChainSafe
-project please notify us immediately. If an issue is confirmed, we will take all necessary precautions 
+project please notify us immediately. If an issue is confirmed, we will take all necessary precautions
 to ensure a statement and patch release is made in a timely manner.
 
 Please email us a description of the flaw and any related information (e.g. reproduction steps, version) to
 [security at chainsafe dot io](mailto:security@chainsafe.io).
 
-## License 
+## License
+
 Mina-rs is licensed under [Apache 2.0](https://github.com/ChainSafe/mina-rs/blob/main/LICENSE).
