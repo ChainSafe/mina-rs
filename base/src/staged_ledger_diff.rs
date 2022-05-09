@@ -109,6 +109,12 @@ pub enum CoinBase {
     Two,
 }
 
+impl_from_with_proxy!(
+    CoinBase,
+    mina_serialization_types::staged_ledger_diff::CoinBase,
+    CoinBaseMinaJson
+);
+
 #[derive(Clone, PartialEq, Debug, AutoFrom)]
 #[auto_from(mina_serialization_types::staged_ledger_diff::CoinBaseFeeTransfer)]
 // FIXME: No test coverage yet
@@ -123,6 +129,12 @@ pub enum InternalCommandBalanceData {
     CoinBase(CoinBaseBalanceData),
     FeeTransfer(FeeTransferBalanceData),
 }
+
+impl_from_with_proxy!(
+    InternalCommandBalanceData,
+    mina_serialization_types::staged_ledger_diff::InternalCommandBalanceData,
+    InternalCommandBalanceDataMinaJson
+);
 
 #[derive(Clone, PartialEq, Debug, AutoFrom)]
 #[auto_from(mina_serialization_types::staged_ledger_diff::CoinBaseBalanceData)]

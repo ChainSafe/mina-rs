@@ -132,5 +132,8 @@ pub mod json {
         SgnTypeJson, SignedJson, StateStackJson, StatementJson, TransactionSnarkJson,
         TransactionSnarkWorkJson,
     };
-    pub use staged_ledger_diff::{CoinBaseJson, StagedLedgerDiffJson};
+    pub use staged_ledger_diff::{
+        CoinBaseBalanceDataJson, CoinBaseMinaJson, FeeTransferBalanceDataJson,
+        InternalCommandBalanceDataMinaJson, StagedLedgerDiffJson,
+    };
 }

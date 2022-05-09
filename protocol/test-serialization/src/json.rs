@@ -54,6 +54,21 @@ mod tests {
     }
 
     #[test]
+    #[wasm_bindgen_test]
+    fn internal_command_balances_json_serde_roundtrip() {
+        json_serde_roundtrip!(
+            InternalCommandBalanceData,
+            "staged_ledger_diff/diff/0/internal_command_balances/0"
+        );
+    }
+
+    #[test]
+    #[wasm_bindgen_test]
+    fn coinbase_json_serde_roundtrip() {
+        json_serde_roundtrip!(CoinBase, "staged_ledger_diff/diff/0/coinbase");
+    }
+
+    #[test]
     // #[wasm_bindgen_test]
     #[should_panic] // Not fully implemented yet
     fn staged_ledger_diff_json_serde_roundtrip() {
