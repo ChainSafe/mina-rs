@@ -53,3 +53,65 @@ macro_rules! impl_strconv_via_json {
         }
     };
 }
+
+/// Implement list tagged enum json serde format for the given enum,
+/// with another convertible enum which is externally tagged
+#[macro_export]
+macro_rules! impl_mina_enum_json_serde {
+    ($t:ty, $tp:ty) => {
+        impl ::serde::Serialize for $t {
+            fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+            where
+                S: ::serde::Serializer,
+            {
+                let e: $tp = self.clone().into();
+                let v =
+                    ::serde_json::to_value(e).map_err(<S::Error as ::serde::ser::Error>::custom)?;
+                if v.is_string() {
+                    let list_tagged_array = ::serde_json::json!([v]);
+                    return serializer.serialize_some(&list_tagged_array);
+                } else if let Some(m) = v.as_object() {
+                    if m.len() != 1 {
+                        panic!("Bad enum: {:?}", self);
+                    }
+                    for (k, v) in m {
+                        let list_tagged_array = ::serde_json::json!([k, v]);
+                        return serializer.serialize_some(&list_tagged_array);
+                    }
+                }
+                serializer.serialize_some(&v)
+            }
+        }
+
+        impl<'de> ::serde::Deserialize<'de> for $t {
+            fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+            where
+                D: ::serde::Deserializer<'de>,
+            {
+                let v = ::serde_json::Value::deserialize(deserializer)?;
+                if let Some(array) = v.as_array() {
+                    let e: $tp = match array.len() {
+                        0 => panic!("Non-empty array expected"),
+                        1 => ::serde_json::from_value(array[0].clone())
+                            .map_err(<D::Error as ::serde::de::Error>::custom)?,
+                        2 => {
+                            let key: String = ::serde_json::from_value(array[0].clone())
+                                .map_err(<D::Error as serde::de::Error>::custom)?;
+                            ::serde_json::from_value(::serde_json::json!({key: array[1]}))
+                                .map_err(<D::Error as serde::de::Error>::custom)?
+                        }
+                        _ => {
+                            let key: String = ::serde_json::from_value(array[0].clone())
+                                .map_err(<D::Error as ::serde::de::Error>::custom)?;
+                            ::serde_json::from_value(::serde_json::json!({key: array[1..]}))
+                                .map_err(<D::Error as ::serde::de::Error>::custom)?
+                        }
+                    };
+                    Ok(e.into())
+                } else {
+                    panic!("Array expected")
+                }
+            }
+        }
+    }
+}
