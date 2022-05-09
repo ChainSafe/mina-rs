@@ -34,7 +34,7 @@ mod tests {
 
             StagedLedgerDiffV1
             StagedLedgerDiffTupleV1
-            StagedLedgerPreDiffTwoV1
+            StagedLedgerPreDiffV1
 
             DeltaTransitionChainProof
 

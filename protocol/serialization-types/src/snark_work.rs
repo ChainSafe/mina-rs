@@ -4,7 +4,7 @@
 //! Types related to the Transaction Snark Work
 #![allow(missing_docs)]
 
-use crate::{common::*, json::*, v1::*};
+use crate::{common::*, impl_mina_enum_json_serde, json::*, v1::*};
 use mina_serialization_types_macros::AutoFrom;
 use serde::{Deserialize, Serialize};
 use versioned::Versioned;
@@ -24,7 +24,7 @@ pub type TransactionSnarkWorkV1 = Versioned<TransactionSnarkWork, 1>;
 pub struct TransactionSnarkWorkJson {
     // Versioned 1 byte
     pub fee: U64Json,
-    pub proofs: OneORTwoJson,
+    pub proofs: OneORTwoMinaJson,
     pub prover: PublicKeyJson,
 }
 
@@ -41,21 +41,25 @@ pub enum OneORTwo {
 pub type OneORTwoV1 = Versioned<OneORTwo, 1>;
 
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq, AutoFrom)]
-#[auto_from(OneORTwo)]
-#[serde(rename = "Polyvar")]
 pub enum OneORTwoJson {
-    // Versioned 1 byte
-    #[serde(rename = "One")]
     One(Box<TransactionSnarkJson>),
-    #[serde(rename = "Two")]
     Two(Box<TransactionSnarkJson>, Box<TransactionSnarkJson>),
 }
+
+#[derive(Clone, Debug, PartialEq, AutoFrom)]
+#[auto_from(OneORTwo)]
+#[auto_from(OneORTwoJson)]
+pub enum OneORTwoMinaJson {
+    One(Box<TransactionSnarkJson>),
+    Two(Box<TransactionSnarkJson>, Box<TransactionSnarkJson>),
+}
+
+impl_mina_enum_json_serde!(OneORTwoMinaJson, OneORTwoJson);
 
 pub type LedgerProofV1 = Versioned<TransactionSnarkV1, 1>;
 
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub struct TransactionSnark {
-    // Versioned 1 byte
     pub statement: StatementV1,
     pub transaction_snark_proof: ProtocolStateProofV1,
 }
@@ -65,7 +69,6 @@ pub type TransactionSnarkV1 = Versioned<TransactionSnark, 1>;
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq, AutoFrom)]
 #[auto_from(TransactionSnark)]
 pub struct TransactionSnarkJson {
-    // Versioned 1 byte
     pub statement: StatementJson,
 
     #[serde(rename = "proof")]
@@ -130,8 +133,9 @@ pub type PendingCoinbaseV1 = Versioned<Versioned<PendingCoinbase, 1>, 1>;
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq, AutoFrom)]
 #[auto_from(PendingCoinbase)]
 pub struct PendingCoinbaseJson {
-    // Versioned 2 byte
+    #[serde(rename = "data")]
     pub data_stack: StateHashV1Json,
+    #[serde(rename = "state")]
     pub state_stack: StateStackJson,
 }
 

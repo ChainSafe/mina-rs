@@ -94,9 +94,9 @@ pub mod v1 {
         InternalCommandBalanceDataV1, PaymentPayloadV1, SignedCommandFeeTokenV1,
         SignedCommandMemoV1, SignedCommandPayloadBodyV1, SignedCommandPayloadCommonV1,
         SignedCommandPayloadV1, SignedCommandV1, StagedLedgerDiffTupleV1, StagedLedgerDiffV1,
-        StagedLedgerPreDiffOneV1, StagedLedgerPreDiffTwoV1, TransactionStatusAppliedV1,
-        TransactionStatusAuxiliaryDataV1, TransactionStatusBalanceDataV1, TransactionStatusV1,
-        UserCommandV1, UserCommandWithStatusV1,
+        StagedLedgerPreDiffV1, TransactionStatusAppliedV1, TransactionStatusAuxiliaryDataV1,
+        TransactionStatusBalanceDataV1, TransactionStatusV1, UserCommandV1,
+        UserCommandWithStatusV1,
     };
 }
 
@@ -128,8 +128,9 @@ pub mod json {
     pub use protocol_version::ProtocolVersionJson;
     pub use signatures::PublicKeyJson;
     pub use snark_work::{
-        FeeExcessJson, PendingCoinbaseJson, PendingCoinbaseStackStateJson, SgnTypeJson, SignedJson,
-        StateStackJson, StatementJson, TransactionSnarkJson, TransactionSnarkWorkJson,
+        FeeExcessJson, OneORTwoMinaJson, PendingCoinbaseJson, PendingCoinbaseStackStateJson,
+        SgnTypeJson, SignedJson, StateStackJson, StatementJson, TransactionSnarkJson,
+        TransactionSnarkWorkJson,
     };
     pub use staged_ledger_diff::{CoinBaseJson, StagedLedgerDiffJson};
 }

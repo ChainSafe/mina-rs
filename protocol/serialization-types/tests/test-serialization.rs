@@ -315,7 +315,7 @@ fn test_staged_ledger_diff_diff() {
 #[wasm_bindgen_test]
 fn test_staged_ledger_diff_one() {
     block_path_test_batch! {
-        Option<StagedLedgerPreDiffOneV1> => "t/staged_ledger_diff/t/diff/t/1"
+        Option<StagedLedgerPreDiffV1> => "t/staged_ledger_diff/t/diff/t/1"
     }
 }
 
@@ -323,7 +323,7 @@ fn test_staged_ledger_diff_one() {
 #[wasm_bindgen_test]
 fn test_staged_ledger_diff_diff_two() {
     block_path_test_batch! {
-        StagedLedgerPreDiffTwoV1 => "t/staged_ledger_diff/t/diff/t/0"
+        StagedLedgerPreDiffV1 => "t/staged_ledger_diff/t/diff/t/0"
     }
 }
 

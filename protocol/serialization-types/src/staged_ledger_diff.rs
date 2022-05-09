@@ -30,52 +30,30 @@ pub struct StagedLedgerDiffJson {
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
-pub struct StagedLedgerDiffTuple(
-    pub StagedLedgerPreDiffTwoV1,
-    pub Option<StagedLedgerPreDiffOneV1>,
-);
+pub struct StagedLedgerDiffTuple(pub StagedLedgerPreDiffV1, pub Option<StagedLedgerPreDiffV1>);
 
 pub type StagedLedgerDiffTupleV1 = Versioned<StagedLedgerDiffTuple, 1>;
 
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq, AutoFrom)]
 #[auto_from(StagedLedgerDiffTuple)]
 pub struct StagedLedgerDiffTupleJson(
-    pub StagedLedgerPreDiffTwoJson,
-    pub Option<StagedLedgerPreDiffOneJson>,
+    pub StagedLedgerPreDiffJson,
+    pub Option<StagedLedgerPreDiffJson>,
 );
 
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
-pub struct StagedLedgerPreDiffOne {
+pub struct StagedLedgerPreDiff {
     pub completed_works: Vec<TransactionSnarkWorkV1>,
     pub commands: Vec<UserCommandWithStatusV1>,
     pub coinbase: CoinBaseV1,
     pub internal_command_balances: Vec<InternalCommandBalanceDataV1>,
 }
 
-pub type StagedLedgerPreDiffOneV1 = Versioned<Versioned<StagedLedgerPreDiffOne, 1>, 1>;
+pub type StagedLedgerPreDiffV1 = Versioned<Versioned<StagedLedgerPreDiff, 1>, 1>;
 
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq, AutoFrom)]
-#[auto_from(StagedLedgerPreDiffOne)]
-pub struct StagedLedgerPreDiffOneJson {
-    pub completed_works: Vec<TransactionSnarkWorkV1>,
-    pub commands: Vec<UserCommandWithStatusV1>,
-    pub coinbase: CoinBaseV1,
-    pub internal_command_balances: Vec<InternalCommandBalanceDataV1>,
-}
-
-#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
-pub struct StagedLedgerPreDiffTwo {
-    pub completed_works: Vec<TransactionSnarkWorkV1>,
-    pub commands: Vec<UserCommandWithStatusV1>,
-    pub coinbase: CoinBaseV1,
-    pub internal_command_balances: Vec<InternalCommandBalanceDataV1>,
-}
-
-pub type StagedLedgerPreDiffTwoV1 = Versioned<Versioned<StagedLedgerPreDiffTwo, 1>, 1>;
-
-#[derive(Clone, Debug, Serialize, Deserialize, PartialEq, AutoFrom)]
-#[auto_from(StagedLedgerPreDiffTwo)]
-pub struct StagedLedgerPreDiffTwoJson {
+#[auto_from(StagedLedgerPreDiff)]
+pub struct StagedLedgerPreDiffJson {
     pub completed_works: Vec<TransactionSnarkWorkJson>,
     pub commands: Vec<UserCommandWithStatusV1>,
     pub coinbase: CoinBaseV1,

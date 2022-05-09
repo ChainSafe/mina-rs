@@ -29,32 +29,23 @@ impl_from_with_proxy!(StagedLedgerDiff, StagedLedgerDiffV1, StagedLedgerDiffJson
 #[derive(Clone, PartialEq, Debug, Default, AutoFrom)]
 #[auto_from(mina_serialization_types::staged_ledger_diff::StagedLedgerDiffTuple)]
 pub struct StagedLedgerDiffTuple(
-    pub(crate) StagedLedgerPreDiffTwo,
-    pub(crate) Option<StagedLedgerPreDiffOne>,
+    pub(crate) StagedLedgerPreDiff,
+    pub(crate) Option<StagedLedgerPreDiff>,
 );
 
 impl StagedLedgerDiffTuple {
-    pub fn diff_two(&self) -> &StagedLedgerPreDiffTwo {
+    pub fn diff_two(&self) -> &StagedLedgerPreDiff {
         &self.0
     }
 
-    pub fn diff_one(&self) -> &Option<StagedLedgerPreDiffOne> {
+    pub fn diff_one(&self) -> &Option<StagedLedgerPreDiff> {
         &self.1
     }
 }
 
 #[derive(Clone, PartialEq, Debug, Default, AutoFrom)]
-#[auto_from(mina_serialization_types::staged_ledger_diff::StagedLedgerPreDiffOne)]
-pub struct StagedLedgerPreDiffOne {
-    pub completed_works: Vec<TransactionSnarkWork>,
-    pub commands: Vec<UserCommandWithStatus>,
-    pub coinbase: CoinBase,
-    pub internal_command_balances: Vec<InternalCommandBalanceData>,
-}
-
-#[derive(Clone, PartialEq, Debug, Default, AutoFrom)]
-#[auto_from(mina_serialization_types::staged_ledger_diff::StagedLedgerPreDiffTwo)]
-pub struct StagedLedgerPreDiffTwo {
+#[auto_from(mina_serialization_types::staged_ledger_diff::StagedLedgerPreDiff)]
+pub struct StagedLedgerPreDiff {
     pub completed_works: Vec<TransactionSnarkWork>,
     pub commands: Vec<UserCommandWithStatus>,
     pub coinbase: CoinBase,
