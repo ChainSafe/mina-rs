@@ -20,7 +20,7 @@ base64 = "0.13"
 hex = "0.4"
 js-sys = "0.3"
 libp2p = {version = "0.44", features = ["wasm-bindgen", "wasm-ext-websocket"]}
-protobuf = {version = "2", features = ["with-bytes"]}
+protobuf = {version = "3", features = ["with-bytes"]}
 serde = {version = "1", features = ["derive"]}
 serde_json = {version = "1"}
 wasm-bindgen = "0.2"
@@ -30,7 +30,7 @@ wasm-bindgen-futures = "0.4"
 
 [build-dependencies]
 anyhow = "1"
-protobuf-codegen-pure = "2"
+protobuf-codegen = "3"
 walkdir = "2"
 
 [lib]
