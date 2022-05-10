@@ -35,3 +35,5 @@ getrandom = {version = "0.2", features = ["js"]}
 
 [dev-dependencies]
 test-fixtures = {path = "../protocol/test-fixtures"}
+
+anyhow = "1"

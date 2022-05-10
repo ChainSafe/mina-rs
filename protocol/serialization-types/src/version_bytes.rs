@@ -31,3 +31,6 @@ pub const STAGED_LEDGER_HASH_AUX_HASH: u8 = 0x0E;
 
 /// base58 version check byte for pending coinbase aux hash
 pub const STAGED_LEDGER_HASH_PENDING_COINBASE_AUX: u8 = 0x0F;
+
+/// base58 version check byte for user command memo
+pub const USER_COMMAND_MEMO: u8 = 0x14;

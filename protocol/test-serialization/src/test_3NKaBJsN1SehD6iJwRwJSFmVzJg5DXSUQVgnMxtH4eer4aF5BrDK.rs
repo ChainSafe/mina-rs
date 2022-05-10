@@ -11,12 +11,12 @@ mod tests {
     use mina_rs_base::types::*;
     use mina_serialization_types::v1::ExternalTransitionV1;
     use pretty_assertions::assert_eq;
+    use proof_systems::mina_signer::CompressedPubKey;
+    use proof_systems::o1_utils::field_helpers::FieldHelpers;
+    use std::str::FromStr;
     use test_fixtures::*;
     use time::macros::*;
     use wasm_bindgen_test::*;
-
-    use proof_systems::mina_signer::CompressedPubKey;
-    use proof_systems::o1_utils::field_helpers::FieldHelpers;
 
     #[wasm_bindgen_test]
     fn test_block_wasm() {
@@ -233,7 +233,10 @@ mod tests {
                 assert_eq!(command.payload.common.nonce.0, 5694);
                 assert_eq!(
                     command.payload.common.memo.0,
-                    SignedCommandMemo::try_from("FPayment")?.0,
+                    SignedCommandMemo::from_str(
+                        "E4Yd7qwaRCHR6t7i6ToM98eSUy5eKKadQUPZX7Vpw4CWBvWyd8fzK"
+                    )?
+                    .0
                 );
                 assert_eq!(command.payload.common.fee.to_string(), "0.010000000");
                 assert_eq!(command.payload.common.fee_token.0, 1);

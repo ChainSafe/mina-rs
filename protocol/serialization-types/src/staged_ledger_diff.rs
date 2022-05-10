@@ -6,9 +6,9 @@
 
 #![allow(missing_docs)] // Don't actually know what many of the types fields are for yet
 
-use crate::{common::*, impl_mina_enum_json_serde, json::*, signatures::*, v1::*};
+use crate::{common::*, impl_mina_enum_json_serde, json::*, signatures::*, v1::*, version_bytes};
 use mina_serialization_types_macros::AutoFrom;
-use serde::{Deserialize, Serialize};
+use serde::{Deserialize, Deserializer, Serialize, Serializer};
 use smart_default::SmartDefault;
 use versioned::*;
 
@@ -147,7 +147,7 @@ pub type SignedCommandPayloadCommonV1 =
 pub struct SignedCommandPayloadCommonJson {
     pub fee: U64Json,
     pub fee_token: U64Json,
-    pub fee_payer_pk: PublicKeyV1,
+    pub fee_payer_pk: PublicKeyJson,
     pub nonce: U32Json,
     pub valid_until: U32Json,
     pub memo: SignedCommandMemoV1,
@@ -203,6 +203,37 @@ pub type SignedCommandFeeTokenV1 = Versioned<Versioned<Versioned<u64, 1>, 1>, 1>
 pub struct SignedCommandMemo(pub Vec<u8>);
 
 pub type SignedCommandMemoV1 = Versioned<SignedCommandMemo, 1>;
+
+#[derive(Clone, Debug, PartialEq, AutoFrom)]
+#[auto_from(SignedCommandMemo)]
+pub struct SignedCommandMemoJson(pub Vec<u8>);
+
+impl Serialize for SignedCommandMemoJson {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        let s = bs58::encode(self.0.as_slice())
+            .with_check_version(version_bytes::USER_COMMAND_MEMO)
+            .into_string();
+        serializer.serialize_str(&s)
+    }
+}
+
+impl<'de> Deserialize<'de> for SignedCommandMemoJson {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        let s = String::deserialize(deserializer)?;
+        let decoded = bs58::decode(s)
+            .with_check(Some(version_bytes::USER_COMMAND_MEMO))
+            .into_vec()
+            .map_err(<D::Error as serde::de::Error>::custom)?;
+        // Skip base58 check byte
+        Ok(Self(decoded.into_iter().skip(1).collect()))
+    }
+}
 
 // FIXME: No test coverage yet
 pub type SnappCommand = Versioned<Versioned<(), 1>, 1>;

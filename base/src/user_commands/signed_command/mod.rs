@@ -159,7 +159,7 @@ mod tests {
                 $nonce,
             )
             .valid_until($valid_until)
-            .memo(SignedCommandMemo::try_from($memo).expect("invalid memo string"));
+            .memo(SignedCommandMemo::try_from_text($memo).expect("invalid memo string"));
 
             let mut payload = builder.build();
 
