@@ -122,7 +122,19 @@ mod conversions {
     impl From<PublicKeyJson> for PublicKeyV1 {
         fn from(t: PublicKeyJson) -> Self {
             let t: CompressedCurvePoint = t.into();
-            PublicKeyV1(t.into())
+            Self(t.into())
+        }
+    }
+
+    impl From<PublicKey2V1> for PublicKeyJson {
+        fn from(t: PublicKey2V1) -> Self {
+            t.0.t.into()
+        }
+    }
+    impl From<PublicKeyJson> for PublicKey2V1 {
+        fn from(t: PublicKeyJson) -> Self {
+            let pk: PublicKeyV1 = t.into();
+            Self(pk.into())
         }
     }
 

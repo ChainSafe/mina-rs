@@ -134,6 +134,8 @@ pub mod json {
     };
     pub use staged_ledger_diff::{
         CoinBaseBalanceDataJson, CoinBaseMinaJson, FeeTransferBalanceDataJson,
-        InternalCommandBalanceDataMinaJson, StagedLedgerDiffJson,
+        InternalCommandBalanceDataMinaJson, PaymentPayloadJson, SignedCommandJson,
+        SignedCommandPayloadBodyMinaJson, SignedCommandPayloadCommonJson, SignedCommandPayloadJson,
+        StagedLedgerDiffJson, UserCommandMinaJson, UserCommandWithStatusJson,
     };
 }

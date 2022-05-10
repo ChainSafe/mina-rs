@@ -70,7 +70,7 @@ pub type UserCommandWithStatusV1 = Versioned<UserCommandWithStatus, 1>;
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq, AutoFrom)]
 #[auto_from(UserCommandWithStatus)]
 pub struct UserCommandWithStatusJson {
-    pub data: UserCommandV1,
+    pub data: UserCommandMinaJson,
     pub status: TransactionStatusV1,
 }
 
@@ -83,6 +83,20 @@ pub enum UserCommand {
 pub type UserCommandV1 = Versioned<Versioned<UserCommand, 1>, 1>;
 
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
+enum UserCommandJson {
+    SignedCommand(SignedCommandJson),
+}
+
+#[derive(Clone, Debug, PartialEq, AutoFrom)]
+#[auto_from(UserCommand)]
+#[auto_from(UserCommandJson)]
+pub enum UserCommandMinaJson {
+    SignedCommand(SignedCommandJson),
+}
+
+impl_mina_enum_json_serde!(UserCommandMinaJson, UserCommandJson);
+
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub struct SignedCommand {
     pub payload: SignedCommandPayloadV1,
     pub signer: PublicKey2V1,
@@ -91,6 +105,14 @@ pub struct SignedCommand {
 
 pub type SignedCommandV1 = Versioned<Versioned<SignedCommand, 1>, 1>;
 
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq, AutoFrom)]
+#[auto_from(SignedCommand)]
+pub struct SignedCommandJson {
+    pub payload: SignedCommandPayloadJson,
+    pub signer: PublicKeyJson,
+    pub signature: SignatureV1,
+}
+
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub struct SignedCommandPayload {
     pub common: SignedCommandPayloadCommonV1,
@@ -98,6 +120,13 @@ pub struct SignedCommandPayload {
 }
 
 pub type SignedCommandPayloadV1 = Versioned<Versioned<SignedCommandPayload, 1>, 1>;
+
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq, AutoFrom)]
+#[auto_from(SignedCommandPayload)]
+pub struct SignedCommandPayloadJson {
+    pub common: SignedCommandPayloadCommonJson,
+    pub body: SignedCommandPayloadBodyMinaJson,
+}
 
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub struct SignedCommandPayloadCommon {
@@ -112,6 +141,17 @@ pub struct SignedCommandPayloadCommon {
 pub type SignedCommandPayloadCommonV1 =
     Versioned<Versioned<Versioned<SignedCommandPayloadCommon, 1>, 1>, 1>;
 
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq, AutoFrom)]
+#[auto_from(SignedCommandPayloadCommon)]
+pub struct SignedCommandPayloadCommonJson {
+    pub fee: U64Json,
+    pub fee_token: U64Json,
+    pub fee_payer_pk: PublicKeyV1,
+    pub nonce: U32Json,
+    pub valid_until: U32Json,
+    pub memo: SignedCommandMemoV1,
+}
+
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub enum SignedCommandPayloadBody {
     PaymentPayload(PaymentPayloadV1),
@@ -119,6 +159,23 @@ pub enum SignedCommandPayloadBody {
 }
 
 pub type SignedCommandPayloadBodyV1 = Versioned<Versioned<SignedCommandPayloadBody, 1>, 1>;
+
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
+enum SignedCommandPayloadBodyJson {
+    PaymentPayload(PaymentPayloadJson),
+}
+
+#[derive(Clone, Debug, PartialEq, AutoFrom)]
+#[auto_from(SignedCommandPayloadBody)]
+#[auto_from(SignedCommandPayloadBodyJson)]
+pub enum SignedCommandPayloadBodyMinaJson {
+    PaymentPayload(PaymentPayloadJson),
+}
+
+impl_mina_enum_json_serde!(
+    SignedCommandPayloadBodyMinaJson,
+    SignedCommandPayloadBodyJson
+);
 
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub struct PaymentPayload {
@@ -129,6 +186,15 @@ pub struct PaymentPayload {
 }
 
 pub type PaymentPayloadV1 = Versioned<Versioned<PaymentPayload, 1>, 1>;
+
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq, AutoFrom)]
+#[auto_from(PaymentPayload)]
+pub struct PaymentPayloadJson {
+    pub source_pk: PublicKeyJson,
+    pub receiver_pk: PublicKeyJson,
+    pub token_id: U64Json,
+    pub amount: U64Json,
+}
 
 pub type SignedCommandFeeTokenV1 = Versioned<Versioned<Versioned<u64, 1>, 1>, 1>;
 
@@ -184,7 +250,7 @@ pub enum CoinBase {
 pub type CoinBaseV1 = Versioned<CoinBase, 1>;
 
 #[derive(Clone, Debug, Serialize, Deserialize, SmartDefault)]
-pub enum CoinBaseJson {
+enum CoinBaseJson {
     #[default]
     Zero,
     One(Option<CoinBaseFeeTransferJson>),
@@ -228,7 +294,7 @@ pub enum InternalCommandBalanceData {
 pub type InternalCommandBalanceDataV1 = Versioned<InternalCommandBalanceData, 1>;
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
-pub enum InternalCommandBalanceDataJson {
+enum InternalCommandBalanceDataJson {
     #[serde(rename = "Coinbase")]
     CoinBase(CoinBaseBalanceDataJson),
     #[serde(rename = "Fee_transfer")]

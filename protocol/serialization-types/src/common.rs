@@ -104,6 +104,17 @@ impl_from_for_newtype!(U64Json, AmountV1);
 // Block path: t/staged_ledger_diff/t/diff/t/0/t/t/commands/0/t/data/t/t/t/t/payload/t/t/common/t/t/t/valid_until
 /// u32 wrapped in 1 version byte
 pub type ExtendedU32 = Versioned<Versioned<i32, 1>, 1>;
+impl From<U32Json> for ExtendedU32 {
+    fn from(t: U32Json) -> Self {
+        (t.0 as i32).into()
+    }
+}
+
+impl From<ExtendedU32> for U32Json {
+    fn from(t: ExtendedU32) -> Self {
+        Self(t.t.t as u32)
+    }
+}
 
 /// u64 wrapped in 1 version byte
 pub type ExtendedU64 = Versioned<u64, 1>;

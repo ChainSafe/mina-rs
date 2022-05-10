@@ -41,7 +41,7 @@ pub enum OneORTwo {
 pub type OneORTwoV1 = Versioned<OneORTwo, 1>;
 
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq, AutoFrom)]
-pub enum OneORTwoJson {
+enum OneORTwoJson {
     One(Box<TransactionSnarkJson>),
     Two(Box<TransactionSnarkJson>, Box<TransactionSnarkJson>),
 }

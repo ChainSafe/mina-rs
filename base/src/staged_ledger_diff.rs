@@ -59,6 +59,12 @@ pub struct UserCommandWithStatus {
     pub status: TransactionStatus,
 }
 
+impl_from_with_proxy!(
+    UserCommandWithStatus,
+    mina_serialization_types::staged_ledger_diff::UserCommandWithStatus,
+    UserCommandWithStatusJson
+);
+
 #[derive(Clone, PartialEq, Debug, AutoFrom)]
 #[auto_from(mina_serialization_types::staged_ledger_diff::TransactionStatus)]
 pub enum TransactionStatus {
