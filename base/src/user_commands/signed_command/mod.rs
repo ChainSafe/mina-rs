@@ -11,7 +11,7 @@ use crate::user_commands::payment::PaymentPayload;
 use crate::verifiable::Verifiable;
 
 use proof_systems::mina_hasher::{Hashable, ROInput};
-use proof_systems::mina_signer::{CompressedPubKey, Keypair, NetworkId, Signature, Signer};
+use proof_systems::mina_signer::{CompressedPubKey, Keypair, NetworkId, PubKey, Signature, Signer};
 
 const TAG_BITS: usize = 3;
 const PAYMENT_TX_TAG: [bool; TAG_BITS] = [false, false, false];
@@ -46,18 +46,15 @@ impl SignedCommand {
     }
 }
 
-use proof_systems::mina_signer;
-use proof_systems::mina_signer::PubKey;
-
-impl Verifiable for SignedCommand {
-    type Sup = ();
-
-    fn verify(&self, _data: Self::Sup) -> bool {
-        let mut mainnet_ctx = mina_signer::create_legacy(NetworkId::MAINNET);
-        // do a slightly sketchy conversion via address. Safe to unwrap as we know it was valid to begin with
+impl<CTX> Verifiable<CTX> for SignedCommand
+where
+    CTX: Signer<SignedCommandPayload>,
+{
+    fn verify(&self, mut ctx: CTX) -> bool {
+        // do a slightly sketchy conversion via address string. Safe to unwrap as we know it was valid to begin with
+        // TODO replace this with a proper `.into` conversion when supported in proof-systems
         let signer_uncompressed = PubKey::from_address(&self.signer.into_address()).unwrap();
-
-        mainnet_ctx.verify(&self.signature, &signer_uncompressed, &self.payload)
+        ctx.verify(&self.signature, &signer_uncompressed, &self.payload)
     }
 }
 

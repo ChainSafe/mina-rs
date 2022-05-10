@@ -4,11 +4,9 @@
 //! Traits and helpers for data structures that require validation
 
 /// Types that implement Verifiable are able to self-check using intrinsic data (e.g. signatures)
-/// and optionally some supplimentary data specific to the implementing type (e.g. CRS for snark proofs)
-pub trait Verifiable {
-    /// Supplimentary data type required to verify
-    type Sup;
-
+/// and optionally some context that is required for peforming the verification
+/// e.g. a singleton signature verifier or param required for snark verification
+pub trait Verifiable<CTX> {
     /// Return if the implementor is valid
-    fn verify(&self, data: Self::Sup) -> bool;
+    fn verify(&self, ctx: CTX) -> bool;
 }

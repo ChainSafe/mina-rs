@@ -9,6 +9,7 @@ pub mod memo;
 pub mod payment;
 pub mod signed_command;
 
+use crate::mina_signer::Signer;
 pub use memo::SignedCommandMemo;
 pub use payment::PaymentPayload;
 pub use signed_command::{
@@ -27,12 +28,13 @@ pub enum UserCommand {
     // FIXME: other variants are not covered by current test block
 }
 
-impl Verifiable for UserCommand {
-    type Sup = ();
-
-    fn verify(&self, _data: Self::Sup) -> bool {
+impl<CTX> Verifiable<CTX> for UserCommand
+where
+    CTX: Signer<SignedCommandPayload>,
+{
+    fn verify(&self, ctx: CTX) -> bool {
         match self {
-            UserCommand::SignedCommand(sc) => sc.verify(()),
+            UserCommand::SignedCommand(sc) => sc.verify(ctx),
         }
     }
 }
