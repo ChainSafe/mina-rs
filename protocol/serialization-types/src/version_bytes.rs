@@ -27,10 +27,13 @@ pub const STATE_HASH: u8 = 0x10;
 pub const VRF_TRUNCATED_OUTPUT: u8 = 0x15;
 
 /// base58 version check byte for aux hash
-pub const STAGED_LEDGER_HASH_AUX_HASH: u8 = 0x0E;
+pub const STAGED_LEDGER_HASH_AUX_HASH: u8 = 0x0e;
 
 /// base58 version check byte for pending coinbase aux hash
-pub const STAGED_LEDGER_HASH_PENDING_COINBASE_AUX: u8 = 0x0F;
+pub const STAGED_LEDGER_HASH_PENDING_COINBASE_AUX: u8 = 0x0f;
 
 /// base58 version check byte for user command memo
 pub const USER_COMMAND_MEMO: u8 = 0x14;
+
+/// base58 version check byte for signature
+pub const SIGNATURE: u8 = 0x9a;

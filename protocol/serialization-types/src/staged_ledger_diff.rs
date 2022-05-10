@@ -71,7 +71,7 @@ pub type UserCommandWithStatusV1 = Versioned<UserCommandWithStatus, 1>;
 #[auto_from(UserCommandWithStatus)]
 pub struct UserCommandWithStatusJson {
     pub data: UserCommandMinaJson,
-    pub status: TransactionStatusV1,
+    pub status: TransactionStatusMinaJson,
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
@@ -111,7 +111,7 @@ pub type SignedCommandV1 = Versioned<Versioned<SignedCommand, 1>, 1>;
 pub struct SignedCommandJson {
     pub payload: SignedCommandPayloadJson,
     pub signer: PublicKeyJson,
-    pub signature: SignatureV1,
+    pub signature: SignatureJson,
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
@@ -145,12 +145,12 @@ pub type SignedCommandPayloadCommonV1 =
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq, AutoFrom)]
 #[auto_from(SignedCommandPayloadCommon)]
 pub struct SignedCommandPayloadCommonJson {
-    pub fee: U64Json,
+    pub fee: DecimalJson,
     pub fee_token: U64Json,
     pub fee_payer_pk: PublicKeyJson,
     pub nonce: U32Json,
     pub valid_until: U32Json,
-    pub memo: SignedCommandMemoV1,
+    pub memo: SignedCommandMemoJson,
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
@@ -163,6 +163,7 @@ pub type SignedCommandPayloadBodyV1 = Versioned<Versioned<SignedCommandPayloadBo
 
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 enum SignedCommandPayloadBodyJson {
+    #[serde(rename = "Payment")]
     PaymentPayload(PaymentPayloadJson),
 }
 

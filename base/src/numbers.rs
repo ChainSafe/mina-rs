@@ -118,10 +118,8 @@ impl std::str::FromStr for Amount {
             .next()
             .ok_or_else(|| Self::Err::ErrorInvalidFormat(s.to_string()))?
             .parse()?;
-        let r: u64 = iter
-            .next()
-            .ok_or_else(|| Self::Err::ErrorInvalidFormat(s.to_string()))?
-            .parse()?;
+        let r_str = iter.next().unwrap_or("0");
+        let r: u64 = format!("{:0<9}", r_str).parse()?;
         if iter.next().is_none() {
             // ensure there isn't more to parse as that is undefined
             Ok(Amount(r + MINA_PRECISION * q))

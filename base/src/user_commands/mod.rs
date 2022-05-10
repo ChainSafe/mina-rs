@@ -10,11 +10,14 @@ pub mod payment;
 pub mod signed_command;
 
 pub use memo::SignedCommandMemo;
-use mina_serialization_types_macros::AutoFrom;
 pub use payment::PaymentPayload;
 pub use signed_command::{
     SignedCommand, SignedCommandPayload, SignedCommandPayloadBody, SignedCommandPayloadCommon,
 };
+
+use mina_serialization_types::json::UserCommandMinaJson;
+use mina_serialization_types_macros::AutoFrom;
+use versioned::*;
 
 /// The top level user command type
 /// This is the output of the command builders
@@ -25,3 +28,9 @@ pub enum UserCommand {
     SignedCommand(SignedCommand),
     // FIXME: other variants are not covered by current test block
 }
+
+impl_from_with_proxy!(
+    UserCommand,
+    mina_serialization_types::staged_ledger_diff::UserCommand,
+    UserCommandMinaJson
+);

@@ -54,13 +54,18 @@ mod tests {
     }
 
     #[test]
-    // #[wasm_bindgen_test]
-    #[should_panic] // Not fully implemented yet
+    #[wasm_bindgen_test]
     fn commands_json_serde_roundtrip() {
         json_serde_roundtrip!(
             UserCommandWithStatus,
             "staged_ledger_diff/diff/0/commands/0"
         );
+    }
+
+    #[test]
+    #[wasm_bindgen_test]
+    fn user_command_json_serde_roundtrip() {
+        json_serde_roundtrip!(UserCommand, "staged_ledger_diff/diff/0/commands/0/data");
     }
 
     #[test]

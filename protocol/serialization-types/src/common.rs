@@ -3,11 +3,11 @@
 
 //! Some basic versioned types used throughout
 
+use crate::version_bytes;
 use bs58::encode::EncodeBuilder;
+use num::Integer;
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
 use versioned::*;
-
-use crate::version_bytes;
 
 /// 32 bytes representing a hash of some kind (v1)
 pub type HashV1 = Versioned<[u8; 32], 1>;
@@ -85,6 +85,50 @@ impl<'de> Deserialize<'de> for U64Json {
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize, derive_more::From, derive_more::Into)]
 pub struct I64(pub i64);
 
+/// u64 wrapper (json)
+/// Note that integers are represented as string in mina json
+#[derive(Clone, Debug, PartialEq, derive_more::From)]
+pub struct DecimalJson(pub u64);
+
+const MINA_PRECISION: u64 = 1000000000;
+impl Serialize for DecimalJson {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        let (q, r) = self.0.div_rem(&MINA_PRECISION);
+        let s = format!("{q}.{:0>9}", r);
+        serializer.serialize_str(s.trim_end_matches('0'))
+    }
+}
+
+impl<'de> Deserialize<'de> for DecimalJson {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        let s = String::deserialize(deserializer)?;
+        let mut iter = s.split('.');
+        let q: u64 = iter
+            .next()
+            .ok_or_else(|| <D::Error as serde::de::Error>::custom(format!("Invalid string: {s}")))?
+            .parse()
+            .map_err(<D::Error as serde::de::Error>::custom)?;
+        let r_str = iter.next().unwrap_or("0");
+        let r: u64 = format!("{:0<9}", r_str)
+            .parse()
+            .map_err(<D::Error as serde::de::Error>::custom)?;
+        if iter.next().is_none() {
+            // ensure there isn't more to parse as that is undefined
+            Ok(Self(r + MINA_PRECISION * q))
+        } else {
+            Err(<D::Error as serde::de::Error>::custom(format!(
+                "Invalid string: {s}"
+            )))
+        }
+    }
+}
+
 /// u32 representing a length (v1)
 pub type LengthV1 = Versioned<Versioned<u32, 1>, 1>;
 impl_from_for_newtype!(U32Json, LengthV1);
@@ -98,6 +142,7 @@ pub type GlobalSlotNumberV1 = Versioned<Versioned<u32, 1>, 1>;
 /// u64 representing an amount of currency (v1)
 pub type AmountV1 = Versioned<Versioned<u64, 1>, 1>;
 impl_from_for_newtype!(U64Json, AmountV1);
+impl_from_for_newtype!(DecimalJson, AmountV1);
 
 // FIXME: 255 255 cannot be deserialized to u32, use i32 for now
 // Note: Extended_Uint32 is not defined in bin_prot, but comes from mina

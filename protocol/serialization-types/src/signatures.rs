@@ -5,7 +5,7 @@
 
 use crate::{
     field_and_curve_elements::{FieldElement, InnerCurveScalar},
-    impl_strconv_via_json,
+    impl_strconv_via_json, version_bytes,
 };
 use mina_serialization_types_macros::AutoFrom;
 use proof_systems::mina_signer::CompressedPubKey;
@@ -70,8 +70,42 @@ pub struct PublicKey2V1(pub Versioned<PublicKeyV1, 1>); // with an extra version
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub struct SignatureV1(pub Versioned<Versioned<(FieldElement, InnerCurveScalar), 1>, 1>);
 
+/// Signature (json)
+#[derive(Clone, Debug, PartialEq)]
+pub struct SignatureJson(pub Versioned<(FieldElement, InnerCurveScalar), 1>);
+
+impl Serialize for SignatureJson {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        let mut buf = Vec::new();
+        bin_prot::to_writer(&mut buf, &self.0).map_err(<S::Error as serde::ser::Error>::custom)?;
+        let s = bs58::encode(buf)
+            .with_check_version(version_bytes::SIGNATURE)
+            .into_string();
+        serializer.serialize_str(&s)
+    }
+}
+
+impl<'de> Deserialize<'de> for SignatureJson {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        let s = String::deserialize(deserializer)?;
+        let bytes = bs58::decode(s)
+            .with_check(Some(version_bytes::SIGNATURE))
+            .into_vec()
+            .map_err(<D::Error as serde::de::Error>::custom)?;
+        Ok(Self(
+            bin_prot::from_reader(&bytes[1..]).map_err(<D::Error as serde::de::Error>::custom)?,
+        ))
+    }
+}
+
 mod conversions {
-    use super::{CompressedCurvePoint, PublicKey2V1, PublicKeyJson, PublicKeyV1, SignatureV1};
+    use super::*;
     use proof_systems::mina_signer::{BaseField, CompressedPubKey, ScalarField, Signature};
     use proof_systems::o1_utils::field_helpers::FieldHelpers;
 
@@ -176,6 +210,29 @@ mod conversions {
                 )
                     .into(),
             )
+        }
+    }
+
+    impl From<SignatureV1> for SignatureJson {
+        fn from(t: SignatureV1) -> Self {
+            Self(t.0.t)
+        }
+    }
+    impl From<SignatureJson> for SignatureV1 {
+        fn from(t: SignatureJson) -> Self {
+            Self(t.0.into())
+        }
+    }
+    impl From<Signature> for SignatureJson {
+        fn from(t: Signature) -> Self {
+            let v1: SignatureV1 = t.into();
+            v1.into()
+        }
+    }
+    impl From<SignatureJson> for Signature {
+        fn from(t: SignatureJson) -> Self {
+            let v1: SignatureV1 = t.into();
+            v1.into()
         }
     }
 }

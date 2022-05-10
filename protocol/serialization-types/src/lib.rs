@@ -125,7 +125,7 @@ pub mod json {
         SpongeDigestBeforeEvaluations,
     };
     pub use protocol_version::ProtocolVersionJson;
-    pub use signatures::PublicKeyJson;
+    pub use signatures::{PublicKeyJson, SignatureJson};
     pub use snark_work::{
         FeeExcessJson, OneORTwoMinaJson, PendingCoinbaseJson, PendingCoinbaseStackStateJson,
         SgnTypeJson, SignedJson, StateStackJson, StatementJson, TransactionSnarkJson,
