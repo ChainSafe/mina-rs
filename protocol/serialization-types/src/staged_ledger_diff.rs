@@ -23,26 +23,16 @@ pub struct StagedLedgerDiff {
 pub type StagedLedgerDiffV1 = Versioned<StagedLedgerDiff, 1>;
 
 pub type StagedLedgerDiffTupleV1 =
-    Versioned<(StagedLedgerPreDiffTwoV1, Option<StagedLedgerPreDiffOneV1>), 1>;
+    Versioned<(StagedLedgerPreDiffV1, Option<StagedLedgerPreDiffV1>), 1>;
 
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
-pub struct StagedLedgerPreDiffOne {
+pub struct StagedLedgerPreDiff {
     pub completed_works: Vec<TransactionSnarkWorkV1>,
     pub commands: Vec<UserCommandWithStatusV1>,
     pub coinbase: CoinBaseV1,
     pub internal_command_balances: Vec<InternalCommandBalanceDataV1>,
 }
-pub type StagedLedgerPreDiffOneV1 = Versioned<Versioned<StagedLedgerPreDiffOne, 1>, 1>;
-
-#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
-pub struct StagedLedgerPreDiffTwo {
-    pub completed_works: Vec<TransactionSnarkWorkV1>,
-    pub commands: Vec<UserCommandWithStatusV1>,
-    pub coinbase: CoinBaseV1,
-    pub internal_command_balances: Vec<InternalCommandBalanceDataV1>,
-}
-
-pub type StagedLedgerPreDiffTwoV1 = Versioned<Versioned<StagedLedgerPreDiffTwo, 1>, 1>;
+pub type StagedLedgerPreDiffV1 = Versioned<Versioned<StagedLedgerPreDiff, 1>, 1>;
 
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub struct UserCommandWithStatus {

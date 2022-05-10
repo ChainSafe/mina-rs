@@ -577,10 +577,10 @@ impl From<InternalCommandBalanceDataV1> for InternalCommandBalanceData {
     }
 }
 
-impl From<StagedLedgerPreDiffOne> for StagedLedgerPreDiffOneV1 {
-    fn from(t: StagedLedgerPreDiffOne) -> Self {
-        StagedLedgerPreDiffOneV1::new(Versioned::new(
-            mina_serialization_types::staged_ledger_diff::StagedLedgerPreDiffOne {
+impl From<StagedLedgerPreDiff> for StagedLedgerPreDiffV1 {
+    fn from(t: StagedLedgerPreDiff) -> Self {
+        StagedLedgerPreDiffV1::new(Versioned::new(
+            mina_serialization_types::staged_ledger_diff::StagedLedgerPreDiff {
                 completed_works: t.completed_works.into_iter().map(Into::into).collect(),
                 commands: t.commands.into_iter().map(Into::into).collect(),
                 coinbase: t.coinbase.into(),
@@ -593,40 +593,8 @@ impl From<StagedLedgerPreDiffOne> for StagedLedgerPreDiffOneV1 {
         ))
     }
 }
-impl From<StagedLedgerPreDiffOneV1> for StagedLedgerPreDiffOne {
-    fn from(t: StagedLedgerPreDiffOneV1) -> Self {
-        Self {
-            completed_works: t.t.t.completed_works.into_iter().map(Into::into).collect(),
-            commands: t.t.t.commands.into_iter().map(Into::into).collect(),
-            coinbase: t.t.t.coinbase.into(),
-            internal_command_balances: t
-                .t
-                .t
-                .internal_command_balances
-                .into_iter()
-                .map(Into::into)
-                .collect(),
-        }
-    }
-}
-
-impl From<StagedLedgerPreDiffTwo> for StagedLedgerPreDiffTwoV1 {
-    fn from(t: StagedLedgerPreDiffTwo) -> Self {
-        mina_serialization_types::staged_ledger_diff::StagedLedgerPreDiffTwo {
-            completed_works: t.completed_works.into_iter().map(Into::into).collect(),
-            commands: t.commands.into_iter().map(Into::into).collect(),
-            coinbase: t.coinbase.into(),
-            internal_command_balances: t
-                .internal_command_balances
-                .into_iter()
-                .map(Into::into)
-                .collect(),
-        }
-        .into()
-    }
-}
-impl From<StagedLedgerPreDiffTwoV1> for StagedLedgerPreDiffTwo {
-    fn from(t: StagedLedgerPreDiffTwoV1) -> Self {
+impl From<StagedLedgerPreDiffV1> for StagedLedgerPreDiff {
+    fn from(t: StagedLedgerPreDiffV1) -> Self {
         Self {
             completed_works: t.t.t.completed_works.into_iter().map(Into::into).collect(),
             commands: t.t.t.commands.into_iter().map(Into::into).collect(),

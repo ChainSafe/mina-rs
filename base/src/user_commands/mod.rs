@@ -9,9 +9,9 @@ pub mod memo;
 pub mod payment;
 pub mod signed_command;
 
-use proof_systems::mina_signer::Signer;
 pub use memo::SignedCommandMemo;
 pub use payment::PaymentPayload;
+use proof_systems::mina_signer::Signer;
 pub use signed_command::{
     SignedCommand, SignedCommandPayload, SignedCommandPayloadBody, SignedCommandPayloadCommon,
 };
