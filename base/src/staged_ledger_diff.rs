@@ -68,26 +68,15 @@ impl_from_with_proxy!(
 #[derive(Clone, PartialEq, Debug, AutoFrom)]
 #[auto_from(mina_serialization_types::staged_ledger_diff::TransactionStatus)]
 pub enum TransactionStatus {
-    Applied(TransactionStatusApplied),
+    Applied(TransactionStatusAuxiliaryData, TransactionStatusBalanceData),
     // FIXME: other variants are not covered by current test block
 }
 
-#[derive(Clone, PartialEq, Debug, AutoFrom)]
-#[auto_from(mina_serialization_types::staged_ledger_diff::TransactionStatusAppliedV1)]
-pub struct TransactionStatusApplied(
-    pub TransactionStatusAuxiliaryData,
-    pub TransactionStatusBalanceData,
+impl_from_with_proxy!(
+    TransactionStatus,
+    mina_serialization_types::staged_ledger_diff::TransactionStatus,
+    TransactionStatusMinaJson
 );
-
-impl TransactionStatusApplied {
-    pub fn auxiliary_data(&self) -> &TransactionStatusAuxiliaryData {
-        &self.0
-    }
-
-    pub fn balance_data(&self) -> &TransactionStatusBalanceData {
-        &self.1
-    }
-}
 
 #[derive(Clone, PartialEq, Debug, AutoFrom)]
 #[auto_from(mina_serialization_types::staged_ledger_diff::TransactionStatusAuxiliaryData)]

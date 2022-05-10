@@ -240,7 +240,10 @@ pub type SnappCommand = Versioned<Versioned<(), 1>, 1>;
 
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub enum TransactionStatus {
-    Applied(TransactionStatusAppliedV1),
+    Applied(
+        TransactionStatusAuxiliaryDataV1,
+        TransactionStatusBalanceDataV1,
+    ),
     // FIXME: other variants are not covered by current test block
 }
 
@@ -248,30 +251,23 @@ pub type TransactionStatusV1 = Versioned<TransactionStatus, 1>;
 
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 enum TransactionStatusJson {
-    Applied(TransactionStatusAppliedJson),
+    Applied(
+        TransactionStatusAuxiliaryDataJson,
+        TransactionStatusBalanceDataJson,
+    ),
 }
 
 #[derive(Clone, Debug, PartialEq, AutoFrom)]
 #[auto_from(TransactionStatus)]
 #[auto_from(TransactionStatusJson)]
 pub enum TransactionStatusMinaJson {
-    Applied(TransactionStatusAppliedJson),
+    Applied(
+        TransactionStatusAuxiliaryDataJson,
+        TransactionStatusBalanceDataJson,
+    ),
 }
 
 impl_mina_enum_json_serde!(TransactionStatusMinaJson, TransactionStatusJson);
-
-#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
-pub struct TransactionStatusAppliedV1(
-    pub TransactionStatusAuxiliaryDataV1,
-    pub TransactionStatusBalanceDataV1,
-);
-
-#[derive(Clone, Debug, Serialize, Deserialize, PartialEq, AutoFrom)]
-#[auto_from(TransactionStatusAppliedV1)]
-pub struct TransactionStatusAppliedJson(
-    pub TransactionStatusAuxiliaryDataJson,
-    pub TransactionStatusBalanceDataJson,
-);
 
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub struct TransactionStatusAuxiliaryData {

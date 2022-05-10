@@ -260,13 +260,11 @@ mod tests {
         }
 
         match &commands[0].status {
-            TransactionStatus::Applied(applied) => {
-                let auxiliary_data = applied.auxiliary_data();
+            TransactionStatus::Applied(auxiliary_data, balance_data) => {
                 assert!(auxiliary_data.fee_payer_account_creation_fee_paid.is_none());
                 assert!(auxiliary_data.receiver_account_creation_fee_paid.is_none());
                 assert!(auxiliary_data.created_token.is_none());
 
-                let balance_data = applied.balance_data();
                 assert!(balance_data.fee_payer_balance.is_some());
                 assert_eq!(balance_data.fee_payer_balance.unwrap().0, 59778375293571);
                 assert!(balance_data.source_balance.is_some());

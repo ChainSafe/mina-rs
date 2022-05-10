@@ -65,6 +65,15 @@ mod tests {
 
     #[test]
     #[wasm_bindgen_test]
+    fn transaction_status_json_serde_roundtrip() {
+        json_serde_roundtrip!(
+            TransactionStatus,
+            "staged_ledger_diff/diff/0/commands/0/status"
+        );
+    }
+
+    #[test]
+    #[wasm_bindgen_test]
     fn internal_command_balances_json_serde_roundtrip() {
         json_serde_roundtrip!(
             InternalCommandBalanceData,

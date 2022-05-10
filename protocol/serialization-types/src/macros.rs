@@ -75,8 +75,18 @@ macro_rules! impl_mina_enum_json_serde {
                         panic!("Bad enum: {:?}", self);
                     }
                     for (k, v) in m {
-                        let list_tagged_array = ::serde_json::json!([k, v]);
-                        return serializer.serialize_some(&list_tagged_array);
+                        if let Some(array) = v.as_array() {
+                            let mut list_tagged_array = ::serde_json::json!([k]);
+                            if let Some(list_tagged_array) = list_tagged_array.as_array_mut() {
+                                for i in array {
+                                    list_tagged_array.push(i.clone());
+                                }
+                            }
+                            return serializer.serialize_some(&list_tagged_array);
+                        } else{
+                            let list_tagged_array = ::serde_json::json!([k, v]);
+                            return serializer.serialize_some(&list_tagged_array);
+                        }
                     }
                 }
                 serializer.serialize_some(&v)
