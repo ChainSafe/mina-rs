@@ -15,6 +15,8 @@ pub use signed_command::{
     SignedCommand, SignedCommandPayload, SignedCommandPayloadBody, SignedCommandPayloadCommon,
 };
 
+use crate::verifiable::Verifiable;
+
 /// The top level user command type
 /// This is the output of the command builders
 #[derive(Clone, PartialEq, Debug)]
@@ -23,4 +25,14 @@ pub enum UserCommand {
     /// A command signed by a private key
     SignedCommand(SignedCommand),
     // FIXME: other variants are not covered by current test block
+}
+
+impl Verifiable for UserCommand {
+    type Sup = ();
+
+    fn verify(&self, _data: Self::Sup) -> bool {
+        match self {
+            UserCommand::SignedCommand(sc) => sc.verify(()),
+        }
+    }
 }
