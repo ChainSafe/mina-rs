@@ -84,6 +84,7 @@ pub type UserCommandV1 = Versioned<Versioned<UserCommand, 1>, 1>;
 
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 enum UserCommandJson {
+    #[serde(rename = "Signed_command")]
     SignedCommand(SignedCommandJson),
 }
 
@@ -215,9 +216,30 @@ pub enum TransactionStatus {
 pub type TransactionStatusV1 = Versioned<TransactionStatus, 1>;
 
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
+enum TransactionStatusJson {
+    Applied(TransactionStatusAppliedJson),
+}
+
+#[derive(Clone, Debug, PartialEq, AutoFrom)]
+#[auto_from(TransactionStatus)]
+#[auto_from(TransactionStatusJson)]
+pub enum TransactionStatusMinaJson {
+    Applied(TransactionStatusAppliedJson),
+}
+
+impl_mina_enum_json_serde!(TransactionStatusMinaJson, TransactionStatusJson);
+
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub struct TransactionStatusAppliedV1(
     pub TransactionStatusAuxiliaryDataV1,
     pub TransactionStatusBalanceDataV1,
+);
+
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq, AutoFrom)]
+#[auto_from(TransactionStatusAppliedV1)]
+pub struct TransactionStatusAppliedJson(
+    pub TransactionStatusAuxiliaryDataJson,
+    pub TransactionStatusBalanceDataJson,
 );
 
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
@@ -229,6 +251,14 @@ pub struct TransactionStatusAuxiliaryData {
 
 pub type TransactionStatusAuxiliaryDataV1 = Versioned<TransactionStatusAuxiliaryData, 1>;
 
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq, AutoFrom)]
+#[auto_from(TransactionStatusAuxiliaryData)]
+pub struct TransactionStatusAuxiliaryDataJson {
+    pub fee_payer_account_creation_fee_paid: Option<U64Json>,
+    pub receiver_account_creation_fee_paid: Option<U64Json>,
+    pub created_token: Option<U64Json>,
+}
+
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub struct TransactionStatusBalanceData {
     pub fee_payer_balance: Option<ExtendedU64_3>,
@@ -237,6 +267,14 @@ pub struct TransactionStatusBalanceData {
 }
 
 pub type TransactionStatusBalanceDataV1 = Versioned<TransactionStatusBalanceData, 1>;
+
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq, AutoFrom)]
+#[auto_from(TransactionStatusBalanceData)]
+pub struct TransactionStatusBalanceDataJson {
+    pub fee_payer_balance: Option<U64Json>,
+    pub source_balance: Option<U64Json>,
+    pub receiver_balance: Option<U64Json>,
+}
 
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq, SmartDefault)]
 pub enum CoinBase {

@@ -136,6 +136,8 @@ pub mod json {
         CoinBaseBalanceDataJson, CoinBaseMinaJson, FeeTransferBalanceDataJson,
         InternalCommandBalanceDataMinaJson, PaymentPayloadJson, SignedCommandJson,
         SignedCommandPayloadBodyMinaJson, SignedCommandPayloadCommonJson, SignedCommandPayloadJson,
-        StagedLedgerDiffJson, UserCommandMinaJson, UserCommandWithStatusJson,
+        StagedLedgerDiffJson, TransactionStatusAppliedJson, TransactionStatusAuxiliaryDataJson,
+        TransactionStatusBalanceDataJson, TransactionStatusMinaJson, UserCommandMinaJson,
+        UserCommandWithStatusJson,
     };
 }
