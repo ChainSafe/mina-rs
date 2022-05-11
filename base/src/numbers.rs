@@ -5,9 +5,9 @@
 
 use crate::{constants::*, *};
 use derive_more::{From, Into};
-use mina_crypto::{hex::skip_0x_prefix_when_needed, prelude::*};
+use mina_crypto::prelude::*;
 use mina_hasher::{Hashable, ROInput};
-use mina_serialization_types::*;
+use mina_serialization_types::{json::*, *};
 use mina_serialization_types_macros::*;
 use num::Integer;
 use std::fmt;
@@ -241,11 +241,8 @@ impl HexEncodable for BigInt256 {
     }
 
     fn try_from_hex(s: impl AsRef<[u8]>) -> Result<Self, Self::Error> {
-        let s = skip_0x_prefix_when_needed(s.as_ref());
-        let bytes = hex::decode(s)?;
-        let mut b32 = [0; 32];
-        b32.copy_from_slice(&bytes);
-        Ok(Self(b32))
+        let json = FieldElementJson::try_from_hex_str(s)?;
+        Ok(Self(json.0))
     }
 }
 

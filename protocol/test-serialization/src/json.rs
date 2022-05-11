@@ -7,7 +7,7 @@ wasm_bindgen_test::wasm_bindgen_test_configure!(run_in_browser);
 #[cfg(test)]
 mod tests {
     use crate::*;
-    use mina_rs_base::types::*;
+    use mina_rs_base::{types::*, *};
     use mina_serialization_types::json::*;
     use pretty_assertions::assert_eq;
     use std::str::FromStr;
@@ -16,16 +16,18 @@ mod tests {
     #[test]
     #[wasm_bindgen_test]
     fn json_binprot_parity_tests() {
-        let block_binprot = test_fixtures::TEST_BLOCKS
+        let block_fixture_binprot = test_fixtures::TEST_BLOCKS
             .get("3NKjZ5fjms6BMaH4aq7DopPGyMY7PbG6vhRsX5XnYRxih8i9G7dj.hex")
-            .unwrap()
-            .external_transitionv1()
             .unwrap();
-        let block_from_binprot: ExternalTransition = block_binprot.into();
+        let block_from_binprot =
+            <ExternalTransition as BinProtSerializationType>::try_from_binprot(
+                block_fixture_binprot.bytes.as_slice(),
+            )
+            .unwrap();
         let json_value = test_fixtures::JSON_TEST_BLOCKS
             .get("mainnet-117896-3NKjZ5fjms6BMaH4aq7DopPGyMY7PbG6vhRsX5XnYRxih8i9G7dj.json")
             .unwrap();
-        let block_json: ExternalTransitionJson =
+        let block_json: <ExternalTransition as JsonSerializationType>::T =
             serde_json::from_value(json_value.clone()).unwrap();
         let block_from_json = block_json.into();
         assert_eq!(block_from_binprot, block_from_json);
