@@ -324,9 +324,9 @@ dependencies = [
 
 [[package]]
 name = "clap"
-version = "3.1.17"
+version = "3.1.18"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "47582c09be7c8b32c0ab3a6181825ababb713fde6fff20fc573a3870dd45c6a0"
+checksum = "d2dbdf4bdacb33466e854ce889eee8dfd5729abf7ccd7664d0a2d60cd384440b"
 dependencies = [
  "atty",
  "bitflags",
@@ -723,7 +723,7 @@ dependencies = [
 [[package]]
 name = "mina-curves"
 version = "0.1.0"
-source = "git+https://github.com/o1-labs/proof-systems?rev=b44ceb380b74eb19bc203df384bcb1643fdd83c2#b44ceb380b74eb19bc203df384bcb1643fdd83c2"
+source = "git+https://github.com/o1-labs/proof-systems?rev=387115d9d88f781b64d6b328ed01b2d6d63c998d#387115d9d88f781b64d6b328ed01b2d6d63c998d"
 dependencies = [
  "ark-ec",
  "ark-ff",
@@ -732,7 +732,7 @@ dependencies = [
 [[package]]
 name = "mina-hasher"
 version = "0.1.0"
-source = "git+https://github.com/o1-labs/proof-systems?rev=b44ceb380b74eb19bc203df384bcb1643fdd83c2#b44ceb380b74eb19bc203df384bcb1643fdd83c2"
+source = "git+https://github.com/o1-labs/proof-systems?rev=387115d9d88f781b64d6b328ed01b2d6d63c998d#387115d9d88f781b64d6b328ed01b2d6d63c998d"
 dependencies = [
  "ark-ff",
  "bitvec",
@@ -783,7 +783,7 @@ version = "0.1.0"
 dependencies = [
  "anyhow",
  "bin-prot",
- "clap 3.1.17",
+ "clap 3.1.18",
  "dhat",
  "mina-rs-base",
  "serde",
@@ -798,6 +798,7 @@ dependencies = [
  "bs58",
  "derive_more",
  "mina-serialization-types-macros",
+ "num",
  "proof-systems",
  "serde",
  "serde_json",
@@ -818,7 +819,7 @@ dependencies = [
 [[package]]
 name = "mina-signer"
 version = "0.1.0"
-source = "git+https://github.com/o1-labs/proof-systems?rev=b44ceb380b74eb19bc203df384bcb1643fdd83c2#b44ceb380b74eb19bc203df384bcb1643fdd83c2"
+source = "git+https://github.com/o1-labs/proof-systems?rev=387115d9d88f781b64d6b328ed01b2d6d63c998d#387115d9d88f781b64d6b328ed01b2d6d63c998d"
 dependencies = [
  "ark-ec",
  "ark-ff",
@@ -941,7 +942,7 @@ dependencies = [
 [[package]]
 name = "o1-utils"
 version = "0.1.0"
-source = "git+https://github.com/o1-labs/proof-systems?rev=b44ceb380b74eb19bc203df384bcb1643fdd83c2#b44ceb380b74eb19bc203df384bcb1643fdd83c2"
+source = "git+https://github.com/o1-labs/proof-systems?rev=387115d9d88f781b64d6b328ed01b2d6d63c998d#387115d9d88f781b64d6b328ed01b2d6d63c998d"
 dependencies = [
  "ark-ec",
  "ark-ff",
@@ -980,7 +981,7 @@ checksum = "624a8340c38c1b80fd549087862da4ba43e08858af025b236e509b6649fc13d5"
 [[package]]
 name = "oracle"
 version = "0.1.0"
-source = "git+https://github.com/o1-labs/proof-systems?rev=b44ceb380b74eb19bc203df384bcb1643fdd83c2#b44ceb380b74eb19bc203df384bcb1643fdd83c2"
+source = "git+https://github.com/o1-labs/proof-systems?rev=387115d9d88f781b64d6b328ed01b2d6d63c998d#387115d9d88f781b64d6b328ed01b2d6d63c998d"
 dependencies = [
  "ark-ec",
  "ark-ff",

@@ -5,6 +5,8 @@
 
 use crate::version_bytes;
 use bs58::encode::EncodeBuilder;
+use derive_more::{From, Into};
+use mina_serialization_types_macros::AutoFrom;
 use num::Integer;
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
 use versioned::*;
@@ -174,8 +176,32 @@ pub type ExtendedU64_3 = Versioned<ExtendedU64_2, 1>;
 pub type Hex64V1 = Versioned<i64, 1>;
 impl_from_for_newtype!(I64, Hex64V1);
 
-/// Versioned char
+/// char (v1)
 pub type CharV1 = Versioned<u8, 1>;
+
+/// char (json)
+#[derive(Debug, Clone, derive_more::From, derive_more::Into)]
+pub struct CharJson(pub u8);
+
+impl Serialize for CharJson {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        let s = unsafe { String::from_utf8_unchecked(vec![self.0]) };
+        serializer.serialize_str(&s)
+    }
+}
+
+impl<'de> Deserialize<'de> for CharJson {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        let s = String::deserialize(deserializer)?;
+        Ok(s.as_bytes()[0].into())
+    }
+}
 
 /// 32 bytes representing a BigInt256
 pub type BigInt256 = [u8; 32];
@@ -185,6 +211,32 @@ pub type BigInt256 = [u8; 32];
 pub struct ByteVec(pub Vec<u8>);
 
 impl_from_versioned!(ByteVec);
+
+/// Wrapper of Vec<u8> (json)
+#[derive(Debug, Clone, PartialEq, From, Into, AutoFrom)]
+#[auto_from(ByteVec)]
+pub struct ByteVecJson(pub Vec<u8>);
+
+impl Serialize for ByteVecJson {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        let s = unsafe { String::from_utf8_unchecked(self.0.clone()) };
+        serializer.serialize_str(&s)
+    }
+}
+
+impl<'de> Deserialize<'de> for ByteVecJson {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        let s = String::deserialize(deserializer)?;
+        let v: Vec<u8> = s.as_bytes().to_vec();
+        Ok(Self(v))
+    }
+}
 
 /// Vector of bytes with a version number. Also encodes its own length when encoded using bin-prot
 pub type ByteVecV1 = Versioned<ByteVec, 1>;

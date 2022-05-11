@@ -110,8 +110,9 @@ pub mod json {
         ScalarChallengeVector2Json,
     };
     pub use common::{
-        AuxHashJson, ChainHashV1Json, CoinBaseHashV1Json, EpochSeedHashV1Json, HashV1Json,
-        LedgerHashV1Json, PendingCoinbaseAuxHashJson, StateHashV1Json, VrfOutputHashV1Json,
+        AuxHashJson, ByteVecJson, ChainHashV1Json, CharJson, CoinBaseHashV1Json,
+        EpochSeedHashV1Json, HashV1Json, LedgerHashV1Json, PendingCoinbaseAuxHashJson,
+        StateHashV1Json, VrfOutputHashV1Json,
     };
     pub use consensus_state::{ConsensusStateJson, VrfOutputTruncatedJson};
     pub use delta_transition_chain_proof::DeltaTransitionChainProofJson;

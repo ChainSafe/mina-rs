@@ -101,7 +101,7 @@ pub struct StatementJson {
     pub fee_excess: FeeExcessJson,
     pub next_available_token_before: U64Json,
     pub next_available_token_after: U64Json,
-    pub sok_digest: ByteVec,
+    pub sok_digest: ByteVecJson,
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]

@@ -7,6 +7,8 @@ use crate::{constants::*, *};
 use derive_more::{From, Into};
 use mina_crypto::{hex::skip_0x_prefix_when_needed, prelude::*};
 use mina_hasher::{Hashable, ROInput};
+use mina_serialization_types::*;
+use mina_serialization_types_macros::*;
 use num::Integer;
 use std::fmt;
 use thiserror::Error;
@@ -147,9 +149,11 @@ impl GlobalSlotNumber {
 /// Will not form part of the public API when deserialization refactor is complete
 pub struct Hex64(pub i64);
 
-#[derive(Clone, PartialEq, Debug, Default, From, Into)]
+#[derive(Clone, PartialEq, Debug, Default, From, Into, AutoFrom)]
+#[auto_from(mina_serialization_types::json::CharJson)]
 /// A single char defined by a single byte (not variable length like a Rust char)
 pub struct Char(pub u8);
+impl_strconv_via_json!(Char, mina_serialization_types::json::CharJson);
 
 impl Hashable for GlobalSlotNumber {
     type D = ();
