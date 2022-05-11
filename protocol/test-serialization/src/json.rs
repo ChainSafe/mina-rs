@@ -15,6 +15,24 @@ mod tests {
 
     #[test]
     #[wasm_bindgen_test]
+    fn json_binprot_parity_tests() {
+        let block_binprot = test_fixtures::TEST_BLOCKS
+            .get("3NKjZ5fjms6BMaH4aq7DopPGyMY7PbG6vhRsX5XnYRxih8i9G7dj.hex")
+            .unwrap()
+            .external_transitionv1()
+            .unwrap();
+        let block_from_binprot: ExternalTransition = block_binprot.into();
+        let json_value = test_fixtures::JSON_TEST_BLOCKS
+            .get("mainnet-117896-3NKjZ5fjms6BMaH4aq7DopPGyMY7PbG6vhRsX5XnYRxih8i9G7dj.json")
+            .unwrap();
+        let block_json: ExternalTransitionJson =
+            serde_json::from_value(json_value.clone()).unwrap();
+        let block_from_json = block_json.into();
+        assert_eq!(block_from_binprot, block_from_json);
+    }
+
+    #[test]
+    #[wasm_bindgen_test]
     fn consensus_state_json_serde_roundtrip() {
         json_serde_roundtrip!(
             ConsensusState,

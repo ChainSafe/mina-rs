@@ -38,6 +38,7 @@ lazy_static! {
         "data/3NLvrNK6rmWnxEkGZo1y4KYjsSTcgVx7gwen2aR2kTWmRDTNoSu8.hex"
         "data/3NK9fHpzfPWhuxFhQ9Dau1X1JWtstB6kGC4xrurSPU1kctMCsU9U.hex"
         "data/3NKapQX5Qe8f4BEZGWxVSWKQvKNnkvPXNLq5KDHCV1qoPzV5Y3Wu.hex"
+        "data/3NKjZ5fjms6BMaH4aq7DopPGyMY7PbG6vhRsX5XnYRxih8i9G7dj.hex"
     );
     // Note that GENESIS_BLOCK_MAINNET_JSON has a different json format, so it's not included here
     pub static ref JSON_TEST_BLOCKS: HashMap<String, serde_json::Value> = load_json_test_blocks!(
