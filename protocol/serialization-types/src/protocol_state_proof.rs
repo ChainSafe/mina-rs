@@ -28,10 +28,10 @@ pub type ProtocolStateProofV1 =
 #[auto_from(ProtocolStateProof)]
 /// SNARK proof of the protocol state at some point in time (json)
 pub struct ProtocolStateProofJson {
-    pub statement: ProofStatementV1,
-    pub prev_evals: PrevEvalsV1,
-    pub prev_x_hat: PrevXHatV1,
-    pub proof: ProofV1,
+    pub statement: ProofStatementJson,
+    pub prev_evals: PrevEvalsJson,
+    pub prev_x_hat: PrevXHatJson,
+    pub proof: ProofJson,
 }
 
 /// SNARK proof of the protocol state at some point in time (base64 json)
@@ -192,10 +192,18 @@ pub struct PrevEvals(pub ProofEvaluationsV1, pub ProofEvaluationsV1);
 
 pub type PrevEvalsV1 = Versioned<PrevEvals, 1>;
 
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq, AutoFrom)]
+#[auto_from(PrevEvals)]
+pub struct PrevEvalsJson(pub ProofEvaluationsV1, pub ProofEvaluationsV1);
+
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub struct PrevXHat(pub FiniteECPoint);
 
 pub type PrevXHatV1 = Versioned<PrevXHat, 1>;
+
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq, AutoFrom)]
+#[auto_from(PrevXHat)]
+pub struct PrevXHatJson(pub FiniteECPoint);
 
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub struct Proof {
@@ -205,8 +213,19 @@ pub struct Proof {
 
 pub type ProofV1 = Versioned<Versioned<Proof, 1>, 1>;
 
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq, AutoFrom)]
+#[auto_from(Proof)]
+pub struct ProofJson {
+    pub messages: ProofMessagesJson,
+    pub openings: ProofOpeningsJson,
+}
+
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub struct ProofOpeningsEvals(pub ProofEvaluationsV1, pub ProofEvaluationsV1);
+
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq, AutoFrom)]
+#[auto_from(ProofOpeningsEvals)]
+pub struct ProofOpeningsEvalsJson(pub ProofEvaluationsJson, pub ProofEvaluationsJson);
 
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub struct ProofOpenings {
@@ -215,3 +234,10 @@ pub struct ProofOpenings {
 }
 
 pub type ProofOpeningsV1 = Versioned<ProofOpenings, 1>;
+
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq, AutoFrom)]
+#[auto_from(ProofOpenings)]
+pub struct ProofOpeningsJson {
+    pub proof: OpeningProofJson,
+    pub evals: ProofOpeningsEvalsJson,
+}

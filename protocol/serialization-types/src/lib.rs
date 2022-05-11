@@ -117,11 +117,21 @@ pub mod json {
     pub use consensus_state::{ConsensusStateJson, VrfOutputTruncatedJson};
     pub use delta_transition_chain_proof::DeltaTransitionChainProofJson;
     pub use external_transition::ExternalTransitionJson;
+    pub use field_and_curve_elements::{
+        ECPointMinaJson, ECPointVecJson, FieldElementJson, FieldElementVecJson, FiniteECPointJson,
+        FiniteECPointPairJson, FiniteECPointPairVecJson,
+    };
+    pub use opening_proof::OpeningProofJson;
+    pub use proof_evaluations::ProofEvaluationsJson;
+    pub use proof_messages::{
+        ProofMessageWithDegreeBoundJson, ProofMessageWithoutDegreeBoundListJson, ProofMessagesJson,
+    };
     pub use protocol_constants::ProtocolConstantsJson;
     pub use protocol_state::ProtocolStateJson;
     pub use protocol_state_body::ProtocolStateBodyJson;
     pub use protocol_state_proof::{
-        PairingBasedJson, PlonkJson, ProofStateDeferredValuesJson, ProofStateJson,
+        PairingBasedJson, PlonkJson, PrevEvalsJson, PrevXHatJson, ProofJson,
+        ProofOpeningsEvalsJson, ProofOpeningsJson, ProofStateDeferredValuesJson, ProofStateJson,
         ProofStatementJson, ProtocolStateProofBase64Json, ProtocolStateProofJson,
         SpongeDigestBeforeEvaluations,
     };
