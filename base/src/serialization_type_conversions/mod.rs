@@ -824,17 +824,6 @@ impl From<SgnTypeV1> for SgnType {
     }
 }
 
-// impl From<StagedLedgerDiffTuple> for StagedLedgerDiffTupleV1 {
-//     fn from(t: StagedLedgerDiffTuple) -> Self {
-//         StagedLedgerDiffTupleV1::new((t.0 .0.into(), t.0 .1.map(Into::into)))
-//     }
-// }
-// impl From<StagedLedgerDiffTupleV1> for StagedLedgerDiffTuple {
-//     fn from(t: StagedLedgerDiffTupleV1) -> Self {
-//         StagedLedgerDiffTuple((t.t.0.into(), t.t.1.map(Into::into)))
-//     }
-// }
-
 impl From<StagedLedgerDiff> for StagedLedgerDiffV1 {
     fn from(t: StagedLedgerDiff) -> Self {
         mina_serialization_types::staged_ledger_diff::StagedLedgerDiff {
