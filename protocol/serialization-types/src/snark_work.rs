@@ -4,7 +4,7 @@
 //! Types related to the Transaction Snark Work
 #![allow(missing_docs)]
 
-use crate::{common::*, impl_mina_enum_json_serde, json::*, v1::*};
+use crate::{common::*, json::*, v1::*, *};
 use mina_serialization_types_macros::AutoFrom;
 use serde::{Deserialize, Serialize};
 use versioned::Versioned;
@@ -190,7 +190,7 @@ pub type SignedV1 = Versioned<Signed, 1>;
 #[auto_from(Signed)]
 pub struct SignedJson {
     // Versioned 1 byte
-    pub magnitude: U64Json,
+    pub magnitude: DecimalJson,
     pub sgn: SgnTypeJson,
 }
 

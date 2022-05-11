@@ -6,7 +6,7 @@
 #![allow(missing_docs)] // Don't actually know what many of the types fields are for yet
 
 use crate::field_and_curve_elements::FiniteECPoint;
-use crate::{common::*, json::*, v1::*};
+use crate::{common::*, json::*, v1::*, *};
 use mina_serialization_types_macros::AutoFrom;
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
 use versioned::*;
@@ -94,7 +94,7 @@ pub type ProofStateV1 = Versioned<ProofState, 1>;
 pub struct ProofStateJson {
     pub deferred_values: ProofStateDeferredValuesJson,
     pub sponge_digest_before_evaluations: SpongeDigestBeforeEvaluationsJson,
-    pub me_only: ProofStatePairingBasedV1,
+    pub me_only: ProofStatePairingBasedJson,
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
@@ -113,11 +113,11 @@ pub type ProofStateDeferredValuesV1 = Versioned<ProofStateDeferredValues, 1>;
 #[auto_from(ProofStateDeferredValues)]
 pub struct ProofStateDeferredValuesJson {
     pub plonk: PlonkJson,
-    pub combined_inner_product: ShiftedValueV1,
-    pub b: ShiftedValueV1,
-    pub xi: BulletproofPreChallengeV1,
-    pub bulletproof_challenges: BulletproofChallengeTuple18V1,
-    pub which_branch: CharV1,
+    pub combined_inner_product: ShiftedValueMinaJson,
+    pub b: ShiftedValueMinaJson,
+    pub xi: BulletproofPreChallengeMinaJson,
+    pub bulletproof_challenges: BulletproofChallengeTuple18Json,
+    pub which_branch: CharJson,
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
@@ -133,10 +133,10 @@ pub type PlonkV1 = Versioned<Plonk, 1>;
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq, AutoFrom)]
 #[auto_from(Plonk)]
 pub struct PlonkJson {
-    pub alpha: BulletproofPreChallengeJson,
+    pub alpha: BulletproofPreChallengeMinaJson,
     pub beta: ScalarChallengeVector2Json,
     pub gamma: ScalarChallengeVector2Json,
-    pub zeta: BulletproofPreChallengeJson,
+    pub zeta: BulletproofPreChallengeMinaJson,
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
@@ -145,6 +145,20 @@ pub enum ShiftedValue {
 }
 
 pub type ShiftedValueV1 = Versioned<ShiftedValue, 1>;
+
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
+enum ShiftedValueJson {
+    #[serde(rename = "Shifted_value")]
+    ShiftedValue(FieldElementJson),
+}
+
+#[derive(Clone, Debug, PartialEq, AutoFrom)]
+#[auto_from(ShiftedValue)]
+#[auto_from(ShiftedValueJson)]
+pub enum ShiftedValueMinaJson {
+    ShiftedValue(FieldElementJson),
+}
+impl_mina_enum_json_serde!(ShiftedValueMinaJson, ShiftedValueJson);
 
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub struct SpongeDigestBeforeEvaluations(
@@ -160,7 +174,13 @@ pub type SpongeDigestBeforeEvaluationsV1 =
 
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq, AutoFrom)]
 #[auto_from(SpongeDigestBeforeEvaluations)]
-pub struct SpongeDigestBeforeEvaluationsJson(pub I64, pub I64, pub I64, pub I64, pub ());
+pub struct SpongeDigestBeforeEvaluationsJson(
+    pub I64,
+    pub I64,
+    pub I64,
+    pub I64,
+    #[serde(skip)] pub (),
+);
 
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub struct ProofStatePairingBased {
@@ -169,6 +189,13 @@ pub struct ProofStatePairingBased {
 }
 
 pub type ProofStatePairingBasedV1 = Versioned<ProofStatePairingBased, 1>;
+
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq, AutoFrom)]
+#[auto_from(ProofStatePairingBased)]
+pub struct ProofStatePairingBasedJson {
+    pub sg: FiniteECPointJson,
+    pub old_bulletproof_challenges: ProofStateBulletproofChallengesJson,
+}
 
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub struct PairingBased {
@@ -183,8 +210,8 @@ pub type PairingBasedV1 = Versioned<PairingBased, 1>;
 #[auto_from(PairingBased)]
 pub struct PairingBasedJson {
     pub app_state: (),
-    pub sg: FiniteECPointVecV1,
-    pub old_bulletproof_challenges: BulletproofChallengesV1,
+    pub sg: FiniteECPointVecJson,
+    pub old_bulletproof_challenges: BulletproofChallengesJson,
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]

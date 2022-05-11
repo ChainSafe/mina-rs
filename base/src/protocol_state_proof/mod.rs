@@ -43,11 +43,15 @@ pub struct ProtocolStateProof {
     pub prev_x_hat: PrevXHat,
     pub proof: Proof,
 }
-
 impl_from_with_proxy!(
     ProtocolStateProof,
     ProtocolStateProofV1,
     ProtocolStateProofBase64Json
+);
+impl_from_with_proxy!(
+    ProtocolStateProof,
+    ProtocolStateProofV1,
+    ProtocolStateProofJson
 );
 
 #[derive(Clone, Default, PartialEq, Debug, AutoFrom)]
@@ -56,6 +60,7 @@ pub struct ProofStatement {
     pub proof_state: ProofState,
     pub pass_through: PairingBased,
 }
+impl_from_with_proxy!(ProofStatement, ProofStatementV1, ProofStatementJson);
 
 #[derive(Clone, Default, PartialEq, Debug, AutoFrom)]
 #[auto_from(mina_serialization_types::protocol_state_proof::ProofState)]
@@ -64,6 +69,7 @@ pub struct ProofState {
     pub sponge_digest_before_evaluations: SpongeDigestBeforeEvaluations,
     pub me_only: ProofStatePairingBased,
 }
+impl_from_with_proxy!(ProofState, ProofStateV1, ProofStateJson);
 
 #[derive(Clone, Default, PartialEq, Debug, AutoFrom)]
 #[auto_from(mina_serialization_types::protocol_state_proof::ProofStateDeferredValues)]
@@ -75,6 +81,11 @@ pub struct ProofStateDeferredValues {
     pub bulletproof_challenges: BulletproofChallengeTuple18,
     pub which_branch: Char,
 }
+impl_from_with_proxy!(
+    ProofStateDeferredValues,
+    mina_serialization_types::protocol_state_proof::ProofStateDeferredValues,
+    ProofStateDeferredValuesJson
+);
 
 #[derive(Clone, Default, PartialEq, Debug, AutoFrom)]
 #[auto_from(mina_serialization_types::protocol_state_proof::Plonk)]
@@ -90,6 +101,11 @@ pub struct Plonk {
 pub enum ShiftedValue {
     ShiftedValue(BigInt256),
 }
+impl_from_with_proxy!(
+    ShiftedValue,
+    mina_serialization_types::protocol_state_proof::ShiftedValue,
+    ShiftedValueMinaJson
+);
 
 impl Default for ShiftedValue {
     fn default() -> Self {

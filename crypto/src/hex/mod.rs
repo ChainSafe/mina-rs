@@ -10,7 +10,7 @@ pub trait HexEncodable {
 }
 
 pub fn skip_0x_prefix_when_needed(s: &[u8]) -> &[u8] {
-    if s[1] == b'x' && (s[0] == b'0' || s[0] == b'\\') {
+    if s.len() > 1 && s[1] == b'x' && (s[0] == b'0' || s[0] == b'\\') {
         &s[2..]
     } else {
         s

@@ -6,7 +6,7 @@
 
 #![allow(missing_docs)] // Don't actually know what many of the types fields are for yet
 
-use crate::{common::*, impl_mina_enum_json_serde, json::*, signatures::*, v1::*, version_bytes};
+use crate::{common::*, json::*, signatures::*, v1::*, version_bytes, *};
 use mina_serialization_types_macros::AutoFrom;
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
 use smart_default::SmartDefault;

@@ -106,8 +106,8 @@ pub mod json {
     pub use blockchain_state::BlockchainStateJson;
     pub use bulletproof_challenges::{
         BulletproofChallengeJson, BulletproofChallengeTuple17Json, BulletproofChallengeTuple18Json,
-        BulletproofPreChallengeJson, ProofStateBulletproofChallengesJson,
-        ScalarChallengeVector2Json,
+        BulletproofChallengesJson, BulletproofPreChallengeMinaJson,
+        ProofStateBulletproofChallengesJson, ScalarChallengeVector2Json,
     };
     pub use common::{
         AuxHashJson, ByteVecJson, ChainHashV1Json, CharJson, CoinBaseHashV1Json,
@@ -119,7 +119,7 @@ pub mod json {
     pub use external_transition::ExternalTransitionJson;
     pub use field_and_curve_elements::{
         ECPointMinaJson, ECPointVecJson, FieldElementJson, FieldElementVecJson, FiniteECPointJson,
-        FiniteECPointPairJson, FiniteECPointPairVecJson,
+        FiniteECPointPairJson, FiniteECPointPairVecJson, FiniteECPointVecJson,
     };
     pub use opening_proof::OpeningProofJson;
     pub use proof_evaluations::ProofEvaluationsJson;
@@ -132,8 +132,8 @@ pub mod json {
     pub use protocol_state_proof::{
         PairingBasedJson, PlonkJson, PrevEvalsJson, PrevXHatJson, ProofJson,
         ProofOpeningsEvalsJson, ProofOpeningsJson, ProofStateDeferredValuesJson, ProofStateJson,
-        ProofStatementJson, ProtocolStateProofBase64Json, ProtocolStateProofJson,
-        SpongeDigestBeforeEvaluations,
+        ProofStatePairingBasedJson, ProofStatementJson, ProtocolStateProofBase64Json,
+        ProtocolStateProofJson, ShiftedValueMinaJson, SpongeDigestBeforeEvaluations,
     };
     pub use protocol_version::ProtocolVersionJson;
     pub use signatures::{PublicKeyJson, SignatureJson};

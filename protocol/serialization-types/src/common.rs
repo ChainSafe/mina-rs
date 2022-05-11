@@ -178,9 +178,10 @@ impl_from_for_newtype!(I64, Hex64V1);
 
 /// char (v1)
 pub type CharV1 = Versioned<u8, 1>;
+impl_from_for_newtype!(CharJson, CharV1);
 
 /// char (json)
-#[derive(Debug, Clone, derive_more::From, derive_more::Into)]
+#[derive(Debug, Clone, PartialEq, From, Into)]
 pub struct CharJson(pub u8);
 
 impl Serialize for CharJson {

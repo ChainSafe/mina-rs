@@ -68,14 +68,6 @@ macro_rules! impl_from_with_proxy {
                 intermidate.into()
             }
         }
-
-        impl mina_serialization_types::BinProtSerializationType<'_> for $t {
-            type T = $t_versioned;
-        }
-
-        impl mina_serialization_types::JsonSerializationType<'_> for $t {
-            type T = $t_json;
-        }
     };
 }
 

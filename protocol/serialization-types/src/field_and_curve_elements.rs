@@ -34,6 +34,11 @@ pub struct FieldElementVecJson(pub Vec<FieldElementJson>);
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub struct FiniteECPoint(pub FieldElement, pub FieldElement);
 
+/// A finite EC point (json)
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq, AutoFrom)]
+#[auto_from(FiniteECPoint)]
+pub struct FiniteECPointJson(pub FieldElementJson, pub FieldElementJson);
+
 /// Vector of finite EC points
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub struct FiniteECPointVec(pub Vec<FiniteECPoint>);
@@ -43,8 +48,8 @@ pub type FiniteECPointVecV1 = Versioned<FiniteECPointVec, 1>;
 
 /// Vector of finite EC points (json)
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq, AutoFrom)]
-#[auto_from(FiniteECPoint)]
-pub struct FiniteECPointJson(pub FieldElementJson, pub FieldElementJson);
+#[auto_from(FiniteECPointVec)]
+pub struct FiniteECPointVecJson(pub Vec<FiniteECPointJson>);
 
 /// Pair if finite EC Points
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
@@ -161,7 +166,7 @@ impl<'de> Deserialize<'de> for FieldElementJson {
 }
 
 fn skip_0x_prefix_when_needed(s: &[u8]) -> &[u8] {
-    if s[1] == b'x' && (s[0] == b'0' || s[0] == b'\\') {
+    if s.len() > 1 && s[1] == b'x' && (s[0] == b'0' || s[0] == b'\\') {
         &s[2..]
     } else {
         s

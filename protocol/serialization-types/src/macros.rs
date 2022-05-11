@@ -55,10 +55,11 @@ macro_rules! impl_strconv_via_json {
 }
 
 /// Implement list tagged enum json serde format for the given enum,
-/// with another convertible enum which is externally tagged
+/// with another convertible enum which is externally tagged and
+/// extra serde options
 #[macro_export]
-macro_rules! impl_mina_enum_json_serde {
-    ($t:ty, $tp:ty) => {
+macro_rules! impl_mina_enum_json_serde_with_option {
+    ($t:ty, $tp:ty, $ser_expand_array:expr) => {
         impl ::serde::Serialize for $t {
             fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
             where
@@ -75,18 +76,19 @@ macro_rules! impl_mina_enum_json_serde {
                         panic!("Bad enum: {:?}", self);
                     }
                     for (k, v) in m {
-                        if let Some(array) = v.as_array() {
-                            let mut list_tagged_array = ::serde_json::json!([k]);
-                            if let Some(list_tagged_array) = list_tagged_array.as_array_mut() {
-                                for i in array {
-                                    list_tagged_array.push(i.clone());
+                        if $ser_expand_array {
+                            if let Some(array) = v.as_array() {
+                                let mut list_tagged_array = ::serde_json::json!([k]);
+                                if let Some(list_tagged_array) = list_tagged_array.as_array_mut() {
+                                    for i in array {
+                                        list_tagged_array.push(i.clone());
+                                    }
                                 }
+                                return serializer.serialize_some(&list_tagged_array);
                             }
-                            return serializer.serialize_some(&list_tagged_array);
-                        } else{
-                            let list_tagged_array = ::serde_json::json!([k, v]);
-                            return serializer.serialize_some(&list_tagged_array);
                         }
+                        let list_tagged_array = ::serde_json::json!([k, v]);
+                        return serializer.serialize_some(&list_tagged_array);
                     }
                 }
                 serializer.serialize_some(&v)
@@ -123,5 +125,14 @@ macro_rules! impl_mina_enum_json_serde {
                 }
             }
         }
-    }
+    };
+}
+
+/// Implement list tagged enum json serde format for the given enum,
+/// with another convertible enum which is externally tagged
+#[macro_export]
+macro_rules! impl_mina_enum_json_serde {
+    ($t:ty, $tp:ty) => {
+        impl_mina_enum_json_serde_with_option!($t, $tp, true);
+    };
 }

@@ -6,8 +6,10 @@
 
 use crate::types::*;
 use mina_crypto::hash::*;
+use mina_serialization_types::json::*;
 use mina_serialization_types_macros::AutoFrom;
 use proof_systems::mina_signer::CompressedPubKey;
+use versioned::*;
 
 #[derive(Clone, Debug, PartialEq, AutoFrom)]
 #[auto_from(mina_serialization_types::snark_work::TransactionSnarkWork)]
@@ -16,6 +18,12 @@ pub struct TransactionSnarkWork {
     pub proofs: OneORTwo,
     pub prover: CompressedPubKey,
 }
+
+impl_from_with_proxy!(
+    TransactionSnarkWork,
+    mina_serialization_types::snark_work::TransactionSnarkWork,
+    TransactionSnarkWorkJson
+);
 
 #[derive(Clone, Debug, PartialEq, AutoFrom)]
 #[auto_from(mina_serialization_types::snark_work::OneORTwo)]
@@ -44,6 +52,12 @@ pub struct Statement {
     pub next_available_token_after: TokenId,
     pub sok_digest: ByteVec,
 }
+
+impl_from_with_proxy!(
+    Statement,
+    mina_serialization_types::snark_work::Statement,
+    StatementJson
+);
 
 #[derive(Clone, Debug, PartialEq, AutoFrom)]
 #[auto_from(mina_serialization_types::snark_work::PendingCoinbaseStackState)]
