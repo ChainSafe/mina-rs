@@ -23,7 +23,7 @@ pub type TransactionSnarkWorkV1 = Versioned<TransactionSnarkWork, 1>;
 #[auto_from(TransactionSnarkWork)]
 pub struct TransactionSnarkWorkJson {
     // Versioned 1 byte
-    pub fee: U64Json,
+    pub fee: DecimalJson,
     pub proofs: OneORTwoJson,
     pub prover: PublicKeyJson,
 }

@@ -111,7 +111,7 @@ pub enum ECPointJson {
     Finite(FiniteECPointJson),
 }
 
-impl_mina_enum_json_serde!(ECPointJson, ECPointJsonProxy);
+impl_mina_enum_json_serde_with_option!(ECPointJson, ECPointJsonProxy, false);
 
 /// Vector of EC points
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]

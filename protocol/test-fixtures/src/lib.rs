@@ -116,7 +116,11 @@ macro_rules! load_json_test_blocks {
             let mut temp_map = HashMap::new();
             $(
                 let file_name = $lt.split('/').last().unwrap().into();
-                let block: serde_json::Value = serde_json::from_slice(include_bytes!($lt)).map_err(|err|format!("Errer loading {}: {err}", $lt)).unwrap();
+                let mut block: serde_json::Value = serde_json::from_slice(include_bytes!($lt)).map_err(|err|format!("Errer loading {}: {err}", $lt)).unwrap();
+                // Remove scheduled_time field as it's not part of block
+                if let Some(block_mut) = block.as_object_mut() {
+                    block_mut.remove("scheduled_time");
+                }
                 temp_map.insert(file_name, block);
             )*
             temp_map

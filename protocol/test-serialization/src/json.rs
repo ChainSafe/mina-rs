@@ -81,6 +81,16 @@ mod tests {
 
     #[test]
     #[wasm_bindgen_test]
+    fn completed_works_json_serde_roundtrip() {
+        json_serde_roundtrip!(
+            TransactionSnarkWork,
+            TransactionSnarkWorkJson,
+            "staged_ledger_diff/diff/0/completed_works/0"
+        );
+    }
+
+    #[test]
+    #[wasm_bindgen_test]
     fn completed_works_proofs_statement_json_serde_roundtrip() {
         json_serde_roundtrip!(
             Statement,
@@ -90,8 +100,7 @@ mod tests {
     }
 
     #[test]
-    // #[wasm_bindgen_test]
-    #[should_panic] // Not fully implemented yet
+    #[wasm_bindgen_test]
     fn completed_works_proofs_proof_json_serde_roundtrip() {
         json_serde_roundtrip!(
             ProtocolStateProof,
@@ -107,47 +116,6 @@ mod tests {
             ProofStatement,
             ProofStatementJson,
             "staged_ledger_diff/diff/0/completed_works/0/proofs/1/proof/statement"
-        );
-    }
-
-    #[test]
-    #[wasm_bindgen_test]
-    fn completed_works_proofs_proof_statement_proof_state_json_serde_roundtrip() {
-        json_serde_roundtrip!(
-            ProofState,
-            ProofStateJson,
-            "staged_ledger_diff/diff/0/completed_works/0/proofs/1/proof/statement/proof_state"
-        );
-    }
-
-    #[test]
-    #[wasm_bindgen_test]
-    fn completed_works_proofs_proof_statement_proof_state_deferred_values_json_serde_roundtrip() {
-        json_serde_roundtrip!(
-            ProofStateDeferredValues,
-            ProofStateDeferredValuesJson,
-            "staged_ledger_diff/diff/0/completed_works/0/proofs/1/proof/statement/proof_state/deferred_values"
-        );
-    }
-
-    #[test]
-    #[wasm_bindgen_test]
-    fn completed_works_proofs_proof_statement_proof_state_deferred_values_b_json_serde_roundtrip() {
-        json_serde_roundtrip!(
-            ShiftedValue,
-            ShiftedValueJson,
-            "staged_ledger_diff/diff/0/completed_works/0/proofs/1/proof/statement/proof_state/deferred_values/b"
-        );
-    }
-
-    #[test]
-    // #[wasm_bindgen_test]
-    #[should_panic] // Not fully implemented yet
-    fn completed_works_json_serde_roundtrip() {
-        json_serde_roundtrip!(
-            TransactionSnarkWork,
-            TransactionSnarkWorkJson,
-            "staged_ledger_diff/diff/0/completed_works/0"
         );
     }
 
@@ -198,15 +166,13 @@ mod tests {
     }
 
     #[test]
-    // #[wasm_bindgen_test]
-    #[should_panic] // Not fully implemented yet
+    #[wasm_bindgen_test]
     fn staged_ledger_diff_json_serde_roundtrip() {
         json_serde_roundtrip!(StagedLedgerDiff, StagedLedgerDiffJson, "staged_ledger_diff");
     }
 
     #[test]
-    // #[wasm_bindgen_test]
-    #[should_panic] // Not fully implemented yet
+    #[wasm_bindgen_test]
     fn block_json_serde_roundtrip() {
         json_serde_roundtrip!(ExternalTransition, ExternalTransitionJson, "");
     }

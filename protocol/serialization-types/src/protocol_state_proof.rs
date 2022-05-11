@@ -221,7 +221,7 @@ pub type PrevEvalsV1 = Versioned<PrevEvals, 1>;
 
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq, AutoFrom)]
 #[auto_from(PrevEvals)]
-pub struct PrevEvalsJson(pub ProofEvaluationsV1, pub ProofEvaluationsV1);
+pub struct PrevEvalsJson(pub ProofEvaluationsJson, pub ProofEvaluationsJson);
 
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub struct PrevXHat(pub FiniteECPoint);
@@ -230,7 +230,7 @@ pub type PrevXHatV1 = Versioned<PrevXHat, 1>;
 
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq, AutoFrom)]
 #[auto_from(PrevXHat)]
-pub struct PrevXHatJson(pub FiniteECPoint);
+pub struct PrevXHatJson(pub FiniteECPointJson);
 
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub struct Proof {
