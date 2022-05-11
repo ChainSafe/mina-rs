@@ -53,5 +53,5 @@ pub type ProofMessageWithDegreeBoundV1 = Versioned<ProofMessageWithDegreeBound, 
 #[auto_from(ProofMessageWithDegreeBound)]
 pub struct ProofMessageWithDegreeBoundJson {
     pub unshifted: ECPointVecJson,
-    pub shifted: ECPointMinaJson,
+    pub shifted: ECPointJson,
 }

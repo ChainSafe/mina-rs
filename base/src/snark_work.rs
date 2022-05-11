@@ -47,7 +47,7 @@ pub struct Statement {
     pub target: StateHash,
     pub supply_increase: Amount,
     pub pending_coinbase_stack_state: PendingCoinbaseStackState,
-    pub fee_excess: FeeExcess,
+    pub fee_excess: FeeExcessPair,
     pub next_available_token_before: TokenId,
     pub next_available_token_after: TokenId,
     pub sok_digest: ByteVec,
@@ -81,12 +81,14 @@ pub struct StateStack {
 }
 
 #[derive(Clone, Debug, PartialEq, AutoFrom)]
+#[auto_from(mina_serialization_types::snark_work::FeeExcessPair)]
+pub struct FeeExcessPair(pub FeeExcess, pub FeeExcess);
+
+#[derive(Clone, Debug, PartialEq, AutoFrom)]
 #[auto_from(mina_serialization_types::snark_work::FeeExcess)]
 pub struct FeeExcess {
-    pub fee_token_l: TokenId,
-    pub fee_excess_l: Signed,
-    pub fee_token_r: TokenId,
-    pub fee_excess_r: Signed,
+    pub token: TokenId,
+    pub amount: Signed,
 }
 
 #[derive(Clone, Debug, PartialEq, AutoFrom)]

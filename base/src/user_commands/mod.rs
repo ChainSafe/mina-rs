@@ -15,7 +15,7 @@ pub use signed_command::{
     SignedCommand, SignedCommandPayload, SignedCommandPayloadBody, SignedCommandPayloadCommon,
 };
 
-use mina_serialization_types::json::UserCommandMinaJson;
+use mina_serialization_types::json::UserCommandJson;
 use mina_serialization_types_macros::AutoFrom;
 use versioned::*;
 
@@ -32,5 +32,5 @@ pub enum UserCommand {
 impl_from_with_proxy!(
     UserCommand,
     mina_serialization_types::staged_ledger_diff::UserCommand,
-    UserCommandMinaJson
+    UserCommandJson
 );

@@ -55,8 +55,8 @@ pub type StagedLedgerPreDiffV1 = Versioned<Versioned<StagedLedgerPreDiff, 1>, 1>
 pub struct StagedLedgerPreDiffJson {
     pub completed_works: Vec<TransactionSnarkWorkJson>,
     pub commands: Vec<UserCommandWithStatusJson>,
-    pub coinbase: CoinBaseMinaJson,
-    pub internal_command_balances: Vec<InternalCommandBalanceDataMinaJson>,
+    pub coinbase: CoinBaseJson,
+    pub internal_command_balances: Vec<InternalCommandBalanceDataJson>,
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
@@ -70,8 +70,8 @@ pub type UserCommandWithStatusV1 = Versioned<UserCommandWithStatus, 1>;
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq, AutoFrom)]
 #[auto_from(UserCommandWithStatus)]
 pub struct UserCommandWithStatusJson {
-    pub data: UserCommandMinaJson,
-    pub status: TransactionStatusMinaJson,
+    pub data: UserCommandJson,
+    pub status: TransactionStatusJson,
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
@@ -83,19 +83,19 @@ pub enum UserCommand {
 pub type UserCommandV1 = Versioned<Versioned<UserCommand, 1>, 1>;
 
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
-enum UserCommandJson {
+enum UserCommandJsonProxy {
     #[serde(rename = "Signed_command")]
     SignedCommand(SignedCommandJson),
 }
 
 #[derive(Clone, Debug, PartialEq, AutoFrom)]
 #[auto_from(UserCommand)]
-#[auto_from(UserCommandJson)]
-pub enum UserCommandMinaJson {
+#[auto_from(UserCommandJsonProxy)]
+pub enum UserCommandJson {
     SignedCommand(SignedCommandJson),
 }
 
-impl_mina_enum_json_serde!(UserCommandMinaJson, UserCommandJson);
+impl_mina_enum_json_serde!(UserCommandJson, UserCommandJsonProxy);
 
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub struct SignedCommand {
@@ -126,7 +126,7 @@ pub type SignedCommandPayloadV1 = Versioned<Versioned<SignedCommandPayload, 1>, 
 #[auto_from(SignedCommandPayload)]
 pub struct SignedCommandPayloadJson {
     pub common: SignedCommandPayloadCommonJson,
-    pub body: SignedCommandPayloadBodyMinaJson,
+    pub body: SignedCommandPayloadBodyJson,
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
@@ -162,21 +162,21 @@ pub enum SignedCommandPayloadBody {
 pub type SignedCommandPayloadBodyV1 = Versioned<Versioned<SignedCommandPayloadBody, 1>, 1>;
 
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
-enum SignedCommandPayloadBodyJson {
+enum SignedCommandPayloadBodyJsonProxy {
     #[serde(rename = "Payment")]
     PaymentPayload(PaymentPayloadJson),
 }
 
 #[derive(Clone, Debug, PartialEq, AutoFrom)]
 #[auto_from(SignedCommandPayloadBody)]
-#[auto_from(SignedCommandPayloadBodyJson)]
-pub enum SignedCommandPayloadBodyMinaJson {
+#[auto_from(SignedCommandPayloadBodyJsonProxy)]
+pub enum SignedCommandPayloadBodyJson {
     PaymentPayload(PaymentPayloadJson),
 }
 
 impl_mina_enum_json_serde!(
-    SignedCommandPayloadBodyMinaJson,
-    SignedCommandPayloadBodyJson
+    SignedCommandPayloadBodyJson,
+    SignedCommandPayloadBodyJsonProxy
 );
 
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
@@ -251,7 +251,7 @@ pub enum TransactionStatus {
 pub type TransactionStatusV1 = Versioned<TransactionStatus, 1>;
 
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
-enum TransactionStatusJson {
+enum TransactionStatusJsonProxy {
     Applied(
         TransactionStatusAuxiliaryDataJson,
         TransactionStatusBalanceDataJson,
@@ -260,15 +260,15 @@ enum TransactionStatusJson {
 
 #[derive(Clone, Debug, PartialEq, AutoFrom)]
 #[auto_from(TransactionStatus)]
-#[auto_from(TransactionStatusJson)]
-pub enum TransactionStatusMinaJson {
+#[auto_from(TransactionStatusJsonProxy)]
+pub enum TransactionStatusJson {
     Applied(
         TransactionStatusAuxiliaryDataJson,
         TransactionStatusBalanceDataJson,
     ),
 }
 
-impl_mina_enum_json_serde!(TransactionStatusMinaJson, TransactionStatusJson);
+impl_mina_enum_json_serde!(TransactionStatusJson, TransactionStatusJsonProxy);
 
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub struct TransactionStatusAuxiliaryData {
@@ -316,7 +316,7 @@ pub enum CoinBase {
 pub type CoinBaseV1 = Versioned<CoinBase, 1>;
 
 #[derive(Clone, Debug, Serialize, Deserialize, SmartDefault)]
-enum CoinBaseJson {
+enum CoinBaseJsonProxy {
     #[default]
     Zero,
     One(Option<CoinBaseFeeTransferJson>),
@@ -325,15 +325,15 @@ enum CoinBaseJson {
 
 #[derive(Clone, Debug, PartialEq, SmartDefault, AutoFrom)]
 #[auto_from(CoinBase)]
-#[auto_from(CoinBaseJson)]
-pub enum CoinBaseMinaJson {
+#[auto_from(CoinBaseJsonProxy)]
+pub enum CoinBaseJson {
     #[default]
     Zero,
     One(Option<CoinBaseFeeTransferJson>),
     Two,
 }
 
-impl_mina_enum_json_serde!(CoinBaseMinaJson, CoinBaseJson);
+impl_mina_enum_json_serde!(CoinBaseJson, CoinBaseJsonProxy);
 
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 // FIXME: No test coverage yet
@@ -360,7 +360,7 @@ pub enum InternalCommandBalanceData {
 pub type InternalCommandBalanceDataV1 = Versioned<InternalCommandBalanceData, 1>;
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
-enum InternalCommandBalanceDataJson {
+enum InternalCommandBalanceDataJsonProxy {
     #[serde(rename = "Coinbase")]
     CoinBase(CoinBaseBalanceDataJson),
     #[serde(rename = "Fee_transfer")]
@@ -369,15 +369,15 @@ enum InternalCommandBalanceDataJson {
 
 #[derive(Clone, Debug, PartialEq, AutoFrom)]
 #[auto_from(InternalCommandBalanceData)]
-#[auto_from(InternalCommandBalanceDataJson)]
-pub enum InternalCommandBalanceDataMinaJson {
+#[auto_from(InternalCommandBalanceDataJsonProxy)]
+pub enum InternalCommandBalanceDataJson {
     CoinBase(CoinBaseBalanceDataJson),
     FeeTransfer(FeeTransferBalanceDataJson),
 }
 
 impl_mina_enum_json_serde!(
-    InternalCommandBalanceDataMinaJson,
-    InternalCommandBalanceDataJson
+    InternalCommandBalanceDataJson,
+    InternalCommandBalanceDataJsonProxy
 );
 
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]

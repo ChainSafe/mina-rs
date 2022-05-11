@@ -113,9 +113,9 @@ pub type ProofStateDeferredValuesV1 = Versioned<ProofStateDeferredValues, 1>;
 #[auto_from(ProofStateDeferredValues)]
 pub struct ProofStateDeferredValuesJson {
     pub plonk: PlonkJson,
-    pub combined_inner_product: ShiftedValueMinaJson,
-    pub b: ShiftedValueMinaJson,
-    pub xi: BulletproofPreChallengeMinaJson,
+    pub combined_inner_product: ShiftedValueJson,
+    pub b: ShiftedValueJson,
+    pub xi: BulletproofPreChallengeJson,
     pub bulletproof_challenges: BulletproofChallengeTuple18Json,
     pub which_branch: CharJson,
 }
@@ -133,10 +133,10 @@ pub type PlonkV1 = Versioned<Plonk, 1>;
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq, AutoFrom)]
 #[auto_from(Plonk)]
 pub struct PlonkJson {
-    pub alpha: BulletproofPreChallengeMinaJson,
+    pub alpha: BulletproofPreChallengeJson,
     pub beta: ScalarChallengeVector2Json,
     pub gamma: ScalarChallengeVector2Json,
-    pub zeta: BulletproofPreChallengeMinaJson,
+    pub zeta: BulletproofPreChallengeJson,
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
@@ -147,18 +147,18 @@ pub enum ShiftedValue {
 pub type ShiftedValueV1 = Versioned<ShiftedValue, 1>;
 
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
-enum ShiftedValueJson {
+enum ShiftedValueJsonProxy {
     #[serde(rename = "Shifted_value")]
     ShiftedValue(FieldElementJson),
 }
 
 #[derive(Clone, Debug, PartialEq, AutoFrom)]
 #[auto_from(ShiftedValue)]
-#[auto_from(ShiftedValueJson)]
-pub enum ShiftedValueMinaJson {
+#[auto_from(ShiftedValueJsonProxy)]
+pub enum ShiftedValueJson {
     ShiftedValue(FieldElementJson),
 }
-impl_mina_enum_json_serde!(ShiftedValueMinaJson, ShiftedValueJson);
+impl_mina_enum_json_serde!(ShiftedValueJson, ShiftedValueJsonProxy);
 
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub struct SpongeDigestBeforeEvaluations(

@@ -37,3 +37,9 @@ pub const USER_COMMAND_MEMO: u8 = 0x14;
 
 /// base58 version check byte for signature
 pub const SIGNATURE: u8 = 0x9a;
+
+/// base58 version check byte for coinbase stack data
+pub const COINBASE_STACK_DATA: u8 = 0x17;
+
+/// base58 version check byte for coinbase stack hash
+pub const COINBASE_STACK_HASH: u8 = 0x18;

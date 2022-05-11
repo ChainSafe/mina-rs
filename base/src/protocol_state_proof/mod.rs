@@ -104,7 +104,7 @@ pub enum ShiftedValue {
 impl_from_with_proxy!(
     ShiftedValue,
     mina_serialization_types::protocol_state_proof::ShiftedValue,
-    ShiftedValueMinaJson
+    ShiftedValueJson
 );
 
 impl Default for ShiftedValue {

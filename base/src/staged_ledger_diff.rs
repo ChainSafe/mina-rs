@@ -75,7 +75,7 @@ pub enum TransactionStatus {
 impl_from_with_proxy!(
     TransactionStatus,
     mina_serialization_types::staged_ledger_diff::TransactionStatus,
-    TransactionStatusMinaJson
+    TransactionStatusJson
 );
 
 #[derive(Clone, PartialEq, Debug, AutoFrom)]
@@ -107,7 +107,7 @@ pub enum CoinBase {
 impl_from_with_proxy!(
     CoinBase,
     mina_serialization_types::staged_ledger_diff::CoinBase,
-    CoinBaseMinaJson
+    CoinBaseJson
 );
 
 #[derive(Clone, PartialEq, Debug, AutoFrom)]
@@ -128,7 +128,7 @@ pub enum InternalCommandBalanceData {
 impl_from_with_proxy!(
     InternalCommandBalanceData,
     mina_serialization_types::staged_ledger_diff::InternalCommandBalanceData,
-    InternalCommandBalanceDataMinaJson
+    InternalCommandBalanceDataJson
 );
 
 #[derive(Clone, PartialEq, Debug, AutoFrom)]

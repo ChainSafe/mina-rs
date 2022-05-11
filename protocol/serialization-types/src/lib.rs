@@ -86,7 +86,7 @@ pub mod v1 {
     pub use super::protocol_version::ProtocolVersionV1;
     pub use super::signatures::{PublicKey2V1, PublicKeyV1, SignatureV1};
     pub use super::snark_work::{
-        FeeExcessV1, LedgerProofV1, OneORTwoV1, PendingCoinbaseStackStateV1, PendingCoinbaseV1,
+        FeeExcessPairV1, LedgerProofV1, OneORTwoV1, PendingCoinbaseStackStateV1, PendingCoinbaseV1,
         SgnTypeV1, SignedV1, StateStackV1, StatementV1, TransactionSnarkV1, TransactionSnarkWorkV1,
     };
     pub use super::staged_ledger_diff::{
@@ -106,7 +106,7 @@ pub mod json {
     pub use blockchain_state::BlockchainStateJson;
     pub use bulletproof_challenges::{
         BulletproofChallengeJson, BulletproofChallengeTuple17Json, BulletproofChallengeTuple18Json,
-        BulletproofChallengesJson, BulletproofPreChallengeMinaJson,
+        BulletproofChallengesJson, BulletproofPreChallengeJson,
         ProofStateBulletproofChallengesJson, ScalarChallengeVector2Json,
     };
     pub use common::{
@@ -118,7 +118,7 @@ pub mod json {
     pub use delta_transition_chain_proof::DeltaTransitionChainProofJson;
     pub use external_transition::ExternalTransitionJson;
     pub use field_and_curve_elements::{
-        ECPointMinaJson, ECPointVecJson, FieldElementJson, FieldElementVecJson, FiniteECPointJson,
+        ECPointJson, ECPointVecJson, FieldElementJson, FieldElementVecJson, FiniteECPointJson,
         FiniteECPointPairJson, FiniteECPointPairVecJson, FiniteECPointVecJson,
     };
     pub use opening_proof::OpeningProofJson;
@@ -133,21 +133,21 @@ pub mod json {
         PairingBasedJson, PlonkJson, PrevEvalsJson, PrevXHatJson, ProofJson,
         ProofOpeningsEvalsJson, ProofOpeningsJson, ProofStateDeferredValuesJson, ProofStateJson,
         ProofStatePairingBasedJson, ProofStatementJson, ProtocolStateProofBase64Json,
-        ProtocolStateProofJson, ShiftedValueMinaJson, SpongeDigestBeforeEvaluations,
+        ProtocolStateProofJson, ShiftedValueJson, SpongeDigestBeforeEvaluations,
     };
     pub use protocol_version::ProtocolVersionJson;
     pub use signatures::{PublicKeyJson, SignatureJson};
     pub use snark_work::{
-        FeeExcessJson, OneORTwoMinaJson, PendingCoinbaseJson, PendingCoinbaseStackStateJson,
-        SgnTypeJson, SignedJson, StateStackJson, StatementJson, TransactionSnarkJson,
-        TransactionSnarkWorkJson,
+        FeeExcessJson, FeeExcessPairJson, OneORTwoJson, PendingCoinbaseJson,
+        PendingCoinbaseStackStateJson, SgnTypeJson, SignedJson, StateStackJson, StatementJson,
+        TransactionSnarkJson, TransactionSnarkWorkJson,
     };
     pub use staged_ledger_diff::{
-        CoinBaseBalanceDataJson, CoinBaseMinaJson, FeeTransferBalanceDataJson,
-        InternalCommandBalanceDataMinaJson, PaymentPayloadJson, SignedCommandJson,
-        SignedCommandMemoJson, SignedCommandPayloadBodyMinaJson, SignedCommandPayloadCommonJson,
+        CoinBaseBalanceDataJson, CoinBaseJson, FeeTransferBalanceDataJson,
+        InternalCommandBalanceDataJson, PaymentPayloadJson, SignedCommandJson,
+        SignedCommandMemoJson, SignedCommandPayloadBodyJson, SignedCommandPayloadCommonJson,
         SignedCommandPayloadJson, StagedLedgerDiffJson, TransactionStatusAuxiliaryDataJson,
-        TransactionStatusBalanceDataJson, TransactionStatusMinaJson, UserCommandMinaJson,
+        TransactionStatusBalanceDataJson, TransactionStatusJson, UserCommandJson,
         UserCommandWithStatusJson,
     };
 }

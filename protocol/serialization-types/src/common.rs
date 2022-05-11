@@ -100,7 +100,7 @@ impl Serialize for DecimalJson {
     {
         let (q, r) = self.0.div_rem(&MINA_PRECISION);
         let s = format!("{q}.{:0>9}", r);
-        serializer.serialize_str(s.trim_end_matches('0'))
+        serializer.serialize_str(s.trim_end_matches('0').trim_end_matches('.'))
     }
 }
 
@@ -428,6 +428,12 @@ pub type EpochSeedHashV1Json = HashV1Json<{ version_bytes::EPOCH_SEED }>;
 
 /// base58 string representation of a state hash
 pub type StateHashV1Json = HashV1Json<{ version_bytes::STATE_HASH }>;
+
+/// base58 string representation of a coinbase stack data hash
+pub type CoinBaseStackDataV1Json = HashV1Json<{ version_bytes::COINBASE_STACK_DATA }>;
+
+/// base58 string representation of a coinbase stack hash
+pub type CoinBaseStackHashV1Json = HashV1Json<{ version_bytes::COINBASE_STACK_HASH }>;
 
 /// base58 string representation of a vrf output hash
 pub type VrfOutputHashV1Json = HashV1Json<{ version_bytes::VRF_TRUNCATED_OUTPUT }>;

@@ -24,7 +24,7 @@ pub type TransactionSnarkWorkV1 = Versioned<TransactionSnarkWork, 1>;
 pub struct TransactionSnarkWorkJson {
     // Versioned 1 byte
     pub fee: U64Json,
-    pub proofs: OneORTwoMinaJson,
+    pub proofs: OneORTwoJson,
     pub prover: PublicKeyJson,
 }
 
@@ -41,20 +41,20 @@ pub enum OneORTwo {
 pub type OneORTwoV1 = Versioned<OneORTwo, 1>;
 
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq, AutoFrom)]
-enum OneORTwoJson {
+enum OneORTwoJsonProxy {
     One(Box<TransactionSnarkJson>),
     Two(Box<TransactionSnarkJson>, Box<TransactionSnarkJson>),
 }
 
 #[derive(Clone, Debug, PartialEq, AutoFrom)]
 #[auto_from(OneORTwo)]
-#[auto_from(OneORTwoJson)]
-pub enum OneORTwoMinaJson {
+#[auto_from(OneORTwoJsonProxy)]
+pub enum OneORTwoJson {
     One(Box<TransactionSnarkJson>),
     Two(Box<TransactionSnarkJson>, Box<TransactionSnarkJson>),
 }
 
-impl_mina_enum_json_serde!(OneORTwoMinaJson, OneORTwoJson);
+impl_mina_enum_json_serde!(OneORTwoJson, OneORTwoJsonProxy);
 
 pub type LedgerProofV1 = Versioned<TransactionSnarkV1, 1>;
 
@@ -82,7 +82,7 @@ pub struct Statement {
     pub target: HashV1,
     pub supply_increase: AmountV1,
     pub pending_coinbase_stack_state: PendingCoinbaseStackStateV1,
-    pub fee_excess: FeeExcessV1,
+    pub fee_excess: FeeExcessPairV1,
     pub next_available_token_before: TokenIdV1,
     pub next_available_token_after: TokenIdV1,
     pub sok_digest: ByteVecV1,
@@ -94,11 +94,11 @@ pub type StatementV1 = Versioned<Versioned<Statement, 1>, 1>;
 #[auto_from(Statement)]
 pub struct StatementJson {
     // Versioned 2 byte
-    pub source: StateHashV1Json,
-    pub target: StateHashV1Json,
+    pub source: LedgerHashV1Json,
+    pub target: LedgerHashV1Json,
     pub supply_increase: U64Json,
     pub pending_coinbase_stack_state: PendingCoinbaseStackStateJson,
-    pub fee_excess: FeeExcessJson,
+    pub fee_excess: FeeExcessPairJson,
     pub next_available_token_before: U64Json,
     pub next_available_token_after: U64Json,
     pub sok_digest: ByteVecJson,
@@ -134,7 +134,7 @@ pub type PendingCoinbaseV1 = Versioned<Versioned<PendingCoinbase, 1>, 1>;
 #[auto_from(PendingCoinbase)]
 pub struct PendingCoinbaseJson {
     #[serde(rename = "data")]
-    pub data_stack: StateHashV1Json,
+    pub data_stack: CoinBaseStackDataV1Json,
     #[serde(rename = "state")]
     pub state_stack: StateStackJson,
 }
@@ -152,30 +152,31 @@ pub type StateStackV1 = Versioned<Versioned<StateStack, 1>, 1>;
 #[auto_from(StateStack)]
 pub struct StateStackJson {
     // Versioned 2 byte
-    pub init: StateHashV1Json,
-    pub curr: StateHashV1Json,
+    pub init: CoinBaseStackHashV1Json,
+    pub curr: CoinBaseStackHashV1Json,
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub struct FeeExcess {
-    // Versioned 2 byte
-    pub fee_token_l: TokenIdV1,
-    pub fee_excess_l: SignedV1,
-    pub fee_token_r: TokenIdV1,
-    pub fee_excess_r: SignedV1,
+    pub token: TokenIdV1,
+    pub amount: SignedV1,
 }
-
-pub type FeeExcessV1 = Versioned<Versioned<FeeExcess, 1>, 1>;
 
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq, AutoFrom)]
 #[auto_from(FeeExcess)]
 pub struct FeeExcessJson {
-    // Versioned 2 byte
-    pub fee_token_l: U64Json,
-    pub fee_excess_l: SignedV1,
-    pub fee_token_r: U64Json,
-    pub fee_excess_r: SignedV1,
+    pub token: U64Json,
+    pub amount: SignedJson,
 }
+
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
+pub struct FeeExcessPair(pub FeeExcess, pub FeeExcess);
+
+pub type FeeExcessPairV1 = Versioned<Versioned<FeeExcessPair, 1>, 1>;
+
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq, AutoFrom)]
+#[auto_from(FeeExcessPair)]
+pub struct FeeExcessPairJson(pub FeeExcessJson, pub FeeExcessJson);
 
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub struct Signed {
@@ -204,9 +205,17 @@ pub enum SgnType {
 pub type SgnTypeV1 = Versioned<SgnType, 1>;
 
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq, AutoFrom)]
-#[auto_from(SgnType)]
-pub enum SgnTypeJson {
-    // Versioned 1 byte
+pub enum SgnTypeJsonProxy {
     Pos,
     Neg,
 }
+
+#[derive(Clone, Debug, PartialEq, AutoFrom)]
+#[auto_from(SgnType)]
+#[auto_from(SgnTypeJsonProxy)]
+pub enum SgnTypeJson {
+    Pos,
+    Neg,
+}
+
+impl_mina_enum_json_serde!(SgnTypeJson, SgnTypeJsonProxy);

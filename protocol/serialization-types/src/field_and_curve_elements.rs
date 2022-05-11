@@ -90,7 +90,7 @@ pub type ECPointV1 = Versioned<ECPoint, 1>;
 /// Elliptic curve point that can either be the coordinates of a point on the curve
 /// OR it can be the point-at-infinity (json)
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq, SmartDefault)]
-enum ECPointJson {
+enum ECPointJsonProxy {
     /// The point at infinity
     #[default]
     Infinite,
@@ -102,8 +102,8 @@ enum ECPointJson {
 /// OR it can be the point-at-infinity (mina json)
 #[derive(Clone, Debug, PartialEq, SmartDefault, AutoFrom)]
 #[auto_from(ECPoint)]
-#[auto_from(ECPointJson)]
-pub enum ECPointMinaJson {
+#[auto_from(ECPointJsonProxy)]
+pub enum ECPointJson {
     /// The point at infinity
     #[default]
     Infinite,
@@ -111,7 +111,7 @@ pub enum ECPointMinaJson {
     Finite(FiniteECPointJson),
 }
 
-impl_mina_enum_json_serde!(ECPointMinaJson, ECPointJson);
+impl_mina_enum_json_serde!(ECPointJson, ECPointJsonProxy);
 
 /// Vector of EC points
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
@@ -123,7 +123,7 @@ pub type ECPointVecV1 = Versioned<ECPointVec, 1>;
 /// Vector of EC points (json)
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq, AutoFrom)]
 #[auto_from(ECPointVec)]
-pub struct ECPointVecJson(pub Vec<ECPointMinaJson>);
+pub struct ECPointVecJson(pub Vec<ECPointJson>);
 
 /// Field element (json)
 #[derive(Debug, Clone, PartialEq, From, Into)]

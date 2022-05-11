@@ -20,7 +20,7 @@ pub type BulletproofChallengeV1 = Versioned<BulletproofChallenge, 1>;
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq, AutoFrom)]
 #[auto_from(BulletproofChallenge)]
 pub struct BulletproofChallengeJson {
-    pub prechallenge: BulletproofPreChallengeMinaJson,
+    pub prechallenge: BulletproofPreChallengeJson,
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
@@ -156,20 +156,20 @@ pub enum BulletproofPreChallenge {
 pub type BulletproofPreChallengeV1 = Versioned<BulletproofPreChallenge, 1>;
 
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
-enum BulletproofPreChallengeJson {
+enum BulletproofPreChallengeJsonProxy {
     #[serde(rename = "Scalar_challenge")]
     ScalarChallenge(ScalarChallengeVector2Json),
 }
 
 #[derive(Clone, Debug, PartialEq, AutoFrom)]
 #[auto_from(BulletproofPreChallenge)]
-#[auto_from(BulletproofPreChallengeJson)]
-pub enum BulletproofPreChallengeMinaJson {
+#[auto_from(BulletproofPreChallengeJsonProxy)]
+pub enum BulletproofPreChallengeJson {
     ScalarChallenge(ScalarChallengeVector2Json),
 }
 impl_mina_enum_json_serde_with_option!(
-    BulletproofPreChallengeMinaJson,
     BulletproofPreChallengeJson,
+    BulletproofPreChallengeJsonProxy,
     false
 );
 
