@@ -18,7 +18,8 @@ use proof_systems::mina_signer::{CompressedPubKey, Signer};
 #[derive(Clone, PartialEq, Debug, Default)]
 /// Top level wrapper type for a StagedLedgerDiff
 pub struct StagedLedgerDiff {
-    pub diff: StagedLedgerDiffTuple,
+    pub diff_two: StagedLedgerPreDiff,
+    pub diff_one: Option<StagedLedgerPreDiff>,
 }
 
 impl<CTX> Verifiable<CTX> for StagedLedgerDiff
@@ -28,26 +29,11 @@ where
     // StagedLedgerDiff is considered valid if:
     // - All PreDiffs are valid
     fn verify(&self, ctx: &mut CTX) -> bool {
-        if let Some(diff_one) = self.diff.diff_one() {
-            diff_one.verify(ctx) && self.diff.diff_two().verify(ctx)
+        if let Some(diff_one) = &self.diff_one {
+            diff_one.verify(ctx) && self.diff_two.verify(ctx)
         } else {
-            self.diff.diff_two().verify(ctx)
+            self.diff_two.verify(ctx)
         }
-    }
-}
-
-#[derive(Clone, PartialEq, Debug, Default)]
-pub struct StagedLedgerDiffTuple(
-    pub(crate) (StagedLedgerPreDiff, Option<StagedLedgerPreDiff>),
-);
-
-impl StagedLedgerDiffTuple {
-    pub fn diff_two(&self) -> &StagedLedgerPreDiff {
-        &self.0 .0
-    }
-
-    pub fn diff_one(&self) -> &Option<StagedLedgerPreDiff> {
-        &self.0 .1
     }
 }
 
@@ -60,27 +46,6 @@ pub struct StagedLedgerPreDiff {
 }
 
 impl<CTX> Verifiable<CTX> for StagedLedgerPreDiff
-where
-    CTX: Signer<SignedCommandPayload>,
-{
-    // PreDiff is considered valid if:
-    // - all commands are valid
-    fn verify(&self, ctx: &mut CTX) -> bool {
-        self.commands
-            .iter()
-            .all(|cmd_with_status| cmd_with_status.data.verify(ctx))
-    }
-}
-
-#[derive(Clone, PartialEq, Debug, Default)]
-pub struct StagedLedgerPreDiffTwo {
-    pub completed_works: Vec<TransactionSnarkWork>,
-    pub commands: Vec<UserCommandWithStatus>,
-    pub coinbase: CoinBase,
-    pub internal_command_balances: Vec<InternalCommandBalanceData>,
-}
-
-impl<CTX> Verifiable<CTX> for StagedLedgerPreDiffTwo
 where
     CTX: Signer<SignedCommandPayload>,
 {
