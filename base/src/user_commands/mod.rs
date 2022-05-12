@@ -15,12 +15,22 @@ pub use signed_command::{
     SignedCommand, SignedCommandPayload, SignedCommandPayloadBody, SignedCommandPayloadCommon,
 };
 
+use mina_serialization_types::json::UserCommandJson;
+use mina_serialization_types_macros::AutoFrom;
+use versioned::*;
+
 /// The top level user command type
 /// This is the output of the command builders
-#[derive(Clone, PartialEq, Debug)]
-#[non_exhaustive]
+#[derive(Clone, PartialEq, Debug, AutoFrom)]
+#[auto_from(mina_serialization_types::staged_ledger_diff::UserCommand)]
 pub enum UserCommand {
     /// A command signed by a private key
     SignedCommand(SignedCommand),
     // FIXME: other variants are not covered by current test block
 }
+
+impl_from_with_proxy!(
+    UserCommand,
+    mina_serialization_types::staged_ledger_diff::UserCommand,
+    UserCommandJson
+);

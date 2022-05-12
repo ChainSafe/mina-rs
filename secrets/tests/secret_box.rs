@@ -7,7 +7,6 @@ wasm_bindgen_test::wasm_bindgen_test_configure!(run_in_browser);
 #[cfg(test)]
 mod tests {
     use mina_secrets::secret_box::*;
-    use mina_serialization_types::v1::*;
     use wasm_bindgen_test::*;
 
     // Note that file permission validation is not covered in this test case
@@ -43,11 +42,8 @@ mod tests {
     fn secret_box_keypair() -> anyhow::Result<()> {
         let sb: SecretBox = PRIVATE_KEY_JSON.try_into()?;
         let keypair = sb.get_keypair(PASSWORD)?;
-        let pk: PublicKeyV1 = keypair.public.into_compressed().into();
-        let pk = pk.0.t.t;
-        let pk_expected_bytes = bs58::decode(PUBLIC_KEY).into_vec()?;
-        assert_eq!(&pk.x[..], &pk_expected_bytes[3..35]);
-        assert_eq!(pk.is_odd as u8, pk_expected_bytes[35]);
+        let pk = keypair.public.into_compressed();
+        assert_eq!(pk.into_address().as_str(), PUBLIC_KEY);
         Ok(())
     }
 

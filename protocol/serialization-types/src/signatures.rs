@@ -3,8 +3,13 @@
 
 //! Signatures and public key types
 
-use crate::field_and_curve_elements::{FieldElement, InnerCurveScalar};
-use serde::{Deserialize, Serialize};
+use crate::{
+    field_and_curve_elements::{FieldElement, InnerCurveScalar},
+    impl_strconv_via_json, version_bytes,
+};
+use mina_serialization_types_macros::AutoFrom;
+use proof_systems::mina_signer::CompressedPubKey;
+use serde::{Deserialize, Deserializer, Serialize, Serializer};
 use versioned::Versioned;
 
 /// An EC point stored in compressed form containing only the x coordinate and one extra bit
@@ -14,6 +19,43 @@ pub struct CompressedCurvePoint {
     pub x: FieldElement,
     /// If the point is odd (or even)
     pub is_odd: bool,
+}
+
+/// An EC point stored in compressed form containing only the x coordinate and one extra bit (json)
+#[derive(Clone, Debug, PartialEq, AutoFrom)]
+#[auto_from(CompressedCurvePoint)]
+pub struct PublicKeyJson {
+    /// The x coordinate of the EC point
+    pub x: FieldElement,
+    /// If the point is odd (or even)
+    pub is_odd: bool,
+}
+
+impl_strconv_via_json!(CompressedCurvePoint, PublicKeyJson);
+
+impl Serialize for PublicKeyJson {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        let pk: CompressedCurvePoint = self.clone().into();
+        let pk: CompressedPubKey = pk.into();
+        let s = pk.into_address();
+        serializer.serialize_str(&s)
+    }
+}
+
+impl<'de> Deserialize<'de> for PublicKeyJson {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        let s = String::deserialize(deserializer)?;
+        let pk =
+            CompressedPubKey::from_address(&s).map_err(<D::Error as serde::de::Error>::custom)?;
+        let pk: CompressedCurvePoint = pk.into();
+        Ok(pk.into())
+    }
 }
 
 /// Public key (v1)
@@ -28,34 +70,105 @@ pub struct PublicKey2V1(pub Versioned<PublicKeyV1, 1>); // with an extra version
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub struct SignatureV1(pub Versioned<Versioned<(FieldElement, InnerCurveScalar), 1>, 1>);
 
+/// Signature (json)
+#[derive(Clone, Debug, PartialEq)]
+pub struct SignatureJson(pub Versioned<(FieldElement, InnerCurveScalar), 1>);
+
+impl Serialize for SignatureJson {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        let mut buf = Vec::new();
+        bin_prot::to_writer(&mut buf, &self.0).map_err(<S::Error as serde::ser::Error>::custom)?;
+        let s = bs58::encode(buf)
+            .with_check_version(version_bytes::SIGNATURE)
+            .into_string();
+        serializer.serialize_str(&s)
+    }
+}
+
+impl<'de> Deserialize<'de> for SignatureJson {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        let s = String::deserialize(deserializer)?;
+        let bytes = bs58::decode(s)
+            .with_check(Some(version_bytes::SIGNATURE))
+            .into_vec()
+            .map_err(<D::Error as serde::de::Error>::custom)?;
+        Ok(Self(
+            bin_prot::from_reader(&bytes[1..]).map_err(<D::Error as serde::de::Error>::custom)?,
+        ))
+    }
+}
+
 mod conversions {
-    use super::{CompressedCurvePoint, PublicKey2V1, PublicKeyV1, SignatureV1};
+    use super::*;
     use proof_systems::mina_signer::{BaseField, CompressedPubKey, ScalarField, Signature};
     use proof_systems::o1_utils::field_helpers::FieldHelpers;
 
-    impl From<PublicKeyV1> for CompressedPubKey {
-        fn from(t: PublicKeyV1) -> Self {
+    impl From<CompressedCurvePoint> for CompressedPubKey {
+        fn from(t: CompressedCurvePoint) -> Self {
             CompressedPubKey {
                 // This unwrap is safe as a PublicKeyV1 always has 32 bytes of data and from_bytes does not check if it is on curve
-                x: BaseField::from_bytes(&t.0.t.t.x)
+                x: BaseField::from_bytes(&t.x)
                     .expect("Wrong number of bytes encountered when converting to BaseField"),
-                is_odd: t.0.t.t.is_odd,
+                is_odd: t.is_odd,
             }
+        }
+    }
+    impl From<CompressedPubKey> for CompressedCurvePoint {
+        fn from(t: CompressedPubKey) -> Self {
+            CompressedCurvePoint {
+                // This unwrap of a slice conversion is safe as a CompressedPubKey always has 32 bytes of data which the exact length of
+                // FieldElement
+                x: t.x
+                    .to_bytes()
+                    .as_slice()
+                    .try_into()
+                    .expect("Wrong number of bytes encountered when converting to FieldElement"),
+                is_odd: t.is_odd,
+            }
+        }
+    }
+
+    impl From<PublicKeyV1> for CompressedPubKey {
+        fn from(t: PublicKeyV1) -> Self {
+            let (t,): (CompressedCurvePoint,) = t.0.into();
+            t.into()
         }
     }
     impl From<CompressedPubKey> for PublicKeyV1 {
         fn from(t: CompressedPubKey) -> Self {
-            PublicKeyV1(
-                CompressedCurvePoint {
-                    // This unwrap of a slice conversion is safe as a CompressedPubKey always has 32 bytes of data which the exact length of
-                    // FieldElement
-                    x: t.x.to_bytes().as_slice().try_into().expect(
-                        "Wrong number of bytes encountered when converting to FieldElement",
-                    ),
-                    is_odd: t.is_odd,
-                }
-                .into(),
-            )
+            let t: CompressedCurvePoint = t.into();
+            PublicKeyV1(t.into())
+        }
+    }
+
+    impl From<PublicKeyV1> for PublicKeyJson {
+        fn from(t: PublicKeyV1) -> Self {
+            let (t,): (CompressedCurvePoint,) = t.0.into();
+            t.into()
+        }
+    }
+    impl From<PublicKeyJson> for PublicKeyV1 {
+        fn from(t: PublicKeyJson) -> Self {
+            let t: CompressedCurvePoint = t.into();
+            Self(t.into())
+        }
+    }
+
+    impl From<PublicKey2V1> for PublicKeyJson {
+        fn from(t: PublicKey2V1) -> Self {
+            t.0.t.into()
+        }
+    }
+    impl From<PublicKeyJson> for PublicKey2V1 {
+        fn from(t: PublicKeyJson) -> Self {
+            let pk: PublicKeyV1 = t.into();
+            Self(pk.into())
         }
     }
 
@@ -97,6 +210,29 @@ mod conversions {
                 )
                     .into(),
             )
+        }
+    }
+
+    impl From<SignatureV1> for SignatureJson {
+        fn from(t: SignatureV1) -> Self {
+            Self(t.0.t)
+        }
+    }
+    impl From<SignatureJson> for SignatureV1 {
+        fn from(t: SignatureJson) -> Self {
+            Self(t.0.into())
+        }
+    }
+    impl From<Signature> for SignatureJson {
+        fn from(t: Signature) -> Self {
+            let v1: SignatureV1 = t.into();
+            v1.into()
+        }
+    }
+    impl From<SignatureJson> for Signature {
+        fn from(t: SignatureJson) -> Self {
+            let v1: SignatureV1 = t.into();
+            v1.into()
         }
     }
 }

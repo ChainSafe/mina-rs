@@ -3,7 +3,7 @@
 
 #![deny(warnings)]
 
-use bin_prot::{encodable::BinProtEncodable, BinProtRule, Deserializer};
+use bin_prot::{BinProtRule, Deserializer};
 use lazy_static::lazy_static;
 use mina_serialization_types::v1::ExternalTransitionV1;
 use serde::Deserialize;
@@ -21,6 +21,7 @@ lazy_static! {
             .unwrap()
             .bin_prot_rule
     };
+    pub static ref GENESIS_BLOCK_MAINNET_JSON: serde_json::Value = serde_json::from_slice(include_bytes!("data/genesis-3NKeMoncuHab5ScarV5ViyF16cJPT4taWNSaTLS64Dp67wuXigPZ.json")).unwrap();
     pub static ref GENESIS_BLOCK_MAINNET: BlockFixture = load_test_block_hex("genesis-3NKeMoncuHab5ScarV5ViyF16cJPT4taWNSaTLS64Dp67wuXigPZ.hex", include_str!("data/genesis-3NKeMoncuHab5ScarV5ViyF16cJPT4taWNSaTLS64Dp67wuXigPZ.hex"));
     // FIXME: Update this with real devnet genesis block
     pub static ref GENESIS_BLOCK_DEVNET: BlockFixture = load_test_block_hex("genesis-3NKeMoncuHab5ScarV5ViyF16cJPT4taWNSaTLS64Dp67wuXigPZ.hex", include_str!("data/genesis-3NKeMoncuHab5ScarV5ViyF16cJPT4taWNSaTLS64Dp67wuXigPZ.hex"));
@@ -37,6 +38,15 @@ lazy_static! {
         "data/3NLvrNK6rmWnxEkGZo1y4KYjsSTcgVx7gwen2aR2kTWmRDTNoSu8.hex"
         "data/3NK9fHpzfPWhuxFhQ9Dau1X1JWtstB6kGC4xrurSPU1kctMCsU9U.hex"
         "data/3NKapQX5Qe8f4BEZGWxVSWKQvKNnkvPXNLq5KDHCV1qoPzV5Y3Wu.hex"
+        "data/3NKjZ5fjms6BMaH4aq7DopPGyMY7PbG6vhRsX5XnYRxih8i9G7dj.hex"
+    );
+    // Note that GENESIS_BLOCK_MAINNET_JSON has a different json format, so it's not included here
+    pub static ref JSON_TEST_BLOCKS: HashMap<String, serde_json::Value> = load_json_test_blocks!(
+        "data/mainnet-117896-3NKrv92FYZFHRNUJxiP7VGeRx3MeDY2iffFjUWXTPoXJorsS63ba.json"
+        "data/mainnet-117896-3NKjZ5fjms6BMaH4aq7DopPGyMY7PbG6vhRsX5XnYRxih8i9G7dj.json"
+        "data/mainnet-116121-3NK6myZRzc3GvS5iydv88on2XTEU2btYrjMVkgtbuoeXASRipSa6.json"
+        "data/mainnet-77749-3NK3P5bJHhqR7xkZBquGGfq3sERUeXNYNma5YXRMjgCNsTJRZpgL.json"
+        "data/mainnet-77748-3NKaBJsN1SehD6iJwRwJSFmVzJg5DXSUQVgnMxtH4eer4aF5BrDK.json"
     );
 }
 
@@ -52,9 +62,7 @@ pub struct BlockFixture {
 
 impl BlockFixture {
     pub fn external_transitionv1(&self) -> anyhow::Result<ExternalTransitionV1> {
-        Ok(ExternalTransitionV1::try_decode_binprot(
-            self.bytes.as_slice(),
-        )?)
+        Ok(bin_prot::from_reader(self.bytes.as_slice())?)
     }
 }
 
@@ -95,6 +103,25 @@ macro_rules! load_test_blocks {
                 let file_name = $lt.split('/').last().unwrap().into();
                 let bytes = include_bytes!($lt);
                 let block = load_test_block($lt, bytes);
+                temp_map.insert(file_name, block);
+            )*
+            temp_map
+        }
+    };
+}
+
+#[macro_export]
+macro_rules! load_json_test_blocks {
+    ( $( $lt:literal $(,)?) * ) => {
+        {
+            let mut temp_map = HashMap::new();
+            $(
+                let file_name = $lt.split('/').last().unwrap().into();
+                let mut block: serde_json::Value = serde_json::from_slice(include_bytes!($lt)).map_err(|err|format!("Errer loading {}: {err}", $lt)).unwrap();
+                // Remove scheduled_time field as it's not part of block
+                if let Some(block_mut) = block.as_object_mut() {
+                    block_mut.remove("scheduled_time");
+                }
                 temp_map.insert(file_name, block);
             )*
             temp_map

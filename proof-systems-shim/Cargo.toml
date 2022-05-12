@@ -7,6 +7,6 @@ edition = "2021"
 license = "Apache-2.0"
 
 [dependencies]
-mina-hasher = {git = "https://github.com/o1-labs/proof-systems", rev = "b44ceb380b74eb19bc203df384bcb1643fdd83c2"}
-mina-signer = {git = "https://github.com/o1-labs/proof-systems", rev = "b44ceb380b74eb19bc203df384bcb1643fdd83c2"}
-o1-utils = {git = "https://github.com/o1-labs/proof-systems", rev = "b44ceb380b74eb19bc203df384bcb1643fdd83c2"}
+mina-hasher = {git = "https://github.com/o1-labs/proof-systems", rev = "3961f5cfce1f8e2f014ff8afeb50241eb6a161a4"}
+mina-signer = {git = "https://github.com/o1-labs/proof-systems", rev = "3961f5cfce1f8e2f014ff8afeb50241eb6a161a4"}
+o1-utils = {git = "https://github.com/o1-labs/proof-systems", rev = "3961f5cfce1f8e2f014ff8afeb50241eb6a161a4"}

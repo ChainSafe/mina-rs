@@ -3,8 +3,11 @@
 
 //! Account based permissions
 
+use mina_serialization_types_macros::AutoFrom;
+
 /// The level of auth required to perform a particular action with an account
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, AutoFrom)]
+#[auto_from(mina_serialization_types::account::AuthRequired)]
 pub enum AuthRequired {
     /// None required
     None,
@@ -21,7 +24,8 @@ pub enum AuthRequired {
 }
 
 /// Permissions associated with the account
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, AutoFrom)]
+#[auto_from(mina_serialization_types::account::Permissions)]
 pub struct Permissions {
     /// If the account can stake
     pub stake: bool,
@@ -37,18 +41,4 @@ pub struct Permissions {
     pub set_permissions: AuthRequired,
     /// Permission require to set verification key
     pub set_verification_key: AuthRequired,
-}
-
-impl Default for Permissions {
-    fn default() -> Self {
-        Self {
-            stake: true,
-            edit_state: AuthRequired::Signature,
-            send: AuthRequired::Signature,
-            receive: AuthRequired::None,
-            set_delegate: AuthRequired::Signature,
-            set_permissions: AuthRequired::Signature,
-            set_verification_key: AuthRequired::Signature,
-        }
-    }
 }

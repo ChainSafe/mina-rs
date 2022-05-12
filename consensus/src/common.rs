@@ -13,9 +13,7 @@ use mina_rs_base::global_slot::GlobalSlot;
 use mina_rs_base::protocol_state::{Header, ProtocolState};
 use mina_rs_base::types::{BlockTime, Length};
 use once_cell::sync::OnceCell;
-use proof_systems::mina_hasher::Fp;
-use proof_systems::mina_hasher::PoseidonHasherKimchi;
-use proof_systems::mina_hasher::{create_kimchi, Hasher};
+use proof_systems::mina_hasher::{create_kimchi, Fp, Hasher, PoseidonHasherKimchi};
 
 /// Type that defines constant values for mina consensus calculation
 // TODO: derive from protocol constants

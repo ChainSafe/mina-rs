@@ -4,9 +4,11 @@
 //! Structure of a global slot
 
 use crate::numbers::{self, Length};
+use mina_serialization_types_macros::AutoFrom;
 use proof_systems::mina_hasher::{Hashable, ROInput};
 
-#[derive(Clone, Default, PartialEq, Debug)]
+#[derive(Clone, Default, PartialEq, Debug, AutoFrom)]
+#[auto_from(mina_serialization_types::global_slot::GlobalSlot)]
 /// A global slot
 pub struct GlobalSlot {
     /// The global slot number of a chain or block

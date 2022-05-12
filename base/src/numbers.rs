@@ -3,22 +3,18 @@
 
 //! Newtypes for different numeric types used throughout Mina
 
-use crate::*;
-
-use std::fmt;
-
-use derive_deref::Deref;
-use derive_more::From;
-use mina_crypto::{hex::skip_0x_prefix_when_needed, prelude::*};
+use crate::{constants::*, *};
+use derive_more::{From, Into};
+use mina_crypto::prelude::*;
 use mina_hasher::{Hashable, ROInput};
+use mina_serialization_types::{json::*, *};
+use mina_serialization_types_macros::*;
 use num::Integer;
+use std::fmt;
 use thiserror::Error;
 use time::Duration;
 
-use crate::constants::MINA_PRECISION;
-
-#[derive(Clone, Default, PartialEq, Debug, Hash, From)]
-#[from(forward)]
+#[derive(Clone, Default, PartialEq, Debug, From, Into)]
 /// Newtype for TokenIds
 pub struct TokenId(pub u64);
 
@@ -36,8 +32,7 @@ impl Hashable for TokenId {
     }
 }
 
-#[derive(Clone, PartialEq, PartialOrd, Debug, Hash, Copy, Default, Deref, From)]
-#[from(forward)]
+#[derive(Clone, PartialEq, PartialOrd, Debug, Copy, Default, From, Into)]
 /// Represents the length of something (e.g. an epoch or window)
 pub struct Length(pub u32);
 
@@ -55,14 +50,12 @@ impl Hashable for Length {
     }
 }
 
-#[derive(Clone, PartialEq, PartialOrd, Debug, Hash, Copy, Default, From)]
-#[from(forward)]
+#[derive(Clone, PartialEq, PartialOrd, Debug, Copy, Default, From, Into)]
 
 /// Represents a difference between two lengths
 pub struct Delta(pub u32);
 
-#[derive(Clone, PartialEq, PartialOrd, Debug, Hash, Copy, Default, From)]
-#[from(forward)]
+#[derive(Clone, PartialEq, PartialOrd, Debug, Copy, Default, From, Into)]
 // FIXME: 255 255 cannot be deserialized to u32, use i32 for now
 // Note: Extended_Uint32 is not defined in bin_prot, but comes from mina
 // Block path: t/staged_ledger_diff/t/diff/t/0/t/t/commands/0/t/data/t/t/t/t/payload/t/t/common/t/t/t/valid_until
@@ -70,9 +63,7 @@ pub struct Delta(pub u32);
 /// This will not be part of the public API once the deserialization refactor is complete
 pub struct ExtendedU32(pub i32);
 
-#[derive(Clone, PartialEq, PartialOrd, Debug, Hash, Copy, Default, From)]
-#[from(forward)]
-
+#[derive(Clone, PartialEq, PartialOrd, Debug, Copy, Default, From, Into)]
 /// This will not be part of the public API once the deserialization refactor is complete
 pub struct ExtendedU64(pub u64);
 
@@ -85,8 +76,7 @@ pub struct ExtendedU64(pub u64);
 /// let amount = Amount(1000000030);
 /// assert_eq!(amount.to_string(), "1.000000030");
 /// ```
-#[derive(Copy, Clone, PartialEq, Debug, Hash, Default, From)]
-#[from(forward)]
+#[derive(Copy, Clone, PartialEq, Debug, Default, From, Into)]
 pub struct Amount(pub u64);
 
 impl fmt::Display for Amount {
@@ -130,10 +120,8 @@ impl std::str::FromStr for Amount {
             .next()
             .ok_or_else(|| Self::Err::ErrorInvalidFormat(s.to_string()))?
             .parse()?;
-        let r: u64 = iter
-            .next()
-            .ok_or_else(|| Self::Err::ErrorInvalidFormat(s.to_string()))?
-            .parse()?;
+        let r_str = iter.next().unwrap_or("0");
+        let r: u64 = format!("{:0<9}", r_str).parse()?;
         if iter.next().is_none() {
             // ensure there isn't more to parse as that is undefined
             Ok(Amount(r + MINA_PRECISION * q))
@@ -144,13 +132,11 @@ impl std::str::FromStr for Amount {
 }
 
 /// Number representing how many txns sent from an account
-#[derive(Copy, Clone, PartialEq, Debug, Hash, Default, From)]
-#[from(forward)]
+#[derive(Copy, Clone, PartialEq, Debug, Default, From, Into)]
 pub struct AccountNonce(pub u32);
 
 /// Consensus slot index
-#[derive(Copy, Clone, PartialEq, Debug, Hash, Default, From, Deref)]
-#[from(forward)]
+#[derive(Copy, Clone, PartialEq, Debug, Default, From, Into)]
 pub struct GlobalSlotNumber(pub u32);
 
 impl GlobalSlotNumber {
@@ -158,18 +144,16 @@ impl GlobalSlotNumber {
     pub const MAX: Self = Self(u32::MAX);
 }
 
-#[derive(Clone, PartialEq, Debug, Hash, Default, From)]
-#[from(forward)]
-
+#[derive(Clone, PartialEq, Debug, Default, From, Into)]
 /// 4 bytes wrapped by a version
 /// Will not form part of the public API when deserialization refactor is complete
 pub struct Hex64(pub i64);
 
-#[derive(Clone, PartialEq, Debug, Hash, Default, From)]
-#[from(forward)]
-
+#[derive(Clone, PartialEq, Debug, Default, From, Into, AutoFrom)]
+#[auto_from(mina_serialization_types::json::CharJson)]
 /// A single char defined by a single byte (not variable length like a Rust char)
 pub struct Char(pub u8);
+impl_strconv_via_json!(Char, mina_serialization_types::json::CharJson);
 
 impl Hashable for GlobalSlotNumber {
     type D = ();
@@ -185,7 +169,7 @@ impl Hashable for GlobalSlotNumber {
     }
 }
 
-#[derive(Clone, PartialEq, Debug, Hash, Default, From)]
+#[derive(Clone, PartialEq, Debug, Default, From, Into)]
 /// Block time numeric type
 pub struct BlockTime(pub u64);
 
@@ -232,19 +216,11 @@ impl BlockTime {
     }
 }
 
-impl From<mina_serialization_types::v1::BlockTimeV1> for BlockTime {
-    fn from(t: mina_serialization_types::v1::BlockTimeV1) -> Self {
-        Self(t.t.t)
-    }
-}
-
-#[derive(Clone, PartialEq, Debug, Hash, Default, From)]
-#[from(forward)]
+#[derive(Clone, PartialEq, Debug, Default, From, Into)]
 /// Time span between two block time instants
 pub struct BlockTimeSpan(pub u64);
 
-#[derive(Clone, Default, PartialEq, Debug, From)]
-#[from(forward)]
+#[derive(Clone, Default, PartialEq, Debug, From, Into)]
 /// Mina 256 bit Bit Integer type
 pub struct BigInt256(pub [u8; 32]);
 
@@ -265,11 +241,8 @@ impl HexEncodable for BigInt256 {
     }
 
     fn try_from_hex(s: impl AsRef<[u8]>) -> Result<Self, Self::Error> {
-        let s = skip_0x_prefix_when_needed(s.as_ref());
-        let bytes = hex::decode(s)?;
-        let mut b32 = [0; 32];
-        b32.copy_from_slice(&bytes);
-        Ok(Self(b32))
+        let json = FieldElementJson::try_from_hex_str(s)?;
+        Ok(Self(json.0))
     }
 }
 

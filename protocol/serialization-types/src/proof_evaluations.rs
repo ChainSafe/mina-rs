@@ -5,7 +5,8 @@
 
 #![allow(missing_docs)] // Don't actually know what many of the types fields are for yet
 
-use crate::field_and_curve_elements::FieldElementVecV1;
+use crate::{json::*, v1::*};
+use mina_serialization_types_macros::AutoFrom;
 use serde::{Deserialize, Serialize};
 use versioned::Versioned;
 
@@ -22,3 +23,16 @@ pub struct ProofEvaluations {
 }
 
 pub type ProofEvaluationsV1 = Versioned<ProofEvaluations, 1>;
+
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq, AutoFrom)]
+#[auto_from(ProofEvaluations)]
+pub struct ProofEvaluationsJson {
+    pub l: FieldElementVecJson,
+    pub r: FieldElementVecJson,
+    pub o: FieldElementVecJson,
+    pub z: FieldElementVecJson,
+    pub t: FieldElementVecJson,
+    pub f: FieldElementVecJson,
+    pub sigma1: FieldElementVecJson,
+    pub sigma2: FieldElementVecJson,
+}

@@ -45,6 +45,7 @@ impl Genesis for ExternalTransition {
             delta_transition_chain_proof: config.delta_transition_chain_proof.clone(),
             current_protocol_version: ProtocolVersion::default(),
             proposed_protocol_version_opt: None,
+            validation_callback: (),
         }
     }
 }

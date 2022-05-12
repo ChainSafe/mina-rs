@@ -5,7 +5,8 @@
 
 #![allow(missing_docs)] // Don't actually know what many of the types fields are for yet
 
-use crate::field_and_curve_elements::{ECPointV1, ECPointVecV1, FiniteECPoint};
+use crate::{field_and_curve_elements::FiniteECPoint, json::*, v1::*};
+use mina_serialization_types_macros::AutoFrom;
 use serde::{Deserialize, Serialize};
 use versioned::Versioned;
 
@@ -20,7 +21,25 @@ pub struct ProofMessages {
 
 pub type ProofMessagesV1 = Versioned<ProofMessages, 1>;
 
-pub type ProofMessageWithoutDegreeBoundListV1 = Versioned<Versioned<Vec<FiniteECPoint>, 1>, 1>;
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq, AutoFrom)]
+#[auto_from(ProofMessages)]
+pub struct ProofMessagesJson {
+    pub l_comm: ProofMessageWithoutDegreeBoundListJson,
+    pub r_comm: ProofMessageWithoutDegreeBoundListJson,
+    pub o_comm: ProofMessageWithoutDegreeBoundListJson,
+    pub z_comm: ProofMessageWithoutDegreeBoundListJson,
+    pub t_comm: ProofMessageWithDegreeBoundJson,
+}
+
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
+pub struct ProofMessageWithoutDegreeBoundList(pub Vec<FiniteECPoint>);
+
+pub type ProofMessageWithoutDegreeBoundListV1 =
+    Versioned<Versioned<ProofMessageWithoutDegreeBoundList, 1>, 1>;
+
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq, AutoFrom)]
+#[auto_from(ProofMessageWithoutDegreeBoundList)]
+pub struct ProofMessageWithoutDegreeBoundListJson(pub Vec<FiniteECPointJson>);
 
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub struct ProofMessageWithDegreeBound {
@@ -29,3 +48,10 @@ pub struct ProofMessageWithDegreeBound {
 }
 
 pub type ProofMessageWithDegreeBoundV1 = Versioned<ProofMessageWithDegreeBound, 1>;
+
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq, AutoFrom)]
+#[auto_from(ProofMessageWithDegreeBound)]
+pub struct ProofMessageWithDegreeBoundJson {
+    pub unshifted: ECPointVecJson,
+    pub shifted: ECPointJson,
+}

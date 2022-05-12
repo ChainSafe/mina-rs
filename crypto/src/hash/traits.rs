@@ -11,10 +11,7 @@ const BLAKE_HASH_SIZE: usize = 32;
 
 /// Trait that any internal hash wrapper type must implement
 /// This defines the prefix that is added to the data prior to it being hashed
-pub trait Hash
-where
-    Self: From<Box<[u8]>>,
-{
+pub trait Hash {
     const PREFIX: &'static HashPrefix;
 }
 
@@ -25,7 +22,7 @@ where
 ///
 pub trait Hashable<OutputType>: Sized + Serialize
 where
-    OutputType: Hash,
+    OutputType: Hash + From<Box<[u8]>>,
 {
     fn hash(&self) -> OutputType {
         // this is known to be a valid hash size
@@ -38,25 +35,24 @@ where
 
 #[cfg(test)]
 mod tests {
+    use std::str::FromStr;
+
     use super::*;
-    use crate::base58::{version_bytes, Base58Encodable};
     use crate::hash::prefixes::PROTOCOL_STATE;
-    use crate::hash::types::{BaseHash, HashBytes};
-    use crate::impl_bs58_for_binprot;
-    use bin_prot::encodable::BinProtEncodable;
-    use serde::Deserialize;
+    use crate::hash::types::BaseHash;
+    use crate::impl_from_for_hash;
+    use mina_serialization_types::{impl_strconv_via_json, json::*, v1::*, version_bytes};
+    use versioned::*;
 
-    #[derive(Clone, Serialize, Deserialize, PartialEq, Debug)]
+    #[derive(Clone, PartialEq, Debug)]
     struct TestHash(BaseHash);
+    type TestHashV1Json = HashV1Json<{ version_bytes::STATE_HASH }>;
+    impl_from_for_hash!(TestHash, HashV1);
+    impl_from_for_generic_with_proxy!(TestHash, HashV1, TestHashV1Json);
+    impl_strconv_via_json!(TestHash, TestHashV1Json);
 
-    impl BinProtEncodable for TestHash {
-        const PREALLOCATE_BUFFER_BYTES: usize = 64;
-    }
-
-    impl_bs58_for_binprot!(TestHash, version_bytes::STATE_HASH);
-
-    impl From<HashBytes> for TestHash {
-        fn from(b: HashBytes) -> Self {
+    impl From<Box<[u8]>> for TestHash {
+        fn from(b: Box<[u8]>) -> Self {
             Self(BaseHash::from(b))
         }
     }
@@ -67,7 +63,7 @@ mod tests {
 
     impl AsRef<[u8]> for TestHash {
         fn as_ref(&self) -> &[u8] {
-            &self.0.as_ref()
+            &self.0 .0.as_ref()
         }
     }
 
@@ -80,9 +76,13 @@ mod tests {
         let t = TestType(123);
         let h = t.hash();
         assert_eq!(
-            h.to_base58_string(),
-            "Zbx5bAfiyj8yPh8nhXEW3et2TEbnZvEPrShQxTaJaLX3cvPPZV"
-        )
+            h,
+            TestHash::from_str("3NLXw1spzQFnLEJGQQKVyykTFExSBjLuhfEU32Fez3odCwY3A4Yc").unwrap()
+        );
+        assert_eq!(
+            h.to_string(),
+            "3NLXw1spzQFnLEJGQQKVyykTFExSBjLuhfEU32Fez3odCwY3A4Yc"
+        );
     }
 
     #[test]

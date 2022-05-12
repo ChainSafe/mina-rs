@@ -4,7 +4,6 @@
 #[cfg(all(test, feature = "browser"))]
 wasm_bindgen_test::wasm_bindgen_test_configure!(run_in_browser);
 
-use bin_prot::encodable::BinProtEncodable;
 use bin_prot::{from_reader, to_writer, Value};
 use mina_serialization_types::v1::*;
 use pretty_assertions::assert_eq;
@@ -20,26 +19,6 @@ fn test_external_transition() {
     block_path_test_batch! {
         ExternalTransitionV1 => ""
     }
-}
-
-#[test]
-#[wasm_bindgen_test]
-fn test_external_transition_preallocate_buffer_bytes() {
-    let max_bytes = TEST_BLOCKS
-        .values()
-        .map(|v| v.bytes.len())
-        .max()
-        .unwrap_or_default();
-    assert!(
-        max_bytes <= ExternalTransitionV1::PREALLOCATE_BUFFER_BYTES,
-        "max_bytes:{}",
-        max_bytes
-    );
-    assert!(
-        max_bytes * 12 / 10 > ExternalTransitionV1::PREALLOCATE_BUFFER_BYTES,
-        "max_bytes:{}",
-        max_bytes
-    );
 }
 
 #[test]
@@ -336,7 +315,7 @@ fn test_staged_ledger_diff_diff() {
 #[wasm_bindgen_test]
 fn test_staged_ledger_diff_one() {
     block_path_test_batch! {
-        Option<StagedLedgerPreDiffOneV1> => "t/staged_ledger_diff/t/diff/t/1"
+        Option<StagedLedgerPreDiffV1> => "t/staged_ledger_diff/t/diff/t/1"
     }
 }
 
@@ -344,7 +323,7 @@ fn test_staged_ledger_diff_one() {
 #[wasm_bindgen_test]
 fn test_staged_ledger_diff_diff_two() {
     block_path_test_batch! {
-        StagedLedgerPreDiffTwoV1 => "t/staged_ledger_diff/t/diff/t/0"
+        StagedLedgerPreDiffV1 => "t/staged_ledger_diff/t/diff/t/0"
     }
 }
 
@@ -431,7 +410,8 @@ fn test_staged_ledger_diff_diff_commands_status() {
     block_path_test_batch! {
         TransactionStatusAuxiliaryDataV1 => "t/staged_ledger_diff/t/diff/t/0/t/t/commands/0/t/status/t/0"
         TransactionStatusBalanceDataV1 => "t/staged_ledger_diff/t/diff/t/0/t/t/commands/0/t/status/t/1"
-        TransactionStatusAppliedV1 => "t/staged_ledger_diff/t/diff/t/0/t/t/commands/0/t/status/t/[sum]"
+        TransactionStatusAuxiliaryDataV1 => "t/staged_ledger_diff/t/diff/t/0/t/t/commands/0/t/status/t/[sum]/0"
+        TransactionStatusBalanceDataV1 => "t/staged_ledger_diff/t/diff/t/0/t/t/commands/0/t/status/t/[sum]/1"
         TransactionStatusV1 => "t/staged_ledger_diff/t/diff/t/0/t/t/commands/0/t/status"
     }
 }
@@ -612,7 +592,8 @@ fn test_in_block<'a, T: Serialize + Deserialize<'a>>(block: &bin_prot::Value, pa
                 )
             })
             .unwrap();
-        assert_eq!(bytes, re_bytes, "path: {}\ndata: {:#?}", path, val);
+
+        assert_eq!(bytes, re_bytes, "path: {}\ndata: {:?}", path, val);
     }
 }
 

@@ -10,11 +10,14 @@ use crate::{
     numbers::{BlockTime, Length},
 };
 use mina_crypto::hash::StateHash;
+use mina_serialization_types::{json::*, v1::*};
+use mina_serialization_types_macros::AutoFrom;
 use proof_systems::mina_hasher::{Hashable, ROInput};
-use serde::Serialize;
+use versioned::*;
 
-#[derive(Clone, Default, PartialEq, Debug)]
 /// Constants that define the consensus parameters
+#[derive(Clone, Default, PartialEq, Debug, AutoFrom)]
+#[auto_from(mina_serialization_types::protocol_constants::ProtocolConstants)]
 pub struct ProtocolConstants {
     /// Point of finality (number of confirmations)
     pub k: Length,
@@ -27,6 +30,12 @@ pub struct ProtocolConstants {
     /// Timestamp of genesis block in unixtime
     pub genesis_state_timestamp: BlockTime,
 }
+
+impl_from_with_proxy!(
+    ProtocolConstants,
+    ProtocolConstantsV1,
+    ProtocolConstantsJson
+);
 
 impl Hashable for ProtocolConstants {
     type D = ();
@@ -46,8 +55,8 @@ impl Hashable for ProtocolConstants {
     }
 }
 
-#[derive(Clone, Default, Debug, PartialEq, Serialize)]
-#[serde(into = "mina_serialization_types::v1::ProtocolStateV1")]
+#[derive(Clone, Default, Debug, PartialEq, AutoFrom)]
+#[auto_from(mina_serialization_types::protocol_state::ProtocolState)]
 /// This structure can be thought of like the block header. It contains the most essential information of a block.
 pub struct ProtocolState {
     /// Commitment to previous block (hash of previous protocol state hash and body hash)
@@ -55,6 +64,8 @@ pub struct ProtocolState {
     /// The body of the protocol state
     pub body: ProtocolStateBody,
 }
+
+impl_from_with_proxy!(ProtocolState, ProtocolStateV1, ProtocolStateJson);
 
 impl Hashable for ProtocolState {
     type D = ();
@@ -78,7 +89,8 @@ impl ProtocolState {
     }
 }
 
-#[derive(Clone, Default, Debug, PartialEq)]
+#[derive(Clone, Default, Debug, PartialEq, AutoFrom)]
+#[auto_from(mina_serialization_types::protocol_state_body::ProtocolStateBody)]
 /// Body of the protocol state
 pub struct ProtocolStateBody {
     /// Genesis protocol state hash (used for hardforks)
@@ -90,6 +102,12 @@ pub struct ProtocolStateBody {
     /// Consensus constants
     pub constants: ProtocolConstants,
 }
+
+impl_from_with_proxy!(
+    ProtocolStateBody,
+    ProtocolStateBodyV1,
+    ProtocolStateBodyJson
+);
 
 impl Hashable for ProtocolStateBody {
     type D = ();

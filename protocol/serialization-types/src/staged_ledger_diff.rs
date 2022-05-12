@@ -6,13 +6,11 @@
 
 #![allow(missing_docs)] // Don't actually know what many of the types fields are for yet
 
-use crate::signatures::{PublicKey2V1, PublicKeyV1, SignatureV1};
-use crate::snark_work::TransactionSnarkWorkV1;
-use serde::{Deserialize, Serialize};
-
-use versioned::Versioned;
-
-use crate::v1::{AmountV1, ExtendedU32, ExtendedU64_2, ExtendedU64_3};
+use crate::{common::*, json::*, signatures::*, v1::*, version_bytes, *};
+use mina_serialization_types_macros::AutoFrom;
+use serde::{Deserialize, Deserializer, Serialize, Serializer};
+use smart_default::SmartDefault;
+use versioned::*;
 
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 /// Top level wrapper type for a StagedLedgerDiff
@@ -20,29 +18,46 @@ pub struct StagedLedgerDiff {
     pub diff: StagedLedgerDiffTupleV1,
 }
 
+/// Top level wrapper type for a StagedLedgerDiff (v1)
 pub type StagedLedgerDiffV1 = Versioned<StagedLedgerDiff, 1>;
 
-pub type StagedLedgerDiffTupleV1 =
-    Versioned<(StagedLedgerPreDiffTwoV1, Option<StagedLedgerPreDiffOneV1>), 1>;
+/// Top level wrapper type for a StagedLedgerDiff (json)
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq, AutoFrom)]
+#[auto_from(StagedLedgerDiff)]
+pub struct StagedLedgerDiffJson {
+    pub diff: StagedLedgerDiffTupleJson,
+}
 
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
-pub struct StagedLedgerPreDiffOne {
+pub struct StagedLedgerDiffTuple(pub StagedLedgerPreDiffV1, pub Option<StagedLedgerPreDiffV1>);
+
+pub type StagedLedgerDiffTupleV1 = Versioned<StagedLedgerDiffTuple, 1>;
+
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq, AutoFrom)]
+#[auto_from(StagedLedgerDiffTuple)]
+pub struct StagedLedgerDiffTupleJson(
+    pub StagedLedgerPreDiffJson,
+    pub Option<StagedLedgerPreDiffJson>,
+);
+
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
+pub struct StagedLedgerPreDiff {
     pub completed_works: Vec<TransactionSnarkWorkV1>,
     pub commands: Vec<UserCommandWithStatusV1>,
     pub coinbase: CoinBaseV1,
     pub internal_command_balances: Vec<InternalCommandBalanceDataV1>,
 }
-pub type StagedLedgerPreDiffOneV1 = Versioned<Versioned<StagedLedgerPreDiffOne, 1>, 1>;
 
-#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
-pub struct StagedLedgerPreDiffTwo {
-    pub completed_works: Vec<TransactionSnarkWorkV1>,
-    pub commands: Vec<UserCommandWithStatusV1>,
-    pub coinbase: CoinBaseV1,
-    pub internal_command_balances: Vec<InternalCommandBalanceDataV1>,
+pub type StagedLedgerPreDiffV1 = Versioned<Versioned<StagedLedgerPreDiff, 1>, 1>;
+
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq, AutoFrom)]
+#[auto_from(StagedLedgerPreDiff)]
+pub struct StagedLedgerPreDiffJson {
+    pub completed_works: Vec<TransactionSnarkWorkJson>,
+    pub commands: Vec<UserCommandWithStatusJson>,
+    pub coinbase: CoinBaseJson,
+    pub internal_command_balances: Vec<InternalCommandBalanceDataJson>,
 }
-
-pub type StagedLedgerPreDiffTwoV1 = Versioned<Versioned<StagedLedgerPreDiffTwo, 1>, 1>;
 
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub struct UserCommandWithStatus {
@@ -52,14 +67,35 @@ pub struct UserCommandWithStatus {
 
 pub type UserCommandWithStatusV1 = Versioned<UserCommandWithStatus, 1>;
 
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq, AutoFrom)]
+#[auto_from(UserCommandWithStatus)]
+pub struct UserCommandWithStatusJson {
+    pub data: UserCommandJson,
+    pub status: TransactionStatusJson,
+}
+
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
-#[non_exhaustive]
 pub enum UserCommand {
     SignedCommand(SignedCommandV1),
     // FIXME: other variants are not covered by current test block
 }
 
 pub type UserCommandV1 = Versioned<Versioned<UserCommand, 1>, 1>;
+
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
+enum UserCommandJsonProxy {
+    #[serde(rename = "Signed_command")]
+    SignedCommand(SignedCommandJson),
+}
+
+#[derive(Clone, Debug, PartialEq, AutoFrom)]
+#[auto_from(UserCommand)]
+#[auto_from(UserCommandJsonProxy)]
+pub enum UserCommandJson {
+    SignedCommand(SignedCommandJson),
+}
+
+impl_mina_enum_json_serde!(UserCommandJson, UserCommandJsonProxy);
 
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub struct SignedCommand {
@@ -70,6 +106,14 @@ pub struct SignedCommand {
 
 pub type SignedCommandV1 = Versioned<Versioned<SignedCommand, 1>, 1>;
 
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq, AutoFrom)]
+#[auto_from(SignedCommand)]
+pub struct SignedCommandJson {
+    pub payload: SignedCommandPayloadJson,
+    pub signer: PublicKeyJson,
+    pub signature: SignatureJson,
+}
+
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub struct SignedCommandPayload {
     pub common: SignedCommandPayloadCommonV1,
@@ -77,6 +121,13 @@ pub struct SignedCommandPayload {
 }
 
 pub type SignedCommandPayloadV1 = Versioned<Versioned<SignedCommandPayload, 1>, 1>;
+
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq, AutoFrom)]
+#[auto_from(SignedCommandPayload)]
+pub struct SignedCommandPayloadJson {
+    pub common: SignedCommandPayloadCommonJson,
+    pub body: SignedCommandPayloadBodyJson,
+}
 
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub struct SignedCommandPayloadCommon {
@@ -91,14 +142,42 @@ pub struct SignedCommandPayloadCommon {
 pub type SignedCommandPayloadCommonV1 =
     Versioned<Versioned<Versioned<SignedCommandPayloadCommon, 1>, 1>, 1>;
 
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq, AutoFrom)]
+#[auto_from(SignedCommandPayloadCommon)]
+pub struct SignedCommandPayloadCommonJson {
+    pub fee: DecimalJson,
+    pub fee_token: U64Json,
+    pub fee_payer_pk: PublicKeyJson,
+    pub nonce: U32Json,
+    pub valid_until: U32Json,
+    pub memo: SignedCommandMemoJson,
+}
+
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
-#[non_exhaustive]
 pub enum SignedCommandPayloadBody {
     PaymentPayload(PaymentPayloadV1),
     // FIXME: other variants are not covered by current test block
 }
 
 pub type SignedCommandPayloadBodyV1 = Versioned<Versioned<SignedCommandPayloadBody, 1>, 1>;
+
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
+enum SignedCommandPayloadBodyJsonProxy {
+    #[serde(rename = "Payment")]
+    PaymentPayload(PaymentPayloadJson),
+}
+
+#[derive(Clone, Debug, PartialEq, AutoFrom)]
+#[auto_from(SignedCommandPayloadBody)]
+#[auto_from(SignedCommandPayloadBodyJsonProxy)]
+pub enum SignedCommandPayloadBodyJson {
+    PaymentPayload(PaymentPayloadJson),
+}
+
+impl_mina_enum_json_serde!(
+    SignedCommandPayloadBodyJson,
+    SignedCommandPayloadBodyJsonProxy
+);
 
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub struct PaymentPayload {
@@ -110,29 +189,86 @@ pub struct PaymentPayload {
 
 pub type PaymentPayloadV1 = Versioned<Versioned<PaymentPayload, 1>, 1>;
 
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq, AutoFrom)]
+#[auto_from(PaymentPayload)]
+pub struct PaymentPayloadJson {
+    pub source_pk: PublicKeyJson,
+    pub receiver_pk: PublicKeyJson,
+    pub token_id: U64Json,
+    pub amount: U64Json,
+}
+
 pub type SignedCommandFeeTokenV1 = Versioned<Versioned<Versioned<u64, 1>, 1>, 1>;
 
-pub type SignedCommandMemoV1 = Versioned<Vec<u8>, 1>;
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
+pub struct SignedCommandMemo(pub Vec<u8>);
+
+pub type SignedCommandMemoV1 = Versioned<SignedCommandMemo, 1>;
+
+#[derive(Clone, Debug, PartialEq, AutoFrom)]
+#[auto_from(SignedCommandMemo)]
+pub struct SignedCommandMemoJson(pub Vec<u8>);
+
+impl Serialize for SignedCommandMemoJson {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        let s = bs58::encode(self.0.as_slice())
+            .with_check_version(version_bytes::USER_COMMAND_MEMO)
+            .into_string();
+        serializer.serialize_str(&s)
+    }
+}
+
+impl<'de> Deserialize<'de> for SignedCommandMemoJson {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        let s = String::deserialize(deserializer)?;
+        let decoded = bs58::decode(s)
+            .with_check(Some(version_bytes::USER_COMMAND_MEMO))
+            .into_vec()
+            .map_err(<D::Error as serde::de::Error>::custom)?;
+        // Skip base58 check byte
+        Ok(Self(decoded.into_iter().skip(1).collect()))
+    }
+}
 
 // FIXME: No test coverage yet
 pub type SnappCommand = Versioned<Versioned<(), 1>, 1>;
 
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
-#[non_exhaustive]
 pub enum TransactionStatus {
-    Applied(TransactionStatusAppliedV1),
+    Applied(
+        TransactionStatusAuxiliaryDataV1,
+        TransactionStatusBalanceDataV1,
+    ),
     // FIXME: other variants are not covered by current test block
 }
 
 pub type TransactionStatusV1 = Versioned<TransactionStatus, 1>;
 
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
-pub struct TransactionStatusAppliedV1(
-    pub  (
-        TransactionStatusAuxiliaryDataV1,
-        TransactionStatusBalanceDataV1,
+enum TransactionStatusJsonProxy {
+    Applied(
+        TransactionStatusAuxiliaryDataJson,
+        TransactionStatusBalanceDataJson,
     ),
-);
+}
+
+#[derive(Clone, Debug, PartialEq, AutoFrom)]
+#[auto_from(TransactionStatus)]
+#[auto_from(TransactionStatusJsonProxy)]
+pub enum TransactionStatusJson {
+    Applied(
+        TransactionStatusAuxiliaryDataJson,
+        TransactionStatusBalanceDataJson,
+    ),
+}
+
+impl_mina_enum_json_serde!(TransactionStatusJson, TransactionStatusJsonProxy);
 
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub struct TransactionStatusAuxiliaryData {
@@ -143,6 +279,14 @@ pub struct TransactionStatusAuxiliaryData {
 
 pub type TransactionStatusAuxiliaryDataV1 = Versioned<TransactionStatusAuxiliaryData, 1>;
 
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq, AutoFrom)]
+#[auto_from(TransactionStatusAuxiliaryData)]
+pub struct TransactionStatusAuxiliaryDataJson {
+    pub fee_payer_account_creation_fee_paid: Option<U64Json>,
+    pub receiver_account_creation_fee_paid: Option<U64Json>,
+    pub created_token: Option<U64Json>,
+}
+
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub struct TransactionStatusBalanceData {
     pub fee_payer_balance: Option<ExtendedU64_3>,
@@ -152,22 +296,44 @@ pub struct TransactionStatusBalanceData {
 
 pub type TransactionStatusBalanceDataV1 = Versioned<TransactionStatusBalanceData, 1>;
 
-#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
-#[non_exhaustive]
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq, AutoFrom)]
+#[auto_from(TransactionStatusBalanceData)]
+pub struct TransactionStatusBalanceDataJson {
+    pub fee_payer_balance: Option<U64Json>,
+    pub source_balance: Option<U64Json>,
+    pub receiver_balance: Option<U64Json>,
+}
+
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq, SmartDefault)]
 pub enum CoinBase {
+    #[default]
     Zero,
     // FIXME: other variants are not covered by current test block
     One(Option<CoinBaseFeeTransferV1>),
     Two,
 }
 
-impl Default for CoinBase {
-    fn default() -> Self {
-        Self::Zero
-    }
+pub type CoinBaseV1 = Versioned<CoinBase, 1>;
+
+#[derive(Clone, Debug, Serialize, Deserialize, SmartDefault)]
+enum CoinBaseJsonProxy {
+    #[default]
+    Zero,
+    One(Option<CoinBaseFeeTransferJson>),
+    Two,
 }
 
-pub type CoinBaseV1 = Versioned<CoinBase, 1>;
+#[derive(Clone, Debug, PartialEq, SmartDefault, AutoFrom)]
+#[auto_from(CoinBase)]
+#[auto_from(CoinBaseJsonProxy)]
+pub enum CoinBaseJson {
+    #[default]
+    Zero,
+    One(Option<CoinBaseFeeTransferJson>),
+    Two,
+}
+
+impl_mina_enum_json_serde!(CoinBaseJson, CoinBaseJsonProxy);
 
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 // FIXME: No test coverage yet
@@ -178,14 +344,41 @@ pub struct CoinBaseFeeTransfer {
 
 pub type CoinBaseFeeTransferV1 = Versioned<Versioned<CoinBaseFeeTransfer, 1>, 1>;
 
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq, AutoFrom)]
+#[auto_from(CoinBaseFeeTransfer)]
+pub struct CoinBaseFeeTransferJson {
+    pub receiver_pk: PublicKeyJson,
+    pub fee: U64Json,
+}
+
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
-#[non_exhaustive]
 pub enum InternalCommandBalanceData {
     CoinBase(CoinBaseBalanceDataV1),
     FeeTransfer(FeeTransferBalanceDataV1),
 }
 
 pub type InternalCommandBalanceDataV1 = Versioned<InternalCommandBalanceData, 1>;
+
+#[derive(Clone, Debug, Serialize, Deserialize)]
+enum InternalCommandBalanceDataJsonProxy {
+    #[serde(rename = "Coinbase")]
+    CoinBase(CoinBaseBalanceDataJson),
+    #[serde(rename = "Fee_transfer")]
+    FeeTransfer(FeeTransferBalanceDataJson),
+}
+
+#[derive(Clone, Debug, PartialEq, AutoFrom)]
+#[auto_from(InternalCommandBalanceData)]
+#[auto_from(InternalCommandBalanceDataJsonProxy)]
+pub enum InternalCommandBalanceDataJson {
+    CoinBase(CoinBaseBalanceDataJson),
+    FeeTransfer(FeeTransferBalanceDataJson),
+}
+
+impl_mina_enum_json_serde!(
+    InternalCommandBalanceDataJson,
+    InternalCommandBalanceDataJsonProxy
+);
 
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub struct CoinBaseBalanceData {
@@ -196,6 +389,13 @@ pub struct CoinBaseBalanceData {
 
 pub type CoinBaseBalanceDataV1 = Versioned<CoinBaseBalanceData, 1>;
 
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq, AutoFrom)]
+#[auto_from(CoinBaseBalanceData)]
+pub struct CoinBaseBalanceDataJson {
+    pub coinbase_receiver_balance: U64Json,
+    pub fee_transfer_receiver_balance: Option<U64Json>,
+}
+
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub struct FeeTransferBalanceData {
     pub receiver1_balance: ExtendedU64_3,
@@ -205,32 +405,9 @@ pub struct FeeTransferBalanceData {
 
 pub type FeeTransferBalanceDataV1 = Versioned<FeeTransferBalanceData, 1>;
 
-/// Top level wrapper type for a StagedLedgerDiff
-/// that is convertible from / to the mina specific json representation
-#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
-pub struct StagedLedgerDiffJson {}
-
-impl From<StagedLedgerDiffJson> for StagedLedgerDiffV1 {
-    fn from(t: StagedLedgerDiffJson) -> Self {
-        let t: StagedLedgerDiff = t.into();
-        t.into()
-    }
-}
-
-impl From<StagedLedgerDiffV1> for StagedLedgerDiffJson {
-    fn from(t: StagedLedgerDiffV1) -> Self {
-        t.t.into()
-    }
-}
-
-impl From<StagedLedgerDiffJson> for StagedLedgerDiff {
-    fn from(_t: StagedLedgerDiffJson) -> Self {
-        unimplemented!()
-    }
-}
-
-impl From<StagedLedgerDiff> for StagedLedgerDiffJson {
-    fn from(_t: StagedLedgerDiff) -> Self {
-        unimplemented!()
-    }
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq, AutoFrom)]
+#[auto_from(FeeTransferBalanceData)]
+pub struct FeeTransferBalanceDataJson {
+    pub receiver1_balance: U64Json,
+    pub receiver2_balance: Option<U64Json>,
 }

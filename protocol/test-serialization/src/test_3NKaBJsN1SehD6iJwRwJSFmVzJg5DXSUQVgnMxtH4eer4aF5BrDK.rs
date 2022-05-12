@@ -1,20 +1,22 @@
 // Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
+#[cfg(all(test, feature = "browser"))]
+wasm_bindgen_test::wasm_bindgen_test_configure!(run_in_browser);
+
 #[cfg(test)]
 mod tests {
     use anyhow::bail;
     use mina_crypto::hash::*;
-    use mina_crypto::prelude::*;
     use mina_rs_base::types::*;
     use mina_serialization_types::v1::ExternalTransitionV1;
     use pretty_assertions::assert_eq;
+    use proof_systems::mina_signer::CompressedPubKey;
+    use proof_systems::o1_utils::field_helpers::FieldHelpers;
+    use std::str::FromStr;
     use test_fixtures::*;
     use time::macros::*;
     use wasm_bindgen_test::*;
-
-    use proof_systems::mina_signer::CompressedPubKey;
-    use proof_systems::o1_utils::field_helpers::FieldHelpers;
 
     #[wasm_bindgen_test]
     fn test_block_wasm() {
@@ -30,44 +32,33 @@ mod tests {
             .unwrap()
             .external_transitionv1()?;
 
-        let protocol_state = &et.0.t.protocol_state;
+        let protocol_state = &et.t.protocol_state;
         assert_eq!(
-            StateHash::from(protocol_state.t.t.previous_state_hash.clone()).to_base58_string(),
+            &StateHash::from(protocol_state.t.t.previous_state_hash.clone()).to_string(),
             "3NKDdX6eVtAgmmTVxaFLnnPPrsGKgVepG2k5cf8HocgSw6ps8Sww"
         );
 
-        let body = &et.0.t.protocol_state.t.t.body;
+        let body = &et.t.protocol_state.t.t.body;
         assert_eq!(
-            StateHash::from(body.t.t.genesis_state_hash.clone()).to_base58_string(),
+            &StateHash::from(body.t.t.genesis_state_hash.clone()).to_string(),
             "3NKeMoncuHab5ScarV5ViyF16cJPT4taWNSaTLS64Dp67wuXigPZ"
         );
         let blockchain_state = &body.t.t.blockchain_state;
         let non_snark = &blockchain_state.t.t.staged_ledger_hash.t.t.non_snark;
         assert_eq!(
-            LedgerHash::from(non_snark.t.ledger_hash.clone()).to_base58_string(),
+            &LedgerHash::from(non_snark.t.ledger_hash.clone()).to_string(),
             "jwD5Kx1GtLKJGSWufhkvCn8m7EFLm2LmAM7neyzLtTiN8wyn2po"
         );
-
-        let bytes = bs58::decode("UworXDykADr3Lte856ePMsdawpTVhKLKT9Y3UKha7Tpbt4V1JP")
-            .into_vec()
-            .unwrap();
-        assert_eq!(non_snark.t.aux_hash.t[..], bytes[1..33]);
         assert_eq!(
-            AuxHash::from(non_snark.t.aux_hash.t.clone()).to_base58_string(),
+            &AuxHash::from(non_snark.t.aux_hash.t.0.clone()).to_string(),
             "UworXDykADr3Lte856ePMsdawpTVhKLKT9Y3UKha7Tpbt4V1JP"
         );
-
-        let bytes = bs58::decode("XbwfEKZjgcZiyDhHRZjHUx72TuxpnuzLPwVYpVWkMAAXkSy7go")
-            .into_vec()
-            .unwrap();
-        assert_eq!(non_snark.t.pending_coinbase_aux.t[..], bytes[1..33]);
         assert_eq!(
-            PendingCoinbaseAuxHash(non_snark.t.pending_coinbase_aux.t.clone()).to_base58_string(),
+            &PendingCoinbaseAuxHash(non_snark.t.pending_coinbase_aux.t.0.clone()).to_string(),
             "XbwfEKZjgcZiyDhHRZjHUx72TuxpnuzLPwVYpVWkMAAXkSy7go"
         );
-
         assert_eq!(
-            CoinBaseHash::from(
+            &CoinBaseHash::from(
                 blockchain_state
                     .t
                     .t
@@ -78,17 +69,15 @@ mod tests {
                     .t
                     .clone()
             )
-            .to_base58_string(),
+            .to_string(),
             "2mzpdUi5ddLicLGUns4iYFiNahL5B5cPkTUot83v2moNtr4mzRYf"
         );
         assert_eq!(
-            SnarkedLedgerHash::from(blockchain_state.t.t.snarked_ledger_hash.clone())
-                .to_base58_string(),
+            &SnarkedLedgerHash::from(blockchain_state.t.t.snarked_ledger_hash.clone()).to_string(),
             "jxkQm8ge9sYPwPyUYUMZ6wr7SQ6Pit5szbRvPmEzYKQQZAnACyC"
         );
         assert_eq!(
-            SnarkedLedgerHash::from(blockchain_state.t.t.genesis_ledger_hash.clone())
-                .to_base58_string(),
+            &SnarkedLedgerHash::from(blockchain_state.t.t.genesis_ledger_hash.clone()).to_string(),
             "jx7buQVWFLsXTtzRgSxbYcT8EYLS8KCZbLrfDcJxMtyy4thw2Ee"
         );
         assert_eq!(blockchain_state.t.t.snarked_next_available_token.t.t.t, 2);
@@ -110,14 +99,9 @@ mod tests {
             vec![6, 1, 3, 5, 4, 3, 5, 7, 4, 5, 6,]
         );
 
-        let bytes = base64::decode_config(
-            "WNAmmaRL7XzyhZHiz276MbnBv4YUIJRGf9P_Xu0RBAA=",
-            base64::URL_SAFE,
-        )
-        .unwrap();
         assert_eq!(
-            VrfOutputTruncated::from(consensus_state.t.t.last_vrf_output.t.clone()).as_ref(),
-            &bytes[..]
+            VrfOutputTruncated::from(consensus_state.t.t.last_vrf_output.clone()).to_string(),
+            "WNAmmaRL7XzyhZHiz276MbnBv4YUIJRGf9P_Xu0RBAA="
         );
 
         assert_eq!(
@@ -136,7 +120,7 @@ mod tests {
 
         let staking_epoch_data = &consensus_state.t.t.staking_epoch_data;
         assert_eq!(
-            LedgerHash::from(staking_epoch_data.t.t.ledger.t.t.hash.clone()).to_base58_string(),
+            LedgerHash::from(staking_epoch_data.t.t.ledger.t.t.hash.clone()).to_string(),
             "jxn15ATGoe4WGgYpbssxJH9XW8NXRDy22WvSsBqvMqcnLPgPAwN"
         );
         assert_eq!(
@@ -144,22 +128,22 @@ mod tests {
             "861208012.840039233"
         );
         assert_eq!(
-            EpochSeed::from(staking_epoch_data.t.t.seed.clone()).to_base58_string(),
+            &EpochSeed::from(staking_epoch_data.t.t.seed.clone()).to_string(),
             "2vao4i3odTHZVRbEhdkKvLoD1rW2UuiVaayVFosYtkghABg29o7i"
         );
         assert_eq!(
-            StateHash::from(staking_epoch_data.t.t.start_checkpoint.clone()).to_base58_string(),
+            &StateHash::from(staking_epoch_data.t.t.start_checkpoint.clone()).to_string(),
             "3NLM6x7j2Z68e8gGspyvc1aU884uU6yWkwz9aW127BFckn9b5uvo"
         );
         assert_eq!(
-            StateHash::from(staking_epoch_data.t.t.lock_checkpoint.clone()).to_base58_string(),
+            &StateHash::from(staking_epoch_data.t.t.lock_checkpoint.clone()).to_string(),
             "3NLiFhztdCsuWSociNGMspidiYkyqNKZw6ufH7jqbgQtEgGtBb2P"
         );
         assert_eq!(staking_epoch_data.t.t.epoch_length.t.t, 4697);
 
         let next_epoch_data = &consensus_state.t.t.next_epoch_data;
         assert_eq!(
-            LedgerHash::from(next_epoch_data.t.t.ledger.t.t.hash.clone()).to_base58_string(),
+            LedgerHash::from(next_epoch_data.t.t.ledger.t.t.hash.clone()).to_string(),
             "jwAXd4GZgxE3YCwqs99g4MpLNiEV2ZfZPstyah4jxo753AVgL6R"
         );
         assert_eq!(
@@ -167,15 +151,15 @@ mod tests {
             "864998092.840039233"
         );
         assert_eq!(
-            EpochSeed::from(next_epoch_data.t.t.seed.clone()).to_base58_string(),
+            &EpochSeed::from(next_epoch_data.t.t.seed.clone()).to_string(),
             "2vbUkQGF5swXK7PNaAJDUQirW1fbZiUJDzbBKwfPGdJXZiryburD"
         );
         assert_eq!(
-            StateHash::from(next_epoch_data.t.t.start_checkpoint.clone()).to_base58_string(),
+            &StateHash::from(next_epoch_data.t.t.start_checkpoint.clone()).to_string(),
             "3NLkdXKqoHfwZ5jT1uxSY3eoFy3C2jpAUFZ1Y6eSMsE66MNJqErx"
         );
         assert_eq!(
-            StateHash::from(next_epoch_data.t.t.lock_checkpoint.clone()).to_base58_string(),
+            &StateHash::from(next_epoch_data.t.t.lock_checkpoint.clone()).to_string(),
             "3NLW5kBi9nXDzzdr2C3p9X6QaKaASMaVHp3otwreKXKJToUNK7yu"
         );
         assert_eq!(next_epoch_data.t.t.epoch_length.t.t, 3285);
@@ -198,11 +182,10 @@ mod tests {
         );
         assert_eq!(consensus_state.t.t.supercharge_coinbase, false);
 
-        let bytes = bs58::decode("B62qpge4uMq4Vv5Rvc8Gw9qSquUYd6xoW1pz7HQkMSHm6h1o7pvLPAN")
-            .into_vec()
-            .unwrap();
-        // TODO: Validate full bytes vec with salted mainnet signature
-        assert_eq!(consensus_state.t.t.block_creator.0.t.t.x[..], bytes[3..35]);
+        assert_eq!(
+            &CompressedPubKey::from(consensus_state.t.t.block_creator.clone()).into_address(),
+            "B62qpge4uMq4Vv5Rvc8Gw9qSquUYd6xoW1pz7HQkMSHm6h1o7pvLPAN"
+        );
 
         assert_eq!(
             Amount::from(consensus_state.t.t.total_currency.t.t).to_string(),
@@ -225,11 +208,11 @@ mod tests {
         */
 
         assert!(
-            &StagedLedgerDiffTuple::from(et.0.t.staged_ledger_diff.t.diff.clone())
+            &StagedLedgerDiffTuple::from(et.t.staged_ledger_diff.t.diff.clone())
                 .diff_one()
                 .is_none()
         );
-        let commands = StagedLedgerDiffTuple::from(et.0.t.staged_ledger_diff.t.diff.clone())
+        let commands = StagedLedgerDiffTuple::from(et.t.staged_ledger_diff.t.diff.clone())
             .diff_two()
             .commands
             .clone();
@@ -237,21 +220,23 @@ mod tests {
 
         match &commands[0].data {
             UserCommand::SignedCommand(command) => {
-                let bytes = bs58::decode("B62qoSuxNqwogusxxZbs3gpJUxCCN4GZEv21FX8S2DtNpToLgKnrexM")
-                    .into_vec()
-                    .unwrap();
-                assert_eq!(command.signer.x.to_bytes(), bytes[3..35]);
+                assert_eq!(
+                    &CompressedPubKey::from(command.signer.clone()).into_address(),
+                    "B62qoSuxNqwogusxxZbs3gpJUxCCN4GZEv21FX8S2DtNpToLgKnrexM"
+                );
 
                 let bytes = bs58::decode("7mXTB1bcHYLJTmTfMtTboo4FSGStvera3z2wd6qjSxhpz1hZFMZZjcyaWAFEmZhgbq6DqVqGsNodnYKsCbMAq7D8yWo5bRSd")
-                    .into_vec()
-                    .unwrap();
+                    .into_vec()?;
                 assert_eq!(command.signature.rx.to_bytes(), &bytes[2..34]);
                 assert_eq!(command.signature.s.to_bytes(), &bytes[34..66]);
 
                 assert_eq!(command.payload.common.nonce.0, 5694);
                 assert_eq!(
                     command.payload.common.memo.0,
-                    SignedCommandMemo::try_from("FPayment").unwrap().0,
+                    SignedCommandMemo::from_str(
+                        "E4Yd7qwaRCHR6t7i6ToM98eSUy5eKKadQUPZX7Vpw4CWBvWyd8fzK"
+                    )?
+                    .0
                 );
                 assert_eq!(command.payload.common.fee.to_string(), "0.010000000");
                 assert_eq!(command.payload.common.fee_token.0, 1);
@@ -260,37 +245,26 @@ mod tests {
                 match &command.payload.body {
                     SignedCommandPayloadBody::PaymentPayload(body) => {
                         assert_eq!(body.amount.to_string(), "0.027370000");
-                        let bytes =
-                            bs58::decode("B62qoSuxNqwogusxxZbs3gpJUxCCN4GZEv21FX8S2DtNpToLgKnrexM")
-                                .into_vec()
-                                .unwrap();
-                        // TODO: Validate full bytes vec with salted mainnet signature
-                        assert_eq!(body.source_pk.x.to_bytes(), bytes[3..35]);
-                        let bytes =
-                            bs58::decode("B62qn2MtuQ9GyyVnotUHB9Ehp9EZre5m6TYpGx64tBCDHHBZFZRURnL")
-                                .into_vec()
-                                .unwrap();
-                        // TODO: Validate full bytes vec with salted mainnet signature
-                        assert_eq!(body.receiver_pk.x.to_bytes(), bytes[3..35]);
+                        assert_eq!(
+                            &CompressedPubKey::from(body.source_pk.clone()).into_address(),
+                            "B62qoSuxNqwogusxxZbs3gpJUxCCN4GZEv21FX8S2DtNpToLgKnrexM"
+                        );
+                        assert_eq!(
+                            &CompressedPubKey::from(body.receiver_pk.clone()).into_address(),
+                            "B62qn2MtuQ9GyyVnotUHB9Ehp9EZre5m6TYpGx64tBCDHHBZFZRURnL"
+                        );
                         assert_eq!(body.token_id.0, 1);
                     }
-                    _ => bail!(
-                        "PaymentPayload expected, but found: {:#?}",
-                        command.payload.body
-                    ),
                 };
             }
-            _ => bail!("SignedCommand expected, but found: {:#?}", commands[0].data),
         }
 
         match &commands[0].status {
-            TransactionStatus::Applied(applied) => {
-                let auxiliary_data = applied.auxiliary_data();
+            TransactionStatus::Applied(auxiliary_data, balance_data) => {
                 assert!(auxiliary_data.fee_payer_account_creation_fee_paid.is_none());
                 assert!(auxiliary_data.receiver_account_creation_fee_paid.is_none());
                 assert!(auxiliary_data.created_token.is_none());
 
-                let balance_data = applied.balance_data();
                 assert!(balance_data.fee_payer_balance.is_some());
                 assert_eq!(balance_data.fee_payer_balance.unwrap().0, 59778375293571);
                 assert!(balance_data.source_balance.is_some());
@@ -298,13 +272,9 @@ mod tests {
                 assert!(balance_data.receiver_balance.is_some());
                 assert_eq!(balance_data.receiver_balance.unwrap().0, 11241317900);
             }
-            _ => bail!(
-                "TransactionStatus::Applied expected, but found: {:#?}",
-                commands[0].status
-            ),
         }
 
-        let coinbase = StagedLedgerDiffTuple::from(et.0.t.staged_ledger_diff.t.diff.clone())
+        let coinbase = StagedLedgerDiffTuple::from(et.t.staged_ledger_diff.t.diff.clone())
             .diff_two()
             .coinbase
             .clone();
@@ -313,11 +283,10 @@ mod tests {
             _ => bail!("CoinBase::One expected, but found: {:#?}", coinbase),
         };
 
-        let internal_commands =
-            StagedLedgerDiffTuple::from(et.0.t.staged_ledger_diff.t.diff.clone())
-                .diff_two()
-                .internal_command_balances
-                .clone();
+        let internal_commands = StagedLedgerDiffTuple::from(et.t.staged_ledger_diff.t.diff.clone())
+            .diff_two()
+            .internal_command_balances
+            .clone();
         assert_eq!(internal_commands.len(), 2);
         match &internal_commands[0] {
             InternalCommandBalanceData::CoinBase(cb) => {
@@ -342,27 +311,26 @@ mod tests {
             }
         };
 
-        let bytes = bs58::decode("jwHLk8kaC6B45K3sjuX2sM38649VtfpUAteTfKFQMPcqTeXjGiT")
-            .into_vec()
-            .unwrap();
+        let bytes =
+            bs58::decode("jwHLk8kaC6B45K3sjuX2sM38649VtfpUAteTfKFQMPcqTeXjGiT").into_vec()?;
         assert_eq!(
-            et.0.t.delta_transition_chain_proof.0.t.as_ref()[..],
+            et.t.delta_transition_chain_proof.0.t.as_ref()[..],
             bytes[2..34]
         );
         // FIXME: Version byte here disagrees with what is being used for genesis block
         // Note that version byte is not part of binprot binary, it's only used for bs58 representation
         // assert_eq!(
-        //     et.delta_transition_chain_proof.0.into(.clone()).to_base58_string(),
+        //     &et.delta_transition_chain_proof.0.into(.clone()).to_string(),
         //     "jwHLk8kaC6B45K3sjuX2sM38649VtfpUAteTfKFQMPcqTeXjGiT"
         // );
-        assert_eq!(et.0.t.current_protocol_version.t.major, 2);
-        assert_eq!(et.0.t.current_protocol_version.t.minor, 0);
-        assert_eq!(et.0.t.current_protocol_version.t.patch, 0);
+        assert_eq!(et.t.current_protocol_version.t.major, 2);
+        assert_eq!(et.t.current_protocol_version.t.minor, 0);
+        assert_eq!(et.t.current_protocol_version.t.patch, 0);
         assert_eq!(
-            et.0.t.current_protocol_version,
+            et.t.current_protocol_version,
             ProtocolVersion::default().into()
         );
-        assert_eq!(et.0.t.proposed_protocol_version_opt, None);
+        assert_eq!(et.t.proposed_protocol_version_opt, None);
         Ok(())
     }
 }

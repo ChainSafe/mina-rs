@@ -38,7 +38,7 @@ mod tests {
         };
 
         let mut prot_state = ProtocolState::default();
-        prot_state.body.consensus_state = chain_a.clone();
+        prot_state.body.consensus_state = chain_a;
         let mut chain_a = ProtocolStateChain::default();
         chain_a.push(prot_state).unwrap();
 

@@ -28,6 +28,7 @@ pub mod tests {
         assert_eq!(Amount::from_str("0.000000003").unwrap(), Amount(3));
         assert_eq!(Amount::from_str("1.000000003").unwrap(), Amount(1000000003));
         assert_eq!(Amount::from_str("1.000000030").unwrap(), Amount(1000000030));
+        assert_eq!(Amount::from_str("1.00000003").unwrap(), Amount(1000000030));
         assert_eq!(Amount::from_str("1.300000000").unwrap(), Amount(1300000000));
         assert_eq!(Amount::from_str("1.000000000").unwrap(), Amount(1000000000));
 
@@ -35,10 +36,7 @@ pub mod tests {
             Amount::from_str("0.000000000.0").unwrap_err(),
             ParseAmountError::ErrorInvalidFormat("0.000000000.0".to_string())
         );
-        assert_eq!(
-            Amount::from_str("000000000").unwrap_err(),
-            ParseAmountError::ErrorInvalidFormat("000000000".to_string())
-        );
+        assert_eq!(Amount::from_str("000000000").unwrap(), Amount(0));
     }
 
     #[test]

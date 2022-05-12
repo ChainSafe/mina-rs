@@ -1,6 +1,9 @@
 // Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
+#[cfg(all(test, feature = "browser"))]
+wasm_bindgen_test::wasm_bindgen_test_configure!(run_in_browser);
+
 #[cfg(test)]
 mod tests {
     use crate::fuzz_test;
@@ -31,7 +34,7 @@ mod tests {
 
             StagedLedgerDiffV1
             StagedLedgerDiffTupleV1
-            StagedLedgerPreDiffTwoV1
+            StagedLedgerPreDiffV1
 
             DeltaTransitionChainProof
 

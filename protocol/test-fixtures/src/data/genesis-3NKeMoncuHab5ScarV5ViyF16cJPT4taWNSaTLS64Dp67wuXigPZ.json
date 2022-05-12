@@ -1,26 +1,19 @@
 {
   "protocol_state": {
-    "previous_state_hash":
-      "3NLoKn22eMnyQ7rxh5pxB6vBA3XhSAhhrf7akdqS6HbAKD14Dh1d",
+    "previous_state_hash": "3NLoKn22eMnyQ7rxh5pxB6vBA3XhSAhhrf7akdqS6HbAKD14Dh1d",
     "body": {
-      "genesis_state_hash":
-        "3NLoKn22eMnyQ7rxh5pxB6vBA3XhSAhhrf7akdqS6HbAKD14Dh1d",
+      "genesis_state_hash": "3NLoKn22eMnyQ7rxh5pxB6vBA3XhSAhhrf7akdqS6HbAKD14Dh1d",
       "blockchain_state": {
         "staged_ledger_hash": {
           "non_snark": {
-            "ledger_hash":
-              "jx7buQVWFLsXTtzRgSxbYcT8EYLS8KCZbLrfDcJxMtyy4thw2Ee",
+            "ledger_hash": "jx7buQVWFLsXTtzRgSxbYcT8EYLS8KCZbLrfDcJxMtyy4thw2Ee",
             "aux_hash": "UDRUFHSvxUAtV8sh7gzMVPqpbd46roG1wzWR6dYvB6RunPihom",
-            "pending_coinbase_aux":
-              "WAAeUjUnP9Q2JiabhJzJozcjiEmkZe8ob4cfFKSuq6pQSNmHh7"
+            "pending_coinbase_aux": "WAAeUjUnP9Q2JiabhJzJozcjiEmkZe8ob4cfFKSuq6pQSNmHh7"
           },
-          "pending_coinbase_hash":
-            "2n1tLdP2gkifmyVmrmzYXTS4ohPbZPJn6Qq4x55ywrbRWB4543cC"
+          "pending_coinbase_hash": "2n1tLdP2gkifmyVmrmzYXTS4ohPbZPJn6Qq4x55ywrbRWB4543cC"
         },
-        "snarked_ledger_hash":
-          "jx7buQVWFLsXTtzRgSxbYcT8EYLS8KCZbLrfDcJxMtyy4thw2Ee",
-        "genesis_ledger_hash":
-          "jx7buQVWFLsXTtzRgSxbYcT8EYLS8KCZbLrfDcJxMtyy4thw2Ee",
+        "snarked_ledger_hash": "jx7buQVWFLsXTtzRgSxbYcT8EYLS8KCZbLrfDcJxMtyy4thw2Ee",
+        "genesis_ledger_hash": "jx7buQVWFLsXTtzRgSxbYcT8EYLS8KCZbLrfDcJxMtyy4thw2Ee",
         "snarked_next_available_token": "2",
         "timestamp": "1615939200000"
       },
@@ -29,11 +22,24 @@
         "epoch_count": "0",
         "min_window_density": "77",
         "sub_window_densities": [
-          "1", "7", "7", "7", "7", "7", "7", "7", "7", "7", "7"
+          "1",
+          "7",
+          "7",
+          "7",
+          "7",
+          "7",
+          "7",
+          "7",
+          "7",
+          "7",
+          "7"
         ],
         "last_vrf_output": "NfThG1r1GxQuhaGLSJWGxcpv24SudtXG4etB0TnGqwg=",
         "total_currency": "805385692840039233",
-        "curr_global_slot": { "slot_number": "0", "slots_per_epoch": "7140" },
+        "curr_global_slot": {
+          "slot_number": "0",
+          "slots_per_epoch": "7140"
+        },
         "global_slot_since_genesis": "0",
         "staking_epoch_data": {
           "ledger": {
@@ -41,10 +47,8 @@
             "total_currency": "805385692840039233"
           },
           "seed": "2va9BGv9JrLTtrzZttiEMDYw1Zj6a6EHzXjmP9evHDTG3oEquURA",
-          "start_checkpoint":
-            "3NK2tkzqqK5spR2sZ7tujjqPksL45M3UUrcA4WhCkeiPtnugyE2x",
-          "lock_checkpoint":
-            "3NK2tkzqqK5spR2sZ7tujjqPksL45M3UUrcA4WhCkeiPtnugyE2x",
+          "start_checkpoint": "3NK2tkzqqK5spR2sZ7tujjqPksL45M3UUrcA4WhCkeiPtnugyE2x",
+          "lock_checkpoint": "3NK2tkzqqK5spR2sZ7tujjqPksL45M3UUrcA4WhCkeiPtnugyE2x",
           "epoch_length": "1"
         },
         "next_epoch_data": {
@@ -53,19 +57,14 @@
             "total_currency": "805385692840039233"
           },
           "seed": "2vaRh7FQ5wSzmpFReF9gcRKjv48CcJvHs25aqb3SSZiPgHQBy5Dt",
-          "start_checkpoint":
-            "3NK2tkzqqK5spR2sZ7tujjqPksL45M3UUrcA4WhCkeiPtnugyE2x",
-          "lock_checkpoint":
-            "3NLoKn22eMnyQ7rxh5pxB6vBA3XhSAhhrf7akdqS6HbAKD14Dh1d",
+          "start_checkpoint": "3NK2tkzqqK5spR2sZ7tujjqPksL45M3UUrcA4WhCkeiPtnugyE2x",
+          "lock_checkpoint": "3NLoKn22eMnyQ7rxh5pxB6vBA3XhSAhhrf7akdqS6HbAKD14Dh1d",
           "epoch_length": "2"
         },
         "has_ancestor_in_same_checkpoint_window": true,
-        "block_stake_winner":
-          "B62qiy32p8kAKnny8ZFwoMhYpBppM1DWVCqAPBYNcXnsAHhnfAAuXgg",
-        "block_creator":
-          "B62qiy32p8kAKnny8ZFwoMhYpBppM1DWVCqAPBYNcXnsAHhnfAAuXgg",
-        "coinbase_receiver":
-          "B62qiy32p8kAKnny8ZFwoMhYpBppM1DWVCqAPBYNcXnsAHhnfAAuXgg",
+        "block_stake_winner": "B62qiy32p8kAKnny8ZFwoMhYpBppM1DWVCqAPBYNcXnsAHhnfAAuXgg",
+        "block_creator": "B62qiy32p8kAKnny8ZFwoMhYpBppM1DWVCqAPBYNcXnsAHhnfAAuXgg",
+        "coinbase_receiver": "B62qiy32p8kAKnny8ZFwoMhYpBppM1DWVCqAPBYNcXnsAHhnfAAuXgg",
         "supercharge_coinbase": true
       },
       "constants": {
@@ -84,13 +83,25 @@
           "plonk": {
             "alpha": [
               "Scalar_challenge",
-              [ 8485106177194710905, -1312226530362767951 ]
+              [
+                8485106177194710905,
+                -1312226530362767951
+              ]
             ],
-            "beta": [ -6430667927186375774, -3337607204513408471 ],
-            "gamma": [ 8370999550582557960, 2564953582899372946 ],
+            "beta": [
+              -6430667927186375774,
+              -3337607204513408471
+            ],
+            "gamma": [
+              8370999550582557960,
+              2564953582899372946
+            ],
             "zeta": [
               "Scalar_challenge",
-              [ 723815570568662761, -7895844621402831008 ]
+              [
+                723815570568662761,
+                -7895844621402831008
+              ]
             ]
           },
           "combined_inner_product": [
@@ -103,121 +114,183 @@
           ],
           "xi": [
             "Scalar_challenge",
-            [ 9192024484525083167, -4963136190301137182 ]
+            [
+              9192024484525083167,
+              -4963136190301137182
+            ]
           ],
           "bulletproof_challenges": [
             {
               "prechallenge": [
                 "Scalar_challenge",
-                [ 621834770194220300, -4327941673388439925 ]
+                [
+                  621834770194220300,
+                  -4327941673388439925
+                ]
               ]
             },
             {
               "prechallenge": [
                 "Scalar_challenge",
-                [ 8902445049614368905, -5479804816757020655 ]
+                [
+                  8902445049614368905,
+                  -5479804816757020655
+                ]
               ]
             },
             {
               "prechallenge": [
                 "Scalar_challenge",
-                [ 8345091427968288705, 8258453988658898844 ]
+                [
+                  8345091427968288705,
+                  8258453988658898844
+                ]
               ]
             },
             {
               "prechallenge": [
                 "Scalar_challenge",
-                [ 746390447645740837, -5643124118675291918 ]
+                [
+                  746390447645740837,
+                  -5643124118675291918
+                ]
               ]
             },
             {
               "prechallenge": [
                 "Scalar_challenge",
-                [ -5948286762976073031, 3913620533516803836 ]
+                [
+                  -5948286762976073031,
+                  3913620533516803836
+                ]
               ]
             },
             {
               "prechallenge": [
                 "Scalar_challenge",
-                [ 6451156200849374208, -7149474906925249401 ]
+                [
+                  6451156200849374208,
+                  -7149474906925249401
+                ]
               ]
             },
             {
               "prechallenge": [
                 "Scalar_challenge",
-                [ 2545802753099625135, -3046285123411643010 ]
+                [
+                  2545802753099625135,
+                  -3046285123411643010
+                ]
               ]
             },
             {
               "prechallenge": [
                 "Scalar_challenge",
-                [ 1476045778313053942, 7088211501506636392 ]
+                [
+                  1476045778313053942,
+                  7088211501506636392
+                ]
               ]
             },
             {
               "prechallenge": [
                 "Scalar_challenge",
-                [ -5780902958823199474, 684672559108579835 ]
+                [
+                  -5780902958823199474,
+                  684672559108579835
+                ]
               ]
             },
             {
               "prechallenge": [
                 "Scalar_challenge",
-                [ -479599555522051695, 6277689784759994790 ]
+                [
+                  -479599555522051695,
+                  6277689784759994790
+                ]
               ]
             },
             {
               "prechallenge": [
                 "Scalar_challenge",
-                [ -6174909374622547011, -2876420228592515736 ]
+                [
+                  -6174909374622547011,
+                  -2876420228592515736
+                ]
               ]
             },
             {
               "prechallenge": [
                 "Scalar_challenge",
-                [ -5612139484668830099, -141685165274757211 ]
+                [
+                  -5612139484668830099,
+                  -141685165274757211
+                ]
               ]
             },
             {
               "prechallenge": [
                 "Scalar_challenge",
-                [ -9057284384873862529, -218923106050670804 ]
+                [
+                  -9057284384873862529,
+                  -218923106050670804
+                ]
               ]
             },
             {
               "prechallenge": [
                 "Scalar_challenge",
-                [ -4381571242292214582, -7982158890774157783 ]
+                [
+                  -4381571242292214582,
+                  -7982158890774157783
+                ]
               ]
             },
             {
               "prechallenge": [
                 "Scalar_challenge",
-                [ -2589693721356185105, 47703702537737607 ]
+                [
+                  -2589693721356185105,
+                  47703702537737607
+                ]
               ]
             },
             {
               "prechallenge": [
                 "Scalar_challenge",
-                [ 6933529253212730047, -453811945482877525 ]
+                [
+                  6933529253212730047,
+                  -453811945482877525
+                ]
               ]
             },
             {
               "prechallenge": [
                 "Scalar_challenge",
-                [ -7749055720453093542, -3329383869546507530 ]
+                [
+                  -7749055720453093542,
+                  -3329383869546507530
+                ]
               ]
             },
             {
               "prechallenge": [
                 "Scalar_challenge",
-                [ -4722006655881085948, -2216518060947545516 ]
+                [
+                  -4722006655881085948,
+                  -2216518060947545516
+                ]
               ]
             }
           ],
           "which_branch": "\u0000"
         },
-        "sponge_digest_before_evaluations": [ 0, 0, 0, 0 ],
+        "sponge_digest_before_evaluations": [
+          0,
+          0,
+          0,
+          0
+        ],
         "me_only": {
           "sg": [
             "0xc60a524476af46c04d571246d5dfd73b82d34a5cc50d3e279dd4e96239879c1b",
@@ -228,103 +301,154 @@
               {
                 "prechallenge": [
                   "Scalar_challenge",
-                  [ -4147613965780683501, 1618424163113385480 ]
+                  [
+                    -4147613965780683501,
+                    1618424163113385480
+                  ]
                 ]
               },
               {
                 "prechallenge": [
                   "Scalar_challenge",
-                  [ 5242665654050011345, 1974270862881305038 ]
+                  [
+                    5242665654050011345,
+                    1974270862881305038
+                  ]
                 ]
               },
               {
                 "prechallenge": [
                   "Scalar_challenge",
-                  [ 3711726721677311855, 8761545649494038627 ]
+                  [
+                    3711726721677311855,
+                    8761545649494038627
+                  ]
                 ]
               },
               {
                 "prechallenge": [
                   "Scalar_challenge",
-                  [ -2505642933990422633, -2487422680924118585 ]
+                  [
+                    -2505642933990422633,
+                    -2487422680924118585
+                  ]
                 ]
               },
               {
                 "prechallenge": [
                   "Scalar_challenge",
-                  [ -4113786261177851957, 566815174034496733 ]
+                  [
+                    -4113786261177851957,
+                    566815174034496733
+                  ]
                 ]
               },
               {
                 "prechallenge": [
                   "Scalar_challenge",
-                  [ 5993263758714673683, -6259514542256722053 ]
+                  [
+                    5993263758714673683,
+                    -6259514542256722053
+                  ]
                 ]
               },
               {
                 "prechallenge": [
                   "Scalar_challenge",
-                  [ -2117686120277866613, -550460597093069586 ]
+                  [
+                    -2117686120277866613,
+                    -550460597093069586
+                  ]
                 ]
               },
               {
                 "prechallenge": [
                   "Scalar_challenge",
-                  [ 2143052809542605959, 5556201566125368992 ]
+                  [
+                    2143052809542605959,
+                    5556201566125368992
+                  ]
                 ]
               },
               {
                 "prechallenge": [
                   "Scalar_challenge",
-                  [ -7172698754141626607, -6773867482688065048 ]
+                  [
+                    -7172698754141626607,
+                    -6773867482688065048
+                  ]
                 ]
               },
               {
                 "prechallenge": [
                   "Scalar_challenge",
-                  [ 6641554769559773261, 6524714810323564443 ]
+                  [
+                    6641554769559773261,
+                    6524714810323564443
+                  ]
                 ]
               },
               {
                 "prechallenge": [
                   "Scalar_challenge",
-                  [ 2504198601910020936, -6446749539458519571 ]
+                  [
+                    2504198601910020936,
+                    -6446749539458519571
+                  ]
                 ]
               },
               {
                 "prechallenge": [
                   "Scalar_challenge",
-                  [ -8068243033437084562, -4483743298391994862 ]
+                  [
+                    -8068243033437084562,
+                    -4483743298391994862
+                  ]
                 ]
               },
               {
                 "prechallenge": [
                   "Scalar_challenge",
-                  [ 4919588161765452745, -7115468514000056859 ]
+                  [
+                    4919588161765452745,
+                    -7115468514000056859
+                  ]
                 ]
               },
               {
                 "prechallenge": [
                   "Scalar_challenge",
-                  [ 4798728907681213006, -7518434295045703748 ]
+                  [
+                    4798728907681213006,
+                    -7518434295045703748
+                  ]
                 ]
               },
               {
                 "prechallenge": [
                   "Scalar_challenge",
-                  [ -7365006775264907657, -1160122940338191724 ]
+                  [
+                    -7365006775264907657,
+                    -1160122940338191724
+                  ]
                 ]
               },
               {
                 "prechallenge": [
                   "Scalar_challenge",
-                  [ 5439700123898059092, -7701257753186809792 ]
+                  [
+                    5439700123898059092,
+                    -7701257753186809792
+                  ]
                 ]
               },
               {
                 "prechallenge": [
                   "Scalar_challenge",
-                  [ 3229587527204030387, 6616313680930013725 ]
+                  [
+                    3229587527204030387,
+                    6616313680930013725
+                  ]
                 ]
               }
             ],
@@ -332,103 +456,154 @@
               {
                 "prechallenge": [
                   "Scalar_challenge",
-                  [ -4147613965780683501, 1618424163113385480 ]
+                  [
+                    -4147613965780683501,
+                    1618424163113385480
+                  ]
                 ]
               },
               {
                 "prechallenge": [
                   "Scalar_challenge",
-                  [ 5242665654050011345, 1974270862881305038 ]
+                  [
+                    5242665654050011345,
+                    1974270862881305038
+                  ]
                 ]
               },
               {
                 "prechallenge": [
                   "Scalar_challenge",
-                  [ 3711726721677311855, 8761545649494038627 ]
+                  [
+                    3711726721677311855,
+                    8761545649494038627
+                  ]
                 ]
               },
               {
                 "prechallenge": [
                   "Scalar_challenge",
-                  [ -2505642933990422633, -2487422680924118585 ]
+                  [
+                    -2505642933990422633,
+                    -2487422680924118585
+                  ]
                 ]
               },
               {
                 "prechallenge": [
                   "Scalar_challenge",
-                  [ -4113786261177851957, 566815174034496733 ]
+                  [
+                    -4113786261177851957,
+                    566815174034496733
+                  ]
                 ]
               },
               {
                 "prechallenge": [
                   "Scalar_challenge",
-                  [ 5993263758714673683, -6259514542256722053 ]
+                  [
+                    5993263758714673683,
+                    -6259514542256722053
+                  ]
                 ]
               },
               {
                 "prechallenge": [
                   "Scalar_challenge",
-                  [ -2117686120277866613, -550460597093069586 ]
+                  [
+                    -2117686120277866613,
+                    -550460597093069586
+                  ]
                 ]
               },
               {
                 "prechallenge": [
                   "Scalar_challenge",
-                  [ 2143052809542605959, 5556201566125368992 ]
+                  [
+                    2143052809542605959,
+                    5556201566125368992
+                  ]
                 ]
               },
               {
                 "prechallenge": [
                   "Scalar_challenge",
-                  [ -7172698754141626607, -6773867482688065048 ]
+                  [
+                    -7172698754141626607,
+                    -6773867482688065048
+                  ]
                 ]
               },
               {
                 "prechallenge": [
                   "Scalar_challenge",
-                  [ 6641554769559773261, 6524714810323564443 ]
+                  [
+                    6641554769559773261,
+                    6524714810323564443
+                  ]
                 ]
               },
               {
                 "prechallenge": [
                   "Scalar_challenge",
-                  [ 2504198601910020936, -6446749539458519571 ]
+                  [
+                    2504198601910020936,
+                    -6446749539458519571
+                  ]
                 ]
               },
               {
                 "prechallenge": [
                   "Scalar_challenge",
-                  [ -8068243033437084562, -4483743298391994862 ]
+                  [
+                    -8068243033437084562,
+                    -4483743298391994862
+                  ]
                 ]
               },
               {
                 "prechallenge": [
                   "Scalar_challenge",
-                  [ 4919588161765452745, -7115468514000056859 ]
+                  [
+                    4919588161765452745,
+                    -7115468514000056859
+                  ]
                 ]
               },
               {
                 "prechallenge": [
                   "Scalar_challenge",
-                  [ 4798728907681213006, -7518434295045703748 ]
+                  [
+                    4798728907681213006,
+                    -7518434295045703748
+                  ]
                 ]
               },
               {
                 "prechallenge": [
                   "Scalar_challenge",
-                  [ -7365006775264907657, -1160122940338191724 ]
+                  [
+                    -7365006775264907657,
+                    -1160122940338191724
+                  ]
                 ]
               },
               {
                 "prechallenge": [
                   "Scalar_challenge",
-                  [ 5439700123898059092, -7701257753186809792 ]
+                  [
+                    5439700123898059092,
+                    -7701257753186809792
+                  ]
                 ]
               },
               {
                 "prechallenge": [
                   "Scalar_challenge",
-                  [ 3229587527204030387, 6616313680930013725 ]
+                  [
+                    3229587527204030387,
+                    6616313680930013725
+                  ]
                 ]
               }
             ]
@@ -452,109 +627,163 @@
             {
               "prechallenge": [
                 "Scalar_challenge",
-                [ 621834770194220300, -4327941673388439925 ]
+                [
+                  621834770194220300,
+                  -4327941673388439925
+                ]
               ]
             },
             {
               "prechallenge": [
                 "Scalar_challenge",
-                [ 8902445049614368905, -5479804816757020655 ]
+                [
+                  8902445049614368905,
+                  -5479804816757020655
+                ]
               ]
             },
             {
               "prechallenge": [
                 "Scalar_challenge",
-                [ 8345091427968288705, 8258453988658898844 ]
+                [
+                  8345091427968288705,
+                  8258453988658898844
+                ]
               ]
             },
             {
               "prechallenge": [
                 "Scalar_challenge",
-                [ 746390447645740837, -5643124118675291918 ]
+                [
+                  746390447645740837,
+                  -5643124118675291918
+                ]
               ]
             },
             {
               "prechallenge": [
                 "Scalar_challenge",
-                [ -5948286762976073031, 3913620533516803836 ]
+                [
+                  -5948286762976073031,
+                  3913620533516803836
+                ]
               ]
             },
             {
               "prechallenge": [
                 "Scalar_challenge",
-                [ 6451156200849374208, -7149474906925249401 ]
+                [
+                  6451156200849374208,
+                  -7149474906925249401
+                ]
               ]
             },
             {
               "prechallenge": [
                 "Scalar_challenge",
-                [ 2545802753099625135, -3046285123411643010 ]
+                [
+                  2545802753099625135,
+                  -3046285123411643010
+                ]
               ]
             },
             {
               "prechallenge": [
                 "Scalar_challenge",
-                [ 1476045778313053942, 7088211501506636392 ]
+                [
+                  1476045778313053942,
+                  7088211501506636392
+                ]
               ]
             },
             {
               "prechallenge": [
                 "Scalar_challenge",
-                [ -5780902958823199474, 684672559108579835 ]
+                [
+                  -5780902958823199474,
+                  684672559108579835
+                ]
               ]
             },
             {
               "prechallenge": [
                 "Scalar_challenge",
-                [ -479599555522051695, 6277689784759994790 ]
+                [
+                  -479599555522051695,
+                  6277689784759994790
+                ]
               ]
             },
             {
               "prechallenge": [
                 "Scalar_challenge",
-                [ -6174909374622547011, -2876420228592515736 ]
+                [
+                  -6174909374622547011,
+                  -2876420228592515736
+                ]
               ]
             },
             {
               "prechallenge": [
                 "Scalar_challenge",
-                [ -5612139484668830099, -141685165274757211 ]
+                [
+                  -5612139484668830099,
+                  -141685165274757211
+                ]
               ]
             },
             {
               "prechallenge": [
                 "Scalar_challenge",
-                [ -9057284384873862529, -218923106050670804 ]
+                [
+                  -9057284384873862529,
+                  -218923106050670804
+                ]
               ]
             },
             {
               "prechallenge": [
                 "Scalar_challenge",
-                [ -4381571242292214582, -7982158890774157783 ]
+                [
+                  -4381571242292214582,
+                  -7982158890774157783
+                ]
               ]
             },
             {
               "prechallenge": [
                 "Scalar_challenge",
-                [ -2589693721356185105, 47703702537737607 ]
+                [
+                  -2589693721356185105,
+                  47703702537737607
+                ]
               ]
             },
             {
               "prechallenge": [
                 "Scalar_challenge",
-                [ 6933529253212730047, -453811945482877525 ]
+                [
+                  6933529253212730047,
+                  -453811945482877525
+                ]
               ]
             },
             {
               "prechallenge": [
                 "Scalar_challenge",
-                [ -7749055720453093542, -3329383869546507530 ]
+                [
+                  -7749055720453093542,
+                  -3329383869546507530
+                ]
               ]
             },
             {
               "prechallenge": [
                 "Scalar_challenge",
-                [ -4722006655881085948, -2216518060947545516 ]
+                [
+                  -4722006655881085948,
+                  -2216518060947545516
+                ]
               ]
             }
           ],
@@ -562,109 +791,163 @@
             {
               "prechallenge": [
                 "Scalar_challenge",
-                [ 621834770194220300, -4327941673388439925 ]
+                [
+                  621834770194220300,
+                  -4327941673388439925
+                ]
               ]
             },
             {
               "prechallenge": [
                 "Scalar_challenge",
-                [ 8902445049614368905, -5479804816757020655 ]
+                [
+                  8902445049614368905,
+                  -5479804816757020655
+                ]
               ]
             },
             {
               "prechallenge": [
                 "Scalar_challenge",
-                [ 8345091427968288705, 8258453988658898844 ]
+                [
+                  8345091427968288705,
+                  8258453988658898844
+                ]
               ]
             },
             {
               "prechallenge": [
                 "Scalar_challenge",
-                [ 746390447645740837, -5643124118675291918 ]
+                [
+                  746390447645740837,
+                  -5643124118675291918
+                ]
               ]
             },
             {
               "prechallenge": [
                 "Scalar_challenge",
-                [ -5948286762976073031, 3913620533516803836 ]
+                [
+                  -5948286762976073031,
+                  3913620533516803836
+                ]
               ]
             },
             {
               "prechallenge": [
                 "Scalar_challenge",
-                [ 6451156200849374208, -7149474906925249401 ]
+                [
+                  6451156200849374208,
+                  -7149474906925249401
+                ]
               ]
             },
             {
               "prechallenge": [
                 "Scalar_challenge",
-                [ 2545802753099625135, -3046285123411643010 ]
+                [
+                  2545802753099625135,
+                  -3046285123411643010
+                ]
               ]
             },
             {
               "prechallenge": [
                 "Scalar_challenge",
-                [ 1476045778313053942, 7088211501506636392 ]
+                [
+                  1476045778313053942,
+                  7088211501506636392
+                ]
               ]
             },
             {
               "prechallenge": [
                 "Scalar_challenge",
-                [ -5780902958823199474, 684672559108579835 ]
+                [
+                  -5780902958823199474,
+                  684672559108579835
+                ]
               ]
             },
             {
               "prechallenge": [
                 "Scalar_challenge",
-                [ -479599555522051695, 6277689784759994790 ]
+                [
+                  -479599555522051695,
+                  6277689784759994790
+                ]
               ]
             },
             {
               "prechallenge": [
                 "Scalar_challenge",
-                [ -6174909374622547011, -2876420228592515736 ]
+                [
+                  -6174909374622547011,
+                  -2876420228592515736
+                ]
               ]
             },
             {
               "prechallenge": [
                 "Scalar_challenge",
-                [ -5612139484668830099, -141685165274757211 ]
+                [
+                  -5612139484668830099,
+                  -141685165274757211
+                ]
               ]
             },
             {
               "prechallenge": [
                 "Scalar_challenge",
-                [ -9057284384873862529, -218923106050670804 ]
+                [
+                  -9057284384873862529,
+                  -218923106050670804
+                ]
               ]
             },
             {
               "prechallenge": [
                 "Scalar_challenge",
-                [ -4381571242292214582, -7982158890774157783 ]
+                [
+                  -4381571242292214582,
+                  -7982158890774157783
+                ]
               ]
             },
             {
               "prechallenge": [
                 "Scalar_challenge",
-                [ -2589693721356185105, 47703702537737607 ]
+                [
+                  -2589693721356185105,
+                  47703702537737607
+                ]
               ]
             },
             {
               "prechallenge": [
                 "Scalar_challenge",
-                [ 6933529253212730047, -453811945482877525 ]
+                [
+                  6933529253212730047,
+                  -453811945482877525
+                ]
               ]
             },
             {
               "prechallenge": [
                 "Scalar_challenge",
-                [ -7749055720453093542, -3329383869546507530 ]
+                [
+                  -7749055720453093542,
+                  -3329383869546507530
+                ]
               ]
             },
             {
               "prechallenge": [
                 "Scalar_challenge",
-                [ -4722006655881085948, -2216518060947545516 ]
+                [
+                  -4722006655881085948,
+                  -2216518060947545516
+                ]
               ]
             }
           ]
@@ -984,10 +1267,8 @@
               ]
             ]
           ],
-          "z_1":
-            "0x27a6753e3c16b98921d53d185402e874f318a819fdf2f3ac6667262045aa8a26",
-          "z_2":
-            "0x664e7ca6fe93f151f069508b826ad5d06c71549318cbc911da6b74d06efe2806",
+          "z_1": "0x27a6753e3c16b98921d53d185402e874f318a819fdf2f3ac6667262045aa8a26",
+          "z_2": "0x664e7ca6fe93f151f069508b826ad5d06c71549318cbc911da6b74d06efe2806",
           "delta": [
             "0x0100000000000000000000000000000000000000000000000000000000000000",
             "0xbb2aedca237acf1971473d33d45b658f54ee7863f0a9df537c93120aa3b5741b"
@@ -1067,14 +1348,17 @@
       {
         "completed_works": [],
         "commands": [],
-        "coinbase": [ "Zero" ],
+        "coinbase": [
+          "Zero"
+        ],
         "internal_command_balances": []
       },
       null
     ]
   },
   "delta_transition_chain_proof": [
-    "3NLoKn22eMnyQ7rxh5pxB6vBA3XhSAhhrf7akdqS6HbAKD14Dh1d", []
+    "3NLoKn22eMnyQ7rxh5pxB6vBA3XhSAhhrf7akdqS6HbAKD14Dh1d",
+    []
   ],
   "current_protocol_version": "2.0.0",
   "proposed_protocol_version": "<None>"

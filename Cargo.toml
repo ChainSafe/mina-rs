@@ -12,6 +12,7 @@ members = [
   "protocol/test-fixtures",
   "protocol/test-serialization",
   "protocol/serialization-types",
+  "protocol/serialization-types-macros",
   "protocol/versioned",
   "secrets",
 ]

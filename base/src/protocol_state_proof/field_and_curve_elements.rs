@@ -4,7 +4,9 @@
 use ark_ec::models::ModelParameters;
 use ark_ec::short_weierstrass_jacobian::GroupAffine;
 use mina_crypto::{hex::skip_0x_prefix_when_needed, prelude::*};
+use mina_serialization_types_macros::AutoFrom;
 use num::Integer;
+use smart_default::SmartDefault;
 
 use crate::numbers::BigInt256;
 
@@ -13,7 +15,8 @@ use crate::numbers::BigInt256;
 pub type FieldElement = BigInt256;
 
 /// Vector of finite field elements (with version number defined in the WireType)
-#[derive(Clone, Default, PartialEq, Debug)]
+#[derive(Clone, Default, PartialEq, Debug, AutoFrom)]
+#[auto_from(mina_serialization_types::field_and_curve_elements::FieldElementVec)]
 pub struct FieldElementVec(pub Vec<FieldElement>);
 
 impl HexEncodable for FieldElementVec {
@@ -55,7 +58,8 @@ where
 
 /// An elliptic curve point defined over a base field with elements that fit in a BigInt256
 /// This is a Finite elliptic curve point as this type cannot be used to encode the point-at-infinity
-#[derive(Clone, Default, PartialEq, Debug)]
+#[derive(Clone, Default, PartialEq, Debug, AutoFrom)]
+#[auto_from(mina_serialization_types::field_and_curve_elements::FiniteECPoint)]
 pub struct FiniteECPoint(pub FieldElement, pub FieldElement);
 
 impl<P> From<FiniteECPoint> for GroupAffine<P>
@@ -85,7 +89,8 @@ macro_rules! finite_ec_point {
 }
 
 /// Vector of finite EC points (with version number defined in the WireType)
-#[derive(Clone, Default, PartialEq, Debug)]
+#[derive(Clone, Default, PartialEq, Debug, AutoFrom)]
+#[auto_from(mina_serialization_types::field_and_curve_elements::FiniteECPointVec)]
 pub struct FiniteECPointVec(pub Vec<FiniteECPoint>);
 
 impl<P> From<FiniteECPointVec> for Vec<GroupAffine<P>>
@@ -98,7 +103,9 @@ where
     }
 }
 
-pub type FiniteECPointPair = (FiniteECPoint, FiniteECPoint);
+#[derive(Clone, Default, PartialEq, Debug, AutoFrom)]
+#[auto_from(mina_serialization_types::field_and_curve_elements::FiniteECPointPair)]
+pub struct FiniteECPointPair(pub FiniteECPoint, pub FiniteECPoint);
 
 #[macro_export]
 macro_rules! finite_ec_point_pair {
@@ -106,13 +113,17 @@ macro_rules! finite_ec_point_pair {
         (|s1, s2, s3, s4| {
             use mina_rs_base::finite_ec_point;
             use mina_rs_base::protocol_state_proof::*;
-            Ok::<_, hex::FromHexError>((finite_ec_point!(s1, s2)?, finite_ec_point!(s3, s4)?))
+            Ok::<_, hex::FromHexError>(FiniteECPointPair(
+                finite_ec_point!(s1, s2)?,
+                finite_ec_point!(s3, s4)?,
+            ))
         })($e1, $e2, $e3, $e4)
     };
 }
 
 /// Vector of 2-tuples of finite EC points (with version number defined in the WireType)
-#[derive(Clone, Default, PartialEq, Debug)]
+#[derive(Clone, Default, PartialEq, Debug, AutoFrom)]
+#[auto_from(mina_serialization_types::field_and_curve_elements::FiniteECPointPairVec)]
 pub struct FiniteECPointPairVec(pub Vec<FiniteECPointPair>);
 
 impl<P> From<FiniteECPointPairVec> for Vec<(GroupAffine<P>, GroupAffine<P>)>
@@ -121,23 +132,21 @@ where
     <P as ModelParameters>::BaseField: From<ark_ff::BigInteger256>,
 {
     fn from(v: FiniteECPointPairVec) -> Self {
-        v.0.into_iter().map(|(x, y)| (x.into(), y.into())).collect()
+        v.0.into_iter()
+            .map(|FiniteECPointPair(x, y)| (x.into(), y.into()))
+            .collect()
     }
 }
 
 /// Elliptic curve point that can either be the coordinates of a point on the curve
 /// OR it can be the point-at-infinity
-#[derive(Clone, PartialEq, Debug)]
+#[derive(Clone, PartialEq, Debug, SmartDefault, AutoFrom)]
+#[auto_from(mina_serialization_types::field_and_curve_elements::ECPoint)]
 pub enum ECPoint {
     // elliptic curve point, can be the point at infinity
+    #[default]
     Infinite,
     Finite(FiniteECPoint),
-}
-
-impl Default for ECPoint {
-    fn default() -> Self {
-        Self::Infinite
-    }
 }
 
 impl<P> From<ECPoint> for GroupAffine<P>
@@ -158,7 +167,8 @@ where
 }
 
 /// Vector of EC points (with version number defined in the WireType)
-#[derive(Clone, Default, PartialEq, Debug)]
+#[derive(Clone, Default, PartialEq, Debug, AutoFrom)]
+#[auto_from(mina_serialization_types::field_and_curve_elements::ECPointVec)]
 pub struct ECPointVec(pub Vec<ECPoint>);
 
 impl<P> From<ECPointVec> for Vec<GroupAffine<P>>

@@ -22,9 +22,11 @@ pub mod common;
 pub mod consensus_state;
 pub mod delta_transition_chain_proof;
 pub mod epoch_data;
+pub mod errors;
 pub mod external_transition;
 pub mod field_and_curve_elements;
 pub mod global_slot;
+pub mod macros;
 pub mod opening_proof;
 pub mod proof_evaluations;
 pub mod proof_messages;
@@ -84,7 +86,7 @@ pub mod v1 {
     pub use super::protocol_version::ProtocolVersionV1;
     pub use super::signatures::{PublicKey2V1, PublicKeyV1, SignatureV1};
     pub use super::snark_work::{
-        FeeExcessV1, LedgerProofV1, OneORTwoV1, PendingCoinbaseStackStateV1, PendingCoinbaseV1,
+        FeeExcessPairV1, LedgerProofV1, OneORTwoV1, PendingCoinbaseStackStateV1, PendingCoinbaseV1,
         SgnTypeV1, SignedV1, StateStackV1, StatementV1, TransactionSnarkV1, TransactionSnarkWorkV1,
     };
     pub use super::staged_ledger_diff::{
@@ -92,9 +94,8 @@ pub mod v1 {
         InternalCommandBalanceDataV1, PaymentPayloadV1, SignedCommandFeeTokenV1,
         SignedCommandMemoV1, SignedCommandPayloadBodyV1, SignedCommandPayloadCommonV1,
         SignedCommandPayloadV1, SignedCommandV1, StagedLedgerDiffTupleV1, StagedLedgerDiffV1,
-        StagedLedgerPreDiffOneV1, StagedLedgerPreDiffTwoV1, TransactionStatusAppliedV1,
-        TransactionStatusAuxiliaryDataV1, TransactionStatusBalanceDataV1, TransactionStatusV1,
-        UserCommandV1, UserCommandWithStatusV1,
+        StagedLedgerPreDiffV1, TransactionStatusAuxiliaryDataV1, TransactionStatusBalanceDataV1,
+        TransactionStatusV1, UserCommandV1, UserCommandWithStatusV1,
     };
 }
 
@@ -102,12 +103,51 @@ pub mod v1 {
 pub mod json {
     use super::*;
 
-    pub use common::{ChainHashV1Json, CoinBaseHashV1Json, EpochSeedHashV1Json, LedgerHashV1Json};
+    pub use blockchain_state::BlockchainStateJson;
+    pub use bulletproof_challenges::{
+        BulletproofChallengeJson, BulletproofChallengeTuple17Json, BulletproofChallengeTuple18Json,
+        BulletproofChallengesJson, BulletproofPreChallengeJson,
+        ProofStateBulletproofChallengesJson, ScalarChallengeVector2Json,
+    };
+    pub use common::{
+        AuxHashJson, ByteVecJson, ChainHashV1Json, CharJson, CoinBaseHashV1Json,
+        EpochSeedHashV1Json, HashV1Json, LedgerHashV1Json, PendingCoinbaseAuxHashJson,
+        StateHashV1Json, VrfOutputHashV1Json,
+    };
+    pub use consensus_state::{ConsensusStateJson, VrfOutputTruncatedJson};
     pub use delta_transition_chain_proof::DeltaTransitionChainProofJson;
     pub use external_transition::ExternalTransitionJson;
+    pub use field_and_curve_elements::{
+        ECPointJson, ECPointVecJson, FieldElementJson, FieldElementVecJson, FiniteECPointJson,
+        FiniteECPointPairJson, FiniteECPointPairVecJson, FiniteECPointVecJson,
+    };
+    pub use opening_proof::OpeningProofJson;
+    pub use proof_evaluations::ProofEvaluationsJson;
+    pub use proof_messages::{
+        ProofMessageWithDegreeBoundJson, ProofMessageWithoutDegreeBoundListJson, ProofMessagesJson,
+    };
+    pub use protocol_constants::ProtocolConstantsJson;
     pub use protocol_state::ProtocolStateJson;
     pub use protocol_state_body::ProtocolStateBodyJson;
-    pub use protocol_state_proof::ProtocolStateProofJson;
+    pub use protocol_state_proof::{
+        PairingBasedJson, PlonkJson, PrevEvalsJson, PrevXHatJson, ProofJson,
+        ProofOpeningsEvalsJson, ProofOpeningsJson, ProofStateDeferredValuesJson, ProofStateJson,
+        ProofStatePairingBasedJson, ProofStatementJson, ProtocolStateProofBase64Json,
+        ProtocolStateProofJson, ShiftedValueJson, SpongeDigestBeforeEvaluations,
+    };
     pub use protocol_version::ProtocolVersionJson;
-    pub use staged_ledger_diff::StagedLedgerDiffJson;
+    pub use signatures::{PublicKeyJson, SignatureJson};
+    pub use snark_work::{
+        FeeExcessJson, FeeExcessPairJson, OneORTwoJson, PendingCoinbaseJson,
+        PendingCoinbaseStackStateJson, SgnTypeJson, SignedJson, StateStackJson, StatementJson,
+        TransactionSnarkJson, TransactionSnarkWorkJson,
+    };
+    pub use staged_ledger_diff::{
+        CoinBaseBalanceDataJson, CoinBaseJson, FeeTransferBalanceDataJson,
+        InternalCommandBalanceDataJson, PaymentPayloadJson, SignedCommandJson,
+        SignedCommandMemoJson, SignedCommandPayloadBodyJson, SignedCommandPayloadCommonJson,
+        SignedCommandPayloadJson, StagedLedgerDiffJson, TransactionStatusAuxiliaryDataJson,
+        TransactionStatusBalanceDataJson, TransactionStatusJson, UserCommandJson,
+        UserCommandWithStatusJson,
+    };
 }

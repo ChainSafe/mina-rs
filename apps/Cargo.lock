@@ -324,9 +324,9 @@ dependencies = [
 
 [[package]]
 name = "clap"
-version = "3.1.16"
+version = "3.1.18"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f52d4f8e4a1419219935762e32913b4430f37cb0c0200ad17a89ee18c0188a9f"
+checksum = "d2dbdf4bdacb33466e854ce889eee8dfd5729abf7ccd7664d0a2d60cd384440b"
 dependencies = [
  "atty",
  "bitflags",
@@ -456,17 +456,6 @@ name = "derivative"
 version = "2.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "fcc3dd5e9e9c0b295d6e1e4d811fb6f157d5ffd784b8d202fc62eac8035a770b"
-dependencies = [
- "proc-macro2",
- "quote",
- "syn",
-]
-
-[[package]]
-name = "derive_deref"
-version = "1.1.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "dcdbcee2d9941369faba772587a565f4f534e42cb8d17e5295871de730163b2b"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -726,6 +715,7 @@ dependencies = [
  "num",
  "proof-systems",
  "serde",
+ "serde_json",
  "thiserror",
  "versioned",
 ]
@@ -733,7 +723,7 @@ dependencies = [
 [[package]]
 name = "mina-curves"
 version = "0.1.0"
-source = "git+https://github.com/o1-labs/proof-systems?rev=b44ceb380b74eb19bc203df384bcb1643fdd83c2#b44ceb380b74eb19bc203df384bcb1643fdd83c2"
+source = "git+https://github.com/o1-labs/proof-systems?rev=3961f5cfce1f8e2f014ff8afeb50241eb6a161a4#3961f5cfce1f8e2f014ff8afeb50241eb6a161a4"
 dependencies = [
  "ark-ec",
  "ark-ff",
@@ -742,7 +732,7 @@ dependencies = [
 [[package]]
 name = "mina-hasher"
 version = "0.1.0"
-source = "git+https://github.com/o1-labs/proof-systems?rev=b44ceb380b74eb19bc203df384bcb1643fdd83c2#b44ceb380b74eb19bc203df384bcb1643fdd83c2"
+source = "git+https://github.com/o1-labs/proof-systems?rev=3961f5cfce1f8e2f014ff8afeb50241eb6a161a4#3961f5cfce1f8e2f014ff8afeb50241eb6a161a4"
 dependencies = [
  "ark-ff",
  "bitvec",
@@ -770,16 +760,17 @@ dependencies = [
  "ark-ff",
  "base64",
  "bin-prot",
- "derive_deref",
  "derive_more",
  "getrandom",
  "hex",
  "mina-crypto",
  "mina-merkle",
  "mina-serialization-types",
+ "mina-serialization-types-macros",
  "num",
  "proof-systems",
  "serde",
+ "serde_json",
  "smart-default",
  "thiserror",
  "time",
@@ -792,7 +783,7 @@ version = "0.1.0"
 dependencies = [
  "anyhow",
  "bin-prot",
- "clap 3.1.16",
+ "clap 3.1.18",
  "dhat",
  "mina-rs-base",
  "serde",
@@ -802,18 +793,34 @@ dependencies = [
 name = "mina-serialization-types"
 version = "0.1.0"
 dependencies = [
+ "base64",
  "bin-prot",
  "bs58",
  "derive_more",
+ "hex",
+ "mina-serialization-types-macros",
+ "num",
  "proof-systems",
  "serde",
+ "serde_json",
+ "smart-default",
+ "thiserror",
  "versioned",
+]
+
+[[package]]
+name = "mina-serialization-types-macros"
+version = "0.1.0"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn",
 ]
 
 [[package]]
 name = "mina-signer"
 version = "0.1.0"
-source = "git+https://github.com/o1-labs/proof-systems?rev=b44ceb380b74eb19bc203df384bcb1643fdd83c2#b44ceb380b74eb19bc203df384bcb1643fdd83c2"
+source = "git+https://github.com/o1-labs/proof-systems?rev=3961f5cfce1f8e2f014ff8afeb50241eb6a161a4#3961f5cfce1f8e2f014ff8afeb50241eb6a161a4"
 dependencies = [
  "ark-ec",
  "ark-ff",
@@ -936,7 +943,7 @@ dependencies = [
 [[package]]
 name = "o1-utils"
 version = "0.1.0"
-source = "git+https://github.com/o1-labs/proof-systems?rev=b44ceb380b74eb19bc203df384bcb1643fdd83c2#b44ceb380b74eb19bc203df384bcb1643fdd83c2"
+source = "git+https://github.com/o1-labs/proof-systems?rev=3961f5cfce1f8e2f014ff8afeb50241eb6a161a4#3961f5cfce1f8e2f014ff8afeb50241eb6a161a4"
 dependencies = [
  "ark-ec",
  "ark-ff",
@@ -953,9 +960,9 @@ dependencies = [
 
 [[package]]
 name = "object"
-version = "0.28.3"
+version = "0.28.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "40bec70ba014595f99f7aa110b84331ffe1ee9aece7fe6f387cc7e3ecda4d456"
+checksum = "e42c982f2d955fac81dd7e1d0e1426a7d702acd9c98d19ab01083a6a0328c424"
 dependencies = [
  "memchr",
 ]
@@ -975,7 +982,7 @@ checksum = "624a8340c38c1b80fd549087862da4ba43e08858af025b236e509b6649fc13d5"
 [[package]]
 name = "oracle"
 version = "0.1.0"
-source = "git+https://github.com/o1-labs/proof-systems?rev=b44ceb380b74eb19bc203df384bcb1643fdd83c2#b44ceb380b74eb19bc203df384bcb1643fdd83c2"
+source = "git+https://github.com/o1-labs/proof-systems?rev=3961f5cfce1f8e2f014ff8afeb50241eb6a161a4#3961f5cfce1f8e2f014ff8afeb50241eb6a161a4"
 dependencies = [
  "ark-ec",
  "ark-ff",
@@ -1420,9 +1427,9 @@ checksum = "6bdef32e8150c2a081110b42772ffe7d7c9032b606bc226c8260fd97e0976601"
 
 [[package]]
 name = "syn"
-version = "1.0.92"
+version = "1.0.93"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7ff7c592601f11445996a06f8ad0c27f094a58857c2f89e97974ab9235b92c52"
+checksum = "04066589568b72ec65f42d65a1a52436e954b168773148893c020269563decf2"
 dependencies = [
  "proc-macro2",
  "quote",
