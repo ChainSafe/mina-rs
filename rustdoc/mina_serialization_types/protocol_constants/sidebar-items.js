@@ -1,1 +1,1 @@
-initSidebarItems({"struct":[["ProtocolConstants","Constants that define the consensus parameters"]],"type":[["ProtocolConstantsV1","Constants that define the consensus parameters (v1)"]]});
+initSidebarItems({"struct":[["ProtocolConstants","Constants that define the consensus parameters"],["ProtocolConstantsJson","Constants that define the consensus parameters (json)"]],"type":[["ProtocolConstantsV1","Constants that define the consensus parameters (v1)"]]});

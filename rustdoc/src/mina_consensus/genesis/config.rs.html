@@ -542,6 +542,8 @@
 </pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems</span>
 <span class="comment">// SPDX-License-Identifier: Apache-2.0</span>
 
+<span class="kw">use</span> <span class="ident">std::str::FromStr</span>;
+
 <span class="kw">use</span> <span class="ident">mina_crypto</span>::{<span class="ident">hash</span>::<span class="kw-2">*</span>, <span class="ident">prelude</span>::<span class="kw-2">*</span>};
 <span class="kw">use</span> <span class="ident">mina_rs_base</span>::{
     <span class="ident">finite_ec_point</span>, <span class="ident">finite_ec_point_pair</span>,
@@ -598,17 +600,16 @@
             <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">data</span> <span class="op">=</span> <span class="ident">EpochData::default</span>();
             <span class="ident">data</span>.<span class="ident">epoch_length</span>.<span class="number">0</span> <span class="op">=</span> <span class="number">1</span>;
             <span class="ident">data</span>.<span class="ident">ledger</span>.<span class="ident">hash</span> <span class="op">=</span>
-                <span class="ident">LedgerHash::from_base58</span>(<span class="string">&quot;jx7buQVWFLsXTtzRgSxbYcT8EYLS8KCZbLrfDcJxMtyy4thw2Ee&quot;</span>)
+                <span class="ident">LedgerHash::from_str</span>(<span class="string">&quot;jx7buQVWFLsXTtzRgSxbYcT8EYLS8KCZbLrfDcJxMtyy4thw2Ee&quot;</span>)
                     .<span class="ident">expect</span>(<span class="ident">ERR_FAIL_TO_DECODE_B58</span>);
             <span class="ident">data</span>.<span class="ident">ledger</span>.<span class="ident">total_currency</span> <span class="op">=</span> <span class="ident">total_currency</span>;
-            <span class="ident">data</span>.<span class="ident">seed</span> <span class="op">=</span>
-                <span class="ident">EpochSeed::from_base58</span>(<span class="string">&quot;2va9BGv9JrLTtrzZttiEMDYw1Zj6a6EHzXjmP9evHDTG3oEquURA&quot;</span>)
-                    .<span class="ident">expect</span>(<span class="ident">ERR_FAIL_TO_DECODE_B58</span>);
+            <span class="ident">data</span>.<span class="ident">seed</span> <span class="op">=</span> <span class="ident">EpochSeed::from_str</span>(<span class="string">&quot;2va9BGv9JrLTtrzZttiEMDYw1Zj6a6EHzXjmP9evHDTG3oEquURA&quot;</span>)
+                .<span class="ident">expect</span>(<span class="ident">ERR_FAIL_TO_DECODE_B58</span>);
             <span class="ident">data</span>.<span class="ident">start_checkpoint</span> <span class="op">=</span>
-                <span class="ident">StateHash::from_base58</span>(<span class="string">&quot;3NK2tkzqqK5spR2sZ7tujjqPksL45M3UUrcA4WhCkeiPtnugyE2x&quot;</span>)
+                <span class="ident">StateHash::from_str</span>(<span class="string">&quot;3NK2tkzqqK5spR2sZ7tujjqPksL45M3UUrcA4WhCkeiPtnugyE2x&quot;</span>)
                     .<span class="ident">expect</span>(<span class="ident">ERR_FAIL_TO_DECODE_B58</span>);
             <span class="ident">data</span>.<span class="ident">lock_checkpoint</span> <span class="op">=</span>
-                <span class="ident">StateHash::from_base58</span>(<span class="string">&quot;3NK2tkzqqK5spR2sZ7tujjqPksL45M3UUrcA4WhCkeiPtnugyE2x&quot;</span>)
+                <span class="ident">StateHash::from_str</span>(<span class="string">&quot;3NK2tkzqqK5spR2sZ7tujjqPksL45M3UUrcA4WhCkeiPtnugyE2x&quot;</span>)
                     .<span class="ident">expect</span>(<span class="ident">ERR_FAIL_TO_DECODE_B58</span>);
             <span class="ident">data</span>
         };
@@ -617,17 +618,16 @@
             <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">data</span> <span class="op">=</span> <span class="ident">EpochData::default</span>();
             <span class="ident">data</span>.<span class="ident">epoch_length</span>.<span class="number">0</span> <span class="op">=</span> <span class="number">2</span>;
             <span class="ident">data</span>.<span class="ident">ledger</span>.<span class="ident">hash</span> <span class="op">=</span>
-                <span class="ident">LedgerHash::from_base58</span>(<span class="string">&quot;jx7buQVWFLsXTtzRgSxbYcT8EYLS8KCZbLrfDcJxMtyy4thw2Ee&quot;</span>)
+                <span class="ident">LedgerHash::from_str</span>(<span class="string">&quot;jx7buQVWFLsXTtzRgSxbYcT8EYLS8KCZbLrfDcJxMtyy4thw2Ee&quot;</span>)
                     .<span class="ident">expect</span>(<span class="ident">ERR_FAIL_TO_DECODE_B58</span>);
             <span class="ident">data</span>.<span class="ident">ledger</span>.<span class="ident">total_currency</span> <span class="op">=</span> <span class="ident">total_currency</span>;
-            <span class="ident">data</span>.<span class="ident">seed</span> <span class="op">=</span>
-                <span class="ident">EpochSeed::from_base58</span>(<span class="string">&quot;2vaRh7FQ5wSzmpFReF9gcRKjv48CcJvHs25aqb3SSZiPgHQBy5Dt&quot;</span>)
-                    .<span class="ident">expect</span>(<span class="ident">ERR_FAIL_TO_DECODE_B58</span>);
+            <span class="ident">data</span>.<span class="ident">seed</span> <span class="op">=</span> <span class="ident">EpochSeed::from_str</span>(<span class="string">&quot;2vaRh7FQ5wSzmpFReF9gcRKjv48CcJvHs25aqb3SSZiPgHQBy5Dt&quot;</span>)
+                .<span class="ident">expect</span>(<span class="ident">ERR_FAIL_TO_DECODE_B58</span>);
             <span class="ident">data</span>.<span class="ident">start_checkpoint</span> <span class="op">=</span>
-                <span class="ident">StateHash::from_base58</span>(<span class="string">&quot;3NK2tkzqqK5spR2sZ7tujjqPksL45M3UUrcA4WhCkeiPtnugyE2x&quot;</span>)
+                <span class="ident">StateHash::from_str</span>(<span class="string">&quot;3NK2tkzqqK5spR2sZ7tujjqPksL45M3UUrcA4WhCkeiPtnugyE2x&quot;</span>)
                     .<span class="ident">expect</span>(<span class="ident">ERR_FAIL_TO_DECODE_B58</span>);
             <span class="ident">data</span>.<span class="ident">lock_checkpoint</span> <span class="op">=</span>
-                <span class="ident">StateHash::from_base58</span>(<span class="string">&quot;3NLoKn22eMnyQ7rxh5pxB6vBA3XhSAhhrf7akdqS6HbAKD14Dh1d&quot;</span>)
+                <span class="ident">StateHash::from_str</span>(<span class="string">&quot;3NLoKn22eMnyQ7rxh5pxB6vBA3XhSAhhrf7akdqS6HbAKD14Dh1d&quot;</span>)
                     .<span class="ident">expect</span>(<span class="ident">ERR_FAIL_TO_DECODE_B58</span>);
             <span class="ident">data</span>
         };
@@ -635,30 +635,30 @@
         <span class="kw">let</span> <span class="ident">blockchain_state</span> <span class="op">=</span> <span class="ident">BlockchainState</span> {
             <span class="ident">timestamp</span>: <span class="ident">BlockTime::from_unix_epoch</span>(<span class="number">1615939200</span>),
             <span class="ident">snarked_next_available_token</span>: <span class="ident">TokenId</span>(<span class="number">2</span>),
-            <span class="ident">snarked_ledger_hash</span>: <span class="ident">SnarkedLedgerHash::from_base58</span>(
+            <span class="ident">snarked_ledger_hash</span>: <span class="ident">SnarkedLedgerHash::from_str</span>(
                 <span class="string">&quot;jx7buQVWFLsXTtzRgSxbYcT8EYLS8KCZbLrfDcJxMtyy4thw2Ee&quot;</span>,
             )
             .<span class="ident">expect</span>(<span class="ident">ERR_FAIL_TO_DECODE_B58</span>),
-            <span class="ident">genesis_ledger_hash</span>: <span class="ident">SnarkedLedgerHash::from_base58</span>(
+            <span class="ident">genesis_ledger_hash</span>: <span class="ident">SnarkedLedgerHash::from_str</span>(
                 <span class="string">&quot;jx7buQVWFLsXTtzRgSxbYcT8EYLS8KCZbLrfDcJxMtyy4thw2Ee&quot;</span>,
             )
             .<span class="ident">expect</span>(<span class="ident">ERR_FAIL_TO_DECODE_B58</span>),
             <span class="ident">staged_ledger_hash</span>: <span class="ident">StagedLedgerHash</span> {
                 <span class="ident">non_snark</span>: <span class="ident">NonSnarkStagedLedgerHash</span> {
-                    <span class="ident">ledger_hash</span>: <span class="ident">LedgerHash::from_base58</span>(
+                    <span class="ident">ledger_hash</span>: <span class="ident">LedgerHash::from_str</span>(
                         <span class="string">&quot;jx7buQVWFLsXTtzRgSxbYcT8EYLS8KCZbLrfDcJxMtyy4thw2Ee&quot;</span>,
                     )
                     .<span class="ident">expect</span>(<span class="ident">ERR_FAIL_TO_DECODE_B58</span>),
-                    <span class="ident">aux_hash</span>: <span class="ident">AuxHash::from_base58</span>(
+                    <span class="ident">aux_hash</span>: <span class="ident">AuxHash::from_str</span>(
                         <span class="string">&quot;UDRUFHSvxUAtV8sh7gzMVPqpbd46roG1wzWR6dYvB6RunPihom&quot;</span>,
                     )
                     .<span class="ident">expect</span>(<span class="ident">ERR_FAIL_TO_DECODE_B58</span>),
-                    <span class="ident">pending_coinbase_aux</span>: <span class="ident">PendingCoinbaseAuxHash::from_base58</span>(
+                    <span class="ident">pending_coinbase_aux</span>: <span class="ident">PendingCoinbaseAuxHash::from_str</span>(
                         <span class="string">&quot;WAAeUjUnP9Q2JiabhJzJozcjiEmkZe8ob4cfFKSuq6pQSNmHh7&quot;</span>,
                     )
                     .<span class="ident">expect</span>(<span class="ident">ERR_FAIL_TO_DECODE_B58</span>),
                 },
-                <span class="ident">pending_coinbase_hash</span>: <span class="ident">CoinBaseHash::from_base58</span>(
+                <span class="ident">pending_coinbase_hash</span>: <span class="ident">CoinBaseHash::from_str</span>(
                     <span class="string">&quot;2n1tLdP2gkifmyVmrmzYXTS4ohPbZPJn6Qq4x55ywrbRWB4543cC&quot;</span>,
                 )
                 .<span class="ident">expect</span>(<span class="ident">ERR_FAIL_TO_DECODE_B58</span>),
@@ -793,10 +793,10 @@
                     <span class="number">3229587527204030387</span>,
                     <span class="number">6616313680930013725</span>,
                 ]);
-                <span class="ident">ProofStateBulletproofChallenges</span>((<span class="ident">t17</span>.<span class="ident">clone</span>(), <span class="ident">t17</span>, ()))
+                <span class="ident">ProofStateBulletproofChallenges</span>(<span class="ident">t17</span>.<span class="ident">clone</span>(), <span class="ident">t17</span>, ())
             };
 
-            <span class="ident">p</span>.<span class="ident">prev_evals</span>.<span class="number">0</span> .<span class="number">0</span> <span class="op">=</span> (<span class="op">|</span><span class="op">|</span> {
+            <span class="ident">p</span>.<span class="ident">prev_evals</span>.<span class="number">0</span> <span class="op">=</span> (<span class="op">|</span><span class="op">|</span> {
                 <span class="prelude-val">Ok</span>::<span class="op">&lt;</span><span class="kw">_</span>, <span class="ident">hex::FromHexError</span><span class="op">&gt;</span>(<span class="ident">ProofEvaluations</span> {
                     <span class="ident">l</span>: <span class="ident">FieldElementVec::try_from_hex</span>(
                         <span class="string">&quot;0x0e5019ef595b796f872edae874df3e6bd1e94424aed7ba4d7ac5fe5ae2252415&quot;</span>,
@@ -833,7 +833,7 @@
             })()
             .<span class="ident">expect</span>(<span class="ident">ERR_FAIL_TO_DECODE_HEX</span>);
 
-            <span class="ident">p</span>.<span class="ident">prev_evals</span>.<span class="number">0</span> .<span class="number">1</span> <span class="op">=</span> (<span class="op">|</span><span class="op">|</span> {
+            <span class="ident">p</span>.<span class="ident">prev_evals</span>.<span class="number">1</span> <span class="op">=</span> (<span class="op">|</span><span class="op">|</span> {
                 <span class="prelude-val">Ok</span>::<span class="op">&lt;</span><span class="kw">_</span>, <span class="ident">hex::FromHexError</span><span class="op">&gt;</span>(<span class="ident">ProofEvaluations</span> {
                     <span class="ident">l</span>: <span class="ident">FieldElementVec::try_from_hex</span>(
                         <span class="string">&quot;0xac5d1055e6dc85e696cde2e4cd58e4117556622de616c04b3427ebcf4e792139&quot;</span>,
@@ -1018,7 +1018,7 @@
 
         <span class="self">Self</span> {
             <span class="ident">sub_windows_per_window</span>: <span class="number">11</span>,
-            <span class="ident">last_vrf_output</span>: <span class="ident">VrfOutputTruncated::try_from_base64</span>(
+            <span class="ident">last_vrf_output</span>: <span class="ident">VrfOutputTruncated::from_str</span>(
                 <span class="string">&quot;NfThG1r1GxQuhaGLSJWGxcpv24SudtXG4etB0TnGqwg=&quot;</span>,
             )
             .<span class="ident">expect</span>(<span class="ident">ERR_FAIL_TO_DECODE_B64</span>),
@@ -1051,18 +1051,18 @@
                 <span class="string">&quot;B62qiy32p8kAKnny8ZFwoMhYpBppM1DWVCqAPBYNcXnsAHhnfAAuXgg&quot;</span>,
             )
             .<span class="ident">expect</span>(<span class="ident">ERR_FAIL_TO_DECODE_B58</span>),
-            <span class="ident">genesis_state_hash</span>: <span class="ident">StateHash::from_base58</span>(
+            <span class="ident">genesis_state_hash</span>: <span class="ident">StateHash::from_str</span>(
                 <span class="string">&quot;3NLoKn22eMnyQ7rxh5pxB6vBA3XhSAhhrf7akdqS6HbAKD14Dh1d&quot;</span>,
             )
             .<span class="ident">expect</span>(<span class="ident">ERR_FAIL_TO_DECODE_B58</span>),
-            <span class="ident">previous_state_hash</span>: <span class="ident">StateHash::from_base58</span>(
+            <span class="ident">previous_state_hash</span>: <span class="ident">StateHash::from_str</span>(
                 <span class="string">&quot;3NLoKn22eMnyQ7rxh5pxB6vBA3XhSAhhrf7akdqS6HbAKD14Dh1d&quot;</span>,
             )
             .<span class="ident">expect</span>(<span class="ident">ERR_FAIL_TO_DECODE_B58</span>),
             <span class="ident">blockchain_state</span>,
             <span class="ident">protocol_state_proof</span>,
             <span class="ident">delta_transition_chain_proof</span>: (
-                <span class="ident">StateHash::from_base58</span>(<span class="string">&quot;3NLoKn22eMnyQ7rxh5pxB6vBA3XhSAhhrf7akdqS6HbAKD14Dh1d&quot;</span>)
+                <span class="ident">StateHash::from_str</span>(<span class="string">&quot;3NLoKn22eMnyQ7rxh5pxB6vBA3XhSAhhrf7akdqS6HbAKD14Dh1d&quot;</span>)
                     .<span class="ident">expect</span>(<span class="ident">ERR_FAIL_TO_DECODE_B58</span>),
                 <span class="ident">Default::default</span>(),
             )
@@ -1076,5 +1076,5 @@
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="mina_consensus" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.62.0-nightly (30f386087 2022-05-05)" ></div>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="mina_consensus" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.62.0-nightly (6dd68402c 2022-05-11)" ></div>
 </body></html>

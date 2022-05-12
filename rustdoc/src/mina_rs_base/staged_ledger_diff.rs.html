@@ -140,6 +140,17 @@
 <span id="135">135</span>
 <span id="136">136</span>
 <span id="137">137</span>
+<span id="138">138</span>
+<span id="139">139</span>
+<span id="140">140</span>
+<span id="141">141</span>
+<span id="142">142</span>
+<span id="143">143</span>
+<span id="144">144</span>
+<span id="145">145</span>
+<span id="146">146</span>
+<span id="147">147</span>
+<span id="148">148</span>
 </pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems</span>
 <span class="comment">// SPDX-License-Identifier: Apache-2.0</span>
 
@@ -153,130 +164,141 @@
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::snark_work::TransactionSnarkWork</span>;
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::types::TokenId</span>;
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::user_commands::UserCommand</span>;
-
+<span class="kw">use</span> <span class="ident">mina_serialization_types</span>::{<span class="ident">json</span>::<span class="kw-2">*</span>, <span class="ident">v1</span>::<span class="kw-2">*</span>};
+<span class="kw">use</span> <span class="ident">mina_serialization_types_macros::AutoFrom</span>;
 <span class="kw">use</span> <span class="ident">proof_systems::mina_signer::CompressedPubKey</span>;
+<span class="kw">use</span> <span class="ident">smart_default::SmartDefault</span>;
+<span class="kw">use</span> <span class="ident">versioned</span>::<span class="kw-2">*</span>;
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>, <span class="ident">Default</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>, <span class="ident">Default</span>, <span class="ident">AutoFrom</span>)]</span>
+<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">mina_serialization_types::staged_ledger_diff::StagedLedgerDiff</span>)]</span>
 <span class="doccomment">/// Top level wrapper type for a StagedLedgerDiff</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">StagedLedgerDiff</span> {
     <span class="kw">pub</span> <span class="ident">diff</span>: <span class="ident">StagedLedgerDiffTuple</span>,
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>, <span class="ident">Default</span>)]</span>
+<span class="macro">impl_from_with_proxy!</span>(<span class="ident">StagedLedgerDiff</span>, <span class="ident">StagedLedgerDiffV1</span>, <span class="ident">StagedLedgerDiffJson</span>);
+
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>, <span class="ident">Default</span>, <span class="ident">AutoFrom</span>)]</span>
+<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">mina_serialization_types::staged_ledger_diff::StagedLedgerDiffTuple</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">StagedLedgerDiffTuple</span>(
-    <span class="kw">pub</span>(<span class="kw">crate</span>) (<span class="ident">StagedLedgerPreDiffTwo</span>, <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">StagedLedgerPreDiffOne</span><span class="op">&gt;</span>),
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="ident">StagedLedgerPreDiff</span>,
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">StagedLedgerPreDiff</span><span class="op">&gt;</span>,
 );
 
 <span class="kw">impl</span> <span class="ident">StagedLedgerDiffTuple</span> {
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">diff_two</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="ident">StagedLedgerPreDiffTwo</span> {
-        <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0</span> .<span class="number">0</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">diff_two</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="ident">StagedLedgerPreDiff</span> {
+        <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0</span>
     }
 
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">diff_one</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">StagedLedgerPreDiffOne</span><span class="op">&gt;</span> {
-        <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0</span> .<span class="number">1</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">diff_one</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">StagedLedgerPreDiff</span><span class="op">&gt;</span> {
+        <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">1</span>
     }
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>, <span class="ident">Default</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">StagedLedgerPreDiffOne</span> {
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>, <span class="ident">Default</span>, <span class="ident">AutoFrom</span>)]</span>
+<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">mina_serialization_types::staged_ledger_diff::StagedLedgerPreDiff</span>)]</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">StagedLedgerPreDiff</span> {
     <span class="kw">pub</span> <span class="ident">completed_works</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">TransactionSnarkWork</span><span class="op">&gt;</span>,
     <span class="kw">pub</span> <span class="ident">commands</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">UserCommandWithStatus</span><span class="op">&gt;</span>,
     <span class="kw">pub</span> <span class="ident">coinbase</span>: <span class="ident">CoinBase</span>,
     <span class="kw">pub</span> <span class="ident">internal_command_balances</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">InternalCommandBalanceData</span><span class="op">&gt;</span>,
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>, <span class="ident">Default</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">StagedLedgerPreDiffTwo</span> {
-    <span class="kw">pub</span> <span class="ident">completed_works</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">TransactionSnarkWork</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">commands</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">UserCommandWithStatus</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">coinbase</span>: <span class="ident">CoinBase</span>,
-    <span class="kw">pub</span> <span class="ident">internal_command_balances</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">InternalCommandBalanceData</span><span class="op">&gt;</span>,
-}
-
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>, <span class="ident">AutoFrom</span>)]</span>
+<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">mina_serialization_types::staged_ledger_diff::UserCommandWithStatus</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">UserCommandWithStatus</span> {
     <span class="kw">pub</span> <span class="ident">data</span>: <span class="ident">UserCommand</span>,
     <span class="kw">pub</span> <span class="ident">status</span>: <span class="ident">TransactionStatus</span>,
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>)]</span>
-<span class="attribute">#[<span class="ident">non_exhaustive</span>]</span>
+<span class="macro">impl_from_with_proxy!</span>(
+    <span class="ident">UserCommandWithStatus</span>,
+    <span class="ident">mina_serialization_types::staged_ledger_diff::UserCommandWithStatus</span>,
+    <span class="ident">UserCommandWithStatusJson</span>
+);
+
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>, <span class="ident">AutoFrom</span>)]</span>
+<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">mina_serialization_types::staged_ledger_diff::TransactionStatus</span>)]</span>
 <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">TransactionStatus</span> {
-    <span class="ident">Applied</span>(<span class="ident">TransactionStatusApplied</span>),
+    <span class="ident">Applied</span>(<span class="ident">TransactionStatusAuxiliaryData</span>, <span class="ident">TransactionStatusBalanceData</span>),
     <span class="comment">// FIXME: other variants are not covered by current test block</span>
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">TransactionStatusApplied</span>(
-    <span class="kw">pub</span> (<span class="ident">TransactionStatusAuxiliaryData</span>, <span class="ident">TransactionStatusBalanceData</span>),
+<span class="macro">impl_from_with_proxy!</span>(
+    <span class="ident">TransactionStatus</span>,
+    <span class="ident">mina_serialization_types::staged_ledger_diff::TransactionStatus</span>,
+    <span class="ident">TransactionStatusJson</span>
 );
 
-<span class="kw">impl</span> <span class="ident">TransactionStatusApplied</span> {
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">auxiliary_data</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="ident">TransactionStatusAuxiliaryData</span> {
-        <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0</span> .<span class="number">0</span>
-    }
-
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">balance_data</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="ident">TransactionStatusBalanceData</span> {
-        <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0</span> .<span class="number">1</span>
-    }
-}
-
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>, <span class="ident">AutoFrom</span>)]</span>
+<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">mina_serialization_types::staged_ledger_diff::TransactionStatusAuxiliaryData</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">TransactionStatusAuxiliaryData</span> {
     <span class="kw">pub</span> <span class="ident">fee_payer_account_creation_fee_paid</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Amount</span><span class="op">&gt;</span>,
     <span class="kw">pub</span> <span class="ident">receiver_account_creation_fee_paid</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Amount</span><span class="op">&gt;</span>,
     <span class="kw">pub</span> <span class="ident">created_token</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">TokenId</span><span class="op">&gt;</span>,
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>, <span class="ident">AutoFrom</span>)]</span>
+<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">mina_serialization_types::staged_ledger_diff::TransactionStatusBalanceData</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">TransactionStatusBalanceData</span> {
     <span class="kw">pub</span> <span class="ident">fee_payer_balance</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Amount</span><span class="op">&gt;</span>,
     <span class="kw">pub</span> <span class="ident">source_balance</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Amount</span><span class="op">&gt;</span>,
     <span class="kw">pub</span> <span class="ident">receiver_balance</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Amount</span><span class="op">&gt;</span>,
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>)]</span>
-<span class="attribute">#[<span class="ident">non_exhaustive</span>]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>, <span class="ident">SmartDefault</span>, <span class="ident">AutoFrom</span>)]</span>
+<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">mina_serialization_types::staged_ledger_diff::CoinBase</span>)]</span>
 <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">CoinBase</span> {
+    <span class="attribute">#[<span class="ident">default</span>]</span>
     <span class="ident">Zero</span>,
     <span class="comment">// FIXME: other variants are not covered by current test block</span>
     <span class="ident">One</span>(<span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">CoinBaseFeeTransfer</span><span class="op">&gt;</span>),
     <span class="ident">Two</span>,
 }
 
-<span class="kw">impl</span> <span class="ident">Default</span> <span class="kw">for</span> <span class="ident">CoinBase</span> {
-    <span class="kw">fn</span> <span class="ident">default</span>() -&gt; <span class="self">Self</span> {
-        <span class="ident"><span class="self">Self</span>::Zero</span>
-    }
-}
+<span class="macro">impl_from_with_proxy!</span>(
+    <span class="ident">CoinBase</span>,
+    <span class="ident">mina_serialization_types::staged_ledger_diff::CoinBase</span>,
+    <span class="ident">CoinBaseJson</span>
+);
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>, <span class="ident">AutoFrom</span>)]</span>
+<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">mina_serialization_types::staged_ledger_diff::CoinBaseFeeTransfer</span>)]</span>
 <span class="comment">// FIXME: No test coverage yet</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">CoinBaseFeeTransfer</span> {
     <span class="kw">pub</span> <span class="ident">receiver_pk</span>: <span class="ident">CompressedPubKey</span>,
     <span class="kw">pub</span> <span class="ident">fee</span>: <span class="ident">Amount</span>,
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>)]</span>
-<span class="attribute">#[<span class="ident">non_exhaustive</span>]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>, <span class="ident">AutoFrom</span>)]</span>
+<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">mina_serialization_types::staged_ledger_diff::InternalCommandBalanceData</span>)]</span>
 <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">InternalCommandBalanceData</span> {
     <span class="ident">CoinBase</span>(<span class="ident">CoinBaseBalanceData</span>),
     <span class="ident">FeeTransfer</span>(<span class="ident">FeeTransferBalanceData</span>),
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>)]</span>
+<span class="macro">impl_from_with_proxy!</span>(
+    <span class="ident">InternalCommandBalanceData</span>,
+    <span class="ident">mina_serialization_types::staged_ledger_diff::InternalCommandBalanceData</span>,
+    <span class="ident">InternalCommandBalanceDataJson</span>
+);
+
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>, <span class="ident">AutoFrom</span>)]</span>
+<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">mina_serialization_types::staged_ledger_diff::CoinBaseBalanceData</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">CoinBaseBalanceData</span> {
     <span class="kw">pub</span> <span class="ident">coinbase_receiver_balance</span>: <span class="ident">Amount</span>,
     <span class="comment">// FIXME: No test coverage yet</span>
     <span class="kw">pub</span> <span class="ident">fee_transfer_receiver_balance</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Amount</span><span class="op">&gt;</span>,
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>, <span class="ident">AutoFrom</span>)]</span>
+<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">mina_serialization_types::staged_ledger_diff::FeeTransferBalanceData</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">FeeTransferBalanceData</span> {
     <span class="kw">pub</span> <span class="ident">receiver1_balance</span>: <span class="ident">Amount</span>,
     <span class="comment">// FIXME: No test coverage yet</span>
     <span class="kw">pub</span> <span class="ident">receiver2_balance</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Amount</span><span class="op">&gt;</span>,
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_rs_base" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.62.0-nightly (30f386087 2022-05-05)" ></div>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_rs_base" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.62.0-nightly (6dd68402c 2022-05-11)" ></div>
 </body></html>

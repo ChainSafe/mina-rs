@@ -1,1 +1,1 @@
-initSidebarItems({"struct":[["ProofMessageWithDegreeBound",""],["ProofMessages",""]],"type":[["ProofMessageWithDegreeBoundV1",""],["ProofMessageWithoutDegreeBoundListV1",""],["ProofMessagesV1",""]]});
+initSidebarItems({"struct":[["ProofMessageWithDegreeBound",""],["ProofMessageWithDegreeBoundJson",""],["ProofMessageWithoutDegreeBoundList",""],["ProofMessageWithoutDegreeBoundListJson",""],["ProofMessages",""],["ProofMessagesJson",""]],"type":[["ProofMessageWithDegreeBoundV1",""],["ProofMessageWithoutDegreeBoundListV1",""],["ProofMessagesV1",""]]});

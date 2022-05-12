@@ -1,1 +1,1 @@
-initSidebarItems({"struct":[["OpeningProof",""]],"type":[["OpeningProofV1",""]]});
+initSidebarItems({"struct":[["OpeningProof",""],["OpeningProofJson",""]],"type":[["OpeningProofV1",""]]});

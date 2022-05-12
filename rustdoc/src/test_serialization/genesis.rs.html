@@ -334,49 +334,15 @@
 <span id="329">329</span>
 <span id="330">330</span>
 <span id="331">331</span>
-<span id="332">332</span>
-<span id="333">333</span>
-<span id="334">334</span>
-<span id="335">335</span>
-<span id="336">336</span>
-<span id="337">337</span>
-<span id="338">338</span>
-<span id="339">339</span>
-<span id="340">340</span>
-<span id="341">341</span>
-<span id="342">342</span>
-<span id="343">343</span>
-<span id="344">344</span>
-<span id="345">345</span>
-<span id="346">346</span>
-<span id="347">347</span>
-<span id="348">348</span>
-<span id="349">349</span>
-<span id="350">350</span>
-<span id="351">351</span>
-<span id="352">352</span>
-<span id="353">353</span>
-<span id="354">354</span>
-<span id="355">355</span>
-<span id="356">356</span>
-<span id="357">357</span>
-<span id="358">358</span>
-<span id="359">359</span>
-<span id="360">360</span>
-<span id="361">361</span>
-<span id="362">362</span>
-<span id="363">363</span>
-<span id="364">364</span>
-<span id="365">365</span>
-<span id="366">366</span>
-<span id="367">367</span>
 </pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems</span>
 <span class="comment">// SPDX-License-Identifier: Apache-2.0</span>
+
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">all</span>(<span class="ident">test</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;browser&quot;</span>))]</span>
+<span class="macro">wasm_bindgen_test::wasm_bindgen_test_configure!</span>(<span class="ident">run_in_browser</span>);
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
 <span class="kw">mod</span> <span class="ident">tests</span> {
     <span class="kw">use</span> <span class="ident"><span class="kw">super</span>::<span class="kw">super</span>::tests::select_path</span>;
-    <span class="kw">use</span> <span class="ident">bin_prot::encodable::BinProtEncodable</span>;
     <span class="kw">use</span> <span class="ident">mina_consensus::genesis</span>::<span class="kw-2">*</span>;
     <span class="kw">use</span> <span class="ident">mina_crypto::prelude</span>::<span class="kw-2">*</span>;
     <span class="kw">use</span> <span class="ident">mina_rs_base::types</span>::<span class="kw-2">*</span>;
@@ -400,7 +366,8 @@
 
     <span class="kw">fn</span> <span class="ident">test_genesis_roundtrip</span>(<span class="ident">genesis_fixture</span>: <span class="kw-2">&amp;</span><span class="ident">BlockFixture</span>) {
         <span class="kw">let</span> <span class="ident">genesis</span> <span class="op">=</span> <span class="ident">genesis_fixture</span>.<span class="ident">external_transitionv1</span>().<span class="ident">unwrap</span>();
-        <span class="kw">let</span> <span class="ident">output</span> <span class="op">=</span> <span class="ident">genesis</span>.<span class="ident">try_encode_binprot</span>().<span class="ident">unwrap</span>();
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">output</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">Vec::new</span>();
+        <span class="ident">bin_prot::to_writer</span>(<span class="kw-2">&amp;mut</span> <span class="ident">output</span>, <span class="kw-2">&amp;</span><span class="ident">genesis</span>).<span class="ident">unwrap</span>();
         <span class="macro">assert_eq!</span>(<span class="ident">genesis_fixture</span>.<span class="ident">bytes</span>, <span class="ident">output</span>)
     }
 
@@ -411,7 +378,7 @@
             <span class="ident">ExternalTransitionV1::from</span>(<span class="ident">ExternalTransition::from_genesis_config</span>(<span class="kw-2">&amp;</span><span class="ident">MAINNET_CONFIG</span>)),
             <span class="ident">GENESIS_BLOCK_MAINNET</span>.<span class="ident">external_transitionv1</span>().<span class="ident">unwrap</span>(),
         ] {
-            <span class="kw">let</span> <span class="ident">protocol_state_proof</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">et</span>.<span class="number">0</span>.<span class="ident">t</span>.<span class="ident">protocol_state_proof</span>;
+            <span class="kw">let</span> <span class="ident">protocol_state_proof</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">et</span>.<span class="ident">t</span>.<span class="ident">protocol_state_proof</span>;
             <span class="kw">let</span> <span class="ident">ev0</span>: <span class="ident">ProofEvaluations</span> <span class="op">=</span> <span class="ident">protocol_state_proof</span>
                 .<span class="ident">t</span>
                 .<span class="ident">t</span>
@@ -464,7 +431,8 @@
     ) {
         <span class="kw">let</span> <span class="ident">genesis</span>: <span class="ident">ExternalTransitionV1</span> <span class="op">=</span>
             <span class="ident">ExternalTransition::from_genesis_config</span>(<span class="ident">genesis_init_config</span>).<span class="ident">into</span>();
-        <span class="kw">let</span> <span class="ident">output</span> <span class="op">=</span> <span class="ident">genesis</span>.<span class="ident">try_encode_binprot</span>().<span class="ident">unwrap</span>();
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">output</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">Vec::new</span>();
+        <span class="ident">bin_prot::to_writer</span>(<span class="kw-2">&amp;mut</span> <span class="ident">output</span>, <span class="kw-2">&amp;</span><span class="ident">genesis</span>).<span class="ident">unwrap</span>();
         <span class="macro">assert_eq!</span>(<span class="ident">genesis_fixture</span>.<span class="ident">bytes</span>, <span class="ident">output</span>)
     }
 
@@ -488,34 +456,34 @@
             <span class="kw-2">&amp;</span><span class="ident">genesis</span>,
             <span class="kw-2">&amp;</span><span class="ident">fixture</span>,
             <span class="string">&quot;t/protocol_state/t/t/previous_state_hash&quot;</span>,
-            <span class="op">|</span><span class="ident">b</span><span class="op">|</span> <span class="kw-2">&amp;</span><span class="ident">b</span>.<span class="number">0</span>.<span class="ident">t</span>.<span class="ident">protocol_state</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">previous_state_hash</span>,
+            <span class="op">|</span><span class="ident">b</span><span class="op">|</span> <span class="kw-2">&amp;</span><span class="ident">b</span>.<span class="ident">t</span>.<span class="ident">protocol_state</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">previous_state_hash</span>,
         );
         <span class="ident">test_path</span>(
             <span class="kw-2">&amp;</span><span class="ident">genesis</span>,
             <span class="kw-2">&amp;</span><span class="ident">fixture</span>,
             <span class="string">&quot;t/protocol_state/t/t/body/t/t/genesis_state_hash&quot;</span>,
-            <span class="op">|</span><span class="ident">b</span><span class="op">|</span> <span class="kw-2">&amp;</span><span class="ident">b</span>.<span class="number">0</span>.<span class="ident">t</span>.<span class="ident">protocol_state</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">body</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">genesis_state_hash</span>,
+            <span class="op">|</span><span class="ident">b</span><span class="op">|</span> <span class="kw-2">&amp;</span><span class="ident">b</span>.<span class="ident">t</span>.<span class="ident">protocol_state</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">body</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">genesis_state_hash</span>,
         );
         <span class="ident">test_path</span>(
             <span class="kw-2">&amp;</span><span class="ident">genesis</span>,
             <span class="kw-2">&amp;</span><span class="ident">fixture</span>,
             <span class="string">&quot;t/protocol_state/t/t/body/t/t/blockchain_state&quot;</span>,
-            <span class="op">|</span><span class="ident">b</span><span class="op">|</span> <span class="kw-2">&amp;</span><span class="ident">b</span>.<span class="number">0</span>.<span class="ident">t</span>.<span class="ident">protocol_state</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">body</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">blockchain_state</span>,
+            <span class="op">|</span><span class="ident">b</span><span class="op">|</span> <span class="kw-2">&amp;</span><span class="ident">b</span>.<span class="ident">t</span>.<span class="ident">protocol_state</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">body</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">blockchain_state</span>,
         );
         <span class="ident">test_path</span>(
             <span class="kw-2">&amp;</span><span class="ident">genesis</span>,
             <span class="kw-2">&amp;</span><span class="ident">fixture</span>,
             <span class="string">&quot;t/protocol_state/t/t/body/t/t/consensus_state&quot;</span>,
-            <span class="op">|</span><span class="ident">b</span><span class="op">|</span> <span class="kw-2">&amp;</span><span class="ident">b</span>.<span class="number">0</span>.<span class="ident">t</span>.<span class="ident">protocol_state</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">body</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">consensus_state</span>,
+            <span class="op">|</span><span class="ident">b</span><span class="op">|</span> <span class="kw-2">&amp;</span><span class="ident">b</span>.<span class="ident">t</span>.<span class="ident">protocol_state</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">body</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">consensus_state</span>,
         );
         <span class="ident">test_path</span>(
             <span class="kw-2">&amp;</span><span class="ident">genesis</span>,
             <span class="kw-2">&amp;</span><span class="ident">fixture</span>,
             <span class="string">&quot;t/protocol_state/t/t/body/t/t/constants&quot;</span>,
-            <span class="op">|</span><span class="ident">b</span><span class="op">|</span> <span class="kw-2">&amp;</span><span class="ident">b</span>.<span class="number">0</span>.<span class="ident">t</span>.<span class="ident">protocol_state</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">body</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">constants</span>,
+            <span class="op">|</span><span class="ident">b</span><span class="op">|</span> <span class="kw-2">&amp;</span><span class="ident">b</span>.<span class="ident">t</span>.<span class="ident">protocol_state</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">body</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">constants</span>,
         );
         <span class="ident">test_path</span>(<span class="kw-2">&amp;</span><span class="ident">genesis</span>, <span class="kw-2">&amp;</span><span class="ident">fixture</span>, <span class="string">&quot;t/protocol_state&quot;</span>, <span class="op">|</span><span class="ident">b</span><span class="op">|</span> {
-            <span class="kw-2">&amp;</span><span class="ident">b</span>.<span class="number">0</span>.<span class="ident">t</span>.<span class="ident">protocol_state</span>
+            <span class="kw-2">&amp;</span><span class="ident">b</span>.<span class="ident">t</span>.<span class="ident">protocol_state</span>
         });
 
         <span class="ident">test_path</span>(
@@ -523,8 +491,7 @@
             <span class="kw-2">&amp;</span><span class="ident">fixture</span>,
             <span class="string">&quot;t/protocol_state_proof/t/t/t/t/statement/t/t/proof_state/t/deferred_values&quot;</span>,
             <span class="op">|</span><span class="ident">b</span><span class="op">|</span> {
-                <span class="kw-2">&amp;</span><span class="ident">b</span>.<span class="number">0</span>.<span class="ident">t</span>
-                    .<span class="ident">protocol_state_proof</span>
+                <span class="kw-2">&amp;</span><span class="ident">b</span>.<span class="ident">t</span>.<span class="ident">protocol_state_proof</span>
                     .<span class="ident">t</span>
                     .<span class="ident">t</span>
                     .<span class="ident">t</span>
@@ -541,15 +508,14 @@
             <span class="kw-2">&amp;</span><span class="ident">genesis</span>,
             <span class="kw-2">&amp;</span><span class="ident">fixture</span>,
             <span class="string">&quot;t/protocol_state_proof/t/t/t/t/statement/t/t/proof_state/t/sponge_digest_before_evaluations&quot;</span>,
-            <span class="op">|</span><span class="ident">b</span><span class="op">|</span> <span class="kw-2">&amp;</span><span class="ident">b</span>.<span class="number">0</span>.<span class="ident">t</span>.<span class="ident">protocol_state_proof</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">statement</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">proof_state</span>.<span class="ident">t</span>.<span class="ident">sponge_digest_before_evaluations</span>,
+            <span class="op">|</span><span class="ident">b</span><span class="op">|</span> <span class="kw-2">&amp;</span><span class="ident">b</span>.<span class="ident">t</span>.<span class="ident">protocol_state_proof</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">statement</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">proof_state</span>.<span class="ident">t</span>.<span class="ident">sponge_digest_before_evaluations</span>,
         );
         <span class="ident">test_path</span>(
             <span class="kw-2">&amp;</span><span class="ident">genesis</span>,
             <span class="kw-2">&amp;</span><span class="ident">fixture</span>,
             <span class="string">&quot;t/protocol_state_proof/t/t/t/t/statement/t/t/proof_state/t/me_only&quot;</span>,
             <span class="op">|</span><span class="ident">b</span><span class="op">|</span> {
-                <span class="kw-2">&amp;</span><span class="ident">b</span>.<span class="number">0</span>.<span class="ident">t</span>
-                    .<span class="ident">protocol_state_proof</span>
+                <span class="kw-2">&amp;</span><span class="ident">b</span>.<span class="ident">t</span>.<span class="ident">protocol_state_proof</span>
                     .<span class="ident">t</span>
                     .<span class="ident">t</span>
                     .<span class="ident">t</span>
@@ -566,56 +532,44 @@
             <span class="kw-2">&amp;</span><span class="ident">genesis</span>,
             <span class="kw-2">&amp;</span><span class="ident">fixture</span>,
             <span class="string">&quot;t/protocol_state_proof/t/t/t/t/statement/t/t/proof_state&quot;</span>,
-            <span class="op">|</span><span class="ident">b</span><span class="op">|</span> <span class="kw-2">&amp;</span><span class="ident">b</span>.<span class="number">0</span>.<span class="ident">t</span>.<span class="ident">protocol_state_proof</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">statement</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">proof_state</span>,
+            <span class="op">|</span><span class="ident">b</span><span class="op">|</span> <span class="kw-2">&amp;</span><span class="ident">b</span>.<span class="ident">t</span>.<span class="ident">protocol_state_proof</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">statement</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">proof_state</span>,
         );
         <span class="ident">test_path</span>(
             <span class="kw-2">&amp;</span><span class="ident">genesis</span>,
             <span class="kw-2">&amp;</span><span class="ident">fixture</span>,
             <span class="string">&quot;t/protocol_state_proof/t/t/t/t/statement/t/t/pass_through&quot;</span>,
-            <span class="op">|</span><span class="ident">b</span><span class="op">|</span> {
-                <span class="kw-2">&amp;</span><span class="ident">b</span>.<span class="number">0</span>.<span class="ident">t</span>
-                    .<span class="ident">protocol_state_proof</span>
-                    .<span class="ident">t</span>
-                    .<span class="ident">t</span>
-                    .<span class="ident">t</span>
-                    .<span class="ident">t</span>
-                    .<span class="ident">statement</span>
-                    .<span class="ident">t</span>
-                    .<span class="ident">t</span>
-                    .<span class="ident">pass_through</span>
-            },
+            <span class="op">|</span><span class="ident">b</span><span class="op">|</span> <span class="kw-2">&amp;</span><span class="ident">b</span>.<span class="ident">t</span>.<span class="ident">protocol_state_proof</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">statement</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">pass_through</span>,
         );
         <span class="ident">test_path</span>(
             <span class="kw-2">&amp;</span><span class="ident">genesis</span>,
             <span class="kw-2">&amp;</span><span class="ident">fixture</span>,
             <span class="string">&quot;t/protocol_state_proof/t/t/t/t/statement&quot;</span>,
-            <span class="op">|</span><span class="ident">b</span><span class="op">|</span> <span class="kw-2">&amp;</span><span class="ident">b</span>.<span class="number">0</span>.<span class="ident">t</span>.<span class="ident">protocol_state_proof</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">statement</span>,
+            <span class="op">|</span><span class="ident">b</span><span class="op">|</span> <span class="kw-2">&amp;</span><span class="ident">b</span>.<span class="ident">t</span>.<span class="ident">protocol_state_proof</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">statement</span>,
         );
         <span class="ident">test_path</span>(
             <span class="kw-2">&amp;</span><span class="ident">genesis</span>,
             <span class="kw-2">&amp;</span><span class="ident">fixture</span>,
             <span class="string">&quot;t/protocol_state_proof/t/t/t/t/prev_evals&quot;</span>,
-            <span class="op">|</span><span class="ident">b</span><span class="op">|</span> <span class="kw-2">&amp;</span><span class="ident">b</span>.<span class="number">0</span>.<span class="ident">t</span>.<span class="ident">protocol_state_proof</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">prev_evals</span>,
+            <span class="op">|</span><span class="ident">b</span><span class="op">|</span> <span class="kw-2">&amp;</span><span class="ident">b</span>.<span class="ident">t</span>.<span class="ident">protocol_state_proof</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">prev_evals</span>,
         );
         <span class="ident">test_path</span>(
             <span class="kw-2">&amp;</span><span class="ident">genesis</span>,
             <span class="kw-2">&amp;</span><span class="ident">fixture</span>,
             <span class="string">&quot;t/protocol_state_proof/t/t/t/t/prev_x_hat&quot;</span>,
-            <span class="op">|</span><span class="ident">b</span><span class="op">|</span> <span class="kw-2">&amp;</span><span class="ident">b</span>.<span class="number">0</span>.<span class="ident">t</span>.<span class="ident">protocol_state_proof</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">prev_x_hat</span>,
+            <span class="op">|</span><span class="ident">b</span><span class="op">|</span> <span class="kw-2">&amp;</span><span class="ident">b</span>.<span class="ident">t</span>.<span class="ident">protocol_state_proof</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">prev_x_hat</span>,
         );
         <span class="ident">test_path</span>(
             <span class="kw-2">&amp;</span><span class="ident">genesis</span>,
             <span class="kw-2">&amp;</span><span class="ident">fixture</span>,
             <span class="string">&quot;t/protocol_state_proof/t/t/t/t/proof/t/t/messages&quot;</span>,
-            <span class="op">|</span><span class="ident">b</span><span class="op">|</span> <span class="kw-2">&amp;</span><span class="ident">b</span>.<span class="number">0</span>.<span class="ident">t</span>.<span class="ident">protocol_state_proof</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">proof</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">messages</span>,
+            <span class="op">|</span><span class="ident">b</span><span class="op">|</span> <span class="kw-2">&amp;</span><span class="ident">b</span>.<span class="ident">t</span>.<span class="ident">protocol_state_proof</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">proof</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">messages</span>,
         );
         <span class="ident">test_path</span>(
             <span class="kw-2">&amp;</span><span class="ident">genesis</span>,
             <span class="kw-2">&amp;</span><span class="ident">fixture</span>,
             <span class="string">&quot;t/protocol_state_proof/t/t/t/t/proof/t/t/openings/t/proof/t/lr&quot;</span>,
             <span class="op">|</span><span class="ident">b</span><span class="op">|</span> {
-                <span class="kw-2">&amp;</span><span class="ident">b</span>.<span class="number">0</span>.<span class="ident">t</span>
-                    .<span class="ident">protocol_state_proof</span>
+                <span class="kw-2">&amp;</span><span class="ident">b</span>.<span class="ident">t</span>.<span class="ident">protocol_state_proof</span>
                     .<span class="ident">t</span>
                     .<span class="ident">t</span>
                     .<span class="ident">t</span>
@@ -634,74 +588,48 @@
             <span class="kw-2">&amp;</span><span class="ident">genesis</span>,
             <span class="kw-2">&amp;</span><span class="ident">fixture</span>,
             <span class="string">&quot;t/protocol_state_proof/t/t/t/t/proof/t/t/openings/t/proof&quot;</span>,
-            <span class="op">|</span><span class="ident">b</span><span class="op">|</span> {
-                <span class="kw-2">&amp;</span><span class="ident">b</span>.<span class="number">0</span>.<span class="ident">t</span>
-                    .<span class="ident">protocol_state_proof</span>
-                    .<span class="ident">t</span>
-                    .<span class="ident">t</span>
-                    .<span class="ident">t</span>
-                    .<span class="ident">t</span>
-                    .<span class="ident">proof</span>
-                    .<span class="ident">t</span>
-                    .<span class="ident">t</span>
-                    .<span class="ident">openings</span>
-                    .<span class="ident">t</span>
-                    .<span class="ident">proof</span>
-            },
+            <span class="op">|</span><span class="ident">b</span><span class="op">|</span> <span class="kw-2">&amp;</span><span class="ident">b</span>.<span class="ident">t</span>.<span class="ident">protocol_state_proof</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">proof</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">openings</span>.<span class="ident">t</span>.<span class="ident">proof</span>,
         );
         <span class="ident">test_path</span>(
             <span class="kw-2">&amp;</span><span class="ident">genesis</span>,
             <span class="kw-2">&amp;</span><span class="ident">fixture</span>,
             <span class="string">&quot;t/protocol_state_proof/t/t/t/t/proof/t/t/openings/t/evals&quot;</span>,
-            <span class="op">|</span><span class="ident">b</span><span class="op">|</span> {
-                <span class="kw-2">&amp;</span><span class="ident">b</span>.<span class="number">0</span>.<span class="ident">t</span>
-                    .<span class="ident">protocol_state_proof</span>
-                    .<span class="ident">t</span>
-                    .<span class="ident">t</span>
-                    .<span class="ident">t</span>
-                    .<span class="ident">t</span>
-                    .<span class="ident">proof</span>
-                    .<span class="ident">t</span>
-                    .<span class="ident">t</span>
-                    .<span class="ident">openings</span>
-                    .<span class="ident">t</span>
-                    .<span class="ident">evals</span>
-            },
+            <span class="op">|</span><span class="ident">b</span><span class="op">|</span> <span class="kw-2">&amp;</span><span class="ident">b</span>.<span class="ident">t</span>.<span class="ident">protocol_state_proof</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">proof</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">openings</span>.<span class="ident">t</span>.<span class="ident">evals</span>,
         );
         <span class="ident">test_path</span>(
             <span class="kw-2">&amp;</span><span class="ident">genesis</span>,
             <span class="kw-2">&amp;</span><span class="ident">fixture</span>,
             <span class="string">&quot;t/protocol_state_proof/t/t/t/t/proof/t/t/openings&quot;</span>,
-            <span class="op">|</span><span class="ident">b</span><span class="op">|</span> <span class="kw-2">&amp;</span><span class="ident">b</span>.<span class="number">0</span>.<span class="ident">t</span>.<span class="ident">protocol_state_proof</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">proof</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">openings</span>,
+            <span class="op">|</span><span class="ident">b</span><span class="op">|</span> <span class="kw-2">&amp;</span><span class="ident">b</span>.<span class="ident">t</span>.<span class="ident">protocol_state_proof</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">proof</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">openings</span>,
         );
         <span class="ident">test_path</span>(
             <span class="kw-2">&amp;</span><span class="ident">genesis</span>,
             <span class="kw-2">&amp;</span><span class="ident">fixture</span>,
             <span class="string">&quot;t/protocol_state_proof/t/t/t/t/proof&quot;</span>,
-            <span class="op">|</span><span class="ident">b</span><span class="op">|</span> <span class="kw-2">&amp;</span><span class="ident">b</span>.<span class="number">0</span>.<span class="ident">t</span>.<span class="ident">protocol_state_proof</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">proof</span>,
+            <span class="op">|</span><span class="ident">b</span><span class="op">|</span> <span class="kw-2">&amp;</span><span class="ident">b</span>.<span class="ident">t</span>.<span class="ident">protocol_state_proof</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">proof</span>,
         );
         <span class="ident">test_path</span>(<span class="kw-2">&amp;</span><span class="ident">genesis</span>, <span class="kw-2">&amp;</span><span class="ident">fixture</span>, <span class="string">&quot;t/protocol_state_proof&quot;</span>, <span class="op">|</span><span class="ident">b</span><span class="op">|</span> {
-            <span class="kw-2">&amp;</span><span class="ident">b</span>.<span class="number">0</span>.<span class="ident">t</span>.<span class="ident">protocol_state_proof</span>
+            <span class="kw-2">&amp;</span><span class="ident">b</span>.<span class="ident">t</span>.<span class="ident">protocol_state_proof</span>
         });
 
         <span class="ident">test_path</span>(<span class="kw-2">&amp;</span><span class="ident">genesis</span>, <span class="kw-2">&amp;</span><span class="ident">fixture</span>, <span class="string">&quot;t/staged_ledger_diff&quot;</span>, <span class="op">|</span><span class="ident">b</span><span class="op">|</span> {
-            <span class="kw-2">&amp;</span><span class="ident">b</span>.<span class="number">0</span>.<span class="ident">t</span>.<span class="ident">staged_ledger_diff</span>
+            <span class="kw-2">&amp;</span><span class="ident">b</span>.<span class="ident">t</span>.<span class="ident">staged_ledger_diff</span>
         });
 
         <span class="ident">test_path</span>(<span class="kw-2">&amp;</span><span class="ident">genesis</span>, <span class="kw-2">&amp;</span><span class="ident">fixture</span>, <span class="string">&quot;t/delta_transition_chain_proof&quot;</span>, <span class="op">|</span><span class="ident">b</span><span class="op">|</span> {
-            <span class="kw-2">&amp;</span><span class="ident">b</span>.<span class="number">0</span>.<span class="ident">t</span>.<span class="ident">delta_transition_chain_proof</span>
+            <span class="kw-2">&amp;</span><span class="ident">b</span>.<span class="ident">t</span>.<span class="ident">delta_transition_chain_proof</span>
         });
 
         <span class="ident">test_path</span>(<span class="kw-2">&amp;</span><span class="ident">genesis</span>, <span class="kw-2">&amp;</span><span class="ident">fixture</span>, <span class="string">&quot;t/current_protocol_version&quot;</span>, <span class="op">|</span><span class="ident">b</span><span class="op">|</span> {
-            <span class="kw-2">&amp;</span><span class="ident">b</span>.<span class="number">0</span>.<span class="ident">t</span>.<span class="ident">current_protocol_version</span>
+            <span class="kw-2">&amp;</span><span class="ident">b</span>.<span class="ident">t</span>.<span class="ident">current_protocol_version</span>
         });
 
         <span class="ident">test_path</span>(<span class="kw-2">&amp;</span><span class="ident">genesis</span>, <span class="kw-2">&amp;</span><span class="ident">fixture</span>, <span class="string">&quot;t/proposed_protocol_version_opt&quot;</span>, <span class="op">|</span><span class="ident">b</span><span class="op">|</span> {
-            <span class="kw-2">&amp;</span><span class="ident">b</span>.<span class="number">0</span>.<span class="ident">t</span>.<span class="ident">proposed_protocol_version_opt</span>
+            <span class="kw-2">&amp;</span><span class="ident">b</span>.<span class="ident">t</span>.<span class="ident">proposed_protocol_version_opt</span>
         });
 
         <span class="ident">test_path</span>(<span class="kw-2">&amp;</span><span class="ident">genesis</span>, <span class="kw-2">&amp;</span><span class="ident">fixture</span>, <span class="string">&quot;t/validation_callback&quot;</span>, <span class="op">|</span><span class="ident">b</span><span class="op">|</span> {
-            <span class="kw-2">&amp;</span><span class="ident">b</span>.<span class="number">0</span>.<span class="ident">t</span>.<span class="ident">validation_callback</span>
+            <span class="kw-2">&amp;</span><span class="ident">b</span>.<span class="ident">t</span>.<span class="ident">validation_callback</span>
         });
     }
 
@@ -738,5 +666,5 @@
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="test_serialization" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.62.0-nightly (30f386087 2022-05-05)" ></div>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="test_serialization" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.62.0-nightly (6dd68402c 2022-05-11)" ></div>
 </body></html>

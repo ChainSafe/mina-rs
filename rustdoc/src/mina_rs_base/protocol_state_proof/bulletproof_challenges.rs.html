@@ -151,12 +151,23 @@
 <span id="146">146</span>
 <span id="147">147</span>
 <span id="148">148</span>
+<span id="149">149</span>
+<span id="150">150</span>
+<span id="151">151</span>
+<span id="152">152</span>
+<span id="153">153</span>
+<span id="154">154</span>
+<span id="155">155</span>
+<span id="156">156</span>
+<span id="157">157</span>
 </pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems</span>
 <span class="comment">// SPDX-License-Identifier: Apache-2.0</span>
 
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::types::Hex64</span>;
+<span class="kw">use</span> <span class="ident">mina_serialization_types_macros::AutoFrom</span>;
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Default</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Default</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>, <span class="ident">AutoFrom</span>)]</span>
+<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">mina_serialization_types::bulletproof_challenges::BulletproofChallenge</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">BulletproofChallenge</span> {
     <span class="kw">pub</span> <span class="ident">prechallenge</span>: <span class="ident">BulletproofPreChallenge</span>,
 }
@@ -169,15 +180,20 @@
     }
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Default</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Default</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>, <span class="ident">AutoFrom</span>)]</span>
+<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">mina_serialization_types::bulletproof_challenges::BulletproofChallenges</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">BulletproofChallenges</span>(<span class="kw">pub</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">BulletproofChallengeTuple18</span><span class="op">&gt;</span>);
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Default</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Default</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>, <span class="ident">AutoFrom</span>)]</span>
+<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">mina_serialization_types::bulletproof_challenges::ProofStateBulletproofChallenges</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ProofStateBulletproofChallenges</span>(
-    <span class="kw">pub</span> (<span class="ident">BulletproofChallengeTuple17</span>, <span class="ident">BulletproofChallengeTuple17</span>, ()),
+    <span class="kw">pub</span> <span class="ident">BulletproofChallengeTuple17</span>,
+    <span class="kw">pub</span> <span class="ident">BulletproofChallengeTuple17</span>,
+    <span class="kw">pub</span> (),
 );
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Default</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Default</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>, <span class="ident">AutoFrom</span>)]</span>
+<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">mina_serialization_types::bulletproof_challenges::BulletproofChallengeTuple17</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">BulletproofChallengeTuple17</span>(
     <span class="kw">pub</span> <span class="ident">BulletproofChallenge</span>,
     <span class="kw">pub</span> <span class="ident">BulletproofChallenge</span>,
@@ -224,7 +240,8 @@
     }
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Default</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Default</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>, <span class="ident">AutoFrom</span>)]</span>
+<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">mina_serialization_types::bulletproof_challenges::BulletproofChallengeTuple18</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">BulletproofChallengeTuple18</span>(
     <span class="kw">pub</span> <span class="ident">BulletproofChallenge</span>,
     <span class="kw">pub</span> <span class="ident">BulletproofChallenge</span>,
@@ -273,8 +290,8 @@
     }
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>)]</span>
-<span class="attribute">#[<span class="ident">non_exhaustive</span>]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>, <span class="ident">AutoFrom</span>)]</span>
+<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">mina_serialization_types::bulletproof_challenges::BulletproofPreChallenge</span>)]</span>
 <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">BulletproofPreChallenge</span> {
     <span class="ident">ScalarChallenge</span>(<span class="ident">ScalarChallengeVector2</span>),
 }
@@ -285,12 +302,13 @@
     }
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Default</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ScalarChallengeVector2</span>(<span class="kw">pub</span> (<span class="ident">Hex64</span>, <span class="ident">Hex64</span>, ()));
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Default</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>, <span class="ident">AutoFrom</span>)]</span>
+<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">mina_serialization_types::bulletproof_challenges::ScalarChallengeVector2</span>)]</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ScalarChallengeVector2</span>(<span class="kw">pub</span> <span class="ident">Hex64</span>, <span class="kw">pub</span> <span class="ident">Hex64</span>, <span class="kw">pub</span> ());
 
 <span class="kw">impl</span> <span class="ident">ScalarChallengeVector2</span> {
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">a</span>: <span class="ident">i64</span>, <span class="ident">b</span>: <span class="ident">i64</span>) -&gt; <span class="self">Self</span> {
-        <span class="self">Self</span>((<span class="ident">a</span>.<span class="ident">into</span>(), <span class="ident">b</span>.<span class="ident">into</span>(), ()))
+        <span class="self">Self</span>(<span class="ident">a</span>.<span class="ident">into</span>(), <span class="ident">b</span>.<span class="ident">into</span>(), ())
     }
 }
 
@@ -300,5 +318,5 @@
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="mina_rs_base" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.62.0-nightly (30f386087 2022-05-05)" ></div>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="mina_rs_base" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.62.0-nightly (6dd68402c 2022-05-11)" ></div>
 </body></html>

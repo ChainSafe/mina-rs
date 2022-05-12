@@ -1,1 +1,1 @@
-initSidebarItems({"enum":[["Timing","Timing information for an account with regard to when its balance is accessable This is to allow vesting from an initial genesis allocation"]]});
+initSidebarItems({"enum":[["Timing","Timing information for an account with regard to when its balance is accessable This is to allow vesting from an initial genesis allocation"]],"struct":[["TimedData","Payload for the timing variant Timed"]]});

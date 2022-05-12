@@ -116,6 +116,46 @@
 <span id="111">111</span>
 <span id="112">112</span>
 <span id="113">113</span>
+<span id="114">114</span>
+<span id="115">115</span>
+<span id="116">116</span>
+<span id="117">117</span>
+<span id="118">118</span>
+<span id="119">119</span>
+<span id="120">120</span>
+<span id="121">121</span>
+<span id="122">122</span>
+<span id="123">123</span>
+<span id="124">124</span>
+<span id="125">125</span>
+<span id="126">126</span>
+<span id="127">127</span>
+<span id="128">128</span>
+<span id="129">129</span>
+<span id="130">130</span>
+<span id="131">131</span>
+<span id="132">132</span>
+<span id="133">133</span>
+<span id="134">134</span>
+<span id="135">135</span>
+<span id="136">136</span>
+<span id="137">137</span>
+<span id="138">138</span>
+<span id="139">139</span>
+<span id="140">140</span>
+<span id="141">141</span>
+<span id="142">142</span>
+<span id="143">143</span>
+<span id="144">144</span>
+<span id="145">145</span>
+<span id="146">146</span>
+<span id="147">147</span>
+<span id="148">148</span>
+<span id="149">149</span>
+<span id="150">150</span>
+<span id="151">151</span>
+<span id="152">152</span>
+<span id="153">153</span>
 </pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems</span>
 <span class="comment">// SPDX-License-Identifier: Apache-2.0</span>
 
@@ -140,9 +180,11 @@
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">consensus_state</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">delta_transition_chain_proof</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">epoch_data</span>;
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">errors</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">external_transition</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">field_and_curve_elements</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">global_slot</span>;
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">macros</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">opening_proof</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">proof_evaluations</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">proof_messages</span>;
@@ -202,7 +244,7 @@
     <span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="kw">super</span>::protocol_version::ProtocolVersionV1</span>;
     <span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="kw">super</span>::signatures</span>::{<span class="ident">PublicKey2V1</span>, <span class="ident">PublicKeyV1</span>, <span class="ident">SignatureV1</span>};
     <span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="kw">super</span>::snark_work</span>::{
-        <span class="ident">FeeExcessV1</span>, <span class="ident">LedgerProofV1</span>, <span class="ident">OneORTwoV1</span>, <span class="ident">PendingCoinbaseStackStateV1</span>, <span class="ident">PendingCoinbaseV1</span>,
+        <span class="ident">FeeExcessPairV1</span>, <span class="ident">LedgerProofV1</span>, <span class="ident">OneORTwoV1</span>, <span class="ident">PendingCoinbaseStackStateV1</span>, <span class="ident">PendingCoinbaseV1</span>,
         <span class="ident">SgnTypeV1</span>, <span class="ident">SignedV1</span>, <span class="ident">StateStackV1</span>, <span class="ident">StatementV1</span>, <span class="ident">TransactionSnarkV1</span>, <span class="ident">TransactionSnarkWorkV1</span>,
     };
     <span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="kw">super</span>::staged_ledger_diff</span>::{
@@ -210,9 +252,8 @@
         <span class="ident">InternalCommandBalanceDataV1</span>, <span class="ident">PaymentPayloadV1</span>, <span class="ident">SignedCommandFeeTokenV1</span>,
         <span class="ident">SignedCommandMemoV1</span>, <span class="ident">SignedCommandPayloadBodyV1</span>, <span class="ident">SignedCommandPayloadCommonV1</span>,
         <span class="ident">SignedCommandPayloadV1</span>, <span class="ident">SignedCommandV1</span>, <span class="ident">StagedLedgerDiffTupleV1</span>, <span class="ident">StagedLedgerDiffV1</span>,
-        <span class="ident">StagedLedgerPreDiffOneV1</span>, <span class="ident">StagedLedgerPreDiffTwoV1</span>, <span class="ident">TransactionStatusAppliedV1</span>,
-        <span class="ident">TransactionStatusAuxiliaryDataV1</span>, <span class="ident">TransactionStatusBalanceDataV1</span>, <span class="ident">TransactionStatusV1</span>,
-        <span class="ident">UserCommandV1</span>, <span class="ident">UserCommandWithStatusV1</span>,
+        <span class="ident">StagedLedgerPreDiffV1</span>, <span class="ident">TransactionStatusAuxiliaryDataV1</span>, <span class="ident">TransactionStatusBalanceDataV1</span>,
+        <span class="ident">TransactionStatusV1</span>, <span class="ident">UserCommandV1</span>, <span class="ident">UserCommandWithStatusV1</span>,
     };
 }
 
@@ -220,15 +261,54 @@
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">json</span> {
     <span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
 
-    <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">common</span>::{<span class="ident">ChainHashV1Json</span>, <span class="ident">CoinBaseHashV1Json</span>, <span class="ident">EpochSeedHashV1Json</span>, <span class="ident">LedgerHashV1Json</span>};
+    <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">blockchain_state::BlockchainStateJson</span>;
+    <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">bulletproof_challenges</span>::{
+        <span class="ident">BulletproofChallengeJson</span>, <span class="ident">BulletproofChallengeTuple17Json</span>, <span class="ident">BulletproofChallengeTuple18Json</span>,
+        <span class="ident">BulletproofChallengesJson</span>, <span class="ident">BulletproofPreChallengeJson</span>,
+        <span class="ident">ProofStateBulletproofChallengesJson</span>, <span class="ident">ScalarChallengeVector2Json</span>,
+    };
+    <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">common</span>::{
+        <span class="ident">AuxHashJson</span>, <span class="ident">ByteVecJson</span>, <span class="ident">ChainHashV1Json</span>, <span class="ident">CharJson</span>, <span class="ident">CoinBaseHashV1Json</span>,
+        <span class="ident">EpochSeedHashV1Json</span>, <span class="ident">HashV1Json</span>, <span class="ident">LedgerHashV1Json</span>, <span class="ident">PendingCoinbaseAuxHashJson</span>,
+        <span class="ident">StateHashV1Json</span>, <span class="ident">VrfOutputHashV1Json</span>,
+    };
+    <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">consensus_state</span>::{<span class="ident">ConsensusStateJson</span>, <span class="ident">VrfOutputTruncatedJson</span>};
     <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">delta_transition_chain_proof::DeltaTransitionChainProofJson</span>;
     <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">external_transition::ExternalTransitionJson</span>;
+    <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">field_and_curve_elements</span>::{
+        <span class="ident">ECPointJson</span>, <span class="ident">ECPointVecJson</span>, <span class="ident">FieldElementJson</span>, <span class="ident">FieldElementVecJson</span>, <span class="ident">FiniteECPointJson</span>,
+        <span class="ident">FiniteECPointPairJson</span>, <span class="ident">FiniteECPointPairVecJson</span>, <span class="ident">FiniteECPointVecJson</span>,
+    };
+    <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">opening_proof::OpeningProofJson</span>;
+    <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">proof_evaluations::ProofEvaluationsJson</span>;
+    <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">proof_messages</span>::{
+        <span class="ident">ProofMessageWithDegreeBoundJson</span>, <span class="ident">ProofMessageWithoutDegreeBoundListJson</span>, <span class="ident">ProofMessagesJson</span>,
+    };
+    <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">protocol_constants::ProtocolConstantsJson</span>;
     <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">protocol_state::ProtocolStateJson</span>;
     <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">protocol_state_body::ProtocolStateBodyJson</span>;
-    <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">protocol_state_proof::ProtocolStateProofJson</span>;
+    <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">protocol_state_proof</span>::{
+        <span class="ident">PairingBasedJson</span>, <span class="ident">PlonkJson</span>, <span class="ident">PrevEvalsJson</span>, <span class="ident">PrevXHatJson</span>, <span class="ident">ProofJson</span>,
+        <span class="ident">ProofOpeningsEvalsJson</span>, <span class="ident">ProofOpeningsJson</span>, <span class="ident">ProofStateDeferredValuesJson</span>, <span class="ident">ProofStateJson</span>,
+        <span class="ident">ProofStatePairingBasedJson</span>, <span class="ident">ProofStatementJson</span>, <span class="ident">ProtocolStateProofBase64Json</span>,
+        <span class="ident">ProtocolStateProofJson</span>, <span class="ident">ShiftedValueJson</span>, <span class="ident">SpongeDigestBeforeEvaluations</span>,
+    };
     <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">protocol_version::ProtocolVersionJson</span>;
-    <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">staged_ledger_diff::StagedLedgerDiffJson</span>;
+    <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">signatures</span>::{<span class="ident">PublicKeyJson</span>, <span class="ident">SignatureJson</span>};
+    <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">snark_work</span>::{
+        <span class="ident">FeeExcessJson</span>, <span class="ident">FeeExcessPairJson</span>, <span class="ident">OneORTwoJson</span>, <span class="ident">PendingCoinbaseJson</span>,
+        <span class="ident">PendingCoinbaseStackStateJson</span>, <span class="ident">SgnTypeJson</span>, <span class="ident">SignedJson</span>, <span class="ident">StateStackJson</span>, <span class="ident">StatementJson</span>,
+        <span class="ident">TransactionSnarkJson</span>, <span class="ident">TransactionSnarkWorkJson</span>,
+    };
+    <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">staged_ledger_diff</span>::{
+        <span class="ident">CoinBaseBalanceDataJson</span>, <span class="ident">CoinBaseJson</span>, <span class="ident">FeeTransferBalanceDataJson</span>,
+        <span class="ident">InternalCommandBalanceDataJson</span>, <span class="ident">PaymentPayloadJson</span>, <span class="ident">SignedCommandJson</span>,
+        <span class="ident">SignedCommandMemoJson</span>, <span class="ident">SignedCommandPayloadBodyJson</span>, <span class="ident">SignedCommandPayloadCommonJson</span>,
+        <span class="ident">SignedCommandPayloadJson</span>, <span class="ident">StagedLedgerDiffJson</span>, <span class="ident">TransactionStatusAuxiliaryDataJson</span>,
+        <span class="ident">TransactionStatusBalanceDataJson</span>, <span class="ident">TransactionStatusJson</span>, <span class="ident">UserCommandJson</span>,
+        <span class="ident">UserCommandWithStatusJson</span>,
+    };
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_serialization_types" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.62.0-nightly (30f386087 2022-05-05)" ></div>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_serialization_types" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.62.0-nightly (6dd68402c 2022-05-11)" ></div>
 </body></html>

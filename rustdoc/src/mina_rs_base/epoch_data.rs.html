@@ -68,6 +68,9 @@
 <span id="63">63</span>
 <span id="64">64</span>
 <span id="65">65</span>
+<span id="66">66</span>
+<span id="67">67</span>
+<span id="68">68</span>
 </pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems</span>
 <span class="comment">// SPDX-License-Identifier: Apache-2.0</span>
 
@@ -75,9 +78,11 @@
 
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::numbers</span>::{<span class="ident">Amount</span>, <span class="ident">Length</span>};
 <span class="kw">use</span> <span class="ident">mina_crypto::hash</span>::<span class="kw-2">*</span>;
+<span class="kw">use</span> <span class="ident">mina_serialization_types_macros::AutoFrom</span>;
 <span class="kw">use</span> <span class="ident">proof_systems::mina_hasher</span>::{<span class="ident">Hashable</span>, <span class="ident">ROInput</span>};
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Default</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Default</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>, <span class="ident">AutoFrom</span>)]</span>
+<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">mina_serialization_types::epoch_data::EpochLedger</span>)]</span>
 <span class="doccomment">/// Epoch Ledger</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">EpochLedger</span> {
     <span class="doccomment">/// A unique identifier of the EpochLedger</span>
@@ -101,7 +106,8 @@
     }
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Default</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Default</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>, <span class="ident">AutoFrom</span>)]</span>
+<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">mina_serialization_types::epoch_data::EpochData</span>)]</span>
 <span class="doccomment">/// Epoch data</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">EpochData</span> {
     <span class="doccomment">/// Epoch Ledger, contains ledger related data for the epoch</span>
@@ -134,5 +140,5 @@
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_rs_base" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.62.0-nightly (30f386087 2022-05-05)" ></div>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_rs_base" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.62.0-nightly (6dd68402c 2022-05-11)" ></div>
 </body></html>

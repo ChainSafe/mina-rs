@@ -1,0 +1,1 @@
+initSidebarItems({"derive":[["AutoFrom","A derive macro that automatically implements [From] trait between the annotated type and types including the attributed target type(s) and their versioned types, when the target type has identical field names with the annotated one, and each pair of the fields are convertible between each other"]]});

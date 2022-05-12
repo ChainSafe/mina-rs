@@ -24,15 +24,33 @@
 <span id="19">19</span>
 <span id="20">20</span>
 <span id="21">21</span>
+<span id="22">22</span>
+<span id="23">23</span>
+<span id="24">24</span>
+<span id="25">25</span>
+<span id="26">26</span>
+<span id="27">27</span>
+<span id="28">28</span>
+<span id="29">29</span>
+<span id="30">30</span>
+<span id="31">31</span>
+<span id="32">32</span>
+<span id="33">33</span>
+<span id="34">34</span>
+<span id="35">35</span>
 </pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems</span>
 <span class="comment">// SPDX-License-Identifier: Apache-2.0</span>
 
 <span class="doccomment">//! Structure of a global slot</span>
 
+<span class="kw">use</span> <span class="ident">mina_serialization_types_macros::AutoFrom</span>;
 <span class="kw">use</span> <span class="ident">serde</span>::{<span class="ident">Deserialize</span>, <span class="ident">Serialize</span>};
 <span class="kw">use</span> <span class="ident">versioned::Versioned</span>;
 
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::v1</span>::{<span class="ident">GlobalSlotNumberV1</span>, <span class="ident">LengthV1</span>};
+<span class="kw">use</span> <span class="kw">crate</span>::{
+    <span class="ident">common::U32Json</span>,
+    <span class="ident">v1</span>::{<span class="ident">GlobalSlotNumberV1</span>, <span class="ident">LengthV1</span>},
+};
 
 <span class="doccomment">/// A global slot</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">PartialEq</span>)]</span>
@@ -45,6 +63,16 @@
 
 <span class="doccomment">/// A global slot (v1)</span>
 <span class="kw">pub</span> <span class="kw">type</span> <span class="ident">GlobalSlotV1</span> <span class="op">=</span> <span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">GlobalSlot</span>, <span class="number">1</span><span class="op">&gt;</span>, <span class="number">1</span><span class="op">&gt;</span>;
+
+<span class="doccomment">/// A global slot (json)</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">PartialEq</span>, <span class="ident">AutoFrom</span>)]</span>
+<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">GlobalSlot</span>)]</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">GlobalSlotJson</span> {
+    <span class="doccomment">/// The global slot number of a chain or block</span>
+    <span class="kw">pub</span> <span class="ident">slot_number</span>: <span class="ident">U32Json</span>,
+    <span class="doccomment">/// Number of slots per epoch</span>
+    <span class="kw">pub</span> <span class="ident">slots_per_epoch</span>: <span class="ident">U32Json</span>,
+}
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_serialization_types" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.62.0-nightly (30f386087 2022-05-05)" ></div>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_serialization_types" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.62.0-nightly (6dd68402c 2022-05-11)" ></div>
 </body></html>

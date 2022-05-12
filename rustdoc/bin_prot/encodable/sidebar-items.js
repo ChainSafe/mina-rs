@@ -1,1 +1,0 @@
-initSidebarItems({"trait":[["BinProtEncodable","Trait to allow a type to give a size it will serialize to/from"]]});

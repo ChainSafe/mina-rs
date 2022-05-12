@@ -1,3 +1,0 @@
-(function() {var implementors = {};
-implementors["mina_rs_base"] = [{"text":"impl <a class=\"trait\" href=\"mina_crypto/base64/encodable/trait.Base64Encodable.html\" title=\"trait mina_crypto::base64::encodable::Base64Encodable\">Base64Encodable</a> for <a class=\"struct\" href=\"mina_rs_base/consensus_state/struct.VrfOutputTruncated.html\" title=\"struct mina_rs_base::consensus_state::VrfOutputTruncated\">VrfOutputTruncated</a>","synthetic":false,"types":["mina_rs_base::consensus_state::VrfOutputTruncated"]}];
-if (window.register_implementors) {window.register_implementors(implementors);} else {window.pending_implementors = implementors;}})()

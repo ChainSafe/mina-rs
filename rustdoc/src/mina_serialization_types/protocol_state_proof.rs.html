@@ -156,6 +156,123 @@
 <span id="151">151</span>
 <span id="152">152</span>
 <span id="153">153</span>
+<span id="154">154</span>
+<span id="155">155</span>
+<span id="156">156</span>
+<span id="157">157</span>
+<span id="158">158</span>
+<span id="159">159</span>
+<span id="160">160</span>
+<span id="161">161</span>
+<span id="162">162</span>
+<span id="163">163</span>
+<span id="164">164</span>
+<span id="165">165</span>
+<span id="166">166</span>
+<span id="167">167</span>
+<span id="168">168</span>
+<span id="169">169</span>
+<span id="170">170</span>
+<span id="171">171</span>
+<span id="172">172</span>
+<span id="173">173</span>
+<span id="174">174</span>
+<span id="175">175</span>
+<span id="176">176</span>
+<span id="177">177</span>
+<span id="178">178</span>
+<span id="179">179</span>
+<span id="180">180</span>
+<span id="181">181</span>
+<span id="182">182</span>
+<span id="183">183</span>
+<span id="184">184</span>
+<span id="185">185</span>
+<span id="186">186</span>
+<span id="187">187</span>
+<span id="188">188</span>
+<span id="189">189</span>
+<span id="190">190</span>
+<span id="191">191</span>
+<span id="192">192</span>
+<span id="193">193</span>
+<span id="194">194</span>
+<span id="195">195</span>
+<span id="196">196</span>
+<span id="197">197</span>
+<span id="198">198</span>
+<span id="199">199</span>
+<span id="200">200</span>
+<span id="201">201</span>
+<span id="202">202</span>
+<span id="203">203</span>
+<span id="204">204</span>
+<span id="205">205</span>
+<span id="206">206</span>
+<span id="207">207</span>
+<span id="208">208</span>
+<span id="209">209</span>
+<span id="210">210</span>
+<span id="211">211</span>
+<span id="212">212</span>
+<span id="213">213</span>
+<span id="214">214</span>
+<span id="215">215</span>
+<span id="216">216</span>
+<span id="217">217</span>
+<span id="218">218</span>
+<span id="219">219</span>
+<span id="220">220</span>
+<span id="221">221</span>
+<span id="222">222</span>
+<span id="223">223</span>
+<span id="224">224</span>
+<span id="225">225</span>
+<span id="226">226</span>
+<span id="227">227</span>
+<span id="228">228</span>
+<span id="229">229</span>
+<span id="230">230</span>
+<span id="231">231</span>
+<span id="232">232</span>
+<span id="233">233</span>
+<span id="234">234</span>
+<span id="235">235</span>
+<span id="236">236</span>
+<span id="237">237</span>
+<span id="238">238</span>
+<span id="239">239</span>
+<span id="240">240</span>
+<span id="241">241</span>
+<span id="242">242</span>
+<span id="243">243</span>
+<span id="244">244</span>
+<span id="245">245</span>
+<span id="246">246</span>
+<span id="247">247</span>
+<span id="248">248</span>
+<span id="249">249</span>
+<span id="250">250</span>
+<span id="251">251</span>
+<span id="252">252</span>
+<span id="253">253</span>
+<span id="254">254</span>
+<span id="255">255</span>
+<span id="256">256</span>
+<span id="257">257</span>
+<span id="258">258</span>
+<span id="259">259</span>
+<span id="260">260</span>
+<span id="261">261</span>
+<span id="262">262</span>
+<span id="263">263</span>
+<span id="264">264</span>
+<span id="265">265</span>
+<span id="266">266</span>
+<span id="267">267</span>
+<span id="268">268</span>
+<span id="269">269</span>
+<span id="270">270</span>
 </pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems</span>
 <span class="comment">// SPDX-License-Identifier: Apache-2.0</span>
 
@@ -163,20 +280,11 @@
 
 <span class="attribute">#![<span class="ident">allow</span>(<span class="ident">missing_docs</span>)]</span> <span class="comment">// Don&#39;t actually know what many of the types fields are for yet</span>
 
-<span class="kw">use</span> <span class="ident">serde</span>::{<span class="ident">Deserialize</span>, <span class="ident">Serialize</span>};
-<span class="kw">use</span> <span class="ident">versioned::Versioned</span>;
-
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::v1::OpeningProofV1</span>;
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::v1::ProofEvaluationsV1</span>;
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::v1::ProofMessagesV1</span>;
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::v1</span>::{<span class="ident">BigInt256</span>, <span class="ident">CharV1</span>, <span class="ident">Hex64V1</span>};
-
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::v1</span>::{
-    <span class="ident">BulletproofChallengeTuple18V1</span>, <span class="ident">BulletproofChallengesV1</span>, <span class="ident">BulletproofPreChallengeV1</span>,
-    <span class="ident">ProofStateBulletproofChallengesV1</span>, <span class="ident">ScalarChallengeVector2V1</span>,
-};
-
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::field_and_curve_elements</span>::{<span class="ident">FiniteECPoint</span>, <span class="ident">FiniteECPointVecV1</span>};
+<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::field_and_curve_elements::FiniteECPoint</span>;
+<span class="kw">use</span> <span class="kw">crate</span>::{<span class="ident">common</span>::<span class="kw-2">*</span>, <span class="ident">json</span>::<span class="kw-2">*</span>, <span class="ident">v1</span>::<span class="kw-2">*</span>, <span class="kw-2">*</span>};
+<span class="kw">use</span> <span class="ident">mina_serialization_types_macros::AutoFrom</span>;
+<span class="kw">use</span> <span class="ident">serde</span>::{<span class="ident">Deserialize</span>, <span class="ident">Deserializer</span>, <span class="ident">Serialize</span>, <span class="ident">Serializer</span>};
+<span class="kw">use</span> <span class="ident">versioned</span>::<span class="kw-2">*</span>;
 
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">PartialEq</span>)]</span>
 <span class="doccomment">/// SNARK proof of the protocol state at some point in time</span>
@@ -187,8 +295,50 @@
     <span class="kw">pub</span> <span class="ident">proof</span>: <span class="ident">ProofV1</span>,
 }
 
+<span class="doccomment">/// SNARK proof of the protocol state at some point in time (v1)</span>
 <span class="kw">pub</span> <span class="kw">type</span> <span class="ident">ProtocolStateProofV1</span> <span class="op">=</span>
     <span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">ProtocolStateProof</span>, <span class="number">1</span><span class="op">&gt;</span>, <span class="number">1</span><span class="op">&gt;</span>, <span class="number">1</span><span class="op">&gt;</span>, <span class="number">1</span><span class="op">&gt;</span>;
+
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">PartialEq</span>, <span class="ident">AutoFrom</span>)]</span>
+<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">ProtocolStateProof</span>)]</span>
+<span class="doccomment">/// SNARK proof of the protocol state at some point in time (json)</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ProtocolStateProofJson</span> {
+    <span class="kw">pub</span> <span class="ident">statement</span>: <span class="ident">ProofStatementJson</span>,
+    <span class="kw">pub</span> <span class="ident">prev_evals</span>: <span class="ident">PrevEvalsJson</span>,
+    <span class="kw">pub</span> <span class="ident">prev_x_hat</span>: <span class="ident">PrevXHatJson</span>,
+    <span class="kw">pub</span> <span class="ident">proof</span>: <span class="ident">ProofJson</span>,
+}
+
+<span class="doccomment">/// SNARK proof of the protocol state at some point in time (base64 json)</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">PartialEq</span>, <span class="ident">derive_more::From</span>, <span class="ident">derive_more::Into</span>)]</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ProtocolStateProofBase64Json</span>(<span class="kw">pub</span> <span class="ident">ProtocolStateProofV1</span>);
+
+<span class="kw">impl</span> <span class="ident">Serialize</span> <span class="kw">for</span> <span class="ident">ProtocolStateProofBase64Json</span> {
+    <span class="kw">fn</span> <span class="ident">serialize</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">serializer</span>: <span class="ident">S</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">S::Ok</span>, <span class="ident">S::Error</span><span class="op">&gt;</span>
+    <span class="kw">where</span>
+        <span class="ident">S</span>: <span class="ident">Serializer</span>,
+    {
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">bytes</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">Vec::new</span>();
+        <span class="ident">bin_prot::to_writer</span>(<span class="kw-2">&amp;mut</span> <span class="ident">bytes</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0</span>)
+            .<span class="ident">map_err</span>(<span class="op">&lt;</span><span class="ident">S::Error</span> <span class="kw">as</span> <span class="ident">serde::ser::Error</span><span class="op">&gt;</span><span class="ident">::custom</span>)<span class="question-mark">?</span>;
+        <span class="kw">let</span> <span class="ident">s</span> <span class="op">=</span> <span class="ident">base64::encode_config</span>(<span class="ident">bytes</span>, <span class="ident">base64::URL_SAFE</span>);
+        <span class="ident">serializer</span>.<span class="ident">serialize_str</span>(<span class="kw-2">&amp;</span><span class="ident">s</span>)
+    }
+}
+
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;de</span><span class="op">&gt;</span> <span class="ident">Deserialize</span><span class="op">&lt;</span><span class="lifetime">&#39;de</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ProtocolStateProofBase64Json</span> {
+    <span class="kw">fn</span> <span class="ident">deserialize</span><span class="op">&lt;</span><span class="ident">D</span><span class="op">&gt;</span>(<span class="ident">deserializer</span>: <span class="ident">D</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span>, <span class="ident">D::Error</span><span class="op">&gt;</span>
+    <span class="kw">where</span>
+        <span class="ident">D</span>: <span class="ident">Deserializer</span><span class="op">&lt;</span><span class="lifetime">&#39;de</span><span class="op">&gt;</span>,
+    {
+        <span class="kw">let</span> <span class="ident">s</span> <span class="op">=</span> <span class="ident">String::deserialize</span>(<span class="ident">deserializer</span>)<span class="question-mark">?</span>;
+        <span class="kw">let</span> <span class="ident">bytes</span> <span class="op">=</span> <span class="ident">base64::decode_config</span>(<span class="ident">s</span>, <span class="ident">base64::URL_SAFE</span>)
+            .<span class="ident">map_err</span>(<span class="op">&lt;</span><span class="ident">D::Error</span> <span class="kw">as</span> <span class="ident">serde::de::Error</span><span class="op">&gt;</span><span class="ident">::custom</span>)<span class="question-mark">?</span>;
+        <span class="kw">let</span> <span class="ident">t</span>: <span class="ident">ProtocolStateProofV1</span> <span class="op">=</span> <span class="ident">bin_prot::from_reader</span>(<span class="ident">bytes</span>.<span class="ident">as_slice</span>())
+            .<span class="ident">map_err</span>(<span class="op">&lt;</span><span class="ident">D::Error</span> <span class="kw">as</span> <span class="ident">serde::de::Error</span><span class="op">&gt;</span><span class="ident">::custom</span>)<span class="question-mark">?</span>;
+        <span class="prelude-val">Ok</span>(<span class="ident">t</span>.<span class="ident">into</span>())
+    }
+}
 
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">PartialEq</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ProofStatement</span> {
@@ -198,6 +348,13 @@
 
 <span class="kw">pub</span> <span class="kw">type</span> <span class="ident">ProofStatementV1</span> <span class="op">=</span> <span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">ProofStatement</span>, <span class="number">1</span><span class="op">&gt;</span>, <span class="number">1</span><span class="op">&gt;</span>;
 
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">PartialEq</span>, <span class="ident">AutoFrom</span>)]</span>
+<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">ProofStatement</span>)]</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ProofStatementJson</span> {
+    <span class="kw">pub</span> <span class="ident">proof_state</span>: <span class="ident">ProofStateJson</span>,
+    <span class="kw">pub</span> <span class="ident">pass_through</span>: <span class="ident">PairingBasedJson</span>,
+}
+
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">PartialEq</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ProofState</span> {
     <span class="kw">pub</span> <span class="ident">deferred_values</span>: <span class="ident">ProofStateDeferredValuesV1</span>,
@@ -206,6 +363,14 @@
 }
 
 <span class="kw">pub</span> <span class="kw">type</span> <span class="ident">ProofStateV1</span> <span class="op">=</span> <span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">ProofState</span>, <span class="number">1</span><span class="op">&gt;</span>;
+
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">PartialEq</span>, <span class="ident">AutoFrom</span>)]</span>
+<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">ProofState</span>)]</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ProofStateJson</span> {
+    <span class="kw">pub</span> <span class="ident">deferred_values</span>: <span class="ident">ProofStateDeferredValuesJson</span>,
+    <span class="kw">pub</span> <span class="ident">sponge_digest_before_evaluations</span>: <span class="ident">SpongeDigestBeforeEvaluationsJson</span>,
+    <span class="kw">pub</span> <span class="ident">me_only</span>: <span class="ident">ProofStatePairingBasedJson</span>,
+}
 
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">PartialEq</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ProofStateDeferredValues</span> {
@@ -219,6 +384,17 @@
 
 <span class="kw">pub</span> <span class="kw">type</span> <span class="ident">ProofStateDeferredValuesV1</span> <span class="op">=</span> <span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">ProofStateDeferredValues</span>, <span class="number">1</span><span class="op">&gt;</span>;
 
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">PartialEq</span>, <span class="ident">AutoFrom</span>)]</span>
+<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">ProofStateDeferredValues</span>)]</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ProofStateDeferredValuesJson</span> {
+    <span class="kw">pub</span> <span class="ident">plonk</span>: <span class="ident">PlonkJson</span>,
+    <span class="kw">pub</span> <span class="ident">combined_inner_product</span>: <span class="ident">ShiftedValueJson</span>,
+    <span class="kw">pub</span> <span class="ident">b</span>: <span class="ident">ShiftedValueJson</span>,
+    <span class="kw">pub</span> <span class="ident">xi</span>: <span class="ident">BulletproofPreChallengeJson</span>,
+    <span class="kw">pub</span> <span class="ident">bulletproof_challenges</span>: <span class="ident">BulletproofChallengeTuple18Json</span>,
+    <span class="kw">pub</span> <span class="ident">which_branch</span>: <span class="ident">CharJson</span>,
+}
+
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">PartialEq</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Plonk</span> {
     <span class="kw">pub</span> <span class="ident">alpha</span>: <span class="ident">BulletproofPreChallengeV1</span>,
@@ -229,8 +405,16 @@
 
 <span class="kw">pub</span> <span class="kw">type</span> <span class="ident">PlonkV1</span> <span class="op">=</span> <span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">Plonk</span>, <span class="number">1</span><span class="op">&gt;</span>;
 
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">PartialEq</span>, <span class="ident">AutoFrom</span>)]</span>
+<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">Plonk</span>)]</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">PlonkJson</span> {
+    <span class="kw">pub</span> <span class="ident">alpha</span>: <span class="ident">BulletproofPreChallengeJson</span>,
+    <span class="kw">pub</span> <span class="ident">beta</span>: <span class="ident">ScalarChallengeVector2Json</span>,
+    <span class="kw">pub</span> <span class="ident">gamma</span>: <span class="ident">ScalarChallengeVector2Json</span>,
+    <span class="kw">pub</span> <span class="ident">zeta</span>: <span class="ident">BulletproofPreChallengeJson</span>,
+}
+
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">PartialEq</span>)]</span>
-<span class="attribute">#[<span class="ident">non_exhaustive</span>]</span>
 <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">ShiftedValue</span> {
     <span class="ident">ShiftedValue</span>(<span class="ident">BigInt256</span>),
 }
@@ -238,10 +422,40 @@
 <span class="kw">pub</span> <span class="kw">type</span> <span class="ident">ShiftedValueV1</span> <span class="op">=</span> <span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">ShiftedValue</span>, <span class="number">1</span><span class="op">&gt;</span>;
 
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">PartialEq</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">SpongeDigestBeforeEvaluations</span>(<span class="kw">pub</span> (<span class="ident">Hex64V1</span>, <span class="ident">Hex64V1</span>, <span class="ident">Hex64V1</span>, <span class="ident">Hex64V1</span>, ()));
+<span class="kw">enum</span> <span class="ident">ShiftedValueJsonProxy</span> {
+    <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">rename</span> <span class="op">=</span> <span class="string">&quot;Shifted_value&quot;</span>)]</span>
+    <span class="ident">ShiftedValue</span>(<span class="ident">FieldElementJson</span>),
+}
+
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">PartialEq</span>, <span class="ident">AutoFrom</span>)]</span>
+<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">ShiftedValue</span>)]</span>
+<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">ShiftedValueJsonProxy</span>)]</span>
+<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">ShiftedValueJson</span> {
+    <span class="ident">ShiftedValue</span>(<span class="ident">FieldElementJson</span>),
+}
+<span class="macro">impl_mina_enum_json_serde!</span>(<span class="ident">ShiftedValueJson</span>, <span class="ident">ShiftedValueJsonProxy</span>);
+
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">PartialEq</span>)]</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">SpongeDigestBeforeEvaluations</span>(
+    <span class="kw">pub</span> <span class="ident">Hex64V1</span>,
+    <span class="kw">pub</span> <span class="ident">Hex64V1</span>,
+    <span class="kw">pub</span> <span class="ident">Hex64V1</span>,
+    <span class="kw">pub</span> <span class="ident">Hex64V1</span>,
+    <span class="kw">pub</span> (),
+);
 
 <span class="kw">pub</span> <span class="kw">type</span> <span class="ident">SpongeDigestBeforeEvaluationsV1</span> <span class="op">=</span>
     <span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">SpongeDigestBeforeEvaluations</span>, <span class="number">1</span><span class="op">&gt;</span>, <span class="number">1</span><span class="op">&gt;</span>;
+
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">PartialEq</span>, <span class="ident">AutoFrom</span>)]</span>
+<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">SpongeDigestBeforeEvaluations</span>)]</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">SpongeDigestBeforeEvaluationsJson</span>(
+    <span class="kw">pub</span> <span class="ident">I64</span>,
+    <span class="kw">pub</span> <span class="ident">I64</span>,
+    <span class="kw">pub</span> <span class="ident">I64</span>,
+    <span class="kw">pub</span> <span class="ident">I64</span>,
+    <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">skip</span>)]</span> <span class="kw">pub</span> (),
+);
 
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">PartialEq</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ProofStatePairingBased</span> {
@@ -250,6 +464,13 @@
 }
 
 <span class="kw">pub</span> <span class="kw">type</span> <span class="ident">ProofStatePairingBasedV1</span> <span class="op">=</span> <span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">ProofStatePairingBased</span>, <span class="number">1</span><span class="op">&gt;</span>;
+
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">PartialEq</span>, <span class="ident">AutoFrom</span>)]</span>
+<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">ProofStatePairingBased</span>)]</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ProofStatePairingBasedJson</span> {
+    <span class="kw">pub</span> <span class="ident">sg</span>: <span class="ident">FiniteECPointJson</span>,
+    <span class="kw">pub</span> <span class="ident">old_bulletproof_challenges</span>: <span class="ident">ProofStateBulletproofChallengesJson</span>,
+}
 
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">PartialEq</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">PairingBased</span> {
@@ -260,9 +481,31 @@
 
 <span class="kw">pub</span> <span class="kw">type</span> <span class="ident">PairingBasedV1</span> <span class="op">=</span> <span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">PairingBased</span>, <span class="number">1</span><span class="op">&gt;</span>;
 
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">PrevEvalsV1</span> <span class="op">=</span> <span class="ident">Versioned</span><span class="op">&lt;</span>(<span class="ident">ProofEvaluationsV1</span>, <span class="ident">ProofEvaluationsV1</span>), <span class="number">1</span><span class="op">&gt;</span>;
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">PartialEq</span>, <span class="ident">AutoFrom</span>)]</span>
+<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">PairingBased</span>)]</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">PairingBasedJson</span> {
+    <span class="kw">pub</span> <span class="ident">app_state</span>: (),
+    <span class="kw">pub</span> <span class="ident">sg</span>: <span class="ident">FiniteECPointVecJson</span>,
+    <span class="kw">pub</span> <span class="ident">old_bulletproof_challenges</span>: <span class="ident">BulletproofChallengesJson</span>,
+}
 
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">PrevXHatV1</span> <span class="op">=</span> <span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">FiniteECPoint</span>, <span class="number">1</span><span class="op">&gt;</span>;
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">PartialEq</span>)]</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">PrevEvals</span>(<span class="kw">pub</span> <span class="ident">ProofEvaluationsV1</span>, <span class="kw">pub</span> <span class="ident">ProofEvaluationsV1</span>);
+
+<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">PrevEvalsV1</span> <span class="op">=</span> <span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">PrevEvals</span>, <span class="number">1</span><span class="op">&gt;</span>;
+
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">PartialEq</span>, <span class="ident">AutoFrom</span>)]</span>
+<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">PrevEvals</span>)]</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">PrevEvalsJson</span>(<span class="kw">pub</span> <span class="ident">ProofEvaluationsJson</span>, <span class="kw">pub</span> <span class="ident">ProofEvaluationsJson</span>);
+
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">PartialEq</span>)]</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">PrevXHat</span>(<span class="kw">pub</span> <span class="ident">FiniteECPoint</span>);
+
+<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">PrevXHatV1</span> <span class="op">=</span> <span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">PrevXHat</span>, <span class="number">1</span><span class="op">&gt;</span>;
+
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">PartialEq</span>, <span class="ident">AutoFrom</span>)]</span>
+<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">PrevXHat</span>)]</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">PrevXHatJson</span>(<span class="kw">pub</span> <span class="ident">FiniteECPointJson</span>);
 
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">PartialEq</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Proof</span> {
@@ -272,43 +515,34 @@
 
 <span class="kw">pub</span> <span class="kw">type</span> <span class="ident">ProofV1</span> <span class="op">=</span> <span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">Proof</span>, <span class="number">1</span><span class="op">&gt;</span>, <span class="number">1</span><span class="op">&gt;</span>;
 
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">PartialEq</span>, <span class="ident">AutoFrom</span>)]</span>
+<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">Proof</span>)]</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ProofJson</span> {
+    <span class="kw">pub</span> <span class="ident">messages</span>: <span class="ident">ProofMessagesJson</span>,
+    <span class="kw">pub</span> <span class="ident">openings</span>: <span class="ident">ProofOpeningsJson</span>,
+}
+
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">PartialEq</span>)]</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ProofOpeningsEvals</span>(<span class="kw">pub</span> <span class="ident">ProofEvaluationsV1</span>, <span class="kw">pub</span> <span class="ident">ProofEvaluationsV1</span>);
+
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">PartialEq</span>, <span class="ident">AutoFrom</span>)]</span>
+<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">ProofOpeningsEvals</span>)]</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ProofOpeningsEvalsJson</span>(<span class="kw">pub</span> <span class="ident">ProofEvaluationsJson</span>, <span class="kw">pub</span> <span class="ident">ProofEvaluationsJson</span>);
+
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">PartialEq</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ProofOpenings</span> {
     <span class="kw">pub</span> <span class="ident">proof</span>: <span class="ident">OpeningProofV1</span>,
-    <span class="kw">pub</span> <span class="ident">evals</span>: (<span class="ident">ProofEvaluationsV1</span>, <span class="ident">ProofEvaluationsV1</span>),
+    <span class="kw">pub</span> <span class="ident">evals</span>: <span class="ident">ProofOpeningsEvals</span>,
 }
 
 <span class="kw">pub</span> <span class="kw">type</span> <span class="ident">ProofOpeningsV1</span> <span class="op">=</span> <span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">ProofOpenings</span>, <span class="number">1</span><span class="op">&gt;</span>;
 
-<span class="doccomment">/// SNARK proof of the protocol state at some point in time</span>
-<span class="doccomment">/// that is convertible from / to the mina specific json representation</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">PartialEq</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ProtocolStateProofJson</span> {}
-
-<span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">ProtocolStateProofJson</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ProtocolStateProofV1</span> {
-    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">t</span>: <span class="ident">ProtocolStateProofJson</span>) -&gt; <span class="self">Self</span> {
-        <span class="kw">let</span> <span class="ident">t</span>: <span class="ident">ProtocolStateProof</span> <span class="op">=</span> <span class="ident">t</span>.<span class="ident">into</span>();
-        <span class="ident">t</span>.<span class="ident">into</span>()
-    }
-}
-
-<span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">ProtocolStateProofV1</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ProtocolStateProofJson</span> {
-    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">t</span>: <span class="ident">ProtocolStateProofV1</span>) -&gt; <span class="self">Self</span> {
-        <span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">into</span>()
-    }
-}
-
-<span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">ProtocolStateProofJson</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ProtocolStateProof</span> {
-    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">_t</span>: <span class="ident">ProtocolStateProofJson</span>) -&gt; <span class="self">Self</span> {
-        <span class="macro">unimplemented!</span>()
-    }
-}
-
-<span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">ProtocolStateProof</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ProtocolStateProofJson</span> {
-    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">_t</span>: <span class="ident">ProtocolStateProof</span>) -&gt; <span class="self">Self</span> {
-        <span class="macro">unimplemented!</span>()
-    }
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">PartialEq</span>, <span class="ident">AutoFrom</span>)]</span>
+<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">ProofOpenings</span>)]</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ProofOpeningsJson</span> {
+    <span class="kw">pub</span> <span class="ident">proof</span>: <span class="ident">OpeningProofJson</span>,
+    <span class="kw">pub</span> <span class="ident">evals</span>: <span class="ident">ProofOpeningsEvalsJson</span>,
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_serialization_types" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.62.0-nightly (30f386087 2022-05-05)" ></div>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_serialization_types" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.62.0-nightly (6dd68402c 2022-05-11)" ></div>
 </body></html>

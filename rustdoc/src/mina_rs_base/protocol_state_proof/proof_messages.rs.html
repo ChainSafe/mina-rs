@@ -25,12 +25,20 @@
 <span id="20">20</span>
 <span id="21">21</span>
 <span id="22">22</span>
+<span id="23">23</span>
+<span id="24">24</span>
+<span id="25">25</span>
+<span id="26">26</span>
+<span id="27">27</span>
 </pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems</span>
 <span class="comment">// SPDX-License-Identifier: Apache-2.0</span>
 
+<span class="kw">use</span> <span class="ident">mina_serialization_types_macros::AutoFrom</span>;
+
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::types</span>::{<span class="ident">ECPoint</span>, <span class="ident">ECPointVec</span>, <span class="ident">FiniteECPoint</span>};
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Default</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Default</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>, <span class="ident">AutoFrom</span>)]</span>
+<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">mina_serialization_types::proof_messages::ProofMessages</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ProofMessages</span> {
     <span class="kw">pub</span> <span class="ident">l_comm</span>: <span class="ident">ProofMessageWithoutDegreeBoundList</span>,
     <span class="kw">pub</span> <span class="ident">r_comm</span>: <span class="ident">ProofMessageWithoutDegreeBoundList</span>,
@@ -39,14 +47,16 @@
     <span class="kw">pub</span> <span class="ident">t_comm</span>: <span class="ident">ProofMessageWithDegreeBound</span>,
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Default</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Default</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>, <span class="ident">AutoFrom</span>)]</span>
+<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">mina_serialization_types::proof_messages::ProofMessageWithoutDegreeBoundList</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ProofMessageWithoutDegreeBoundList</span>(<span class="kw">pub</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">FiniteECPoint</span><span class="op">&gt;</span>);
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Default</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Default</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>, <span class="ident">AutoFrom</span>)]</span>
+<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">mina_serialization_types::proof_messages::ProofMessageWithDegreeBound</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ProofMessageWithDegreeBound</span> {
     <span class="kw">pub</span> <span class="ident">unshifted</span>: <span class="ident">ECPointVec</span>,
     <span class="kw">pub</span> <span class="ident">shifted</span>: <span class="ident">ECPoint</span>,
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="mina_rs_base" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.62.0-nightly (30f386087 2022-05-05)" ></div>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="mina_rs_base" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.62.0-nightly (6dd68402c 2022-05-11)" ></div>
 </body></html>

@@ -30,8 +30,19 @@
 <span id="25">25</span>
 <span id="26">26</span>
 <span id="27">27</span>
+<span id="28">28</span>
+<span id="29">29</span>
+<span id="30">30</span>
+<span id="31">31</span>
+<span id="32">32</span>
+<span id="33">33</span>
+<span id="34">34</span>
+<span id="35">35</span>
 </pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems</span>
 <span class="comment">// SPDX-License-Identifier: Apache-2.0</span>
+
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">all</span>(<span class="ident">test</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;browser&quot;</span>))]</span>
+<span class="macro">wasm_bindgen_test::wasm_bindgen_test_configure!</span>(<span class="ident">run_in_browser</span>);
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
 <span class="kw">mod</span> <span class="ident">tests</span> {
@@ -48,15 +59,20 @@
             <span class="kw">let</span> <span class="ident">versioned</span> <span class="op">=</span> <span class="ident">block</span>.<span class="ident">external_transitionv1</span>().<span class="ident">unwrap</span>();
 
             <span class="kw">let</span> <span class="ident">et</span>: <span class="ident">ExternalTransition</span> <span class="op">=</span> <span class="ident">versioned</span>.<span class="ident">clone</span>().<span class="ident">into</span>();
-            <span class="kw">let</span> <span class="ident">versioned2</span>: <span class="op">&lt;</span><span class="ident">ExternalTransition</span> <span class="kw">as</span> <span class="ident">BinProtSerializationType</span><span class="op">&gt;</span><span class="ident">::T</span> <span class="op">=</span> <span class="ident">et</span>.<span class="ident">into</span>();
+            <span class="kw">let</span> <span class="ident">et2</span>: <span class="ident">ExternalTransition</span> <span class="op">=</span>
+                <span class="op">&lt;</span><span class="ident">ExternalTransition</span> <span class="kw">as</span> <span class="ident">BinProtSerializationType</span><span class="op">&gt;</span><span class="ident">::try_from_binprot</span>(
+                    <span class="ident">block</span>.<span class="ident">bytes</span>.<span class="ident">as_slice</span>(),
+                )
+                .<span class="ident">unwrap</span>();
+            <span class="macro">assert_eq!</span>(<span class="ident">et</span>, <span class="ident">et2</span>);
+            <span class="kw">let</span> <span class="ident">versioned2</span>: <span class="op">&lt;</span><span class="ident">ExternalTransition</span> <span class="kw">as</span> <span class="ident">BinProtSerializationType</span><span class="op">&gt;</span><span class="ident">::T</span> <span class="op">=</span> <span class="ident">et</span>.<span class="ident">clone</span>().<span class="ident">into</span>();
             <span class="macro">assert_eq!</span>(<span class="ident">versioned</span>, <span class="ident">versioned2</span>);
 
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">bytes</span> <span class="op">=</span> <span class="ident">Vec::with_capacity</span>(<span class="ident">block</span>.<span class="ident">bytes</span>.<span class="ident">len</span>());
-            <span class="ident">bin_prot::to_writer</span>(<span class="kw-2">&amp;mut</span> <span class="ident">bytes</span>, <span class="kw-2">&amp;</span><span class="ident">versioned</span>).<span class="ident">unwrap</span>();
-            <span class="macro">assert_eq!</span>(<span class="ident">bytes</span>.<span class="ident">as_slice</span>(), <span class="ident">block</span>.<span class="ident">bytes</span>.<span class="ident">as_slice</span>(),);
+            <span class="kw">let</span> <span class="ident">bytes</span> <span class="op">=</span> <span class="ident">et</span>.<span class="ident">try_into_binprot</span>().<span class="ident">unwrap</span>();
+            <span class="macro">assert_eq!</span>(<span class="ident">bytes</span>.<span class="ident">as_slice</span>(), <span class="ident">block</span>.<span class="ident">bytes</span>.<span class="ident">as_slice</span>());
         }
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="test_serialization" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.62.0-nightly (30f386087 2022-05-05)" ></div>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="test_serialization" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.62.0-nightly (6dd68402c 2022-05-11)" ></div>
 </body></html>

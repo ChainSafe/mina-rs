@@ -36,39 +36,47 @@
 <span id="31">31</span>
 <span id="32">32</span>
 <span id="33">33</span>
+<span id="34">34</span>
+<span id="35">35</span>
+<span id="36">36</span>
+<span id="37">37</span>
 </pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems</span>
 <span class="comment">// SPDX-License-Identifier: Apache-2.0</span>
 
 <span class="doccomment">//! Account Timing</span>
 
+<span class="kw">use</span> <span class="ident">mina_serialization_types_macros::AutoFrom</span>;
+<span class="kw">use</span> <span class="ident">smart_default::SmartDefault</span>;
+
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::numbers</span>::{<span class="ident">Amount</span>, <span class="ident">BlockTime</span>};
+
+<span class="doccomment">/// Payload for the timing variant Timed</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">PartialEq</span>, <span class="ident">AutoFrom</span>)]</span>
+<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">mina_serialization_types::account::TimedData</span>)]</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">TimedData</span> {
+    <span class="doccomment">/// Initial balance for the account</span>
+    <span class="kw">pub</span> <span class="ident">initial_minimum_balance</span>: <span class="ident">Amount</span>,
+    <span class="doccomment">/// Time when all balance is avaiable</span>
+    <span class="kw">pub</span> <span class="ident">cliff_time</span>: <span class="ident">BlockTime</span>,
+    <span class="doccomment">/// Amount extra available when fully fested</span>
+    <span class="kw">pub</span> <span class="ident">cliff_amount</span>: <span class="ident">Amount</span>,
+    <span class="doccomment">/// Ammount released in each vesting period</span>
+    <span class="kw">pub</span> <span class="ident">vesting_increment</span>: <span class="ident">Amount</span>,
+    <span class="doccomment">/// Period in whcih allocation is released in chunks</span>
+    <span class="kw">pub</span> <span class="ident">vesting_period</span>: <span class="ident">BlockTime</span>,
+}
 
 <span class="doccomment">/// Timing information for an account with regard to when its balance is accessable</span>
 <span class="doccomment">/// This is to allow vesting from an initial genesis allocation</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">SmartDefault</span>, <span class="ident">AutoFrom</span>)]</span>
+<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">mina_serialization_types::account::Timing</span>)]</span>
 <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">Timing</span> {
     <span class="doccomment">/// Account does not have any timing limitations</span>
+    <span class="attribute">#[<span class="ident">default</span>]</span>
     <span class="ident">Untimed</span>,
     <span class="doccomment">/// Account does have timing limitations as specified</span>
-    <span class="ident">Timed</span> {
-        <span class="doccomment">/// Initial balance for the account</span>
-        <span class="ident">initial_minimum_balance</span>: <span class="ident">Amount</span>,
-        <span class="doccomment">/// Time when all balance is avaiable</span>
-        <span class="ident">cliff_time</span>: <span class="ident">BlockTime</span>,
-        <span class="doccomment">/// Amount extra available when fully fested</span>
-        <span class="ident">cliff_amount</span>: <span class="ident">Amount</span>,
-        <span class="doccomment">/// Ammount released in each vesting period</span>
-        <span class="ident">vesting_increment</span>: <span class="ident">Amount</span>,
-        <span class="doccomment">/// Period in whcih allocation is released in chunks</span>
-        <span class="ident">vesting_period</span>: <span class="ident">BlockTime</span>,
-    },
-}
-
-<span class="kw">impl</span> <span class="ident">Default</span> <span class="kw">for</span> <span class="ident">Timing</span> {
-    <span class="kw">fn</span> <span class="ident">default</span>() -&gt; <span class="self">Self</span> {
-        <span class="ident">Timing::Untimed</span>
-    }
+    <span class="ident">Timed</span>(<span class="ident">TimedData</span>),
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="mina_rs_base" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.62.0-nightly (30f386087 2022-05-05)" ></div>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="mina_rs_base" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.62.0-nightly (6dd68402c 2022-05-11)" ></div>
 </body></html>

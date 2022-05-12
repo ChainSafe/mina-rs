@@ -106,12 +106,39 @@
 <span id="101">101</span>
 <span id="102">102</span>
 <span id="103">103</span>
+<span id="104">104</span>
+<span id="105">105</span>
+<span id="106">106</span>
+<span id="107">107</span>
+<span id="108">108</span>
+<span id="109">109</span>
+<span id="110">110</span>
+<span id="111">111</span>
+<span id="112">112</span>
+<span id="113">113</span>
+<span id="114">114</span>
+<span id="115">115</span>
+<span id="116">116</span>
+<span id="117">117</span>
+<span id="118">118</span>
+<span id="119">119</span>
+<span id="120">120</span>
+<span id="121">121</span>
+<span id="122">122</span>
+<span id="123">123</span>
+<span id="124">124</span>
+<span id="125">125</span>
+<span id="126">126</span>
+<span id="127">127</span>
+<span id="128">128</span>
+<span id="129">129</span>
+<span id="130">130</span>
 </pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems</span>
 <span class="comment">// SPDX-License-Identifier: Apache-2.0</span>
 
 <span class="attribute">#![<span class="ident">deny</span>(<span class="ident">warnings</span>)]</span>
 
-<span class="kw">use</span> <span class="ident">bin_prot</span>::{<span class="ident">encodable::BinProtEncodable</span>, <span class="ident">BinProtRule</span>, <span class="ident">Deserializer</span>};
+<span class="kw">use</span> <span class="ident">bin_prot</span>::{<span class="ident">BinProtRule</span>, <span class="ident">Deserializer</span>};
 <span class="kw">use</span> <span class="ident">lazy_static::lazy_static</span>;
 <span class="kw">use</span> <span class="ident">mina_serialization_types::v1::ExternalTransitionV1</span>;
 <span class="kw">use</span> <span class="ident">serde::Deserialize</span>;
@@ -129,6 +156,7 @@
             .<span class="ident">unwrap</span>()
             .<span class="ident">bin_prot_rule</span>
     };
+    <span class="kw">pub</span> <span class="kw">static</span> <span class="kw-2">ref</span> <span class="ident">GENESIS_BLOCK_MAINNET_JSON</span>: <span class="ident">serde_json::Value</span> <span class="op">=</span> <span class="ident">serde_json::from_slice</span>(<span class="macro">include_bytes!</span>(<span class="string">&quot;data/genesis-3NKeMoncuHab5ScarV5ViyF16cJPT4taWNSaTLS64Dp67wuXigPZ.json&quot;</span>)).<span class="ident">unwrap</span>();
     <span class="kw">pub</span> <span class="kw">static</span> <span class="kw-2">ref</span> <span class="ident">GENESIS_BLOCK_MAINNET</span>: <span class="ident">BlockFixture</span> <span class="op">=</span> <span class="ident">load_test_block_hex</span>(<span class="string">&quot;genesis-3NKeMoncuHab5ScarV5ViyF16cJPT4taWNSaTLS64Dp67wuXigPZ.hex&quot;</span>, <span class="macro">include_str!</span>(<span class="string">&quot;data/genesis-3NKeMoncuHab5ScarV5ViyF16cJPT4taWNSaTLS64Dp67wuXigPZ.hex&quot;</span>));
     <span class="comment">// FIXME: Update this with real devnet genesis block</span>
     <span class="kw">pub</span> <span class="kw">static</span> <span class="kw-2">ref</span> <span class="ident">GENESIS_BLOCK_DEVNET</span>: <span class="ident">BlockFixture</span> <span class="op">=</span> <span class="ident">load_test_block_hex</span>(<span class="string">&quot;genesis-3NKeMoncuHab5ScarV5ViyF16cJPT4taWNSaTLS64Dp67wuXigPZ.hex&quot;</span>, <span class="macro">include_str!</span>(<span class="string">&quot;data/genesis-3NKeMoncuHab5ScarV5ViyF16cJPT4taWNSaTLS64Dp67wuXigPZ.hex&quot;</span>));
@@ -145,6 +173,15 @@
         <span class="string">&quot;data/3NLvrNK6rmWnxEkGZo1y4KYjsSTcgVx7gwen2aR2kTWmRDTNoSu8.hex&quot;</span>
         <span class="string">&quot;data/3NK9fHpzfPWhuxFhQ9Dau1X1JWtstB6kGC4xrurSPU1kctMCsU9U.hex&quot;</span>
         <span class="string">&quot;data/3NKapQX5Qe8f4BEZGWxVSWKQvKNnkvPXNLq5KDHCV1qoPzV5Y3Wu.hex&quot;</span>
+        <span class="string">&quot;data/3NKjZ5fjms6BMaH4aq7DopPGyMY7PbG6vhRsX5XnYRxih8i9G7dj.hex&quot;</span>
+    );
+    <span class="comment">// Note that GENESIS_BLOCK_MAINNET_JSON has a different json format, so it&#39;s not included here</span>
+    <span class="kw">pub</span> <span class="kw">static</span> <span class="kw-2">ref</span> <span class="ident">JSON_TEST_BLOCKS</span>: <span class="ident">HashMap</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">serde_json::Value</span><span class="op">&gt;</span> <span class="op">=</span> <span class="macro">load_json_test_blocks!</span>(
+        <span class="string">&quot;data/mainnet-117896-3NKrv92FYZFHRNUJxiP7VGeRx3MeDY2iffFjUWXTPoXJorsS63ba.json&quot;</span>
+        <span class="string">&quot;data/mainnet-117896-3NKjZ5fjms6BMaH4aq7DopPGyMY7PbG6vhRsX5XnYRxih8i9G7dj.json&quot;</span>
+        <span class="string">&quot;data/mainnet-116121-3NK6myZRzc3GvS5iydv88on2XTEU2btYrjMVkgtbuoeXASRipSa6.json&quot;</span>
+        <span class="string">&quot;data/mainnet-77749-3NK3P5bJHhqR7xkZBquGGfq3sERUeXNYNma5YXRMjgCNsTJRZpgL.json&quot;</span>
+        <span class="string">&quot;data/mainnet-77748-3NKaBJsN1SehD6iJwRwJSFmVzJg5DXSUQVgnMxtH4eer4aF5BrDK.json&quot;</span>
     );
 }
 
@@ -160,9 +197,7 @@
 
 <span class="kw">impl</span> <span class="ident">BlockFixture</span> {
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">external_transitionv1</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">anyhow::Result</span><span class="op">&lt;</span><span class="ident">ExternalTransitionV1</span><span class="op">&gt;</span> {
-        <span class="prelude-val">Ok</span>(<span class="ident">ExternalTransitionV1::try_decode_binprot</span>(
-            <span class="self">self</span>.<span class="ident">bytes</span>.<span class="ident">as_slice</span>(),
-        )<span class="question-mark">?</span>)
+        <span class="prelude-val">Ok</span>(<span class="ident">bin_prot::from_reader</span>(<span class="self">self</span>.<span class="ident">bytes</span>.<span class="ident">as_slice</span>())<span class="question-mark">?</span>)
     }
 }
 
@@ -209,6 +244,25 @@
         }
     };
 }
+
+<span class="attribute">#[<span class="ident">macro_export</span>]</span>
+<span class="macro">macro_rules!</span> <span class="ident">load_json_test_blocks</span> {
+    ( $( <span class="macro-nonterminal">$</span><span class="macro-nonterminal">lt</span>:<span class="ident">literal</span> $(,)<span class="question-mark">?</span>) <span class="op">*</span> ) =&gt; {
+        {
+            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">temp_map</span> <span class="op">=</span> <span class="ident">HashMap::new</span>();
+            $(
+                <span class="kw">let</span> <span class="ident">file_name</span> <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">lt</span>.<span class="ident">split</span>(<span class="string">&#39;/&#39;</span>).<span class="ident">last</span>().<span class="ident">unwrap</span>().<span class="ident">into</span>();
+                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">block</span>: <span class="ident">serde_json::Value</span> <span class="op">=</span> <span class="ident">serde_json::from_slice</span>(<span class="macro">include_bytes!</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">lt</span>)).<span class="ident">map_err</span>(<span class="op">|</span><span class="ident">err</span><span class="op">|</span><span class="macro">format!</span>(<span class="string">&quot;Errer loading {}: {err}&quot;</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">lt</span>)).<span class="ident">unwrap</span>();
+                <span class="comment">// Remove scheduled_time field as it&#39;s not part of block</span>
+                <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">block_mut</span>) <span class="op">=</span> <span class="ident">block</span>.<span class="ident">as_object_mut</span>() {
+                    <span class="ident">block_mut</span>.<span class="ident">remove</span>(<span class="string">&quot;scheduled_time&quot;</span>);
+                }
+                <span class="ident">temp_map</span>.<span class="ident">insert</span>(<span class="ident">file_name</span>, <span class="ident">block</span>);
+            )<span class="op">*</span>
+            <span class="ident">temp_map</span>
+        }
+    };
+}
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="test_fixtures" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.62.0-nightly (30f386087 2022-05-05)" ></div>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="test_fixtures" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.62.0-nightly (6dd68402c 2022-05-11)" ></div>
 </body></html>

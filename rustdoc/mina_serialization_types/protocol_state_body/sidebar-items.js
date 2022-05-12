@@ -1,1 +1,1 @@
-initSidebarItems({"struct":[["ProtocolStateBody","Body of the protocol state"],["ProtocolStateBodyJson","Body of the protocol state that is convertible from / to the mina specific json representation"]],"type":[["ProtocolStateBodyV1","Body of the protocol state (v1)"]]});
+initSidebarItems({"struct":[["ProtocolStateBody","Body of the protocol state"],["ProtocolStateBodyJson","Body of the protocol state (json)"]],"type":[["ProtocolStateBodyV1","Body of the protocol state (v1)"]]});

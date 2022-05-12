@@ -410,57 +410,6 @@
 <span id="405">405</span>
 <span id="406">406</span>
 <span id="407">407</span>
-<span id="408">408</span>
-<span id="409">409</span>
-<span id="410">410</span>
-<span id="411">411</span>
-<span id="412">412</span>
-<span id="413">413</span>
-<span id="414">414</span>
-<span id="415">415</span>
-<span id="416">416</span>
-<span id="417">417</span>
-<span id="418">418</span>
-<span id="419">419</span>
-<span id="420">420</span>
-<span id="421">421</span>
-<span id="422">422</span>
-<span id="423">423</span>
-<span id="424">424</span>
-<span id="425">425</span>
-<span id="426">426</span>
-<span id="427">427</span>
-<span id="428">428</span>
-<span id="429">429</span>
-<span id="430">430</span>
-<span id="431">431</span>
-<span id="432">432</span>
-<span id="433">433</span>
-<span id="434">434</span>
-<span id="435">435</span>
-<span id="436">436</span>
-<span id="437">437</span>
-<span id="438">438</span>
-<span id="439">439</span>
-<span id="440">440</span>
-<span id="441">441</span>
-<span id="442">442</span>
-<span id="443">443</span>
-<span id="444">444</span>
-<span id="445">445</span>
-<span id="446">446</span>
-<span id="447">447</span>
-<span id="448">448</span>
-<span id="449">449</span>
-<span id="450">450</span>
-<span id="451">451</span>
-<span id="452">452</span>
-<span id="453">453</span>
-<span id="454">454</span>
-<span id="455">455</span>
-<span id="456">456</span>
-<span id="457">457</span>
-<span id="458">458</span>
 </pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems</span>
 <span class="comment">// SPDX-License-Identifier: Apache-2.0</span>
 
@@ -474,19 +423,13 @@
 <span class="doccomment">//!</span>
 
 <span class="kw">use</span> <span class="ident"><span class="kw">super</span>::prefixes</span>::<span class="kw-2">*</span>;
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::base58</span>::{<span class="ident">version_bytes</span>, <span class="ident">Base58Encodable</span>};
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::hash::Hash</span>;
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::impl_bs58</span>;
-<span class="kw">use</span> <span class="ident">derive_more::From</span>;
-<span class="kw">use</span> <span class="ident">mina_serialization_types</span>::{<span class="ident">json</span>::<span class="kw-2">*</span>, <span class="ident">v1</span>::<span class="kw-2">*</span>};
+<span class="kw">use</span> <span class="ident">mina_serialization_types</span>::{<span class="ident">impl_strconv_via_json</span>, <span class="ident">json</span>::<span class="kw-2">*</span>, <span class="ident">v1</span>::<span class="kw-2">*</span>};
 <span class="kw">use</span> <span class="ident">proof_systems::mina_hasher</span>::{<span class="ident">Hashable</span>, <span class="ident">ROInput</span>};
-<span class="kw">use</span> <span class="ident">serde</span>::{<span class="ident">Deserialize</span>, <span class="ident">Serialize</span>};
 <span class="kw">use</span> <span class="ident">versioned</span>::<span class="kw-2">*</span>;
 
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">type</span> <span class="ident">HashBytes</span> <span class="op">=</span> <span class="ident">Box</span><span class="op">&lt;</span>[<span class="ident">u8</span>]<span class="op">&gt;</span>;
-
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Default</span>, <span class="ident">Debug</span>, <span class="ident">PartialEq</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">From</span>, <span class="ident">PartialOrd</span>)]</span>
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">struct</span> <span class="ident">BaseHash</span>([<span class="ident">u8</span>; <span class="number">32</span>]);
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Default</span>, <span class="ident">PartialEq</span>, <span class="ident">derive_more::From</span>, <span class="ident">derive_more::Into</span>)]</span>
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">struct</span> <span class="ident">BaseHash</span>(<span class="kw">pub</span>(<span class="kw">crate</span>) [<span class="ident">u8</span>; <span class="number">32</span>]);
 
 <span class="kw">impl</span> <span class="ident">Hashable</span> <span class="kw">for</span> <span class="ident">BaseHash</span> {
     <span class="kw">type</span> <span class="ident">D</span> <span class="op">=</span> ();
@@ -502,9 +445,9 @@
     }
 }
 
-<span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">HashBytes</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">BaseHash</span> {
+<span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">Box</span><span class="op">&lt;</span>[<span class="ident">u8</span>]<span class="op">&gt;</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">BaseHash</span> {
     <span class="comment">// TODO: Figure out how to do this without a copy and still have BaseHash serializable</span>
-    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">b</span>: <span class="ident">HashBytes</span>) -&gt; <span class="self">Self</span> {
+    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">b</span>: <span class="ident">Box</span><span class="op">&lt;</span>[<span class="ident">u8</span>]<span class="op">&gt;</span>) -&gt; <span class="self">Self</span> {
         <span class="kw">let</span> <span class="ident">b</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>] <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">b</span>;
         <span class="ident">b</span>.<span class="ident">into</span>()
     }
@@ -518,29 +461,18 @@
     }
 }
 
-<span class="kw">impl</span> <span class="ident">AsRef</span><span class="op">&lt;</span>[<span class="ident">u8</span>]<span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">BaseHash</span> {
-    <span class="kw">fn</span> <span class="ident">as_ref</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>[<span class="ident">u8</span>] {
-        <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0</span>
-    }
-}
-
-<span class="kw">impl</span> <span class="ident">AsRef</span><span class="op">&lt;</span>[<span class="ident">u8</span>; <span class="number">32</span>]<span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">BaseHash</span> {
-    <span class="kw">fn</span> <span class="ident">as_ref</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>[<span class="ident">u8</span>; <span class="number">32</span>] {
-        <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0</span>
-    }
-}
-
 <span class="macro">impl_from_for_newtype!</span>(<span class="ident">BaseHash</span>, <span class="ident">HashV1</span>);
-
-<span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">HashV1</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">BaseHash</span> {
-    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">h</span>: <span class="ident">HashV1</span>) -&gt; <span class="self">Self</span> {
-        <span class="self">Self</span>(<span class="ident">h</span>.<span class="ident">t</span>)
-    }
-}
+<span class="macro">impl_from_for_newtype!</span>(<span class="ident">BaseHash</span>, <span class="ident">Hash2V1</span>);
 
 <span class="attribute">#[<span class="ident">macro_export</span>]</span>
 <span class="macro">macro_rules!</span> <span class="ident">impl_from_for_hash</span> {
     (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>:<span class="ident">ty</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">tv</span>:<span class="ident">ty</span>) =&gt; {
+        <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">tv</span> {
+            <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">t</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>) -&gt; <span class="self">Self</span> {
+                <span class="ident">t</span>.<span class="number">0</span>.<span class="ident">into</span>()
+            }
+        }
+
         <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">tv</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span> {
             <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">h</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">tv</span>) -&gt; <span class="self">Self</span> {
                 <span class="kw">let</span> <span class="ident">base</span>: <span class="ident">BaseHash</span> <span class="op">=</span> <span class="ident">h</span>.<span class="ident">into</span>();
@@ -551,15 +483,12 @@
 }
 
 <span class="comment">//////////////////////////////////////////////////////////////////////////</span>
-<span class="attribute">#[<span class="ident">derive</span>(
-    <span class="ident">Clone</span>, <span class="ident">Default</span>, <span class="ident">Debug</span>, <span class="ident">PartialEq</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">PartialOrd</span>, <span class="ident">derive_more::From</span>,
-)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Default</span>, <span class="ident">PartialEq</span>, <span class="ident">derive_more::From</span>, <span class="ident">derive_more::Into</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">StateHash</span>(<span class="ident">BaseHash</span>);
 
-<span class="macro">impl_bs58!</span>(<span class="ident">StateHash</span>, <span class="ident">version_bytes::STATE_HASH</span>);
-<span class="macro">impl_from_for_hash!</span>(<span class="ident">StateHash</span>, <span class="ident">HashBytes</span>);
 <span class="macro">impl_from_for_hash!</span>(<span class="ident">StateHash</span>, <span class="ident">HashV1</span>);
-<span class="macro">impl_from_for_newtype!</span>(<span class="ident">StateHash</span>, <span class="ident">HashV1</span>);
+<span class="macro">impl_from_for_generic_with_proxy!</span>(<span class="ident">StateHash</span>, <span class="ident">HashV1</span>, <span class="ident">StateHashV1Json</span>);
+<span class="macro">impl_strconv_via_json!</span>(<span class="ident">StateHash</span>, <span class="ident">StateHashV1Json</span>);
 
 <span class="kw">impl</span> <span class="ident">Hashable</span> <span class="kw">for</span> <span class="ident">StateHash</span> {
     <span class="kw">type</span> <span class="ident">D</span> <span class="op">=</span> ();
@@ -581,14 +510,12 @@
 
 <span class="comment">//////////////////////////////////////////////////////////////////////////</span>
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Default</span>, <span class="ident">Debug</span>, <span class="ident">PartialEq</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">derive_more::From</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Default</span>, <span class="ident">PartialEq</span>, <span class="ident">derive_more::From</span>, <span class="ident">derive_more::Into</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">LedgerHash</span>(<span class="ident">BaseHash</span>);
 
-<span class="macro">impl_bs58!</span>(<span class="ident">LedgerHash</span>, <span class="ident">version_bytes::LEDGER_HASH</span>);
-<span class="macro">impl_from_for_hash!</span>(<span class="ident">LedgerHash</span>, <span class="ident">HashBytes</span>);
 <span class="macro">impl_from_for_hash!</span>(<span class="ident">LedgerHash</span>, <span class="ident">HashV1</span>);
-<span class="macro">impl_from_for_newtype!</span>(<span class="ident">LedgerHash</span>, <span class="ident">HashV1</span>);
-<span class="macro">impl_from_for_ext_type_generic!</span>(<span class="ident">LedgerHash</span>, <span class="ident">HashV1</span>, <span class="ident">LedgerHashV1Json</span>);
+<span class="macro">impl_from_for_generic_with_proxy!</span>(<span class="ident">LedgerHash</span>, <span class="ident">HashV1</span>, <span class="ident">LedgerHashV1Json</span>);
+<span class="macro">impl_strconv_via_json!</span>(<span class="ident">LedgerHash</span>, <span class="ident">LedgerHashV1Json</span>);
 
 <span class="kw">impl</span> <span class="ident">Hashable</span> <span class="kw">for</span> <span class="ident">LedgerHash</span> {
     <span class="kw">type</span> <span class="ident">D</span> <span class="op">=</span> ();
@@ -606,25 +533,22 @@
 
 <span class="comment">//////////////////////////////////////////////////////////////////////////</span>
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Default</span>, <span class="ident">Debug</span>, <span class="ident">PartialEq</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">derive_more::From</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Default</span>, <span class="ident">Debug</span>, <span class="ident">PartialEq</span>, <span class="ident">derive_more::From</span>, <span class="ident">derive_more::Into</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ChainHash</span>(<span class="ident">BaseHash</span>);
 
-<span class="macro">impl_bs58!</span>(<span class="ident">ChainHash</span>, <span class="ident">version_bytes::LEDGER_HASH</span>);
-<span class="macro">impl_from_for_hash!</span>(<span class="ident">ChainHash</span>, <span class="ident">HashBytes</span>);
 <span class="macro">impl_from_for_hash!</span>(<span class="ident">ChainHash</span>, <span class="ident">HashV1</span>);
-<span class="macro">impl_from_for_newtype!</span>(<span class="ident">ChainHash</span>, <span class="ident">HashV1</span>);
-<span class="macro">impl_from_for_ext_type_generic!</span>(<span class="ident">ChainHash</span>, <span class="ident">HashV1</span>, <span class="ident">ChainHashV1Json</span>);
+<span class="macro">impl_from_for_generic_with_proxy!</span>(<span class="ident">ChainHash</span>, <span class="ident">HashV1</span>, <span class="ident">ChainHashV1Json</span>);
+<span class="macro">impl_strconv_via_json!</span>(<span class="ident">ChainHash</span>, <span class="ident">ChainHashV1Json</span>);
 
 <span class="comment">//////////////////////////////////////////////////////////////////////////</span>
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Default</span>, <span class="ident">Debug</span>, <span class="ident">PartialEq</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Default</span>, <span class="ident">Debug</span>, <span class="ident">PartialEq</span>, <span class="ident">derive_more::From</span>, <span class="ident">derive_more::Into</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">CoinBaseHash</span>(<span class="ident">BaseHash</span>);
 
-<span class="macro">impl_bs58!</span>(<span class="ident">CoinBaseHash</span>, <span class="number">12</span>);
-<span class="macro">impl_from_for_hash!</span>(<span class="ident">CoinBaseHash</span>, <span class="ident">HashBytes</span>);
 <span class="macro">impl_from_for_hash!</span>(<span class="ident">CoinBaseHash</span>, <span class="ident">HashV1</span>);
-<span class="macro">impl_from_for_newtype!</span>(<span class="ident">CoinBaseHash</span>, <span class="ident">HashV1</span>);
-<span class="macro">impl_from_for_ext_type_generic!</span>(<span class="ident">CoinBaseHash</span>, <span class="ident">HashV1</span>, <span class="ident">CoinBaseHashV1Json</span>);
+<span class="macro">impl_from_for_hash!</span>(<span class="ident">CoinBaseHash</span>, <span class="ident">Hash2V1</span>);
+<span class="macro">impl_from_for_generic_with_proxy!</span>(<span class="ident">CoinBaseHash</span>, <span class="ident">HashV1</span>, <span class="ident">CoinBaseHashV1Json</span>);
+<span class="macro">impl_strconv_via_json!</span>(<span class="ident">CoinBaseHash</span>, <span class="ident">CoinBaseHashV1Json</span>);
 
 <span class="kw">impl</span> <span class="ident">Hashable</span> <span class="kw">for</span> <span class="ident">CoinBaseHash</span> {
     <span class="kw">type</span> <span class="ident">D</span> <span class="op">=</span> ();
@@ -642,14 +566,12 @@
 
 <span class="comment">//////////////////////////////////////////////////////////////////////////</span>
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Default</span>, <span class="ident">Debug</span>, <span class="ident">PartialEq</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Default</span>, <span class="ident">Debug</span>, <span class="ident">PartialEq</span>, <span class="ident">derive_more::From</span>, <span class="ident">derive_more::Into</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">EpochSeed</span>(<span class="ident">BaseHash</span>);
 
-<span class="macro">impl_bs58!</span>(<span class="ident">EpochSeed</span>, <span class="ident">version_bytes::EPOCH_SEED</span>);
-<span class="macro">impl_from_for_hash!</span>(<span class="ident">EpochSeed</span>, <span class="ident">HashBytes</span>);
 <span class="macro">impl_from_for_hash!</span>(<span class="ident">EpochSeed</span>, <span class="ident">HashV1</span>);
-<span class="macro">impl_from_for_newtype!</span>(<span class="ident">EpochSeed</span>, <span class="ident">HashV1</span>);
-<span class="macro">impl_from_for_ext_type_generic!</span>(<span class="ident">EpochSeed</span>, <span class="ident">HashV1</span>, <span class="ident">EpochSeedHashV1Json</span>);
+<span class="macro">impl_from_for_generic_with_proxy!</span>(<span class="ident">EpochSeed</span>, <span class="ident">HashV1</span>, <span class="ident">EpochSeedHashV1Json</span>);
+<span class="macro">impl_strconv_via_json!</span>(<span class="ident">EpochSeed</span>, <span class="ident">EpochSeedHashV1Json</span>);
 
 <span class="kw">impl</span> <span class="ident">Hashable</span> <span class="kw">for</span> <span class="ident">EpochSeed</span> {
     <span class="kw">type</span> <span class="ident">D</span> <span class="op">=</span> ();
@@ -671,14 +593,12 @@
 
 <span class="comment">//////////////////////////////////////////////////////////////////////////</span>
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Default</span>, <span class="ident">Debug</span>, <span class="ident">PartialEq</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Default</span>, <span class="ident">Debug</span>, <span class="ident">PartialEq</span>, <span class="ident">derive_more::From</span>, <span class="ident">derive_more::Into</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">SnarkedLedgerHash</span>(<span class="ident">BaseHash</span>);
 
-<span class="macro">impl_bs58!</span>(<span class="ident">SnarkedLedgerHash</span>, <span class="ident">version_bytes::LEDGER_HASH</span>);
-<span class="macro">impl_from_for_hash!</span>(<span class="ident">SnarkedLedgerHash</span>, <span class="ident">HashBytes</span>);
 <span class="macro">impl_from_for_hash!</span>(<span class="ident">SnarkedLedgerHash</span>, <span class="ident">HashV1</span>);
-<span class="macro">impl_from_for_newtype!</span>(<span class="ident">SnarkedLedgerHash</span>, <span class="ident">HashV1</span>);
-<span class="macro">impl_from_for_ext_type_generic!</span>(<span class="ident">SnarkedLedgerHash</span>, <span class="ident">HashV1</span>, <span class="ident">LedgerHashV1Json</span>);
+<span class="macro">impl_from_for_generic_with_proxy!</span>(<span class="ident">SnarkedLedgerHash</span>, <span class="ident">HashV1</span>, <span class="ident">LedgerHashV1Json</span>);
+<span class="macro">impl_strconv_via_json!</span>(<span class="ident">SnarkedLedgerHash</span>, <span class="ident">LedgerHashV1Json</span>);
 
 <span class="kw">impl</span> <span class="ident">Hashable</span> <span class="kw">for</span> <span class="ident">SnarkedLedgerHash</span> {
     <span class="kw">type</span> <span class="ident">D</span> <span class="op">=</span> ();
@@ -696,7 +616,7 @@
 
 <span class="comment">//////////////////////////////////////////////////////////////////////////</span>
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Default</span>, <span class="ident">Debug</span>, <span class="ident">PartialEq</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Default</span>, <span class="ident">Debug</span>, <span class="ident">PartialEq</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">StagedLedgerHash</span> {
     <span class="kw">pub</span> <span class="ident">non_snark</span>: <span class="ident">NonSnarkStagedLedgerHash</span>,
     <span class="kw">pub</span> <span class="ident">pending_coinbase_hash</span>: <span class="ident">CoinBaseHash</span>,
@@ -717,7 +637,7 @@
     }
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Default</span>, <span class="ident">Debug</span>, <span class="ident">PartialEq</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Default</span>, <span class="ident">Debug</span>, <span class="ident">PartialEq</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">NonSnarkStagedLedgerHash</span> {
     <span class="kw">pub</span> <span class="ident">ledger_hash</span>: <span class="ident">LedgerHash</span>,
     <span class="kw">pub</span> <span class="ident">aux_hash</span>: <span class="ident">AuxHash</span>,
@@ -740,9 +660,11 @@
     }
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Default</span>, <span class="ident">Debug</span>, <span class="ident">PartialEq</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">derive_more::From</span>)]</span>
-<span class="attribute">#[<span class="ident">from</span>(<span class="ident">forward</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Default</span>, <span class="ident">Debug</span>, <span class="ident">PartialEq</span>, <span class="ident">derive_more::From</span>, <span class="ident">derive_more::Into</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">AuxHash</span>(<span class="kw">pub</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>);
+
+<span class="macro">impl_from_for_newtype!</span>(<span class="ident">AuxHash</span>, <span class="ident">AuxHashJson</span>);
+<span class="macro">impl_strconv_via_json!</span>(<span class="ident">AuxHash</span>, <span class="ident">AuxHashJson</span>);
 
 <span class="kw">impl</span> <span class="ident">Hashable</span> <span class="kw">for</span> <span class="ident">AuxHash</span> {
     <span class="kw">type</span> <span class="ident">D</span> <span class="op">=</span> ();
@@ -758,20 +680,13 @@
     }
 }
 
-<span class="kw">impl</span> <span class="ident">Base58Encodable</span> <span class="kw">for</span> <span class="ident">AuxHash</span> {
-    <span class="kw">const</span> <span class="ident">VERSION_BYTE</span>: <span class="ident">u8</span> <span class="op">=</span> <span class="ident">version_bytes::STAGED_LEDGER_HASH_AUX_HASH</span>;
-    <span class="kw">const</span> <span class="ident">MINA_VERSION_BYTE_COUNT</span>: <span class="ident">usize</span> <span class="op">=</span> <span class="number">0</span>;
-
-    <span class="kw">fn</span> <span class="ident">write_encodable_bytes</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">output</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>) {
-        <span class="ident">output</span>.<span class="ident">extend</span>(<span class="self">self</span>.<span class="number">0</span>.<span class="ident">as_slice</span>());
-    }
-}
-
 <span class="comment">//////////////////////////////////////////////////////////////////////////</span>
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Default</span>, <span class="ident">Debug</span>, <span class="ident">PartialEq</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">derive_more::From</span>)]</span>
-<span class="attribute">#[<span class="ident">from</span>(<span class="ident">forward</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Default</span>, <span class="ident">Debug</span>, <span class="ident">PartialEq</span>, <span class="ident">derive_more::From</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">PendingCoinbaseAuxHash</span>(<span class="kw">pub</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>);
+
+<span class="macro">impl_from_for_newtype!</span>(<span class="ident">PendingCoinbaseAuxHash</span>, <span class="ident">PendingCoinbaseAuxHashJson</span>);
+<span class="macro">impl_strconv_via_json!</span>(<span class="ident">PendingCoinbaseAuxHash</span>, <span class="ident">PendingCoinbaseAuxHashJson</span>);
 
 <span class="kw">impl</span> <span class="ident">Hashable</span> <span class="kw">for</span> <span class="ident">PendingCoinbaseAuxHash</span> {
     <span class="kw">type</span> <span class="ident">D</span> <span class="op">=</span> ();
@@ -787,24 +702,14 @@
     }
 }
 
-<span class="kw">impl</span> <span class="ident">Base58Encodable</span> <span class="kw">for</span> <span class="ident">PendingCoinbaseAuxHash</span> {
-    <span class="kw">const</span> <span class="ident">VERSION_BYTE</span>: <span class="ident">u8</span> <span class="op">=</span> <span class="ident">version_bytes::STAGED_LEDGER_HASH_PENDING_COINBASE_AUX</span>;
-    <span class="kw">const</span> <span class="ident">MINA_VERSION_BYTE_COUNT</span>: <span class="ident">usize</span> <span class="op">=</span> <span class="number">0</span>;
-
-    <span class="kw">fn</span> <span class="ident">write_encodable_bytes</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">output</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>) {
-        <span class="ident">output</span>.<span class="ident">extend</span>(<span class="self">self</span>.<span class="number">0</span>.<span class="ident">as_slice</span>());
-    }
-}
-
 <span class="comment">//////////////////////////////////////////////////////////////////////////</span>
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Default</span>, <span class="ident">Debug</span>, <span class="ident">PartialEq</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Default</span>, <span class="ident">Debug</span>, <span class="ident">PartialEq</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">VrfOutputHash</span>(<span class="ident">BaseHash</span>);
 
-<span class="macro">impl_bs58!</span>(<span class="ident">VrfOutputHash</span>, <span class="ident">version_bytes::VRF_TRUNCATED_OUTPUT</span>);
-<span class="macro">impl_from_for_hash!</span>(<span class="ident">VrfOutputHash</span>, <span class="ident">HashBytes</span>);
 <span class="macro">impl_from_for_hash!</span>(<span class="ident">VrfOutputHash</span>, <span class="ident">HashV1</span>);
-<span class="macro">impl_from_for_newtype!</span>(<span class="ident">VrfOutputHash</span>, <span class="ident">HashV1</span>);
+<span class="macro">impl_from_for_generic_with_proxy!</span>(<span class="ident">VrfOutputHash</span>, <span class="ident">HashV1</span>, <span class="ident">VrfOutputHashV1Json</span>);
+<span class="macro">impl_strconv_via_json!</span>(<span class="ident">VrfOutputHash</span>, <span class="ident">VrfOutputHashV1Json</span>);
 
 <span class="kw">impl</span> <span class="ident">Hash</span> <span class="kw">for</span> <span class="ident">VrfOutputHash</span> {
     <span class="kw">const</span> <span class="ident">PREFIX</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">HashPrefix</span> <span class="op">=</span> <span class="ident">VRF_OUTPUT</span>;
@@ -815,44 +720,40 @@
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">test</span> {
 
-    <span class="kw">use</span> <span class="ident">mina_serialization_types::json</span>::<span class="kw-2">*</span>;
+    <span class="kw">use</span> <span class="ident">std::str::FromStr</span>;
+
+    <span class="kw">use</span> <span class="ident">mina_serialization_types</span>::{<span class="ident">json</span>::<span class="kw-2">*</span>, <span class="ident">JsonSerializationType</span>};
 
     <span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
-    <span class="kw">fn</span> <span class="ident">convert_ledger_hash_to_base58</span>() {
-        <span class="kw">let</span> <span class="ident">bytes</span> <span class="op">=</span> [
-            <span class="number">182</span>, <span class="number">175</span>, <span class="number">122</span>, <span class="number">248</span>, <span class="number">93</span>, <span class="number">142</span>, <span class="number">245</span>, <span class="number">54</span>, <span class="number">161</span>, <span class="number">170</span>, <span class="number">103</span>, <span class="number">111</span>, <span class="number">123</span>, <span class="number">128</span>, <span class="number">48</span>, <span class="number">218</span>, <span class="number">84</span>, <span class="number">208</span>,
-            <span class="number">17</span>, <span class="number">245</span>, <span class="number">30</span>, <span class="number">111</span>, <span class="number">61</span>, <span class="number">210</span>, <span class="number">168</span>, <span class="number">20</span>, <span class="number">160</span>, <span class="number">79</span>, <span class="number">111</span>, <span class="number">37</span>, <span class="number">167</span>, <span class="number">2</span>,
-        ];
-        <span class="kw">let</span> <span class="ident">h</span> <span class="op">=</span> <span class="ident">LedgerHash</span>(<span class="ident">BaseHash</span>(<span class="ident">bytes</span>));
-        <span class="macro">println!</span>(<span class="string">&quot;{}&quot;</span>, <span class="ident">h</span>.<span class="ident">to_base58_string</span>())
-    }
-
-    <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">ledger_hash_from_base58</span>() {
         <span class="kw">let</span> <span class="ident">s</span> <span class="op">=</span> <span class="string">&quot;jxV4SS44wHUVrGEucCsfxLisZyUC5QddsiokGH3kz5xm2hJWZ25&quot;</span>;
-        <span class="kw">let</span> <span class="ident">h</span> <span class="op">=</span> <span class="ident">LedgerHash::from_base58</span>(<span class="ident">s</span>).<span class="ident">unwrap</span>();
-        <span class="macro">assert_eq!</span>(<span class="ident">h</span>.<span class="ident">to_base58_string</span>(), <span class="ident">s</span>);
+        <span class="kw">let</span> <span class="ident">h</span> <span class="op">=</span> <span class="ident">LedgerHash::from_str</span>(<span class="ident">s</span>).<span class="ident">unwrap</span>();
+        <span class="macro">assert_eq!</span>(<span class="kw-2">&amp;</span><span class="ident">h</span>.<span class="ident">to_string</span>(), <span class="ident">s</span>);
     }
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">ledger_hash_json_roundtrip</span>() -&gt; <span class="ident">anyhow::Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
+        <span class="kw">impl</span> <span class="ident">JsonSerializationType</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">LedgerHash</span> {
+            <span class="kw">type</span> <span class="ident">T</span> <span class="op">=</span> <span class="ident">LedgerHashV1Json</span>;
+        }
+
         <span class="kw">let</span> <span class="ident">s</span> <span class="op">=</span> <span class="string">&quot;jxV4SS44wHUVrGEucCsfxLisZyUC5QddsiokGH3kz5xm2hJWZ25&quot;</span>;
         <span class="kw">let</span> <span class="ident">s_json</span> <span class="op">=</span> <span class="macro">format!</span>(<span class="string">&quot;\&quot;{s}\&quot;&quot;</span>);
-        <span class="kw">let</span> <span class="ident">json</span>: <span class="ident">LedgerHashV1Json</span> <span class="op">=</span> <span class="ident">serde_json::from_str</span>(<span class="kw-2">&amp;</span><span class="ident">s_json</span>)<span class="question-mark">?</span>;
-        <span class="kw">let</span> <span class="ident">h</span>: <span class="ident">LedgerHash</span> <span class="op">=</span> <span class="ident">json</span>.<span class="ident">into</span>();
-        <span class="macro">assert_eq!</span>(<span class="ident">h</span>.<span class="ident">to_base58_string</span>(), <span class="ident">s</span>);
-        <span class="kw">let</span> <span class="ident">json</span>: <span class="ident">LedgerHashV1Json</span> <span class="op">=</span> <span class="ident">h</span>.<span class="ident">into</span>();
-        <span class="macro">assert_eq!</span>(<span class="ident">serde_json::to_string</span>(<span class="kw-2">&amp;</span><span class="ident">json</span>)<span class="question-mark">?</span>, <span class="ident">s_json</span>);
+        <span class="kw">let</span> <span class="ident">h</span> <span class="op">=</span> <span class="op">&lt;</span><span class="ident">LedgerHash</span> <span class="kw">as</span> <span class="ident">JsonSerializationType</span><span class="op">&gt;</span><span class="ident">::try_from_json</span>(<span class="kw-2">&amp;</span><span class="ident">s_json</span>)<span class="question-mark">?</span>;
+        <span class="macro">assert_eq!</span>(<span class="ident">h</span>.<span class="ident">clone</span>().<span class="ident">try_into_json</span>()<span class="question-mark">?</span>, <span class="ident">s_json</span>);
+        <span class="kw">let</span> <span class="ident">s_json</span> <span class="op">=</span> <span class="ident">h</span>.<span class="ident">try_into_json</span>()<span class="question-mark">?</span>;
+        <span class="kw">let</span> <span class="ident">str_json</span>: <span class="kw-2">&amp;</span><span class="ident">str</span> <span class="op">=</span> <span class="ident">serde_json::from_str</span>(<span class="kw-2">&amp;</span><span class="ident">s_json</span>)<span class="question-mark">?</span>;
+        <span class="macro">assert_eq!</span>(<span class="ident">s</span>, <span class="ident">str_json</span>);
         <span class="prelude-val">Ok</span>(())
     }
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">coinbase_hash_from_base58</span>() {
         <span class="kw">let</span> <span class="ident">s</span> <span class="op">=</span> <span class="string">&quot;2n1tLdP2gkifmyVmrmzYXTS4ohPbZPJn6Qq4x55ywrbRWB4543cC&quot;</span>;
-        <span class="kw">let</span> <span class="ident">h</span> <span class="op">=</span> <span class="ident">CoinBaseHash::from_base58</span>(<span class="ident">s</span>).<span class="ident">unwrap</span>();
-        <span class="macro">assert_eq!</span>(<span class="ident">h</span>.<span class="ident">to_base58_string</span>(), <span class="ident">s</span>);
+        <span class="kw">let</span> <span class="ident">h</span> <span class="op">=</span> <span class="ident">CoinBaseHash::from_str</span>(<span class="ident">s</span>).<span class="ident">unwrap</span>();
+        <span class="macro">assert_eq!</span>(<span class="kw-2">&amp;</span><span class="ident">h</span>.<span class="ident">to_string</span>(), <span class="ident">s</span>);
     }
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
@@ -861,7 +762,7 @@
         <span class="kw">let</span> <span class="ident">s_json</span> <span class="op">=</span> <span class="macro">format!</span>(<span class="string">&quot;\&quot;{s}\&quot;&quot;</span>);
         <span class="kw">let</span> <span class="ident">json</span>: <span class="ident">CoinBaseHashV1Json</span> <span class="op">=</span> <span class="ident">serde_json::from_str</span>(<span class="kw-2">&amp;</span><span class="ident">s_json</span>)<span class="question-mark">?</span>;
         <span class="kw">let</span> <span class="ident">h</span>: <span class="ident">CoinBaseHash</span> <span class="op">=</span> <span class="ident">json</span>.<span class="ident">into</span>();
-        <span class="macro">assert_eq!</span>(<span class="ident">h</span>.<span class="ident">to_base58_string</span>(), <span class="ident">s</span>);
+        <span class="macro">assert_eq!</span>(<span class="kw-2">&amp;</span><span class="ident">h</span>.<span class="ident">to_string</span>(), <span class="ident">s</span>);
         <span class="kw">let</span> <span class="ident">json</span>: <span class="ident">CoinBaseHashV1Json</span> <span class="op">=</span> <span class="ident">h</span>.<span class="ident">into</span>();
         <span class="macro">assert_eq!</span>(<span class="ident">serde_json::to_string</span>(<span class="kw-2">&amp;</span><span class="ident">json</span>)<span class="question-mark">?</span>, <span class="ident">s_json</span>);
         <span class="prelude-val">Ok</span>(())
@@ -870,8 +771,8 @@
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">epoch_seed_from_base58</span>() {
         <span class="kw">let</span> <span class="ident">s</span> <span class="op">=</span> <span class="string">&quot;2va9BGv9JrLTtrzZttiEMDYw1Zj6a6EHzXjmP9evHDTG3oEquURA&quot;</span>;
-        <span class="kw">let</span> <span class="ident">h</span> <span class="op">=</span> <span class="ident">EpochSeed::from_base58</span>(<span class="ident">s</span>).<span class="ident">unwrap</span>();
-        <span class="macro">assert_eq!</span>(<span class="ident">h</span>.<span class="ident">to_base58_string</span>(), <span class="ident">s</span>);
+        <span class="kw">let</span> <span class="ident">h</span> <span class="op">=</span> <span class="ident">EpochSeed::from_str</span>(<span class="ident">s</span>).<span class="ident">unwrap</span>();
+        <span class="macro">assert_eq!</span>(<span class="kw-2">&amp;</span><span class="ident">h</span>.<span class="ident">to_string</span>(), <span class="ident">s</span>);
     }
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
@@ -880,7 +781,7 @@
         <span class="kw">let</span> <span class="ident">s_json</span> <span class="op">=</span> <span class="macro">format!</span>(<span class="string">&quot;\&quot;{s}\&quot;&quot;</span>);
         <span class="kw">let</span> <span class="ident">json</span>: <span class="ident">EpochSeedHashV1Json</span> <span class="op">=</span> <span class="ident">serde_json::from_str</span>(<span class="kw-2">&amp;</span><span class="ident">s_json</span>)<span class="question-mark">?</span>;
         <span class="kw">let</span> <span class="ident">h</span>: <span class="ident">EpochSeed</span> <span class="op">=</span> <span class="ident">json</span>.<span class="ident">into</span>();
-        <span class="macro">assert_eq!</span>(<span class="ident">h</span>.<span class="ident">to_base58_string</span>(), <span class="ident">s</span>);
+        <span class="macro">assert_eq!</span>(<span class="kw-2">&amp;</span><span class="ident">h</span>.<span class="ident">to_string</span>(), <span class="ident">s</span>);
         <span class="kw">let</span> <span class="ident">json</span>: <span class="ident">EpochSeedHashV1Json</span> <span class="op">=</span> <span class="ident">h</span>.<span class="ident">into</span>();
         <span class="macro">assert_eq!</span>(<span class="ident">serde_json::to_string</span>(<span class="kw-2">&amp;</span><span class="ident">json</span>)<span class="question-mark">?</span>, <span class="ident">s_json</span>);
         <span class="prelude-val">Ok</span>(())
@@ -889,8 +790,8 @@
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">snarked_ledger_hash_from_base58</span>() {
         <span class="kw">let</span> <span class="ident">s</span> <span class="op">=</span> <span class="string">&quot;jx7buQVWFLsXTtzRgSxbYcT8EYLS8KCZbLrfDcJxMtyy4thw2Ee&quot;</span>;
-        <span class="kw">let</span> <span class="ident">h</span> <span class="op">=</span> <span class="ident">SnarkedLedgerHash::from_base58</span>(<span class="ident">s</span>).<span class="ident">unwrap</span>();
-        <span class="macro">assert_eq!</span>(<span class="ident">h</span>.<span class="ident">to_base58_string</span>(), <span class="ident">s</span>);
+        <span class="kw">let</span> <span class="ident">h</span> <span class="op">=</span> <span class="ident">SnarkedLedgerHash::from_str</span>(<span class="ident">s</span>).<span class="ident">unwrap</span>();
+        <span class="macro">assert_eq!</span>(<span class="kw-2">&amp;</span><span class="ident">h</span>.<span class="ident">to_string</span>(), <span class="ident">s</span>);
     }
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
@@ -899,7 +800,7 @@
         <span class="kw">let</span> <span class="ident">s_json</span> <span class="op">=</span> <span class="macro">format!</span>(<span class="string">&quot;\&quot;{s}\&quot;&quot;</span>);
         <span class="kw">let</span> <span class="ident">json</span>: <span class="ident">LedgerHashV1Json</span> <span class="op">=</span> <span class="ident">serde_json::from_str</span>(<span class="kw-2">&amp;</span><span class="ident">s_json</span>)<span class="question-mark">?</span>;
         <span class="kw">let</span> <span class="ident">h</span>: <span class="ident">SnarkedLedgerHash</span> <span class="op">=</span> <span class="ident">json</span>.<span class="ident">into</span>();
-        <span class="macro">assert_eq!</span>(<span class="ident">h</span>.<span class="ident">to_base58_string</span>(), <span class="ident">s</span>);
+        <span class="macro">assert_eq!</span>(<span class="kw-2">&amp;</span><span class="ident">h</span>.<span class="ident">to_string</span>(), <span class="ident">s</span>);
         <span class="kw">let</span> <span class="ident">json</span>: <span class="ident">LedgerHashV1Json</span> <span class="op">=</span> <span class="ident">h</span>.<span class="ident">into</span>();
         <span class="macro">assert_eq!</span>(<span class="ident">serde_json::to_string</span>(<span class="kw-2">&amp;</span><span class="ident">json</span>)<span class="question-mark">?</span>, <span class="ident">s_json</span>);
         <span class="prelude-val">Ok</span>(())
@@ -913,12 +814,9 @@
             <span class="number">0x03</span>, <span class="number">0x04</span>, <span class="number">0x05</span>, <span class="number">0x06</span>, <span class="number">0x07</span>,
         ];
         <span class="kw">let</span> <span class="ident">h</span> <span class="op">=</span> <span class="ident">LedgerHash</span>(<span class="ident">BaseHash</span>(<span class="ident">bytes</span>));
-        <span class="macro">assert_eq!</span>(
-            <span class="ident">h</span>.<span class="ident">clone</span>(),
-            <span class="ident">LedgerHash::from_base58</span>(<span class="ident">h</span>.<span class="ident">to_base58_string</span>()).<span class="ident">unwrap</span>()
-        )
+        <span class="macro">assert_eq!</span>(<span class="ident">h</span>, <span class="ident">LedgerHash::from_str</span>(<span class="ident">h</span>.<span class="ident">to_string</span>().<span class="ident">as_str</span>()).<span class="ident">unwrap</span>())
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="mina_crypto" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.62.0-nightly (30f386087 2022-05-05)" ></div>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="mina_crypto" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.62.0-nightly (6dd68402c 2022-05-11)" ></div>
 </body></html>

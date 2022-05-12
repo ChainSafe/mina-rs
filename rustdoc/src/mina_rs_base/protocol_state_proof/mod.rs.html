@@ -121,6 +121,36 @@
 <span id="116">116</span>
 <span id="117">117</span>
 <span id="118">118</span>
+<span id="119">119</span>
+<span id="120">120</span>
+<span id="121">121</span>
+<span id="122">122</span>
+<span id="123">123</span>
+<span id="124">124</span>
+<span id="125">125</span>
+<span id="126">126</span>
+<span id="127">127</span>
+<span id="128">128</span>
+<span id="129">129</span>
+<span id="130">130</span>
+<span id="131">131</span>
+<span id="132">132</span>
+<span id="133">133</span>
+<span id="134">134</span>
+<span id="135">135</span>
+<span id="136">136</span>
+<span id="137">137</span>
+<span id="138">138</span>
+<span id="139">139</span>
+<span id="140">140</span>
+<span id="141">141</span>
+<span id="142">142</span>
+<span id="143">143</span>
+<span id="144">144</span>
+<span id="145">145</span>
+<span id="146">146</span>
+<span id="147">147</span>
+<span id="148">148</span>
 </pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems</span>
 <span class="comment">// SPDX-License-Identifier: Apache-2.0</span>
 
@@ -131,6 +161,9 @@
 <span class="attribute">#![<span class="ident">allow</span>(<span class="ident">missing_docs</span>)]</span>
 
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::numbers</span>::{<span class="ident">BigInt256</span>, <span class="ident">Char</span>, <span class="ident">Hex64</span>};
+<span class="kw">use</span> <span class="ident">mina_serialization_types</span>::{<span class="ident">json</span>::<span class="kw-2">*</span>, <span class="ident">v1</span>::<span class="kw-2">*</span>};
+<span class="kw">use</span> <span class="ident">mina_serialization_types_macros</span>::<span class="kw-2">*</span>;
+<span class="kw">use</span> <span class="ident">versioned</span>::<span class="kw-2">*</span>;
 
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">proof_messages</span>;
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">proof_messages::ProofMessages</span>;
@@ -154,7 +187,8 @@
     <span class="ident">FiniteECPointPairVec</span>, <span class="ident">FiniteECPointVec</span>,
 };
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Default</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Default</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>, <span class="ident">AutoFrom</span>)]</span>
+<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">mina_serialization_types::protocol_state_proof::ProtocolStateProof</span>)]</span>
 <span class="doccomment">/// SNARK proof of the protocol state at some point in time</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ProtocolStateProof</span> {
     <span class="kw">pub</span> <span class="ident">statement</span>: <span class="ident">ProofStatement</span>,
@@ -162,21 +196,35 @@
     <span class="kw">pub</span> <span class="ident">prev_x_hat</span>: <span class="ident">PrevXHat</span>,
     <span class="kw">pub</span> <span class="ident">proof</span>: <span class="ident">Proof</span>,
 }
+<span class="macro">impl_from_with_proxy!</span>(
+    <span class="ident">ProtocolStateProof</span>,
+    <span class="ident">ProtocolStateProofV1</span>,
+    <span class="ident">ProtocolStateProofBase64Json</span>
+);
+<span class="macro">impl_from_with_proxy!</span>(
+    <span class="ident">ProtocolStateProof</span>,
+    <span class="ident">ProtocolStateProofV1</span>,
+    <span class="ident">ProtocolStateProofJson</span>
+);
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Default</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Default</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>, <span class="ident">AutoFrom</span>)]</span>
+<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">mina_serialization_types::protocol_state_proof::ProofStatement</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ProofStatement</span> {
     <span class="kw">pub</span> <span class="ident">proof_state</span>: <span class="ident">ProofState</span>,
     <span class="kw">pub</span> <span class="ident">pass_through</span>: <span class="ident">PairingBased</span>,
 }
+<span class="macro">impl_from_with_proxy!</span>(<span class="ident">ProofStatement</span>, <span class="ident">ProofStatementV1</span>, <span class="ident">ProofStatementJson</span>);
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Default</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Default</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>, <span class="ident">AutoFrom</span>)]</span>
+<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">mina_serialization_types::protocol_state_proof::ProofState</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ProofState</span> {
     <span class="kw">pub</span> <span class="ident">deferred_values</span>: <span class="ident">ProofStateDeferredValues</span>,
     <span class="kw">pub</span> <span class="ident">sponge_digest_before_evaluations</span>: <span class="ident">SpongeDigestBeforeEvaluations</span>,
     <span class="kw">pub</span> <span class="ident">me_only</span>: <span class="ident">ProofStatePairingBased</span>,
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Default</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Default</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>, <span class="ident">AutoFrom</span>)]</span>
+<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">mina_serialization_types::protocol_state_proof::ProofStateDeferredValues</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ProofStateDeferredValues</span> {
     <span class="kw">pub</span> <span class="ident">plonk</span>: <span class="ident">Plonk</span>,
     <span class="kw">pub</span> <span class="ident">combined_inner_product</span>: <span class="ident">ShiftedValue</span>,
@@ -186,7 +234,8 @@
     <span class="kw">pub</span> <span class="ident">which_branch</span>: <span class="ident">Char</span>,
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Default</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Default</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>, <span class="ident">AutoFrom</span>)]</span>
+<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">mina_serialization_types::protocol_state_proof::Plonk</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Plonk</span> {
     <span class="kw">pub</span> <span class="ident">alpha</span>: <span class="ident">BulletproofPreChallenge</span>,
     <span class="kw">pub</span> <span class="ident">beta</span>: <span class="ident">ScalarChallengeVector2</span>,
@@ -194,8 +243,8 @@
     <span class="kw">pub</span> <span class="ident">zeta</span>: <span class="ident">BulletproofPreChallenge</span>,
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>)]</span>
-<span class="attribute">#[<span class="ident">non_exhaustive</span>]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>, <span class="ident">AutoFrom</span>)]</span>
+<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">mina_serialization_types::protocol_state_proof::ShiftedValue</span>)]</span>
 <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">ShiftedValue</span> {
     <span class="ident">ShiftedValue</span>(<span class="ident">BigInt256</span>),
 }
@@ -206,39 +255,50 @@
     }
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Default</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">SpongeDigestBeforeEvaluations</span>(<span class="kw">pub</span> (<span class="ident">Hex64</span>, <span class="ident">Hex64</span>, <span class="ident">Hex64</span>, <span class="ident">Hex64</span>, ()));
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Default</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>, <span class="ident">AutoFrom</span>)]</span>
+<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">mina_serialization_types::protocol_state_proof::SpongeDigestBeforeEvaluations</span>)]</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">SpongeDigestBeforeEvaluations</span>(<span class="kw">pub</span> <span class="ident">Hex64</span>, <span class="kw">pub</span> <span class="ident">Hex64</span>, <span class="kw">pub</span> <span class="ident">Hex64</span>, <span class="kw">pub</span> <span class="ident">Hex64</span>, <span class="kw">pub</span> ());
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Default</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Default</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>, <span class="ident">AutoFrom</span>)]</span>
+<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">mina_serialization_types::protocol_state_proof::ProofStatePairingBased</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ProofStatePairingBased</span> {
     <span class="kw">pub</span> <span class="ident">sg</span>: <span class="ident">FiniteECPoint</span>,
     <span class="kw">pub</span> <span class="ident">old_bulletproof_challenges</span>: <span class="ident">ProofStateBulletproofChallenges</span>,
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Default</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Default</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>, <span class="ident">AutoFrom</span>)]</span>
+<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">mina_serialization_types::protocol_state_proof::PairingBased</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">PairingBased</span> {
     <span class="kw">pub</span> <span class="ident">app_state</span>: (),
     <span class="kw">pub</span> <span class="ident">sg</span>: <span class="ident">FiniteECPointVec</span>,
     <span class="kw">pub</span> <span class="ident">old_bulletproof_challenges</span>: <span class="ident">BulletproofChallenges</span>,
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Default</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">PrevEvals</span>(<span class="kw">pub</span> (<span class="ident">ProofEvaluations</span>, <span class="ident">ProofEvaluations</span>));
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Default</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>, <span class="ident">AutoFrom</span>)]</span>
+<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">mina_serialization_types::protocol_state_proof::PrevEvals</span>)]</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">PrevEvals</span>(<span class="kw">pub</span> <span class="ident">ProofEvaluations</span>, <span class="kw">pub</span> <span class="ident">ProofEvaluations</span>);
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Default</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Default</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>, <span class="ident">AutoFrom</span>)]</span>
+<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">mina_serialization_types::protocol_state_proof::PrevXHat</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">PrevXHat</span>(<span class="kw">pub</span> <span class="ident">FiniteECPoint</span>);
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Default</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Default</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>, <span class="ident">AutoFrom</span>)]</span>
+<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">mina_serialization_types::protocol_state_proof::Proof</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Proof</span> {
     <span class="kw">pub</span> <span class="ident">messages</span>: <span class="ident">ProofMessages</span>,
     <span class="kw">pub</span> <span class="ident">openings</span>: <span class="ident">ProofOpenings</span>,
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Default</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Default</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>, <span class="ident">AutoFrom</span>)]</span>
+<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">mina_serialization_types::protocol_state_proof::ProofOpeningsEvals</span>)]</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ProofOpeningsEvals</span>(<span class="kw">pub</span> <span class="ident">ProofEvaluations</span>, <span class="kw">pub</span> <span class="ident">ProofEvaluations</span>);
+
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Default</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>, <span class="ident">AutoFrom</span>)]</span>
+<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">mina_serialization_types::protocol_state_proof::ProofOpenings</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ProofOpenings</span> {
     <span class="kw">pub</span> <span class="ident">proof</span>: <span class="ident">OpeningProof</span>,
-    <span class="kw">pub</span> <span class="ident">evals</span>: (<span class="ident">ProofEvaluations</span>, <span class="ident">ProofEvaluations</span>),
+    <span class="kw">pub</span> <span class="ident">evals</span>: <span class="ident">ProofOpeningsEvals</span>,
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="mina_rs_base" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.62.0-nightly (30f386087 2022-05-05)" ></div>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="mina_rs_base" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.62.0-nightly (6dd68402c 2022-05-11)" ></div>
 </body></html>

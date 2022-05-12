@@ -47,23 +47,16 @@
 <span id="42">42</span>
 <span id="43">43</span>
 <span id="44">44</span>
-<span id="45">45</span>
-<span id="46">46</span>
-<span id="47">47</span>
-<span id="48">48</span>
-<span id="49">49</span>
-<span id="50">50</span>
-<span id="51">51</span>
-<span id="52">52</span>
-<span id="53">53</span>
-<span id="54">54</span>
 </pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems</span>
 <span class="comment">// SPDX-License-Identifier: Apache-2.0</span>
 
 <span class="doccomment">//! Account based permissions</span>
 
+<span class="kw">use</span> <span class="ident">mina_serialization_types_macros::AutoFrom</span>;
+
 <span class="doccomment">/// The level of auth required to perform a particular action with an account</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">AutoFrom</span>)]</span>
+<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">mina_serialization_types::account::AuthRequired</span>)]</span>
 <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">AuthRequired</span> {
     <span class="doccomment">/// None required</span>
     <span class="prelude-val">None</span>,
@@ -80,7 +73,8 @@
 }
 
 <span class="doccomment">/// Permissions associated with the account</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">AutoFrom</span>)]</span>
+<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">mina_serialization_types::account::Permissions</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Permissions</span> {
     <span class="doccomment">/// If the account can stake</span>
     <span class="kw">pub</span> <span class="ident">stake</span>: <span class="ident">bool</span>,
@@ -97,20 +91,6 @@
     <span class="doccomment">/// Permission require to set verification key</span>
     <span class="kw">pub</span> <span class="ident">set_verification_key</span>: <span class="ident">AuthRequired</span>,
 }
-
-<span class="kw">impl</span> <span class="ident">Default</span> <span class="kw">for</span> <span class="ident">Permissions</span> {
-    <span class="kw">fn</span> <span class="ident">default</span>() -&gt; <span class="self">Self</span> {
-        <span class="self">Self</span> {
-            <span class="ident">stake</span>: <span class="bool-val">true</span>,
-            <span class="ident">edit_state</span>: <span class="ident">AuthRequired::Signature</span>,
-            <span class="ident">send</span>: <span class="ident">AuthRequired::Signature</span>,
-            <span class="ident">receive</span>: <span class="ident">AuthRequired::None</span>,
-            <span class="ident">set_delegate</span>: <span class="ident">AuthRequired::Signature</span>,
-            <span class="ident">set_permissions</span>: <span class="ident">AuthRequired::Signature</span>,
-            <span class="ident">set_verification_key</span>: <span class="ident">AuthRequired::Signature</span>,
-        }
-    }
-}
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="mina_rs_base" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.62.0-nightly (30f386087 2022-05-05)" ></div>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="mina_rs_base" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.62.0-nightly (6dd68402c 2022-05-11)" ></div>
 </body></html>

@@ -73,58 +73,18 @@
 <span id="68">68</span>
 <span id="69">69</span>
 <span id="70">70</span>
-<span id="71">71</span>
-<span id="72">72</span>
-<span id="73">73</span>
-<span id="74">74</span>
-<span id="75">75</span>
-<span id="76">76</span>
-<span id="77">77</span>
-<span id="78">78</span>
-<span id="79">79</span>
-<span id="80">80</span>
-<span id="81">81</span>
-<span id="82">82</span>
-<span id="83">83</span>
-<span id="84">84</span>
-<span id="85">85</span>
-<span id="86">86</span>
-<span id="87">87</span>
-<span id="88">88</span>
-<span id="89">89</span>
-<span id="90">90</span>
-<span id="91">91</span>
-<span id="92">92</span>
-<span id="93">93</span>
-<span id="94">94</span>
-<span id="95">95</span>
-<span id="96">96</span>
-<span id="97">97</span>
-<span id="98">98</span>
-<span id="99">99</span>
-<span id="100">100</span>
-<span id="101">101</span>
-<span id="102">102</span>
-<span id="103">103</span>
-<span id="104">104</span>
-<span id="105">105</span>
-<span id="106">106</span>
-<span id="107">107</span>
-<span id="108">108</span>
-<span id="109">109</span>
-<span id="110">110</span>
-<span id="111">111</span>
 </pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems</span>
 <span class="comment">// SPDX-License-Identifier: Apache-2.0</span>
 
 <span class="doccomment">//! Mina ExternalTransition</span>
 
+<span class="kw">use</span> <span class="ident">mina_serialization_types_macros::AutoFrom</span>;
 <span class="kw">use</span> <span class="ident">serde</span>::{<span class="ident">Deserialize</span>, <span class="ident">Serialize</span>};
 
 <span class="kw">use</span> <span class="kw">crate</span>::{
     <span class="ident">delta_transition_chain_proof::DeltaTransitionChainProofJson</span>,
     <span class="ident">protocol_state::ProtocolStateJson</span>,
-    <span class="ident">protocol_state_proof::ProtocolStateProofJson</span>,
+    <span class="ident">protocol_state_proof::ProtocolStateProofBase64Json</span>,
     <span class="ident">protocol_version::ProtocolVersionJson</span>,
     <span class="ident">staged_ledger_diff::StagedLedgerDiffJson</span>,
     <span class="ident">v1</span>::{
@@ -132,7 +92,7 @@
         <span class="ident">StagedLedgerDiffV1</span>,
     },
 };
-<span class="kw">use</span> <span class="ident">versioned::Versioned</span>;
+<span class="kw">use</span> <span class="ident">versioned</span>::<span class="kw-2">*</span>;
 
 <span class="doccomment">/// This structure represents a mina block received from an external block producer</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">PartialEq</span>)]</span>
@@ -156,75 +116,33 @@
 }
 
 <span class="doccomment">/// Versioned structure to use externally</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">PartialEq</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ExternalTransitionV1</span>(<span class="kw">pub</span> <span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">ExternalTransition</span>, <span class="number">1</span><span class="op">&gt;</span>);
-
-<span class="kw">impl</span> <span class="ident">bin_prot::encodable::BinProtEncodable</span> <span class="kw">for</span> <span class="ident">ExternalTransitionV1</span> {
-    <span class="kw">const</span> <span class="ident">PREALLOCATE_BUFFER_BYTES</span>: <span class="ident">usize</span> <span class="op">=</span> <span class="number">1800</span> <span class="op">*</span> <span class="number">1024</span>;
-}
+<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">ExternalTransitionV1</span> <span class="op">=</span> <span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">ExternalTransition</span>, <span class="number">1</span><span class="op">&gt;</span>;
 
 <span class="doccomment">/// This structure represents a mina block received from an external block producer</span>
 <span class="doccomment">/// that is convertible from / to the mina specific json representation</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">PartialEq</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">PartialEq</span>, <span class="ident">AutoFrom</span>)]</span>
+<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">ExternalTransition</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ExternalTransitionJson</span> {
     <span class="doccomment">/// The blockchain state, including consensus and the ledger</span>
     <span class="kw">pub</span> <span class="ident">protocol_state</span>: <span class="ident">ProtocolStateJson</span>,
     <span class="doccomment">/// Proof that the protocol state and entire history of the chain is valid</span>
-    <span class="kw">pub</span> <span class="ident">protocol_state_proof</span>: <span class="ident">ProtocolStateProofJson</span>,
+    <span class="kw">pub</span> <span class="ident">protocol_state_proof</span>: <span class="ident">ProtocolStateProofBase64Json</span>,
     <span class="doccomment">/// Diff of the proposed next state of the blockchain</span>
     <span class="kw">pub</span> <span class="ident">staged_ledger_diff</span>: <span class="ident">StagedLedgerDiffJson</span>,
     <span class="doccomment">/// Proof that the block was produced within the allotted slot time</span>
     <span class="kw">pub</span> <span class="ident">delta_transition_chain_proof</span>: <span class="ident">DeltaTransitionChainProofJson</span>,
     <span class="doccomment">/// Current protocol version</span>
+    <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">skip</span>)]</span>
     <span class="kw">pub</span> <span class="ident">current_protocol_version</span>: <span class="ident">ProtocolVersionJson</span>,
     <span class="doccomment">/// Proposed protocol version</span>
+    <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">skip</span>)]</span>
     <span class="kw">pub</span> <span class="ident">proposed_protocol_version_opt</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">ProtocolVersionJson</span><span class="op">&gt;</span>,
     <span class="doccomment">/// Callback used for validating external transition received over the network.</span>
     <span class="doccomment">/// This is not actually send over the network but requires a unit type to meet the</span>
     <span class="doccomment">/// serialization requirements</span>
+    <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">skip</span>)]</span>
     <span class="kw">pub</span> <span class="ident">validation_callback</span>: (),
 }
-
-<span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">ExternalTransitionJson</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ExternalTransitionV1</span> {
-    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">t</span>: <span class="ident">ExternalTransitionJson</span>) -&gt; <span class="self">Self</span> {
-        <span class="kw">let</span> <span class="ident">t</span>: <span class="ident">ExternalTransition</span> <span class="op">=</span> <span class="ident">t</span>.<span class="ident">into</span>();
-        <span class="self">Self</span>(<span class="ident">t</span>.<span class="ident">into</span>())
-    }
-}
-
-<span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">ExternalTransitionV1</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ExternalTransitionJson</span> {
-    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">t</span>: <span class="ident">ExternalTransitionV1</span>) -&gt; <span class="self">Self</span> {
-        <span class="ident">t</span>.<span class="number">0</span>.<span class="ident">t</span>.<span class="ident">into</span>()
-    }
-}
-
-<span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">ExternalTransitionJson</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ExternalTransition</span> {
-    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">t</span>: <span class="ident">ExternalTransitionJson</span>) -&gt; <span class="self">Self</span> {
-        <span class="self">Self</span> {
-            <span class="ident">protocol_state</span>: <span class="ident">t</span>.<span class="ident">protocol_state</span>.<span class="ident">into</span>(),
-            <span class="ident">protocol_state_proof</span>: <span class="ident">t</span>.<span class="ident">protocol_state_proof</span>.<span class="ident">into</span>(),
-            <span class="ident">staged_ledger_diff</span>: <span class="ident">t</span>.<span class="ident">staged_ledger_diff</span>.<span class="ident">into</span>(),
-            <span class="ident">delta_transition_chain_proof</span>: <span class="ident">t</span>.<span class="ident">delta_transition_chain_proof</span>.<span class="ident">into</span>(),
-            <span class="ident">current_protocol_version</span>: <span class="ident">t</span>.<span class="ident">current_protocol_version</span>.<span class="ident">into</span>(),
-            <span class="ident">proposed_protocol_version_opt</span>: <span class="ident">t</span>.<span class="ident">proposed_protocol_version_opt</span>.<span class="ident">map</span>(<span class="op">|</span><span class="ident">i</span><span class="op">|</span> <span class="ident">i</span>.<span class="ident">into</span>()),
-            <span class="ident">validation_callback</span>: <span class="ident">t</span>.<span class="ident">validation_callback</span>,
-        }
-    }
-}
-
-<span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">ExternalTransition</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ExternalTransitionJson</span> {
-    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">t</span>: <span class="ident">ExternalTransition</span>) -&gt; <span class="self">Self</span> {
-        <span class="self">Self</span> {
-            <span class="ident">protocol_state</span>: <span class="ident">t</span>.<span class="ident">protocol_state</span>.<span class="ident">into</span>(),
-            <span class="ident">protocol_state_proof</span>: <span class="ident">t</span>.<span class="ident">protocol_state_proof</span>.<span class="ident">into</span>(),
-            <span class="ident">staged_ledger_diff</span>: <span class="ident">t</span>.<span class="ident">staged_ledger_diff</span>.<span class="ident">into</span>(),
-            <span class="ident">delta_transition_chain_proof</span>: <span class="ident">t</span>.<span class="ident">delta_transition_chain_proof</span>.<span class="ident">into</span>(),
-            <span class="ident">current_protocol_version</span>: <span class="ident">t</span>.<span class="ident">current_protocol_version</span>.<span class="ident">into</span>(),
-            <span class="ident">proposed_protocol_version_opt</span>: <span class="ident">t</span>.<span class="ident">proposed_protocol_version_opt</span>.<span class="ident">map</span>(<span class="op">|</span><span class="ident">i</span><span class="op">|</span> <span class="ident">i</span>.<span class="ident">into</span>()),
-            <span class="ident">validation_callback</span>: <span class="ident">t</span>.<span class="ident">validation_callback</span>,
-        }
-    }
-}
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_serialization_types" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.62.0-nightly (30f386087 2022-05-05)" ></div>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_serialization_types" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.62.0-nightly (6dd68402c 2022-05-11)" ></div>
 </body></html>

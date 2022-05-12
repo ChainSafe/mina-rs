@@ -136,6 +136,24 @@
 <span id="131">131</span>
 <span id="132">132</span>
 <span id="133">133</span>
+<span id="134">134</span>
+<span id="135">135</span>
+<span id="136">136</span>
+<span id="137">137</span>
+<span id="138">138</span>
+<span id="139">139</span>
+<span id="140">140</span>
+<span id="141">141</span>
+<span id="142">142</span>
+<span id="143">143</span>
+<span id="144">144</span>
+<span id="145">145</span>
+<span id="146">146</span>
+<span id="147">147</span>
+<span id="148">148</span>
+<span id="149">149</span>
+<span id="150">150</span>
+<span id="151">151</span>
 </pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems</span>
 <span class="comment">// SPDX-License-Identifier: Apache-2.0</span>
 
@@ -148,11 +166,14 @@
     <span class="ident">numbers</span>::{<span class="ident">BlockTime</span>, <span class="ident">Length</span>},
 };
 <span class="kw">use</span> <span class="ident">mina_crypto::hash::StateHash</span>;
+<span class="kw">use</span> <span class="ident">mina_serialization_types</span>::{<span class="ident">json</span>::<span class="kw-2">*</span>, <span class="ident">v1</span>::<span class="kw-2">*</span>};
+<span class="kw">use</span> <span class="ident">mina_serialization_types_macros::AutoFrom</span>;
 <span class="kw">use</span> <span class="ident">proof_systems::mina_hasher</span>::{<span class="ident">Hashable</span>, <span class="ident">ROInput</span>};
-<span class="kw">use</span> <span class="ident">serde::Serialize</span>;
+<span class="kw">use</span> <span class="ident">versioned</span>::<span class="kw-2">*</span>;
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Default</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>)]</span>
 <span class="doccomment">/// Constants that define the consensus parameters</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Default</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>, <span class="ident">AutoFrom</span>)]</span>
+<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">mina_serialization_types::protocol_constants::ProtocolConstants</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ProtocolConstants</span> {
     <span class="doccomment">/// Point of finality (number of confirmations)</span>
     <span class="kw">pub</span> <span class="ident">k</span>: <span class="ident">Length</span>,
@@ -165,6 +186,12 @@
     <span class="doccomment">/// Timestamp of genesis block in unixtime</span>
     <span class="kw">pub</span> <span class="ident">genesis_state_timestamp</span>: <span class="ident">BlockTime</span>,
 }
+
+<span class="macro">impl_from_with_proxy!</span>(
+    <span class="ident">ProtocolConstants</span>,
+    <span class="ident">ProtocolConstantsV1</span>,
+    <span class="ident">ProtocolConstantsJson</span>
+);
 
 <span class="kw">impl</span> <span class="ident">Hashable</span> <span class="kw">for</span> <span class="ident">ProtocolConstants</span> {
     <span class="kw">type</span> <span class="ident">D</span> <span class="op">=</span> ();
@@ -184,8 +211,8 @@
     }
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Default</span>, <span class="ident">Debug</span>, <span class="ident">PartialEq</span>, <span class="ident">Serialize</span>)]</span>
-<span class="attribute">#[<span class="ident">serde</span>(<span class="ident">into</span> <span class="op">=</span> <span class="string">&quot;mina_serialization_types::v1::ProtocolStateV1&quot;</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Default</span>, <span class="ident">Debug</span>, <span class="ident">PartialEq</span>, <span class="ident">AutoFrom</span>)]</span>
+<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">mina_serialization_types::protocol_state::ProtocolState</span>)]</span>
 <span class="doccomment">/// This structure can be thought of like the block header. It contains the most essential information of a block.</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ProtocolState</span> {
     <span class="doccomment">/// Commitment to previous block (hash of previous protocol state hash and body hash)</span>
@@ -193,6 +220,8 @@
     <span class="doccomment">/// The body of the protocol state</span>
     <span class="kw">pub</span> <span class="ident">body</span>: <span class="ident">ProtocolStateBody</span>,
 }
+
+<span class="macro">impl_from_with_proxy!</span>(<span class="ident">ProtocolState</span>, <span class="ident">ProtocolStateV1</span>, <span class="ident">ProtocolStateJson</span>);
 
 <span class="kw">impl</span> <span class="ident">Hashable</span> <span class="kw">for</span> <span class="ident">ProtocolState</span> {
     <span class="kw">type</span> <span class="ident">D</span> <span class="op">=</span> ();
@@ -216,7 +245,8 @@
     }
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Default</span>, <span class="ident">Debug</span>, <span class="ident">PartialEq</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Default</span>, <span class="ident">Debug</span>, <span class="ident">PartialEq</span>, <span class="ident">AutoFrom</span>)]</span>
+<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">mina_serialization_types::protocol_state_body::ProtocolStateBody</span>)]</span>
 <span class="doccomment">/// Body of the protocol state</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ProtocolStateBody</span> {
     <span class="doccomment">/// Genesis protocol state hash (used for hardforks)</span>
@@ -228,6 +258,12 @@
     <span class="doccomment">/// Consensus constants</span>
     <span class="kw">pub</span> <span class="ident">constants</span>: <span class="ident">ProtocolConstants</span>,
 }
+
+<span class="macro">impl_from_with_proxy!</span>(
+    <span class="ident">ProtocolStateBody</span>,
+    <span class="ident">ProtocolStateBodyV1</span>,
+    <span class="ident">ProtocolStateBodyJson</span>
+);
 
 <span class="kw">impl</span> <span class="ident">Hashable</span> <span class="kw">for</span> <span class="ident">ProtocolStateBody</span> {
     <span class="kw">type</span> <span class="ident">D</span> <span class="op">=</span> ();
@@ -270,5 +306,5 @@
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_rs_base" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.62.0-nightly (30f386087 2022-05-05)" ></div>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_rs_base" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.62.0-nightly (6dd68402c 2022-05-11)" ></div>
 </body></html>

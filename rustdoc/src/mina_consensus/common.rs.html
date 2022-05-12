@@ -338,8 +338,6 @@
 <span id="333">333</span>
 <span id="334">334</span>
 <span id="335">335</span>
-<span id="336">336</span>
-<span id="337">337</span>
 </pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems</span>
 <span class="comment">// SPDX-License-Identifier: Apache-2.0</span>
 
@@ -355,9 +353,7 @@
 <span class="kw">use</span> <span class="ident">mina_rs_base::protocol_state</span>::{<span class="ident">Header</span>, <span class="ident">ProtocolState</span>};
 <span class="kw">use</span> <span class="ident">mina_rs_base::types</span>::{<span class="ident">BlockTime</span>, <span class="ident">Length</span>};
 <span class="kw">use</span> <span class="ident">once_cell::sync::OnceCell</span>;
-<span class="kw">use</span> <span class="ident">proof_systems::mina_hasher::Fp</span>;
-<span class="kw">use</span> <span class="ident">proof_systems::mina_hasher::PoseidonHasherKimchi</span>;
-<span class="kw">use</span> <span class="ident">proof_systems::mina_hasher</span>::{<span class="ident">create_kimchi</span>, <span class="ident">Hasher</span>};
+<span class="kw">use</span> <span class="ident">proof_systems::mina_hasher</span>::{<span class="ident">create_kimchi</span>, <span class="ident">Fp</span>, <span class="ident">Hasher</span>, <span class="ident">PoseidonHasherKimchi</span>};
 
 <span class="doccomment">/// Type that defines constant values for mina consensus calculation</span>
 <span class="comment">// TODO: derive from protocol constants</span>
@@ -678,5 +674,5 @@
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_consensus" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.62.0-nightly (30f386087 2022-05-05)" ></div>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_consensus" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.62.0-nightly (6dd68402c 2022-05-11)" ></div>
 </body></html>
