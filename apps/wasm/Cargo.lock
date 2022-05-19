@@ -1785,6 +1785,7 @@ dependencies = [
 name = "mina-network"
 version = "0.1.0"
 dependencies = [
+ "async-trait",
  "cfg-if",
  "getrandom 0.2.6",
  "js-sys",
