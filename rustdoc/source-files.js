@@ -1,4 +1,4 @@
-var N = null;var sourcesIndex = {};
+var sourcesIndex = {};
 sourcesIndex["bin_prot"] = {"name":"","dirs":[{"name":"integers","files":["integer.rs","mod.rs","nat0.rs"]},{"name":"polyvar","files":["caml_hash_variant.rs","mod.rs"]},{"name":"value","dirs":[{"name":"layout","files":["list_tagged_enum.rs","mod.rs","traverse.rs"]}],"files":["enum_data.rs","index.rs","mod.rs","ser.rs","visitor.rs"]}],"files":["consts.rs","de.rs","error.rs","lib.rs","loose_deserializer.rs","read_ext.rs","ser.rs","write_ext.rs"]};
 sourcesIndex["bin_prot_checker"] = {"name":"","files":["main.rs"]};
 sourcesIndex["mina_consensus"] = {"name":"","dirs":[{"name":"genesis","files":["config.rs","genesis_impl.rs","mod.rs"]}],"files":["common.rs","error.rs","lib.rs"]};
