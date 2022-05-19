@@ -10,6 +10,7 @@ license = "Apache-2.0"
 default = []
 
 [dependencies]
+async-trait = "0.1"
 cfg-if = "1"
 lazy_static = "1"
 libp2p = {version = "0.44", features = ["dns-tokio", "tcp-tokio"]}
