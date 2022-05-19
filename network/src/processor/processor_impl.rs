@@ -36,10 +36,10 @@ where
         let transition_frontier = &mut self.transition_frontier;
         let query_block_request_receiver = &mut self.query_block_request_receiver;
         let nonconsensus_ops = &mut self.nonconsensus_ops;
-        tokio::select! {
-            _ = Self::run_recv_block_loop(transition_frontier, block_receiver) => { }
-            _ = Self::run_query_block_loop(nonconsensus_ops, query_block_request_receiver) => { }
-        };
+        _ = tokio::join!(
+            Self::run_recv_block_loop(transition_frontier, block_receiver),
+            Self::run_query_block_loop(nonconsensus_ops, query_block_request_receiver)
+        );
     }
 
     /// Schedules the event loop of sending blocks that are received from the network
