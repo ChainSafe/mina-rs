@@ -49,15 +49,15 @@ jobs:
         run: ./scripts/add_license.sh
       - uses: EmbarkStudios/cargo-deny-action@v1
         with:
-          command: check All -s
+          command: check all -s
           arguments: --all-features
       - uses: EmbarkStudios/cargo-deny-action@v1
         with:
-          command: check All -s
+          command: check all -s
           arguments: --all-features --manifest-path apps/Cargo.toml
       - uses: EmbarkStudios/cargo-deny-action@v1
         with:
-          command: check All -s
+          command: check all -s
           arguments: --all-features --manifest-path apps/wasm/Cargo.toml
       - run: cargo install cargo-udeps || echo 'already installed'
       - run: cargo +nightly udeps --all-targets --all-features
