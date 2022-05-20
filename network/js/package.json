@@ -1,0 +1,16 @@
+{
+  "name": "mina-network",
+  "version": "1.0.0",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "test": "jest"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.18.0",
+    "@babel/preset-env": "^7.18.0",
+    "babel-jest": "^28.1.0",
+    "jest": "^28.1.0",
+    "node-fetch": "^2.6.7"
+  }
+}
