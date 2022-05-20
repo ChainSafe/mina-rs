@@ -14,6 +14,9 @@
 
 mod processor_impl;
 
+#[cfg(target_arch = "wasm32")]
+pub mod js;
+
 use async_trait::async_trait;
 use tokio::sync::mpsc;
 

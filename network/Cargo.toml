@@ -9,6 +9,9 @@ license = "Apache-2.0"
 [features]
 default = []
 
+# browser feature is used to run wasm tests in headless browser context
+browser = []
+
 [dependencies]
 async-trait = "0.1"
 cfg-if = "1"
@@ -17,14 +20,20 @@ libp2p = {version = "0.44", features = ["dns-tokio", "tcp-tokio"]}
 multihash = "0.16"
 tokio = {version = "1.18", features = ["macros", "sync"]}
 
+# To list all wasm targets, use command 'rustc --print target-list | grep wasm'
+[target.'cfg(target_arch = "wasm32")'.dependencies]
+mina-serialization-types = {path = "../protocol/serialization-types"}
+
+getrandom = {version = "0.2", features = ["js"]}
+js-sys = "0.3"
+libp2p = {version = "0.44", features = ["wasm-bindgen", "wasm-ext-websocket"]}
+serde_json = "1"
+wasm-bindgen = "0.2"
+wasm-bindgen-futures = "0.4"
+
 [dev-dependencies]
 anyhow = "1"
 tokio = {version = "1.18", features = ["macros", "rt", "sync"]}
 
-# To list all wasm targets, use command 'rustc --print target-list | grep wasm'
-[target.'cfg(target_arch = "wasm32")'.dependencies]
-libp2p = {version = "0.44", features = ["wasm-bindgen", "wasm-ext-websocket"]}
-
-getrandom = {version = "0.2", features = ["js"]}
-js-sys = "0.3"
-wasm-bindgen = "0.2"
+[target.'cfg(target_arch = "wasm32")'.dev-dependencies]
+wasm-bindgen-test = "0.3"
