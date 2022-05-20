@@ -16,7 +16,7 @@ use smart_default::SmartDefault;
 use versioned::*;
 
 /// Wrapper struct for the output for a VRF
-#[derive(Clone, Default, PartialEq, Debug, derive_more::From, derive_more::Into, AutoFrom)]
+#[derive(Clone, Default, PartialEq, Debug, derive_more::From, derive_more::Into, AutoFrom, PartialOrd)]
 #[auto_from(mina_serialization_types::consensus_state::VrfOutputTruncated)]
 #[auto_from(mina_serialization_types::consensus_state::VrfOutputTruncatedJson)]
 pub struct VrfOutputTruncated(pub Vec<u8>);

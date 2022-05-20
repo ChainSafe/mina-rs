@@ -6,9 +6,10 @@
 //!
 
 use crate::error::ConsensusError;
+use blake2::Blake2bVar;
+use blake2::digest::Update;
 use lockfree_object_pool::SpinLockObjectPool;
 use mina_rs_base::consensus_state::ConsensusState;
-use mina_rs_base::consensus_state::VrfOutputTruncated;
 use mina_rs_base::global_slot::GlobalSlot;
 use mina_rs_base::protocol_state::{Header, ProtocolState};
 use mina_rs_base::types::{BlockTime, Length};
@@ -83,7 +84,7 @@ where
     fn length(&self) -> usize;
     /// This function returns the hex digest of the hash of the last VRF output
     ///  of a given chain. The input is a chain C and the output is the hash digest.
-    fn last_vrf_hash(&self) -> Option<Fp>;
+    fn last_vrf_hash(&self) -> Result<String, ConsensusError>;
     /// This function returns hash of the top block's protocol state for a given chain.
     /// The input is a chain C and the output is the hash.
     fn state_hash(&self) -> Option<Fp>;
@@ -131,14 +132,12 @@ impl Chain<ProtocolState> for ProtocolStateChain {
         self.0.len()
     }
 
-    fn last_vrf_hash(&self) -> Option<Fp> {
-        static HASHER_POOL: OnceCell<SpinLockObjectPool<PoseidonHasherKimchi<VrfOutputTruncated>>> =
-            OnceCell::new();
-        let pool =
-            HASHER_POOL.get_or_init(|| SpinLockObjectPool::new(|| create_kimchi(()), |_| ()));
-        let mut hasher = pool.pull();
-        self.top()
-            .map(|s| hasher.hash(&s.body.consensus_state.last_vrf_output))
+    fn last_vrf_hash(&self) -> Result<String, ConsensusError> {
+        use blake2::digest::VariableOutput;
+        let mut hasher = Blake2bVar::new(32).unwrap();
+        hasher.update(self.top().ok_or(ConsensusError::TopBlockNotFound)?.body.consensus_state.last_vrf_output.0.as_slice());
+        let hash = hasher.finalize_boxed();
+        Ok(hex::encode(hash))
     }
 
     fn state_hash(&self) -> Option<Fp> {
@@ -238,7 +237,7 @@ impl Consensus for ProtocolStateChain {
             return Ok(candidate);
         } else if top_state.blockchain_length == candidate_state.blockchain_length {
             // tiebreak logic
-            match candidate.last_vrf_hash().cmp(&self.last_vrf_hash()) {
+            match candidate.last_vrf_hash()?.cmp(&self.last_vrf_hash()?) {
                 std::cmp::Ordering::Greater => return Ok(candidate),
                 std::cmp::Ordering::Equal => {
                     if candidate.state_hash() > self.state_hash() {
