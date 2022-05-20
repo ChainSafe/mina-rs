@@ -13,7 +13,7 @@ extern "C" {
     pub async fn fetch_block_json_str(height: usize, state_hash: &str) -> JsValue;
 }
 
-/// TODO: Doc
+/// Fetch [ExternalTransitionJson] with its height and state hash
 pub async fn fetch_block(
     height: usize,
     state_hash: &str,
@@ -30,8 +30,8 @@ mod tests {
     #[cfg(feature = "browser")]
     wasm_bindgen_test::wasm_bindgen_test_configure!(run_in_browser);
 
-    /// This currently fails with cors errors
-    #[cfg(feature = "browser")]
+    // This currently fails with cors errors in browseer
+    #[cfg(not(feature = "browser"))]
     #[wasm_bindgen_test::wasm_bindgen_test]
     async fn test_fetch_block_json_str() {
         use super::*;
@@ -46,8 +46,8 @@ mod tests {
         assert!(!block_json_str.is_empty());
     }
 
-    /// This currently fails with cors errors
-    #[cfg(feature = "browser")]
+    // This currently fails with cors errors in browseer
+    #[cfg(not(feature = "browser"))]
     #[wasm_bindgen_test::wasm_bindgen_test]
     async fn test_fetch_block() {
         use super::*;
