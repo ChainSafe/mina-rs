@@ -30,7 +30,7 @@ mod tests {
     #[cfg(feature = "browser")]
     wasm_bindgen_test::wasm_bindgen_test_configure!(run_in_browser);
 
-    // This currently fails with cors errors in browseer
+    // This currently fails with cors errors in browser
     #[cfg(not(feature = "browser"))]
     #[wasm_bindgen_test::wasm_bindgen_test]
     async fn test_fetch_block_json_str() {
@@ -46,7 +46,7 @@ mod tests {
         assert!(!block_json_str.is_empty());
     }
 
-    // This currently fails with cors errors in browseer
+    // This currently fails with cors errors in browser
     #[cfg(not(feature = "browser"))]
     #[wasm_bindgen_test::wasm_bindgen_test]
     async fn test_fetch_block() {
