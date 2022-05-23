@@ -13,6 +13,9 @@ default = []
 browser = []
 
 [dependencies]
+mina-consensus = {path = "../consensus"}
+mina-rs-base = {path = "../base"}
+
 anyhow = "1"
 async-trait = "0.1"
 cfg-if = "1"
@@ -23,8 +26,6 @@ tokio = {version = "1.18", features = ["macros", "sync"]}
 
 # To list all wasm targets, use command 'rustc --print target-list | grep wasm'
 [target.'cfg(target_arch = "wasm32")'.dependencies]
-mina-rs-base = {path = "../base"}
-mina-consensus={path="../consensus"}
 mina-serialization-types = {path = "../protocol/serialization-types"}
 
 getrandom = {version = "0.2", features = ["js"]}

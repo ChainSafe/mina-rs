@@ -4,10 +4,7 @@
     <h2>Mina Web Node Demo using graphql</h2>
     <p>wasm: {{ wasmStatus() }}</p>
     <p>peer list: (each on a new line)</p>
-    <textarea
-      v-model="nodeList"
-      class="min-w-full"
-    />
+    <textarea v-model="nodeList" class="min-w-full" />
     <button
       v-if="wasmLoaded"
       class="bg-sky-500 hover:bg-sky-700 px-5 py-2 text-sm leading-5 rounded-full font-semibold text-white"
@@ -18,16 +15,11 @@
   </div>
   <div class="container px-4 prose">
     <p>
-      <span>Block height:</span><input
-        v-model="heightToQuery"
-        type="text"
-      >
+      <span>Block height:</span><input v-model="heightToQuery" type="text" />
     </p>
     <p>
-      <span>Block state hash:</span><input
-        v-model="stateHashToQuery"
-        type="text"
-      >
+      <span>Block state hash:</span
+      ><input v-model="stateHashToQuery" type="text" />
     </p>
     <button
       v-if="wasmLoaded"
@@ -40,16 +32,41 @@
       NOTE: For now it requires disabling cors with
       <a
         href="https://chrome.google.com/webstore/detail/cors-unblock/lfhmikememgdcahcdlaciloancbhjino"
-      >this extension</a>
+        >this extension</a
+      >
     </p>
     <p>Previous state hash: {{ previousStateHash }}</p>
+    <p>
+      <button
+        v-if="wasmLoaded"
+        class="bg-sky-500 hover:bg-sky-700 px-5 py-2 text-sm leading-5 rounded-full font-semibold text-white"
+        @click="pollLatestBlocksOnce"
+      >
+        Poll latest blocks
+      </button>
+    </p>
+    <p>
+      <button
+        v-if="wasmLoaded"
+        class="bg-sky-500 hover:bg-sky-700 px-5 py-2 text-sm leading-5 rounded-full font-semibold text-white"
+        @click="refreshBestChainStateJson"
+      >
+        Refresh best chain state
+      </button>
+    </p>
+    <p>best chain state: {{ bestChainStateJson }}</p>
   </div>
 </template>
 
 <script lang="ts">
 import NavBar from "~/web/components/NavBar.vue";
 import { initWasm } from "~/utils";
-import { fetch_block_previous_state_hash } from "~/pkg/wasm";
+import {
+  fetch_block_previous_state_hash,
+  poll_latest_blocks_once,
+  get_best_chain_state_json,
+  run_processor,
+} from "~/pkg/wasm";
 
 export default {
   components: {
@@ -62,10 +79,12 @@ export default {
       heightToQuery: 25718,
       stateHashToQuery: "3NLQanLUpZLAbkciDnUs6bQGkgg48UqatpZxShHuLWSudG4M9iyn",
       previousStateHash: "",
+      bestChainStateJson: "",
     };
   },
-  created() {
-    this.loadWasm();
+  async created() {
+    await this.loadWasm();
+    run_processor();
   },
   methods: {
     async loadWasm() {
@@ -88,6 +107,14 @@ export default {
       } catch (e) {
         this.previousStateHash = e.toString();
       }
+    },
+    async pollLatestBlocksOnce() {
+      await poll_latest_blocks_once();
+      await this.refreshBestChainStateJson();
+    },
+    async refreshBestChainStateJson() {
+      const json = await get_best_chain_state_json();
+      this.bestChainStateJson = json;
     },
   },
 };

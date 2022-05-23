@@ -21,7 +21,7 @@ mod processor_impl;
 pub mod js;
 
 use async_trait::async_trait;
-use tokio::sync::mpsc;
+use tokio::sync::{mpsc, RwLock};
 
 /// Request struct for querying a block
 pub struct QueryBlockRequest {
@@ -78,11 +78,11 @@ where
     NCOps: NonConsensusNetworkingOps<Block = NetworkBlock>,
 {
     /// The [TransitionFrontier] instance
-    transition_frontier: TF,
+    transition_frontier: RwLock<TF>,
     /// The [NonConsensusNetworkingOps] instance
-    nonconsensus_ops: NCOps,
+    nonconsensus_ops: RwLock<NCOps>,
     /// Block receiver
-    block_receiver: mpsc::Receiver<NetworkBlock>,
+    block_receiver: RwLock<mpsc::Receiver<NetworkBlock>>,
     /// [QueryBlockRequest] receiver
-    query_block_request_receiver: mpsc::Receiver<QueryBlockRequest>,
+    query_block_request_receiver: RwLock<mpsc::Receiver<QueryBlockRequest>>,
 }

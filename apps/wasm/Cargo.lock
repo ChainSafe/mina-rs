@@ -1977,6 +1977,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "lockfree-object-pool"
+version = "0.1.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "8166fbddef141acbea89cf3425ed97d4c22d14a68161977fc01c301175a4fb89"
+
+[[package]]
 name = "log"
 version = "0.4.17"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2032,6 +2038,40 @@ dependencies = [
 ]
 
 [[package]]
+name = "mina-consensus"
+version = "0.1.0"
+dependencies = [
+ "bs58",
+ "hex",
+ "lazy_static",
+ "lockfree-object-pool",
+ "mina-crypto",
+ "mina-rs-base",
+ "once_cell",
+ "proof-systems",
+ "thiserror",
+]
+
+[[package]]
+name = "mina-crypto"
+version = "0.1.0"
+dependencies = [
+ "base64",
+ "bin-prot",
+ "blake2",
+ "bs58",
+ "derive_more",
+ "hex",
+ "mina-serialization-types",
+ "num",
+ "proof-systems",
+ "serde",
+ "serde_json",
+ "thiserror",
+ "versioned",
+]
+
+[[package]]
 name = "mina-curves"
 version = "0.1.0"
 source = "git+https://github.com/o1-labs/proof-systems?rev=6f99af4a37a5a3ebc0c898aa775c958978272ec8#6f99af4a37a5a3ebc0c898aa775c958978272ec8"
@@ -2054,6 +2094,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "mina-merkle"
+version = "0.1.0"
+dependencies = [
+ "ark-ff",
+ "lockfree-object-pool",
+ "once_cell",
+ "proof-systems",
+]
+
+[[package]]
 name = "mina-network"
 version = "0.1.0"
 dependencies = [
@@ -2064,6 +2114,8 @@ dependencies = [
  "js-sys",
  "lazy_static",
  "libp2p",
+ "mina-consensus",
+ "mina-rs-base",
  "mina-serialization-types",
  "multihash",
  "serde",
@@ -2071,6 +2123,31 @@ dependencies = [
  "tokio",
  "wasm-bindgen",
  "wasm-bindgen-futures",
+]
+
+[[package]]
+name = "mina-rs-base"
+version = "0.1.0"
+dependencies = [
+ "ark-ec",
+ "ark-ff",
+ "base64",
+ "bin-prot",
+ "derive_more",
+ "getrandom 0.2.6",
+ "hex",
+ "mina-crypto",
+ "mina-merkle",
+ "mina-serialization-types",
+ "mina-serialization-types-macros",
+ "num",
+ "proof-systems",
+ "serde",
+ "serde_json",
+ "smart-default",
+ "thiserror",
+ "time",
+ "versioned",
 ]
 
 [[package]]
@@ -2082,8 +2159,12 @@ dependencies = [
  "base64",
  "hex",
  "js-sys",
+ "lazy_static",
  "libp2p",
+ "mina-consensus",
  "mina-network",
+ "mina-serialization-types",
+ "once_cell",
  "protobuf",
  "protobuf-codegen",
  "serde",
@@ -2401,6 +2482,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "num_threads"
+version = "0.1.6"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "2819ce041d2ee131036f4fc9d6ae7ae125a3a40e97ba64d04fe799ad9dabbb44"
+dependencies = [
+ "libc",
+]
+
+[[package]]
 name = "o1-utils"
 version = "0.1.0"
 source = "git+https://github.com/o1-labs/proof-systems?rev=6f99af4a37a5a3ebc0c898aa775c958978272ec8#6f99af4a37a5a3ebc0c898aa775c958978272ec8"
@@ -2421,9 +2511,9 @@ dependencies = [
 
 [[package]]
 name = "once_cell"
-version = "1.11.0"
+version = "1.12.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7b10983b38c53aebdf33f542c6275b0f58a238129d00c4ae0e6fb59738d783ca"
+checksum = "7709cef83f0c1f58f666e746a08b21e0085f7440fa6a29cc194d68aac97a4225"
 
 [[package]]
 name = "opaque-debug"
@@ -3468,6 +3558,16 @@ dependencies = [
  "proc-macro2",
  "quote",
  "syn",
+]
+
+[[package]]
+name = "time"
+version = "0.3.9"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "c2702e08a7a860f005826c6815dcac101b19b5eb330c27fe4a5928fec1d20ddd"
+dependencies = [
+ "libc",
+ "num_threads",
 ]
 
 [[package]]

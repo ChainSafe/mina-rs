@@ -55,17 +55,25 @@ pub struct BlockBasicInfo {
 }
 
 /// TODO: Doc
+#[derive(Debug, Clone, Default)]
 pub struct NonConsensusGraphQLV1Backend {
-    block_responder: mpsc::Sender<ExternalTransitionJson>,
+    block_responder: Option<mpsc::Sender<ExternalTransitionJson>>,
 }
 
 impl NonConsensusGraphQLV1Backend {
     /// TODO: Doc
-    pub async fn poll_once(&self) -> anyhow::Result<()> {
-        let blocks = query_latest_blocks(10).await?;
-        for b in blocks {
-            if let Ok(block) = fetch_block(b.block_height, b.state_hash.as_str()).await {
-                _ = self.block_responder.send(block).await;
+    pub fn new() -> Self {
+        Default::default()
+    }
+
+    /// TODO: Doc
+    pub async fn poll_latest_once(&self) -> anyhow::Result<()> {
+        if let Some(block_responder) = &self.block_responder {
+            let blocks = query_latest_blocks(10).await?;
+            for b in blocks {
+                if let Ok(block) = fetch_block(b.block_height, b.state_hash.as_str()).await {
+                    _ = block_responder.send(block).await;
+                }
             }
         }
         Ok(())
@@ -77,12 +85,14 @@ impl NonConsensusNetworkingOps for NonConsensusGraphQLV1Backend {
     type Block = ExternalTransitionJson;
 
     fn set_block_responder(&mut self, sender: mpsc::Sender<Self::Block>) {
-        self.block_responder = sender;
+        self.block_responder = Some(sender);
     }
 
     async fn query_block(&mut self, request: &QueryBlockRequest) -> anyhow::Result<()> {
-        let block_json = fetch_block(request.height, request.state_hash.as_str()).await?;
-        self.block_responder.send(block_json).await?;
+        if let Some(block_responder) = &self.block_responder {
+            let block_json = fetch_block(request.height, request.state_hash.as_str()).await?;
+            block_responder.send(block_json).await?;
+        }
         Ok(())
     }
 }
