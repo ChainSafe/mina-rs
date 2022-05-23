@@ -240,7 +240,7 @@ mod tests {
     // Same BlockChain length but greater last vrf output of candidate chain
     // Chain A: https://storage.googleapis.com/mina_network_block_data/mainnet-113267-3NKtqqstB6h8SVNQCtspFisjUwCTqoQ6cC1KGvb6kx6n2dqKkiZS.json
     // Chain B: https://storage.googleapis.com/mina_network_block_data/mainnet-113267-3NLenrog9wkiJMoA774T9VraqSUGhCuhbDLj3JKbEzomNdjr78G8.json
-    // Current chain: Chain A  
+    // Current chain: Chain A
     // Candidate chains: [Chain B] (Greater Last VRF output)
     fn test_longer_chain_with_same_chain_length_greater_last_vrf_output() {
         use std::str::FromStr;
