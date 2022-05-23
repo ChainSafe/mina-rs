@@ -6,12 +6,16 @@
 //!
 
 use mina_serialization_types::json::*;
+use serde::{Deserialize, Serialize};
 use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen(module = "/js/graphql_v1_utils.js")]
 extern "C" {
     #[wasm_bindgen(catch)]
     pub async fn fetch_block_json_str(height: usize, state_hash: &str) -> Result<JsValue, JsValue>;
+
+    #[wasm_bindgen(catch)]
+    pub async fn query_latest_blocks_json_str(limit: usize) -> Result<JsValue, JsValue>;
 }
 
 /// Fetch [ExternalTransitionJson] with its height and state hash
@@ -25,6 +29,28 @@ pub async fn fetch_block(
         .as_string()
         .unwrap_or_default();
     Ok(serde_json::from_str(&json_str)?)
+}
+
+/// Query infomation of the latest blocks
+pub async fn query_latest_blocks(limit: usize) -> anyhow::Result<Vec<BlockBasicInfo>> {
+    let json_str = query_latest_blocks_json_str(limit)
+        .await
+        .map_err(|err| anyhow::Error::msg(format!("{:?}", err)))?
+        .as_string()
+        .unwrap_or_default();
+    Ok(serde_json::from_str(&json_str)?)
+}
+
+/// Basic block information as query result
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct BlockBasicInfo {
+    /// Block height
+    #[serde(rename = "blockHeight")]
+    pub block_height: usize,
+
+    /// Block state hash
+    #[serde(rename = "stateHash")]
+    pub state_hash: String,
 }
 
 #[cfg(test)]
@@ -71,5 +97,20 @@ mod tests {
                 .as_str(),
             "3NKeMoncuHab5ScarV5ViyF16cJPT4taWNSaTLS64Dp67wuXigPZ"
         );
+    }
+
+    // This currently fails with cors errors in browser
+    #[cfg(not(feature = "browser"))]
+    #[wasm_bindgen_test::wasm_bindgen_test]
+    async fn test_query_latest_blocks() {
+        use super::*;
+
+        let limit = 10;
+        let blocks = query_latest_blocks(limit).await.unwrap();
+        assert_eq!(limit, blocks.len());
+        for block in blocks {
+            assert!(block.block_height > 0);
+            assert!(!block.state_hash.is_empty());
+        }
     }
 }
