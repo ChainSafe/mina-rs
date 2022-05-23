@@ -12,6 +12,9 @@
 //! the networking layer to unittest the [TransitionFrontier]
 //!
 
+mod naive_transition_frontier;
+pub use naive_transition_frontier::*;
+
 mod processor_impl;
 
 #[cfg(target_arch = "wasm32")]
@@ -33,7 +36,7 @@ pub struct QueryBlockRequest {
 /// with the networking layer
 ///
 /// TODO: Should this below to its own crate?
-#[async_trait]
+#[async_trait(?Send)]
 pub trait TransitionFrontier {
     /// Type that represents a block
     type Block;
