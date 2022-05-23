@@ -69,17 +69,17 @@ pub trait NonConsensusNetworkingOps {
 
 /// This struct processes all the interactions and data exchanges
 /// between the [NonConsensusNetworkingOps] and the [TransitionFrontier]
-pub struct NetworkMessageProcessor<Block, TF, NCOps>
+pub struct NetworkMessageProcessor<NetworkBlock, FrontierBlock, TF, NCOps>
 where
-    TF: TransitionFrontier<Block = Block>,
-    NCOps: NonConsensusNetworkingOps<Block = Block>,
+    TF: TransitionFrontier<Block = FrontierBlock>,
+    NCOps: NonConsensusNetworkingOps<Block = NetworkBlock>,
 {
     /// The [TransitionFrontier] instance
     transition_frontier: TF,
     /// The [NonConsensusNetworkingOps] instance
     nonconsensus_ops: NCOps,
     /// Block receiver
-    block_receiver: mpsc::Receiver<Block>,
+    block_receiver: mpsc::Receiver<NetworkBlock>,
     /// [QueryBlockRequest] receiver
     query_block_request_receiver: mpsc::Receiver<QueryBlockRequest>,
 }

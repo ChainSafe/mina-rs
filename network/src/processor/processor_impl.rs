@@ -4,17 +4,19 @@
 use super::*;
 use std::marker::{Send, Sync};
 
-impl<Block, TF, NCOps> NetworkMessageProcessor<Block, TF, NCOps>
+impl<NetworkBlock, FrontierBlock, TF, NCOps>
+    NetworkMessageProcessor<NetworkBlock, FrontierBlock, TF, NCOps>
 where
-    TF: TransitionFrontier<Block = Block>,
-    NCOps: NonConsensusNetworkingOps<Block = Block>,
-    Block: Send + Sync,
+    TF: TransitionFrontier<Block = FrontierBlock>,
+    NCOps: NonConsensusNetworkingOps<Block = NetworkBlock>,
+    NetworkBlock: Send + Sync,
+    FrontierBlock: From<NetworkBlock>,
 {
     /// Creates a new [NetworkMessageProcessor] with the given [TransitionFrontier] and
     /// [NonConsensusNetworkingOps], initializing all the message channels for the communication
     pub fn new(mut transition_frontier: TF, mut nonconsensus_ops: NCOps) -> Self {
         // TODO: make buffer size configurable, use rendezvous channel for now
-        let (sender, block_receiver) = mpsc::channel::<Block>(1);
+        let (sender, block_receiver) = mpsc::channel(1);
         nonconsensus_ops.set_block_responder(sender);
 
         // TODO: make buffer size configurable, use rendezvous channel for now
@@ -46,10 +48,10 @@ where
     /// to the [TransitionFrontier]
     async fn run_recv_block_loop(
         transition_frontier: &mut TF,
-        block_receiver: &mut mpsc::Receiver<Block>,
+        block_receiver: &mut mpsc::Receiver<NetworkBlock>,
     ) {
         while let Some(block) = block_receiver.recv().await {
-            _ = transition_frontier.add_block(block).await;
+            _ = transition_frontier.add_block(block.into()).await;
         }
     }
 

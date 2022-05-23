@@ -10,7 +10,7 @@ pub mod exports;
 use self::exports::graphql_api_v1::fetch_block;
 use crate::processor::*;
 use async_trait::async_trait;
-use mina_serialization_types::json::ExternalTransitionJson;
+use mina_serialization_types::json::*;
 
 /// TODO: Doc
 pub struct NonConsensusGraphQLV1Backend {

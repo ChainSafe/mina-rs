@@ -2057,6 +2057,7 @@ dependencies = [
 name = "mina-network"
 version = "0.1.0"
 dependencies = [
+ "anyhow",
  "async-trait",
  "cfg-if",
  "getrandom 0.2.6",
@@ -2065,6 +2066,7 @@ dependencies = [
  "libp2p",
  "mina-serialization-types",
  "multihash",
+ "serde",
  "serde_json",
  "tokio",
  "wasm-bindgen",
