@@ -41,7 +41,7 @@ pub trait TransitionFrontier {
     /// Adds a block that is received from networking layer.
     /// The block could be either pushed by other peers or
     /// the response of [QueryBlockRequest].
-    async fn add_block(&mut self, block: Self::Block);
+    async fn add_block(&mut self, block: Self::Block) -> anyhow::Result<()>;
 
     /// Sets the block requester for querying a block, e.g. parent of certain block
     /// The responses will be recieved in a asynchronous way by the `add_block` API
@@ -50,7 +50,7 @@ pub trait TransitionFrontier {
 
 /// abstraction of networking operations for
 /// non-consensus mina node(s).
-#[async_trait]
+#[async_trait(?Send)]
 pub trait NonConsensusNetworkingOps {
     /// Type that represents a block
     type Block;
@@ -64,7 +64,7 @@ pub trait NonConsensusNetworkingOps {
     fn set_block_responder(&mut self, sender: mpsc::Sender<Self::Block>);
 
     /// Queries a block with its height and state hash
-    async fn query_block(&mut self, request: &QueryBlockRequest);
+    async fn query_block(&mut self, request: &QueryBlockRequest) -> anyhow::Result<()>;
 }
 
 /// This struct processes all the interactions and data exchanges

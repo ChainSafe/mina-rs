@@ -49,7 +49,7 @@ where
         block_receiver: &mut mpsc::Receiver<Block>,
     ) {
         while let Some(block) = block_receiver.recv().await {
-            transition_frontier.add_block(block).await;
+            _ = transition_frontier.add_block(block).await;
         }
     }
 
@@ -60,7 +60,7 @@ where
         query_block_request_receiver: &mut mpsc::Receiver<QueryBlockRequest>,
     ) {
         while let Some(request) = query_block_request_receiver.recv().await {
-            nonconsensus_ops.query_block(&request).await;
+            _ = nonconsensus_ops.query_block(&request).await;
         }
     }
 }

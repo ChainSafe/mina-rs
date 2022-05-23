@@ -10,19 +10,21 @@ use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen(module = "/js/graphql_v1_utils.js")]
 extern "C" {
-    pub async fn fetch_block_json_str(height: usize, state_hash: &str) -> JsValue;
+    #[wasm_bindgen(catch)]
+    pub async fn fetch_block_json_str(height: usize, state_hash: &str) -> Result<JsValue, JsValue>;
 }
 
 /// Fetch [ExternalTransitionJson] with its height and state hash
 pub async fn fetch_block(
     height: usize,
     state_hash: &str,
-) -> Result<ExternalTransitionJson, serde_json::Error> {
+) -> anyhow::Result<ExternalTransitionJson> {
     let json_str = fetch_block_json_str(height, state_hash)
         .await
+        .map_err(|err| anyhow::Error::msg(format!("{:?}", err)))?
         .as_string()
         .unwrap_or_default();
-    serde_json::from_str(&json_str)
+    Ok(serde_json::from_str(&json_str)?)
 }
 
 #[cfg(test)]
@@ -41,6 +43,7 @@ mod tests {
             "3NLQanLUpZLAbkciDnUs6bQGkgg48UqatpZxShHuLWSudG4M9iyn",
         )
         .await
+        .unwrap()
         .as_string()
         .unwrap();
         assert!(!block_json_str.is_empty());
