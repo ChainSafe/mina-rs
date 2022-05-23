@@ -5,7 +5,7 @@ use crate::*;
 use js_sys::Uint8Array;
 use wasm_bindgen::prelude::*;
 
-pub use mina_network::processor::js::exports::graphql_api_v1;
+pub use mina_network::processor::js::graphql_api_v1;
 
 #[wasm_bindgen]
 pub async fn fetch_block_previous_state_hash(

@@ -5,6 +5,7 @@
 //! Utilities for graphQL backend v1 at <https://graphql.minaexplorer.com/>
 //!
 
+use crate::processor::*;
 use mina_serialization_types::json::*;
 use serde::{Deserialize, Serialize};
 use wasm_bindgen::prelude::*;
@@ -51,6 +52,39 @@ pub struct BlockBasicInfo {
     /// Block state hash
     #[serde(rename = "stateHash")]
     pub state_hash: String,
+}
+
+/// TODO: Doc
+pub struct NonConsensusGraphQLV1Backend {
+    sender: mpsc::Sender<ExternalTransitionJson>,
+}
+
+impl NonConsensusGraphQLV1Backend {
+    /// TODO: Doc
+    pub async fn poll_once(&self) -> anyhow::Result<()> {
+        let blocks = query_latest_blocks(10).await?;
+        for b in blocks {
+            if let Ok(block) = fetch_block(b.block_height, b.state_hash.as_str()).await {
+                _ = self.sender.send(block).await;
+            }
+        }
+        Ok(())
+    }
+}
+
+#[async_trait(?Send)]
+impl NonConsensusNetworkingOps for NonConsensusGraphQLV1Backend {
+    type Block = ExternalTransitionJson;
+
+    fn set_block_responder(&mut self, sender: mpsc::Sender<Self::Block>) {
+        self.sender = sender;
+    }
+
+    async fn query_block(&mut self, request: &QueryBlockRequest) -> anyhow::Result<()> {
+        let block_json = fetch_block(request.height, request.state_hash.as_str()).await?;
+        self.sender.send(block_json).await?;
+        Ok(())
+    }
 }
 
 #[cfg(test)]
