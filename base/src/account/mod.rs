@@ -15,11 +15,11 @@ pub use permissions::{AuthRequired, Permissions};
 pub use timing::Timing;
 pub use token_permissions::TokenPermissions;
 
+use ark_ff::Zero;
 use mina_crypto::hash::{ChainHash, StateHash};
 use mina_hasher::ROInput;
 use mina_serialization_types::v1::AccountV1;
 use proof_systems::mina_signer::{BaseField, CompressedPubKey};
-use proof_systems::o1_utils::FieldHelpers;
 
 /// An account identified by its public key and token ID. Multiple accounts may
 /// where the same public key if multiple tokens exist
@@ -70,8 +70,8 @@ impl mina_hasher::Hashable for Account {
         roi.append_bool(self.public_key.is_odd);
 
         roi.append_hashable(&self.token_id)
-            .append_hashable(&self.token_permissions)
             .append_hashable(&self.balance)
+            .append_hashable(&self.token_permissions)
             .append_hashable(&self.nonce)
             .append_hashable(&self.receipt_chain_hash);
         match self.delegate {
@@ -81,7 +81,7 @@ impl mina_hasher::Hashable for Account {
             }
             None => {
                 let default_key = CompressedPubKey {
-                    x: BaseField::from_bytes(&[0]).unwrap(), // FIXME: not sure if the default field should be this.
+                    x: BaseField::zero(),
                     is_odd: false,
                 };
                 roi.append_field(default_key.x);
