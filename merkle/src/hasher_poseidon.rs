@@ -54,17 +54,14 @@ where
     _pd: PhantomData<Item>,
 }
 
-impl<Item> MerkleHasher<MINA_POSEIDON_MERKLE_DEGREE> for MinaPoseidonMerkleHasher<Item>
+impl<Item> MerkleHasher for MinaPoseidonMerkleHasher<Item>
 where
     Item: mina_hasher::Hashable + PoseidonLegacyHasherPoolProvider<Item = Item>,
     <Item as mina_hasher::Hashable>::D: Default,
 {
     type Item = Item;
     type Hash = Fp;
-    fn hash(
-        item: &Self::Item,
-        _: MerkleTreeNodeMetadata<MINA_POSEIDON_MERKLE_DEGREE>,
-    ) -> Self::Hash {
+    fn hash(item: &Self::Item, _: MerkleTreeNodeMetadata) -> Self::Hash {
         use mina_hasher::Hasher;
         let pool = <Item as PoseidonLegacyHasherPoolProvider>::get_pool();
         let mut hasher = pool.pull();

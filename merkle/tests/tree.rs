@@ -29,7 +29,7 @@ mod tests {
     impl MerkleHasher for TestHasher {
         type Item = i64;
         type Hash = i64;
-        fn hash(item: &Self::Item, _: MerkleTreeNodeMetadata<2>) -> Self::Hash {
+        fn hash(item: &Self::Item, _: MerkleTreeNodeMetadata) -> Self::Hash {
             *item
         }
     }
@@ -38,10 +38,7 @@ mod tests {
 
     impl MerkleMerger for TestMerger {
         type Hash = i64;
-        fn merge(
-            hashes: [Option<Self::Hash>; 2],
-            _: MerkleTreeNodeMetadata<2>,
-        ) -> Option<Self::Hash> {
+        fn merge(hashes: [Option<Self::Hash>; 2], _: MerkleTreeNodeMetadata) -> Option<Self::Hash> {
             match (hashes[0], hashes[1]) {
                 (Some(left), Some(right)) => Some(left + right),
                 (Some(left), None) => Some(left),
@@ -157,6 +154,20 @@ mod tests {
         test_expand_mina_merkle_tree(&mut tree, 128, 8128, 7);
         test_expand_mina_merkle_tree(&mut tree, 129, 8256, 8);
         test_expand_mina_merkle_tree(&mut tree, 188, 17578, 8);
+    }
+
+    #[test]
+    fn test_proofs() {
+        let n = 11;
+        let mut tree = TestMerkleTree::with_capacity(n);
+        let v: Vec<i64> = (0..n).map(|i| i as i64).collect();
+        tree.add_batch(v);
+        let root_hash = tree.root().unwrap();
+        for i in 0..n {
+            println!("{i}");
+            let proof = tree.get_proof(i).unwrap();
+            assert!(proof.verify(&root_hash));
+        }
     }
 
     fn test_expand_mina_merkle_tree(

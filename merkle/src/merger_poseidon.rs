@@ -15,15 +15,15 @@ pub struct MinaPoseidonMerkleMerger;
 impl MerkleMerger for MinaPoseidonMerkleMerger {
     type Hash = Fp;
     fn merge(
-        hashes: [Option<Self::Hash>; MINA_POSEIDON_MERKLE_DEGREE],
-        metadata: MerkleTreeNodeMetadata<MINA_POSEIDON_MERKLE_DEGREE>,
+        hashes: [Option<Self::Hash>; 2],
+        metadata: MerkleTreeNodeMetadata,
     ) -> Option<Self::Hash> {
         merge_poseidon_hash(hashes, metadata.height()).into()
     }
 }
 
 #[derive(Clone)]
-struct MinaPoseidonMerkleTreeNonLeafNode([Option<Fp>; MINA_POSEIDON_MERKLE_DEGREE], u32);
+struct MinaPoseidonMerkleTreeNonLeafNode([Option<Fp>; 2], u32);
 
 impl Hashable for MinaPoseidonMerkleTreeNonLeafNode {
     type D = u32;
@@ -46,7 +46,7 @@ impl Hashable for MinaPoseidonMerkleTreeNonLeafNode {
     }
 }
 
-fn merge_poseidon_hash(hashes: [Option<Fp>; MINA_POSEIDON_MERKLE_DEGREE], height: u32) -> Fp {
+fn merge_poseidon_hash(hashes: [Option<Fp>; 2], height: u32) -> Fp {
     static HASHER_POOL: OnceCell<
         SpinLockObjectPool<PoseidonHasherLegacy<MinaPoseidonMerkleTreeNonLeafNode>>,
     > = OnceCell::new();
@@ -58,7 +58,7 @@ fn merge_poseidon_hash(hashes: [Option<Fp>; MINA_POSEIDON_MERKLE_DEGREE], height
 
 fn merge_poseidon_hash_with_hasher(
     hasher: &mut SpinLockReusable<PoseidonHasherLegacy<MinaPoseidonMerkleTreeNonLeafNode>>,
-    mut hashes: [Option<Fp>; MINA_POSEIDON_MERKLE_DEGREE],
+    mut hashes: [Option<Fp>; 2],
     height: u32,
 ) -> Fp {
     for hash_opt in hashes.iter_mut() {

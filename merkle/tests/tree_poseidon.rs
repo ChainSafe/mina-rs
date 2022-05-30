@@ -30,10 +30,10 @@ mod tests {
     impl_poseidon_legacy_hasher_pool_provider!(TestLeafNode);
     struct TestHasher;
 
-    impl MerkleHasher<2> for TestHasher {
+    impl MerkleHasher for TestHasher {
         type Item = TestLeafNode;
         type Hash = Fp;
-        fn hash(item: &Self::Item, _: MerkleTreeNodeMetadata<2>) -> Self::Hash {
+        fn hash(item: &Self::Item, _: MerkleTreeNodeMetadata) -> Self::Hash {
             item.0
         }
     }
@@ -158,6 +158,13 @@ mod tests {
         assert!(expected_root_hash.is_some());
         assert_eq!(fixed_height, root_height as u32);
         assert_eq!(merkle_ledger.root(), expected_root_hash);
+
+        // Test merkle proofs
+        let root_hash = &expected_root_hash.unwrap();
+        for i in (0..10).chain(merkle_ledger.count() - 10..merkle_ledger.count()) {
+            let proof = merkle_ledger.get_proof(i).unwrap();
+            assert!(proof.verify(root_hash));
+        }
     }
 
     #[cfg(not(target_arch = "wasm32"))]

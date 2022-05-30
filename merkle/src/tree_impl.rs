@@ -4,25 +4,44 @@
 use super::*;
 use std::{cmp::Ordering, marker::PhantomData};
 
-const DEGREE: usize = 2;
-
 // modes of tree operation
 
-#[derive(Default)]
+/// Type state mode for a tree
+pub trait HeightMode {
+    /// Gets the fixed height if applicable
+    fn fixed_height(&self) -> Option<u32>;
+}
+
+#[derive(Default, Debug, Clone)]
 /// Type state mode for a tree with a fixed height
 pub struct FixedHeightMode(u32);
-#[derive(Default)]
+
+impl HeightMode for FixedHeightMode {
+    fn fixed_height(&self) -> Option<u32> {
+        Some(self.0)
+    }
+}
+
+#[derive(Default, Debug, Clone)]
 /// Type state mode for a tree with a variable height that increases as data is added
 pub struct VariableHeightMode;
+
+impl HeightMode for VariableHeightMode {
+    fn fixed_height(&self) -> Option<u32> {
+        None
+    }
+}
 
 /// Special complete binary merkle tree that is compatible with
 /// <https://github.com/o1-labs/snarky/blob/master/src/base/merkle_tree.ml>
 /// whose leaf nodes are at the same height
 pub struct MinaMerkleTree<Item, Hash, Hasher, Merger, Mode>
 where
-    Hasher: MerkleHasher<DEGREE, Item = Item, Hash = Hash>,
-    Merger: MerkleMerger<DEGREE, Hash = Hash>,
-    Hash: Clone,
+    Hasher: MerkleHasher<Item = Item, Hash = Hash>,
+    Merger: MerkleMerger<Hash = Hash>,
+    Hash: Clone + PartialEq + std::fmt::Debug,
+    Item: Clone,
+    Mode: HeightMode,
 {
     mode: Mode,
     variable_height: u32,
@@ -35,9 +54,10 @@ where
 
 impl<Item, Hash, Hasher, Merger> MinaMerkleTree<Item, Hash, Hasher, Merger, FixedHeightMode>
 where
-    Hasher: MerkleHasher<DEGREE, Item = Item, Hash = Hash>,
-    Merger: MerkleMerger<DEGREE, Hash = Hash>,
-    Hash: Clone,
+    Hasher: MerkleHasher<Item = Item, Hash = Hash>,
+    Merger: MerkleMerger<Hash = Hash>,
+    Hash: Clone + PartialEq + std::fmt::Debug,
+    Item: Clone,
 {
     /// Creates a new instance of a fixed height MinaMerkleTree
     pub fn new(height: u32) -> Self {
@@ -50,9 +70,10 @@ where
 
 impl<Item, Hash, Hasher, Merger> MinaMerkleTree<Item, Hash, Hasher, Merger, VariableHeightMode>
 where
-    Hasher: MerkleHasher<DEGREE, Item = Item, Hash = Hash>,
-    Merger: MerkleMerger<DEGREE, Hash = Hash>,
-    Hash: Clone,
+    Hasher: MerkleHasher<Item = Item, Hash = Hash>,
+    Merger: MerkleMerger<Hash = Hash>,
+    Hash: Clone + PartialEq + std::fmt::Debug,
+    Item: Clone,
 {
     /// Creates a new instance of a variable height MinaMerkletree
     pub fn new() -> Self {
@@ -62,10 +83,11 @@ where
 
 impl<Item, Hash, Hasher, Merger, Mode> MinaMerkleTree<Item, Hash, Hasher, Merger, Mode>
 where
-    Hasher: MerkleHasher<DEGREE, Item = Item, Hash = Hash>,
-    Merger: MerkleMerger<DEGREE, Hash = Hash>,
-    Hash: Clone,
-    Mode: Default,
+    Hasher: MerkleHasher<Item = Item, Hash = Hash>,
+    Merger: MerkleMerger<Hash = Hash>,
+    Hash: Clone + PartialEq + std::fmt::Debug,
+    Item: Clone,
+    Mode: Default + HeightMode,
 {
     /// Creates a new instance of [MinaMerkleTree] with estimated capacity of leaves
     pub fn with_capacity(capacity: usize) -> Self {
@@ -75,6 +97,64 @@ where
             leafs: Vec::with_capacity(capacity),
             nodes: Vec::with_capacity(potential_node_count),
             ..Default::default()
+        }
+    }
+
+    /// Gets the merkle proof of an item with the 0-based index of the item
+    /// being added, e.g. the first item is index 0
+    pub fn get_proof(
+        &mut self,
+        index: usize,
+    ) -> Option<DefaultMerkleProof<Item, Hash, Hasher, Merger>> {
+        if self.calculate_hash_if_needed(0).is_some() {
+            let height_above = if let Some(fixed_height) = self.mode.fixed_height() {
+                fixed_height
+            } else {
+                self.variable_height
+            };
+            let index_offset = calculate_node_count(height_above);
+            let capacity = self.mode.fixed_height().unwrap_or(self.variable_height) as usize;
+            let mut peer_indices = Vec::with_capacity(capacity);
+            let mut peer_hashes = Vec::with_capacity(capacity);
+            let (item, _) = &self.leafs[index];
+            let index_with_offset = index_offset + index;
+            let peer_index = if index % 2 == 0 { index + 1 } else { index - 1 };
+            let peer_index_with_offset = index_offset + peer_index;
+            let peer_hash = if peer_index < self.leafs.len() {
+                self.leafs[peer_index].1.clone()
+            } else {
+                None
+            };
+            peer_indices.push(peer_index_with_offset);
+            peer_hashes.push(peer_hash);
+            let mut parent_index = calculate_parent_index(self.nodes.len() + index);
+            let mut parent_index_with_offset = calculate_parent_index(index_with_offset);
+            while parent_index_with_offset > 0 {
+                if parent_index > 0 {
+                    let parent_peer_index = if parent_index % 2 == 0 {
+                        parent_index - 1
+                    } else {
+                        parent_index + 1
+                    };
+                    let parent_peer_index_with_offset =
+                        parent_index_with_offset + parent_peer_index - parent_index;
+                    peer_indices.push(parent_peer_index_with_offset);
+                    peer_hashes.push(self.nodes[parent_peer_index].clone());
+                    parent_index = calculate_parent_index(parent_index);
+                } else {
+                    peer_indices.push(parent_index_with_offset + 1);
+                    peer_hashes.push(None);
+                }
+                parent_index_with_offset = calculate_parent_index(parent_index_with_offset);
+            }
+            Some(DefaultMerkleProof::new(
+                index_with_offset,
+                item.clone(),
+                peer_indices,
+                peer_hashes,
+            ))
+        } else {
+            None
         }
     }
 
@@ -134,12 +214,13 @@ where
     }
 }
 
-impl<Item, Hash, Hasher, Merger> MerkleTree<DEGREE>
+impl<Item, Hash, Hasher, Merger> MerkleTree
     for MinaMerkleTree<Item, Hash, Hasher, Merger, VariableHeightMode>
 where
-    Hasher: MerkleHasher<DEGREE, Item = Item, Hash = Hash>,
-    Merger: MerkleMerger<DEGREE, Hash = Hash>,
-    Hash: Clone,
+    Hasher: MerkleHasher<Item = Item, Hash = Hash>,
+    Merger: MerkleMerger<Hash = Hash>,
+    Hash: Clone + PartialEq + std::fmt::Debug,
+    Item: Clone,
 {
     type Item = Item;
     type Hash = Hash;
@@ -159,18 +240,15 @@ where
     fn add_batch(&mut self, items: impl IntoIterator<Item = Self::Item>) {
         add_batch(self, items)
     }
-
-    fn add(&mut self, item: Self::Item) {
-        self.add_batch(vec![item])
-    }
 }
 
-impl<Item, Hash, Hasher, Merger> MerkleTree<DEGREE>
+impl<Item, Hash, Hasher, Merger> MerkleTree
     for MinaMerkleTree<Item, Hash, Hasher, Merger, FixedHeightMode>
 where
-    Hasher: MerkleHasher<DEGREE, Item = Item, Hash = Hash>,
-    Merger: MerkleMerger<DEGREE, Hash = Hash>,
-    Hash: Clone,
+    Hasher: MerkleHasher<Item = Item, Hash = Hash>,
+    Merger: MerkleMerger<Hash = Hash>,
+    Hash: Clone + PartialEq + std::fmt::Debug,
+    Item: Clone,
 {
     type Item = Item;
     type Hash = Hash;
@@ -204,18 +282,15 @@ where
     fn add_batch(&mut self, items: impl IntoIterator<Item = Self::Item>) {
         add_batch(self, items)
     }
-
-    fn add(&mut self, item: Self::Item) {
-        self.add_batch(vec![item])
-    }
 }
 
 impl<Item, Hash, Hasher, Merger, Mode> Default for MinaMerkleTree<Item, Hash, Hasher, Merger, Mode>
 where
-    Hasher: MerkleHasher<DEGREE, Item = Item, Hash = Hash>,
-    Merger: MerkleMerger<DEGREE, Hash = Hash>,
-    Hash: Clone,
-    Mode: Default,
+    Hasher: MerkleHasher<Item = Item, Hash = Hash>,
+    Merger: MerkleMerger<Hash = Hash>,
+    Hash: Clone + PartialEq + std::fmt::Debug,
+    Item: Clone,
+    Mode: Default + HeightMode,
 {
     fn default() -> Self {
         Self {
@@ -233,10 +308,11 @@ fn add_batch<Item, Hash, Hasher, Merger, Mode>(
     tree: &mut MinaMerkleTree<Item, Hash, Hasher, Merger, Mode>,
     items: impl IntoIterator<Item = Item>,
 ) where
-    Hasher: MerkleHasher<DEGREE, Item = Item, Hash = Hash>,
-    Merger: MerkleMerger<DEGREE, Hash = Hash>,
-    Hash: Clone,
-    Mode: Default,
+    Hasher: MerkleHasher<Item = Item, Hash = Hash>,
+    Merger: MerkleMerger<Hash = Hash>,
+    Hash: Clone + PartialEq + std::fmt::Debug,
+    Item: Clone,
+    Mode: Default + HeightMode,
 {
     let mut leaves: Vec<_> = items
         .into_iter()
