@@ -4,8 +4,10 @@
 //! Mina ExternalTransition
 
 use crate::types::*;
+use crate::verifiable::Verifiable;
 use mina_serialization_types::{json::*, v1::ExternalTransitionV1, *};
 use mina_serialization_types_macros::AutoFrom;
+use proof_systems::mina_signer::Signer;
 use versioned::*;
 
 /// This structure represents a mina block
@@ -41,4 +43,16 @@ impl BinProtSerializationType<'_> for ExternalTransition {
 
 impl JsonSerializationType<'_> for ExternalTransition {
     type T = ExternalTransitionJson;
+}
+
+impl<CTX> Verifiable<CTX> for ExternalTransition
+where
+    CTX: Signer<SignedCommandPayload>,
+{
+    // ExternalTransition is considered valid if:
+    // - Its staged ledger diff is valid
+    // - TODO
+    fn verify(&self, ctx: &mut CTX) -> bool {
+        self.staged_ledger_diff.verify(ctx)
+    }
 }

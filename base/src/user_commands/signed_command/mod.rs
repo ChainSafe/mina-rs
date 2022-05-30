@@ -8,10 +8,11 @@ pub mod builder;
 use crate::numbers::{AccountNonce, Amount, GlobalSlotNumber, TokenId};
 use crate::user_commands::memo::SignedCommandMemo;
 use crate::user_commands::payment::PaymentPayload;
+use crate::verifiable::Verifiable;
 
 use mina_serialization_types_macros::AutoFrom;
 use proof_systems::mina_hasher::{Hashable, ROInput};
-use proof_systems::mina_signer::{CompressedPubKey, Keypair, NetworkId, Signature, Signer};
+use proof_systems::mina_signer::{CompressedPubKey, Keypair, NetworkId, PubKey, Signature, Signer};
 
 const TAG_BITS: usize = 3;
 const PAYMENT_TX_TAG: [bool; TAG_BITS] = [false, false, false];
@@ -44,6 +45,18 @@ impl SignedCommand {
             signer: keypair.public.into_compressed(),
             signature,
         }
+    }
+}
+
+impl<CTX> Verifiable<CTX> for SignedCommand
+where
+    CTX: Signer<SignedCommandPayload>,
+{
+    fn verify(&self, ctx: &mut CTX) -> bool {
+        // do a slightly sketchy conversion via address string. Safe to unwrap as we know it was valid to begin with
+        // TODO replace this with a proper `.into` conversion when supported in proof-systems
+        let signer_uncompressed = PubKey::from_address(&self.signer.into_address()).unwrap();
+        ctx.verify(&self.signature, &signer_uncompressed, &self.payload)
     }
 }
 

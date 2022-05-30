@@ -27,6 +27,7 @@ mod serialization_type_conversions;
 pub mod snark_work;
 pub mod staged_ledger_diff;
 pub mod user_commands;
+mod verifiable;
 pub mod verification_key;
 
 /// Import all crates from proof_systems
