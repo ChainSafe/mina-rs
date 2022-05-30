@@ -172,14 +172,14 @@ mod tests {
                 $nonce,
             )
             .valid_until($valid_until)
-            .memo(SignedCommandMemo::try_from_text($memo).expect("invalid memo string"));
+            .memo(SignedCommandMemo::try_from($memo).expect("invalid memo string"));
 
             let mut payload = builder.build();
 
-            let testnet_sig =
-                SignedCommand::from_payload(payload.clone(), kp, NetworkId::TESTNET).signature;
-            let mainnet_sig =
-                SignedCommand::from_payload(payload.clone(), kp, NetworkId::MAINNET).signature;
+            let testnet_cmd = SignedCommand::from_payload(payload.clone(), kp, NetworkId::TESTNET);
+            let testnet_sig = testnet_cmd.signature;
+            let mainnet_cmd = SignedCommand::from_payload(payload.clone(), kp, NetworkId::MAINNET);
+            let mainnet_sig = mainnet_cmd.signature;
 
             // Context for verification
             let mut testnet_ctx = mina_signer::create_legacy(NetworkId::TESTNET);
@@ -214,6 +214,14 @@ mod tests {
                 testnet_ctx.verify(&mainnet_sig, &kp.public, &payload),
                 false
             );
+
+            // Also check using the implementation of verify
+            assert_eq!(testnet_cmd.verify(&mut testnet_ctx), true);
+            assert_eq!(mainnet_cmd.verify(&mut mainnet_ctx), true);
+
+            // Ensure they fail on the other network
+            assert_eq!(testnet_cmd.verify(&mut mainnet_ctx), false);
+            assert_eq!(mainnet_cmd.verify(&mut testnet_ctx), false);
         };
     }
 
