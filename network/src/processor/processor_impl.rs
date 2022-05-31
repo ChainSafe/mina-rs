@@ -4,6 +4,7 @@
 use tokio::sync::RwLockReadGuard;
 
 use super::*;
+use log::error;
 use std::marker::{Send, Sync};
 
 impl<'a, NetworkBlock, FrontierBlock, TF, NCOps>
@@ -46,11 +47,7 @@ where
     /// Schedules event loops of all types of communications between [TransitionFrontier] and
     /// [NonConsensusNetworkingOps].
     pub async fn run(&self) {
-        // let block_receiver = &mut self.block_receiver;
-        // let transition_frontier = &mut self.transition_frontier;
-        // let query_block_request_receiver = &mut self.query_block_request_receiver;
-        // let nonconsensus_ops = &mut self.nonconsensus_ops;
-        _ = tokio::join!(self.run_recv_block_loop(), self.run_query_block_loop());
+        tokio::join!(self.run_recv_block_loop(), self.run_query_block_loop());
     }
 
     /// Schedules the event loop of sending blocks that are received from the network
@@ -59,7 +56,9 @@ where
         let mut block_receiver = self.block_receiver.write().await;
         while let Some(block) = block_receiver.recv().await {
             let mut transition_frontier = self.transition_frontier.write().await;
-            _ = transition_frontier.add_block(block.into()).await;
+            if let Err(err) = transition_frontier.add_block(block.into()).await {
+                error!("{err}");
+            }
         }
     }
 
@@ -69,7 +68,9 @@ where
         let mut query_block_request_receiver = self.query_block_request_receiver.write().await;
         while let Some(request) = query_block_request_receiver.recv().await {
             let mut nonconsensus_ops = self.nonconsensus_ops.write().await;
-            _ = nonconsensus_ops.query_block(&request).await;
+            if let Err(err) = nonconsensus_ops.query_block(&request).await {
+                error!("{err}");
+            }
         }
     }
 }

@@ -6,6 +6,7 @@
 //!
 
 use crate::processor::*;
+use log::error;
 use mina_serialization_types::json::*;
 use serde::{Deserialize, Serialize};
 use wasm_bindgen::prelude::*;
@@ -72,7 +73,9 @@ impl NonConsensusGraphQLV1Backend {
             let blocks = query_latest_blocks(10).await?;
             for b in blocks {
                 if let Ok(block) = fetch_block(b.block_height, b.state_hash.as_str()).await {
-                    _ = block_responder.send(block).await;
+                    if let Err(err) = block_responder.send(block).await {
+                        error!("{err}");
+                    }
                 }
             }
         }

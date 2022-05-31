@@ -21,6 +21,7 @@ async-trait = "0.1"
 cfg-if = "1"
 lazy_static = "1"
 libp2p = {version = "0.44", features = ["dns-tokio", "tcp-tokio"]}
+log = "0.4"
 multihash = "0.16"
 tokio = {version = "1.18", features = ["macros", "sync"]}
 
