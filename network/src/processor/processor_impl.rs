@@ -1,11 +1,10 @@
 // Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
-use tokio::sync::RwLockReadGuard;
-
 use super::*;
 use log::error;
 use std::marker::{Send, Sync};
+use tokio::sync::{RwLock, RwLockReadGuard};
 
 impl<'a, NetworkBlock, FrontierBlock, TF, NCOps>
     NetworkMessageProcessor<NetworkBlock, FrontierBlock, TF, NCOps>

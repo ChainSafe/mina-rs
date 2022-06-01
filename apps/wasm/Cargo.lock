@@ -1805,9 +1805,9 @@ dependencies = [
 
 [[package]]
 name = "libp2p-swarm-derive"
-version = "0.27.1"
+version = "0.27.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "daf2fe8c80b43561355f4d51875273b5b6dfbac37952e8f64b1270769305c9d7"
+checksum = "4f693c8c68213034d472cbb93a379c63f4f307d97c06f1c41e4985de481687a5"
 dependencies = [
  "quote",
  "syn",
@@ -2062,7 +2062,7 @@ dependencies = [
 [[package]]
 name = "mina-curves"
 version = "0.1.0"
-source = "git+https://github.com/o1-labs/proof-systems?rev=6f99af4a37a5a3ebc0c898aa775c958978272ec8#6f99af4a37a5a3ebc0c898aa775c958978272ec8"
+source = "git+https://github.com/o1-labs/proof-systems?rev=b883501b06375da79fc9965c1c17e02a72e9ded7#b883501b06375da79fc9965c1c17e02a72e9ded7"
 dependencies = [
  "ark-ec",
  "ark-ff",
@@ -2071,7 +2071,7 @@ dependencies = [
 [[package]]
 name = "mina-hasher"
 version = "0.1.0"
-source = "git+https://github.com/o1-labs/proof-systems?rev=6f99af4a37a5a3ebc0c898aa775c958978272ec8#6f99af4a37a5a3ebc0c898aa775c958978272ec8"
+source = "git+https://github.com/o1-labs/proof-systems?rev=b883501b06375da79fc9965c1c17e02a72e9ded7#b883501b06375da79fc9965c1c17e02a72e9ded7"
 dependencies = [
  "ark-ff",
  "bitvec",
@@ -2193,7 +2193,7 @@ dependencies = [
 [[package]]
 name = "mina-signer"
 version = "0.1.0"
-source = "git+https://github.com/o1-labs/proof-systems?rev=6f99af4a37a5a3ebc0c898aa775c958978272ec8#6f99af4a37a5a3ebc0c898aa775c958978272ec8"
+source = "git+https://github.com/o1-labs/proof-systems?rev=b883501b06375da79fc9965c1c17e02a72e9ded7#b883501b06375da79fc9965c1c17e02a72e9ded7"
 dependencies = [
  "ark-ec",
  "ark-ff",
@@ -2481,7 +2481,7 @@ dependencies = [
 [[package]]
 name = "o1-utils"
 version = "0.1.0"
-source = "git+https://github.com/o1-labs/proof-systems?rev=6f99af4a37a5a3ebc0c898aa775c958978272ec8#6f99af4a37a5a3ebc0c898aa775c958978272ec8"
+source = "git+https://github.com/o1-labs/proof-systems?rev=b883501b06375da79fc9965c1c17e02a72e9ded7#b883501b06375da79fc9965c1c17e02a72e9ded7"
 dependencies = [
  "ark-ec",
  "ark-ff",
@@ -2512,7 +2512,7 @@ checksum = "624a8340c38c1b80fd549087862da4ba43e08858af025b236e509b6649fc13d5"
 [[package]]
 name = "oracle"
 version = "0.1.0"
-source = "git+https://github.com/o1-labs/proof-systems?rev=6f99af4a37a5a3ebc0c898aa775c958978272ec8#6f99af4a37a5a3ebc0c898aa775c958978272ec8"
+source = "git+https://github.com/o1-labs/proof-systems?rev=b883501b06375da79fc9965c1c17e02a72e9ded7#b883501b06375da79fc9965c1c17e02a72e9ded7"
 dependencies = [
  "ark-ec",
  "ark-ff",
@@ -2861,9 +2861,9 @@ dependencies = [
 
 [[package]]
 name = "protobuf"
-version = "3.0.2"
+version = "3.0.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a74937d52a466a535fda2e83f0e575f3ef1b34e4a84545b4a9e418fad32a3b1c"
+checksum = "5d644aefa452a3188ce8fd92e71944ad082feca2016eb41d4b9c55ceba9e5f38"
 dependencies = [
  "bytes",
  "once_cell",
@@ -2873,9 +2873,9 @@ dependencies = [
 
 [[package]]
 name = "protobuf-codegen"
-version = "3.0.2"
+version = "3.0.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a02997c69a76d9dba3124e2041dc7bb32c98e2cc7bbd136950312a819c64f825"
+checksum = "a98d7c8e6ce193695c7f70e0b945fa07e68f3918bca8f142ff0463a6351b1090"
 dependencies = [
  "anyhow",
  "once_cell",
@@ -2888,9 +2888,9 @@ dependencies = [
 
 [[package]]
 name = "protobuf-parse"
-version = "3.0.2"
+version = "3.0.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3272369e02691aef4ff079ef97bb278afa9d15c21a41fd727654ab712e4bb297"
+checksum = "1447ee61a7ac2df06b6d1b0067fb82e9d4e889989f963300096e1eec9c8b1d0d"
 dependencies = [
  "anyhow",
  "indexmap",
@@ -2904,9 +2904,9 @@ dependencies = [
 
 [[package]]
 name = "protobuf-support"
-version = "3.0.2"
+version = "3.0.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ebf34636d66670da249c3b6589142e7f0b4918a015ec72fa32102fd43e023b0e"
+checksum = "f737edf903b494f760e5cdf2e16d904f5dd36206a14afa84654688f422c950eb"
 dependencies = [
  "thiserror",
 ]
