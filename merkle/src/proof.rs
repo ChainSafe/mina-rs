@@ -83,7 +83,6 @@ where
                 &self.item,
                 MerkleTreeNodeMetadata::new(self.index, self.peer_indices.len() as u32),
             ));
-            // println!("{index}-{:?}", hash_opt);
             for i in 0..self.peer_indices.len() {
                 let peer_index = self.peer_indices[i];
                 let peer_hash_opt = &self.peer_hashes[i];
@@ -97,7 +96,6 @@ where
                     hashes,
                     MerkleTreeNodeMetadata::new(parent_index, self.peer_indices.len() as u32),
                 );
-                // println!("{i}-{index}-{peer_index}-{parent_index}-{:?}", hash_opt);
                 index = parent_index;
             }
             hash_opt

@@ -1,6 +1,7 @@
 {
   "packages": [
-    "apps/wasm/mvp"
+    "apps/wasm/mvp",
+    "network"
   ],
   "version": "4.0.0",
   "npmClient": "yarn"

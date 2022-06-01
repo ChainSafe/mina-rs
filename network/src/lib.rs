@@ -8,3 +8,4 @@
 //! and peer-to-peer communication
 
 pub mod p2p;
+pub mod processor;

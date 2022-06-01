@@ -1,0 +1,15 @@
+{
+  "name": "mina-network",
+  "version": "1.0.0",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "test": "jest"
+  },
+  "dependencies": {
+    "node-fetch": "^2.6.7"
+  },
+  "devDependencies": {
+    "jest": "^28.1.0"
+  }
+}
