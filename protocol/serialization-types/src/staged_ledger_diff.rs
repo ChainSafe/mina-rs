@@ -178,9 +178,10 @@ pub enum SignedCommandPayloadBodyJson {
     StakeDelegation(StakeDelegationJson),
 }
 
-impl_mina_enum_json_serde!(
+impl_mina_enum_json_serde_with_option!(
     SignedCommandPayloadBodyJson,
-    SignedCommandPayloadBodyJsonProxy
+    SignedCommandPayloadBodyJsonProxy,
+    false
 );
 
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
