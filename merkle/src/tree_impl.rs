@@ -101,7 +101,8 @@ where
     }
 
     /// Gets the merkle proof of an item with the 0-based index of the item
-    /// being added, e.g. the first item is index 0
+    /// being added, e.g. the first item is index 0.
+    /// This function panics when the index is out of range.
     pub fn get_proof(
         &mut self,
         index: usize,

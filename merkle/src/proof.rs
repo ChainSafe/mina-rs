@@ -76,8 +76,6 @@ where
 
     fn root_hash(&self) -> Option<Hash> {
         if self.index > 0 {
-            // let mut peer_index = get_peer_index(self.index);
-            // let mut parent_index = get_parent_index(self.index);
             let mut index = self.index;
             let mut hash_opt = Some(Hasher::hash(
                 &self.item,
