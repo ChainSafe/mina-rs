@@ -105,6 +105,17 @@ impl Hashable for SignedCommandPayload {
                 roi.append_u64(pp.amount.0);
                 roi.append_bool(false); // this is the token locked field. Not sure where this belongs yet
             }
+            SignedCommandPayloadBody::StakeDelegation(s) => match s {
+                StakeDelegation::SetDelegate {
+                    delegator,
+                    new_delegate,
+                } => {
+                    roi.append_field(delegator.x);
+                    roi.append_bool(delegator.is_odd);
+                    roi.append_field(new_delegate.x);
+                    roi.append_bool(new_delegate.is_odd);
+                }
+            },
         };
         roi
     }
@@ -143,7 +154,22 @@ pub struct SignedCommandPayloadCommon {
 pub enum SignedCommandPayloadBody {
     /// Payment transfer fields
     PaymentPayload(PaymentPayload),
+    /// Stake Delegation fields
+    StakeDelegation(StakeDelegation),
     // FIXME: other variants are not covered by current test block
+}
+
+/// Enum of variable fields for stake delegation
+#[derive(Clone, PartialEq, Debug, AutoFrom)]
+#[auto_from(mina_serialization_types::staged_ledger_diff::StakeDelegation)]
+pub enum StakeDelegation {
+    /// Set Delegate
+    SetDelegate {
+        /// Delegator
+        delegator: CompressedPubKey,
+        /// New Delegate
+        new_delegate: CompressedPubKey,
+    },
 }
 
 #[cfg(test)]
