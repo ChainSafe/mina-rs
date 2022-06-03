@@ -28,7 +28,7 @@
     "lodash": "^4.17.21",
     "marked": "^4.0.16",
     "node-fetch": "^2.6.7",
-    "protobufjs": "^6.11.2",
+    "protobufjs": "^6.11.3",
     "vue": "^3.2.34"
   },
   "devDependencies": {
