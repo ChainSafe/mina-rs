@@ -255,6 +255,7 @@ mod tests {
                         );
                         assert_eq!(body.token_id.0, 1);
                     }
+                    _ => {}
                 };
             }
         }
