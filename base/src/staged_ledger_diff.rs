@@ -10,10 +10,11 @@
 use crate::numbers::Amount;
 use crate::snark_work::TransactionSnarkWork;
 use crate::types::TokenId;
-use crate::user_commands::UserCommand;
+use crate::user_commands::{SignedCommandPayload, UserCommand};
+use crate::verifiable::Verifiable;
 use mina_serialization_types::{json::*, v1::*};
 use mina_serialization_types_macros::AutoFrom;
-use proof_systems::mina_signer::CompressedPubKey;
+use proof_systems::mina_signer::{CompressedPubKey, Signer};
 use smart_default::SmartDefault;
 use versioned::*;
 
@@ -25,6 +26,21 @@ pub struct StagedLedgerDiff {
 }
 
 impl_from_with_proxy!(StagedLedgerDiff, StagedLedgerDiffV1, StagedLedgerDiffJson);
+
+impl<CTX> Verifiable<CTX> for StagedLedgerDiff
+where
+    CTX: Signer<SignedCommandPayload>,
+{
+    // StagedLedgerDiff is considered valid if:
+    // - All PreDiffs are valid
+    fn verify(&self, ctx: &mut CTX) -> bool {
+        if let Some(diff_one) = &self.diff.diff_one() {
+            diff_one.verify(ctx) && self.diff.diff_two().verify(ctx)
+        } else {
+            self.diff.diff_two().verify(ctx)
+        }
+    }
+}
 
 #[derive(Clone, PartialEq, Debug, Default, AutoFrom)]
 #[auto_from(mina_serialization_types::staged_ledger_diff::StagedLedgerDiffTuple)]
@@ -50,6 +66,19 @@ pub struct StagedLedgerPreDiff {
     pub commands: Vec<UserCommandWithStatus>,
     pub coinbase: CoinBase,
     pub internal_command_balances: Vec<InternalCommandBalanceData>,
+}
+
+impl<CTX> Verifiable<CTX> for StagedLedgerPreDiff
+where
+    CTX: Signer<SignedCommandPayload>,
+{
+    // PreDiff is considered valid if:
+    // - all commands are valid
+    fn verify(&self, ctx: &mut CTX) -> bool {
+        self.commands
+            .iter()
+            .all(|cmd_with_status| cmd_with_status.data.verify(ctx))
+    }
 }
 
 #[derive(Clone, PartialEq, Debug, AutoFrom)]

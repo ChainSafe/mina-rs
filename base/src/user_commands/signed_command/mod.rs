@@ -8,10 +8,11 @@ pub mod builder;
 use crate::numbers::{AccountNonce, Amount, GlobalSlotNumber, TokenId};
 use crate::user_commands::memo::SignedCommandMemo;
 use crate::user_commands::payment::PaymentPayload;
+use crate::verifiable::Verifiable;
 
 use mina_serialization_types_macros::AutoFrom;
 use proof_systems::mina_hasher::{Hashable, ROInput};
-use proof_systems::mina_signer::{CompressedPubKey, Keypair, NetworkId, Signature, Signer};
+use proof_systems::mina_signer::{CompressedPubKey, Keypair, NetworkId, PubKey, Signature, Signer};
 
 const TAG_BITS: usize = 3;
 const PAYMENT_TX_TAG: [bool; TAG_BITS] = [false, false, false];
@@ -44,6 +45,18 @@ impl SignedCommand {
             signer: keypair.public.into_compressed(),
             signature,
         }
+    }
+}
+
+impl<CTX> Verifiable<CTX> for SignedCommand
+where
+    CTX: Signer<SignedCommandPayload>,
+{
+    fn verify(&self, ctx: &mut CTX) -> bool {
+        // do a slightly sketchy conversion via address string. Safe to unwrap as we know it was valid to begin with
+        // TODO replace this with a proper `.into` conversion when supported in proof-systems
+        let signer_uncompressed = PubKey::from_address(&self.signer.into_address()).unwrap();
+        ctx.verify(&self.signature, &signer_uncompressed, &self.payload)
     }
 }
 
@@ -163,10 +176,10 @@ mod tests {
 
             let mut payload = builder.build();
 
-            let testnet_sig =
-                SignedCommand::from_payload(payload.clone(), kp, NetworkId::TESTNET).signature;
-            let mainnet_sig =
-                SignedCommand::from_payload(payload.clone(), kp, NetworkId::MAINNET).signature;
+            let testnet_cmd = SignedCommand::from_payload(payload.clone(), kp, NetworkId::TESTNET);
+            let testnet_sig = testnet_cmd.signature;
+            let mainnet_cmd = SignedCommand::from_payload(payload.clone(), kp, NetworkId::MAINNET);
+            let mainnet_sig = mainnet_cmd.signature;
 
             // Context for verification
             let mut testnet_ctx = mina_signer::create_legacy(NetworkId::TESTNET);
@@ -201,6 +214,14 @@ mod tests {
                 testnet_ctx.verify(&mainnet_sig, &kp.public, &payload),
                 false
             );
+
+            // Also check using the implementation of verify
+            assert_eq!(testnet_cmd.verify(&mut testnet_ctx), true);
+            assert_eq!(mainnet_cmd.verify(&mut mainnet_ctx), true);
+
+            // Ensure they fail on the other network
+            assert_eq!(testnet_cmd.verify(&mut mainnet_ctx), false);
+            assert_eq!(mainnet_cmd.verify(&mut testnet_ctx), false);
         };
     }
 
