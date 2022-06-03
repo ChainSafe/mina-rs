@@ -27,6 +27,9 @@ thiserror = "1"
 
 [dev-dependencies]
 mina-serialization-types = {path = "../protocol/serialization-types"}
+test-fixtures = {path = "../protocol/test-fixtures"}
+serde_json = "1"
+
 
 anyhow = "1"
 base64 = "0.13"
