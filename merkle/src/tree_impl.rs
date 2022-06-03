@@ -108,6 +108,8 @@ where
         index: usize,
     ) -> Option<DefaultMerkleProof<Item, Hash, Hasher, Merger>> {
         if self.calculate_hash_if_needed(0).is_some() {
+            // 1. Calculates the number of nodes above the data node,
+            // for calculating its index in the tree (0 for the root, counted from topdown, left to right)
             let height_above = if let Some(fixed_height) = self.mode.fixed_height() {
                 fixed_height
             } else {
@@ -119,6 +121,7 @@ where
             let mut peer_hashes = Vec::with_capacity(capacity);
             let (item, _) = &self.leafs[index];
             let index_with_offset = index_offset + index;
+            // 2. Gets the index and hash of its sibling in the tree, and push to the proof vec
             let peer_index = if index % 2 == 0 { index + 1 } else { index - 1 };
             let peer_index_with_offset = index_offset + peer_index;
             let peer_hash = if peer_index < self.leafs.len() {
@@ -128,10 +131,15 @@ where
             };
             peer_indices.push(peer_index_with_offset);
             peer_hashes.push(peer_hash);
+            // 3. Gets the index of their parent node and point the cursor to it
+            // parent_index is the index of the actual tree with the variable height
             let mut parent_index = calculate_parent_index(self.nodes.len() + index);
+            // and parent_index_with_offset is the index of the virtual tree with possible fixed height
+            // when the fixed height equals to the variable height, parent_index equals to parent_index_with_offset
             let mut parent_index_with_offset = calculate_parent_index(index_with_offset);
             while parent_index_with_offset > 0 {
                 if parent_index > 0 {
+                    // 4. Gets the index and hash of the sibling of this node, and push to the proof vec
                     let parent_peer_index = if parent_index % 2 == 0 {
                         parent_index - 1
                     } else {
@@ -143,9 +151,14 @@ where
                     peer_hashes.push(self.nodes[parent_peer_index].clone());
                     parent_index = calculate_parent_index(parent_index);
                 } else {
+                    // 4.1 When it comes to virtual nodes(only when fixed node count > variable node count)
+                    // that are not stored in the tree, use None hash and leave it for the merger to recalculate
+                    // in proof verification flow
                     peer_indices.push(parent_index_with_offset + 1);
                     peer_hashes.push(None);
                 }
+                // 5. Go back to step 3, point the cursor to its parent and apply the same flow
+                // until root node is hit
                 parent_index_with_offset = calculate_parent_index(parent_index_with_offset);
             }
             Some(DefaultMerkleProof::new(

@@ -27,28 +27,14 @@ pub trait MerkleTree {
 /// Trait for implementing sparse binary merkle tree.
 /// It is essentially a collection of [MerkleProof]
 pub trait SparseMerkleTree {
-    /// Type of the leaf data
-    type Item;
-    /// Type of the hash values
-    type Hash: PartialEq + Clone;
-    /// Type of the merkle hasher
-    type Hasher: MerkleHasher<Item = Self::Item, Hash = Self::Hash>;
-    /// Type of the merkle merger
-    type Merger: MerkleMerger<Hash = Self::Hash>;
+    /// Type of the merkle proof
+    type MerkleProof: MerkleProof;
 
     /// Adds a single [MerkleProof]
-    fn add(
-        &mut self,
-        proof: DefaultMerkleProof<Self::Item, Self::Hash, Self::Hasher, Self::Merger>,
-    ) {
+    fn add(&mut self, proof: Self::MerkleProof) {
         self.add_batch(vec![proof])
     }
 
     /// Adds a collection of [MerkleProof]
-    fn add_batch(
-        &mut self,
-        proofs: impl IntoIterator<
-            Item = DefaultMerkleProof<Self::Item, Self::Hash, Self::Hasher, Self::Merger>,
-        >,
-    );
+    fn add_batch(&mut self, proofs: impl IntoIterator<Item = Self::MerkleProof>);
 }
