@@ -41,6 +41,19 @@
 <span id="34">34</span>
 <span id="35">35</span>
 <span id="36">36</span>
+<span id="37">37</span>
+<span id="38">38</span>
+<span id="39">39</span>
+<span id="40">40</span>
+<span id="41">41</span>
+<span id="42">42</span>
+<span id="43">43</span>
+<span id="44">44</span>
+<span id="45">45</span>
+<span id="46">46</span>
+<span id="47">47</span>
+<span id="48">48</span>
+<span id="49">49</span>
 </pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems</span>
 <span class="comment">// SPDX-License-Identifier: Apache-2.0</span>
 
@@ -52,6 +65,7 @@
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">payment</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">signed_command</span>;
 
+<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::verifiable::Verifiable</span>;
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">memo::SignedCommandMemo</span>;
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">payment::PaymentPayload</span>;
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">signed_command</span>::{
@@ -60,6 +74,7 @@
 
 <span class="kw">use</span> <span class="ident">mina_serialization_types::json::UserCommandJson</span>;
 <span class="kw">use</span> <span class="ident">mina_serialization_types_macros::AutoFrom</span>;
+<span class="kw">use</span> <span class="ident">proof_systems::mina_signer::Signer</span>;
 <span class="kw">use</span> <span class="ident">versioned</span>::<span class="kw-2">*</span>;
 
 <span class="doccomment">/// The top level user command type</span>
@@ -77,6 +92,17 @@
     <span class="ident">mina_serialization_types::staged_ledger_diff::UserCommand</span>,
     <span class="ident">UserCommandJson</span>
 );
+
+<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">CTX</span><span class="op">&gt;</span> <span class="ident">Verifiable</span><span class="op">&lt;</span><span class="ident">CTX</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">UserCommand</span>
+<span class="kw">where</span>
+    <span class="ident">CTX</span>: <span class="ident">Signer</span><span class="op">&lt;</span><span class="ident">SignedCommandPayload</span><span class="op">&gt;</span>,
+{
+    <span class="kw">fn</span> <span class="ident">verify</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">ctx</span>: <span class="kw-2">&amp;mut</span> <span class="ident">CTX</span>) -&gt; <span class="ident">bool</span> {
+        <span class="kw">match</span> <span class="self">self</span> {
+            <span class="ident">UserCommand::SignedCommand</span>(<span class="ident">sc</span>) =&gt; <span class="ident">sc</span>.<span class="ident">verify</span>(<span class="ident">ctx</span>),
+        }
+    }
+}
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="mina_rs_base" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.63.0-nightly (e09449220 2022-05-31)" ></div>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="mina_rs_base" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.63.0-nightly (e71440575 2022-06-02)" ></div>
 </body></html>

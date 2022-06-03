@@ -153,6 +153,35 @@
 <span id="146">146</span>
 <span id="147">147</span>
 <span id="148">148</span>
+<span id="149">149</span>
+<span id="150">150</span>
+<span id="151">151</span>
+<span id="152">152</span>
+<span id="153">153</span>
+<span id="154">154</span>
+<span id="155">155</span>
+<span id="156">156</span>
+<span id="157">157</span>
+<span id="158">158</span>
+<span id="159">159</span>
+<span id="160">160</span>
+<span id="161">161</span>
+<span id="162">162</span>
+<span id="163">163</span>
+<span id="164">164</span>
+<span id="165">165</span>
+<span id="166">166</span>
+<span id="167">167</span>
+<span id="168">168</span>
+<span id="169">169</span>
+<span id="170">170</span>
+<span id="171">171</span>
+<span id="172">172</span>
+<span id="173">173</span>
+<span id="174">174</span>
+<span id="175">175</span>
+<span id="176">176</span>
+<span id="177">177</span>
 </pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems</span>
 <span class="comment">// SPDX-License-Identifier: Apache-2.0</span>
 
@@ -165,10 +194,11 @@
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::numbers::Amount</span>;
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::snark_work::TransactionSnarkWork</span>;
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::types::TokenId</span>;
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::user_commands::UserCommand</span>;
+<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::user_commands</span>::{<span class="ident">SignedCommandPayload</span>, <span class="ident">UserCommand</span>};
+<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::verifiable::Verifiable</span>;
 <span class="kw">use</span> <span class="ident">mina_serialization_types</span>::{<span class="ident">json</span>::<span class="kw-2">*</span>, <span class="ident">v1</span>::<span class="kw-2">*</span>};
 <span class="kw">use</span> <span class="ident">mina_serialization_types_macros::AutoFrom</span>;
-<span class="kw">use</span> <span class="ident">proof_systems::mina_signer::CompressedPubKey</span>;
+<span class="kw">use</span> <span class="ident">proof_systems::mina_signer</span>::{<span class="ident">CompressedPubKey</span>, <span class="ident">Signer</span>};
 <span class="kw">use</span> <span class="ident">smart_default::SmartDefault</span>;
 <span class="kw">use</span> <span class="ident">versioned</span>::<span class="kw-2">*</span>;
 
@@ -180,6 +210,21 @@
 }
 
 <span class="macro">impl_from_with_proxy!</span>(<span class="ident">StagedLedgerDiff</span>, <span class="ident">StagedLedgerDiffV1</span>, <span class="ident">StagedLedgerDiffJson</span>);
+
+<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">CTX</span><span class="op">&gt;</span> <span class="ident">Verifiable</span><span class="op">&lt;</span><span class="ident">CTX</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">StagedLedgerDiff</span>
+<span class="kw">where</span>
+    <span class="ident">CTX</span>: <span class="ident">Signer</span><span class="op">&lt;</span><span class="ident">SignedCommandPayload</span><span class="op">&gt;</span>,
+{
+    <span class="comment">// StagedLedgerDiff is considered valid if:</span>
+    <span class="comment">// - All PreDiffs are valid</span>
+    <span class="kw">fn</span> <span class="ident">verify</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">ctx</span>: <span class="kw-2">&amp;mut</span> <span class="ident">CTX</span>) -&gt; <span class="ident">bool</span> {
+        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">diff_one</span>) <span class="op">=</span> <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">diff</span>.<span class="ident">diff_one</span>() {
+            <span class="ident">diff_one</span>.<span class="ident">verify</span>(<span class="ident">ctx</span>) <span class="op">&amp;&amp;</span> <span class="self">self</span>.<span class="ident">diff</span>.<span class="ident">diff_two</span>().<span class="ident">verify</span>(<span class="ident">ctx</span>)
+        } <span class="kw">else</span> {
+            <span class="self">self</span>.<span class="ident">diff</span>.<span class="ident">diff_two</span>().<span class="ident">verify</span>(<span class="ident">ctx</span>)
+        }
+    }
+}
 
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>, <span class="ident">Default</span>, <span class="ident">AutoFrom</span>)]</span>
 <span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">mina_serialization_types::staged_ledger_diff::StagedLedgerDiffTuple</span>)]</span>
@@ -205,6 +250,19 @@
     <span class="kw">pub</span> <span class="ident">commands</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">UserCommandWithStatus</span><span class="op">&gt;</span>,
     <span class="kw">pub</span> <span class="ident">coinbase</span>: <span class="ident">CoinBase</span>,
     <span class="kw">pub</span> <span class="ident">internal_command_balances</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">InternalCommandBalanceData</span><span class="op">&gt;</span>,
+}
+
+<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">CTX</span><span class="op">&gt;</span> <span class="ident">Verifiable</span><span class="op">&lt;</span><span class="ident">CTX</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">StagedLedgerPreDiff</span>
+<span class="kw">where</span>
+    <span class="ident">CTX</span>: <span class="ident">Signer</span><span class="op">&lt;</span><span class="ident">SignedCommandPayload</span><span class="op">&gt;</span>,
+{
+    <span class="comment">// PreDiff is considered valid if:</span>
+    <span class="comment">// - all commands are valid</span>
+    <span class="kw">fn</span> <span class="ident">verify</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">ctx</span>: <span class="kw-2">&amp;mut</span> <span class="ident">CTX</span>) -&gt; <span class="ident">bool</span> {
+        <span class="self">self</span>.<span class="ident">commands</span>
+            .<span class="ident">iter</span>()
+            .<span class="ident">all</span>(<span class="op">|</span><span class="ident">cmd_with_status</span><span class="op">|</span> <span class="ident">cmd_with_status</span>.<span class="ident">data</span>.<span class="ident">verify</span>(<span class="ident">ctx</span>))
+    }
 }
 
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>, <span class="ident">AutoFrom</span>)]</span>
@@ -302,5 +360,5 @@
     <span class="kw">pub</span> <span class="ident">receiver2_balance</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Amount</span><span class="op">&gt;</span>,
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_rs_base" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.63.0-nightly (e09449220 2022-05-31)" ></div>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_rs_base" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.63.0-nightly (e71440575 2022-06-02)" ></div>
 </body></html>
