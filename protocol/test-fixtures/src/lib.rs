@@ -49,6 +49,11 @@ lazy_static! {
         "data/mainnet-77748-3NKaBJsN1SehD6iJwRwJSFmVzJg5DXSUQVgnMxtH4eer4aF5BrDK.json"
         "data/mainnet-113267-3NLenrog9wkiJMoA774T9VraqSUGhCuhbDLj3JKbEzomNdjr78G8.json"
     );
+
+    pub static ref CONSENSUS_TEST_BLOCKS: HashMap<String, serde_json::Value> = load_json_test_blocks!(
+        "data/consensus/mainnet-113267-3NLenrog9wkiJMoA774T9VraqSUGhCuhbDLj3JKbEzomNdjr78G8.json"
+        "data/consensus/mainnet-77748-3NKaBJsN1SehD6iJwRwJSFmVzJg5DXSUQVgnMxtH4eer4aF5BrDK.json"
+    );
 }
 
 pub const VERIFICATION_KEY: &[u8] = include_bytes!(

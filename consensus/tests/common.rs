@@ -6,7 +6,8 @@ mod tests {
     use std::str::FromStr;
 
     use mina_consensus::{common::*, error::ConsensusError};
-    use mina_rs_base::types::*;
+    use mina_rs_base::types::ExternalTransition;
+    use mina_rs_base::{types::*, JsonSerializationType};
     use wasm_bindgen_test::*;
 
     #[test]
@@ -507,57 +508,25 @@ mod tests {
     // Current chain: Chain A
     // Candidate chains: Chain B (Lesser relative min window density)
     fn test_select_secure_chain_long_range_fork_lesser_relative_min_window_density() {
+        // Chain A
+        let json_block = test_fixtures::JSON_TEST_BLOCKS
+            .get("mainnet-113267-3NLenrog9wkiJMoA774T9VraqSUGhCuhbDLj3JKbEzomNdjr78G8.json")
+            .unwrap();
+        let json_value: <ExternalTransition as JsonSerializationType>::T =
+            serde_json::from_value(json_block.clone()).unwrap();
+        let block_from_json: ExternalTransition = json_value.into();
         let mut chain_a = ProtocolStateChain::default();
-        let mut consensus_state = ConsensusState::default();
-        consensus_state.epoch_count = Length(23);
-        consensus_state.min_window_density = Length(14);
-        consensus_state.sub_window_densities = vec![
-            Length(7),
-            Length(2),
-            Length(2),
-            Length(5),
-            Length(6),
-            Length(7),
-            Length(5),
-            Length(7),
-            Length(5),
-            Length(5),
-            Length(5),
-        ];
-        consensus_state.curr_global_slot = GlobalSlot {
-            slot_number: GlobalSlotNumber(167176),
-            slots_per_epoch: Length(7140),
-        };
-        consensus_state.blockchain_length = Length(113267);
-        let mut prot_state = ProtocolState::default();
-        prot_state.body.consensus_state = consensus_state;
-        chain_a.push(prot_state).unwrap();
+        chain_a.push(block_from_json.protocol_state).unwrap();
 
+        // Chain B
+        let json_block = test_fixtures::JSON_TEST_BLOCKS
+            .get("mainnet-77748-3NKaBJsN1SehD6iJwRwJSFmVzJg5DXSUQVgnMxtH4eer4aF5BrDK.json")
+            .unwrap();
+        let json_value: <ExternalTransition as JsonSerializationType>::T =
+            serde_json::from_value(json_block.clone()).unwrap();
+        let block_from_json: ExternalTransition = json_value.into();
         let mut chain_b = ProtocolStateChain::default();
-        let mut consensus_state = ConsensusState::default();
-        consensus_state.epoch_count = Length(15);
-        consensus_state.min_window_density = Length(33);
-        consensus_state.sub_window_densities = vec![
-            Length(6),
-            Length(1),
-            Length(3),
-            Length(5),
-            Length(4),
-            Length(3),
-            Length(5),
-            Length(7),
-            Length(4),
-            Length(5),
-            Length(6),
-        ];
-        consensus_state.curr_global_slot = GlobalSlot {
-            slot_number: GlobalSlotNumber(111965),
-            slots_per_epoch: Length(7140),
-        };
-        consensus_state.blockchain_length = Length(77748);
-        let mut prot_state = ProtocolState::default();
-        prot_state.body.consensus_state = consensus_state;
-        chain_b.push(prot_state).unwrap();
+        chain_b.push(block_from_json.protocol_state).unwrap();
 
         let mut chains = vec![];
         chains.push(chain_b);
