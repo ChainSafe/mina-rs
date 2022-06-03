@@ -244,6 +244,16 @@
 <span id="237">237</span>
 <span id="238">238</span>
 <span id="239">239</span>
+<span id="240">240</span>
+<span id="241">241</span>
+<span id="242">242</span>
+<span id="243">243</span>
+<span id="244">244</span>
+<span id="245">245</span>
+<span id="246">246</span>
+<span id="247">247</span>
+<span id="248">248</span>
+<span id="249">249</span>
 </pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems</span>
 <span class="comment">// SPDX-License-Identifier: Apache-2.0</span>
 
@@ -402,6 +412,16 @@
             <span class="ident">UserCommand</span>,
             <span class="ident">UserCommandJson</span>,
             <span class="string">&quot;staged_ledger_diff/diff/0/commands/0/data&quot;</span>
+        );
+    }
+
+    <span class="attribute">#[<span class="ident">test</span>]</span>
+    <span class="attribute">#[<span class="ident">wasm_bindgen_test</span>]</span>
+    <span class="kw">fn</span> <span class="ident">user_command_json_serde_roundtrip_2</span>() {
+        <span class="macro">json_serde_roundtrip!</span>(
+            <span class="ident">UserCommand</span>,
+            <span class="ident">UserCommandJson</span>,
+            <span class="string">&quot;staged_ledger_diff/diff/0/commands/2/data&quot;</span>
         );
     }
 

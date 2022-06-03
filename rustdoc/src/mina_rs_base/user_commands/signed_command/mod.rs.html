@@ -300,6 +300,32 @@
 <span id="293">293</span>
 <span id="294">294</span>
 <span id="295">295</span>
+<span id="296">296</span>
+<span id="297">297</span>
+<span id="298">298</span>
+<span id="299">299</span>
+<span id="300">300</span>
+<span id="301">301</span>
+<span id="302">302</span>
+<span id="303">303</span>
+<span id="304">304</span>
+<span id="305">305</span>
+<span id="306">306</span>
+<span id="307">307</span>
+<span id="308">308</span>
+<span id="309">309</span>
+<span id="310">310</span>
+<span id="311">311</span>
+<span id="312">312</span>
+<span id="313">313</span>
+<span id="314">314</span>
+<span id="315">315</span>
+<span id="316">316</span>
+<span id="317">317</span>
+<span id="318">318</span>
+<span id="319">319</span>
+<span id="320">320</span>
+<span id="321">321</span>
 </pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems</span>
 <span class="comment">// SPDX-License-Identifier: Apache-2.0</span>
 
@@ -407,6 +433,17 @@
                 <span class="ident">roi</span>.<span class="ident">append_u64</span>(<span class="ident">pp</span>.<span class="ident">amount</span>.<span class="number">0</span>);
                 <span class="ident">roi</span>.<span class="ident">append_bool</span>(<span class="bool-val">false</span>); <span class="comment">// this is the token locked field. Not sure where this belongs yet</span>
             }
+            <span class="ident">SignedCommandPayloadBody::StakeDelegation</span>(<span class="ident">s</span>) =&gt; <span class="kw">match</span> <span class="ident">s</span> {
+                <span class="ident">StakeDelegation::SetDelegate</span> {
+                    <span class="ident">delegator</span>,
+                    <span class="ident">new_delegate</span>,
+                } =&gt; {
+                    <span class="ident">roi</span>.<span class="ident">append_field</span>(<span class="ident">delegator</span>.<span class="ident">x</span>);
+                    <span class="ident">roi</span>.<span class="ident">append_bool</span>(<span class="ident">delegator</span>.<span class="ident">is_odd</span>);
+                    <span class="ident">roi</span>.<span class="ident">append_field</span>(<span class="ident">new_delegate</span>.<span class="ident">x</span>);
+                    <span class="ident">roi</span>.<span class="ident">append_bool</span>(<span class="ident">new_delegate</span>.<span class="ident">is_odd</span>);
+                }
+            },
         };
         <span class="ident">roi</span>
     }
@@ -445,7 +482,22 @@
 <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">SignedCommandPayloadBody</span> {
     <span class="doccomment">/// Payment transfer fields</span>
     <span class="ident">PaymentPayload</span>(<span class="ident">PaymentPayload</span>),
+    <span class="doccomment">/// Stake Delegation fields</span>
+    <span class="ident">StakeDelegation</span>(<span class="ident">StakeDelegation</span>),
     <span class="comment">// FIXME: other variants are not covered by current test block</span>
+}
+
+<span class="doccomment">/// Enum of variable fields for stake delegation</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>, <span class="ident">AutoFrom</span>)]</span>
+<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">mina_serialization_types::staged_ledger_diff::StakeDelegation</span>)]</span>
+<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">StakeDelegation</span> {
+    <span class="doccomment">/// Set Delegate</span>
+    <span class="ident">SetDelegate</span> {
+        <span class="doccomment">/// Delegator</span>
+        <span class="ident">delegator</span>: <span class="ident">CompressedPubKey</span>,
+        <span class="doccomment">/// New Delegate</span>
+        <span class="ident">new_delegate</span>: <span class="ident">CompressedPubKey</span>,
+    },
 }
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
