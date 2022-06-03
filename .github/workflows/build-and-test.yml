@@ -148,6 +148,7 @@ jobs:
             ~/.cargo/registry/index/
             ~/.cargo/registry/cache/
             ~/.cargo/git/db/
+            node_modules/
             target/
             apps/target/
             apps/wasm/target/
@@ -165,6 +166,7 @@ jobs:
       - run: cargo clippy --release --all-features --target wasm32-unknown-unknown --manifest-path apps/wasm/Cargo.toml -- --deny warnings
       - name: Install wasm-pack
         run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
+      - run: yarn
       - name: wasm-pack tests for test-serialization
         run: |
           cd protocol/test-serialization
@@ -178,6 +180,11 @@ jobs:
       - name: wasm-pack tests for secrets
         run: |
           cd secrets
+          wasm-pack test --node --release
+          wasm-pack test --headless --chrome --release --features browser
+      - name: wasm-pack tests for network
+        run: |
+          cd network
           wasm-pack test --node --release
           wasm-pack test --headless --chrome --release --features browser
   node:

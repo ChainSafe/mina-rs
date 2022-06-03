@@ -55,7 +55,7 @@ impl ConsensusConstants {
 }
 
 /// A chain of [ProtocolState]
-#[derive(Debug, Default)]
+#[derive(Debug, Clone, Default)]
 // TODO: replace vec element with ExternalTransition
 pub struct ProtocolStateChain(pub Vec<ProtocolState>);
 
