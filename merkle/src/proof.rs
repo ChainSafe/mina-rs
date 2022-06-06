@@ -116,13 +116,8 @@ where
                 let peer_index = self.peer_indices[i];
                 let peer_hash_opt = &self.peer_hashes[i];
                 // 3 Prepare the input for for the hash merger by ordering the 2 hashes properly
-                let hashes = if index + 1 == peer_index {
-                    [hash_opt, peer_hash_opt.clone()]
-                } else if index == peer_index + 1 {
-                    [peer_hash_opt.clone(), hash_opt]
-                } else {
-                    return Err(MerkleProofError::InvalidProof);
-                };
+                let hashes =
+                    get_ordered_siblings(index, hash_opt, peer_index, peer_hash_opt.clone())?;
                 // 4 Calculates the hash of their parent by invoking the associated merkle merger
                 let parent_index = get_parent_index(index);
                 hash_opt = Merger::merge(
@@ -147,4 +142,19 @@ where
 fn get_parent_index(index: usize) -> usize {
     debug_assert!(index > 0);
     (index - 1) / 2
+}
+
+fn get_ordered_siblings<Hash>(
+    index: usize,
+    hash: Option<Hash>,
+    sibling_index: usize,
+    sibling_hash: Option<Hash>,
+) -> Result<[Option<Hash>; 2], MerkleProofError> {
+    if index + 1 == sibling_index {
+        Ok([hash, sibling_hash])
+    } else if index == sibling_index + 1 {
+        Ok([sibling_hash, hash])
+    } else {
+        Err(MerkleProofError::InvalidProof)
+    }
 }
