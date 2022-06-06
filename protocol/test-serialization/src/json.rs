@@ -161,6 +161,16 @@ mod tests {
 
     #[test]
     #[wasm_bindgen_test]
+    fn user_command_json_serde_roundtrip_2() {
+        json_serde_roundtrip!(
+            UserCommand,
+            UserCommandJson,
+            "staged_ledger_diff/diff/0/commands/2/data"
+        );
+    }
+
+    #[test]
+    #[wasm_bindgen_test]
     fn transaction_status_json_serde_roundtrip() {
         json_serde_roundtrip!(
             TransactionStatus,

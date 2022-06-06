@@ -156,6 +156,7 @@ pub struct SignedCommandPayloadCommonJson {
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub enum SignedCommandPayloadBody {
     PaymentPayload(PaymentPayloadV1),
+    StakeDelegation(StakeDelegationV1),
     // FIXME: other variants are not covered by current test block
 }
 
@@ -165,6 +166,8 @@ pub type SignedCommandPayloadBodyV1 = Versioned<Versioned<SignedCommandPayloadBo
 enum SignedCommandPayloadBodyJsonProxy {
     #[serde(rename = "Payment")]
     PaymentPayload(PaymentPayloadJson),
+    #[serde(rename = "Stake_delegation")]
+    StakeDelegation(StakeDelegationJson),
 }
 
 #[derive(Clone, Debug, PartialEq, AutoFrom)]
@@ -172,11 +175,13 @@ enum SignedCommandPayloadBodyJsonProxy {
 #[auto_from(SignedCommandPayloadBodyJsonProxy)]
 pub enum SignedCommandPayloadBodyJson {
     PaymentPayload(PaymentPayloadJson),
+    StakeDelegation(StakeDelegationJson),
 }
 
-impl_mina_enum_json_serde!(
+impl_mina_enum_json_serde_with_option!(
     SignedCommandPayloadBodyJson,
-    SignedCommandPayloadBodyJsonProxy
+    SignedCommandPayloadBodyJsonProxy,
+    false
 );
 
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
@@ -197,6 +202,37 @@ pub struct PaymentPayloadJson {
     pub token_id: U64Json,
     pub amount: U64Json,
 }
+
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
+pub enum StakeDelegation {
+    SetDelegate {
+        delegator: PublicKeyV1,
+        new_delegate: PublicKeyV1,
+    },
+}
+
+pub type StakeDelegationV1 = Versioned<StakeDelegation, 1>;
+
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
+enum StakeDelegationJsonProxy {
+    #[serde(rename = "Set_delegate")]
+    SetDelegate {
+        delegator: PublicKeyJson,
+        new_delegate: PublicKeyJson,
+    },
+}
+
+#[derive(Clone, Debug, PartialEq, AutoFrom)]
+#[auto_from(StakeDelegation)]
+#[auto_from(StakeDelegationJsonProxy)]
+pub enum StakeDelegationJson {
+    SetDelegate {
+        delegator: PublicKeyJson,
+        new_delegate: PublicKeyJson,
+    },
+}
+
+impl_mina_enum_json_serde!(StakeDelegationJson, StakeDelegationJsonProxy);
 
 pub type SignedCommandFeeTokenV1 = Versioned<Versioned<Versioned<u64, 1>, 1>, 1>;
 
