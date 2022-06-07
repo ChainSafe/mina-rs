@@ -16,6 +16,7 @@ use proof_systems::mina_signer::{CompressedPubKey, Keypair, NetworkId, PubKey, S
 
 const TAG_BITS: usize = 3;
 const PAYMENT_TX_TAG: [bool; TAG_BITS] = [false, false, false];
+const DELEGATION_TX_TAG: [bool; TAG_BITS] = [false, false, true];
 
 /// Top level signed command type
 #[derive(Clone, PartialEq, Debug, AutoFrom)]
@@ -110,10 +111,26 @@ impl Hashable for SignedCommandPayload {
                     delegator,
                     new_delegate,
                 } => {
+                    roi.append_field(self.common.fee_payer_pk.x);
                     roi.append_field(delegator.x);
-                    roi.append_bool(delegator.is_odd);
                     roi.append_field(new_delegate.x);
+
+                    roi.append_u64(self.common.fee.0);
+                    roi.append_u64(self.common.fee_token.0);
+                    roi.append_bool(self.common.fee_payer_pk.is_odd);
+                    roi.append_u32(self.common.nonce.0);
+                    roi.append_u32(self.common.valid_until.0);
+                    roi.append_bytes(&self.common.memo.0);
+
+                    for tag_bit in DELEGATION_TX_TAG {
+                        roi.append_bool(tag_bit);
+                    }
+
+                    roi.append_bool(delegator.is_odd);
                     roi.append_bool(new_delegate.is_odd);
+                    roi.append_u64(1);
+                    roi.append_u64(0);
+                    roi.append_bool(false); // this is the token locked field. Not sure where this belongs yet
                 }
             },
         };

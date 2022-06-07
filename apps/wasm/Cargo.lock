@@ -2108,6 +2108,7 @@ dependencies = [
  "mina-rs-base",
  "mina-serialization-types",
  "multihash",
+ "proof-systems",
  "serde",
  "serde_json",
  "tokio",
