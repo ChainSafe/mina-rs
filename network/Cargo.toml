@@ -15,6 +15,7 @@ browser = []
 [dependencies]
 mina-consensus = {path = "../consensus"}
 mina-rs-base = {path = "../base"}
+proof-systems = {path = "../proof-systems-shim"}
 
 anyhow = "1"
 async-trait = "0.1"

@@ -7,7 +7,8 @@
 
 use super::*;
 use mina_consensus::common::*;
-use mina_rs_base::types::*;
+use mina_rs_base::{types::*, verifiable::Verifiable};
+use proof_systems::mina_signer::{self, NetworkId};
 use tokio::sync::mpsc;
 
 /// Struct that represents a naive implementation of the [TransitionFrontier]
@@ -38,14 +39,19 @@ impl TransitionFrontier for NaiveTransitionFrontier {
     }
 
     async fn add_block(&mut self, block: Self::Block) -> anyhow::Result<()> {
-        if self.best_chain.length() < 1 {
-            self.best_chain.push(block.protocol_state)?;
+        let mut ctx = mina_signer::create_legacy::<SignedCommandPayload>(NetworkId::MAINNET);
+        if !block.verify(&mut ctx) {
+            Err(anyhow::Error::msg("block verification failure"))
         } else {
-            let candidate_chains = vec![ProtocolStateChain(vec![block.protocol_state])];
-            // TODO: Avoid doing clone here by refining chain selection API(s)
-            let best_chain = self.best_chain.select_secure_chain(&candidate_chains)?;
-            self.best_chain = best_chain.clone();
+            if self.best_chain.length() < 1 {
+                self.best_chain.push(block.protocol_state)?;
+            } else {
+                let candidate_chains = vec![ProtocolStateChain(vec![block.protocol_state])];
+                // TODO: Avoid doing clone here by refining chain selection API(s)
+                let best_chain = self.best_chain.select_secure_chain(&candidate_chains)?;
+                self.best_chain = best_chain.clone();
+            }
+            Ok(())
         }
-        Ok(())
     }
 }
