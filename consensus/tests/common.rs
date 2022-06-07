@@ -284,24 +284,25 @@ mod tests {
     // Current chain: Chain A
     // Candidate chains: [Chain B] (Lesser Last VRF output)
     fn test_longer_chain_with_same_chain_length_lesser_last_vrf_output() {
+        // Chain A
+        let json_block = test_fixtures::JSON_TEST_BLOCKS
+            .get("mainnet-113267-3NLenrog9wkiJMoA774T9VraqSUGhCuhbDLj3JKbEzomNdjr78G8.json")
+            .unwrap();
+        let json_value: <ExternalTransition as JsonSerializationType>::T =
+            serde_json::from_value(json_block.clone()).unwrap();
+        let block_from_json: ExternalTransition = json_value.into();
         let mut chain_a = ProtocolStateChain::default();
-        let mut consensus_state = ConsensusState::default();
-        consensus_state.blockchain_length = Length(113267);
-        consensus_state.last_vrf_output =
-            VrfOutputTruncated::from_str("kKr83LYd7DyFupRAPh5Dh9eWM1teSEs5VjU4XId2DgA=").unwrap();
-        let mut prot_state = ProtocolState::default();
-        prot_state.body.consensus_state = consensus_state;
-        chain_a.push(prot_state).unwrap();
+        chain_a.push(block_from_json.protocol_state).unwrap();
 
+        // Chain B
+        let json_block = test_fixtures::JSON_TEST_BLOCKS
+            .get("mainnet-113267-3NKtqqstB6h8SVNQCtspFisjUwCTqoQ6cC1KGvb6kx6n2dqKkiZS.json")
+            .unwrap();
+        let json_value: <ExternalTransition as JsonSerializationType>::T =
+            serde_json::from_value(json_block.clone()).unwrap();
+        let block_from_json: ExternalTransition = json_value.into();
         let mut chain_b = ProtocolStateChain::default();
-        let mut consensus_state = ConsensusState::default();
-        consensus_state.blockchain_length = Length(113267);
-        consensus_state.last_vrf_output =
-            VrfOutputTruncated::from_str("r0K80Xsb44NLx_pBjI9UQtt6a1N-RWym8VxVTY4pAAA=").unwrap();
-
-        let mut prot_state = ProtocolState::default();
-        prot_state.body.consensus_state = consensus_state;
-        chain_b.push(prot_state).unwrap();
+        chain_b.push(block_from_json.protocol_state).unwrap();
 
         let select_result = chain_a.select_longer_chain(&chain_b).unwrap();
 
@@ -547,61 +548,32 @@ mod tests {
     // Current chain: Chain A
     // Candidate chains: Chain B (with extra sub window densities)
     fn adversary_test_select_secure_chain_candidate_with_extra_sub_window_densities() {
+        // Chain A
+        let json_block = test_fixtures::JSON_TEST_BLOCKS
+            .get("mainnet-113267-3NLenrog9wkiJMoA774T9VraqSUGhCuhbDLj3JKbEzomNdjr78G8.json")
+            .unwrap();
+        let json_value: <ExternalTransition as JsonSerializationType>::T =
+            serde_json::from_value(json_block.clone()).unwrap();
+        let block_from_json: ExternalTransition = json_value.into();
         let mut chain_a = ProtocolStateChain::default();
-        let mut consensus_state = ConsensusState::default();
-        consensus_state.epoch_count = Length(23);
-        consensus_state.min_window_density = Length(14);
-        consensus_state.sub_window_densities = vec![
-            Length(7),
-            Length(2),
-            Length(2),
-            Length(5),
-            Length(6),
-            Length(7),
-            Length(5),
-            Length(7),
-            Length(5),
-            Length(5),
-            Length(5),
-        ];
-        consensus_state.curr_global_slot = GlobalSlot {
-            slot_number: GlobalSlotNumber(167176),
-            slots_per_epoch: Length(7140),
-        };
-        consensus_state.blockchain_length = Length(113267);
-        let mut prot_state = ProtocolState::default();
-        prot_state.body.consensus_state = consensus_state;
-        chain_a.push(prot_state).unwrap();
+        chain_a.push(block_from_json.protocol_state).unwrap();
 
+        // Chain B
+        let json_block = test_fixtures::JSON_TEST_BLOCKS
+            .get("mainnet-77748-3NKaBJsN1SehD6iJwRwJSFmVzJg5DXSUQVgnMxtH4eer4aF5BrDK.json")
+            .unwrap();
+        let json_value: <ExternalTransition as JsonSerializationType>::T =
+            serde_json::from_value(json_block.clone()).unwrap();
+        let mut block_from_json: ExternalTransition = json_value.into();
+        // Extra Sub Window Density which will result in greater relative min window density and incorrect chain selection
+        block_from_json
+            .protocol_state
+            .body
+            .consensus_state
+            .sub_window_densities
+            .extend_from_slice(&[Length(6), Length(6), Length(6)]);
         let mut chain_b = ProtocolStateChain::default();
-        let mut consensus_state = ConsensusState::default();
-        consensus_state.epoch_count = Length(15);
-        consensus_state.min_window_density = Length(33);
-        consensus_state.sub_window_densities = vec![
-            Length(6),
-            Length(1),
-            Length(3),
-            Length(5),
-            Length(4),
-            Length(3),
-            Length(5),
-            Length(7),
-            Length(4),
-            Length(5),
-            Length(6),
-            // Extra Sub Window Density which will result in greater relative min window density and incorrect chain selection
-            Length(6),
-            Length(6),
-            Length(6),
-        ];
-        consensus_state.curr_global_slot = GlobalSlot {
-            slot_number: GlobalSlotNumber(111965),
-            slots_per_epoch: Length(7140),
-        };
-        consensus_state.blockchain_length = Length(77748);
-        let mut prot_state = ProtocolState::default();
-        prot_state.body.consensus_state = consensus_state;
-        chain_b.push(prot_state).unwrap();
+        chain_b.push(block_from_json.protocol_state).unwrap();
 
         let mut chains = vec![];
         chains.push(chain_b);
@@ -622,58 +594,32 @@ mod tests {
     // Current chain: Chain A
     // Candidate chains: Chain B (With extremely high sub window densities)
     fn adversary_test_select_secure_chain_with_extremely_high_sub_window_densities() {
+        // Chain A
+        let json_block = test_fixtures::JSON_TEST_BLOCKS
+            .get("mainnet-113267-3NLenrog9wkiJMoA774T9VraqSUGhCuhbDLj3JKbEzomNdjr78G8.json")
+            .unwrap();
+        let json_value: <ExternalTransition as JsonSerializationType>::T =
+            serde_json::from_value(json_block.clone()).unwrap();
+        let block_from_json: ExternalTransition = json_value.into();
         let mut chain_a = ProtocolStateChain::default();
-        let mut consensus_state = ConsensusState::default();
-        consensus_state.epoch_count = Length(23);
-        consensus_state.min_window_density = Length(14);
-        consensus_state.sub_window_densities = vec![
-            Length(7),
-            Length(2),
-            Length(2),
-            Length(5),
-            Length(6),
-            Length(7),
-            Length(5),
-            Length(7),
-            Length(5),
-            Length(5),
-            Length(5),
-        ];
-        consensus_state.curr_global_slot = GlobalSlot {
-            slot_number: GlobalSlotNumber(167176),
-            slots_per_epoch: Length(7140),
-        };
-        consensus_state.blockchain_length = Length(113267);
-        let mut prot_state = ProtocolState::default();
-        prot_state.body.consensus_state = consensus_state;
-        chain_a.push(prot_state).unwrap();
+        chain_a.push(block_from_json.protocol_state).unwrap();
 
+        // Chain B
+        let json_block = test_fixtures::JSON_TEST_BLOCKS
+            .get("mainnet-77748-3NKaBJsN1SehD6iJwRwJSFmVzJg5DXSUQVgnMxtH4eer4aF5BrDK.json")
+            .unwrap();
+        let json_value: <ExternalTransition as JsonSerializationType>::T =
+            serde_json::from_value(json_block.clone()).unwrap();
+        let mut block_from_json: ExternalTransition = json_value.into();
+        // changed window density of 3 to 999: An impossibly high sub window density
+        // which will result in greater relative min window density and incorrect chain selection
+        block_from_json
+            .protocol_state
+            .body
+            .consensus_state
+            .sub_window_densities[5] = Length(999);
         let mut chain_b = ProtocolStateChain::default();
-        let mut consensus_state = ConsensusState::default();
-        consensus_state.epoch_count = Length(15);
-        consensus_state.min_window_density = Length(33);
-        consensus_state.sub_window_densities = vec![
-            Length(6),
-            Length(1),
-            Length(3),
-            Length(5),
-            Length(4),
-            // changed window density of 3 to 999 impossibly high sub window densities which will result in greater relative min window density and incorrect chain selection
-            Length(999),
-            Length(5),
-            Length(7),
-            Length(4),
-            Length(5),
-            Length(6),
-        ];
-        consensus_state.curr_global_slot = GlobalSlot {
-            slot_number: GlobalSlotNumber(167168), // changed to 167168 from 111965 to meet adversary test case
-            slots_per_epoch: Length(7140),
-        };
-        consensus_state.blockchain_length = Length(77748);
-        let mut prot_state = ProtocolState::default();
-        prot_state.body.consensus_state = consensus_state;
-        chain_b.push(prot_state).unwrap();
+        chain_b.push(block_from_json.protocol_state).unwrap();
 
         let mut chains = vec![];
         chains.push(chain_b);
@@ -692,58 +638,31 @@ mod tests {
     // Candidate chains: Chain B (Having very less number of sub window densities)
     // Result: Should pick up the chain with valid sub window density.
     fn adversary_test_select_secure_chain_with_less_number_of_sub_window_densities() {
+        // Chain A
+        let json_block = test_fixtures::JSON_TEST_BLOCKS
+            .get("mainnet-113267-3NLenrog9wkiJMoA774T9VraqSUGhCuhbDLj3JKbEzomNdjr78G8.json")
+            .unwrap();
+        let json_value: <ExternalTransition as JsonSerializationType>::T =
+            serde_json::from_value(json_block.clone()).unwrap();
+        let block_from_json: ExternalTransition = json_value.into();
         let mut chain_a = ProtocolStateChain::default();
-        let mut consensus_state = ConsensusState::default();
-        consensus_state.epoch_count = Length(23);
-        consensus_state.min_window_density = Length(14);
-        consensus_state.sub_window_densities = vec![
-            Length(7),
-            Length(2),
-            Length(2),
-            Length(5),
-            Length(6),
-            Length(7),
-            Length(5),
-            Length(7),
-            Length(5),
-            Length(5),
-            Length(5),
-        ];
-        consensus_state.curr_global_slot = GlobalSlot {
-            slot_number: GlobalSlotNumber(167176),
-            slots_per_epoch: Length(7140),
-        };
-        consensus_state.blockchain_length = Length(113267);
-        let mut prot_state = ProtocolState::default();
-        prot_state.body.consensus_state = consensus_state;
-        chain_a.push(prot_state).unwrap();
+        chain_a.push(block_from_json.protocol_state).unwrap();
 
+        // Chain B
+        let json_block = test_fixtures::JSON_TEST_BLOCKS
+            .get("mainnet-77748-3NKaBJsN1SehD6iJwRwJSFmVzJg5DXSUQVgnMxtH4eer4aF5BrDK.json")
+            .unwrap();
+        let json_value: <ExternalTransition as JsonSerializationType>::T =
+            serde_json::from_value(json_block.clone()).unwrap();
+        let mut block_from_json: ExternalTransition = json_value.into();
+        // Below sub window densities are delibrately removed, resulting in index out of bound error
+        block_from_json
+            .protocol_state
+            .body
+            .consensus_state
+            .sub_window_densities = vec![Length(6), Length(1), Length(3)];
         let mut chain_b = ProtocolStateChain::default();
-        let mut consensus_state = ConsensusState::default();
-        consensus_state.epoch_count = Length(15);
-        consensus_state.min_window_density = Length(33);
-        consensus_state.sub_window_densities = vec![
-            Length(6),
-            Length(1),
-            Length(3),
-            // Below sub window densities are delibrately removed, resulting in index out of bound error
-            // Length(5),
-            // Length(4),
-            // Length(3),
-            // Length(5),
-            // Length(7),
-            // Length(4),
-            // Length(5),
-            // Length(6),
-        ];
-        consensus_state.curr_global_slot = GlobalSlot {
-            slot_number: GlobalSlotNumber(111965),
-            slots_per_epoch: Length(7140),
-        };
-        consensus_state.blockchain_length = Length(77748);
-        let mut prot_state = ProtocolState::default();
-        prot_state.body.consensus_state = consensus_state;
-        chain_b.push(prot_state).unwrap();
+        chain_b.push(block_from_json.protocol_state).unwrap();
 
         let mut chains = vec![];
         chains.push(chain_b);
