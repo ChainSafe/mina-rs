@@ -326,6 +326,23 @@
 <span id="319">319</span>
 <span id="320">320</span>
 <span id="321">321</span>
+<span id="322">322</span>
+<span id="323">323</span>
+<span id="324">324</span>
+<span id="325">325</span>
+<span id="326">326</span>
+<span id="327">327</span>
+<span id="328">328</span>
+<span id="329">329</span>
+<span id="330">330</span>
+<span id="331">331</span>
+<span id="332">332</span>
+<span id="333">333</span>
+<span id="334">334</span>
+<span id="335">335</span>
+<span id="336">336</span>
+<span id="337">337</span>
+<span id="338">338</span>
 </pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems</span>
 <span class="comment">// SPDX-License-Identifier: Apache-2.0</span>
 
@@ -344,6 +361,7 @@
 
 <span class="kw">const</span> <span class="ident">TAG_BITS</span>: <span class="ident">usize</span> <span class="op">=</span> <span class="number">3</span>;
 <span class="kw">const</span> <span class="ident">PAYMENT_TX_TAG</span>: [<span class="ident">bool</span>; <span class="ident">TAG_BITS</span>] <span class="op">=</span> [<span class="bool-val">false</span>, <span class="bool-val">false</span>, <span class="bool-val">false</span>];
+<span class="kw">const</span> <span class="ident">DELEGATION_TX_TAG</span>: [<span class="ident">bool</span>; <span class="ident">TAG_BITS</span>] <span class="op">=</span> [<span class="bool-val">false</span>, <span class="bool-val">false</span>, <span class="bool-val">true</span>];
 
 <span class="doccomment">/// Top level signed command type</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>, <span class="ident">AutoFrom</span>)]</span>
@@ -438,10 +456,26 @@
                     <span class="ident">delegator</span>,
                     <span class="ident">new_delegate</span>,
                 } =&gt; {
+                    <span class="ident">roi</span>.<span class="ident">append_field</span>(<span class="self">self</span>.<span class="ident">common</span>.<span class="ident">fee_payer_pk</span>.<span class="ident">x</span>);
                     <span class="ident">roi</span>.<span class="ident">append_field</span>(<span class="ident">delegator</span>.<span class="ident">x</span>);
-                    <span class="ident">roi</span>.<span class="ident">append_bool</span>(<span class="ident">delegator</span>.<span class="ident">is_odd</span>);
                     <span class="ident">roi</span>.<span class="ident">append_field</span>(<span class="ident">new_delegate</span>.<span class="ident">x</span>);
+
+                    <span class="ident">roi</span>.<span class="ident">append_u64</span>(<span class="self">self</span>.<span class="ident">common</span>.<span class="ident">fee</span>.<span class="number">0</span>);
+                    <span class="ident">roi</span>.<span class="ident">append_u64</span>(<span class="self">self</span>.<span class="ident">common</span>.<span class="ident">fee_token</span>.<span class="number">0</span>);
+                    <span class="ident">roi</span>.<span class="ident">append_bool</span>(<span class="self">self</span>.<span class="ident">common</span>.<span class="ident">fee_payer_pk</span>.<span class="ident">is_odd</span>);
+                    <span class="ident">roi</span>.<span class="ident">append_u32</span>(<span class="self">self</span>.<span class="ident">common</span>.<span class="ident">nonce</span>.<span class="number">0</span>);
+                    <span class="ident">roi</span>.<span class="ident">append_u32</span>(<span class="self">self</span>.<span class="ident">common</span>.<span class="ident">valid_until</span>.<span class="number">0</span>);
+                    <span class="ident">roi</span>.<span class="ident">append_bytes</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">common</span>.<span class="ident">memo</span>.<span class="number">0</span>);
+
+                    <span class="kw">for</span> <span class="ident">tag_bit</span> <span class="kw">in</span> <span class="ident">DELEGATION_TX_TAG</span> {
+                        <span class="ident">roi</span>.<span class="ident">append_bool</span>(<span class="ident">tag_bit</span>);
+                    }
+
+                    <span class="ident">roi</span>.<span class="ident">append_bool</span>(<span class="ident">delegator</span>.<span class="ident">is_odd</span>);
                     <span class="ident">roi</span>.<span class="ident">append_bool</span>(<span class="ident">new_delegate</span>.<span class="ident">is_odd</span>);
+                    <span class="ident">roi</span>.<span class="ident">append_u64</span>(<span class="number">1</span>);
+                    <span class="ident">roi</span>.<span class="ident">append_u64</span>(<span class="number">0</span>);
+                    <span class="ident">roi</span>.<span class="ident">append_bool</span>(<span class="bool-val">false</span>); <span class="comment">// this is the token locked field. Not sure where this belongs yet</span>
                 }
             },
         };
@@ -648,5 +682,5 @@
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../../" data-current-crate="mina_rs_base" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.63.0-nightly (e71440575 2022-06-02)" ></div>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../../" data-current-crate="mina_rs_base" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.63.0-nightly (50b00252a 2022-06-06)" ></div>
 </body></html>
