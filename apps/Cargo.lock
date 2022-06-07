@@ -723,7 +723,7 @@ dependencies = [
 [[package]]
 name = "mina-curves"
 version = "0.1.0"
-source = "git+https://github.com/o1-labs/proof-systems?rev=1f8532ec1b8d43748a372632bd854be36b371afe#1f8532ec1b8d43748a372632bd854be36b371afe"
+source = "git+https://github.com/o1-labs/proof-systems?rev=3bae9501e10c9c01eb965e7695ec715ad6672630#3bae9501e10c9c01eb965e7695ec715ad6672630"
 dependencies = [
  "ark-ec",
  "ark-ff",
@@ -732,7 +732,7 @@ dependencies = [
 [[package]]
 name = "mina-hasher"
 version = "0.1.0"
-source = "git+https://github.com/o1-labs/proof-systems?rev=1f8532ec1b8d43748a372632bd854be36b371afe#1f8532ec1b8d43748a372632bd854be36b371afe"
+source = "git+https://github.com/o1-labs/proof-systems?rev=3bae9501e10c9c01eb965e7695ec715ad6672630#3bae9501e10c9c01eb965e7695ec715ad6672630"
 dependencies = [
  "ark-ff",
  "bitvec",
@@ -821,7 +821,7 @@ dependencies = [
 [[package]]
 name = "mina-signer"
 version = "0.1.0"
-source = "git+https://github.com/o1-labs/proof-systems?rev=1f8532ec1b8d43748a372632bd854be36b371afe#1f8532ec1b8d43748a372632bd854be36b371afe"
+source = "git+https://github.com/o1-labs/proof-systems?rev=3bae9501e10c9c01eb965e7695ec715ad6672630#3bae9501e10c9c01eb965e7695ec715ad6672630"
 dependencies = [
  "ark-ec",
  "ark-ff",
@@ -944,7 +944,7 @@ dependencies = [
 [[package]]
 name = "o1-utils"
 version = "0.1.0"
-source = "git+https://github.com/o1-labs/proof-systems?rev=1f8532ec1b8d43748a372632bd854be36b371afe#1f8532ec1b8d43748a372632bd854be36b371afe"
+source = "git+https://github.com/o1-labs/proof-systems?rev=3bae9501e10c9c01eb965e7695ec715ad6672630#3bae9501e10c9c01eb965e7695ec715ad6672630"
 dependencies = [
  "ark-ec",
  "ark-ff",
@@ -984,7 +984,7 @@ checksum = "624a8340c38c1b80fd549087862da4ba43e08858af025b236e509b6649fc13d5"
 [[package]]
 name = "oracle"
 version = "0.1.0"
-source = "git+https://github.com/o1-labs/proof-systems?rev=1f8532ec1b8d43748a372632bd854be36b371afe#1f8532ec1b8d43748a372632bd854be36b371afe"
+source = "git+https://github.com/o1-labs/proof-systems?rev=3bae9501e10c9c01eb965e7695ec715ad6672630#3bae9501e10c9c01eb965e7695ec715ad6672630"
 dependencies = [
  "ark-ec",
  "ark-ff",

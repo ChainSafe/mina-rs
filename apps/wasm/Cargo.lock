@@ -2062,7 +2062,7 @@ dependencies = [
 [[package]]
 name = "mina-curves"
 version = "0.1.0"
-source = "git+https://github.com/o1-labs/proof-systems?rev=1f8532ec1b8d43748a372632bd854be36b371afe#1f8532ec1b8d43748a372632bd854be36b371afe"
+source = "git+https://github.com/o1-labs/proof-systems?rev=3bae9501e10c9c01eb965e7695ec715ad6672630#3bae9501e10c9c01eb965e7695ec715ad6672630"
 dependencies = [
  "ark-ec",
  "ark-ff",
@@ -2071,7 +2071,7 @@ dependencies = [
 [[package]]
 name = "mina-hasher"
 version = "0.1.0"
-source = "git+https://github.com/o1-labs/proof-systems?rev=1f8532ec1b8d43748a372632bd854be36b371afe#1f8532ec1b8d43748a372632bd854be36b371afe"
+source = "git+https://github.com/o1-labs/proof-systems?rev=3bae9501e10c9c01eb965e7695ec715ad6672630#3bae9501e10c9c01eb965e7695ec715ad6672630"
 dependencies = [
  "ark-ff",
  "bitvec",
@@ -2194,7 +2194,7 @@ dependencies = [
 [[package]]
 name = "mina-signer"
 version = "0.1.0"
-source = "git+https://github.com/o1-labs/proof-systems?rev=1f8532ec1b8d43748a372632bd854be36b371afe#1f8532ec1b8d43748a372632bd854be36b371afe"
+source = "git+https://github.com/o1-labs/proof-systems?rev=3bae9501e10c9c01eb965e7695ec715ad6672630#3bae9501e10c9c01eb965e7695ec715ad6672630"
 dependencies = [
  "ark-ec",
  "ark-ff",
@@ -2482,7 +2482,7 @@ dependencies = [
 [[package]]
 name = "o1-utils"
 version = "0.1.0"
-source = "git+https://github.com/o1-labs/proof-systems?rev=1f8532ec1b8d43748a372632bd854be36b371afe#1f8532ec1b8d43748a372632bd854be36b371afe"
+source = "git+https://github.com/o1-labs/proof-systems?rev=3bae9501e10c9c01eb965e7695ec715ad6672630#3bae9501e10c9c01eb965e7695ec715ad6672630"
 dependencies = [
  "ark-ec",
  "ark-ff",
@@ -2513,7 +2513,7 @@ checksum = "624a8340c38c1b80fd549087862da4ba43e08858af025b236e509b6649fc13d5"
 [[package]]
 name = "oracle"
 version = "0.1.0"
-source = "git+https://github.com/o1-labs/proof-systems?rev=1f8532ec1b8d43748a372632bd854be36b371afe#1f8532ec1b8d43748a372632bd854be36b371afe"
+source = "git+https://github.com/o1-labs/proof-systems?rev=3bae9501e10c9c01eb965e7695ec715ad6672630#3bae9501e10c9c01eb965e7695ec715ad6672630"
 dependencies = [
  "ark-ec",
  "ark-ff",
@@ -3569,9 +3569,9 @@ checksum = "cda74da7e1a664f795bb1f8a87ec406fb89a02522cf6e50620d016add6dbbf5c"
 
 [[package]]
 name = "tokio"
-version = "1.19.1"
+version = "1.19.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "95eec79ea28c00a365f539f1961e9278fbcaf81c0ff6aaf0e93c181352446948"
+checksum = "c51a52ed6686dd62c320f9b89299e9dfb46f730c7a48e635c19f21d116cb1439"
 dependencies = [
  "bytes",
  "libc",
