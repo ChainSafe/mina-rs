@@ -22,7 +22,6 @@
 <span id="15">15</span>
 <span id="16">16</span>
 <span id="17">17</span>
-<span id="18">18</span>
 </pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems</span>
 <span class="comment">// SPDX-License-Identifier: Apache-2.0</span>
 
@@ -30,15 +29,14 @@
 
 <span class="doccomment">/// Trait that merges the hashes of child nodes</span>
 <span class="doccomment">/// and calculates the hash of their parent</span>
-<span class="doccomment">/// degree defaults to 2</span>
-<span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">MerkleMerger</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">DEGREE</span>: <span class="ident">usize</span> <span class="op">=</span> <span class="ident">DEFAULT_DEGREE</span><span class="op">&gt;</span> {
+<span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">MerkleMerger</span> {
     <span class="doccomment">/// Type that represents the hash value</span>
     <span class="kw">type</span> <span class="ident">Hash</span>;
     <span class="doccomment">/// Merges hashes of child nodes,</span>
     <span class="doccomment">/// with metadata of the target node</span>
     <span class="kw">fn</span> <span class="ident">merge</span>(
-        <span class="ident">hashes</span>: [<span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident"><span class="self">Self</span>::Hash</span><span class="op">&gt;</span>; <span class="ident">DEGREE</span>],
-        <span class="ident">metadata</span>: <span class="ident">MerkleTreeNodeMetadata</span><span class="op">&lt;</span><span class="ident">DEGREE</span><span class="op">&gt;</span>,
+        <span class="ident">hashes</span>: [<span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident"><span class="self">Self</span>::Hash</span><span class="op">&gt;</span>; <span class="number">2</span>],
+        <span class="ident">metadata</span>: <span class="ident">MerkleTreeNodeMetadata</span>,
     ) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident"><span class="self">Self</span>::Hash</span><span class="op">&gt;</span>;
 }
 </code></pre></div>

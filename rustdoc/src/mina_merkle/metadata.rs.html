@@ -44,6 +44,7 @@
 <span id="37">37</span>
 <span id="38">38</span>
 <span id="39">39</span>
+<span id="40">40</span>
 </pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems</span>
 <span class="comment">// SPDX-License-Identifier: Apache-2.0</span>
 
@@ -51,17 +52,18 @@
 <span class="doccomment">/// in the merkle tree it belongs to, which can be used for</span>
 <span class="doccomment">/// calculating hash</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">Default</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">MerkleTreeNodeMetadata</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">DEGREE</span>: <span class="ident">usize</span><span class="op">&gt;</span> {
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">MerkleTreeNodeMetadata</span> {
     <span class="ident">depth</span>: <span class="ident">u32</span>,
     <span class="ident">height</span>: <span class="ident">u32</span>,
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">DEGREE</span>: <span class="ident">usize</span><span class="op">&gt;</span> <span class="ident">MerkleTreeNodeMetadata</span><span class="op">&lt;</span><span class="ident">DEGREE</span><span class="op">&gt;</span> {
+<span class="kw">impl</span> <span class="ident">MerkleTreeNodeMetadata</span> {
     <span class="doccomment">/// Creates a new instance of [MerkleTreeNodeMetadata] with</span>
     <span class="doccomment">/// the node&#39;s index in the merkle tree, index of root node is 0</span>
+    <span class="doccomment">/// the tree height does not count data/leaf nodes</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">node_index</span>: <span class="ident">usize</span>, <span class="ident">tree_height</span>: <span class="ident">u32</span>) -&gt; <span class="self">Self</span> {
-        <span class="kw">let</span> <span class="ident">depth</span> <span class="op">=</span> <span class="ident">depth</span>::<span class="op">&lt;</span><span class="ident">DEGREE</span><span class="op">&gt;</span>(<span class="ident">node_index</span>);
-        <span class="kw">let</span> <span class="ident">height</span> <span class="op">=</span> <span class="ident">height</span>::<span class="op">&lt;</span><span class="ident">DEGREE</span><span class="op">&gt;</span>(<span class="ident">node_index</span>, <span class="ident">tree_height</span>);
+        <span class="kw">let</span> <span class="ident">depth</span> <span class="op">=</span> <span class="ident">depth</span>::<span class="op">&lt;</span><span class="number">2</span><span class="op">&gt;</span>(<span class="ident">node_index</span>);
+        <span class="kw">let</span> <span class="ident">height</span> <span class="op">=</span> <span class="ident">height</span>::<span class="op">&lt;</span><span class="number">2</span><span class="op">&gt;</span>(<span class="ident">node_index</span>, <span class="ident">tree_height</span>);
         <span class="self">Self</span> { <span class="ident">depth</span>, <span class="ident">height</span> }
     }
 

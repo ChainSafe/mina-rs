@@ -128,15 +128,15 @@
 <span class="kw">impl</span> <span class="ident">MerkleMerger</span> <span class="kw">for</span> <span class="ident">MinaPoseidonMerkleMerger</span> {
     <span class="kw">type</span> <span class="ident">Hash</span> <span class="op">=</span> <span class="ident">Fp</span>;
     <span class="kw">fn</span> <span class="ident">merge</span>(
-        <span class="ident">hashes</span>: [<span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident"><span class="self">Self</span>::Hash</span><span class="op">&gt;</span>; <span class="ident">MINA_POSEIDON_MERKLE_DEGREE</span>],
-        <span class="ident">metadata</span>: <span class="ident">MerkleTreeNodeMetadata</span><span class="op">&lt;</span><span class="ident">MINA_POSEIDON_MERKLE_DEGREE</span><span class="op">&gt;</span>,
+        <span class="ident">hashes</span>: [<span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident"><span class="self">Self</span>::Hash</span><span class="op">&gt;</span>; <span class="number">2</span>],
+        <span class="ident">metadata</span>: <span class="ident">MerkleTreeNodeMetadata</span>,
     ) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident"><span class="self">Self</span>::Hash</span><span class="op">&gt;</span> {
         <span class="ident">merge_poseidon_hash</span>(<span class="ident">hashes</span>, <span class="ident">metadata</span>.<span class="ident">height</span>()).<span class="ident">into</span>()
     }
 }
 
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>)]</span>
-<span class="kw">struct</span> <span class="ident">MinaPoseidonMerkleTreeNonLeafNode</span>([<span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Fp</span><span class="op">&gt;</span>; <span class="ident">MINA_POSEIDON_MERKLE_DEGREE</span>], <span class="ident">u32</span>);
+<span class="kw">struct</span> <span class="ident">MinaPoseidonMerkleTreeNonLeafNode</span>([<span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Fp</span><span class="op">&gt;</span>; <span class="number">2</span>], <span class="ident">u32</span>);
 
 <span class="kw">impl</span> <span class="ident">Hashable</span> <span class="kw">for</span> <span class="ident">MinaPoseidonMerkleTreeNonLeafNode</span> {
     <span class="kw">type</span> <span class="ident">D</span> <span class="op">=</span> <span class="ident">u32</span>;
@@ -159,7 +159,7 @@
     }
 }
 
-<span class="kw">fn</span> <span class="ident">merge_poseidon_hash</span>(<span class="ident">hashes</span>: [<span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Fp</span><span class="op">&gt;</span>; <span class="ident">MINA_POSEIDON_MERKLE_DEGREE</span>], <span class="ident">height</span>: <span class="ident">u32</span>) -&gt; <span class="ident">Fp</span> {
+<span class="kw">fn</span> <span class="ident">merge_poseidon_hash</span>(<span class="ident">hashes</span>: [<span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Fp</span><span class="op">&gt;</span>; <span class="number">2</span>], <span class="ident">height</span>: <span class="ident">u32</span>) -&gt; <span class="ident">Fp</span> {
     <span class="kw">static</span> <span class="ident">HASHER_POOL</span>: <span class="ident">OnceCell</span><span class="op">&lt;</span>
         <span class="ident">SpinLockObjectPool</span><span class="op">&lt;</span><span class="ident">PoseidonHasherLegacy</span><span class="op">&lt;</span><span class="ident">MinaPoseidonMerkleTreeNonLeafNode</span><span class="op">&gt;</span><span class="op">&gt;</span>,
     <span class="op">&gt;</span> <span class="op">=</span> <span class="ident">OnceCell::new</span>();
@@ -171,7 +171,7 @@
 
 <span class="kw">fn</span> <span class="ident">merge_poseidon_hash_with_hasher</span>(
     <span class="ident">hasher</span>: <span class="kw-2">&amp;mut</span> <span class="ident">SpinLockReusable</span><span class="op">&lt;</span><span class="ident">PoseidonHasherLegacy</span><span class="op">&lt;</span><span class="ident">MinaPoseidonMerkleTreeNonLeafNode</span><span class="op">&gt;</span><span class="op">&gt;</span>,
-    <span class="kw-2">mut</span> <span class="ident">hashes</span>: [<span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Fp</span><span class="op">&gt;</span>; <span class="ident">MINA_POSEIDON_MERKLE_DEGREE</span>],
+    <span class="kw-2">mut</span> <span class="ident">hashes</span>: [<span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Fp</span><span class="op">&gt;</span>; <span class="number">2</span>],
     <span class="ident">height</span>: <span class="ident">u32</span>,
 ) -&gt; <span class="ident">Fp</span> {
     <span class="kw">for</span> <span class="ident">hash_opt</span> <span class="kw">in</span> <span class="ident">hashes</span>.<span class="ident">iter_mut</span>() {

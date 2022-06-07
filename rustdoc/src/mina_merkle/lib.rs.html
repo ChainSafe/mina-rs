@@ -46,7 +46,6 @@
 <span id="39">39</span>
 <span id="40">40</span>
 <span id="41">41</span>
-<span id="42">42</span>
 </pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems</span>
 <span class="comment">// SPDX-License-Identifier: Apache-2.0</span>
 
@@ -56,6 +55,8 @@
 <span class="doccomment">//! mina-merkle crate provides traits and data structure implementations for</span>
 <span class="doccomment">//! in-memory, persistent, maskable and masking mina merkle tree</span>
 
+<span class="kw">mod</span> <span class="ident">proof</span>;
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">proof</span>::<span class="kw-2">*</span>;
 <span class="kw">mod</span> <span class="ident">tree</span>;
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">tree</span>::<span class="kw-2">*</span>;
 <span class="kw">mod</span> <span class="ident">tree_impl</span>;
@@ -86,9 +87,6 @@
     <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">once_cell</span>;
     <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">proof_systems</span>::<span class="kw-2">*</span>;
 }
-
-<span class="kw">const</span> <span class="ident">DEFAULT_DEGREE</span>: <span class="ident">usize</span> <span class="op">=</span> <span class="number">2</span>;
-<span class="kw">const</span> <span class="ident">MINA_POSEIDON_MERKLE_DEGREE</span>: <span class="ident">usize</span> <span class="op">=</span> <span class="number">2</span>;
 </code></pre></div>
 </section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_merkle" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.63.0-nightly (50b00252a 2022-06-06)" ></div>
 </body></html>

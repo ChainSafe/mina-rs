@@ -27,11 +27,31 @@
 <span id="20">20</span>
 <span id="21">21</span>
 <span id="22">22</span>
+<span id="23">23</span>
+<span id="24">24</span>
+<span id="25">25</span>
+<span id="26">26</span>
+<span id="27">27</span>
+<span id="28">28</span>
+<span id="29">29</span>
+<span id="30">30</span>
+<span id="31">31</span>
+<span id="32">32</span>
+<span id="33">33</span>
+<span id="34">34</span>
+<span id="35">35</span>
+<span id="36">36</span>
+<span id="37">37</span>
+<span id="38">38</span>
+<span id="39">39</span>
+<span id="40">40</span>
 </pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems</span>
 <span class="comment">// SPDX-License-Identifier: Apache-2.0</span>
 
-<span class="doccomment">/// Trait for implementing general n-degree merkle tree</span>
-<span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">MerkleTree</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">DEGREE</span>: <span class="ident">usize</span><span class="op">&gt;</span> {
+<span class="kw">use</span> <span class="kw">crate</span>::<span class="kw-2">*</span>;
+
+<span class="doccomment">/// Trait for implementing binary merkle tree</span>
+<span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">MerkleTree</span> {
     <span class="doccomment">/// Type of the leaf data</span>
     <span class="kw">type</span> <span class="ident">Item</span>;
     <span class="doccomment">/// Type of the hash values</span>
@@ -43,11 +63,27 @@
     <span class="kw">fn</span> <span class="ident">count</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">usize</span>;
     <span class="doccomment">/// Root hash, lazy-evaluated</span>
     <span class="kw">fn</span> <span class="ident">root</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident"><span class="self">Self</span>::Hash</span><span class="op">&gt;</span>;
-
     <span class="doccomment">/// Adds a new leaf</span>
-    <span class="kw">fn</span> <span class="ident">add</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">item</span>: <span class="ident"><span class="self">Self</span>::Item</span>);
+    <span class="kw">fn</span> <span class="ident">add</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">item</span>: <span class="ident"><span class="self">Self</span>::Item</span>) {
+        <span class="self">self</span>.<span class="ident">add_batch</span>(<span class="macro">vec!</span>[<span class="ident">item</span>])
+    }
     <span class="doccomment">/// Adds a batch of leaves in the give order</span>
     <span class="kw">fn</span> <span class="ident">add_batch</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">items</span>: <span class="kw">impl</span> <span class="ident">IntoIterator</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> <span class="ident"><span class="self">Self</span>::Item</span><span class="op">&gt;</span>);
+}
+
+<span class="doccomment">/// Trait for implementing sparse binary merkle tree.</span>
+<span class="doccomment">/// It is essentially a collection of [MerkleProof]</span>
+<span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">SparseMerkleTree</span> {
+    <span class="doccomment">/// Type of the merkle proof</span>
+    <span class="kw">type</span> <span class="ident">MerkleProof</span>: <span class="ident">MerkleProof</span>;
+
+    <span class="doccomment">/// Adds a single [MerkleProof]</span>
+    <span class="kw">fn</span> <span class="ident">add</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">proof</span>: <span class="ident"><span class="self">Self</span>::MerkleProof</span>) {
+        <span class="self">self</span>.<span class="ident">add_batch</span>(<span class="macro">vec!</span>[<span class="ident">proof</span>])
+    }
+
+    <span class="doccomment">/// Adds a collection of [MerkleProof]</span>
+    <span class="kw">fn</span> <span class="ident">add_batch</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">proofs</span>: <span class="kw">impl</span> <span class="ident">IntoIterator</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> <span class="ident"><span class="self">Self</span>::MerkleProof</span><span class="op">&gt;</span>);
 }
 </code></pre></div>
 </section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_merkle" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.63.0-nightly (50b00252a 2022-06-06)" ></div>
