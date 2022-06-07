@@ -5,17 +5,18 @@
 /// in the merkle tree it belongs to, which can be used for
 /// calculating hash
 #[derive(Debug, Clone, Default)]
-pub struct MerkleTreeNodeMetadata<const DEGREE: usize> {
+pub struct MerkleTreeNodeMetadata {
     depth: u32,
     height: u32,
 }
 
-impl<const DEGREE: usize> MerkleTreeNodeMetadata<DEGREE> {
+impl MerkleTreeNodeMetadata {
     /// Creates a new instance of [MerkleTreeNodeMetadata] with
     /// the node's index in the merkle tree, index of root node is 0
+    /// the tree height does not count data/leaf nodes
     pub fn new(node_index: usize, tree_height: u32) -> Self {
-        let depth = depth::<DEGREE>(node_index);
-        let height = height::<DEGREE>(node_index, tree_height);
+        let depth = depth::<2>(node_index);
+        let height = height::<2>(node_index, tree_height);
         Self { depth, height }
     }
 

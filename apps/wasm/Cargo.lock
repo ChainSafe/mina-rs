@@ -2089,6 +2089,7 @@ dependencies = [
  "lockfree-object-pool",
  "once_cell",
  "proof-systems",
+ "thiserror",
 ]
 
 [[package]]

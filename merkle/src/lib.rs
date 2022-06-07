@@ -7,6 +7,8 @@
 //! mina-merkle crate provides traits and data structure implementations for
 //! in-memory, persistent, maskable and masking mina merkle tree
 
+mod proof;
+pub use proof::*;
 mod tree;
 pub use tree::*;
 mod tree_impl;
@@ -37,6 +39,3 @@ pub mod macros {
     pub use once_cell;
     pub use proof_systems::*;
 }
-
-const DEFAULT_DEGREE: usize = 2;
-const MINA_POSEIDON_MERKLE_DEGREE: usize = 2;
