@@ -50,6 +50,7 @@ lazy_static! {
         "data/mainnet-113267-3NLenrog9wkiJMoA774T9VraqSUGhCuhbDLj3JKbEzomNdjr78G8.json"
         "data/mainnet-147571-3NKwrze6FvGQCCF6L7Q2JLvwgnsm56hwSny9kUyjbSUr8oqu1MGp.json"
         "data/mainnet-149909-3NLCeY7UwgCryuvk3Wevm9ndMDvWAMjwGBfBJS12MqL1QoTQWEWt.json"
+        "data/mainnet-113267-3NKtqqstB6h8SVNQCtspFisjUwCTqoQ6cC1KGvb6kx6n2dqKkiZS.json"
     );
 }
 
