@@ -267,7 +267,7 @@ mod tests {
         let mut current_chain = ProtocolStateChain::default();
         current_chain.push(block_from_json.protocol_state).unwrap();
 
-        // // Init candidate chain from JSON
+        // Init candidate chain from JSON
         let block_from_json: ExternalTransition = read_block_json(
             "mainnet-113267-3NKtqqstB6h8SVNQCtspFisjUwCTqoQ6cC1KGvb6kx6n2dqKkiZS.json",
         );
