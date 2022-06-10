@@ -33,22 +33,22 @@ async fn connect_async(request: &ConnectRequest) -> anyhow::Result<CommonRespons
     };
 
     let parsed_addr: Multiaddr = request.address.parse().unwrap();
-    log_string(format!(
+    log::info!(
         "[WASM] Connecting to proxy server via ws {} ... ",
         request.address
-    ));
+    );
     let mut swarm = {
         let behaviour = NodeStatusBehaviour::new().await.unwrap();
         SwarmBuilder::new(transport, behaviour, peer_id).build()
     };
     match swarm.dial(parsed_addr) {
         Ok(_) => {
-            log_str("[WASM] dial ok");
+            log::info!("[WASM] dial ok");
             loop {
                 if let SwarmEvent::ConnectionEstablished { peer_id, .. } =
                     swarm.select_next_some().await
                 {
-                    log_string(format!("[WASM] Connected to {}", peer_id));
+                    log::info!("[WASM] Connected to {}", peer_id);
                     swarm
                         .behaviour_mut()
                         .request_response
@@ -56,7 +56,7 @@ async fn connect_async(request: &ConnectRequest) -> anyhow::Result<CommonRespons
                 }
             }
         }
-        Err(e) => log_string(format!("[WASM] Fail to dail: {}", e)),
+        Err(e) => log::error!("[WASM] Fail to dail: {}", e),
     }
     Ok({
         let mut r = CommonResponse::new();
@@ -89,7 +89,7 @@ impl NetworkBehaviourEventProcess<RequestResponseEvent<NodeStatusRequest, NodeSt
     for NodeStatusBehaviour
 {
     fn inject_event(&mut self, event: RequestResponseEvent<NodeStatusRequest, NodeStatusResponse>) {
-        log_string(format!("[WASM] RequestResponseEvent: {:?}", event));
+        log::info!("[WASM] RequestResponseEvent: {:?}", event);
     }
 }
 
@@ -136,7 +136,7 @@ impl RequestResponseCodec for NodeStatusCodec {
     where
         T: AsyncRead + Unpin + Send,
     {
-        log_str("[WASM] read_request");
+        log::info!("[WASM] read_request");
         Ok(NodeStatusRequest)
     }
 
@@ -149,7 +149,7 @@ impl RequestResponseCodec for NodeStatusCodec {
         T: AsyncRead + Unpin + Send,
     {
         let mut reader = BufReader::new(io);
-        log_str("[WASM] read_response: begin loop");
+        log::info!("[WASM] read_response: begin loop");
         loop {
             let mut line = String::new();
             match reader.read_line(&mut line).await {
@@ -160,7 +160,7 @@ impl RequestResponseCodec for NodeStatusCodec {
                             Ok(bytes) => {
                                 if let Ok(status) = serde_json::from_slice::<PeerStatusJson>(&bytes)
                                 {
-                                    log_string(format!("[WASM] read_response: {:?}", status));
+                                    log::info!("[WASM] read_response: {:?}", status);
                                     let status_pb = {
                                         let mut s = pb::messages::PeerStatus::new();
                                         s.connected = status.connected;
@@ -175,27 +175,24 @@ impl RequestResponseCodec for NodeStatusCodec {
                                         if let Ok(u8a) = proto_msg_to_u8array(&status_pb) {
                                             ee.emit_u8a("update", &u8a);
                                         } else {
-                                            ee.emit_str("log", "Fail to serialize node status into protobuf binary");
+                                            log::error!("Fail to serialize node status into protobuf binary");
                                         }
                                     }
                                 }
                             }
                             _ => {
-                                log_string(format!("[WASM] read_response({}): {}", n, line));
-                                if let Some(ee) = event_emitter::get_event_emitter() {
-                                    ee.emit_str("log", line);
-                                }
+                                log::info!("[WASM] read_response({}): {}", n, line);
                             }
                         }
                     }
                 }
                 Err(err) => {
-                    log_string(format!("[WASM] read_response err: {:?}", err));
+                    log::error!("[WASM] read_response err: {:?}", err);
                     break;
                 }
             }
         }
-        log_str("[WASM] read_response: end loop");
+        log::info!("[WASM] read_response: end loop");
         Ok(NodeStatusResponse("read_response".into()))
     }
 
@@ -208,7 +205,7 @@ impl RequestResponseCodec for NodeStatusCodec {
     where
         T: AsyncWrite + Unpin + Send,
     {
-        log_str("[WASM] write_request");
+        log::info!("[WASM] write_request");
         io.close().await?;
         Ok(())
     }
@@ -222,7 +219,7 @@ impl RequestResponseCodec for NodeStatusCodec {
     where
         T: AsyncWrite + Unpin + Send,
     {
-        log_string(format!("[WASM] write_response: {}", json));
+        log::info!("[WASM] write_response: {}", json);
         io.write_all(json.as_bytes()).await?;
         io.close().await?;
         Ok(())

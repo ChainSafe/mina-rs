@@ -19,10 +19,12 @@ mina-serialization-types = {path = "../../../protocol/serialization-types"}
 anyhow = "1"
 async-trait = "0.1"
 base64 = "0.13"
+console_log = {version = "0.2", features = ["color"]}
 hex = "0.4"
 js-sys = "0.3"
 lazy_static = "1"
 libp2p = {version = "0.44", features = ["wasm-bindgen", "wasm-ext-websocket"]}
+log = "0.4"
 protobuf = {version = "3", features = ["with-bytes"]}
 serde = {version = "1", features = ["derive"]}
 serde_json = {version = "1"}

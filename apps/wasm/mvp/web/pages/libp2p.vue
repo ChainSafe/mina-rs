@@ -55,7 +55,7 @@
 
 <script lang="ts">
 import { initWasm } from "~/utils";
-import { connect, set_event_emitter } from "~/pkg/wasm";
+import { init_logger, connect, set_event_emitter } from "~/pkg/wasm";
 import { EventEmitter } from "events";
 import { ConnectRequest } from "~/web/pb/requests";
 import { PeerStatus } from "~/web/pb/messages";
@@ -79,9 +79,6 @@ export default {
     this.loadWasm();
   },
   mounted() {
-    this.eventEmitter.on("log", (msg) => {
-      console.log(`[log] ${msg}`);
-    });
     this.eventEmitter.on("update", (msg) => {
       console.log(`[update] raw msg: ${msg}`);
       try {
@@ -99,6 +96,7 @@ export default {
     async loadWasm() {
       await initWasm();
       this.wasmLoaded = true;
+      init_logger();
     },
     wasmStatus() {
       return this.wasmLoaded ? "loaded" : "loading";
