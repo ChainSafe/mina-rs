@@ -11,10 +11,22 @@
             "background.js"
         ]
     },
+    "declarative_net_request": {
+        "rule_resources": [
+            {
+                "id": "rules_cors",
+                "enabled": true,
+                "path": "rules_cors.json"
+            }
+        ]
+    },
     "permissions": [
         "tabs",
         "webNavigation",
-        "storage"
+        "storage",
+        "declarativeNetRequest",
+        "declarativeNetRequestFeedback",
+        "*://storage.googleapis.com/*"
     ],
     "content_security_policy": "worker-src 'self'; connect-src *; img-src *; default-src 'self' 'wasm-unsafe-eval'"
 }
