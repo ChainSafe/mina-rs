@@ -95,8 +95,8 @@ pub mod v1 {
         SignedCommandMemoV1, SignedCommandPayloadBodyV1, SignedCommandPayloadCommonV1,
         SignedCommandPayloadV1, SignedCommandV1, StagedLedgerDiffTupleV1, StagedLedgerDiffV1,
         StagedLedgerPreDiffV1, StakeDelegationV1, TransactionStatusAuxiliaryDataV1,
-        TransactionStatusBalanceDataV1, TransactionStatusV1, UserCommandV1,
-        UserCommandWithStatusV1,
+        TransactionStatusBalanceDataV1, TransactionStatusFailedTypeV1, TransactionStatusV1,
+        UserCommandV1, UserCommandWithStatusV1,
     };
 }
 
@@ -149,6 +149,7 @@ pub mod json {
         SignedCommandMemoJson, SignedCommandPayloadBodyJson, SignedCommandPayloadCommonJson,
         SignedCommandPayloadJson, StagedLedgerDiffJson, StakeDelegationJson,
         TransactionStatusAuxiliaryDataJson, TransactionStatusBalanceDataJson,
-        TransactionStatusJson, UserCommandJson, UserCommandWithStatusJson,
+        TransactionStatusFailedTypeJson, TransactionStatusJson, UserCommandJson,
+        UserCommandWithStatusJson,
     };
 }

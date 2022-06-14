@@ -273,6 +273,7 @@ mod tests {
                 assert!(balance_data.receiver_balance.is_some());
                 assert_eq!(balance_data.receiver_balance.unwrap().0, 11241317900);
             }
+            _ => {}
         }
 
         let coinbase = StagedLedgerDiffTuple::from(et.t.staged_ledger_diff.t.diff.clone())

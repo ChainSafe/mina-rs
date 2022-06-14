@@ -98,7 +98,10 @@ impl_from_with_proxy!(
 #[auto_from(mina_serialization_types::staged_ledger_diff::TransactionStatus)]
 pub enum TransactionStatus {
     Applied(TransactionStatusAuxiliaryData, TransactionStatusBalanceData),
-    // FIXME: other variants are not covered by current test block
+    Failed(
+        Vec<TransactionStatusFailedType>,
+        TransactionStatusBalanceData,
+    ),
 }
 
 impl_from_with_proxy!(
@@ -122,6 +125,32 @@ pub struct TransactionStatusBalanceData {
     pub source_balance: Option<Amount>,
     pub receiver_balance: Option<Amount>,
 }
+
+#[derive(Clone, PartialEq, Debug, AutoFrom)]
+#[auto_from(mina_serialization_types::staged_ledger_diff::TransactionStatusFailedType)]
+pub enum TransactionStatusFailedType {
+    Predicate,
+    SourceNotPresent,
+    ReceiverNotPresent,
+    AmountInsufficientToCreateAccount,
+    CannotPayCreationFeeInToken,
+    SourceInsufficientBalance,
+    SourceMinimumBalanceViolation,
+    ReceiverAlreadyExists,
+    NotTokenOwner,
+    MismatchedTokenPermissions,
+    Overflow,
+    SignedCommandOnSnappAccount,
+    SnappAccountNotPresent,
+    UpdateNotPermitted,
+    IncorrectNonce,
+}
+
+impl_from_with_proxy!(
+    TransactionStatusFailedType,
+    mina_serialization_types::staged_ledger_diff::TransactionStatusFailedType,
+    TransactionStatusFailedTypeJson
+);
 
 #[derive(Clone, PartialEq, Debug, SmartDefault, AutoFrom)]
 #[auto_from(mina_serialization_types::staged_ledger_diff::CoinBase)]
