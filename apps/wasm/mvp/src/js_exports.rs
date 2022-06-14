@@ -1,7 +1,7 @@
 // Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
-use crate::*;
+use crate::{logger::JsExportableLogger, *};
 use js_sys::Uint8Array;
 use mina_consensus::common::Chain;
 use mina_network::processor::js::graphql_api_v1;
@@ -72,5 +72,7 @@ pub async fn connect(request: Uint8Array) -> Result<Uint8Array, JsError> {
 
 #[wasm_bindgen]
 pub fn init_logger() -> Result<(), JsError> {
-    console_log::init_with_level(log::Level::Info).map_err(err_to_js_error)
+    static JS_LOGGER: JsExportableLogger = JsExportableLogger::new(log::Level::Debug);
+    log::set_max_level(JS_LOGGER.max_level().to_level_filter());
+    log::set_logger(&JS_LOGGER).map_err(err_to_js_error)
 }

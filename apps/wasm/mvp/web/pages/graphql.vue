@@ -56,9 +56,9 @@
       <button
         v-if="wasmLoaded"
         class="bg-sky-500 hover:bg-sky-700 px-5 py-2 text-sm leading-5 rounded-full font-semibold text-white"
-        @click="refreshBestChainStateJson"
+        @click="exportLog"
       >
-        Refresh best chain state
+        Export log
       </button>
     </p>
     <p>best chain state: {{ bestChainStateJson }}</p>
@@ -67,13 +67,14 @@
 
 <script lang="ts">
 import NavBar from "~/web/components/NavBar.vue";
-import { initWasm } from "~/utils";
+import { initWasm, downloadFile, textToPath } from "~/utils";
 import {
   init_logger,
   fetch_block_previous_state_hash,
   poll_latest_blocks_once,
   get_best_chain_state_json,
   run_processor,
+  get_log_text,
 } from "~/pkg/wasm";
 
 export default {
@@ -118,6 +119,7 @@ export default {
       }
     },
     async pollLatestBlocksOnce() {
+      this.bestChainStateJson = `updating\n${this.bestChainStateJson}`;
       await poll_latest_blocks_once();
       await this.refreshBestChainStateJson();
     },
@@ -125,6 +127,11 @@ export default {
       const json = await get_best_chain_state_json();
       this.bestChainStateJson = json;
     },
+    exportLog() {
+      const logText = get_log_text()
+      console.log(logText)
+      downloadFile(textToPath(logText))
+    }
   },
 };
 </script>

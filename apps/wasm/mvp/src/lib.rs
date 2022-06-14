@@ -4,6 +4,7 @@
 pub mod js_exports;
 mod js_ffi;
 use js_ffi::*;
+mod logger;
 mod pb;
 mod utils;
 use libp2p::{

@@ -19,7 +19,6 @@ mina-serialization-types = {path = "../../../protocol/serialization-types"}
 anyhow = "1"
 async-trait = "0.1"
 base64 = "0.13"
-console_log = {version = "0.2", features = ["color"]}
 hex = "0.4"
 js-sys = "0.3"
 lazy_static = "1"
