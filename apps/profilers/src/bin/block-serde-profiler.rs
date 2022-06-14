@@ -14,14 +14,15 @@ fn main() -> anyhow::Result<()> {
                 .short('m')
                 .long("mode")
                 .value_name("MODE")
-                .possible_values(&["cpu", "heap"])
+                .value_parser(["cpu", "heap"])
                 .required(true)
                 .default_value("cpu")
                 .help("Profiling mode")
                 .takes_value(true),
         )
         .get_matches();
-    let mode = Mode::from_str(matches.value_of("mode").unwrap()).unwrap();
+    let mode: &String = matches.get_one("mode").unwrap();
+    let mode = Mode::from_str(mode.as_str()).unwrap();
     match mode {
         Mode::Cpu => cpu_profile_serialization(),
         Mode::Heap => heap_profile_serialization(),
