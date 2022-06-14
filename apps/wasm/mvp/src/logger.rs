@@ -4,7 +4,7 @@
 use log::{Level, Log, Metadata, Record};
 use wasm_bindgen::prelude::*;
 
-use crate::js_ffi::console_log_str;
+use crate::js_ffi::console_log;
 
 #[wasm_bindgen(inline_js = r###"
 let logText = ''
@@ -70,7 +70,7 @@ impl Log for JsExportableLogger {
     fn log(&self, record: &Record) {
         if self.enabled(record.metadata()) {
             let s = Self::record_to_string(record);
-            console_log_str(s.as_str());
+            console_log(s.as_str());
             append_log_record(s);
         }
     }
