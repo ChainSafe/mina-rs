@@ -460,9 +460,8 @@ pub struct TransactionStatusBalanceDataJson {
 pub enum CoinBase {
     #[default]
     Zero,
-    // FIXME: other variants are not covered by current test block
     One(Option<CoinBaseFeeTransferV1>),
-    Two,
+    Two(Option<CoinBaseFeeTransferV1>, Option<CoinBaseFeeTransferV1>),
 }
 
 pub type CoinBaseV1 = Versioned<CoinBase, 1>;
@@ -472,7 +471,10 @@ enum CoinBaseJsonProxy {
     #[default]
     Zero,
     One(Option<CoinBaseFeeTransferJson>),
-    Two,
+    Two(
+        Option<CoinBaseFeeTransferJson>,
+        Option<CoinBaseFeeTransferJson>,
+    ),
 }
 
 #[derive(Clone, Debug, PartialEq, SmartDefault, AutoFrom)]
@@ -482,7 +484,10 @@ pub enum CoinBaseJson {
     #[default]
     Zero,
     One(Option<CoinBaseFeeTransferJson>),
-    Two,
+    Two(
+        Option<CoinBaseFeeTransferJson>,
+        Option<CoinBaseFeeTransferJson>,
+    ),
 }
 
 impl_mina_enum_json_serde!(CoinBaseJson, CoinBaseJsonProxy);
