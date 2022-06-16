@@ -5,6 +5,8 @@ use mina_rs_base::types::ExternalTransition;
 use mina_rs_base::JsonSerializationType;
 use serde::{Deserialize, Serialize};
 use serde_json::Error;
+#[macro_use]
+extern crate log;
 
 // To read query response from graphql api (https://graphql.minaexplorer.com/)
 #[derive(Debug, Serialize, Deserialize)]
@@ -25,22 +27,23 @@ struct BlockInfo {
 
 #[tokio::main]
 async fn main() {
+    env_logger::init();
     // Fetch n blocks info from graphql api
     let blocks = fetch_block_info().await.unwrap();
     for block in blocks.data.blocks {
-        println!("Checking: {}-{}", block.block_height, block.state_hash);
+        info!("Checking: {}-{}", block.block_height, block.state_hash);
         // Retrieve block json from mainnet json dump
         let block_json = match retrieve_block_json("mainnet", &block).await {
             Ok(val) => val,
             Err(err) => {
-                println!("Failed to retrieve block json: {}", err);
+                warn!("Failed to retrieve block json: {}", err);
                 continue;
             }
         };
         match parse_block_json(block_json) {
             Ok(_et) => {} // Block parsed successfully
             Err(err) => {
-                println!(
+                error!(
                     "Fix Me(https://storage.googleapis.com/mina_network_block_data/mainnet-{}-{}.json): {}",
                     block.block_height, block.state_hash, err
                 );
