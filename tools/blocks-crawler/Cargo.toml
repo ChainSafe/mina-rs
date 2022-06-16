@@ -1,0 +1,13 @@
+[package]
+name = "blocks-crawler"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+mina-rs-base = {path = "../../base"}
+serde = {version = "1", features = ["derive"]}
+serde_json = "1"
+reqwest = { version = "0.11", features = ["json"] }
+tokio = {version = "1.18", features = ["full"]}
