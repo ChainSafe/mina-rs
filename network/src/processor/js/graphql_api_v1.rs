@@ -25,6 +25,7 @@ pub async fn fetch_block(
     height: usize,
     state_hash: &str,
 ) -> anyhow::Result<ExternalTransitionJson> {
+    log::info!("Fetching block {state_hash} at height {height}");
     let json_str = fetch_block_json_str(height, state_hash)
         .await
         .map_err(|err| anyhow::Error::msg(format!("{:?}", err)))?
@@ -35,6 +36,7 @@ pub async fn fetch_block(
 
 /// Query infomation of the latest blocks
 pub async fn query_latest_blocks(limit: usize) -> anyhow::Result<Vec<BlockBasicInfo>> {
+    log::info!("Querying the latest {limit} blocks");
     let json_str = query_latest_blocks_json_str(limit)
         .await
         .map_err(|err| anyhow::Error::msg(format!("{:?}", err)))?

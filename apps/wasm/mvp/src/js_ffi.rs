@@ -6,11 +6,8 @@ use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen]
 extern "C" {
-    #[wasm_bindgen(js_namespace= console, js_name = log)]
-    pub fn log_string(s: String);
-
-    #[wasm_bindgen(js_namespace= console, js_name = log)]
-    pub fn log_str(s: &str);
+    #[wasm_bindgen(js_namespace = console, js_name = log)]
+    pub fn console_log(s: &str);
 
     #[wasm_bindgen]
     pub type EventEmitter;
