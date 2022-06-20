@@ -44,18 +44,26 @@ If parsing block json fails appropriate error message along with block url will 
 Fix Me(https://storage.googleapis.com/mina_network_block_data/mainnet-147571-3NKwrze6FvGQCCF6L7Q2JLvwgnsm56hwSny9kUyjbSUr8oqu1MGp.json): found 'Failed' expected 'Applied'
 ```
 
+## How to Run: blocks-crawler 
+
+USAGE:
+    blocks-crawler [OPTIONS] --limit <LIMIT>
+
+OPTIONS:
+    -c, --concurrency <CONCURRENCY>    [default: 8]
+    -h, --help                         Print help information
+    -l, --limit <LIMIT>                
+
 ## How to enable logger:
 
 To enable info level logger: 
 ```
-RUST_LOG=info cargo run or RUST_LOG=info ./blocks-crawler 
+RUST_LOG=info
 ```
-
 To enable warn level logger: 
 ```
-RUST_LOG=warn cargo run or RUST_LOG=warn ./blocks-crawler 
+RUST_LOG=warn
 ```
-
 To enable error level logger: 
 ```
-RUST_LOG=error cargo run or RUST_LOG=error ./blocks-crawler 
+RUST_LOG=error
