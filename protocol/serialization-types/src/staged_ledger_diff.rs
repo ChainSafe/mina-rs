@@ -281,7 +281,10 @@ pub enum TransactionStatus {
         TransactionStatusAuxiliaryDataV1,
         TransactionStatusBalanceDataV1,
     ),
-    // FIXME: other variants are not covered by current test block
+    Failed(
+        Vec<TransactionStatusFailedTypeV1>,
+        TransactionStatusBalanceDataV1,
+    ),
 }
 
 pub type TransactionStatusV1 = Versioned<TransactionStatus, 1>;
@@ -292,6 +295,10 @@ enum TransactionStatusJsonProxy {
         TransactionStatusAuxiliaryDataJson,
         TransactionStatusBalanceDataJson,
     ),
+    Failed(
+        Vec<TransactionStatusFailedTypeJson>,
+        TransactionStatusBalanceDataJson,
+    ),
 }
 
 #[derive(Clone, Debug, PartialEq, AutoFrom)]
@@ -300,6 +307,10 @@ enum TransactionStatusJsonProxy {
 pub enum TransactionStatusJson {
     Applied(
         TransactionStatusAuxiliaryDataJson,
+        TransactionStatusBalanceDataJson,
+    ),
+    Failed(
+        Vec<TransactionStatusFailedTypeJson>,
         TransactionStatusBalanceDataJson,
     ),
 }
@@ -321,6 +332,111 @@ pub struct TransactionStatusAuxiliaryDataJson {
     pub fee_payer_account_creation_fee_paid: Option<U64Json>,
     pub receiver_account_creation_fee_paid: Option<U64Json>,
     pub created_token: Option<U64Json>,
+}
+
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
+pub enum TransactionStatusFailedType {
+    #[serde(rename = "Predicate")]
+    Predicate,
+    #[serde(rename = "Source_not_present")]
+    SourceNotPresent,
+    #[serde(rename = "Receiver_not_present")]
+    ReceiverNotPresent,
+    #[serde(rename = "Amount_insufficient_to_create_account")]
+    AmountInsufficientToCreateAccount,
+    #[serde(rename = "Cannot_pay_creation_fee_in_token")]
+    CannotPayCreationFeeInToken,
+    #[serde(rename = "Source_insufficient_balance")]
+    SourceInsufficientBalance,
+    #[serde(rename = "Source_minimum_balance_violation")]
+    SourceMinimumBalanceViolation,
+    #[serde(rename = "Receiver_already_exists")]
+    ReceiverAlreadyExists,
+    #[serde(rename = "Not_token_owner")]
+    NotTokenOwner,
+    #[serde(rename = "Mismatched_token_permissions")]
+    MismatchedTokenPermissions,
+    #[serde(rename = "Overflow")]
+    Overflow,
+    #[serde(rename = "Signed_command_on_snapp_account")]
+    SignedCommandOnSnappAccount,
+    #[serde(rename = "Snapp_account_not_present")]
+    SnappAccountNotPresent,
+    #[serde(rename = "Update_not_permitted")]
+    UpdateNotPermitted,
+    #[serde(rename = "Incorrect_nonce")]
+    IncorrectNonce,
+}
+pub type TransactionStatusFailedTypeV1 = Versioned<TransactionStatusFailedType, 1>;
+
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
+enum TransactionStatusFailedTypeJsonProxy {
+    #[serde(rename = "Predicate")]
+    Predicate,
+    #[serde(rename = "Source_not_present")]
+    SourceNotPresent,
+    #[serde(rename = "Receiver_not_present")]
+    ReceiverNotPresent,
+    #[serde(rename = "Amount_insufficient_to_create_account")]
+    AmountInsufficientToCreateAccount,
+    #[serde(rename = "Cannot_pay_creation_fee_in_token")]
+    CannotPayCreationFeeInToken,
+    #[serde(rename = "Source_insufficient_balance")]
+    SourceInsufficientBalance,
+    #[serde(rename = "Source_minimum_balance_violation")]
+    SourceMinimumBalanceViolation,
+    #[serde(rename = "Receiver_already_exists")]
+    ReceiverAlreadyExists,
+    #[serde(rename = "Not_token_owner")]
+    NotTokenOwner,
+    #[serde(rename = "Mismatched_token_permissions")]
+    MismatchedTokenPermissions,
+    #[serde(rename = "Overflow")]
+    Overflow,
+    #[serde(rename = "Signed_command_on_snapp_account")]
+    SignedCommandOnSnappAccount,
+    #[serde(rename = "Snapp_account_not_present")]
+    SnappAccountNotPresent,
+    #[serde(rename = "Update_not_permitted")]
+    UpdateNotPermitted,
+    #[serde(rename = "Incorrect_nonce")]
+    IncorrectNonce,
+}
+
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq, AutoFrom)]
+#[auto_from(TransactionStatusFailedType)]
+#[auto_from(TransactionStatusFailedTypeJsonProxy)]
+pub enum TransactionStatusFailedTypeJson {
+    #[serde(rename = "Predicate")]
+    Predicate,
+    #[serde(rename = "Source_not_present")]
+    SourceNotPresent,
+    #[serde(rename = "Receiver_not_present")]
+    ReceiverNotPresent,
+    #[serde(rename = "Amount_insufficient_to_create_account")]
+    AmountInsufficientToCreateAccount,
+    #[serde(rename = "Cannot_pay_creation_fee_in_token")]
+    CannotPayCreationFeeInToken,
+    #[serde(rename = "Source_insufficient_balance")]
+    SourceInsufficientBalance,
+    #[serde(rename = "Source_minimum_balance_violation")]
+    SourceMinimumBalanceViolation,
+    #[serde(rename = "Receiver_already_exists")]
+    ReceiverAlreadyExists,
+    #[serde(rename = "Not_token_owner")]
+    NotTokenOwner,
+    #[serde(rename = "Mismatched_token_permissions")]
+    MismatchedTokenPermissions,
+    #[serde(rename = "Overflow")]
+    Overflow,
+    #[serde(rename = "Signed_command_on_snapp_account")]
+    SignedCommandOnSnappAccount,
+    #[serde(rename = "Snapp_account_not_present")]
+    SnappAccountNotPresent,
+    #[serde(rename = "Update_not_permitted")]
+    UpdateNotPermitted,
+    #[serde(rename = "Incorrect_nonce")]
+    IncorrectNonce,
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
