@@ -4,5 +4,6 @@
 members = [
   "profilers",
   "bin-prot-layout-reader",
+  "tools/blocks-crawler"
 ]
 resolver = "2"
