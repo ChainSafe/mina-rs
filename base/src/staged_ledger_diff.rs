@@ -157,9 +157,8 @@ impl_from_with_proxy!(
 pub enum CoinBase {
     #[default]
     Zero,
-    // FIXME: other variants are not covered by current test block
     One(Option<CoinBaseFeeTransfer>),
-    Two,
+    Two(Option<CoinBaseFeeTransfer>, Option<CoinBaseFeeTransfer>),
 }
 
 impl_from_with_proxy!(
