@@ -570,6 +570,11 @@
 <span id="563">563</span>
 <span id="564">564</span>
 <span id="565">565</span>
+<span id="566">566</span>
+<span id="567">567</span>
+<span id="568">568</span>
+<span id="569">569</span>
+<span id="570">570</span>
 </pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems</span>
 <span class="comment">// SPDX-License-Identifier: Apache-2.0</span>
 
@@ -1032,9 +1037,8 @@
 <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">CoinBase</span> {
     <span class="attribute">#[<span class="ident">default</span>]</span>
     <span class="ident">Zero</span>,
-    <span class="comment">// FIXME: other variants are not covered by current test block</span>
     <span class="ident">One</span>(<span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">CoinBaseFeeTransferV1</span><span class="op">&gt;</span>),
-    <span class="ident">Two</span>,
+    <span class="ident">Two</span>(<span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">CoinBaseFeeTransferV1</span><span class="op">&gt;</span>, <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">CoinBaseFeeTransferV1</span><span class="op">&gt;</span>),
 }
 
 <span class="kw">pub</span> <span class="kw">type</span> <span class="ident">CoinBaseV1</span> <span class="op">=</span> <span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">CoinBase</span>, <span class="number">1</span><span class="op">&gt;</span>;
@@ -1044,7 +1048,10 @@
     <span class="attribute">#[<span class="ident">default</span>]</span>
     <span class="ident">Zero</span>,
     <span class="ident">One</span>(<span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">CoinBaseFeeTransferJson</span><span class="op">&gt;</span>),
-    <span class="ident">Two</span>,
+    <span class="ident">Two</span>(
+        <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">CoinBaseFeeTransferJson</span><span class="op">&gt;</span>,
+        <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">CoinBaseFeeTransferJson</span><span class="op">&gt;</span>,
+    ),
 }
 
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">PartialEq</span>, <span class="ident">SmartDefault</span>, <span class="ident">AutoFrom</span>)]</span>
@@ -1054,7 +1061,10 @@
     <span class="attribute">#[<span class="ident">default</span>]</span>
     <span class="ident">Zero</span>,
     <span class="ident">One</span>(<span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">CoinBaseFeeTransferJson</span><span class="op">&gt;</span>),
-    <span class="ident">Two</span>,
+    <span class="ident">Two</span>(
+        <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">CoinBaseFeeTransferJson</span><span class="op">&gt;</span>,
+        <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">CoinBaseFeeTransferJson</span><span class="op">&gt;</span>,
+    ),
 }
 
 <span class="macro">impl_mina_enum_json_serde!</span>(<span class="ident">CoinBaseJson</span>, <span class="ident">CoinBaseJsonProxy</span>);

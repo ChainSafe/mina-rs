@@ -210,7 +210,6 @@
 <span id="203">203</span>
 <span id="204">204</span>
 <span id="205">205</span>
-<span id="206">206</span>
 </pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems</span>
 <span class="comment">// SPDX-License-Identifier: Apache-2.0</span>
 
@@ -370,9 +369,8 @@
 <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">CoinBase</span> {
     <span class="attribute">#[<span class="ident">default</span>]</span>
     <span class="ident">Zero</span>,
-    <span class="comment">// FIXME: other variants are not covered by current test block</span>
     <span class="ident">One</span>(<span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">CoinBaseFeeTransfer</span><span class="op">&gt;</span>),
-    <span class="ident">Two</span>,
+    <span class="ident">Two</span>(<span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">CoinBaseFeeTransfer</span><span class="op">&gt;</span>, <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">CoinBaseFeeTransfer</span><span class="op">&gt;</span>),
 }
 
 <span class="macro">impl_from_with_proxy!</span>(
