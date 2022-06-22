@@ -73,11 +73,11 @@ mod tests {
             "2mzpdUi5ddLicLGUns4iYFiNahL5B5cPkTUot83v2moNtr4mzRYf"
         );
         assert_eq!(
-            &SnarkedLedgerHash::from(blockchain_state.t.t.snarked_ledger_hash.clone()).to_string(),
+            &LedgerHash::from(blockchain_state.t.t.snarked_ledger_hash.clone()).to_string(),
             "jxkQm8ge9sYPwPyUYUMZ6wr7SQ6Pit5szbRvPmEzYKQQZAnACyC"
         );
         assert_eq!(
-            &SnarkedLedgerHash::from(blockchain_state.t.t.genesis_ledger_hash.clone()).to_string(),
+            &LedgerHash::from(blockchain_state.t.t.genesis_ledger_hash.clone()).to_string(),
             "jx7buQVWFLsXTtzRgSxbYcT8EYLS8KCZbLrfDcJxMtyy4thw2Ee"
         );
         assert_eq!(blockchain_state.t.t.snarked_next_available_token.t.t.t, 2);

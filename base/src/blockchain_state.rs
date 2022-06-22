@@ -17,9 +17,9 @@ pub struct BlockchainState {
     /// Hash of the proposed next state of the blockchain
     pub staged_ledger_hash: StagedLedgerHash,
     /// Hash of the most recently proven state of the blockchain
-    pub snarked_ledger_hash: SnarkedLedgerHash,
+    pub snarked_ledger_hash: LedgerHash,
     /// Hash of the genesis state
-    pub genesis_ledger_hash: SnarkedLedgerHash,
+    pub genesis_ledger_hash: LedgerHash,
     /// Check whether the change of the next token ID is consistent.
     pub snarked_next_available_token: TokenId,
     /// Timestamps for blocks

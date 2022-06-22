@@ -94,11 +94,11 @@ impl GenesisInitConfig {
         let blockchain_state = BlockchainState {
             timestamp: BlockTime::from_unix_epoch(1615939200),
             snarked_next_available_token: TokenId(2),
-            snarked_ledger_hash: SnarkedLedgerHash::from_str(
+            snarked_ledger_hash: LedgerHash::from_str(
                 "jx7buQVWFLsXTtzRgSxbYcT8EYLS8KCZbLrfDcJxMtyy4thw2Ee",
             )
             .expect(ERR_FAIL_TO_DECODE_B58),
-            genesis_ledger_hash: SnarkedLedgerHash::from_str(
+            genesis_ledger_hash: LedgerHash::from_str(
                 "jx7buQVWFLsXTtzRgSxbYcT8EYLS8KCZbLrfDcJxMtyy4thw2Ee",
             )
             .expect(ERR_FAIL_TO_DECODE_B58),
