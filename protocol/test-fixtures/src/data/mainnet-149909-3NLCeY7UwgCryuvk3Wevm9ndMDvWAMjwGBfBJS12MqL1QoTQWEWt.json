@@ -1,0 +1,2792 @@
+{
+  "delta_transition_chain_proof": [
+    "jwqxPKdMWKf14X6M7rKtbFrKMJhqa7uQaH2fb9iYUKU6ox5a2w2",
+    []
+  ],
+  "protocol_state": {
+    "body": {
+      "blockchain_state": {
+        "genesis_ledger_hash": "jx7buQVWFLsXTtzRgSxbYcT8EYLS8KCZbLrfDcJxMtyy4thw2Ee",
+        "snarked_ledger_hash": "jxgEXorMSBGyBnh1TcCz9VVTFpSvvcbXJRU5K39qFACyV2qHAtV",
+        "snarked_next_available_token": "2",
+        "staged_ledger_hash": {
+          "non_snark": {
+            "aux_hash": "UyfzJMqqpxdYiDjqaVMN3QKycUfLWSxhffce8nVQNrWaqH8Yeg",
+            "ledger_hash": "jwvC5SwjtWmA4BpQT7GVvqa7okdwEMFpeGKiStha92ymVafPMuU",
+            "pending_coinbase_aux": "XBZ9F1YBewGL8UrQMLe3kzXAWEKPn3dFhBfQDa3jvuHuyvAEMZ"
+          },
+          "pending_coinbase_hash": "2n2Mn3VrW9FEWJRjAV4ELnrJPyCouk2yL8BxPbZ2yJ2e62TKR8Zu"
+        },
+        "timestamp": "1655743320000"
+      },
+      "consensus_state": {
+        "block_creator": "B62qs2Lw5WZNSjd8eHBUZXFYyRjV8oKtrZMFDn1S1Ye62G71xCQJMYM",
+        "block_stake_winner": "B62qrZCAKA2YwZ3Na6Cv9VdjF92y2G4oCud1JQtWwDoyvfkjZ6PCtTV",
+        "blockchain_length": "149909",
+        "coinbase_receiver": "B62qs2Lw5WZNSjd8eHBUZXFYyRjV8oKtrZMFDn1S1Ye62G71xCQJMYM",
+        "curr_global_slot": {
+          "slot_number": "221134",
+          "slots_per_epoch": "7140"
+        },
+        "epoch_count": "30",
+        "global_slot_since_genesis": "221134",
+        "has_ancestor_in_same_checkpoint_window": true,
+        "last_vrf_output": "5gL3QqhFtse9YU_woRTQwibGVRhIH4pwO93ptjlzAAA=",
+        "min_window_density": "14",
+        "next_epoch_data": {
+          "epoch_length": "4698",
+          "ledger": {
+            "hash": "jwcWudRBTNZuMd1Tcyjzpr71buwc9RNmT2Jip1efA9eWvXcZiKL",
+            "total_currency": "924139612840039233"
+          },
+          "lock_checkpoint": "3NKFbuqjPsQCRxTQ4wpEJNRoxHMaMd5CUZmu5ibDo7Y8KKPqQAZp",
+          "seed": "2vbLQeJV4RXqA4GAGVdxLUcky72Bs2vX95rY9j6JJwMpZeVE5tRQ",
+          "start_checkpoint": "3NKkwMuZGto5eQWDwxbpuPccZktD8fSPDD9FXbK5YcgNr6hzq7TF"
+        },
+        "staking_epoch_data": {
+          "epoch_length": "4876",
+          "ledger": {
+            "hash": "jxDP6iJZGfNixGBiVasAnYYm1Fk29qWP2MecJ4mAg676DK7sQCM",
+            "total_currency": "919710892840039233"
+          },
+          "lock_checkpoint": "3NKhn4hhUHUxzAnuHZDowgcxuikeScTRFfTEGURxs3KtLNgiMELd",
+          "seed": "2vbV4bko2etACSdwWVyv7xR7dWVP9nprwZHj9yJcXEnp9Y4QHqVu",
+          "start_checkpoint": "3NKkVSdVCVfx3s5DX7ZPwE2kngxEnSqCZLszPuhdZ1ipSrq2HazX"
+        },
+        "sub_window_densities": [
+          "6",
+          "4",
+          "6",
+          "7",
+          "4",
+          "4",
+          "5",
+          "2",
+          "5",
+          "3",
+          "7"
+        ],
+        "supercharge_coinbase": false,
+        "total_currency": "928144252840039233"
+      },
+      "constants": {
+        "delta": "0",
+        "genesis_state_timestamp": "1615939200000",
+        "k": "290",
+        "slots_per_epoch": "7140",
+        "slots_per_sub_window": "7"
+      },
+      "genesis_state_hash": "3NKeMoncuHab5ScarV5ViyF16cJPT4taWNSaTLS64Dp67wuXigPZ"
+    },
+    "previous_state_hash": "3NKnFAHXHCQAikfYRxC9eWJD48Wt2B6uCS8TpaxkwjcJCT5fSFYz"
+  },
+  "protocol_state_proof": "AQEBAQEBAQEBAQABAfwhgMpTdOWX9QH8LtE2POq10QUAAQH8FM64MEn7-_4B_IMDXcCQKqFnAAEB_HL3c0RxhksPAfww6p-nc-4cnAABAAEB_I1BAeFZwt_AAfya6dPA3ZW7pAABAOl8s6WjJTMfJgvadNNs4lUWVZAvWhI1sRd8LBGPv48BAQDefRFKtKS5CUN2td8KLwxTAK7mw9Uphjkn5liTL4lBAAEAAQH8CpWVv1SrlBUB_BC0m5O-VKLmAAEBAQEAAQH8XvsuKBIiKmcB_DwF_Jh6hCPRAAEBAAEB_DqptLd5DPXVAfzSw7Euu9cwvQABAQABAfwDiN1pTZTC4wH834FZsiY2fK4AAQEAAQH8zCRfCm6_b2YB_KLLKl_ZXAViAAEBAAEB_CzMxH1sAOBgAfzOf2G75YTZFAABAQABAfxHbbWBcpNdGgH8VlsgE_wIsHkAAQEAAQH8EDIiJR998uAB_EInW2s2fJjtAAEBAAEB_MQwhx-2veO9AfwzxLmDbpookQABAQABAfzrpgSFrf_3pgH8m2_lTWvwFmsAAQEAAQH8xh1Ju1DQJbIB_DaGM_-i8H2fAAEBAAEB_OUQYsHdg0eSAfyIhZPzyUEi3gABAQABAfw-jJ77gW8T2AH8zSSKPqCLTooAAQEAAQH83xUU6i1ZRvwB_Bz7Lt2IhW1JAAEBAAEB_NHkai04gJp3AfzG2rhH9FyRmwABAQABAfwXrvFrIq8mIwH8z7FmCFhhH-8AAQEAAQH8iYBSkAZdtsUB_HEkuQc20rcXAAEBAAEB_EI98TVX7Q4HAfwbPNldLiE_YwABAQABAfyfke3aoueFWgH85WFH-FoKXxkAAAEAAQEB_GTS5BOcdGSlAfxmLXlCL4iOLAH8kWDfxAljCLAB_CSR84UezhcIAAFsGB5pneVgZ-3VlZxvPeYRiGgLEiwFap9JY-pIbJzJDJ_4lXTmq70EIzIz_94Ttwo512BZdaYFmNYhj0k9lqgCAQEBAQEBAAEB_LXoj99OPuQbAfzo_rzpPIRPAQABAQABAfxnQ8GBnoqMYQH8tZMMAqiGTRcAAQEAAQH8Hnwx_JuHplMB_EOAkZ24YOA3AAEBAAEB_Pak78EVXv99Afw3NYRekloEiwABAQABAfz7boAthlgJowH82ySmPenzktgAAQEAAQH8xYMrEmgm5nIB_Nx_5iQ1YUWIAAEBAAEB_GykBq2Se6fpAfwqXASMWXUmAQABAQABAfywLyYrFgCV7wH8L909qBCkKoQAAQEAAQH8Tw0izroPxE8B_MLLufwJvw_mAAEBAAEB_LkJP4OIncWlAfz0zZIX2Egy2wABAQABAfzWzP4aUm3LNQH8Cl55EdvMva0AAQEAAQH8y0MOvWGmYUAB_OAudo2Rx8KSAAEBAAEB_ILtLDAnuFa7AfzFYfOffszesQABAQABAfx6Sq2SEsX3SQH89iCSJAjC7GEAAQEAAQH82GcY4MiEOIgB_OqwhJG-5gT0AAEBAAEB_GFtUyAyO5x0AfzynNVkJ9vpVgABAQABAfzw70uJgY2g-QH8-pi-wDwupxMAAAEBAQEBAAEB_NZV5ecCBCVGAfwpk58ghPg_VgABAQABAfwxek-cord3DwH8r-1NfC5df7MAAQEAAQH8YxzjryX89JsB_GpEMIwogwHpAAEBAAEB_BzZsLG4iywZAfxJz0AHSk_JDAABAQABAfxujKz_L8lAzwH8w9BCyAKgzBcAAQEAAQH8c4zPBQtHi3QB_IGVlnIsj87LAAEBAAEB_BUTTRm_q3NSAfwUHHDhsoxLqAABAQABAfz6IS87UYL9MgH8RLd54bI6yDEAAQEAAQH8gSyZ7BwCoNQB_LIJdqcyw2BCAAEBAAEB_ESvRXahJL1nAfyFnkT0GwQoDwABAQABAfyTV5lue_6s2AH87SmBZSAXpY8AAQEAAQH82qMpGr0dgRsB_DPs1eDoEhiqAAEBAAEB_P-K8-fpDHSmAfwSshhAI1IzEQABAQABAfzerGaIfzzuagH87Qun887VF48AAQEAAQH83xalJEgnb_QB_EHkQ4AoWBAJAAEBAAEB_FXq7UuTGADVAfzpZIW_Z84iQgABAQABAfzqKe3kh8EQhgH8Rrg9LPj1ffsAAAABAAECSlAol-wW3QSTxBvsgPqRfLmSzyp8mQQrks1l1WxoLyil6h2yYKcv1Vq2ax2M8TCQSlrzVvR4XVhy14sNBGU_DBisPiPBdO7AiNfL5X-Ot4meQCru3IPcqaVARquSW3sdmBcgHh35mjF3LqSbS2nwoYARvpJ5gyKD6nXJhrFcuScBAgEBAQEAAQH8x3S3IO637IEB_PFeBbQO7YuLAAEBAAEB_KtUZB10CCN-AfzupILzVfKAqgABAQABAfwnFXTLMGHFegH8DCdKPm1b6g4AAQEAAQH8a3mcX9hk_60B_AvdRFgm7x0mAAEBAAEB_EjAdfLJKoz6Afzl_9ofm7XQzQABAQABAfzqjCeY_yn76QH8KvZySc9LsIwAAQEAAQH8GNnjp_IUciAB_Dsq9MvvTKS-AAEBAAEB_Ep095IeVStwAfwjXwtG6k4YfgABAQABAfzxpdYhiDxhLQH8oa1dDqbsVfcAAQEAAQH83gRJeTz44aIB_C44ffoX8X_vAAEBAAEB_It6BvUQC9iOAfyrtjBgYlTehgABAQABAfxLNTC4zDhmgAH8oRHWZ0xbYdEAAQEAAQH8eaDo1lQfmksB_LpI2sytM4NQAAEBAAEB_HbW9NDMlRboAfzwUht1sdVRAgABAQABAfzBNAMW4j3HbgH8nkwUYmjsW_8AAQEAAQH8zeQCVWIqFBEB_H7jiEeHrosZAAEBAAEB_Eo405BpBHBiAfx-_U0ld-g2EwABAQABAfzPR5FFnwtUjgH8w5orMcjH9b4AAAEBAQEAAQH8DMVpym0zoQgB_IuGEn36D_DDAAEBAAEB_IkAs_6a1ot7AfwRKLlqjdLzswABAQABAfzBBzWGcLjPcwH8nOfrwyXsm3IAAQEAAQH8JU-rVyi2WwoB_PKA6zqDmK-xAAEBAAEB_Lkqp1a0cHOtAfz8nvHVI_lPNgABAQABAfwAfC-OYhyHWQH8h8wmonP2x5wAAQEAAQH8r_K2nh2CVCMB_H71ffbRa7nVAAEBAAEB_PaGkKDQ93sUAfxoKiRAzmJeYgABAQABAfwOrVYyYxvGrwH8--EfoRBygAkAAQEAAQH8kUGsyr4eWPkB_KbJtz6Z1R5XAAEBAAEB_L3DZM2jUE6qAfxoxf7BCucU2AABAQABAfxt3l6C36wdsgH8pQfbxReiCP4AAQEAAQH8f6rm6dYPToIB_Cx_uU6YOvb8AAEBAAEB_MoEG3EriDHDAfwpJq62x6w5kQABAQABAfzvUYH9R48P3AH8h5U7xEN6qQAAAQEAAQH8vzKG0R7YOGAB_KsFqqJwvLP5AAEBAAEB_FpHr-Xg0nWUAfz20sOuAqfL0QABAQABAfwEfC359g94vgH8VOL7MpFYPeEAAAEBAQH2fj7QzQFmcWKfNTNC9c6r8PfXhNtfsHzjH1qSi5zwBwEBXaYKCTZv01iDV_lCrzwAjO3jq_4wrXNfW-b-vAVd0hYBAcCV7IdQgtFghsqFxNEPGgYlsYxpylZ4wDF7bOBFcYAXAQEySznQR1d3Bi8VlulQ5c7e4hcgi2ysS-TJjdxh9T8fNgEFygL4VtYpG9z5Ms8B4AEPwGNbI8Z8sgBthD9zHjEgLwYsmEiavgjYphwPNZDB3BQ3bJ-Is_yu6AzDfY7mTWOZB2m1qQbXw8QAQT_Ec0Tw04vl_ny-4wWXEBlgJne_Y1MwYTf4qCdUVf3T7wdWLcNZ-LPKjgL1XdSmxwZxIxEMVB0cAJDnrv8s28PfanNQHtsneTJhjvQTpqgIrc2A9pKWGAEBEBrqCkmK1AgHwCnzU9LSOP3X5J4LHU4AiwCzYbA9nBUBAdJLJboQ-R8FScBekdEADqDyzSeH93PlHp_maybpCQE2AQFzPQv6WMh6Or6htdfjFm8t3h9_wwYxcSerm45xcAPfKQEBAdtMSPIH_mubliLuP_HiG2V848s0p6AKkYGan-N2_IM3AQEbshFART3lbd0O8PoeSoQI4PAYU_4Ts1YhzkzFCwkACwEBE4pWlElxg3bgUXiUOqoI8qoxZdzGpT-8SRPMpSUKcDIBAY4wFKJxTQDTnrklmkM20MXcChoNTzoKq-vksC90LjQ8AQXdmXmAwr1DHNG8_psPKEIkvYncFky4i-7B5QtDa9yJOdF2VSCEWxq1EUUocPsJncF2D4ycT3Cq9kNtYx_Gm1k4OwKEV8Y7FMjObK7qRjPrNs1nv3UqIf5YOjlQuowVAj4DF8o287TY1wgDm-cUeiuZLLR2xxVwaFPV0YBzwNfMP0usT9ONMboyK8goSBXhHsxCtUNJFpiuzFh69pcvGcAQAQFiPr4DmKZDmwTHbGBGlBNcTKA-3XhlCggWLbpMPmgSKgEB-4U2TcbjcT9RHqCm7utvc-QhI0AwxMmBQnyFt4nKVyMBAVQZBWajfkVKNrArrRk1vmPJLFAkXTAg6onoLgJzZZIwAXEnE6XKSBA-0E4-eNLLEhCbc0pXJe5QzBYxv_pwQ7cqEYQMoobLLYSC6q15GWAn_9WJbuq4EcJy9EKVB-LarA0BAQEBAQH8GSVLkgKY1h8XU4dqgDpiRw4m02agVtBPdotlmCuwDCfgeZDQVuWqxxK7DULFv9atanJywtANsyDLGF4_bN8cAQEBlBV7LjNklSAstJmOKOem0ThdhT2FjSZn9I_LowyfeDacTx8gQziSPrVmhDgijEsVMVOlL3-4zymn_fd3TBn8EgEBAWSj04bZ7z5sdnqNfidfo0XEqPXlL9Ir1rjUY5GkOyEZglsSj7Bql71tA1p2KpJw5ZuO-LwzRV8wH4U4ML5G2jMBAQFlVTbyf7EcnYtp0twEmBlqtwdNkEhwpkOxVcO89Vb2Et4v2ah5mZQNGtc7HZRm17x4QwoXtIoT6j7aFD83Iu8nAQEFAQFz_yFYcuIqVkZEa8S0QyL_f0QYgm2jVWlcIdaKauVRIrwwRAs60GJuTURATSRUHBPzyZy4gQQvU3tJeNvbM4QWAQF5Ubqd03pI1-gvThTYCLkcrORJXvhOEkav9du32dfpJOx2fDY41nCc4dJaX93Buxe539iXxPyPF3_wCZDk6zMbAQGtj8fdLSrgpvnBpztGoFG38qbZovWkg9ExPwLJvJTPAzP8A7_e-cS06_PJ_FiRh18468Wi4C3r5Pjihy4PRNQVAQHMUwh4E1qa5qy9cB3ddSyTeirXEuJAmAm7e-Q3aT6JOLD6Zw6VCDlLUWz6hhrClBZ7H0pHfCqWiOwKSuqp2wMKAQHA2RnQIHe5UA6gDoxlZqMrjjmcpL--TIy7YbXqxry1IvQJ1t9QKY-c2hgAeYwbSV3XxAnAImS0t_vsa9Joxr0YAQEe3ChXH7dyamns2Q_f-DvpBDElvLUd6aft9kdys6GpOq_CWGKfvi1ZsPlX-t5Q4sGecWNqd8s8DMrDNLjs5-U_AQEBEaefDS9cnXwkk726R6rtCtxb9KrZTeKQa5jrb6h6nGEzz3p4s4umXfYfhz9xrjngCMoJEgS_KRzsgIdVlY6kORFMC7RBGCEGwosQGvzkWTBAYOO5CP6B4N79aZs1SIITKodk9FDWe86o75_WoE88AlYWLoHQ_AFnRHJXwkuWSsMTFqWf2qRAV2HAU7za5OFCPpOHp8b8mbmgUbf3ir-U-xKeaSUzUJD_-Dcg-x6S47DcfD8wst7uypjc_2ymg7NxLpmBQNHtIiztLw3d6ZuHaZwYu9kd88ATSAI3G0LrSeYVj3CMdaqcYYbzk1t8LPK4fMcbOiTSq4nD7J0iVPtNaiwJhAQddjEP6DXk2xiyEUX0pFMWGAdaKP9ncudwr8LxHX0D8mToIwvho9z4tDWi_DlvTyCGZcJyPGZT6S_wm7Y1B3MBKQ3NzbtYo82t6BOI9wFJnlP0YP9M6Gqrv-5DCS3LJofAmkbK59_4rhNRvJI09l37gMJ5Sv_OuHNTjDI-CeJmyrd90C7k-wGPDjXcxUEZndKpHFntykB75Rp9WR8lTT47bLTYouz9RGch7D8z2sYI58HXELTTcUoux6fK6hH6kI-lChmBmsDR-8ER6LpSEm-62NEX54jaI8Klu5PwHgXSC3boBEDb-jkDHV8-Oc6dRBYd0nLvKiHcZYbD2h4Lv7DgWg-ZOJMmK4PfWpF3lkvWPwcikNWZ73O8ON1S5SeKgqV3zefepEtjYCA18YEKq2zQmKl8Ujr4iJgHpiK8HDlhne5aSoYjvPlPBN8kxTmVeCDqlI5tHlxrQjmUr3AAlGovINQ3e4MMoSHOnI6bfGKoVG4KrQeIVQ-n5bpAuj1QxtKuSx7bGGBt_VOt0CLkRi2VxdHDmpVfLl_fRNqsI74aEVHLDFfGFdjnzY5CEzM4b9b1wUZqjfZHEk06EQ4TjhCAn3MiC5eDwmEZVJ5Xc8CKPQbe3w6TCN4rtG9-YAq9Jl97tUv5lg9H15AIom6778YVCZ8MimRJ6kbxCztwGhtnb-p2WunHfrR3-k9j9e9XHt06T6gYi4Vf3zVwOy0ZNt0e3qjapZs8_vOp2FC2avg9rvaTNfVTt1SywU_GqSkVKsAGwT6BGoNelzg27JQuK1imKLdKSr_aP-8N0IM6Cu5qrpCRERAK-v6pClKgWWgiZmy9ERELzbmjJJyoKKcCE00zGvMORatdzEb-LkCrw2kbazkX__FqrhOQVn_MeSDD9sq4TY9dtchJk_4khg5qzSZJtHF_7gObKH58XV76CfT6QYu_Mvqwm27oDzTYT8hJEAcO090BJ_h620L-6nUMgDU1A0nz4_u8gm_ldUA2LfEgwu4nfmNhvW_pI1-2nQQo0iWhxS7-sI8OSfx7tF-Xl1YVsXTAuveGmCxR7izYOU2ndNrLcF3BfVk3ioM8V0byewBiJnWYEN2U6QeNDm0kXAhVS8G__R6PCt-_UqRCPLUAu6Uj5iYgVPogVM14GxkdonrfcY2kPXt30K7TdbltttSiWvnfySBmGTXalWT8LUAx2X7XMqBa2D6YTbkGA6uToXCow9UhqU-zr-Tk2jgPGDdD6ZNDK3OMeLsCI6wDrukhwelAHjDatL7J9Efv1j0kTfF2gSdhWXb8pYfQlbAbssCn8zmme9xaBkJ61-u-FnkotFfqAtfIeI0T4zI-GeHVTm6j2LHIk5t-a6_3M6MioKe0zBz0IcBno1J2PZGNyhBOQvRkAe4QsXQGciTqYQCOH3tSmw-H6T-nJOXo7B3KINuZqsPFnlc34IIipHb-HSSX0eNpFqc0uzBjA8t0oHDuhebq6XgjsrC1t8WAg1E-45d_VNP-xGe8tI2OF6x02xPqZzQLAQx63IMOUzUwriQkT66hqzkyrgDqDBJBrr8YvE9rDzGmCQgkGQNUlEnVE-OI6wgO950jrO67oSlVnSOgHaynmWb91HCuZLExFp4APH396-hwcJx2ruYXEOyW1i3c0MQz9n4EEI9Cb7XuRjLpDEkpJSmGoISBBEAQMZxRkhcmMQkOv7fptIwDdr8tLnCaxoVo3ymCXOKOZb7GH4vSNmfivsiHJYU94WQops4i2CAfMM_NoMqFYSmdirR1A59ndIqDwT_Qcf1fto34xhf8fNEO2Rpk3Ap4yiCPyKA-QuZ__FzxC0KoGn6R6cPmBBXbDtYFVR4-smI5zPyFHLDHKmn3hI5oOWKI8k29riQHoAyGogVQv0BPFOLmKcvu_iq3gr7fjPOn-358IV1AhybuGqexpy1tRqv7gdyGFHCr3T_imBmYyr8FN4MfmnuvJT85meFfYjRxdLsn4E3ginolEB0OccJodBsVYon4FIU-AiVFsi45oTyKFjqNPgRpO42JJOldXLx-LPxx2bcEYCKC8J9dHqAlrlpWQSpirXuOeojBaP9AYWWU1YS9vI0YCs-TNZkU9r5xo_6azhk3eD0GMppPIfU8rRF0SmA8aDodEjV02FmDjGQ8uitkifA2u0h2Y-ZKw87zQMRU1Ru1_D2uLQcAhAjCe6LuN_uDajiD61-jtsn1wVypvpXK2YAqLTq6xJVQlwjknHYjBJLpIss_u8k5yoL0-KsRjvwErnQ6mz4rXvsCrbu42Thsdd5BmYgbEx6JkRpoVdU2fV_o_Q5LU4JPz0FTHL1pZ_2U9FufD6F2e5FGNdP34Y2wb3MHCpe4L1vygJO5bnrWhTF-nDc-zb6QUYVJI-sEpGQ4Jl0oOQ64NPxWz9cZwUTs86LqxNnnusa1t75M8rYGl7z0UBsWdQiV6nyz0yJyIbqoXs5cyDzn5q6QLnV4JKScxk6NHpv_35OyQ0xpyDv5YUNPYCs2-xnUluTvMc2RY90kLPgjzdpgjd55HKtgtFKzK2DnMkzm-6ePgQ4DAO4HAAZ0-Cmc0BQkgyteaj8fF3MmJdexHv5UDlFDIzjo8tERnuWUGoD15PFQYbpBuAZIOomjzZSPXgUQFMgYyn62J3zbDpcDFxo0mGKirkrE2eVhIJcfsv1PPid-ALDIK74REpYpazmTsbMStVoffuYyz4lbAUd7jLBF3rc3yLsb6KkLqwGGLwTaTIU6ViHhg5wYgD3Ec01agQEtJl19EAzCziUye0sCSaEfNzoljIBTMkYAYFUcNFKOTgcWtqUBYrCQm2DybjMBAQGvQvxVDqiTUtyfwIQ2wkQF8tZm-2Un08KhY1WDpG-4EQEBvA8wBi78SElvLZV0F-jqcmuVOUSw9XVysePAS4b6KDUBAT6935IoXTEQ9xhwGf0hjrehc5HRKvQGsk7l9cpS3lwHAQFir50I45xddjE2erL0Oy0wS1KrzgfmDt9oT8fJbfFMHAEFgWSfveMmd9tCGBaUiHzr-Vf9Kq59gfBcNSboNr5A6AKwY2Zw6cnbByR6WvRQwlUOVEz-UMh1bmY-kVW8br0RMBHcheafF9AFm1xg4msHzyBgeDeuvvEeBVBFmkGcopszX3gmqhiAlqMvEthUWz8N4Fl65DCEL-kKYnozLzqkZActlj9ZknSU-gEvCgF7pQKSNwN7gOsXLqwgQe8d67GxGQEBAiPjo8iGLgS0w51QNFZPk9HcopyYraO8TzoK6HepYykBAVeM3mWo59vfJIF2VghyswLirDZHqUqUNj1qid-08poMAQFCDqtpAxGZ3-UyKECNA48rfNWsWMQ16o1Em_6sQ7WMKQEBAVnbgxXxEXMJxgG0GDr6wErekSfu8SzvRtWTO_R1VzsNAQEbh_OpJrHitw8hKqF3-phu6nqcy4QExjLLOEOS1atLLAEBWeM6ralueGKAQ_q84pLpPjjtx4PLmoj3cnKwfdLeHCYBAfE76vAsQPaZhtefp398fDpLh8S_EdI1PySPxpoG8RIbAQUBzF3m0Z1p_s7-VrhNZf8GAfoAohc6T8OGpab2uhcAMNkXQz9onJCtl1-X486XcpXByjjyEkll8TlnblI8sT02YYpCS81_ibNc1OUKEf7x1Gtbu0B2xqOArQoPxITb7Sb1Mx-cHtaceZZuKxXDZG86QXUhakyTBVbYcxzwSOqWLpluexLIyrwFWL8SsPIJcHfLWoUuKxsDLjPIYwP3kvE6AQGE0oAwY91oXNOHHgz4yECFZj6ybGyB60iPI4_UFqiDKwEBfIaZzn02f3RetWivFvZIuGvrlTbfsTMhIXaxwXtzojIBAe4PbLJ23ojQ8ltWK6i-8piZIApv1seAgOXyeIIKq_YQ",
+  "staged_ledger_diff": {
+    "diff": [
+      {
+        "coinbase": [
+          "One",
+          {
+            "fee": "0.002",
+            "receiver_pk": "B62qqbkaRjwN9WtZjDcP4VffydYFFjJKf4mi3X1x4Yhfmx58wkLhckW"
+          }
+        ],
+        "commands": [
+          {
+            "data": [
+              "Signed_command",
+              {
+                "payload": {
+                  "body": [
+                    "Payment",
+                    {
+                      "amount": "1000",
+                      "receiver_pk": "B62qjYanmV7y9njVeH5UHkz3GYBm7xKir1rAnoY4KsEYUGLMiU45FSM",
+                      "source_pk": "B62qre3erTHfzQckNuibViWQGyyKwZseztqrjPZBv6SQF384Rg6ESAy",
+                      "token_id": "1"
+                    }
+                  ],
+                  "common": {
+                    "fee": "0.001",
+                    "fee_payer_pk": "B62qre3erTHfzQckNuibViWQGyyKwZseztqrjPZBv6SQF384Rg6ESAy",
+                    "fee_token": "1",
+                    "memo": "E4YM2vTHhWEg66xpj52JErHUBU4pZ1yageL4TVDDpTTSsv8mK6YaH",
+                    "nonce": "210749",
+                    "valid_until": "4294967295"
+                  }
+                },
+                "signature": "7mXWdH5KmA4MToUvaHNC4nx7ifPQWHJ5PU9WWGtq3tjWM6JjtCRPyz3uUTH5wx9f1QypKc7EoFoYF1N8U4tBe6SXrrorjNJN",
+                "signer": "B62qre3erTHfzQckNuibViWQGyyKwZseztqrjPZBv6SQF384Rg6ESAy"
+              }
+            ],
+            "status": [
+              "Applied",
+              {
+                "created_token": null,
+                "fee_payer_account_creation_fee_paid": null,
+                "receiver_account_creation_fee_paid": null
+              },
+              {
+                "fee_payer_balance": "883398173921",
+                "receiver_balance": "924518858",
+                "source_balance": "883398173921"
+              }
+            ]
+          }
+        ],
+        "completed_works": [
+          {
+            "fee": "0.002",
+            "proofs": [
+              "Two",
+              {
+                "proof": {
+                  "prev_evals": [
+                    {
+                      "f": [
+                        "0x03837ff2fbb8a9f5a9fb3574264e78e6ca6a34fcfb1db671bccbea799361de25"
+                      ],
+                      "l": [
+                        "0xf4566370d72739973bf4d9333dd9fb7f6417f27e8d7be1a1b2cf38a1468cc328"
+                      ],
+                      "o": [
+                        "0x4665898dfd808a7e470bd0d7dcd6124ced197dd1edd36404f666040ee5005d2f"
+                      ],
+                      "r": [
+                        "0xc806167b7fcbd9359ac1416d0615f61848e4c89c84d16c13e8257c22f0761e3f"
+                      ],
+                      "sigma1": [
+                        "0xa6f5ea249d001c46acbe5740041803af4a1afad5ecaa38e1288da19c473a551c"
+                      ],
+                      "sigma2": [
+                        "0xfbd67998fb9cb8105123ae05c0ec77946db71b707c927ac7f211a9cc35fa3221"
+                      ],
+                      "t": [
+                        "0x390e45ea7964ace3ac5caf5e04b897ae2d0c39ebd6662fc233fb14b6761b5b39",
+                        "0x6453be79a5cf774b073588de871e0d8a04ac7a959a6a1de9ab29a865f6f12608",
+                        "0x58728c2299ed76c7f4ad72bad9a459f0b007ca201b971fb025bce15bd2c32103",
+                        "0xffcbc7dbe2414cf5f0a7f7d7a022bee653b3bf21790e554f7949aa3092826433",
+                        "0x61c18ed095e9638ec0252d661aba84d74ca6827a5677795fe1cb4f973180020f"
+                      ],
+                      "z": [
+                        "0x350949350b8f0613af208c3615812e8c1b5564e338d165e4ec2aee87d3f24925"
+                      ]
+                    },
+                    {
+                      "f": [
+                        "0x87ea3c1f520761389c3ed8402d1d40c6d9d2441532b2335854aee3f72dc8d11a"
+                      ],
+                      "l": [
+                        "0xa391c07d9597b3cb06ff6235d055a23ff27d9d50d40f48d159252361e7122413"
+                      ],
+                      "o": [
+                        "0x8c1e0e1066a15dc0764e44d9c0e278cb995d23967cd9267ac4f919c3ab09aa30"
+                      ],
+                      "r": [
+                        "0x6c37556ce1dbef3b79f6a32aa2f747d025ffe4a498ec486ded2d8f32d1100c3a"
+                      ],
+                      "sigma1": [
+                        "0x60cf40fe2d60b3b0e81fe7709f58f5c8592196d4d2f1e80b79cd28fb4951c52d"
+                      ],
+                      "sigma2": [
+                        "0x4fe2995f62d49aadc7d0c898ef87f4c5fe838659d7fcc8c41b78ec52c1fbbd16"
+                      ],
+                      "t": [
+                        "0x50c238b3a7ea5ec218f8fabe10d4da72fa8b3cbb36e201ea4028f54f3cf3ed38",
+                        "0x906debfe87cd014062b1ff4ac586b6cc5672fb6db3585476b7609feb453b3920",
+                        "0x72103564070ab88a7ec66e0b7ffa5fa5b10a05e3d9b42cbe84805060a89f572e",
+                        "0x42a9564bb21df865a7123281df830c9a62c0c7ccbfeff92f54cebbb67238fb13",
+                        "0x68fa3f7473383c83241dc701b6573a4e505ce3fdde5f78d6f6b6c4f641ee5e05"
+                      ],
+                      "z": [
+                        "0x9defc5059c84685378f5dddc73d7dc5c6dafe200a727153a32ea9cd4ff16442b"
+                      ]
+                    }
+                  ],
+                  "prev_x_hat": [
+                    "0xde96e2ea50c96570336d07578fd58f31cdd5dafddd28a8e9b8bb5b8c0fb8fa37",
+                    "0x4e1ec7c5b542a748005dfa8e0df43622c70aa9de9b23f173af69eea2518f7432"
+                  ],
+                  "proof": {
+                    "messages": {
+                      "l_comm": [
+                        [
+                          "0x2e5211e66983943fe40789d3537868f95928786806d30b8f6ed6eebbca511704",
+                          "0xd796d624d2ecf5fbc9f9298abf474ca778d9c42731eee28df41995abc3ed6b0c"
+                        ]
+                      ],
+                      "o_comm": [
+                        [
+                          "0xc10415d7dae891d0010657e873b11faca711964b7c7860a8fe99edc725ae6920",
+                          "0x9bcbfc6fd0754e8a115bf49289a8a3dcd3eeca4453c49dd1e87c5c743eebc72b"
+                        ]
+                      ],
+                      "r_comm": [
+                        [
+                          "0x0e86645af032db0ffbd7e7d03f01ce7adba5cc255b068457425a968da1404312",
+                          "0x38f4fb06d9d58d67337b028ee36d0a6301977b10248f2e780cc25f7252eb4e3e"
+                        ]
+                      ],
+                      "t_comm": {
+                        "shifted": [
+                          "Finite",
+                          [
+                            "0x204f392dec7a396ccb3a951fe51eecfed434680ff68c5062a8c6c5b39ea2f203",
+                            "0xecb908eabc7b4be26d6888e86378a97b35078cf93a93dddfcca2c734f8704b33"
+                          ]
+                        ],
+                        "unshifted": [
+                          [
+                            "Finite",
+                            [
+                              "0x1cc36d60becf92326696bcd26ffa871630adfb498fe0a10d9bf27614edf92124",
+                              "0x96c5dab844413c942a55eda5d3fd3a49587cc593ba67d1586c1c54e58925543d"
+                            ]
+                          ],
+                          [
+                            "Finite",
+                            [
+                              "0xcde767c077588bb2727979ba7d404b401ecf571972d000b8db2e6ff2db409e2c",
+                              "0xd5922bec0e0ca0fd448c402356a485542cf13049f175338a454d2f86dd79f90a"
+                            ]
+                          ],
+                          [
+                            "Finite",
+                            [
+                              "0x4b5a00fc857bb28bdf167635c51e287cc16097d43190a5dc583e8f851dcf9707",
+                              "0x6dd04b80a9d5a9593168e9ff888e606c6ec334a4b25717d8d7c2657a462c6c3b"
+                            ]
+                          ],
+                          [
+                            "Finite",
+                            [
+                              "0x04162755f95199777e2b5ca2cb581bd81467eb431a96e0cdfb31f999e3947400",
+                              "0x5e74449d88416720a5e6a4ec68231f2da94eed76aa795a4893c528bac272760b"
+                            ]
+                          ],
+                          [
+                            "Finite",
+                            [
+                              "0x45ebaef2fee071c73acb4121e133a67655f970cb06ea6422026c7c5fc92eac10",
+                              "0xc684a4887aaf2bea2a7d8b29c68e3fecd04b41dccf54bac192142d09706fb02a"
+                            ]
+                          ]
+                        ]
+                      },
+                      "z_comm": [
+                        [
+                          "0x70fb742970e75cee8885d0c6fe86ab6c812bc782246abd7893a13fb80dbcc114",
+                          "0xf1954b2102935e4b4df8dbf2bcad6fdbe51a373673cadf7056742e4eb5862201"
+                        ]
+                      ]
+                    },
+                    "openings": {
+                      "evals": [
+                        {
+                          "f": [
+                            "0xbe3484cc62fb626531b9484c63b0fad94a78c82ab2bbbcd72e5745d27714df11"
+                          ],
+                          "l": [
+                            "0x240ed9928d9385baf2831bfc3b3c81b13f22b98672bbf1146462df8a477bbd0d"
+                          ],
+                          "o": [
+                            "0x16bee866dc7fbae790152f056e8615d7654bb0bbdf258f78c3274f29da0a9531"
+                          ],
+                          "r": [
+                            "0x7a7b1f8d64c120b7f513cf9b6ede8f855a039e73b69b6311485af5728b780715"
+                          ],
+                          "sigma1": [
+                            "0xa21532ae88e0e0a250552c6b4c211c0af61bb9bbbd814fcc9b4a9def373c0a0a"
+                          ],
+                          "sigma2": [
+                            "0x6082aa3d30245c1586bc0eec3290a9dab707e5a49bee44180c3d5dfc3cc20f03"
+                          ],
+                          "t": [
+                            "0x8053a9fcad3748f8eec7d9f7116a70af6aaeadd83ac01b8ed2c32b9d3aec4300",
+                            "0xa4d29b108ed44f1adb8571189092268c8b7eb97883044813bac725aaed4cbb28",
+                            "0x9fce4af6b87f57c561b83103165552e10fdc445fdcab77adbae1096b5b516615",
+                            "0x85d65794a812e1d85ec398b9f551ef387c5eb4eb9c8974cd19bc2bf41475d128",
+                            "0xcc82b05705ce30690457792aca609419fff8734701343989938b67089c965d22"
+                          ],
+                          "z": [
+                            "0x32488e5cea18327313dae837737ffd866e8cf0f4dbd0842cb63926fdfb2bef0f"
+                          ]
+                        },
+                        {
+                          "f": [
+                            "0x9e3d946e8da04ea7ff9728181c61a96a80d56f21565aa1b22a5329675db8482d"
+                          ],
+                          "l": [
+                            "0x9d4386b7cd8e0a3d5be37070e288a3ea56dbd94e030f35866fc33b8741a65d2c"
+                          ],
+                          "o": [
+                            "0x76b9e01851f72a59b2e507ddbce8c44fd794f61ea5b5911634f1c4296e2b9d1e"
+                          ],
+                          "r": [
+                            "0xd43e4e9c898cf6410dfa173b0954c826e414a3c7514db13c6ec9de246c361739"
+                          ],
+                          "sigma1": [
+                            "0xa30682f469971a259f61a188e877acde00720598b2453fce83fd9aba9ebda63c"
+                          ],
+                          "sigma2": [
+                            "0xcead1bba6bcbcdcff3e965e5c637f1e4a5e4e407ba0887f3ffc3c0a529dec32a"
+                          ],
+                          "t": [
+                            "0x80e1f74df33b4ba836324dd5c0883e2de1e5a073b449260807968045cad4a933",
+                            "0x91589b7b0c9c236748c75db13f8a83e17b061bd83f07d79c4f2b5f152bb1e009",
+                            "0xdaf51efc2d63c29963abe551f9fce4ede5180e708799a3d419f7bd4f37832d1e",
+                            "0x7611e76a650ba0a7f47174f157f04cb82a9b330afa31e437c94d9a90ce34e628",
+                            "0xed0fe650821b67f10ac7a4f9cea6f92bf596df9c1142d38707776684713a713d"
+                          ],
+                          "z": [
+                            "0x62e6c3815777bb0321d521625f5bc36b65b46954fed107726376ea56fc558339"
+                          ]
+                        }
+                      ],
+                      "proof": {
+                        "delta": [
+                          "0xe5c701f028b2566ed3c8c257214a3d373908c54a72df152c19df65b3e060fb3a",
+                          "0x120636ba1a0723f55c945c79c5c10eb175e892d7b81d27e45e3ccecb662a1f1f"
+                        ],
+                        "lr": [
+                          [
+                            [
+                              "0xf2e093e7b29014100794e7bfe66f60fd059bd6207b97fe1b8a5f9a102940573a",
+                              "0xccd34fecfd30ab536393dbf5f7355f138bb9d033d901d5f88204c8e0741e1813"
+                            ],
+                            [
+                              "0x3e3d3b2796ea0db0c5685981a7f791c948e1d326f654593dfa3b4579f1402904",
+                              "0x16a0f5069ceafd0bfda92c3a3cfbd329ca481a0866ea73a567971a3d18bf0017"
+                            ]
+                          ],
+                          [
+                            [
+                              "0xf01c9e2d6bf153420f6dfb1856b311fce54e5e3b33a47368be3b7024bdd3312f",
+                              "0x4369e4f3c8ba39abf8495475b5e120be72ac5c34a30030625e8da8fce152a31e"
+                            ],
+                            [
+                              "0x4a38241ba82a8c857f9d1b08b93beffb29c2fdb047196fd6f3d986b40e11401e",
+                              "0x6eebe1909f8143e40ece4c715abaa39cf541d5352666fafc441dbb4228960528"
+                            ]
+                          ],
+                          [
+                            [
+                              "0x717ab560af4d5946e217925664b13eb2cf7e33f2ee39ad0fed342e79bc086405",
+                              "0x0fc3757064c2ad6ab58a3a83939a9ec717e9d156ad2ee2dc1b1940df61677218"
+                            ],
+                            [
+                              "0xc325120777f7b76b4e57ee224293b5b25fb27a3d5458a31c2684b06b731b442c",
+                              "0xc1b52a0af86d129d1fcbe4710e7b620c9e80c5e6adf5d4ccf255823d74aa0f35"
+                            ]
+                          ],
+                          [
+                            [
+                              "0xfe04f8de01733e6edd56cbffefd3d0d0ded4e03b2295beee316ecf935651f707",
+                              "0xa597dfe72b8562b5b74add4331b2d6ec254b7858f9767e958308f396934bdc1d"
+                            ],
+                            [
+                              "0xd0e94c2689fc16710507701d3aab4f045712e79ba80d9f941fce4d0d4be0852f",
+                              "0x0e68ee25b2655d37a346508c32313fc0ffd043cbd95e1c3d1b488a865263cd0f"
+                            ]
+                          ],
+                          [
+                            [
+                              "0x769fba41d8776983fc622e6ffc105dacc6cfb954922453b1e34bbdf9bfa7f83d",
+                              "0x6cc71fcae6d80eb78844af87b90a582c1616bc00db535c8d7eff28bacf04f030"
+                            ],
+                            [
+                              "0xc8c8dc9222d0c9af04d62bdd2860fa681b93d152013fbea14c9c3e4f596b640d",
+                              "0xc2184d4ced9b6396ec04bd3ecf4df4dba490abeee489186d584ea3bc2446c42b"
+                            ]
+                          ],
+                          [
+                            [
+                              "0x6bf48b7d45a581ace2a94df51dfe27acbb1cc264b1840ce96dda3e2ffe893311",
+                              "0xea2d8e7e8bf171d225a0a17275ea3dafdb23166d06e68c80f47205cc9ac7ae0f"
+                            ],
+                            [
+                              "0xc322f784cf5d3d9eab45b2525ccb2cdbf7cdf6ee0fd16caf5817d8ef875bcd3f",
+                              "0x2e2e0c2fea3df8daccc9e1b86107c84e0a3e288bccd3b006660bb78568ae7a1b"
+                            ]
+                          ],
+                          [
+                            [
+                              "0x7afbe789a2640043b872cef176e8cd379b5f90deb543953e372becbfc8e64233",
+                              "0xfe26bb2e98ffe16815bdd77ab3ee585f1ca2a5ee93ae2ddf7f0edc622bef3220"
+                            ],
+                            [
+                              "0xaa76d5a7f3fc9c517248d66d13bd06977886613243d9382bf21a780cfb2a6f05",
+                              "0x431f0839dab90ca1cb98c455f6f9a07726d15298dbd7bc0a51afb62b83b7292e"
+                            ]
+                          ],
+                          [
+                            [
+                              "0x07e7f09e8fa596e988fc342b340aa22d49000c027b913f4b4058a380aa670b19",
+                              "0xbe31e5c3e7ae069bd0ab26477bd041eb3eb052f64f7be201526b00dca8219e2d"
+                            ],
+                            [
+                              "0x9e50e0e317712388bbd16bb1f16d6cb785d9a5c832450815a29ffe67d9145914",
+                              "0xafaa60fb09bbab4edc67435080cf25ab848344c2e0028a48c28fd0d750091c28"
+                            ]
+                          ],
+                          [
+                            [
+                              "0x9e907ad033d9801280e6180041ee87b5395b693085fc871885b35b8d4fff211d",
+                              "0x67150f1dfcbb8ec6f36e7a554e88f3871a44524c91607c099224ad46426b7339"
+                            ],
+                            [
+                              "0x5ecdaad38e4957ae17f74c629bff7cd09e9a5b1dfda5a73705e97266079fec2e",
+                              "0xa85d6ace12387d8b1e4d46e67a46b2a2656c72cefb1a0845c15dfb1a39b6c911"
+                            ]
+                          ],
+                          [
+                            [
+                              "0x78eb38f408b523021f2184255f337837fdd8da146dc9270b3d86c9b40004021f",
+                              "0xcbbd75836ba96b7530e3d03ed0b2f2aecf59b58b55f308ebf916f6d9102e5502"
+                            ],
+                            [
+                              "0x7f3f71e6410a8ac172aa15bb637bf59c577de49df9253e82018d4e3a5098393b",
+                              "0xba2f005444ff4b69107fd04cd470f3233ae13fccc76437dacc9a93ddd0168536"
+                            ]
+                          ],
+                          [
+                            [
+                              "0x221b72fd3ad6f23cd181699102a6ae46ed19ef84a7aa13e505c78677bd969c35",
+                              "0x723ab0e2ae565bd16b97297699d0b8f4a987a8f55d91f1b2af1fd0a9b4517400"
+                            ],
+                            [
+                              "0xe87f548b3d23c4a9a895b43d3261b033831effc3329938134ab5dca59bd26c19",
+                              "0xbaffd2b6398539bdbf080aa2a6f77d310238764df87f14235200eca817b50e0e"
+                            ]
+                          ],
+                          [
+                            [
+                              "0x3aaf32e497d5ef6a9a47dca4dfa5ff75072a6d9107d064194e1250def94c8515",
+                              "0x9949042d644ac756c88e44e140ec2f4aa57783aa96ad1172468aa52c5175a20e"
+                            ],
+                            [
+                              "0xf914c7704a1526bd58c7c7f799cac99a25280f3f06f28d6619712d2774a51306",
+                              "0x481a24837509b3e89de71b6219c20e148b63edf72c8f889ce5b7c0da1a09b517"
+                            ]
+                          ],
+                          [
+                            [
+                              "0xe28fd816c4247ff7d15223c88c1ffccace62381ab10df99adf4c601cb7eb8207",
+                              "0x0026ca7c2c698086ca5060b0445b6180613e7df5fd0ae21f653641eb7eeef933"
+                            ],
+                            [
+                              "0xaf04dd38f029f182cf781ec44e49f52c9aeba3218f7dac2d50eb49d4b08fc811",
+                              "0x3121249ef3f33f76f30ce101aff6174fdd7170278aeaee08df701392ed598638"
+                            ]
+                          ],
+                          [
+                            [
+                              "0x44b003a408437b58525e3267b45d3d2a5eb512c6c75566b2361b0da4f101db14",
+                              "0x1825bef77d1e1eea4d2e1bead685708aaa9c06c9b00ea2e096fd040e321c5039"
+                            ],
+                            [
+                              "0x5c0e74f45d5c927d2b65c52d7bb40994bfd92ce9dc551a5f3d84dbfeb325e61b",
+                              "0xdc2900e4cc6cbd26c883b9f0674743c2c541c9f5069c98613108075beea5a106"
+                            ]
+                          ],
+                          [
+                            [
+                              "0x67f1f3edbc2dbb793685a544aaed76b92cc3aab2564fe10400a849a1de8e0e25",
+                              "0x5caa982768e4d28b43931a577f01e97798bb9904a2821211b52cb5fdf863b619"
+                            ],
+                            [
+                              "0x28c6ce6c5e9c8a771da94684f0698e55ee7cc95f40170ef3bdc10e01302c5f01",
+                              "0x006fba0f9e73d2a8af9d82329010792bfbbee55efc05e7bf3434cdd010c68636"
+                            ]
+                          ],
+                          [
+                            [
+                              "0x6a9d2933658c98008cea0a37416744af52a46051f4e2bc5f67af8ebbd6119c3f",
+                              "0x9c61cac50d588e59b2d618ee69452fe26005fa2470381fa22442a4c9d2c6123b"
+                            ],
+                            [
+                              "0xc731de4e9feb6be55bfab89b6513144e2bbba71c2d1e8c3403a99dff83187a17",
+                              "0x57c8ef4035f7650629ac1447fffe619cea11642673bedd01ae2cd0533ecd9517"
+                            ]
+                          ],
+                          [
+                            [
+                              "0x303abb30ffa2a63aaa033d481584f8fe781c9a0de5021a2b1517cf6d61cc111b",
+                              "0x57ee6ea733c5963bbafafd7b2558fb31463466fd6e71475bd3503f6634781a33"
+                            ],
+                            [
+                              "0x0b2855056baa023fa4da8c56f1ecbdfb7d93de05a4ad1554abfb4198df519e2e",
+                              "0x4448a0a8f126b408141155e291e498580420bafb4974ea1ea11c3034b62ba500"
+                            ]
+                          ]
+                        ],
+                        "sg": [
+                          "0x47ba9a3529ab198f99d80e5127428680412ea5f0909c55ecf18a870c6a835727",
+                          "0xbcd93860ab76291e9498d7968a98669029f074879916a812f27b1d20031a8125"
+                        ],
+                        "z_1": "0x2539722daaa44dd4303127bccd98eeae24a2c41ac21d760f8b7ec77798234537",
+                        "z_2": "0xa427523da9e799954b6c2bc59177b967bf2b09b62ec11dcea881e9ac99c5f53a"
+                      }
+                    }
+                  },
+                  "statement": {
+                    "pass_through": {
+                      "app_state": null,
+                      "old_bulletproof_challenges": [
+                        [
+                          {
+                            "prechallenge": [
+                              "Scalar_challenge",
+                              [
+                                9117670402661917909,
+                                4592121962002716050
+                              ]
+                            ]
+                          },
+                          {
+                            "prechallenge": [
+                              "Scalar_challenge",
+                              [
+                                -1660664063476044508,
+                                -5837379898991622045
+                              ]
+                            ]
+                          },
+                          {
+                            "prechallenge": [
+                              "Scalar_challenge",
+                              [
+                                3453596219617544245,
+                                -2669074723062272042
+                              ]
+                            ]
+                          },
+                          {
+                            "prechallenge": [
+                              "Scalar_challenge",
+                              [
+                                8735899982028239668,
+                                3246207140313967007
+                              ]
+                            ]
+                          },
+                          {
+                            "prechallenge": [
+                              "Scalar_challenge",
+                              [
+                                1464389770603656174,
+                                -4013319991266853486
+                              ]
+                            ]
+                          },
+                          {
+                            "prechallenge": [
+                              "Scalar_challenge",
+                              [
+                                -6752073256525567155,
+                                -7459431159952592811
+                              ]
+                            ]
+                          },
+                          {
+                            "prechallenge": [
+                              "Scalar_challenge",
+                              [
+                                6479050627062035255,
+                                -8747104686098037753
+                              ]
+                            ]
+                          },
+                          {
+                            "prechallenge": [
+                              "Scalar_challenge",
+                              [
+                                5318953234278069829,
+                                6374796698407536932
+                              ]
+                            ]
+                          },
+                          {
+                            "prechallenge": [
+                              "Scalar_challenge",
+                              [
+                                2831351149772561325,
+                                -1170447588593108608
+                              ]
+                            ]
+                          },
+                          {
+                            "prechallenge": [
+                              "Scalar_challenge",
+                              [
+                                1777143140701338795,
+                                -1480776631387066706
+                              ]
+                            ]
+                          },
+                          {
+                            "prechallenge": [
+                              "Scalar_challenge",
+                              [
+                                -6929386787412156758,
+                                -1155080692584775951
+                              ]
+                            ]
+                          },
+                          {
+                            "prechallenge": [
+                              "Scalar_challenge",
+                              [
+                                5945718817044328573,
+                                -5068439916985258279
+                              ]
+                            ]
+                          },
+                          {
+                            "prechallenge": [
+                              "Scalar_challenge",
+                              [
+                                1622236452018340802,
+                                -376689152022079184
+                              ]
+                            ]
+                          },
+                          {
+                            "prechallenge": [
+                              "Scalar_challenge",
+                              [
+                                5468649396841349871,
+                                -3561698698639250532
+                              ]
+                            ]
+                          },
+                          {
+                            "prechallenge": [
+                              "Scalar_challenge",
+                              [
+                                -8400503612872170045,
+                                -5689145114549317133
+                              ]
+                            ]
+                          },
+                          {
+                            "prechallenge": [
+                              "Scalar_challenge",
+                              [
+                                481802552502136844,
+                                -2003568215172314359
+                              ]
+                            ]
+                          },
+                          {
+                            "prechallenge": [
+                              "Scalar_challenge",
+                              [
+                                8301161211064294031,
+                                -8137518481599905247
+                              ]
+                            ]
+                          },
+                          {
+                            "prechallenge": [
+                              "Scalar_challenge",
+                              [
+                                8577691619886079298,
+                                -2255753360615193676
+                              ]
+                            ]
+                          }
+                        ],
+                        [
+                          {
+                            "prechallenge": [
+                              "Scalar_challenge",
+                              [
+                                -7745953689341177029,
+                                -3470297360837596458
+                              ]
+                            ]
+                          },
+                          {
+                            "prechallenge": [
+                              "Scalar_challenge",
+                              [
+                                -6836983091433252960,
+                                4849898533016724639
+                              ]
+                            ]
+                          },
+                          {
+                            "prechallenge": [
+                              "Scalar_challenge",
+                              [
+                                -2291468084178525751,
+                                2837553652063320228
+                              ]
+                            ]
+                          },
+                          {
+                            "prechallenge": [
+                              "Scalar_challenge",
+                              [
+                                7498264428370238116,
+                                -3751905270366303065
+                              ]
+                            ]
+                          },
+                          {
+                            "prechallenge": [
+                              "Scalar_challenge",
+                              [
+                                -2144058819816856019,
+                                -4038290192213955701
+                              ]
+                            ]
+                          },
+                          {
+                            "prechallenge": [
+                              "Scalar_challenge",
+                              [
+                                8141910083544148545,
+                                -6852020146017030774
+                              ]
+                            ]
+                          },
+                          {
+                            "prechallenge": [
+                              "Scalar_challenge",
+                              [
+                                -7277349373283212429,
+                                8256086188660586353
+                              ]
+                            ]
+                          },
+                          {
+                            "prechallenge": [
+                              "Scalar_challenge",
+                              [
+                                4564889362685776129,
+                                8770725351670110858
+                              ]
+                            ]
+                          },
+                          {
+                            "prechallenge": [
+                              "Scalar_challenge",
+                              [
+                                1361829782061278064,
+                                -4096265803040553738
+                              ]
+                            ]
+                          },
+                          {
+                            "prechallenge": [
+                              "Scalar_challenge",
+                              [
+                                1675199674830323234,
+                                -3506218135888725215
+                              ]
+                            ]
+                          },
+                          {
+                            "prechallenge": [
+                              "Scalar_challenge",
+                              [
+                                7758554021067132242,
+                                -5859635899898523893
+                              ]
+                            ]
+                          },
+                          {
+                            "prechallenge": [
+                              "Scalar_challenge",
+                              [
+                                -1964194213100017604,
+                                5641672158046233156
+                              ]
+                            ]
+                          },
+                          {
+                            "prechallenge": [
+                              "Scalar_challenge",
+                              [
+                                -5402931562237175747,
+                                -2754406382592308097
+                              ]
+                            ]
+                          },
+                          {
+                            "prechallenge": [
+                              "Scalar_challenge",
+                              [
+                                5616590071084598762,
+                                -4608389133931032250
+                              ]
+                            ]
+                          },
+                          {
+                            "prechallenge": [
+                              "Scalar_challenge",
+                              [
+                                9096243625797644450,
+                                878912031020860624
+                              ]
+                            ]
+                          },
+                          {
+                            "prechallenge": [
+                              "Scalar_challenge",
+                              [
+                                -7799148514638996762,
+                                -256147975837078832
+                              ]
+                            ]
+                          },
+                          {
+                            "prechallenge": [
+                              "Scalar_challenge",
+                              [
+                                -6800801484945175967,
+                                1061350958161479255
+                              ]
+                            ]
+                          },
+                          {
+                            "prechallenge": [
+                              "Scalar_challenge",
+                              [
+                                -8218563429327684049,
+                                2054728479676841392
+                              ]
+                            ]
+                          }
+                        ]
+                      ],
+                      "sg": [
+                        [
+                          "0xc3211ca5d92661d7574af2d156cff00eae701a872a066a7955efcb618f18fd18",
+                          "0x7bbf7621b9e010970ee179d088277ca96f5ff69aa095763a07f9d1268a7cb42b"
+                        ],
+                        [
+                          "0x24230a4ba6b7226ba7970a887d57134d8f0dbe65d5e40202e23f6839561b5134",
+                          "0x6dd67ff686e3942aa8cd967acc7e1867b0738f795d1cdff83259a529dcfdd50a"
+                        ]
+                      ]
+                    },
+                    "proof_state": {
+                      "deferred_values": {
+                        "b": [
+                          "Shifted_value",
+                          "0xeea0113de2316ec2483be4f4d7271eae2fcdc936baa5dd85a79de73ccfecd630"
+                        ],
+                        "bulletproof_challenges": [
+                          {
+                            "prechallenge": [
+                              "Scalar_challenge",
+                              [
+                                -1702792024316891735,
+                                -5395309613950027307
+                              ]
+                            ]
+                          },
+                          {
+                            "prechallenge": [
+                              "Scalar_challenge",
+                              [
+                                -6122960189852071549,
+                                6606118249079226458
+                              ]
+                            ]
+                          },
+                          {
+                            "prechallenge": [
+                              "Scalar_challenge",
+                              [
+                                -5114856756138136517,
+                                8122496030305143075
+                              ]
+                            ]
+                          },
+                          {
+                            "prechallenge": [
+                              "Scalar_challenge",
+                              [
+                                -8714256540524602097,
+                                4254070118905193451
+                              ]
+                            ]
+                          },
+                          {
+                            "prechallenge": [
+                              "Scalar_challenge",
+                              [
+                                -5280046481156777689,
+                                -2763572081808756510
+                              ]
+                            ]
+                          },
+                          {
+                            "prechallenge": [
+                              "Scalar_challenge",
+                              [
+                                6274027909881549404,
+                                2610922670617601583
+                              ]
+                            ]
+                          },
+                          {
+                            "prechallenge": [
+                              "Scalar_challenge",
+                              [
+                                -6956667385670350692,
+                                -6846430651676669069
+                              ]
+                            ]
+                          },
+                          {
+                            "prechallenge": [
+                              "Scalar_challenge",
+                              [
+                                -954093269604044405,
+                                1024995343273564531
+                              ]
+                            ]
+                          },
+                          {
+                            "prechallenge": [
+                              "Scalar_challenge",
+                              [
+                                -4942475964797880006,
+                                5169648867393096234
+                              ]
+                            ]
+                          },
+                          {
+                            "prechallenge": [
+                              "Scalar_challenge",
+                              [
+                                -194105682439309456,
+                                -5167438024048027253
+                              ]
+                            ]
+                          },
+                          {
+                            "prechallenge": [
+                              "Scalar_challenge",
+                              [
+                                8199938307235497423,
+                                -5900162105418920145
+                              ]
+                            ]
+                          },
+                          {
+                            "prechallenge": [
+                              "Scalar_challenge",
+                              [
+                                3201882631652547609,
+                                -7612046375728055750
+                              ]
+                            ]
+                          },
+                          {
+                            "prechallenge": [
+                              "Scalar_challenge",
+                              [
+                                -7699176922978365907,
+                                2294210229855936807
+                              ]
+                            ]
+                          },
+                          {
+                            "prechallenge": [
+                              "Scalar_challenge",
+                              [
+                                -7323895760694298618,
+                                -4142553011990125569
+                              ]
+                            ]
+                          },
+                          {
+                            "prechallenge": [
+                              "Scalar_challenge",
+                              [
+                                -8339517566095184988,
+                                1114455758267333244
+                              ]
+                            ]
+                          },
+                          {
+                            "prechallenge": [
+                              "Scalar_challenge",
+                              [
+                                8101729763383020487,
+                                1227476745002613242
+                              ]
+                            ]
+                          },
+                          {
+                            "prechallenge": [
+                              "Scalar_challenge",
+                              [
+                                2053237439202247369,
+                                -712800479552778814
+                              ]
+                            ]
+                          },
+                          {
+                            "prechallenge": [
+                              "Scalar_challenge",
+                              [
+                                634200482973710753,
+                                -3806321653794483114
+                              ]
+                            ]
+                          }
+                        ],
+                        "combined_inner_product": [
+                          "Shifted_value",
+                          "0xd3b6563cff5368d6d0fd9392a3aa9afc16fed6ad7041840ecd2e38cba0cc5e1e"
+                        ],
+                        "plonk": {
+                          "alpha": [
+                            "Scalar_challenge",
+                            [
+                              8831928957967760866,
+                              -1995582557569257191
+                            ]
+                          ],
+                          "beta": [
+                            1309510566565834501,
+                            7351894389545674718
+                          ],
+                          "gamma": [
+                            -2558048765722482581,
+                            1143689470109664715
+                          ],
+                          "zeta": [
+                            "Scalar_challenge",
+                            [
+                              -5514404301580781901,
+                              7198327208877837647
+                            ]
+                          ]
+                        },
+                        "which_branch": "\u0001",
+                        "xi": [
+                          "Scalar_challenge",
+                          [
+                            2448250804662620275,
+                            -2070704493775149559
+                          ]
+                        ]
+                      },
+                      "me_only": {
+                        "old_bulletproof_challenges": [
+                          [
+                            {
+                              "prechallenge": [
+                                "Scalar_challenge",
+                                [
+                                  -6569591908710724233,
+                                  -5769154907087612
+                                ]
+                              ]
+                            },
+                            {
+                              "prechallenge": [
+                                "Scalar_challenge",
+                                [
+                                  -322133330065225288,
+                                  5994297955451290255
+                                ]
+                              ]
+                            },
+                            {
+                              "prechallenge": [
+                                "Scalar_challenge",
+                                [
+                                  6883175860362561819,
+                                  2519990913800166641
+                                ]
+                              ]
+                            },
+                            {
+                              "prechallenge": [
+                                "Scalar_challenge",
+                                [
+                                  4649163127474487637,
+                                  7622716062549626012
+                                ]
+                              ]
+                            },
+                            {
+                              "prechallenge": [
+                                "Scalar_challenge",
+                                [
+                                  -7522858626025467667,
+                                  598763386193066959
+                                ]
+                              ]
+                            },
+                            {
+                              "prechallenge": [
+                                "Scalar_challenge",
+                                [
+                                  3143470105100408377,
+                                  -8855015553991416646
+                                ]
+                              ]
+                            },
+                            {
+                              "prechallenge": [
+                                "Scalar_challenge",
+                                [
+                                  1244505632729098756,
+                                  -8237059566323850353
+                                ]
+                              ]
+                            },
+                            {
+                              "prechallenge": [
+                                "Scalar_challenge",
+                                [
+                                  -178246262330534064,
+                                  -7424965859414851007
+                                ]
+                              ]
+                            },
+                            {
+                              "prechallenge": [
+                                "Scalar_challenge",
+                                [
+                                  528931275324310165,
+                                  1993172040938118355
+                                ]
+                              ]
+                            },
+                            {
+                              "prechallenge": [
+                                "Scalar_challenge",
+                                [
+                                  -4555606021735455379,
+                                  5621701442961901687
+                                ]
+                              ]
+                            },
+                            {
+                              "prechallenge": [
+                                "Scalar_challenge",
+                                [
+                                  -6451835251032798335,
+                                  -4088564059874002829
+                                ]
+                              ]
+                            },
+                            {
+                              "prechallenge": [
+                                "Scalar_challenge",
+                                [
+                                  5076763586912252296,
+                                  -4186772670721949735
+                                ]
+                              ]
+                            },
+                            {
+                              "prechallenge": [
+                                "Scalar_challenge",
+                                [
+                                  5910859172409391058,
+                                  -8542788752372007845
+                                ]
+                              ]
+                            },
+                            {
+                              "prechallenge": [
+                                "Scalar_challenge",
+                                [
+                                  1812776552884885045,
+                                  -3912655363074270699
+                                ]
+                              ]
+                            },
+                            {
+                              "prechallenge": [
+                                "Scalar_challenge",
+                                [
+                                  -1296818357280281478,
+                                  684767728602331460
+                                ]
+                              ]
+                            },
+                            {
+                              "prechallenge": [
+                                "Scalar_challenge",
+                                [
+                                  5227150028914001258,
+                                  6120183471577757384
+                                ]
+                              ]
+                            },
+                            {
+                              "prechallenge": [
+                                "Scalar_challenge",
+                                [
+                                  -7271529304797051314,
+                                  61105843129403043
+                                ]
+                              ]
+                            }
+                          ],
+                          [
+                            {
+                              "prechallenge": [
+                                "Scalar_challenge",
+                                [
+                                  3125394338168574041,
+                                  -5485463500496830894
+                                ]
+                              ]
+                            },
+                            {
+                              "prechallenge": [
+                                "Scalar_challenge",
+                                [
+                                  -838210302598480567,
+                                  -9158497867057627855
+                                ]
+                              ]
+                            },
+                            {
+                              "prechallenge": [
+                                "Scalar_challenge",
+                                [
+                                  -4911077292307811250,
+                                  4755246460778111395
+                                ]
+                              ]
+                            },
+                            {
+                              "prechallenge": [
+                                "Scalar_challenge",
+                                [
+                                  723135531350669687,
+                                  3701387974829892607
+                                ]
+                              ]
+                            },
+                            {
+                              "prechallenge": [
+                                "Scalar_challenge",
+                                [
+                                  3188740877781236030,
+                                  3486537865345477129
+                                ]
+                              ]
+                            },
+                            {
+                              "prechallenge": [
+                                "Scalar_challenge",
+                                [
+                                  48471397822639522,
+                                  7011216484358280734
+                                ]
+                              ]
+                            },
+                            {
+                              "prechallenge": [
+                                "Scalar_challenge",
+                                [
+                                  7320140218881378991,
+                                  6642703365184236694
+                                ]
+                              ]
+                            },
+                            {
+                              "prechallenge": [
+                                "Scalar_challenge",
+                                [
+                                  1268937050635531713,
+                                  -4460315108872537654
+                                ]
+                              ]
+                            },
+                            {
+                              "prechallenge": [
+                                "Scalar_challenge",
+                                [
+                                  -4729790896874570637,
+                                  567811940865714002
+                                ]
+                              ]
+                            },
+                            {
+                              "prechallenge": [
+                                "Scalar_challenge",
+                                [
+                                  4531980515389565070,
+                                  998321580843875352
+                                ]
+                              ]
+                            },
+                            {
+                              "prechallenge": [
+                                "Scalar_challenge",
+                                [
+                                  8722824898477823616,
+                                  3288769731115230023
+                                ]
+                              ]
+                            },
+                            {
+                              "prechallenge": [
+                                "Scalar_challenge",
+                                [
+                                  2908941614473242530,
+                                  -9027837485310209640
+                                ]
+                              ]
+                            },
+                            {
+                              "prechallenge": [
+                                "Scalar_challenge",
+                                [
+                                  6802394481682287950,
+                                  -8226445310384605648
+                                ]
+                              ]
+                            },
+                            {
+                              "prechallenge": [
+                                "Scalar_challenge",
+                                [
+                                  4085337084745380856,
+                                  4629585605228279133
+                                ]
+                              ]
+                            },
+                            {
+                              "prechallenge": [
+                                "Scalar_challenge",
+                                [
+                                  -1772920733124302758,
+                                  2480725721708042729
+                                ]
+                              ]
+                            },
+                            {
+                              "prechallenge": [
+                                "Scalar_challenge",
+                                [
+                                  8105841642944215146,
+                                  -2247527641911790288
+                                ]
+                              ]
+                            },
+                            {
+                              "prechallenge": [
+                                "Scalar_challenge",
+                                [
+                                  7746614513142963839,
+                                  117905106228247783
+                                ]
+                              ]
+                            }
+                          ]
+                        ],
+                        "sg": [
+                          "0xb866e6e5e1bb90f714271cd5d5fb183626d4d9c8c6c32a6bbbf42b42a7542334",
+                          "0x3dd1ad3f77a2c3b4894211c1c3d6ba8476fec59af4a8e548d44fe77fdc86ac16"
+                        ]
+                      },
+                      "sponge_digest_before_evaluations": [
+                        4889898388049651600,
+                        8015667595816340917,
+                        6788111224637653112,
+                        3539707818400497561
+                      ]
+                    }
+                  }
+                },
+                "statement": {
+                  "fee_excess": [
+                    {
+                      "amount": {
+                        "magnitude": "0",
+                        "sgn": [
+                          "Pos"
+                        ]
+                      },
+                      "token": "1"
+                    },
+                    {
+                      "amount": {
+                        "magnitude": "0",
+                        "sgn": [
+                          "Pos"
+                        ]
+                      },
+                      "token": "1"
+                    }
+                  ],
+                  "next_available_token_after": "2",
+                  "next_available_token_before": "2",
+                  "pending_coinbase_stack_state": {
+                    "source": {
+                      "data": "4QPi4MdpCYg7KwX4KgXSRuCkEy6STRnTgv9v6asQg5rYjmfC4Xbk",
+                      "state": {
+                        "curr": "4Yyx7dXrwhNKv8TgrjSQNjDWeFNinVAHL6tExomhpYUHcYSkcQba",
+                        "init": "4Yyx7dXrwhNKv8TgrjSQNjDWeFNinVAHL6tExomhpYUHcYSkcQba"
+                      }
+                    },
+                    "target": {
+                      "data": "4QPy6qjBB1rfwG47Xymasqnjd6UroBNZY4Vdz7McjPzZs3zswbqf",
+                      "state": {
+                        "curr": "4YxviphXbt8hRDwVKAqd1Fppetbg7QNdqkfmK2H8uhso81qHwcvm",
+                        "init": "4Yyx7dXrwhNKv8TgrjSQNjDWeFNinVAHL6tExomhpYUHcYSkcQba"
+                      }
+                    }
+                  },
+                  "sok_digest": "��e�S|\"5\u000e���V���\u0001�g���*�U�\u0010�,S�",
+                  "source": "jxvBVnfd2n245QJQB9x2H1umD8652mMU2iLeCHh4bhN1bXjTEkU",
+                  "supply_increase": "5760000000000",
+                  "target": "jxJ65Axk2ijxET2jpnMXbBBKX2pLa5gpZkzeBXEgNSg82g4eHKs"
+                }
+              },
+              {
+                "proof": {
+                  "prev_evals": [
+                    {
+                      "f": [
+                        "0xc79c3de357b1e2d26cd8ba2605ed56b388ac4f9360d8692d4e4fb40ce0bc5c2e"
+                      ],
+                      "l": [
+                        "0x544d719fbbc9291f724d5e567693870a4e11184a395d3b7530e16b305032be24"
+                      ],
+                      "o": [
+                        "0x6a9fb6e137f2e194b0c4f7496009b523a08b6a81b5cf3bdf95cd7c34b1a53622"
+                      ],
+                      "r": [
+                        "0x65d37967051e231d5a45757f16f83b64f8724dbaf5b4cea1d4fbbd9cc60fc539"
+                      ],
+                      "sigma1": [
+                        "0x89265a3fc2253ea558f24e654c95cfda2f83b6c2dfbec6e93ce69446c82f283d"
+                      ],
+                      "sigma2": [
+                        "0xeac766e0f279a12859235acab46ae3789b8725aa8ed51d76d3d958f47a0bb602"
+                      ],
+                      "t": [
+                        "0xbea2d25836795fff42c9d46cf21aff3f4afd32223a46c32a960a1d639e8e7334",
+                        "0x0c5eead9a2e02b5448041780a7e9377e7761f1b50eaf793a270595756e60cd11",
+                        "0x51acb1ec01d9f85b723e4219f28e66b2f67488525bb75a1e11b19f88e243290d",
+                        "0x6155ee40c21c3b641a1803893672139cc99e1469ce86fd4f4445734458598506",
+                        "0x318b8d96e1a0218eab7ee75d1b7f27e33ea1a18ad7eccf516ae9d8cb723a341f"
+                      ],
+                      "z": [
+                        "0x188f52338be51c525416424b503ea71b0b8e6b58c95891e780ec11f71ac7ac15"
+                      ]
+                    },
+                    {
+                      "f": [
+                        "0xbce7493f65f77d17aeacf1706e143b30f52583c0f7c789761e69dbd722614228"
+                      ],
+                      "l": [
+                        "0x3ef33eb7debe898cfa0382bebe73e6db189a574baca0af8c72701215aac1032c"
+                      ],
+                      "o": [
+                        "0x98737a6891639a25072922d8c36c6d85af19c493ba58fa0fdf3a8fc3e857680a"
+                      ],
+                      "r": [
+                        "0x8219599d34f113b700a0cdc5aac9be807fdd20637f917290d89ac3ca8fb76e1a"
+                      ],
+                      "sigma1": [
+                        "0x76c6beaa8ba5b9c78ad5f9e3ae15cbb3b93e3efac430496e9c1baee13724cd32"
+                      ],
+                      "sigma2": [
+                        "0x0bdd559487aba6b6defaa32e937cb99a40aede935ae49069ab50db837392e939"
+                      ],
+                      "t": [
+                        "0xb6835873203d8b14f9efd8d1761b9774e5569f426556644916fb843035b0190b",
+                        "0x58ca4e6784d57823bb86e16e77f2afb48a0d8bab93fe1e5ce36b6ed0bdde4d2c",
+                        "0xd55a0e69837c78f031e7941ad8eb253bba2588b25da7ac2136ece7b10eddc701",
+                        "0x1ede62ed099d074471211d353a6069c428bef912c12723d477aede2ef857c704",
+                        "0xf11bb8b1124abeb5d6add58ce5ac93afcb43d3eb627274fc62a2a494bc939702"
+                      ],
+                      "z": [
+                        "0x8fbbb61db5a4aa6bfd7481d78ba75c70663d7498a631400d8c421dbcf2a5fe0c"
+                      ]
+                    }
+                  ],
+                  "prev_x_hat": [
+                    "0xd78ed1d2b572d591bfb05a97737efd408093c5be5640a3c5400a7749aae7db14",
+                    "0xbbb6205e48fa840ad8a7a1fddcfcb5c4d4e36f8c63e3b8770a78a164bde9a307"
+                  ],
+                  "proof": {
+                    "messages": {
+                      "l_comm": [
+                        [
+                          "0x5acdafe8f00e3b2d71ce60d270dd65eddcdda6864677d6ae1b5ceff05819fe02",
+                          "0x25e644f16a222ebe3974c4939d34ed9a057a549b0e3e5853b959def7f4f5741b"
+                        ]
+                      ],
+                      "o_comm": [
+                        [
+                          "0x7e4a006c69be4153acaacdde1e08a50fdfb517eccc11c53c1d7b851740792d36",
+                          "0xb68cf88fa75c996895a7d24d174cbe3e410a122074ccdc6164e79acf5e781732"
+                        ]
+                      ],
+                      "r_comm": [
+                        [
+                          "0x571fdf4744dba8419842b2a07f64995381dfc761eab1bffadd53b45dd226e909",
+                          "0x3c62c5104445e50c5071b3cbb9e8fff1a1543b8e76f2729f2b7b7ccddc51a12f"
+                        ]
+                      ],
+                      "t_comm": {
+                        "shifted": [
+                          "Finite",
+                          [
+                            "0x034318d6eb47c2894475f1fc638c1f2996a4d972031db652b4bf491650414e23",
+                            "0xd444e84065051e7d7307c8d251f7e1ba0967f5277308ddddf0b03b91a013b939"
+                          ]
+                        ],
+                        "unshifted": [
+                          [
+                            "Finite",
+                            [
+                              "0xf655b551197e82cac4f4733809355d16722bb2cf7c4846c074a498e409c83a05",
+                              "0xbd4056e2c557a943d570b9f25f07aeac6a432cc517a079d118025776032f713d"
+                            ]
+                          ],
+                          [
+                            "Finite",
+                            [
+                              "0xec4d5a996ad7c4b68a779a94ae7a1c4f350bd2a6f7f7a6a5837a22ad40f97009",
+                              "0xa6cd55987bda0855deb0b92a35ccefc5b6c79380b40ff9a3ac130591f86a672e"
+                            ]
+                          ],
+                          [
+                            "Finite",
+                            [
+                              "0xd2a72d92ad8ac4b04637fb353e7dd476132b1755ea42181ba292af14b76bb82c",
+                              "0xfad89af5a4ef7b5cad6b4556b7fe95e19f93c6dc369b5d5f6925af2cdfc1dc09"
+                            ]
+                          ],
+                          [
+                            "Finite",
+                            [
+                              "0x1dcf10c0212c6d3808c50f50223380a6e830fd981d00f09172be4e7248932b3e",
+                              "0xe177349b66307f4e11730c6492f870c895edef5c0605f9ac8ffdafbc5d06101f"
+                            ]
+                          ],
+                          [
+                            "Finite",
+                            [
+                              "0x2d3623b7767c5a26ce186089170ee8180789e9ba041207caf2f7ebb63d98e339",
+                              "0x732d09968b464678ce50e03d56437160961931068116404b7b537c1b1fc0be16"
+                            ]
+                          ]
+                        ]
+                      },
+                      "z_comm": [
+                        [
+                          "0x7e91c21a0777690463f8e7907af6ab51dca6cad51f7de9862780339a27195e37",
+                          "0x25d37726f2b199f8983f78c00816dfcbe106bc164af9a79102fc1eddafd4250b"
+                        ]
+                      ]
+                    },
+                    "openings": {
+                      "evals": [
+                        {
+                          "f": [
+                            "0xb2a1c11652377428db7bd9d9bed5e3a7423c0d84386f7d1a8145630d7c073023"
+                          ],
+                          "l": [
+                            "0xd2b3518903229a12d3c1ca0c288daf70c1d8ac63db54c1a36a3ff4122896a40c"
+                          ],
+                          "o": [
+                            "0x43de9b342ff757eb26a5fd228992e31027f53ca7e08b222249a0a7b61532453d"
+                          ],
+                          "r": [
+                            "0x641395b9395fb537f9a0f41f818fd5df01b98743b8d160094ca4a3bd74734f3a"
+                          ],
+                          "sigma1": [
+                            "0x219c7b203c13681bafa759a528bcf7495739770178cd4e464553333b61535a2c"
+                          ],
+                          "sigma2": [
+                            "0x0038f0c169cc7c7a139da4341b3eebd50573427896340153fe7e3a8313f62027"
+                          ],
+                          "t": [
+                            "0x9b2771f36981bdb7e9ea9bbfdd69522e043346acfe4bcc6efedf49e94ed1a02e",
+                            "0x60c41bb7ead4ab9d26ee32274204ed78bfc3368373424470e021c20a8ac83530",
+                            "0x343154099e83bc248634b764f48101f155c5823b8883fd67b895022e73cbbd3c",
+                            "0x18a3b908c4e7516795a2a8d0bb7e71feccbd115bb1493d57f420728a9a044c27",
+                            "0x70009c16955d2c0c8317cbafcbeb2f6a543e089ad1d738481383e641c6e81521"
+                          ],
+                          "z": [
+                            "0xa26aa035f881b0d5480bf8a674427b77b17aaf7bd73fcf7c65db897dd07aae28"
+                          ]
+                        },
+                        {
+                          "f": [
+                            "0x9f02a00c366615af81a265659992326b70cd1c3a3383922d27195c86964bd124"
+                          ],
+                          "l": [
+                            "0x712bed07a09f264543502d08e0014aabded0851baa738c2b4feef114e4030b2b"
+                          ],
+                          "o": [
+                            "0x3dc18877e8eae54e2d188efe6649edda666ba76060e75186b42538dbe3947504"
+                          ],
+                          "r": [
+                            "0x35628596051a7c11dda7f90ffc50a3cf841b39d511694e3c37903a3a7bc32306"
+                          ],
+                          "sigma1": [
+                            "0xe0d6801563219ce0f956323677a5cbfbc5d819cfb711e4747d9730651a78d317"
+                          ],
+                          "sigma2": [
+                            "0xf7d3173e20ede803afbe274868b295af6aac3b950fca7eec45a3a28de83a1605"
+                          ],
+                          "t": [
+                            "0xfafef123805a0e56d4dd942eec7a0d3b111302f432e67837c4a418cd1ec0cf05",
+                            "0xc554fc365562bcc06a9fa4465c282ed9455b72a38644bd8eb7ec1cc8a2112d16",
+                            "0x02ac910b52b97b4cb20afb38debef4c8549f692105ec1c6ff09fad5b7be0fa31",
+                            "0x894ba6d3bbe1ea88ba84a414deb9ce51c9ec861e064bd357a26afd377f47ce21",
+                            "0xecc76c227c82c44e099c9052eff78b8dff78f4e77d788449628b04bc0e545000"
+                          ],
+                          "z": [
+                            "0xb27e75ff56713e973b6cd8340295348d6d528f5c9d7446f06c6ad54e3f454e01"
+                          ]
+                        }
+                      ],
+                      "proof": {
+                        "delta": [
+                          "0x380fd6c8347863e1d1c3c26d5d9f9dc9edfe8a64524b3ea65961ec01ebb26130",
+                          "0xcfa1f882d85ff5efc2f256f0a4204d66abddaca941a2f555e8c3d8389c2baa19"
+                        ],
+                        "lr": [
+                          [
+                            [
+                              "0x12c04c5eec12e1d90734707df67a50d6f4868b2461f301202a9044a8181aa611",
+                              "0x3e5f7c63fdbf7e4307192cc4bd5b25d8580c92d46cba44050e563d8f89440016"
+                            ],
+                            [
+                              "0x30060e6ddc10fda854b298371de86c015621e1a9063e3ad4b177654f3b8d213d",
+                              "0x404fcaaabb9938e96a91dfe671a413fb0583e7a873be8f5909d88bd16f87543f"
+                            ]
+                          ],
+                          [
+                            [
+                              "0xf09aade02398641bbf826f8b9d5f5506061935e1f6cee774c155809809bfe727",
+                              "0xe6c7061916d1f23d2169052108602996238c41f604fc81de1f8afb7ba0fd2b3d"
+                            ],
+                            [
+                              "0xcdddc91684d59fe984b77cde6e3f1d7c4d274e653e74f2e43bc108cefb17a604",
+                              "0x9d303c72dcd93cf5edd363cff67701d8f34b7d00c776a81cb945f8af7c348221"
+                            ]
+                          ],
+                          [
+                            [
+                              "0x22b9e1a3425b97c2eec0d2dd44c6cae57ff3433b813d0138b436615e30a39436",
+                              "0x72f8842cffdf3406d6c7b39c291e3ac868be7816e557544f564e8c83608bc22f"
+                            ],
+                            [
+                              "0x98725aa1395b08402434b662d5b27714e0847f94f8b8b8cd7b4c2a0c21d0f12f",
+                              "0xc22a2d89c662b672f441c8b51b554bcca902303ab98a5a001f39706493e9a726"
+                            ]
+                          ],
+                          [
+                            [
+                              "0x11e97a6ed6c0d9847424011c7c86dc71a1b308e5512e332d97460cc20bbde81c",
+                              "0xc2540535369f99d6f79bfe346f506e95394ff5f3fdd9807ca0639a74e2e9b939"
+                            ],
+                            [
+                              "0x671cf6007591e3785e50609ffa22c5460524801678347ca478015ade3690d515",
+                              "0x5473de6b0d77de476ba106318787ff9d9c756a6a92a0b52a47a321e7ead49704"
+                            ]
+                          ],
+                          [
+                            [
+                              "0xdc7f8860f8a24d13299eb9d4393af7a9b5b71eef97866deddb494cc486d95a03",
+                              "0xb894330dcb2a5f594f07cf06d33f0e38c6cca683734ec62dc17380428382230f"
+                            ],
+                            [
+                              "0x25671af09cc751eda01000782c1bec6c195611b0b70def5291f0a8e2ee0bee3c",
+                              "0x5bbf4ad695ca0eb34f925437c3ce694e978e285e9c02f976a4d004cc8bf0b001"
+                            ]
+                          ],
+                          [
+                            [
+                              "0xe5f4e20d292389ec65d6852efe25631ab0fd289a2344a3c37a1ed75b0b8d3802",
+                              "0x4bc742ffa245f85b59eacd128e0b90c63b17146c3bc28d952be2e6d3e0556137"
+                            ],
+                            [
+                              "0xce33bc3f7395ad768e4a8c0e88ff6a33b9c6683d7df4c60e1aa02067a891731b",
+                              "0x989262b563eda21939b375931d35f81c5af6224b8a7ace827c1bc4c52b33aa34"
+                            ]
+                          ],
+                          [
+                            [
+                              "0x5810f91b118d3458dae5d18f9f9619ea2f7fe9690810ba2a4d9ccd7b97e33e17",
+                              "0xe363cbcfadc8022f58b4a37a9e6275f09784bae33c3809cd6baa550145ff1a0e"
+                            ],
+                            [
+                              "0x6a88392cfb4111e8b97ac9e469d450f957c774042e08533d5b1f0226a98dcf05",
+                              "0xe66045a5b1bc4c389080f5e2328f30912517f961577dc44ca19eaeb5d41d5308"
+                            ]
+                          ],
+                          [
+                            [
+                              "0x8325ab6b6d6ad9dec79d4925eb91c4b92cc26c25f386b838bed3b314f043f723",
+                              "0x83a80193ec031baf20a060465880c8c82d410bd4d2b4af192ac2f56a93378c1b"
+                            ],
+                            [
+                              "0x4c5f6a22e15ef7c0a2613e4b2a1209f0c5042946bac80a6b1fa7127330f8670c",
+                              "0x26e2ded7337a778140be09ffd60c69eb4bc81e840e285d2d0c5d7d33c382d607"
+                            ]
+                          ],
+                          [
+                            [
+                              "0xa444c72d2e5beba888195ff3fc2143264659bf6afb48a8e6f58d4fc53ddeac12",
+                              "0x54daf828dfce77273ba6e14599a329e0beadb3dcbce560a8ee047ab6e4c1050f"
+                            ],
+                            [
+                              "0xceef9292f6adb1a86b1ade63f20e3598ea67c6bda62ad22d3f71a81921be2519",
+                              "0x0912e4e3ea809fcb79e5905e93e3a533adb7b413b6aafad5d26b5c3f2315da11"
+                            ]
+                          ],
+                          [
+                            [
+                              "0x3cccc9f5df63306f6fb01ef7b8c2d21d8f00db513b4080fc266b00b57f85b02d",
+                              "0xe10079cc533310cd4234e9736e4c7d635754d1ca2fb662bda9cbf049378f1639"
+                            ],
+                            [
+                              "0xcf7836ebbada2e223adcee4447fc8b8b7243a8e6414744bce80b1b0903b85921",
+                              "0xe98f811bf7fc4bdf44ca6e1f4064751b604bc5924d7757c339460bcca87d130c"
+                            ]
+                          ],
+                          [
+                            [
+                              "0x5668e47a69506d62626a47b853cdd90e6cfd89d6eef1dc150e05de39db2ff817",
+                              "0x6981790910e3bd8f7abfa1ef52ef20349f2e4824b4eff6cc417fcb63ca00022b"
+                            ],
+                            [
+                              "0xfc0be27ec5b9e526e2c5fb8741e42da80b0eeece2e3a86d45e1ed3b7aaa1fd31",
+                              "0x3fcb062992ddf31f517008a378bfc44f6f32941727b7146d56fc1a1b17972b1f"
+                            ]
+                          ],
+                          [
+                            [
+                              "0x8bb7d9ed6331a56aae24befec8a17a705cbb2a0ff7a9e03bea8bf6d686f44134",
+                              "0xf582c2f9a1a45386b3894d47f3f09d3d1948bdf71e41c4aa70ef9fd4b236a020"
+                            ],
+                            [
+                              "0x473ae7eebf7ede5daa3b9328ef99284c6aa5e86d99cfa3078367d0eff40a8420",
+                              "0x80ff24d0744871802993a73eb3a8a599153835aa83d6a0aa9be76c76e62cc620"
+                            ]
+                          ],
+                          [
+                            [
+                              "0xc66681ce596bf23346f128210d9bdce4b023b8e5570aa76d325b0c86c0f24904",
+                              "0x2a2572413133e4bd07352e48c8f149970e9eaf38885427a573169d9af0df6327"
+                            ],
+                            [
+                              "0x159aaa93b5427b4954e3b59f6f3871d4f383e13639fa2c152ec8e47b80f98220",
+                              "0x76e9508920a2fd5b9530f37f63048b3f4f43b00c3f73f04c88df729b76d7993d"
+                            ]
+                          ],
+                          [
+                            [
+                              "0xe9b95a304a57303abc466c20540de41fc5bc9ca3d83b255dfc4791eb6261c901",
+                              "0x735342011a0223f4b3e7b2db01ccd8b9e5b0a91e58c44dce76cabb48df299f30"
+                            ],
+                            [
+                              "0x2c7c046487ae984260dfe0bb91df4be1cbb2323cd98aeae4dc61866fc4c8ce2a",
+                              "0x37e3712f78c7c57ef3f3ae71a7af3f80d21d065feb6ca0aac4bfb85ffd1cf931"
+                            ]
+                          ],
+                          [
+                            [
+                              "0x600cb45c659b0359212f2b94e8fb7fdaf5f16809e699a9fd2b70e24f24601437",
+                              "0xa1b1818841b83a7c245bdffcd96de1a824b3fb6530b19afae7f6e0d178b5eb03"
+                            ],
+                            [
+                              "0xa5cec58ff84798b891570573e174a88dd9a774bf0cf009ab660161dd46f2ec3a",
+                              "0x3950ee562c0e9085882d26af4ad8c6a293055ee7086bf2caaa92c22b9d53aa10"
+                            ]
+                          ],
+                          [
+                            [
+                              "0x93001131771f362839c9af1df4a823e71b8acd1c50c3690d8b236d28b45ea13d",
+                              "0x974cb6591723c65fe990b5050f51dfc667fb998a9b59da67ccb62df1ae816f28"
+                            ],
+                            [
+                              "0xa2a3375e74a709ec9eca425f343e9c3ef29ec519be42d1b488328acc8a16383f",
+                              "0x224d391eed656fd62e48959bf95d95768b4ba34c3b58b075d737ecd7ac7e5a3b"
+                            ]
+                          ],
+                          [
+                            [
+                              "0x9633e5fb2080459b944169cbde8612f55beda8d8e3ab15aff7aa0dadb792e212",
+                              "0x371bcbe85e38e1fd7efb236cf45392c86c33a598aac4c1d0fc3a55b383a03032"
+                            ],
+                            [
+                              "0x6d72b05908b5a2d287d7ce35d8b411726bef384f169e1e85a2db882ada71a217",
+                              "0x94c4d3fbf8c95a3ab56636ed241bf60f5f5c2d7a0074d34bc33647af5114ec25"
+                            ]
+                          ]
+                        ],
+                        "sg": [
+                          "0xeed8c1bd664c8e49f912143d4284ebec06be7df50e89737cfca3c7fd91960932",
+                          "0x600c4b76697029fcc06d5b4ed41c9cd2f8d4b3970b2449e65b5834b8d3ee190d"
+                        ],
+                        "z_1": "0xa20cd40871658a7d5f3fcb4ae42f8b9e445473895ee049f09f8c0985bac0081f",
+                        "z_2": "0xd36c51996549a5a8c6cbfd956ec7bdda7b146de46687a92c83f27290595d6d26"
+                      }
+                    }
+                  },
+                  "statement": {
+                    "pass_through": {
+                      "app_state": null,
+                      "old_bulletproof_challenges": [
+                        [
+                          {
+                            "prechallenge": [
+                              "Scalar_challenge",
+                              [
+                                -1327302200754837021,
+                                -1660994852969836270
+                              ]
+                            ]
+                          },
+                          {
+                            "prechallenge": [
+                              "Scalar_challenge",
+                              [
+                                450890173527247009,
+                                -8557633769085154846
+                              ]
+                            ]
+                          },
+                          {
+                            "prechallenge": [
+                              "Scalar_challenge",
+                              [
+                                6634065464092600254,
+                                8702514372245888318
+                              ]
+                            ]
+                          },
+                          {
+                            "prechallenge": [
+                              "Scalar_challenge",
+                              [
+                                -3076406060866646892,
+                                1016688427598690610
+                              ]
+                            ]
+                          },
+                          {
+                            "prechallenge": [
+                              "Scalar_challenge",
+                              [
+                                -5493876653098243956,
+                                769990206333808039
+                              ]
+                            ]
+                          },
+                          {
+                            "prechallenge": [
+                              "Scalar_challenge",
+                              [
+                                -4119606708939609773,
+                                2880620987023227098
+                              ]
+                            ]
+                          },
+                          {
+                            "prechallenge": [
+                              "Scalar_challenge",
+                              [
+                                7333492655424793207,
+                                5751733166870738222
+                              ]
+                            ]
+                          },
+                          {
+                            "prechallenge": [
+                              "Scalar_challenge",
+                              [
+                                -6886670596004831169,
+                                -6270070401981405515
+                              ]
+                            ]
+                          },
+                          {
+                            "prechallenge": [
+                              "Scalar_challenge",
+                              [
+                                1065420039690682113,
+                                -8151038022977271686
+                              ]
+                            ]
+                          },
+                          {
+                            "prechallenge": [
+                              "Scalar_challenge",
+                              [
+                                -8309448713645796536,
+                                -7550288760044488238
+                              ]
+                            ]
+                          },
+                          {
+                            "prechallenge": [
+                              "Scalar_challenge",
+                              [
+                                3328563629865946501,
+                                830984299657929194
+                              ]
+                            ]
+                          },
+                          {
+                            "prechallenge": [
+                              "Scalar_challenge",
+                              [
+                                6666664909049802302,
+                                -2980567688372571769
+                              ]
+                            ]
+                          },
+                          {
+                            "prechallenge": [
+                              "Scalar_challenge",
+                              [
+                                8167832352714880610,
+                                -4053770927132440539
+                              ]
+                            ]
+                          },
+                          {
+                            "prechallenge": [
+                              "Scalar_challenge",
+                              [
+                                -5177763692356352424,
+                                -7954183992925958771
+                              ]
+                            ]
+                          },
+                          {
+                            "prechallenge": [
+                              "Scalar_challenge",
+                              [
+                                -4161805434173466374,
+                                141701322943121872
+                              ]
+                            ]
+                          },
+                          {
+                            "prechallenge": [
+                              "Scalar_challenge",
+                              [
+                                -3816266299808153994,
+                                8313141998869699171
+                              ]
+                            ]
+                          },
+                          {
+                            "prechallenge": [
+                              "Scalar_challenge",
+                              [
+                                15796241594752706,
+                                5047735635275106000
+                              ]
+                            ]
+                          },
+                          {
+                            "prechallenge": [
+                              "Scalar_challenge",
+                              [
+                                8413720909549015440,
+                                -5104339989993237412
+                              ]
+                            ]
+                          }
+                        ],
+                        [
+                          {
+                            "prechallenge": [
+                              "Scalar_challenge",
+                              [
+                                -1255056937214341977,
+                                -259585554707518354
+                              ]
+                            ]
+                          },
+                          {
+                            "prechallenge": [
+                              "Scalar_challenge",
+                              [
+                                -343923985761274782,
+                                3979432916411627813
+                              ]
+                            ]
+                          },
+                          {
+                            "prechallenge": [
+                              "Scalar_challenge",
+                              [
+                                4276952930975997064,
+                                -4769166697516589154
+                              ]
+                            ]
+                          },
+                          {
+                            "prechallenge": [
+                              "Scalar_challenge",
+                              [
+                                5193728385518822263,
+                                668300098772652852
+                              ]
+                            ]
+                          },
+                          {
+                            "prechallenge": [
+                              "Scalar_challenge",
+                              [
+                                8636689812779470790,
+                                -2243647468794185475
+                              ]
+                            ]
+                          },
+                          {
+                            "prechallenge": [
+                              "Scalar_challenge",
+                              [
+                                229636021696540543,
+                                -117830064111654256
+                              ]
+                            ]
+                          },
+                          {
+                            "prechallenge": [
+                              "Scalar_challenge",
+                              [
+                                -5233782109109376882,
+                                -7432692779151561206
+                              ]
+                            ]
+                          },
+                          {
+                            "prechallenge": [
+                              "Scalar_challenge",
+                              [
+                                -8954038278466315518,
+                                3969600799651687848
+                              ]
+                            ]
+                          },
+                          {
+                            "prechallenge": [
+                              "Scalar_challenge",
+                              [
+                                5564020648263554251,
+                                3873419600095983689
+                              ]
+                            ]
+                          },
+                          {
+                            "prechallenge": [
+                              "Scalar_challenge",
+                              [
+                                -2067149356589447991,
+                                8842182598452064838
+                              ]
+                            ]
+                          },
+                          {
+                            "prechallenge": [
+                              "Scalar_challenge",
+                              [
+                                5934737952979568160,
+                                5722140733954460000
+                              ]
+                            ]
+                          },
+                          {
+                            "prechallenge": [
+                              "Scalar_challenge",
+                              [
+                                7562598291495986591,
+                                8443554132242022432
+                              ]
+                            ]
+                          },
+                          {
+                            "prechallenge": [
+                              "Scalar_challenge",
+                              [
+                                -3492554641679057333,
+                                -2271426961886562152
+                              ]
+                            ]
+                          },
+                          {
+                            "prechallenge": [
+                              "Scalar_challenge",
+                              [
+                                705473305211302785,
+                                -7809629918589509918
+                              ]
+                            ]
+                          },
+                          {
+                            "prechallenge": [
+                              "Scalar_challenge",
+                              [
+                                -3816524934515088889,
+                                56744361387753946
+                              ]
+                            ]
+                          },
+                          {
+                            "prechallenge": [
+                              "Scalar_challenge",
+                              [
+                                -5899261868751403853,
+                                -6924195479400349350
+                              ]
+                            ]
+                          },
+                          {
+                            "prechallenge": [
+                              "Scalar_challenge",
+                              [
+                                1990729075750356358,
+                                -325373018364226679
+                              ]
+                            ]
+                          },
+                          {
+                            "prechallenge": [
+                              "Scalar_challenge",
+                              [
+                                -7276582116139457052,
+                                -3650652686964424606
+                              ]
+                            ]
+                          }
+                        ]
+                      ],
+                      "sg": [
+                        [
+                          "0x405102f8a80d8c551fc59a3c1fdcc8069ebaa7b1f99e062a89e85cd7596dff29",
+                          "0x401b176611a9290e3f33a2fc54acb52cf9f62ee6b473c8f4536114e01c089405"
+                        ],
+                        [
+                          "0x0760377d0029d470c7832ed3321f87d45beca27e6753a0a8428d74088cd1f81b",
+                          "0x48156d22a3559d17faae3e80653cefadbd8bd8e86789c6b110823a7eea92ea1f"
+                        ]
+                      ]
+                    },
+                    "proof_state": {
+                      "deferred_values": {
+                        "b": [
+                          "Shifted_value",
+                          "0x0dc89ce23d1e14fe298315381de0fb9b293ed672d0c551d6dd990104aff95228"
+                        ],
+                        "bulletproof_challenges": [
+                          {
+                            "prechallenge": [
+                              "Scalar_challenge",
+                              [
+                                -6470307548568255813,
+                                -1685090256481876634
+                              ]
+                            ]
+                          },
+                          {
+                            "prechallenge": [
+                              "Scalar_challenge",
+                              [
+                                -8004622731815543621,
+                                -1545029919965654965
+                              ]
+                            ]
+                          },
+                          {
+                            "prechallenge": [
+                              "Scalar_challenge",
+                              [
+                                4809252666649878372,
+                                2819154183022108562
+                              ]
+                            ]
+                          },
+                          {
+                            "prechallenge": [
+                              "Scalar_challenge",
+                              [
+                                3119993033649662074,
+                                -6273158934668032224
+                              ]
+                            ]
+                          },
+                          {
+                            "prechallenge": [
+                              "Scalar_challenge",
+                              [
+                                5335259367533787038,
+                                1116227186724479544
+                              ]
+                            ]
+                          },
+                          {
+                            "prechallenge": [
+                              "Scalar_challenge",
+                              [
+                                4289045420687315723,
+                                1848105058699879711
+                              ]
+                            ]
+                          },
+                          {
+                            "prechallenge": [
+                              "Scalar_challenge",
+                              [
+                                -1325947330250380042,
+                                2762910259079749572
+                              ]
+                            ]
+                          },
+                          {
+                            "prechallenge": [
+                              "Scalar_challenge",
+                              [
+                                4519420222869149750,
+                                6462535156084911080
+                              ]
+                            ]
+                          },
+                          {
+                            "prechallenge": [
+                              "Scalar_challenge",
+                              [
+                                8111574644320124960,
+                                6817429286683361992
+                              ]
+                            ]
+                          },
+                          {
+                            "prechallenge": [
+                              "Scalar_challenge",
+                              [
+                                6746824402442684717,
+                                241436331211418088
+                              ]
+                            ]
+                          },
+                          {
+                            "prechallenge": [
+                              "Scalar_challenge",
+                              [
+                                -6506908395330704290,
+                                -8641191554315738119
+                              ]
+                            ]
+                          },
+                          {
+                            "prechallenge": [
+                              "Scalar_challenge",
+                              [
+                                -4510512149482601052,
+                                1915999890411539298
+                              ]
+                            ]
+                          },
+                          {
+                            "prechallenge": [
+                              "Scalar_challenge",
+                              [
+                                -7252986413293280759,
+                                7296615389025655827
+                              ]
+                            ]
+                          },
+                          {
+                            "prechallenge": [
+                              "Scalar_challenge",
+                              [
+                                3793456731441130834,
+                                -5519016051354182028
+                              ]
+                            ]
+                          },
+                          {
+                            "prechallenge": [
+                              "Scalar_challenge",
+                              [
+                                4459290710059275907,
+                                6204183429859900407
+                              ]
+                            ]
+                          },
+                          {
+                            "prechallenge": [
+                              "Scalar_challenge",
+                              [
+                                7429585426243654635,
+                                -1989984745750605712
+                              ]
+                            ]
+                          },
+                          {
+                            "prechallenge": [
+                              "Scalar_challenge",
+                              [
+                                -9166150313950113597,
+                                3771059249185998957
+                              ]
+                            ]
+                          },
+                          {
+                            "prechallenge": [
+                              "Scalar_challenge",
+                              [
+                                -120987024896550131,
+                                4013394263016011356
+                              ]
+                            ]
+                          }
+                        ],
+                        "combined_inner_product": [
+                          "Shifted_value",
+                          "0x299987cd03e0267ddfd33c644dc7ba758bdb4030e8089cb016a0c14ea7bd0410"
+                        ],
+                        "plonk": {
+                          "alpha": [
+                            "Scalar_challenge",
+                            [
+                              5387522963952121549,
+                              6500629152453094631
+                            ]
+                          ],
+                          "beta": [
+                            -8067652271892059372,
+                            -2924077780675467701
+                          ],
+                          "gamma": [
+                            -4144858325762727292,
+                            5252476909328647844
+                          ],
+                          "zeta": [
+                            "Scalar_challenge",
+                            [
+                              -1390837605711899172,
+                              -1211452877015642201
+                            ]
+                          ]
+                        },
+                        "which_branch": "\u0001",
+                        "xi": [
+                          "Scalar_challenge",
+                          [
+                            -3113748372604943435,
+                            8315819691794144641
+                          ]
+                        ]
+                      },
+                      "me_only": {
+                        "old_bulletproof_challenges": [
+                          [
+                            {
+                              "prechallenge": [
+                                "Scalar_challenge",
+                                [
+                                  -9133237669107373068,
+                                  6677883643731912046
+                                ]
+                              ]
+                            },
+                            {
+                              "prechallenge": [
+                                "Scalar_challenge",
+                                [
+                                  5824557528802284622,
+                                  6235819420540980660
+                                ]
+                              ]
+                            },
+                            {
+                              "prechallenge": [
+                                "Scalar_challenge",
+                                [
+                                  4576804143862340361,
+                                  -5721366495371644460
+                                ]
+                              ]
+                            },
+                            {
+                              "prechallenge": [
+                                "Scalar_challenge",
+                                [
+                                  424719095017263873,
+                                  2069266838899526735
+                                ]
+                              ]
+                            },
+                            {
+                              "prechallenge": [
+                                "Scalar_challenge",
+                                [
+                                  420343483798153479,
+                                  8174873095379580503
+                                ]
+                              ]
+                            },
+                            {
+                              "prechallenge": [
+                                "Scalar_challenge",
+                                [
+                                  5488787307480474161,
+                                  6678428768087646939
+                                ]
+                              ]
+                            },
+                            {
+                              "prechallenge": [
+                                "Scalar_challenge",
+                                [
+                                  1203138375968307955,
+                                  -3485865922517012863
+                                ]
+                              ]
+                            },
+                            {
+                              "prechallenge": [
+                                "Scalar_challenge",
+                                [
+                                  7966131476939467650,
+                                  -7626384130655617008
+                                ]
+                              ]
+                            },
+                            {
+                              "prechallenge": [
+                                "Scalar_challenge",
+                                [
+                                  -7086851165598340039,
+                                  -4152029332417382695
+                                ]
+                              ]
+                            },
+                            {
+                              "prechallenge": [
+                                "Scalar_challenge",
+                                [
+                                  -1349762000432484970,
+                                  -2290789152169810110
+                                ]
+                              ]
+                            },
+                            {
+                              "prechallenge": [
+                                "Scalar_challenge",
+                                [
+                                  -4633188997492774788,
+                                  -6037483947952445580
+                                ]
+                              ]
+                            },
+                            {
+                              "prechallenge": [
+                                "Scalar_challenge",
+                                [
+                                  -3298636552709405503,
+                                  4137446096131822480
+                                ]
+                              ]
+                            },
+                            {
+                              "prechallenge": [
+                                "Scalar_challenge",
+                                [
+                                  1630085079698877486,
+                                  7412040897158977115
+                                ]
+                              ]
+                            },
+                            {
+                              "prechallenge": [
+                                "Scalar_challenge",
+                                [
+                                  -8439652260785035102,
+                                  512227592520966344
+                                ]
+                              ]
+                            },
+                            {
+                              "prechallenge": [
+                                "Scalar_challenge",
+                                [
+                                  -6475726185593794928,
+                                  8260293406928107292
+                                ]
+                              ]
+                            },
+                            {
+                              "prechallenge": [
+                                "Scalar_challenge",
+                                [
+                                  2555309395075423597,
+                                  1093026827873615829
+                                ]
+                              ]
+                            },
+                            {
+                              "prechallenge": [
+                                "Scalar_challenge",
+                                [
+                                  -4604114489089346267,
+                                  -5839663126737394192
+                                ]
+                              ]
+                            }
+                          ],
+                          [
+                            {
+                              "prechallenge": [
+                                "Scalar_challenge",
+                                [
+                                  1244530117689482839,
+                                  8677476392371264269
+                                ]
+                              ]
+                            },
+                            {
+                              "prechallenge": [
+                                "Scalar_challenge",
+                                [
+                                  4922472953247846744,
+                                  -9076594222282725384
+                                ]
+                              ]
+                            },
+                            {
+                              "prechallenge": [
+                                "Scalar_challenge",
+                                [
+                                  823655068244916831,
+                                  249458042557156943
+                                ]
+                              ]
+                            },
+                            {
+                              "prechallenge": [
+                                "Scalar_challenge",
+                                [
+                                  -6990360222078059502,
+                                  6705671791166618719
+                                ]
+                              ]
+                            },
+                            {
+                              "prechallenge": [
+                                "Scalar_challenge",
+                                [
+                                  -7460477836769426930,
+                                  4757627487616351071
+                                ]
+                              ]
+                            },
+                            {
+                              "prechallenge": [
+                                "Scalar_challenge",
+                                [
+                                  -6131505055198889954,
+                                  -6618983902998928597
+                                ]
+                              ]
+                            },
+                            {
+                              "prechallenge": [
+                                "Scalar_challenge",
+                                [
+                                  -2427377891461561405,
+                                  6827663819390291405
+                                ]
+                              ]
+                            },
+                            {
+                              "prechallenge": [
+                                "Scalar_challenge",
+                                [
+                                  4955861418625641480,
+                                  -4682521199263521705
+                                ]
+                              ]
+                            },
+                            {
+                              "prechallenge": [
+                                "Scalar_challenge",
+                                [
+                                  -8597886209759634195,
+                                  -9041351059656177465
+                                ]
+                              ]
+                            },
+                            {
+                              "prechallenge": [
+                                "Scalar_challenge",
+                                [
+                                  -3521361650447210761,
+                                  6219620125800751784
+                                ]
+                              ]
+                            },
+                            {
+                              "prechallenge": [
+                                "Scalar_challenge",
+                                [
+                                  8479540276224168376,
+                                  -8378739865535600977
+                                ]
+                              ]
+                            },
+                            {
+                              "prechallenge": [
+                                "Scalar_challenge",
+                                [
+                                  7549956753440002693,
+                                  -3512822276445268247
+                                ]
+                              ]
+                            },
+                            {
+                              "prechallenge": [
+                                "Scalar_challenge",
+                                [
+                                  753831416210890463,
+                                  -713956759483813073
+                                ]
+                              ]
+                            },
+                            {
+                              "prechallenge": [
+                                "Scalar_challenge",
+                                [
+                                  7625087501357974343,
+                                  -4202165859822194333
+                                ]
+                              ]
+                            },
+                            {
+                              "prechallenge": [
+                                "Scalar_challenge",
+                                [
+                                  -6033574794403138076,
+                                  1673672483851692351
+                                ]
+                              ]
+                            },
+                            {
+                              "prechallenge": [
+                                "Scalar_challenge",
+                                [
+                                  9178856673275651273,
+                                  -9042501452746093377
+                                ]
+                              ]
+                            },
+                            {
+                              "prechallenge": [
+                                "Scalar_challenge",
+                                [
+                                  26976717269139030,
+                                  2965273235397381099
+                                ]
+                              ]
+                            }
+                          ]
+                        ],
+                        "sg": [
+                          "0x7eed695e99250abe17e7cbac59163f563b576313c89581612e188489f30be737",
+                          "0xd2202800c90d0d5d096848420e7bb3ecbd569c1aac7633d00a1ab026aab5342d"
+                        ]
+                      },
+                      "sponge_digest_before_evaluations": [
+                        7696680311731659314,
+                        6686283050237186312,
+                        -5242045042224097141,
+                        3089759438775164500
+                      ]
+                    }
+                  }
+                },
+                "statement": {
+                  "fee_excess": [
+                    {
+                      "amount": {
+                        "magnitude": "0",
+                        "sgn": [
+                          "Pos"
+                        ]
+                      },
+                      "token": "1"
+                    },
+                    {
+                      "amount": {
+                        "magnitude": "0",
+                        "sgn": [
+                          "Pos"
+                        ]
+                      },
+                      "token": "1"
+                    }
+                  ],
+                  "next_available_token_after": "2",
+                  "next_available_token_before": "2",
+                  "pending_coinbase_stack_state": {
+                    "source": {
+                      "data": "4QPy6qjBB1rfwG47Xymasqnjd6UroBNZY4Vdz7McjPzZs3zswbqf",
+                      "state": {
+                        "curr": "4YxviphXbt8hRDwVKAqd1Fppetbg7QNdqkfmK2H8uhso81qHwcvm",
+                        "init": "4Yyx7dXrwhNKv8TgrjSQNjDWeFNinVAHL6tExomhpYUHcYSkcQba"
+                      }
+                    },
+                    "target": {
+                      "data": "4QPiqih4bQziV4K2dmVDzukfEsPbSmJzCnZhqn7srxTDEijsgQbo",
+                      "state": {
+                        "curr": "4YyCPm1AKiMQPc4A9NnWPWkWESky8ooKr8cUCWQKatxcmHAiA4t8",
+                        "init": "4Yyx7dXrwhNKv8TgrjSQNjDWeFNinVAHL6tExomhpYUHcYSkcQba"
+                      }
+                    }
+                  },
+                  "sok_digest": "��e�S|\"5\u000e���V���\u0001�g���*�U�\u0010�,S�",
+                  "source": "jxJ65Axk2ijxET2jpnMXbBBKX2pLa5gpZkzeBXEgNSg82g4eHKs",
+                  "supply_increase": "5040000000000",
+                  "target": "jwa1Lm9GuAb1yTE1JDYjzjjrm2AzZuv96asZLNmU6bGDFbDnqtm"
+                }
+              }
+            ],
+            "prover": "B62qqbkaRjwN9WtZjDcP4VffydYFFjJKf4mi3X1x4Yhfmx58wkLhckW"
+          }
+        ],
+        "internal_command_balances": [
+          [
+            "Coinbase",
+            {
+              "coinbase_receiver_balance": "89978263042471",
+              "fee_transfer_receiver_balance": "7035710000"
+            }
+          ],
+          [
+            "Fee_transfer",
+            {
+              "receiver1_balance": "89978264042471",
+              "receiver2_balance": null
+            }
+          ]
+        ]
+      },
+      null
+    ]
+  }
+}

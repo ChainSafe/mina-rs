@@ -505,7 +505,7 @@ pub type CoinBaseFeeTransferV1 = Versioned<Versioned<CoinBaseFeeTransfer, 1>, 1>
 #[auto_from(CoinBaseFeeTransfer)]
 pub struct CoinBaseFeeTransferJson {
     pub receiver_pk: PublicKeyJson,
-    pub fee: U64Json,
+    pub fee: DecimalJson,
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
