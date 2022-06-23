@@ -7,6 +7,7 @@
 
 use crate::error::ConsensusError;
 use blake2::digest::Update;
+use blake2::digest::VariableOutput;
 use blake2::Blake2bVar;
 use lockfree_object_pool::SpinLockObjectPool;
 use mina_rs_base::consensus_state::ConsensusState;
@@ -133,8 +134,9 @@ impl Chain<ProtocolState> for ProtocolStateChain {
     }
 
     fn last_vrf_hash(&self) -> Result<String, ConsensusError> {
-        use blake2::digest::VariableOutput;
-        let mut hasher = Blake2bVar::new(32).unwrap();
+        let output_size = 32; // TODO: do we need this configurable?
+        let mut hasher = Blake2bVar::new(output_size)
+            .map_err(|_| ConsensusError::InvalidBlake2bOutputSize(output_size))?;
         hasher.update(
             self.top()
                 .ok_or(ConsensusError::TopBlockNotFound)?

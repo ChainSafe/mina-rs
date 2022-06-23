@@ -238,7 +238,7 @@ mod tests {
     #[test]
     #[wasm_bindgen_test]
     // Same BlockChain length but greater last vrf output of candidate chain
-    // Chain A: https://storage.googleapis.com/mina_network_block_data/mainnet-113267-3NKtqqstB6h8SVNQCtspFisjUwCTqoQ6cC1KGvb6kx6n2dqKkiZS.json
+    // Chain A: https://storage.googleapis.com/mina_network_block_data/mainnet-113267-3NKtqqstB6h8SVNQCtspFisjUwCTqoQ6cC1KGvb6kx6n2dqKkiZS.json (non-canonical)
     // Chain B: https://storage.googleapis.com/mina_network_block_data/mainnet-113267-3NLenrog9wkiJMoA774T9VraqSUGhCuhbDLj3JKbEzomNdjr78G8.json
     // Current chain: Chain A
     // Candidate chains: [Chain B] (Greater Last VRF output)
@@ -249,6 +249,7 @@ mod tests {
         let mut consensus_state = ConsensusState::default();
         consensus_state.blockchain_length = Length(113267);
 
+        // Chain A vrf hex: "dd55ef09c0474817a64efffa7fe5a3aedd2db04a5f66e52e9630b59711f56613"
         consensus_state.last_vrf_output =
             VrfOutputTruncated::from_str("r0K80Xsb44NLx_pBjI9UQtt6a1N-RWym8VxVTY4pAAA=").unwrap();
         let mut prot_state = ProtocolState::default();
@@ -259,6 +260,7 @@ mod tests {
         let mut chain_b = ProtocolStateChain::default();
         let mut consensus_state = ConsensusState::default();
         consensus_state.blockchain_length = Length(113267);
+        // Chain B vrf hash hex: "e907e63d043c78b3dfa724b2ddc1152114fc91b983b40581b1036a8d19eb136d"
         consensus_state.last_vrf_output =
             VrfOutputTruncated::from_str("kKr83LYd7DyFupRAPh5Dh9eWM1teSEs5VjU4XId2DgA=").unwrap(); // smaller
         let mut prot_state = ProtocolState::default();
@@ -279,13 +281,14 @@ mod tests {
     #[wasm_bindgen_test]
     // Same BlockChain length but lesser last vrf output of candidate chain
     // Chain A: https://storage.googleapis.com/mina_network_block_data/mainnet-113267-3NLenrog9wkiJMoA774T9VraqSUGhCuhbDLj3JKbEzomNdjr78G8.json
-    // Chain B: https://storage.googleapis.com/mina_network_block_data/mainnet-113267-3NKtqqstB6h8SVNQCtspFisjUwCTqoQ6cC1KGvb6kx6n2dqKkiZS.json
+    // Chain B: https://storage.googleapis.com/mina_network_block_data/mainnet-113267-3NKtqqstB6h8SVNQCtspFisjUwCTqoQ6cC1KGvb6kx6n2dqKkiZS.json (non-canonical)
     // Current chain: Chain A
     // Candidate chains: [Chain B] (Lesser Last VRF output)
     fn test_longer_chain_with_same_chain_length_lesser_last_vrf_output() {
         let mut chain_a = ProtocolStateChain::default();
         let mut consensus_state = ConsensusState::default();
         consensus_state.blockchain_length = Length(113267);
+        // Chain A vrf hash hex: "e907e63d043c78b3dfa724b2ddc1152114fc91b983b40581b1036a8d19eb136d"
         consensus_state.last_vrf_output =
             VrfOutputTruncated::from_str("kKr83LYd7DyFupRAPh5Dh9eWM1teSEs5VjU4XId2DgA=").unwrap();
         let mut prot_state = ProtocolState::default();
@@ -295,6 +298,7 @@ mod tests {
         let mut chain_b = ProtocolStateChain::default();
         let mut consensus_state = ConsensusState::default();
         consensus_state.blockchain_length = Length(113267);
+        // Chain B vrf hex: "dd55ef09c0474817a64efffa7fe5a3aedd2db04a5f66e52e9630b59711f56613"
         consensus_state.last_vrf_output =
             VrfOutputTruncated::from_str("r0K80Xsb44NLx_pBjI9UQtt6a1N-RWym8VxVTY4pAAA=").unwrap();
 

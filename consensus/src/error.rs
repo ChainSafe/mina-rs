@@ -36,7 +36,11 @@ pub enum ConsensusError {
     #[error("Invalid sub window density length")]
     InvalidSubWindowDensityLen,
 
-    /// Invalid sub window density length
+    /// Blake2b digest generation failed
     #[error("Could not generate blake2b digest of last vrf output: {0}")]
     FailedVrfHashDigest(Utf8Error),
+
+    /// Invalid Blake2b output size
+    #[error("Invalid output size blake2b digest of last vrf output: {0}")]
+    InvalidBlake2bOutputSize(usize),
 }
