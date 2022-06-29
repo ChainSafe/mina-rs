@@ -85,7 +85,7 @@ where
     fn length(&self) -> usize;
     /// This function returns the hex digest of the hash of the last VRF output
     ///  of a given chain. The input is a chain C and the output is the hash digest.
-    fn last_vrf_hash(&self) -> Result<String, ConsensusError>;
+    fn last_vrf_hash_digest(&self) -> Result<String, ConsensusError>;
     /// This function returns hash of the top block's protocol state for a given chain.
     /// The input is a chain C and the output is the hash.
     fn state_hash(&self) -> Option<Fp>;
@@ -133,7 +133,7 @@ impl Chain<ProtocolState> for ProtocolStateChain {
         self.0.len()
     }
 
-    fn last_vrf_hash(&self) -> Result<String, ConsensusError> {
+    fn last_vrf_hash_digest(&self) -> Result<String, ConsensusError> {
         let output_size = 32; // TODO: do we need this configurable?
         let mut hasher = Blake2bVar::new(output_size)
             .map_err(|_| ConsensusError::InvalidBlake2bOutputSize(output_size))?;
@@ -247,7 +247,10 @@ impl Consensus for ProtocolStateChain {
             return Ok(candidate);
         } else if top_state.blockchain_length == candidate_state.blockchain_length {
             // tiebreak logic
-            match candidate.last_vrf_hash()?.cmp(&self.last_vrf_hash()?) {
+            match candidate
+                .last_vrf_hash_digest()?
+                .cmp(&self.last_vrf_hash_digest()?)
+            {
                 std::cmp::Ordering::Greater => return Ok(candidate),
                 std::cmp::Ordering::Equal => {
                     if candidate.state_hash() > self.state_hash() {
