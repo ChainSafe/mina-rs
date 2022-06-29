@@ -1,1 +1,1 @@
-initSidebarItems({"struct":[["GlobalSlot","A global slot"]]});
+window.SIDEBAR_ITEMS = {"struct":[["GlobalSlot","A global slot"]]};

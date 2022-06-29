@@ -1,1 +1,1 @@
-initSidebarItems({"struct":[["EpochData","Epoch data"],["EpochLedger","Epoch Ledger"]]});
+window.SIDEBAR_ITEMS = {"struct":[["EpochData","Epoch data"],["EpochLedger","Epoch Ledger"]]};

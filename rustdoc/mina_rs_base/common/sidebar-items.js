@@ -1,1 +1,1 @@
-initSidebarItems({"struct":[["ByteVec","Wrapper of Vec"]]});
+window.SIDEBAR_ITEMS = {"struct":[["ByteVec","Wrapper of Vec"]]};

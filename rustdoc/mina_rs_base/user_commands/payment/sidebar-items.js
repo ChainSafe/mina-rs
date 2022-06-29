@@ -1,1 +1,1 @@
-initSidebarItems({"struct":[["PaymentPayload","The data specific to payload commands"]]});
+window.SIDEBAR_ITEMS = {"struct":[["PaymentPayload","The data specific to payload commands"]]};

@@ -1,1 +1,1 @@
-initSidebarItems({"struct":[["ProtocolStateBody","Body of the protocol state"],["ProtocolStateBodyJson","Body of the protocol state (json)"]],"type":[["ProtocolStateBodyV1","Body of the protocol state (v1)"]]});
+window.SIDEBAR_ITEMS = {"struct":[["ProtocolStateBody","Body of the protocol state"],["ProtocolStateBodyJson","Body of the protocol state (json)"]],"type":[["ProtocolStateBodyV1","Body of the protocol state (v1)"]]};

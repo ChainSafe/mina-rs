@@ -1,1 +1,1 @@
-initSidebarItems({"struct":[["EpochData","Epoch data"],["EpochDataJson","Epoch data (json)"],["EpochLedger","Epoch Ledger"],["EpochLedgerJson","Epoch Ledger (json)"]],"type":[["EpochDataV1","Epoch data (v1)"],["EpochLedgerV1","Epoch Ledger (v1)"]]});
+window.SIDEBAR_ITEMS = {"struct":[["EpochData","Epoch data"],["EpochDataJson","Epoch data (json)"],["EpochLedger","Epoch Ledger"],["EpochLedgerJson","Epoch Ledger (json)"]],"type":[["EpochDataV1","Epoch data (v1)"],["EpochLedgerV1","Epoch Ledger (v1)"]]};

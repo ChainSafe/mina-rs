@@ -1,1 +1,1 @@
-initSidebarItems({"fn":[["deserialize","Deserializer for variable length natural integer"],["serialize","Serializer for variable length natural integer"]]});
+window.SIDEBAR_ITEMS = {"fn":[["deserialize","Deserializer for variable length natural integer"],["serialize","Serializer for variable length natural integer"]]};

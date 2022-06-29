@@ -1,1 +1,1 @@
-initSidebarItems({"enum":[["OneORTwo",""],["SgnType",""]],"struct":[["FeeExcess",""],["FeeExcessPair",""],["PendingCoinbase",""],["PendingCoinbaseStackState",""],["Signed",""],["StateStack",""],["Statement",""],["TransactionSnark",""],["TransactionSnarkWork",""]]});
+window.SIDEBAR_ITEMS = {"enum":[["OneORTwo",""],["SgnType",""]],"struct":[["FeeExcess",""],["FeeExcessPair",""],["PendingCoinbase",""],["PendingCoinbaseStackState",""],["Signed",""],["StateStack",""],["Statement",""],["TransactionSnark",""],["TransactionSnarkWork",""]]};

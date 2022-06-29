@@ -1,1 +1,1 @@
-initSidebarItems({"enum":[["ConsensusError","Type that represents errors in mina consensus operations"]]});
+window.SIDEBAR_ITEMS = {"enum":[["ConsensusError","Type that represents errors in mina consensus operations"]]};

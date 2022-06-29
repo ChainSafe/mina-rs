@@ -1,1 +1,1 @@
-initSidebarItems({"struct":[["ProtocolVersion","Defines a version of the Mina protocol in semver format"]]});
+window.SIDEBAR_ITEMS = {"struct":[["ProtocolVersion","Defines a version of the Mina protocol in semver format"]]};

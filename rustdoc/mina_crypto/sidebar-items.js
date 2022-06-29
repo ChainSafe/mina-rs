@@ -1,1 +1,1 @@
-initSidebarItems({"macro":[["impl_from_for_hash",""]],"mod":[["hash",""],["hex",""],["prelude",""]]});
+window.SIDEBAR_ITEMS = {"macro":[["impl_from_for_hash",""]],"mod":[["hash",""],["hex",""],["prelude",""]]};

@@ -1,1 +1,1 @@
-initSidebarItems({"struct":[["ProofMessageWithDegreeBound",""],["ProofMessageWithoutDegreeBoundList",""],["ProofMessages",""]]});
+window.SIDEBAR_ITEMS = {"struct":[["ProofMessageWithDegreeBound",""],["ProofMessageWithoutDegreeBoundList",""],["ProofMessages",""]]};
