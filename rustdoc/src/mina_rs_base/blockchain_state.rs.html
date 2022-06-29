@@ -70,9 +70,9 @@
     <span class="doccomment">/// Hash of the proposed next state of the blockchain</span>
     <span class="kw">pub</span> <span class="ident">staged_ledger_hash</span>: <span class="ident">StagedLedgerHash</span>,
     <span class="doccomment">/// Hash of the most recently proven state of the blockchain</span>
-    <span class="kw">pub</span> <span class="ident">snarked_ledger_hash</span>: <span class="ident">SnarkedLedgerHash</span>,
+    <span class="kw">pub</span> <span class="ident">snarked_ledger_hash</span>: <span class="ident">LedgerHash</span>,
     <span class="doccomment">/// Hash of the genesis state</span>
-    <span class="kw">pub</span> <span class="ident">genesis_ledger_hash</span>: <span class="ident">SnarkedLedgerHash</span>,
+    <span class="kw">pub</span> <span class="ident">genesis_ledger_hash</span>: <span class="ident">LedgerHash</span>,
     <span class="doccomment">/// Check whether the change of the next token ID is consistent.</span>
     <span class="kw">pub</span> <span class="ident">snarked_next_available_token</span>: <span class="ident">TokenId</span>,
     <span class="doccomment">/// Timestamps for blocks</span>

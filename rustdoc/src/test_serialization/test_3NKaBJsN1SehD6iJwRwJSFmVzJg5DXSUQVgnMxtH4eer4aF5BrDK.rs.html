@@ -417,11 +417,11 @@
             <span class="string">&quot;2mzpdUi5ddLicLGUns4iYFiNahL5B5cPkTUot83v2moNtr4mzRYf&quot;</span>
         );
         <span class="macro">assert_eq!</span>(
-            <span class="kw-2">&amp;</span><span class="ident">SnarkedLedgerHash::from</span>(<span class="ident">blockchain_state</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">snarked_ledger_hash</span>.<span class="ident">clone</span>()).<span class="ident">to_string</span>(),
+            <span class="kw-2">&amp;</span><span class="ident">LedgerHash::from</span>(<span class="ident">blockchain_state</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">snarked_ledger_hash</span>.<span class="ident">clone</span>()).<span class="ident">to_string</span>(),
             <span class="string">&quot;jxkQm8ge9sYPwPyUYUMZ6wr7SQ6Pit5szbRvPmEzYKQQZAnACyC&quot;</span>
         );
         <span class="macro">assert_eq!</span>(
-            <span class="kw-2">&amp;</span><span class="ident">SnarkedLedgerHash::from</span>(<span class="ident">blockchain_state</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">genesis_ledger_hash</span>.<span class="ident">clone</span>()).<span class="ident">to_string</span>(),
+            <span class="kw-2">&amp;</span><span class="ident">LedgerHash::from</span>(<span class="ident">blockchain_state</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">genesis_ledger_hash</span>.<span class="ident">clone</span>()).<span class="ident">to_string</span>(),
             <span class="string">&quot;jx7buQVWFLsXTtzRgSxbYcT8EYLS8KCZbLrfDcJxMtyy4thw2Ee&quot;</span>
         );
         <span class="macro">assert_eq!</span>(<span class="ident">blockchain_state</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">snarked_next_available_token</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">t</span>, <span class="number">2</span>);

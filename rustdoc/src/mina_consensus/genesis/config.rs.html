@@ -636,11 +636,11 @@
         <span class="kw">let</span> <span class="ident">blockchain_state</span> <span class="op">=</span> <span class="ident">BlockchainState</span> {
             <span class="ident">timestamp</span>: <span class="ident">BlockTime::from_unix_epoch</span>(<span class="number">1615939200</span>),
             <span class="ident">snarked_next_available_token</span>: <span class="ident">TokenId</span>(<span class="number">2</span>),
-            <span class="ident">snarked_ledger_hash</span>: <span class="ident">SnarkedLedgerHash::from_str</span>(
+            <span class="ident">snarked_ledger_hash</span>: <span class="ident">LedgerHash::from_str</span>(
                 <span class="string">&quot;jx7buQVWFLsXTtzRgSxbYcT8EYLS8KCZbLrfDcJxMtyy4thw2Ee&quot;</span>,
             )
             .<span class="ident">expect</span>(<span class="ident">ERR_FAIL_TO_DECODE_B58</span>),
-            <span class="ident">genesis_ledger_hash</span>: <span class="ident">SnarkedLedgerHash::from_str</span>(
+            <span class="ident">genesis_ledger_hash</span>: <span class="ident">LedgerHash::from_str</span>(
                 <span class="string">&quot;jx7buQVWFLsXTtzRgSxbYcT8EYLS8KCZbLrfDcJxMtyy4thw2Ee&quot;</span>,
             )
             .<span class="ident">expect</span>(<span class="ident">ERR_FAIL_TO_DECODE_B58</span>),
