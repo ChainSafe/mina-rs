@@ -69,7 +69,10 @@ mod tests {
     use crate::*;
 
     use ark_ff::*;
+    use mina_consensus::genesis::Genesis;
+    use mina_crypto::hash::*;
     use mina_merkle::*;
+    use mina_rs_base::types::ExternalTransition;
     use proof_systems::mina_hasher::Fp;
     use rocksdb::*;
 
@@ -104,7 +107,17 @@ mod tests {
         let mut merkle_ledger = genesis_ledger.to_mina_merkle_ledger();
         assert!(expected_root_hash.is_some());
         assert_eq!(merkle_ledger.height(), expected_root_height as u32);
-
+        let ledger_hash: LedgerHash = expected_root_hash.unwrap().into();
+        let genesis_block =
+            ExternalTransition::from_genesis_config(&mina_consensus::genesis::MAINNET_CONFIG);
+        assert_eq!(
+            ledger_hash,
+            genesis_block
+                .protocol_state
+                .body
+                .blockchain_state
+                .genesis_ledger_hash
+        );
         // TODO: Change this to assert_eq! when Hashable is completely implemented for Account
         assert_ne!(merkle_ledger.root(), expected_root_hash);
         assert_eq!(accounts.len(), expected_account_hashes.len());

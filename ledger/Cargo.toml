@@ -19,6 +19,7 @@ thiserror = "1"
 rocksdb = "0.18.0"
 
 [dev-dependencies]
+mina-consensus = {path = "../consensus"}
 proof-systems = {path = "../proof-systems-shim"}
 
 ark-ff = "0.3"

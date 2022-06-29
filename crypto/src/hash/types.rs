@@ -13,7 +13,10 @@
 use super::prefixes::*;
 use crate::hash::Hash;
 use mina_serialization_types::{impl_strconv_via_json, json::*, v1::*};
-use proof_systems::mina_hasher::{Hashable, ROInput};
+use proof_systems::{
+    mina_hasher::{Fp, Hashable, ROInput},
+    o1_utils::{field_helpers::FieldHelpersError, FieldHelpers},
+};
 use versioned::*;
 
 #[derive(Clone, Debug, Default, PartialEq, derive_more::From, derive_more::Into)]
@@ -46,6 +49,21 @@ impl<'a> From<&'a [u8]> for BaseHash {
         let mut o = BaseHash::default();
         o.0.copy_from_slice(b);
         o
+    }
+}
+
+impl From<Fp> for BaseHash {
+    fn from(i: Fp) -> Self {
+        let bytes = i.to_bytes();
+        bytes.as_slice().into()
+    }
+}
+
+impl TryFrom<BaseHash> for Fp {
+    type Error = FieldHelpersError;
+
+    fn try_from(i: BaseHash) -> Result<Self, Self::Error> {
+        Fp::from_bytes(i.0.as_slice())
     }
 }
 
@@ -104,6 +122,21 @@ pub struct LedgerHash(BaseHash);
 impl_from_for_hash!(LedgerHash, HashV1);
 impl_from_for_generic_with_proxy!(LedgerHash, HashV1, LedgerHashV1Json);
 impl_strconv_via_json!(LedgerHash, LedgerHashV1Json);
+
+impl From<Fp> for LedgerHash {
+    fn from(i: Fp) -> Self {
+        let base: BaseHash = i.into();
+        base.into()
+    }
+}
+
+impl TryFrom<LedgerHash> for Fp {
+    type Error = FieldHelpersError;
+
+    fn try_from(i: LedgerHash) -> Result<Self, Self::Error> {
+        i.0.try_into()
+    }
+}
 
 impl Hashable for LedgerHash {
     type D = ();
@@ -177,29 +210,6 @@ impl Hashable for EpochSeed {
 
 impl Hash for EpochSeed {
     const PREFIX: &'static HashPrefix = EPOCH_SEED;
-}
-
-//////////////////////////////////////////////////////////////////////////
-
-#[derive(Clone, Default, Debug, PartialEq, derive_more::From, derive_more::Into)]
-pub struct SnarkedLedgerHash(BaseHash);
-
-impl_from_for_hash!(SnarkedLedgerHash, HashV1);
-impl_from_for_generic_with_proxy!(SnarkedLedgerHash, HashV1, LedgerHashV1Json);
-impl_strconv_via_json!(SnarkedLedgerHash, LedgerHashV1Json);
-
-impl Hashable for SnarkedLedgerHash {
-    type D = ();
-
-    fn to_roinput(&self) -> ROInput {
-        let mut roi = ROInput::new();
-        roi.append_hashable(&self.0);
-        roi
-    }
-
-    fn domain_string(_: Self::D) -> Option<String> {
-        None
-    }
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -378,7 +388,7 @@ pub mod test {
     #[test]
     fn snarked_ledger_hash_from_base58() {
         let s = "jx7buQVWFLsXTtzRgSxbYcT8EYLS8KCZbLrfDcJxMtyy4thw2Ee";
-        let h = SnarkedLedgerHash::from_str(s).unwrap();
+        let h = LedgerHash::from_str(s).unwrap();
         assert_eq!(&h.to_string(), s);
     }
 
@@ -387,7 +397,7 @@ pub mod test {
         let s = "jx7buQVWFLsXTtzRgSxbYcT8EYLS8KCZbLrfDcJxMtyy4thw2Ee";
         let s_json = format!("\"{s}\"");
         let json: LedgerHashV1Json = serde_json::from_str(&s_json)?;
-        let h: SnarkedLedgerHash = json.into();
+        let h: LedgerHash = json.into();
         assert_eq!(&h.to_string(), s);
         let json: LedgerHashV1Json = h.into();
         assert_eq!(serde_json::to_string(&json)?, s_json);
