@@ -6,17 +6,19 @@
 //!
 
 use crate::error::ConsensusError;
+use blake2::digest::Update;
+use blake2::digest::VariableOutput;
+use blake2::Blake2bVar;
 use lockfree_object_pool::SpinLockObjectPool;
 use mina_rs_base::consensus_state::ConsensusState;
-use mina_rs_base::consensus_state::VrfOutputTruncated;
 use mina_rs_base::global_slot::GlobalSlot;
 use mina_rs_base::protocol_state::{Header, ProtocolState};
 use mina_rs_base::types::{BlockTime, Length};
 use once_cell::sync::OnceCell;
 use proof_systems::mina_hasher::{create_kimchi, Fp, Hasher, PoseidonHasherKimchi};
 
-/// Type that defines constant values for mina consensus calculation
 // TODO: derive from protocol constants
+/// Constants used for the conensus
 pub struct ConsensusConstants {
     /// Point of finality (number of confirmations)
     pub k: Length,
@@ -55,7 +57,7 @@ impl ConsensusConstants {
 }
 
 /// A chain of [ProtocolState]
-#[derive(Debug, Clone, Default)]
+#[derive(Debug, Default, PartialEq, Clone)]
 // TODO: replace vec element with ExternalTransition
 pub struct ProtocolStateChain(pub Vec<ProtocolState>);
 
@@ -83,7 +85,7 @@ where
     fn length(&self) -> usize;
     /// This function returns the hex digest of the hash of the last VRF output
     ///  of a given chain. The input is a chain C and the output is the hash digest.
-    fn last_vrf_hash(&self) -> Option<Fp>;
+    fn last_vrf_hash_digest(&self) -> Result<String, ConsensusError>;
     /// This function returns hash of the top block's protocol state for a given chain.
     /// The input is a chain C and the output is the hash.
     fn state_hash(&self) -> Option<Fp>;
@@ -131,14 +133,21 @@ impl Chain<ProtocolState> for ProtocolStateChain {
         self.0.len()
     }
 
-    fn last_vrf_hash(&self) -> Option<Fp> {
-        static HASHER_POOL: OnceCell<SpinLockObjectPool<PoseidonHasherKimchi<VrfOutputTruncated>>> =
-            OnceCell::new();
-        let pool =
-            HASHER_POOL.get_or_init(|| SpinLockObjectPool::new(|| create_kimchi(()), |_| ()));
-        let mut hasher = pool.pull();
-        self.top()
-            .map(|s| hasher.hash(&s.body.consensus_state.last_vrf_output))
+    fn last_vrf_hash_digest(&self) -> Result<String, ConsensusError> {
+        let output_size = 32; // TODO: do we need this configurable?
+        let mut hasher = Blake2bVar::new(output_size)
+            .map_err(|_| ConsensusError::InvalidBlake2bOutputSize(output_size))?;
+        hasher.update(
+            self.top()
+                .ok_or(ConsensusError::TopBlockNotFound)?
+                .body
+                .consensus_state
+                .last_vrf_output
+                .0
+                .as_slice(),
+        );
+        let hash = hasher.finalize_boxed();
+        Ok(hex::encode(hash))
     }
 
     fn state_hash(&self) -> Option<Fp> {
@@ -191,6 +200,26 @@ impl Consensus for ProtocolStateChain {
                 // short-range fork, select longer chain
                 self.select_longer_chain(candidate)
             } else {
+                // check against sub window density sizes > 11
+                let candidate_state = candidate
+                    .consensus_state()
+                    .ok_or(ConsensusError::ConsensusStateNotFound)?;
+
+                // sub window density must not be greater than initial genesis subwindow density value.
+                if candidate_state
+                    .sub_window_densities()
+                    .iter()
+                    .any(|s| *s > self.config().slots_per_sub_window.0)
+                {
+                    return Ok(self);
+                };
+
+                // sub window densities must not be greater than sub_windows_per_window
+                let sub_windows_per_window = self.config().sub_windows_per_window.0 as usize;
+                if candidate_state.sub_window_densities.len() != sub_windows_per_window {
+                    return Ok(self);
+                }
+
                 let tip_density = self.relative_min_window_density(candidate)?;
                 let candidate_density = candidate.relative_min_window_density(self)?;
                 match candidate_density.cmp(&tip_density) {
@@ -218,7 +247,10 @@ impl Consensus for ProtocolStateChain {
             return Ok(candidate);
         } else if top_state.blockchain_length == candidate_state.blockchain_length {
             // tiebreak logic
-            match candidate.last_vrf_hash().cmp(&self.last_vrf_hash()) {
+            match candidate
+                .last_vrf_hash_digest()?
+                .cmp(&self.last_vrf_hash_digest()?)
+            {
                 std::cmp::Ordering::Greater => return Ok(candidate),
                 std::cmp::Ordering::Equal => {
                     if candidate.state_hash() > self.state_hash() {
@@ -316,7 +348,10 @@ impl Consensus for ProtocolStateChain {
             // ring shift
             while shift_count > 0 {
                 rel_sub_window = (rel_sub_window + 1) % self.config().sub_windows_per_window.0;
-                projected_window[rel_sub_window as usize] = Length(0);
+                match projected_window.get_mut(rel_sub_window as usize) {
+                    Some(density) => *density = Length(0),
+                    None => return Err(ConsensusError::CandidatesMissingSubWindowDensities),
+                };
                 shift_count -= 1;
             }
 

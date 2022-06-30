@@ -5,6 +5,8 @@
 //! Types that represent errors in mina consensus operations
 //!
 
+use std::str::Utf8Error;
+
 /// Type that represents errors in mina consensus operations
 #[derive(thiserror::Error, Debug, PartialEq)]
 pub enum ConsensusError {
@@ -27,4 +29,18 @@ pub enum ConsensusError {
     /// candidates not found
     #[error("candidates not found")]
     CandidatesNotFound,
+    /// Candidates missing some sub window densities
+    #[error("Candidates missing some sub window densities")]
+    CandidatesMissingSubWindowDensities,
+    /// Invalid sub window density length
+    #[error("Invalid sub window density length")]
+    InvalidSubWindowDensityLen,
+
+    /// Blake2b digest generation failed
+    #[error("Could not generate blake2b digest of last vrf output: {0}")]
+    FailedVrfHashDigest(Utf8Error),
+
+    /// Invalid Blake2b output size
+    #[error("Invalid output size blake2b digest of last vrf output: {0}")]
+    InvalidBlake2bOutputSize(usize),
 }
