@@ -128,6 +128,8 @@
 <span id="122">122</span>
 <span id="123">123</span>
 <span id="124">124</span>
+<span id="125">125</span>
+<span id="126">126</span>
 </pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems</span>
 <span class="comment">// SPDX-License-Identifier: Apache-2.0</span>
 
@@ -146,7 +148,9 @@
 <span class="kw">use</span> <span class="ident">versioned</span>::<span class="kw-2">*</span>;
 
 <span class="doccomment">/// Wrapper struct for the output for a VRF</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Default</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>, <span class="ident">derive_more::From</span>, <span class="ident">derive_more::Into</span>, <span class="ident">AutoFrom</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(
+    <span class="ident">Clone</span>, <span class="ident">Default</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>, <span class="ident">derive_more::From</span>, <span class="ident">derive_more::Into</span>, <span class="ident">AutoFrom</span>, <span class="ident">PartialOrd</span>,
+)]</span>
 <span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">mina_serialization_types::consensus_state::VrfOutputTruncated</span>)]</span>
 <span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">mina_serialization_types::consensus_state::VrfOutputTruncatedJson</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">VrfOutputTruncated</span>(<span class="kw">pub</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>);
@@ -253,5 +257,5 @@
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_rs_base" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (830880640 2022-06-28)" ></div>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_rs_base" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (ddcbba036 2022-06-29)" ></div>
 </body></html>

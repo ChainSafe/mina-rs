@@ -339,6 +339,41 @@
 <span id="333">333</span>
 <span id="334">334</span>
 <span id="335">335</span>
+<span id="336">336</span>
+<span id="337">337</span>
+<span id="338">338</span>
+<span id="339">339</span>
+<span id="340">340</span>
+<span id="341">341</span>
+<span id="342">342</span>
+<span id="343">343</span>
+<span id="344">344</span>
+<span id="345">345</span>
+<span id="346">346</span>
+<span id="347">347</span>
+<span id="348">348</span>
+<span id="349">349</span>
+<span id="350">350</span>
+<span id="351">351</span>
+<span id="352">352</span>
+<span id="353">353</span>
+<span id="354">354</span>
+<span id="355">355</span>
+<span id="356">356</span>
+<span id="357">357</span>
+<span id="358">358</span>
+<span id="359">359</span>
+<span id="360">360</span>
+<span id="361">361</span>
+<span id="362">362</span>
+<span id="363">363</span>
+<span id="364">364</span>
+<span id="365">365</span>
+<span id="366">366</span>
+<span id="367">367</span>
+<span id="368">368</span>
+<span id="369">369</span>
+<span id="370">370</span>
 </pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems</span>
 <span class="comment">// SPDX-License-Identifier: Apache-2.0</span>
 
@@ -347,17 +382,19 @@
 <span class="doccomment">//!</span>
 
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::error::ConsensusError</span>;
+<span class="kw">use</span> <span class="ident">blake2::digest::Update</span>;
+<span class="kw">use</span> <span class="ident">blake2::digest::VariableOutput</span>;
+<span class="kw">use</span> <span class="ident">blake2::Blake2bVar</span>;
 <span class="kw">use</span> <span class="ident">lockfree_object_pool::SpinLockObjectPool</span>;
 <span class="kw">use</span> <span class="ident">mina_rs_base::consensus_state::ConsensusState</span>;
-<span class="kw">use</span> <span class="ident">mina_rs_base::consensus_state::VrfOutputTruncated</span>;
 <span class="kw">use</span> <span class="ident">mina_rs_base::global_slot::GlobalSlot</span>;
 <span class="kw">use</span> <span class="ident">mina_rs_base::protocol_state</span>::{<span class="ident">Header</span>, <span class="ident">ProtocolState</span>};
 <span class="kw">use</span> <span class="ident">mina_rs_base::types</span>::{<span class="ident">BlockTime</span>, <span class="ident">Length</span>};
 <span class="kw">use</span> <span class="ident">once_cell::sync::OnceCell</span>;
 <span class="kw">use</span> <span class="ident">proof_systems::mina_hasher</span>::{<span class="ident">create_kimchi</span>, <span class="ident">Fp</span>, <span class="ident">Hasher</span>, <span class="ident">PoseidonHasherKimchi</span>};
 
-<span class="doccomment">/// Type that defines constant values for mina consensus calculation</span>
 <span class="comment">// TODO: derive from protocol constants</span>
+<span class="doccomment">/// Constants used for the conensus</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ConsensusConstants</span> {
     <span class="doccomment">/// Point of finality (number of confirmations)</span>
     <span class="kw">pub</span> <span class="ident">k</span>: <span class="ident">Length</span>,
@@ -396,7 +433,7 @@
 }
 
 <span class="doccomment">/// A chain of [ProtocolState]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">Default</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Default</span>, <span class="ident">PartialEq</span>, <span class="ident">Clone</span>)]</span>
 <span class="comment">// TODO: replace vec element with ExternalTransition</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ProtocolStateChain</span>(<span class="kw">pub</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">ProtocolState</span><span class="op">&gt;</span>);
 
@@ -424,7 +461,7 @@
     <span class="kw">fn</span> <span class="ident">length</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">usize</span>;
     <span class="doccomment">/// This function returns the hex digest of the hash of the last VRF output</span>
     <span class="doccomment">///  of a given chain. The input is a chain C and the output is the hash digest.</span>
-    <span class="kw">fn</span> <span class="ident">last_vrf_hash</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Fp</span><span class="op">&gt;</span>;
+    <span class="kw">fn</span> <span class="ident">last_vrf_hash_digest</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">ConsensusError</span><span class="op">&gt;</span>;
     <span class="doccomment">/// This function returns hash of the top block&#39;s protocol state for a given chain.</span>
     <span class="doccomment">/// The input is a chain C and the output is the hash.</span>
     <span class="kw">fn</span> <span class="ident">state_hash</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Fp</span><span class="op">&gt;</span>;
@@ -472,14 +509,21 @@
         <span class="self">self</span>.<span class="number">0</span>.<span class="ident">len</span>()
     }
 
-    <span class="kw">fn</span> <span class="ident">last_vrf_hash</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Fp</span><span class="op">&gt;</span> {
-        <span class="kw">static</span> <span class="ident">HASHER_POOL</span>: <span class="ident">OnceCell</span><span class="op">&lt;</span><span class="ident">SpinLockObjectPool</span><span class="op">&lt;</span><span class="ident">PoseidonHasherKimchi</span><span class="op">&lt;</span><span class="ident">VrfOutputTruncated</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="op">=</span>
-            <span class="ident">OnceCell::new</span>();
-        <span class="kw">let</span> <span class="ident">pool</span> <span class="op">=</span>
-            <span class="ident">HASHER_POOL</span>.<span class="ident">get_or_init</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">SpinLockObjectPool::new</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">create_kimchi</span>(()), <span class="op">|</span><span class="kw">_</span><span class="op">|</span> ()));
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">hasher</span> <span class="op">=</span> <span class="ident">pool</span>.<span class="ident">pull</span>();
-        <span class="self">self</span>.<span class="ident">top</span>()
-            .<span class="ident">map</span>(<span class="op">|</span><span class="ident">s</span><span class="op">|</span> <span class="ident">hasher</span>.<span class="ident">hash</span>(<span class="kw-2">&amp;</span><span class="ident">s</span>.<span class="ident">body</span>.<span class="ident">consensus_state</span>.<span class="ident">last_vrf_output</span>))
+    <span class="kw">fn</span> <span class="ident">last_vrf_hash_digest</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">ConsensusError</span><span class="op">&gt;</span> {
+        <span class="kw">let</span> <span class="ident">output_size</span> <span class="op">=</span> <span class="number">32</span>; <span class="comment">// TODO: do we need this configurable?</span>
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">hasher</span> <span class="op">=</span> <span class="ident">Blake2bVar::new</span>(<span class="ident">output_size</span>)
+            .<span class="ident">map_err</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="ident">ConsensusError::InvalidBlake2bOutputSize</span>(<span class="ident">output_size</span>))<span class="question-mark">?</span>;
+        <span class="ident">hasher</span>.<span class="ident">update</span>(
+            <span class="self">self</span>.<span class="ident">top</span>()
+                .<span class="ident">ok_or</span>(<span class="ident">ConsensusError::TopBlockNotFound</span>)<span class="question-mark">?</span>
+                .<span class="ident">body</span>
+                .<span class="ident">consensus_state</span>
+                .<span class="ident">last_vrf_output</span>
+                .<span class="number">0</span>
+                .<span class="ident">as_slice</span>(),
+        );
+        <span class="kw">let</span> <span class="ident">hash</span> <span class="op">=</span> <span class="ident">hasher</span>.<span class="ident">finalize_boxed</span>();
+        <span class="prelude-val">Ok</span>(<span class="ident">hex::encode</span>(<span class="ident">hash</span>))
     }
 
     <span class="kw">fn</span> <span class="ident">state_hash</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Fp</span><span class="op">&gt;</span> {
@@ -532,6 +576,26 @@
                 <span class="comment">// short-range fork, select longer chain</span>
                 <span class="self">self</span>.<span class="ident">select_longer_chain</span>(<span class="ident">candidate</span>)
             } <span class="kw">else</span> {
+                <span class="comment">// check against sub window density sizes &gt; 11</span>
+                <span class="kw">let</span> <span class="ident">candidate_state</span> <span class="op">=</span> <span class="ident">candidate</span>
+                    .<span class="ident">consensus_state</span>()
+                    .<span class="ident">ok_or</span>(<span class="ident">ConsensusError::ConsensusStateNotFound</span>)<span class="question-mark">?</span>;
+
+                <span class="comment">// sub window density must not be greater than initial genesis subwindow density value.</span>
+                <span class="kw">if</span> <span class="ident">candidate_state</span>
+                    .<span class="ident">sub_window_densities</span>()
+                    .<span class="ident">iter</span>()
+                    .<span class="ident">any</span>(<span class="op">|</span><span class="ident">s</span><span class="op">|</span> <span class="kw-2">*</span><span class="ident">s</span> <span class="op">&gt;</span> <span class="self">self</span>.<span class="ident">config</span>().<span class="ident">slots_per_sub_window</span>.<span class="number">0</span>)
+                {
+                    <span class="kw">return</span> <span class="prelude-val">Ok</span>(<span class="self">self</span>);
+                };
+
+                <span class="comment">// sub window densities must not be greater than sub_windows_per_window</span>
+                <span class="kw">let</span> <span class="ident">sub_windows_per_window</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">config</span>().<span class="ident">sub_windows_per_window</span>.<span class="number">0</span> <span class="kw">as</span> <span class="ident">usize</span>;
+                <span class="kw">if</span> <span class="ident">candidate_state</span>.<span class="ident">sub_window_densities</span>.<span class="ident">len</span>() <span class="op">!</span><span class="op">=</span> <span class="ident">sub_windows_per_window</span> {
+                    <span class="kw">return</span> <span class="prelude-val">Ok</span>(<span class="self">self</span>);
+                }
+
                 <span class="kw">let</span> <span class="ident">tip_density</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">relative_min_window_density</span>(<span class="ident">candidate</span>)<span class="question-mark">?</span>;
                 <span class="kw">let</span> <span class="ident">candidate_density</span> <span class="op">=</span> <span class="ident">candidate</span>.<span class="ident">relative_min_window_density</span>(<span class="self">self</span>)<span class="question-mark">?</span>;
                 <span class="kw">match</span> <span class="ident">candidate_density</span>.<span class="ident">cmp</span>(<span class="kw-2">&amp;</span><span class="ident">tip_density</span>) {
@@ -559,7 +623,10 @@
             <span class="kw">return</span> <span class="prelude-val">Ok</span>(<span class="ident">candidate</span>);
         } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">top_state</span>.<span class="ident">blockchain_length</span> <span class="op">==</span> <span class="ident">candidate_state</span>.<span class="ident">blockchain_length</span> {
             <span class="comment">// tiebreak logic</span>
-            <span class="kw">match</span> <span class="ident">candidate</span>.<span class="ident">last_vrf_hash</span>().<span class="ident">cmp</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">last_vrf_hash</span>()) {
+            <span class="kw">match</span> <span class="ident">candidate</span>
+                .<span class="ident">last_vrf_hash_digest</span>()<span class="question-mark">?</span>
+                .<span class="ident">cmp</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">last_vrf_hash_digest</span>()<span class="question-mark">?</span>)
+            {
                 <span class="ident">std::cmp::Ordering::Greater</span> =&gt; <span class="kw">return</span> <span class="prelude-val">Ok</span>(<span class="ident">candidate</span>),
                 <span class="ident">std::cmp::Ordering::Equal</span> =&gt; {
                     <span class="kw">if</span> <span class="ident">candidate</span>.<span class="ident">state_hash</span>() <span class="op">&gt;</span> <span class="self">self</span>.<span class="ident">state_hash</span>() {
@@ -657,7 +724,10 @@
             <span class="comment">// ring shift</span>
             <span class="kw">while</span> <span class="ident">shift_count</span> <span class="op">&gt;</span> <span class="number">0</span> {
                 <span class="ident">rel_sub_window</span> <span class="op">=</span> (<span class="ident">rel_sub_window</span> <span class="op">+</span> <span class="number">1</span>) <span class="op">%</span> <span class="self">self</span>.<span class="ident">config</span>().<span class="ident">sub_windows_per_window</span>.<span class="number">0</span>;
-                <span class="ident">projected_window</span>[<span class="ident">rel_sub_window</span> <span class="kw">as</span> <span class="ident">usize</span>] <span class="op">=</span> <span class="ident">Length</span>(<span class="number">0</span>);
+                <span class="kw">match</span> <span class="ident">projected_window</span>.<span class="ident">get_mut</span>(<span class="ident">rel_sub_window</span> <span class="kw">as</span> <span class="ident">usize</span>) {
+                    <span class="prelude-val">Some</span>(<span class="ident">density</span>) =&gt; <span class="kw-2">*</span><span class="ident">density</span> <span class="op">=</span> <span class="ident">Length</span>(<span class="number">0</span>),
+                    <span class="prelude-val">None</span> =&gt; <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">ConsensusError::CandidatesMissingSubWindowDensities</span>),
+                };
                 <span class="ident">shift_count</span> <span class="op">-</span><span class="op">=</span> <span class="number">1</span>;
             }
 
@@ -675,5 +745,5 @@
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_consensus" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (830880640 2022-06-28)" ></div>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_consensus" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (ddcbba036 2022-06-29)" ></div>
 </body></html>
