@@ -223,26 +223,22 @@ mod tests {
     // Candidate chains: https://storage.googleapis.com/mina_network_block_data/mainnet-113267-3NLenrog9wkiJMoA774T9VraqSUGhCuhbDLj3JKbEzomNdjr78G8.json
     fn test_longer_chain_with_same_chain_length_greater_last_vrf_output() {
         // Init current chain
-        let mut current_chain = ProtocolStateChain::default();
-        let mut consensus_state = ConsensusState::default();
-        consensus_state.blockchain_length = Length(113267);
         // current chain vrf hex: "dd55ef09c0474817a64efffa7fe5a3aedd2db04a5f66e52e9630b59711f56613"
-        consensus_state.last_vrf_output =
-            VrfOutputTruncated::from_str("r0K80Xsb44NLx_pBjI9UQtt6a1N-RWym8VxVTY4pAAA=").unwrap();
-        let mut prot_state = ProtocolState::default();
-        prot_state.body.consensus_state = consensus_state;
-        current_chain.push(prot_state).unwrap();
+        let block_from_json: ExternalTransition = read_block_json(
+            "mainnet-113267-3NKtqqstB6h8SVNQCtspFisjUwCTqoQ6cC1KGvb6kx6n2dqKkiZS.json",
+        );
+        let mut current_chain = ProtocolStateChain::default();
+        current_chain.push(block_from_json.protocol_state).unwrap();
 
-        // Init candidate chain
-        let mut candidate_chain = ProtocolStateChain::default();
-        let mut consensus_state = ConsensusState::default();
-        consensus_state.blockchain_length = Length(113267);
+        // Init candidate chain from JSON
         // candidate chain vrf hash hex: "e907e63d043c78b3dfa724b2ddc1152114fc91b983b40581b1036a8d19eb136d"
-        consensus_state.last_vrf_output =
-            VrfOutputTruncated::from_str("kKr83LYd7DyFupRAPh5Dh9eWM1teSEs5VjU4XId2DgA=").unwrap(); // Greater Last VRF
-        let mut prot_state = ProtocolState::default();
-        prot_state.body.consensus_state = consensus_state;
-        candidate_chain.push(prot_state).unwrap();
+        let block_from_json: ExternalTransition = read_block_json(
+            "mainnet-113267-3NLenrog9wkiJMoA774T9VraqSUGhCuhbDLj3JKbEzomNdjr78G8.json",
+        );
+        let mut candidate_chain = ProtocolStateChain::default();
+        candidate_chain
+            .push(block_from_json.protocol_state)
+            .unwrap();
 
         // Candidate chain has greater last vrf hash
         let select_result = current_chain.select_longer_chain(&candidate_chain).unwrap();
@@ -293,20 +289,16 @@ mod tests {
     fn test_select_secure_chain_short_range_fork() {
         // Init current chain with mocked data
         let mut current_chain = ProtocolStateChain::default();
-        let mut consensus_state = ConsensusState::default();
-        consensus_state.epoch_count = Length(5);
-        consensus_state.blockchain_length = Length(11);
         let mut prot_state = ProtocolState::default();
-        prot_state.body.consensus_state = consensus_state;
+        prot_state.body.consensus_state.epoch_count = 5.into();
+        prot_state.body.consensus_state.blockchain_length = 11.into();
         current_chain.push(prot_state).unwrap();
 
         // Init new chain with mocked data to satisfy short range fork rule wrt current chain
         let mut new_chain = ProtocolStateChain::default();
-        let mut consensus_state = ConsensusState::default();
-        consensus_state.epoch_count = Length(5);
-        consensus_state.blockchain_length = Length(10);
         let mut prot_state = ProtocolState::default();
-        prot_state.body.consensus_state = consensus_state;
+        prot_state.body.consensus_state.epoch_count = 5.into();
+        prot_state.body.consensus_state.blockchain_length = 10.into();
         new_chain.push(prot_state).unwrap();
 
         // Add new chain to collection of candidate chains
@@ -332,63 +324,29 @@ mod tests {
     // Candidate chains: https://storage.googleapis.com/mina_network_block_data/mainnet-113267-3NLenrog9wkiJMoA774T9VraqSUGhCuhbDLj3JKbEzomNdjr78G8.json
     fn test_select_secure_chain_long_range_fork_greater_relative_min_window_density() {
         // Init current chain with mocked data
+
+        let block_from_json: ExternalTransition = read_block_json(
+            "mainnet-77748-3NKaBJsN1SehD6iJwRwJSFmVzJg5DXSUQVgnMxtH4eer4aF5BrDK.json",
+        );
+
         let mut current_chain = ProtocolStateChain::default();
-        let mut consensus_state = ConsensusState::default();
-        consensus_state.epoch_count = Length(15);
-        consensus_state.min_window_density = Length(33);
-        consensus_state.sub_window_densities = vec![
-            Length(6),
-            Length(1),
-            Length(3),
-            Length(5),
-            Length(4),
-            Length(3),
-            Length(5),
-            Length(7),
-            Length(4),
-            Length(5),
-            Length(6),
-        ];
-        consensus_state.curr_global_slot = GlobalSlot {
-            slot_number: GlobalSlotNumber(111965),
-            slots_per_epoch: Length(7140),
-        };
-        consensus_state.blockchain_length = Length(77748);
-        let mut prot_state = ProtocolState::default();
-        prot_state.body.consensus_state = consensus_state;
-        current_chain.push(prot_state).unwrap();
+        current_chain.push(block_from_json.protocol_state).unwrap();
 
         // Init new candidate chain with mocked data to satisfy long range fork rule wrt to current chain
         // new candidate chain has greater relative min window density
-        let mut new_chain = ProtocolStateChain::default();
-        let mut consensus_state = ConsensusState::default();
-        consensus_state.epoch_count = Length(23);
-        consensus_state.min_window_density = Length(14);
-        consensus_state.sub_window_densities = vec![
-            Length(7),
-            Length(2),
-            Length(2),
-            Length(5),
-            Length(6),
-            Length(7),
-            Length(5),
-            Length(7),
-            Length(5),
-            Length(5),
-            Length(5),
-        ];
-        consensus_state.curr_global_slot = GlobalSlot {
-            slot_number: GlobalSlotNumber(167176),
-            slots_per_epoch: Length(7140),
-        };
-        consensus_state.blockchain_length = Length(113267);
-        let mut prot_state = ProtocolState::default();
-        prot_state.body.consensus_state = consensus_state;
-        new_chain.push(prot_state).unwrap();
+
+        let block_from_json: ExternalTransition = read_block_json(
+            "mainnet-113267-3NLenrog9wkiJMoA774T9VraqSUGhCuhbDLj3JKbEzomNdjr78G8.json",
+        );
+        let mut candidate_chain = ProtocolStateChain::default();
+        candidate_chain
+            .push(block_from_json.protocol_state)
+            .unwrap();
 
         // Add new chain to collection of candidate chains
         let mut candidate_chains = vec![];
-        candidate_chains.push(new_chain);
+        candidate_chains.push(candidate_chain);
+
         // Current chain and candidate chain satisfy long range fork rule and candidate chain has greater relative min window density
         let select_result = current_chain
             .select_secure_chain(&candidate_chains)
