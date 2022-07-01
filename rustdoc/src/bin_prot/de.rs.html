@@ -965,7 +965,7 @@
     <span class="ident">variants</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> [<span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span>],
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;de</span>, <span class="ident">R</span>: <span class="ident">Read</span>, <span class="ident">Mode</span><span class="op">&gt;</span> <span class="ident">PolyvarEnum</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">R</span>, <span class="ident">Mode</span><span class="op">&gt;</span> {
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">R</span>: <span class="ident">Read</span>, <span class="ident">Mode</span><span class="op">&gt;</span> <span class="ident">PolyvarEnum</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">R</span>, <span class="ident">Mode</span><span class="op">&gt;</span> {
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(
         <span class="ident">de</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="kw-2">mut</span> <span class="ident">Deserializer</span><span class="op">&lt;</span><span class="ident">R</span>, <span class="ident">Mode</span><span class="op">&gt;</span>,
         <span class="ident">hash</span>: <span class="ident">VariantHash</span>,
@@ -1014,7 +1014,7 @@
     <span class="ident">index</span>: <span class="ident">u8</span>,
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;de</span>, <span class="ident">R</span>: <span class="ident">Read</span>, <span class="ident">Mode</span><span class="op">&gt;</span> <span class="ident">Enum</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">R</span>, <span class="ident">Mode</span><span class="op">&gt;</span> {
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">R</span>: <span class="ident">Read</span>, <span class="ident">Mode</span><span class="op">&gt;</span> <span class="ident">Enum</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">R</span>, <span class="ident">Mode</span><span class="op">&gt;</span> {
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">de</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="kw-2">mut</span> <span class="ident">Deserializer</span><span class="op">&lt;</span><span class="ident">R</span>, <span class="ident">Mode</span><span class="op">&gt;</span>, <span class="ident">index</span>: <span class="ident">u8</span>) -&gt; <span class="self">Self</span> {
         <span class="ident">Enum</span> { <span class="ident">de</span>, <span class="ident">index</span> }
     }
@@ -1201,5 +1201,5 @@
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;loose_deserialization&quot;</span>)]</span>
 <span class="macro">impl_seq_access!</span>(<span class="ident">LooselyTyped</span>);
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="bin_prot" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (ddcbba036 2022-06-29)" ></div>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="bin_prot" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (7425fb293 2022-06-30)" ></div>
 </body></html>

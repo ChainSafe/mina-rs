@@ -270,7 +270,7 @@
 
 <span class="kw">use</span> <span class="ident">byteorder::ReadBytesExt</span>;
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;de</span>, <span class="lifetime">&#39;a</span>, <span class="ident">R</span>: <span class="ident">Read</span><span class="op">&gt;</span> <span class="ident">DS</span><span class="op">&lt;</span><span class="ident">R</span>, <span class="ident">LooselyTyped</span><span class="op">&gt;</span> {
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;de</span>, <span class="ident">R</span>: <span class="ident">Read</span><span class="op">&gt;</span> <span class="ident">DS</span><span class="op">&lt;</span><span class="ident">R</span>, <span class="ident">LooselyTyped</span><span class="op">&gt;</span> {
     <span class="doccomment">/// The loose deserializer version of deserialize</span>
     <span class="doccomment">/// Only implemented on the LooselyTyped variant of the Deserializer</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">deserialize_loose</span><span class="op">&lt;</span><span class="ident">V</span><span class="op">&gt;</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">visitor</span>: <span class="ident">V</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">V::Value</span><span class="op">&gt;</span>
@@ -453,7 +453,7 @@
     },
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;de</span>, <span class="ident">R</span>: <span class="ident">Read</span>, <span class="ident">Mode</span><span class="op">&gt;</span> <span class="ident">ValueEnum</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">R</span>, <span class="ident">Mode</span><span class="op">&gt;</span> {
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">R</span>: <span class="ident">Read</span>, <span class="ident">Mode</span><span class="op">&gt;</span> <span class="ident">ValueEnum</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">R</span>, <span class="ident">Mode</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">de</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="kw-2">mut</span> <span class="ident">DS</span><span class="op">&lt;</span><span class="ident">R</span>, <span class="ident">Mode</span><span class="op">&gt;</span>, <span class="ident">variant</span>: <span class="ident">VariantType</span>) -&gt; <span class="self">Self</span> {
         <span class="self">Self</span> { <span class="ident">de</span>, <span class="ident">variant</span> }
     }
@@ -501,5 +501,5 @@
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="bin_prot" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (ddcbba036 2022-06-29)" ></div>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="bin_prot" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (7425fb293 2022-06-30)" ></div>
 </body></html>

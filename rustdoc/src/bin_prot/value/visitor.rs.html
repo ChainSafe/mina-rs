@@ -246,7 +246,7 @@
     {
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">values</span> <span class="op">=</span> <span class="ident">Vec::new</span>();
         <span class="kw">while</span> <span class="kw">let</span> <span class="prelude-val">Some</span>((<span class="ident">k</span>, <span class="ident">v</span>)) <span class="op">=</span> <span class="ident">visitor</span>.<span class="ident">next_entry</span>()<span class="question-mark">?</span> {
-            <span class="kw">let</span> <span class="kw">_</span> <span class="op">=</span> <span class="ident">values</span>.<span class="ident">push</span>((<span class="ident">k</span>, <span class="ident">v</span>)); <span class="comment">// returns old value of replacing a key. This cannot happen here so can unwrap</span>
+            <span class="ident">values</span>.<span class="ident">push</span>((<span class="ident">k</span>, <span class="ident">v</span>));
         }
         <span class="prelude-val">Ok</span>(<span class="ident">Value::Record</span>(<span class="ident">values</span>))
     }
@@ -287,5 +287,5 @@
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="bin_prot" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (ddcbba036 2022-06-29)" ></div>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="bin_prot" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (7425fb293 2022-06-30)" ></div>
 </body></html>
