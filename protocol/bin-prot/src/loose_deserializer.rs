@@ -16,7 +16,7 @@ use serde::{Deserialize, Serialize};
 
 use byteorder::ReadBytesExt;
 
-impl<'de, 'a, R: Read> DS<R, LooselyTyped> {
+impl<'de, R: Read> DS<R, LooselyTyped> {
     /// The loose deserializer version of deserialize
     /// Only implemented on the LooselyTyped variant of the Deserializer
     pub fn deserialize_loose<V>(&mut self, visitor: V) -> Result<V::Value>
@@ -199,7 +199,7 @@ pub enum EnumData {
     },
 }
 
-impl<'a, 'de, R: Read, Mode> ValueEnum<'a, R, Mode> {
+impl<'a, R: Read, Mode> ValueEnum<'a, R, Mode> {
     fn new(de: &'a mut DS<R, Mode>, variant: VariantType) -> Self {
         Self { de, variant }
     }

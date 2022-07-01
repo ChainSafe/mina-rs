@@ -6,7 +6,6 @@
 [![Continuous integration](https://github.com/ChainSafe/mina-rs/actions/workflows/build-and-test.yml/badge.svg?branch=main)](https://github.com/ChainSafe/mina-rs/actions/workflows/build-and-test.yml)
 [![codecov](https://codecov.io/gh/ChainSafe/mina-rs/branch/main/graph/badge.svg?token=7YXISNRW48)](https://codecov.io/gh/ChainSafe/mina-rs)
 [![dependency status](https://deps.rs/repo/github/ChainSafe/mina-rs/status.svg?style=flat-square)](https://deps.rs/repo/github/ChainSafe/mina-rs)
-[![loc](https://tokei.rs/b1/github/ChainSafe/mina-rs?category=code)](https://github.com/ChainSafe/mina-rs)
 
 An implementation of Mina protocol in Rust, with focus on web and Wasm compatibility
 
