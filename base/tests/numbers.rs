@@ -43,7 +43,7 @@ pub mod tests {
     fn test_convert_bigint_to_arkworks_zero() {
         use ark_ff::BigInteger256;
         let i = BigInt256([0; 32]);
-        let ark_i: BigInteger256 = i.into();
+        let ark_i = BigInteger256::from(&i);
         assert_eq!(ark_i, BigInteger256::default())
     }
 

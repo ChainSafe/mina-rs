@@ -12,6 +12,7 @@ mina-serialization-types-macros = {path = "../serialization-types-macros"}
 proof-systems = {path = "../../proof-systems-shim"}
 versioned = {path = "../versioned"}
 
+ark-serialize = "0.3"
 base64 = "0.13"
 bs58 = {version = "0.4", features = ["check"]}
 derive_more = "0.99"

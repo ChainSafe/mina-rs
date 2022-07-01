@@ -107,7 +107,7 @@ mod tests {
         let mut merkle_ledger = genesis_ledger.to_mina_merkle_ledger();
         assert!(expected_root_hash.is_some());
         assert_eq!(merkle_ledger.height(), expected_root_height as u32);
-        let ledger_hash: LedgerHash = expected_root_hash.unwrap().into();
+        let ledger_hash = LedgerHash::try_from(&expected_root_hash.unwrap()).unwrap();
         let genesis_block =
             ExternalTransition::from_genesis_config(&mina_consensus::genesis::MAINNET_CONFIG);
         assert_eq!(
