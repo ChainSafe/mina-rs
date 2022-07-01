@@ -99,7 +99,7 @@ impl<'de> Visitor<'de> for ValueVisitor {
     {
         let mut values = Vec::new();
         while let Some((k, v)) = visitor.next_entry()? {
-            let _ = values.push((k, v)); // returns old value of replacing a key. This cannot happen here so can unwrap
+            values.push((k, v));
         }
         Ok(Value::Record(values))
     }

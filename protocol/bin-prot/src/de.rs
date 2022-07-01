@@ -361,7 +361,7 @@ pub struct PolyvarEnum<'a, R: Read, Mode> {
     variants: &'a [&'static str],
 }
 
-impl<'a, 'de, R: Read, Mode> PolyvarEnum<'a, R, Mode> {
+impl<'a, R: Read, Mode> PolyvarEnum<'a, R, Mode> {
     pub fn new(
         de: &'a mut Deserializer<R, Mode>,
         hash: VariantHash,
@@ -410,7 +410,7 @@ pub struct Enum<'a, R: Read, Mode> {
     index: u8,
 }
 
-impl<'a, 'de, R: Read, Mode> Enum<'a, R, Mode> {
+impl<'a, R: Read, Mode> Enum<'a, R, Mode> {
     pub fn new(de: &'a mut Deserializer<R, Mode>, index: u8) -> Self {
         Enum { de, index }
     }
