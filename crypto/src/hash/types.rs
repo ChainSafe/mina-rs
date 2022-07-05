@@ -16,6 +16,7 @@ use proof_systems::{
     mina_hasher::{Fp, Hashable, ROInput},
     o1_utils::{field_helpers::FieldHelpersError, FieldHelpers},
 };
+use sha2::{Digest, Sha256};
 use versioned::*;
 
 #[derive(Clone, Debug, Default, PartialEq, derive_more::From, derive_more::Into)]
@@ -26,7 +27,7 @@ impl Hashable for BaseHash {
 
     fn to_roinput(&self) -> ROInput {
         let mut roi = ROInput::new();
-        roi.append_bytes(&self.0);
+        roi.append_field(self.try_into().expect("Failed to convert Hash into Fp"));
         roi
     }
 
@@ -247,14 +248,23 @@ pub struct NonSnarkStagedLedgerHash {
     pub pending_coinbase_aux: PendingCoinbaseAuxHash,
 }
 
+impl NonSnarkStagedLedgerHash {
+    pub fn digest(&self) -> Vec<u8> {
+        let mut hasher = Sha256::new();
+        let ledger_hash_bytes: Vec<u8> = self.ledger_hash.0 .0.iter().rev().cloned().collect();
+        hasher.update(&ledger_hash_bytes);
+        hasher.update(&self.aux_hash.0);
+        hasher.update(&self.pending_coinbase_aux.0);
+        hasher.finalize().to_vec()
+    }
+}
+
 impl Hashable for NonSnarkStagedLedgerHash {
     type D = ();
 
     fn to_roinput(&self) -> ROInput {
         let mut roi = ROInput::new();
-        roi.append_hashable(&self.ledger_hash);
-        roi.append_hashable(&self.aux_hash);
-        roi.append_hashable(&self.pending_coinbase_aux);
+        roi.append_bytes(&self.digest());
         roi
     }
 

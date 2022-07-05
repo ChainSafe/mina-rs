@@ -6,9 +6,6 @@
 //!
 
 use crate::error::ConsensusError;
-use blake2::digest::Update;
-use blake2::digest::VariableOutput;
-use blake2::Blake2bVar;
 use mina_rs_base::consensus_state::ConsensusState;
 use mina_rs_base::global_slot::GlobalSlot;
 use mina_rs_base::protocol_state::{Header, ProtocolState};
@@ -132,19 +129,13 @@ impl Chain<ProtocolState> for ProtocolStateChain {
     }
 
     fn last_vrf_hash_digest(&self) -> Result<String, ConsensusError> {
-        let output_size = 32; // TODO: do we need this configurable?
-        let mut hasher = Blake2bVar::new(output_size)
-            .map_err(|_| ConsensusError::InvalidBlake2bOutputSize(output_size))?;
-        hasher.update(
-            self.top()
-                .ok_or(ConsensusError::TopBlockNotFound)?
-                .body
-                .consensus_state
-                .last_vrf_output
-                .0
-                .as_slice(),
-        );
-        let hash = hasher.finalize_boxed();
+        let hash = self
+            .top()
+            .ok_or(ConsensusError::TopBlockNotFound)?
+            .body
+            .consensus_state
+            .last_vrf_output
+            .digest();
         Ok(hex::encode(hash))
     }
 
