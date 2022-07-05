@@ -43,13 +43,11 @@ impl From<&[u8]> for BaseHash {
     }
 }
 
-impl TryFrom<&Fp> for BaseHash {
-    type Error = ark_serialize::SerializationError;
-
-    fn try_from(i: &Fp) -> Result<Self, Self::Error> {
+impl From<&Fp> for BaseHash {
+    fn from(i: &Fp) -> Self {
         let mut bytes: Vec<u8> = Vec::with_capacity(32);
-        i.serialize(&mut bytes)?;
-        Ok(bytes.as_slice().into())
+        i.serialize(&mut bytes).expect("Failed to serialize Fp");
+        bytes.as_slice().into()
     }
 }
 
@@ -90,12 +88,30 @@ impl_from_for_hash!(StateHash, HashV1);
 impl_from_for_generic_with_proxy!(StateHash, HashV1, StateHashV1Json);
 impl_strconv_via_json!(StateHash, StateHashV1Json);
 
+impl From<&Fp> for StateHash {
+    fn from(i: &Fp) -> Self {
+        let base: BaseHash = i.into();
+        base.into()
+    }
+}
+
+impl TryFrom<&StateHash> for Fp {
+    type Error = FieldHelpersError;
+
+    fn try_from(i: &StateHash) -> Result<Self, Self::Error> {
+        (&i.0).try_into()
+    }
+}
+
 impl Hashable for StateHash {
     type D = ();
 
     fn to_roinput(&self) -> ROInput {
         let mut roi = ROInput::new();
-        roi.append_hashable(&self.0);
+        roi.append_field(
+            self.try_into()
+                .expect("Failed to convert StateHash into Fp"),
+        );
         roi
     }
 
@@ -113,12 +129,10 @@ impl_from_for_hash!(LedgerHash, HashV1);
 impl_from_for_generic_with_proxy!(LedgerHash, HashV1, LedgerHashV1Json);
 impl_strconv_via_json!(LedgerHash, LedgerHashV1Json);
 
-impl TryFrom<&Fp> for LedgerHash {
-    type Error = ark_serialize::SerializationError;
-
-    fn try_from(i: &Fp) -> Result<Self, Self::Error> {
-        let base: BaseHash = i.try_into()?;
-        Ok(base.into())
+impl From<&Fp> for LedgerHash {
+    fn from(i: &Fp) -> Self {
+        let base: BaseHash = i.into();
+        base.into()
     }
 }
 
@@ -135,7 +149,10 @@ impl Hashable for LedgerHash {
 
     fn to_roinput(&self) -> ROInput {
         let mut roi = ROInput::new();
-        roi.append_hashable(&self.0);
+        roi.append_field(
+            self.try_into()
+                .expect("Failed to convert StateHash into Fp"),
+        );
         roi
     }
 

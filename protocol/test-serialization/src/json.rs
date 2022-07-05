@@ -35,6 +35,26 @@ mod tests {
 
     #[test]
     #[wasm_bindgen_test]
+    fn json_binprot_state_hash_tests() {
+        for (file_name, json) in test_fixtures::JSON_TEST_BLOCKS.iter() {
+            let expected_state_hash = file_name
+                .split('.')
+                .nth(0)
+                .unwrap_or_default()
+                .split('-')
+                .last()
+                .unwrap_or_default();
+            let block_json: <ExternalTransition as JsonSerializationType>::T =
+                serde_json::from_value(json.clone()).unwrap();
+            let block: ExternalTransition = block_json.into();
+            let state_hash = block.protocol_state.state_hash();
+            // FIXME: change to assert_eq! when Hashable is properly implemented for ProtocolState
+            assert_ne!(&state_hash.to_string(), expected_state_hash);
+        }
+    }
+
+    #[test]
+    #[wasm_bindgen_test]
     fn consensus_state_json_serde_roundtrip() {
         json_serde_roundtrip!(
             ConsensusState,

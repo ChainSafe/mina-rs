@@ -9,10 +9,14 @@ use crate::{
     global_slot::GlobalSlot,
     numbers::{BlockTime, Length},
 };
+use lockfree_object_pool::SpinLockObjectPool;
 use mina_crypto::hash::StateHash;
 use mina_serialization_types::{json::*, v1::*};
 use mina_serialization_types_macros::AutoFrom;
-use proof_systems::mina_hasher::{Hashable, ROInput};
+use once_cell::sync::OnceCell;
+use proof_systems::mina_hasher::{
+    create_legacy, Fp, Hashable, Hasher, PoseidonHasherLegacy, ROInput,
+};
 use versioned::*;
 
 /// Constants that define the consensus parameters
@@ -86,6 +90,22 @@ impl ProtocolState {
     /// Gets the current global slot the current epoch
     pub fn curr_global_slot(&self) -> &GlobalSlot {
         &self.body.consensus_state.curr_global_slot
+    }
+
+    /// Calculates the state hash field of current protocol state
+    pub fn state_hash_fp(&self) -> Fp {
+        static HASHER_POOL: OnceCell<SpinLockObjectPool<PoseidonHasherLegacy<ProtocolState>>> =
+            OnceCell::new();
+        let pool =
+            HASHER_POOL.get_or_init(|| SpinLockObjectPool::new(|| create_legacy(()), |_| ()));
+        let mut hasher = pool.pull();
+        hasher.hash(self)
+    }
+
+    /// Calculates the state hash of current protocol state
+    pub fn state_hash(&self) -> StateHash {
+        let f = self.state_hash_fp();
+        (&f).into()
     }
 }
 

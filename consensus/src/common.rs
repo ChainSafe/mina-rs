@@ -9,13 +9,11 @@ use crate::error::ConsensusError;
 use blake2::digest::Update;
 use blake2::digest::VariableOutput;
 use blake2::Blake2bVar;
-use lockfree_object_pool::SpinLockObjectPool;
 use mina_rs_base::consensus_state::ConsensusState;
 use mina_rs_base::global_slot::GlobalSlot;
 use mina_rs_base::protocol_state::{Header, ProtocolState};
 use mina_rs_base::types::{BlockTime, Length};
-use once_cell::sync::OnceCell;
-use proof_systems::mina_hasher::{create_kimchi, Fp, Hasher, PoseidonHasherKimchi};
+use proof_systems::mina_hasher::Fp;
 
 // TODO: derive from protocol constants
 /// Constants used for the conensus
@@ -151,12 +149,7 @@ impl Chain<ProtocolState> for ProtocolStateChain {
     }
 
     fn state_hash(&self) -> Option<Fp> {
-        static HASHER_POOL: OnceCell<SpinLockObjectPool<PoseidonHasherKimchi<ProtocolState>>> =
-            OnceCell::new();
-        let pool =
-            HASHER_POOL.get_or_init(|| SpinLockObjectPool::new(|| create_kimchi(()), |_| ()));
-        let mut hasher = pool.pull();
-        self.top().map(|s| hasher.hash(s))
+        self.top().map(|s| s.state_hash_fp())
     }
 }
 
