@@ -10,8 +10,7 @@
 //! Depending on the type of hash a different byte prefix is used in the human readable form
 //!
 
-use super::prefixes::*;
-use crate::hash::Hash;
+use ark_serialize::CanonicalSerialize;
 use mina_serialization_types::{impl_strconv_via_json, json::*, v1::*};
 use proof_systems::{
     mina_hasher::{Fp, Hashable, ROInput},
@@ -36,33 +35,26 @@ impl Hashable for BaseHash {
     }
 }
 
-impl From<Box<[u8]>> for BaseHash {
-    // TODO: Figure out how to do this without a copy and still have BaseHash serializable
-    fn from(b: Box<[u8]>) -> Self {
-        let b: &[u8] = &b;
-        b.into()
-    }
-}
-
-impl<'a> From<&'a [u8]> for BaseHash {
-    fn from(b: &'a [u8]) -> Self {
+impl From<&[u8]> for BaseHash {
+    fn from(b: &[u8]) -> Self {
         let mut o = BaseHash::default();
         o.0.copy_from_slice(b);
         o
     }
 }
 
-impl From<Fp> for BaseHash {
-    fn from(i: Fp) -> Self {
-        let bytes = i.to_bytes();
+impl From<&Fp> for BaseHash {
+    fn from(i: &Fp) -> Self {
+        let mut bytes: Vec<u8> = Vec::with_capacity(32);
+        i.serialize(&mut bytes).expect("Failed to serialize Fp");
         bytes.as_slice().into()
     }
 }
 
-impl TryFrom<BaseHash> for Fp {
+impl TryFrom<&BaseHash> for Fp {
     type Error = FieldHelpersError;
 
-    fn try_from(i: BaseHash) -> Result<Self, Self::Error> {
+    fn try_from(i: &BaseHash) -> Result<Self, Self::Error> {
         Fp::from_bytes(i.0.as_slice())
     }
 }
@@ -96,22 +88,36 @@ impl_from_for_hash!(StateHash, HashV1);
 impl_from_for_generic_with_proxy!(StateHash, HashV1, StateHashV1Json);
 impl_strconv_via_json!(StateHash, StateHashV1Json);
 
+impl From<&Fp> for StateHash {
+    fn from(i: &Fp) -> Self {
+        let base: BaseHash = i.into();
+        base.into()
+    }
+}
+
+impl TryFrom<&StateHash> for Fp {
+    type Error = FieldHelpersError;
+
+    fn try_from(i: &StateHash) -> Result<Self, Self::Error> {
+        (&i.0).try_into()
+    }
+}
+
 impl Hashable for StateHash {
     type D = ();
 
     fn to_roinput(&self) -> ROInput {
         let mut roi = ROInput::new();
-        roi.append_hashable(&self.0);
+        roi.append_field(
+            self.try_into()
+                .expect("Failed to convert StateHash into Fp"),
+        );
         roi
     }
 
     fn domain_string(_: Self::D) -> Option<String> {
         None
     }
-}
-
-impl Hash for StateHash {
-    const PREFIX: &'static HashPrefix = PROTOCOL_STATE;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -123,18 +129,18 @@ impl_from_for_hash!(LedgerHash, HashV1);
 impl_from_for_generic_with_proxy!(LedgerHash, HashV1, LedgerHashV1Json);
 impl_strconv_via_json!(LedgerHash, LedgerHashV1Json);
 
-impl From<Fp> for LedgerHash {
-    fn from(i: Fp) -> Self {
+impl From<&Fp> for LedgerHash {
+    fn from(i: &Fp) -> Self {
         let base: BaseHash = i.into();
         base.into()
     }
 }
 
-impl TryFrom<LedgerHash> for Fp {
+impl TryFrom<&LedgerHash> for Fp {
     type Error = FieldHelpersError;
 
-    fn try_from(i: LedgerHash) -> Result<Self, Self::Error> {
-        i.0.try_into()
+    fn try_from(i: &LedgerHash) -> Result<Self, Self::Error> {
+        (&i.0).try_into()
     }
 }
 
@@ -143,7 +149,10 @@ impl Hashable for LedgerHash {
 
     fn to_roinput(&self) -> ROInput {
         let mut roi = ROInput::new();
-        roi.append_hashable(&self.0);
+        roi.append_field(
+            self.try_into()
+                .expect("Failed to convert StateHash into Fp"),
+        );
         roi
     }
 
@@ -206,10 +215,6 @@ impl Hashable for EpochSeed {
     fn domain_string(_: Self::D) -> Option<String> {
         None
     }
-}
-
-impl Hash for EpochSeed {
-    const PREFIX: &'static HashPrefix = EPOCH_SEED;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -308,10 +313,6 @@ pub struct VrfOutputHash(BaseHash);
 impl_from_for_hash!(VrfOutputHash, HashV1);
 impl_from_for_generic_with_proxy!(VrfOutputHash, HashV1, VrfOutputHashV1Json);
 impl_strconv_via_json!(VrfOutputHash, VrfOutputHashV1Json);
-
-impl Hash for VrfOutputHash {
-    const PREFIX: &'static HashPrefix = VRF_OUTPUT;
-}
 
 //////////////////////////////////////////////////////////////////////////
 

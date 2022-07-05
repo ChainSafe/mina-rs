@@ -246,8 +246,8 @@ impl HexEncodable for BigInt256 {
     }
 }
 
-impl From<BigInt256> for ark_ff::BigInteger256 {
-    fn from(i: BigInt256) -> Self {
+impl From<&BigInt256> for ark_ff::BigInteger256 {
+    fn from(i: &BigInt256) -> Self {
         use ark_ff::bytes::FromBytes;
         Self::read(&i.0[..]).unwrap()
     }

@@ -221,7 +221,7 @@ mod tests {
         match &commands[0].data {
             UserCommand::SignedCommand(command) => {
                 assert_eq!(
-                    &CompressedPubKey::from(command.signer.clone()).into_address(),
+                    &command.signer.clone().into_address(),
                     "B62qoSuxNqwogusxxZbs3gpJUxCCN4GZEv21FX8S2DtNpToLgKnrexM"
                 );
 
@@ -246,11 +246,11 @@ mod tests {
                     SignedCommandPayloadBody::PaymentPayload(body) => {
                         assert_eq!(body.amount.to_string(), "0.027370000");
                         assert_eq!(
-                            &CompressedPubKey::from(body.source_pk.clone()).into_address(),
+                            &body.source_pk.clone().into_address(),
                             "B62qoSuxNqwogusxxZbs3gpJUxCCN4GZEv21FX8S2DtNpToLgKnrexM"
                         );
                         assert_eq!(
-                            &CompressedPubKey::from(body.receiver_pk.clone()).into_address(),
+                            &body.receiver_pk.clone().into_address(),
                             "B62qn2MtuQ9GyyVnotUHB9Ehp9EZre5m6TYpGx64tBCDHHBZFZRURnL"
                         );
                         assert_eq!(body.token_id.0, 1);

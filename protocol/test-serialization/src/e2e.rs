@@ -14,6 +14,19 @@ mod tests {
 
     #[test]
     #[wasm_bindgen_test]
+    fn test_block_state_hash() {
+        for (file_name, block_fixture) in test_fixtures::TEST_BLOCKS.iter() {
+            let expected_state_hash = file_name.split('.').nth(0).unwrap_or_default();
+            let block_v1 = block_fixture.external_transitionv1().unwrap();
+            let block: ExternalTransition = block_v1.into();
+            let state_hash = block.protocol_state.state_hash();
+            // FIXME: change to assert_eq! when Hashable is properly implemented for ProtocolState
+            assert_ne!(&state_hash.to_string(), expected_state_hash);
+        }
+    }
+
+    #[test]
+    #[wasm_bindgen_test]
     fn test_block_serde_roundtrip() {
         for block in TEST_BLOCKS.values() {
             let versioned = block.external_transitionv1().unwrap();

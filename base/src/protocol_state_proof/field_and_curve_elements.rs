@@ -45,12 +45,12 @@ impl HexEncodable for FieldElementVec {
     }
 }
 
-impl<Fs> From<FieldElementVec> for Vec<Fs>
+impl<Fs> From<&FieldElementVec> for Vec<Fs>
 where
     Fs: From<ark_ff::BigInteger256>,
 {
-    fn from(t: FieldElementVec) -> Self {
-        t.0.into_iter()
+    fn from(t: &FieldElementVec) -> Self {
+        t.0.iter()
             .map(|i| ark_ff::BigInteger256::from(i).into())
             .collect()
     }
@@ -62,15 +62,15 @@ where
 #[auto_from(mina_serialization_types::field_and_curve_elements::FiniteECPoint)]
 pub struct FiniteECPoint(pub FieldElement, pub FieldElement);
 
-impl<P> From<FiniteECPoint> for GroupAffine<P>
+impl<P> From<&FiniteECPoint> for GroupAffine<P>
 where
     P: ark_ec::SWModelParameters,
     <P as ModelParameters>::BaseField: From<ark_ff::BigInteger256>,
 {
-    fn from(FiniteECPoint(x, y): FiniteECPoint) -> Self {
+    fn from(p: &FiniteECPoint) -> Self {
         Self::new(
-            ark_ff::BigInteger256::from(x).into(),
-            ark_ff::BigInteger256::from(y).into(),
+            ark_ff::BigInteger256::from(&p.0).into(),
+            ark_ff::BigInteger256::from(&p.1).into(),
             false,
         )
     }
@@ -93,13 +93,13 @@ macro_rules! finite_ec_point {
 #[auto_from(mina_serialization_types::field_and_curve_elements::FiniteECPointVec)]
 pub struct FiniteECPointVec(pub Vec<FiniteECPoint>);
 
-impl<P> From<FiniteECPointVec> for Vec<GroupAffine<P>>
+impl<P> From<&FiniteECPointVec> for Vec<GroupAffine<P>>
 where
     P: ark_ec::SWModelParameters,
     <P as ModelParameters>::BaseField: From<ark_ff::BigInteger256>,
 {
-    fn from(v: FiniteECPointVec) -> Self {
-        v.0.into_iter().map(Into::into).collect()
+    fn from(v: &FiniteECPointVec) -> Self {
+        v.0.iter().map(Into::into).collect()
     }
 }
 
@@ -126,13 +126,13 @@ macro_rules! finite_ec_point_pair {
 #[auto_from(mina_serialization_types::field_and_curve_elements::FiniteECPointPairVec)]
 pub struct FiniteECPointPairVec(pub Vec<FiniteECPointPair>);
 
-impl<P> From<FiniteECPointPairVec> for Vec<(GroupAffine<P>, GroupAffine<P>)>
+impl<P> From<&FiniteECPointPairVec> for Vec<(GroupAffine<P>, GroupAffine<P>)>
 where
     P: ark_ec::SWModelParameters,
     <P as ModelParameters>::BaseField: From<ark_ff::BigInteger256>,
 {
-    fn from(v: FiniteECPointPairVec) -> Self {
-        v.0.into_iter()
+    fn from(v: &FiniteECPointPairVec) -> Self {
+        v.0.iter()
             .map(|FiniteECPointPair(x, y)| (x.into(), y.into()))
             .collect()
     }
@@ -149,12 +149,12 @@ pub enum ECPoint {
     Finite(FiniteECPoint),
 }
 
-impl<P> From<ECPoint> for GroupAffine<P>
+impl<P> From<&ECPoint> for GroupAffine<P>
 where
     P: ark_ec::SWModelParameters,
     <P as ModelParameters>::BaseField: From<ark_ff::BigInteger256>,
 {
-    fn from(p: ECPoint) -> Self {
+    fn from(p: &ECPoint) -> Self {
         match p {
             ECPoint::Infinite => Self::new(Default::default(), Default::default(), true),
             ECPoint::Finite(FiniteECPoint(x, y)) => Self::new(
@@ -171,12 +171,12 @@ where
 #[auto_from(mina_serialization_types::field_and_curve_elements::ECPointVec)]
 pub struct ECPointVec(pub Vec<ECPoint>);
 
-impl<P> From<ECPointVec> for Vec<GroupAffine<P>>
+impl<P> From<&ECPointVec> for Vec<GroupAffine<P>>
 where
     P: ark_ec::SWModelParameters,
     <P as ModelParameters>::BaseField: From<ark_ff::BigInteger256>,
 {
-    fn from(v: ECPointVec) -> Self {
-        v.0.into_iter().map(Into::into).collect()
+    fn from(v: &ECPointVec) -> Self {
+        v.0.iter().map(Into::into).collect()
     }
 }
