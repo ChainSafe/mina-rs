@@ -246,7 +246,7 @@
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">merkle_ledger</span> <span class="op">=</span> <span class="ident">genesis_ledger</span>.<span class="ident">to_mina_merkle_ledger</span>();
         <span class="macro">assert!</span>(<span class="ident">expected_root_hash</span>.<span class="ident">is_some</span>());
         <span class="macro">assert_eq!</span>(<span class="ident">merkle_ledger</span>.<span class="ident">height</span>(), <span class="ident">expected_root_height</span> <span class="kw">as</span> <span class="ident">u32</span>);
-        <span class="kw">let</span> <span class="ident">ledger_hash</span>: <span class="ident">LedgerHash</span> <span class="op">=</span> <span class="ident">expected_root_hash</span>.<span class="ident">unwrap</span>().<span class="ident">into</span>();
+        <span class="kw">let</span> <span class="ident">ledger_hash</span> <span class="op">=</span> <span class="ident">LedgerHash::try_from</span>(<span class="kw-2">&amp;</span><span class="ident">expected_root_hash</span>.<span class="ident">unwrap</span>()).<span class="ident">unwrap</span>();
         <span class="kw">let</span> <span class="ident">genesis_block</span> <span class="op">=</span>
             <span class="ident">ExternalTransition::from_genesis_config</span>(<span class="kw-2">&amp;</span><span class="ident">mina_consensus::genesis::MAINNET_CONFIG</span>);
         <span class="macro">assert_eq!</span>(
@@ -271,5 +271,5 @@
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_ledger" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (495b21669 2022-07-03)" ></div>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_ledger" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (27eb6d701 2022-07-04)" ></div>
 </body></html>

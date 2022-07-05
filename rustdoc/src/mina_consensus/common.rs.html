@@ -367,13 +367,6 @@
 <span id="361">361</span>
 <span id="362">362</span>
 <span id="363">363</span>
-<span id="364">364</span>
-<span id="365">365</span>
-<span id="366">366</span>
-<span id="367">367</span>
-<span id="368">368</span>
-<span id="369">369</span>
-<span id="370">370</span>
 </pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems</span>
 <span class="comment">// SPDX-License-Identifier: Apache-2.0</span>
 
@@ -385,13 +378,11 @@
 <span class="kw">use</span> <span class="ident">blake2::digest::Update</span>;
 <span class="kw">use</span> <span class="ident">blake2::digest::VariableOutput</span>;
 <span class="kw">use</span> <span class="ident">blake2::Blake2bVar</span>;
-<span class="kw">use</span> <span class="ident">lockfree_object_pool::SpinLockObjectPool</span>;
 <span class="kw">use</span> <span class="ident">mina_rs_base::consensus_state::ConsensusState</span>;
 <span class="kw">use</span> <span class="ident">mina_rs_base::global_slot::GlobalSlot</span>;
 <span class="kw">use</span> <span class="ident">mina_rs_base::protocol_state</span>::{<span class="ident">Header</span>, <span class="ident">ProtocolState</span>};
 <span class="kw">use</span> <span class="ident">mina_rs_base::types</span>::{<span class="ident">BlockTime</span>, <span class="ident">Length</span>};
-<span class="kw">use</span> <span class="ident">once_cell::sync::OnceCell</span>;
-<span class="kw">use</span> <span class="ident">proof_systems::mina_hasher</span>::{<span class="ident">create_kimchi</span>, <span class="ident">Fp</span>, <span class="ident">Hasher</span>, <span class="ident">PoseidonHasherKimchi</span>};
+<span class="kw">use</span> <span class="ident">proof_systems::mina_hasher::Fp</span>;
 
 <span class="comment">// TODO: derive from protocol constants</span>
 <span class="doccomment">/// Constants used for the conensus</span>
@@ -527,12 +518,7 @@
     }
 
     <span class="kw">fn</span> <span class="ident">state_hash</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Fp</span><span class="op">&gt;</span> {
-        <span class="kw">static</span> <span class="ident">HASHER_POOL</span>: <span class="ident">OnceCell</span><span class="op">&lt;</span><span class="ident">SpinLockObjectPool</span><span class="op">&lt;</span><span class="ident">PoseidonHasherKimchi</span><span class="op">&lt;</span><span class="ident">ProtocolState</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="op">=</span>
-            <span class="ident">OnceCell::new</span>();
-        <span class="kw">let</span> <span class="ident">pool</span> <span class="op">=</span>
-            <span class="ident">HASHER_POOL</span>.<span class="ident">get_or_init</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">SpinLockObjectPool::new</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">create_kimchi</span>(()), <span class="op">|</span><span class="kw">_</span><span class="op">|</span> ()));
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">hasher</span> <span class="op">=</span> <span class="ident">pool</span>.<span class="ident">pull</span>();
-        <span class="self">self</span>.<span class="ident">top</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">s</span><span class="op">|</span> <span class="ident">hasher</span>.<span class="ident">hash</span>(<span class="ident">s</span>))
+        <span class="self">self</span>.<span class="ident">top</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">s</span><span class="op">|</span> <span class="ident">s</span>.<span class="ident">state_hash_fp</span>())
     }
 }
 
@@ -745,5 +731,5 @@
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_consensus" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (495b21669 2022-07-03)" ></div>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_consensus" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (27eb6d701 2022-07-04)" ></div>
 </body></html>

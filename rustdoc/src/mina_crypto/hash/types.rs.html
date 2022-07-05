@@ -421,6 +421,7 @@
 <span id="415">415</span>
 <span id="416">416</span>
 <span id="417">417</span>
+<span id="418">418</span>
 </pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems</span>
 <span class="comment">// SPDX-License-Identifier: Apache-2.0</span>
 
@@ -433,8 +434,7 @@
 <span class="doccomment">//! Depending on the type of hash a different byte prefix is used in the human readable form</span>
 <span class="doccomment">//!</span>
 
-<span class="kw">use</span> <span class="ident"><span class="kw">super</span>::prefixes</span>::<span class="kw-2">*</span>;
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::hash::Hash</span>;
+<span class="kw">use</span> <span class="ident">ark_serialize::CanonicalSerialize</span>;
 <span class="kw">use</span> <span class="ident">mina_serialization_types</span>::{<span class="ident">impl_strconv_via_json</span>, <span class="ident">json</span>::<span class="kw-2">*</span>, <span class="ident">v1</span>::<span class="kw-2">*</span>};
 <span class="kw">use</span> <span class="ident">proof_systems</span>::{
     <span class="ident">mina_hasher</span>::{<span class="ident">Fp</span>, <span class="ident">Hashable</span>, <span class="ident">ROInput</span>},
@@ -459,33 +459,26 @@
     }
 }
 
-<span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">Box</span><span class="op">&lt;</span>[<span class="ident">u8</span>]<span class="op">&gt;</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">BaseHash</span> {
-    <span class="comment">// TODO: Figure out how to do this without a copy and still have BaseHash serializable</span>
-    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">b</span>: <span class="ident">Box</span><span class="op">&lt;</span>[<span class="ident">u8</span>]<span class="op">&gt;</span>) -&gt; <span class="self">Self</span> {
-        <span class="kw">let</span> <span class="ident">b</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>] <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">b</span>;
-        <span class="ident">b</span>.<span class="ident">into</span>()
-    }
-}
-
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="ident">From</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> [<span class="ident">u8</span>]<span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">BaseHash</span> {
-    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">b</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> [<span class="ident">u8</span>]) -&gt; <span class="self">Self</span> {
+<span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="kw-2">&amp;</span>[<span class="ident">u8</span>]<span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">BaseHash</span> {
+    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">b</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>]) -&gt; <span class="self">Self</span> {
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">o</span> <span class="op">=</span> <span class="ident">BaseHash::default</span>();
         <span class="ident">o</span>.<span class="number">0</span>.<span class="ident">copy_from_slice</span>(<span class="ident">b</span>);
         <span class="ident">o</span>
     }
 }
 
-<span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">Fp</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">BaseHash</span> {
-    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">i</span>: <span class="ident">Fp</span>) -&gt; <span class="self">Self</span> {
-        <span class="kw">let</span> <span class="ident">bytes</span> <span class="op">=</span> <span class="ident">i</span>.<span class="ident">to_bytes</span>();
+<span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">Fp</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">BaseHash</span> {
+    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">i</span>: <span class="kw-2">&amp;</span><span class="ident">Fp</span>) -&gt; <span class="self">Self</span> {
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">bytes</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">Vec::with_capacity</span>(<span class="number">32</span>);
+        <span class="ident">i</span>.<span class="ident">serialize</span>(<span class="kw-2">&amp;mut</span> <span class="ident">bytes</span>).<span class="ident">expect</span>(<span class="string">&quot;Failed to serialize Fp&quot;</span>);
         <span class="ident">bytes</span>.<span class="ident">as_slice</span>().<span class="ident">into</span>()
     }
 }
 
-<span class="kw">impl</span> <span class="ident">TryFrom</span><span class="op">&lt;</span><span class="ident">BaseHash</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Fp</span> {
+<span class="kw">impl</span> <span class="ident">TryFrom</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">BaseHash</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Fp</span> {
     <span class="kw">type</span> <span class="ident">Error</span> <span class="op">=</span> <span class="ident">FieldHelpersError</span>;
 
-    <span class="kw">fn</span> <span class="ident">try_from</span>(<span class="ident">i</span>: <span class="ident">BaseHash</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span>, <span class="ident"><span class="self">Self</span>::Error</span><span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">try_from</span>(<span class="ident">i</span>: <span class="kw-2">&amp;</span><span class="ident">BaseHash</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span>, <span class="ident"><span class="self">Self</span>::Error</span><span class="op">&gt;</span> {
         <span class="ident">Fp::from_bytes</span>(<span class="ident">i</span>.<span class="number">0</span>.<span class="ident">as_slice</span>())
     }
 }
@@ -519,22 +512,36 @@
 <span class="macro">impl_from_for_generic_with_proxy!</span>(<span class="ident">StateHash</span>, <span class="ident">HashV1</span>, <span class="ident">StateHashV1Json</span>);
 <span class="macro">impl_strconv_via_json!</span>(<span class="ident">StateHash</span>, <span class="ident">StateHashV1Json</span>);
 
+<span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">Fp</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">StateHash</span> {
+    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">i</span>: <span class="kw-2">&amp;</span><span class="ident">Fp</span>) -&gt; <span class="self">Self</span> {
+        <span class="kw">let</span> <span class="ident">base</span>: <span class="ident">BaseHash</span> <span class="op">=</span> <span class="ident">i</span>.<span class="ident">into</span>();
+        <span class="ident">base</span>.<span class="ident">into</span>()
+    }
+}
+
+<span class="kw">impl</span> <span class="ident">TryFrom</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">StateHash</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Fp</span> {
+    <span class="kw">type</span> <span class="ident">Error</span> <span class="op">=</span> <span class="ident">FieldHelpersError</span>;
+
+    <span class="kw">fn</span> <span class="ident">try_from</span>(<span class="ident">i</span>: <span class="kw-2">&amp;</span><span class="ident">StateHash</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span>, <span class="ident"><span class="self">Self</span>::Error</span><span class="op">&gt;</span> {
+        (<span class="kw-2">&amp;</span><span class="ident">i</span>.<span class="number">0</span>).<span class="ident">try_into</span>()
+    }
+}
+
 <span class="kw">impl</span> <span class="ident">Hashable</span> <span class="kw">for</span> <span class="ident">StateHash</span> {
     <span class="kw">type</span> <span class="ident">D</span> <span class="op">=</span> ();
 
     <span class="kw">fn</span> <span class="ident">to_roinput</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">ROInput</span> {
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">roi</span> <span class="op">=</span> <span class="ident">ROInput::new</span>();
-        <span class="ident">roi</span>.<span class="ident">append_hashable</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0</span>);
+        <span class="ident">roi</span>.<span class="ident">append_field</span>(
+            <span class="self">self</span>.<span class="ident">try_into</span>()
+                .<span class="ident">expect</span>(<span class="string">&quot;Failed to convert StateHash into Fp&quot;</span>),
+        );
         <span class="ident">roi</span>
     }
 
     <span class="kw">fn</span> <span class="ident">domain_string</span>(<span class="kw">_</span>: <span class="ident"><span class="self">Self</span>::D</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> {
         <span class="prelude-val">None</span>
     }
-}
-
-<span class="kw">impl</span> <span class="ident">Hash</span> <span class="kw">for</span> <span class="ident">StateHash</span> {
-    <span class="kw">const</span> <span class="ident">PREFIX</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">HashPrefix</span> <span class="op">=</span> <span class="ident">PROTOCOL_STATE</span>;
 }
 
 <span class="comment">//////////////////////////////////////////////////////////////////////////</span>
@@ -546,18 +553,18 @@
 <span class="macro">impl_from_for_generic_with_proxy!</span>(<span class="ident">LedgerHash</span>, <span class="ident">HashV1</span>, <span class="ident">LedgerHashV1Json</span>);
 <span class="macro">impl_strconv_via_json!</span>(<span class="ident">LedgerHash</span>, <span class="ident">LedgerHashV1Json</span>);
 
-<span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">Fp</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">LedgerHash</span> {
-    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">i</span>: <span class="ident">Fp</span>) -&gt; <span class="self">Self</span> {
+<span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">Fp</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">LedgerHash</span> {
+    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">i</span>: <span class="kw-2">&amp;</span><span class="ident">Fp</span>) -&gt; <span class="self">Self</span> {
         <span class="kw">let</span> <span class="ident">base</span>: <span class="ident">BaseHash</span> <span class="op">=</span> <span class="ident">i</span>.<span class="ident">into</span>();
         <span class="ident">base</span>.<span class="ident">into</span>()
     }
 }
 
-<span class="kw">impl</span> <span class="ident">TryFrom</span><span class="op">&lt;</span><span class="ident">LedgerHash</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Fp</span> {
+<span class="kw">impl</span> <span class="ident">TryFrom</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">LedgerHash</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Fp</span> {
     <span class="kw">type</span> <span class="ident">Error</span> <span class="op">=</span> <span class="ident">FieldHelpersError</span>;
 
-    <span class="kw">fn</span> <span class="ident">try_from</span>(<span class="ident">i</span>: <span class="ident">LedgerHash</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span>, <span class="ident"><span class="self">Self</span>::Error</span><span class="op">&gt;</span> {
-        <span class="ident">i</span>.<span class="number">0</span>.<span class="ident">try_into</span>()
+    <span class="kw">fn</span> <span class="ident">try_from</span>(<span class="ident">i</span>: <span class="kw-2">&amp;</span><span class="ident">LedgerHash</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span>, <span class="ident"><span class="self">Self</span>::Error</span><span class="op">&gt;</span> {
+        (<span class="kw-2">&amp;</span><span class="ident">i</span>.<span class="number">0</span>).<span class="ident">try_into</span>()
     }
 }
 
@@ -566,7 +573,10 @@
 
     <span class="kw">fn</span> <span class="ident">to_roinput</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">ROInput</span> {
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">roi</span> <span class="op">=</span> <span class="ident">ROInput::new</span>();
-        <span class="ident">roi</span>.<span class="ident">append_hashable</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0</span>);
+        <span class="ident">roi</span>.<span class="ident">append_field</span>(
+            <span class="self">self</span>.<span class="ident">try_into</span>()
+                .<span class="ident">expect</span>(<span class="string">&quot;Failed to convert StateHash into Fp&quot;</span>),
+        );
         <span class="ident">roi</span>
     }
 
@@ -629,10 +639,6 @@
     <span class="kw">fn</span> <span class="ident">domain_string</span>(<span class="kw">_</span>: <span class="ident"><span class="self">Self</span>::D</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> {
         <span class="prelude-val">None</span>
     }
-}
-
-<span class="kw">impl</span> <span class="ident">Hash</span> <span class="kw">for</span> <span class="ident">EpochSeed</span> {
-    <span class="kw">const</span> <span class="ident">PREFIX</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">HashPrefix</span> <span class="op">=</span> <span class="ident">EPOCH_SEED</span>;
 }
 
 <span class="comment">//////////////////////////////////////////////////////////////////////////</span>
@@ -731,10 +737,6 @@
 <span class="macro">impl_from_for_hash!</span>(<span class="ident">VrfOutputHash</span>, <span class="ident">HashV1</span>);
 <span class="macro">impl_from_for_generic_with_proxy!</span>(<span class="ident">VrfOutputHash</span>, <span class="ident">HashV1</span>, <span class="ident">VrfOutputHashV1Json</span>);
 <span class="macro">impl_strconv_via_json!</span>(<span class="ident">VrfOutputHash</span>, <span class="ident">VrfOutputHashV1Json</span>);
-
-<span class="kw">impl</span> <span class="ident">Hash</span> <span class="kw">for</span> <span class="ident">VrfOutputHash</span> {
-    <span class="kw">const</span> <span class="ident">PREFIX</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">HashPrefix</span> <span class="op">=</span> <span class="ident">VRF_OUTPUT</span>;
-}
 
 <span class="comment">//////////////////////////////////////////////////////////////////////////</span>
 
@@ -839,5 +841,5 @@
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="mina_crypto" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (495b21669 2022-07-03)" ></div>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="mina_crypto" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (27eb6d701 2022-07-04)" ></div>
 </body></html>

@@ -506,12 +506,12 @@
     }
 }
 
-<span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">BigInt256</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ark_ff::BigInteger256</span> {
-    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">i</span>: <span class="ident">BigInt256</span>) -&gt; <span class="self">Self</span> {
+<span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">BigInt256</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ark_ff::BigInteger256</span> {
+    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">i</span>: <span class="kw-2">&amp;</span><span class="ident">BigInt256</span>) -&gt; <span class="self">Self</span> {
         <span class="kw">use</span> <span class="ident">ark_ff::bytes::FromBytes</span>;
         <span class="ident"><span class="self">Self</span>::read</span>(<span class="kw-2">&amp;</span><span class="ident">i</span>.<span class="number">0</span>[..]).<span class="ident">unwrap</span>()
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_rs_base" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (495b21669 2022-07-03)" ></div>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_rs_base" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (27eb6d701 2022-07-04)" ></div>
 </body></html>
