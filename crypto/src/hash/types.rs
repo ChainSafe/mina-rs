@@ -270,20 +270,6 @@ pub struct AuxHash(pub Vec<u8>);
 impl_from_for_newtype!(AuxHash, AuxHashJson);
 impl_strconv_via_json!(AuxHash, AuxHashJson);
 
-impl Hashable for AuxHash {
-    type D = ();
-
-    fn to_roinput(&self) -> ROInput {
-        let mut roi = ROInput::new();
-        roi.append_bytes(&self.0);
-        roi
-    }
-
-    fn domain_string(_: Self::D) -> Option<String> {
-        None
-    }
-}
-
 //////////////////////////////////////////////////////////////////////////
 
 #[derive(Clone, Default, Debug, PartialEq, derive_more::From)]
@@ -291,20 +277,6 @@ pub struct PendingCoinbaseAuxHash(pub Vec<u8>);
 
 impl_from_for_newtype!(PendingCoinbaseAuxHash, PendingCoinbaseAuxHashJson);
 impl_strconv_via_json!(PendingCoinbaseAuxHash, PendingCoinbaseAuxHashJson);
-
-impl Hashable for PendingCoinbaseAuxHash {
-    type D = ();
-
-    fn to_roinput(&self) -> ROInput {
-        let mut roi = ROInput::new();
-        roi.append_bytes(&self.0);
-        roi
-    }
-
-    fn domain_string(_: Self::D) -> Option<String> {
-        None
-    }
-}
 
 //////////////////////////////////////////////////////////////////////////
 

@@ -196,28 +196,13 @@ mod tests {
             "26916965920202625828811831006264431911594993787410334374666335644820635123853"
         );
 
-        let body_hash = {
-            let mut hasher = create_legacy(());
-            let hash = hasher.hash(&block.protocol_state.body);
-            let big256: BigInteger256 = hash.into();
-            let big: BigUint = big256.into();
-            big.to_str_radix(10)
-        };
-
         assert_eq!(
-            body_hash,
+            hash(&block.protocol_state.body),
             "11547288559214200277520549031042137594317244691846831172842173442778999413309"
         );
 
-        let state_hash = {
-            let hash = block.protocol_state.state_hash_fp();
-            let big256: BigInteger256 = hash.into();
-            let big: BigUint = big256.into();
-            big.to_str_radix(10)
-        };
-
         assert_eq!(
-            state_hash,
+            hash(&block.protocol_state),
             "18109765379584684499155740919947103416101561945742376017305891046236717214321"
         );
     }
