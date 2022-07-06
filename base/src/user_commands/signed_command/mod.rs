@@ -219,10 +219,12 @@ mod tests {
 
             let mut payload = builder.build();
 
-            let testnet_cmd = SignedCommand::from_payload(payload.clone(), kp, NetworkId::TESTNET);
-            let testnet_sig = testnet_cmd.signature;
-            let mainnet_cmd = SignedCommand::from_payload(payload.clone(), kp, NetworkId::MAINNET);
-            let mainnet_sig = mainnet_cmd.signature;
+            let testnet_cmd =
+                SignedCommand::from_payload(payload.clone(), kp.clone(), NetworkId::TESTNET);
+            let testnet_sig = &testnet_cmd.signature;
+            let mainnet_cmd =
+                SignedCommand::from_payload(payload.clone(), kp.clone(), NetworkId::MAINNET);
+            let mainnet_sig = &mainnet_cmd.signature;
 
             // Context for verification
             let mut testnet_ctx = mina_signer::create_legacy(NetworkId::TESTNET);

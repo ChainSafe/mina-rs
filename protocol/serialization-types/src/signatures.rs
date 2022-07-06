@@ -7,7 +7,6 @@ use crate::{
     field_and_curve_elements::{FieldElement, InnerCurveScalar},
     impl_strconv_via_json, version_bytes,
 };
-use ark_serialize::CanonicalSerialize;
 use mina_serialization_types_macros::AutoFrom;
 use proof_systems::mina_signer::CompressedPubKey;
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
@@ -124,13 +123,11 @@ mod conversions {
     }
     impl From<&CompressedPubKey> for CompressedCurvePoint {
         fn from(t: &CompressedPubKey) -> Self {
-            let mut x_bytes: Vec<u8> = Vec::with_capacity(32);
-            t.x.serialize(&mut x_bytes)
-                .expect("Failed to serialize field");
             CompressedCurvePoint {
                 // This unwrap of a slice conversion is safe as a CompressedPubKey always has 32 bytes of data which the exact length of
                 // FieldElement
-                x: x_bytes
+                x: t.x
+                    .to_bytes()
                     .as_slice()
                     .try_into()
                     .expect("Wrong number of bytes encountered when converting to FieldElement"),
@@ -238,20 +235,14 @@ mod conversions {
 
     impl From<&Signature> for SignatureV1 {
         fn from(t: &Signature) -> Self {
-            let mut rx_bytes: Vec<u8> = Vec::with_capacity(32);
-            t.rx.serialize(&mut rx_bytes)
-                .expect("Failed to serialize field");
-            let mut s_bytes: Vec<u8> = Vec::with_capacity(32);
-            t.s.serialize(&mut s_bytes)
-                .expect("Failed to serialize field");
             SignatureV1(
                 (
                     // This unwrap of a slice conversion is safe as a CompressedPubKey always has 32 bytes of data which the exact length of
                     // FieldElement
-                    rx_bytes.as_slice().try_into().expect(
+                    t.rx.to_bytes().as_slice().try_into().expect(
                         "Wrong number of bytes encountered when converting to FieldElement",
                     ),
-                    s_bytes.as_slice().try_into().expect(
+                    t.s.to_bytes().as_slice().try_into().expect(
                         "Wrong number of bytes encountered when converting to FieldElement",
                     ),
                 )

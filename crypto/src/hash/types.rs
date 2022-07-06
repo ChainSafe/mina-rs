@@ -10,7 +10,6 @@
 //! Depending on the type of hash a different byte prefix is used in the human readable form
 //!
 
-use ark_serialize::CanonicalSerialize;
 use mina_serialization_types::{impl_strconv_via_json, json::*, v1::*};
 use proof_systems::{
     mina_hasher::{Fp, Hashable, ROInput},
@@ -46,9 +45,7 @@ impl From<&[u8]> for BaseHash {
 
 impl From<&Fp> for BaseHash {
     fn from(i: &Fp) -> Self {
-        let mut bytes: Vec<u8> = Vec::with_capacity(32);
-        i.serialize(&mut bytes).expect("Failed to serialize Fp");
-        bytes.as_slice().into()
+        i.to_bytes().as_slice().into()
     }
 }
 
