@@ -106,10 +106,7 @@ impl Hashable for StateHash {
 
     fn to_roinput(&self) -> ROInput {
         let mut roi = ROInput::new();
-        roi.append_field(
-            self.try_into()
-                .expect("Failed to convert StateHash into Fp"),
-        );
+        roi.append_hashable(&self.0);
         roi
     }
 
@@ -147,10 +144,7 @@ impl Hashable for LedgerHash {
 
     fn to_roinput(&self) -> ROInput {
         let mut roi = ROInput::new();
-        roi.append_field(
-            self.try_into()
-                .expect("Failed to convert StateHash into Fp"),
-        );
+        roi.append_hashable(&self.0);
         roi
     }
 
