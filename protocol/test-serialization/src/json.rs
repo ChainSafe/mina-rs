@@ -118,8 +118,12 @@ mod tests {
             "21283551842411620881532468880644102678972422874752466180084533585306358443047"
         );
 
-        // FIXME
-        assert_ne!(
+        assert_eq!(
+            hash(&block.protocol_state.body.consensus_state.last_vrf_output),
+            "25370206210950520779082257948618326030877049579889865033411963068050002039007"
+        );
+
+        assert_eq!(
             hash(&block.protocol_state.body.consensus_state),
             "4567520866406870569587277062959652446267293244931899281786637782228092413468"
         );
@@ -192,15 +196,28 @@ mod tests {
             "26916965920202625828811831006264431911594993787410334374666335644820635123853"
         );
 
+        let body_hash = {
+            let mut hasher = create_legacy(());
+            let hash = hasher.hash(&block.protocol_state.body);
+            let big256: BigInteger256 = hash.into();
+            let big: BigUint = big256.into();
+            big.to_str_radix(10)
+        };
         // FIXME
         assert_ne!(
-            hash(&block.protocol_state.body),
+            body_hash,
             "11547288559214200277520549031042137594317244691846831172842173442778999413309"
         );
 
+        let state_hash = {
+            let hash = block.protocol_state.state_hash_fp();
+            let big256: BigInteger256 = hash.into();
+            let big: BigUint = big256.into();
+            big.to_str_radix(10)
+        };
         // FIXME
         assert_ne!(
-            hash(&block.protocol_state),
+            state_hash,
             "18109765379584684499155740919947103416101561945742376017305891046236717214321"
         );
     }
