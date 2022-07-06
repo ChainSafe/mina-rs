@@ -141,10 +141,10 @@ impl Hashable for ProtocolStateBody {
 
     fn to_roinput(&self) -> ROInput {
         let mut roi = ROInput::new();
+        roi.append_hashable(&self.constants);
+        roi.append_hashable(&self.genesis_state_hash);
         roi.append_hashable(&self.blockchain_state);
         roi.append_hashable(&self.consensus_state);
-        roi.append_hashable(&self.genesis_state_hash);
-        roi.append_hashable(&self.constants);
         roi
     }
 

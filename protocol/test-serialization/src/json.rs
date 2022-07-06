@@ -97,7 +97,7 @@ mod tests {
     */
     #[test]
     #[wasm_bindgen_test]
-    fn protocol_state_parity_test() {
+    fn protocol_state_hash_parity_test() {
         let json_value = test_fixtures::JSON_TEST_BLOCKS
             .get("mainnet-113267-3NKtqqstB6h8SVNQCtspFisjUwCTqoQ6cC1KGvb6kx6n2dqKkiZS.json")
             .unwrap();
@@ -203,8 +203,8 @@ mod tests {
             let big: BigUint = big256.into();
             big.to_str_radix(10)
         };
-        // FIXME
-        assert_ne!(
+
+        assert_eq!(
             body_hash,
             "11547288559214200277520549031042137594317244691846831172842173442778999413309"
         );
@@ -215,8 +215,8 @@ mod tests {
             let big: BigUint = big256.into();
             big.to_str_radix(10)
         };
-        // FIXME
-        assert_ne!(
+
+        assert_eq!(
             state_hash,
             "18109765379584684499155740919947103416101561945742376017305891046236717214321"
         );
@@ -237,8 +237,7 @@ mod tests {
                 serde_json::from_value(json.clone()).unwrap();
             let block: ExternalTransition = block_json.into();
             let state_hash = block.protocol_state.state_hash();
-            // FIXME: change to assert_eq! when Hashable is properly implemented for ProtocolState
-            assert_ne!(&state_hash.to_string(), expected_state_hash);
+            assert_eq!(&state_hash.to_string(), expected_state_hash);
         }
     }
 
