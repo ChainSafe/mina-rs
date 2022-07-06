@@ -133,88 +133,30 @@ mod tests {
         // TODO: Validate derived state hash against ocaml derived state hash
     }
 
-    // FIXME: This test fails after state hash calculation is fixed, can we use real blocks instead?
     // Test longer chain selection method
-    // Current Chain: Genesis Chain
-    // Candidate Chain: Chain at BlockHeight: 5001 with StateHash: 3NLUKCeQ16Y7B31i79CTU4jcUSPUQTpjqNicK8SfvoWvrh2B9RYq
-    // #[test]
-    // #[wasm_bindgen_test]
+    // Current chain: https://storage.googleapis.com/mina_network_block_data/mainnet-77748-3NKaBJsN1SehD6iJwRwJSFmVzJg5DXSUQVgnMxtH4eer4aF5BrDK.json
+    // Candidate chains: https://storage.googleapis.com/mina_network_block_data/mainnet-117896-3NKrv92FYZFHRNUJxiP7VGeRx3MeDY2iffFjUWXTPoXJorsS63ba.json
+    #[test]
+    #[wasm_bindgen_test]
     fn selects_longer_chain() {
-        // Init current chain with Genesis chain attributes
+        // Init current chain
+        let block_from_json: ExternalTransition = read_block_json(
+            "mainnet-77748-3NKaBJsN1SehD6iJwRwJSFmVzJg5DXSUQVgnMxtH4eer4aF5BrDK.json",
+        );
         let mut current_chain = ProtocolStateChain::default();
-        // Add new block `b0`
-        let mut b0 = ProtocolState::default();
-        let mut consensus_state = ConsensusState::default();
-        consensus_state.min_window_density = Length(77); // MinWindowDensity of Genesis chain
-        consensus_state.sub_window_densities = vec![
-            // SubWindowDensities of Genesis chain
-            Length(1),
-            Length(7),
-            Length(7),
-            Length(7),
-            Length(7),
-            Length(7),
-            Length(7),
-            Length(7),
-            Length(7),
-            Length(7),
-            Length(7),
-        ];
-        consensus_state.curr_global_slot = GlobalSlot {
-            // GlobalSlot of Genesis chain
-            slot_number: GlobalSlotNumber(0),
-            slots_per_epoch: Length(7140),
-        };
-        b0.body.consensus_state = consensus_state;
-        current_chain.push(b0).unwrap();
+        current_chain.push(block_from_json.protocol_state).unwrap();
 
-        // Init candidate chain
-        let mut new_chain = ProtocolStateChain::default();
-        // Add new block `b0`
-        let mut b0 = ProtocolState::default();
-        let mut consensus_state = ConsensusState::default();
-        consensus_state.min_window_density = Length(43); // MinWindowDenisity of candidate chain
-        let densities = vec![
-            // SubWindowDensities of candidate chain
-            Length(5),
-            Length(5),
-            Length(2),
-            Length(5),
-            Length(3),
-            Length(1),
-            Length(5),
-            Length(3),
-            Length(7),
-            Length(6),
-            Length(5),
-        ];
-        consensus_state.sub_window_densities = densities.clone();
-        consensus_state.curr_global_slot = GlobalSlot {
-            // GlobalSlot of candidate chain
-            slot_number: GlobalSlotNumber(7042),
-            slots_per_epoch: Length(7140),
-        };
-        b0.body.consensus_state = consensus_state;
-        new_chain.push(b0).unwrap();
-
-        // Add new chain to collection of candidate chains
-        let mut candidate_chains = vec![];
-        candidate_chains.push(new_chain);
-        let select_result = current_chain
-            .select_secure_chain(&candidate_chains)
+        // Init candidate chain from JSON
+        let block_from_json: ExternalTransition = read_block_json(
+            "mainnet-117896-3NKrv92FYZFHRNUJxiP7VGeRx3MeDY2iffFjUWXTPoXJorsS63ba.json",
+        );
+        let mut candidate_chain = ProtocolStateChain::default();
+        candidate_chain
+            .push(block_from_json.protocol_state)
             .unwrap();
-        // Candidate chain satisfies short range fork rule wrt to current chain
-        // and candidate chain should be selected as per longer chain selection rule
-        assert_eq!(select_result, &candidate_chains[0]);
-        let result_state = select_result.0.get(0).unwrap();
-        assert_eq!(
-            result_state.body.consensus_state.min_window_density,
-            Length(43) // MinWindowDenisity of candidate chain
-        );
-        assert_eq!(
-            result_state.body.consensus_state.sub_window_densities,
-            densities // SubWindowDensities of candidate chain
-        );
+
+        let select_result = current_chain.select_longer_chain(&candidate_chain).unwrap(); // Candidate chain is longer 117896 > 77748
+        assert_eq!(select_result, &candidate_chain);
     }
 
     #[test]
