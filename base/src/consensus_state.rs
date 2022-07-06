@@ -43,14 +43,19 @@ impl Hashable for VrfOutputTruncated {
 
     fn to_roinput(&self) -> ROInput {
         let mut roi = ROInput::new();
-        roi.append_bytes(&self.0[..31]);
-        let last = self.0[31];
-        roi.append_bool(last & 0b1 > 0)
-            .append_bool(last & 0b10 > 0)
-            .append_bool(last & 0b100 > 0)
-            .append_bool(last & 0b1000 > 0)
-            .append_bool(last & 0b10000 > 0);
-
+        if self.0.len() <= 31 {
+            roi.append_bytes(&self.0);
+        } else {
+            roi.append_bytes(&self.0[..31]);
+            if self.0.len() > 31 {
+                let last = self.0[31];
+                roi.append_bool(last & 0b1 > 0)
+                    .append_bool(last & 0b10 > 0)
+                    .append_bool(last & 0b100 > 0)
+                    .append_bool(last & 0b1000 > 0)
+                    .append_bool(last & 0b10000 > 0);
+            }
+        }
         roi
     }
 
