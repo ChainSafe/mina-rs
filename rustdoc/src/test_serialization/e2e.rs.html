@@ -52,6 +52,7 @@
 <span id="46">46</span>
 <span id="47">47</span>
 <span id="48">48</span>
+<span id="49">49</span>
 </pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems</span>
 <span class="comment">// SPDX-License-Identifier: Apache-2.0</span>
 
@@ -71,11 +72,12 @@
     <span class="kw">fn</span> <span class="ident">test_block_state_hash</span>() {
         <span class="kw">for</span> (<span class="ident">file_name</span>, <span class="ident">block_fixture</span>) <span class="kw">in</span> <span class="ident">test_fixtures::TEST_BLOCKS</span>.<span class="ident">iter</span>() {
             <span class="kw">let</span> <span class="ident">expected_state_hash</span> <span class="op">=</span> <span class="ident">file_name</span>.<span class="ident">split</span>(<span class="string">&#39;.&#39;</span>).<span class="ident">nth</span>(<span class="number">0</span>).<span class="ident">unwrap_or_default</span>();
-            <span class="kw">let</span> <span class="ident">block_v1</span> <span class="op">=</span> <span class="ident">block_fixture</span>.<span class="ident">external_transitionv1</span>().<span class="ident">unwrap</span>();
-            <span class="kw">let</span> <span class="ident">block</span>: <span class="ident">ExternalTransition</span> <span class="op">=</span> <span class="ident">block_v1</span>.<span class="ident">into</span>();
-            <span class="kw">let</span> <span class="ident">state_hash</span> <span class="op">=</span> <span class="ident">block</span>.<span class="ident">protocol_state</span>.<span class="ident">state_hash</span>();
-            <span class="comment">// FIXME: change to assert_eq! when Hashable is properly implemented for ProtocolState</span>
-            <span class="macro">assert_ne!</span>(<span class="kw-2">&amp;</span><span class="ident">state_hash</span>.<span class="ident">to_string</span>(), <span class="ident">expected_state_hash</span>);
+            <span class="kw">if</span> <span class="op">!</span><span class="ident">expected_state_hash</span>.<span class="ident">contains</span>(<span class="string">&quot;block&quot;</span>) {
+                <span class="kw">let</span> <span class="ident">block_v1</span> <span class="op">=</span> <span class="ident">block_fixture</span>.<span class="ident">external_transitionv1</span>().<span class="ident">unwrap</span>();
+                <span class="kw">let</span> <span class="ident">block</span>: <span class="ident">ExternalTransition</span> <span class="op">=</span> <span class="ident">block_v1</span>.<span class="ident">into</span>();
+                <span class="kw">let</span> <span class="ident">state_hash</span> <span class="op">=</span> <span class="ident">block</span>.<span class="ident">protocol_state</span>.<span class="ident">state_hash</span>();
+                <span class="macro">assert_eq!</span>(<span class="kw-2">&amp;</span><span class="ident">state_hash</span>.<span class="ident">to_string</span>(), <span class="ident">expected_state_hash</span>);
+            }
         }
     }
 
@@ -101,5 +103,5 @@
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="test_serialization" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (27eb6d701 2022-07-04)" ></div>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="test_serialization" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (7665c3543 2022-07-06)" ></div>
 </body></html>

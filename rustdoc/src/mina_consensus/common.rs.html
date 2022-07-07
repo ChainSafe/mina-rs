@@ -358,15 +358,6 @@
 <span id="352">352</span>
 <span id="353">353</span>
 <span id="354">354</span>
-<span id="355">355</span>
-<span id="356">356</span>
-<span id="357">357</span>
-<span id="358">358</span>
-<span id="359">359</span>
-<span id="360">360</span>
-<span id="361">361</span>
-<span id="362">362</span>
-<span id="363">363</span>
 </pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems</span>
 <span class="comment">// SPDX-License-Identifier: Apache-2.0</span>
 
@@ -375,9 +366,6 @@
 <span class="doccomment">//!</span>
 
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::error::ConsensusError</span>;
-<span class="kw">use</span> <span class="ident">blake2::digest::Update</span>;
-<span class="kw">use</span> <span class="ident">blake2::digest::VariableOutput</span>;
-<span class="kw">use</span> <span class="ident">blake2::Blake2bVar</span>;
 <span class="kw">use</span> <span class="ident">mina_rs_base::consensus_state::ConsensusState</span>;
 <span class="kw">use</span> <span class="ident">mina_rs_base::global_slot::GlobalSlot</span>;
 <span class="kw">use</span> <span class="ident">mina_rs_base::protocol_state</span>::{<span class="ident">Header</span>, <span class="ident">ProtocolState</span>};
@@ -501,19 +489,13 @@
     }
 
     <span class="kw">fn</span> <span class="ident">last_vrf_hash_digest</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">ConsensusError</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">output_size</span> <span class="op">=</span> <span class="number">32</span>; <span class="comment">// TODO: do we need this configurable?</span>
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">hasher</span> <span class="op">=</span> <span class="ident">Blake2bVar::new</span>(<span class="ident">output_size</span>)
-            .<span class="ident">map_err</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="ident">ConsensusError::InvalidBlake2bOutputSize</span>(<span class="ident">output_size</span>))<span class="question-mark">?</span>;
-        <span class="ident">hasher</span>.<span class="ident">update</span>(
-            <span class="self">self</span>.<span class="ident">top</span>()
-                .<span class="ident">ok_or</span>(<span class="ident">ConsensusError::TopBlockNotFound</span>)<span class="question-mark">?</span>
-                .<span class="ident">body</span>
-                .<span class="ident">consensus_state</span>
-                .<span class="ident">last_vrf_output</span>
-                .<span class="number">0</span>
-                .<span class="ident">as_slice</span>(),
-        );
-        <span class="kw">let</span> <span class="ident">hash</span> <span class="op">=</span> <span class="ident">hasher</span>.<span class="ident">finalize_boxed</span>();
+        <span class="kw">let</span> <span class="ident">hash</span> <span class="op">=</span> <span class="self">self</span>
+            .<span class="ident">top</span>()
+            .<span class="ident">ok_or</span>(<span class="ident">ConsensusError::TopBlockNotFound</span>)<span class="question-mark">?</span>
+            .<span class="ident">body</span>
+            .<span class="ident">consensus_state</span>
+            .<span class="ident">last_vrf_output</span>
+            .<span class="ident">digest</span>();
         <span class="prelude-val">Ok</span>(<span class="ident">hex::encode</span>(<span class="ident">hash</span>))
     }
 
@@ -731,5 +713,5 @@
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_consensus" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (27eb6d701 2022-07-04)" ></div>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_consensus" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (7665c3543 2022-07-06)" ></div>
 </body></html>

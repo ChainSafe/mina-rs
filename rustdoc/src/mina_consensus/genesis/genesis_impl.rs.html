@@ -69,11 +69,11 @@
                 <span class="ident">blockchain_state</span>: <span class="ident">config</span>.<span class="ident">blockchain_state</span>.<span class="ident">clone</span>(),
                 <span class="ident">constants</span>: <span class="ident">config</span>.<span class="ident">constants</span>.<span class="ident">clone</span>(),
                 <span class="ident">consensus_state</span>: <span class="ident">ConsensusState</span> {
-                    <span class="ident">block_creator</span>: <span class="ident">config</span>.<span class="ident">block_creator</span>,
-                    <span class="ident">block_stake_winner</span>: <span class="ident">config</span>.<span class="ident">block_stake_winner</span>,
+                    <span class="ident">block_creator</span>: <span class="ident">config</span>.<span class="ident">block_creator</span>.<span class="ident">clone</span>(),
+                    <span class="ident">block_stake_winner</span>: <span class="ident">config</span>.<span class="ident">block_stake_winner</span>.<span class="ident">clone</span>(),
                     <span class="ident">blockchain_length</span>: <span class="number">1_u32</span>.<span class="ident">into</span>(),
                     <span class="ident">epoch_count</span>: <span class="number">0_u32</span>.<span class="ident">into</span>(),
-                    <span class="ident">coinbase_receiver</span>: <span class="ident">config</span>.<span class="ident">coinbase_receiver</span>,
+                    <span class="ident">coinbase_receiver</span>: <span class="ident">config</span>.<span class="ident">coinbase_receiver</span>.<span class="ident">clone</span>(),
                     <span class="ident">curr_global_slot</span>: <span class="ident">GlobalSlot</span> {
                         <span class="ident">slot_number</span>: <span class="number">0_u32</span>.<span class="ident">into</span>(),
                         <span class="ident">slots_per_epoch</span>: <span class="ident">config</span>.<span class="ident">constants</span>.<span class="ident">slots_per_epoch</span>,
@@ -107,5 +107,5 @@
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="mina_consensus" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (27eb6d701 2022-07-04)" ></div>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="mina_consensus" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (7665c3543 2022-07-06)" ></div>
 </body></html>

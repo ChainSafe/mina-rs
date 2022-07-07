@@ -130,6 +130,35 @@
 <span id="124">124</span>
 <span id="125">125</span>
 <span id="126">126</span>
+<span id="127">127</span>
+<span id="128">128</span>
+<span id="129">129</span>
+<span id="130">130</span>
+<span id="131">131</span>
+<span id="132">132</span>
+<span id="133">133</span>
+<span id="134">134</span>
+<span id="135">135</span>
+<span id="136">136</span>
+<span id="137">137</span>
+<span id="138">138</span>
+<span id="139">139</span>
+<span id="140">140</span>
+<span id="141">141</span>
+<span id="142">142</span>
+<span id="143">143</span>
+<span id="144">144</span>
+<span id="145">145</span>
+<span id="146">146</span>
+<span id="147">147</span>
+<span id="148">148</span>
+<span id="149">149</span>
+<span id="150">150</span>
+<span id="151">151</span>
+<span id="152">152</span>
+<span id="153">153</span>
+<span id="154">154</span>
+<span id="155">155</span>
 </pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems</span>
 <span class="comment">// SPDX-License-Identifier: Apache-2.0</span>
 
@@ -139,6 +168,10 @@
     <span class="ident">epoch_data::EpochData</span>,
     <span class="ident">global_slot::GlobalSlot</span>,
     <span class="ident">numbers</span>::{<span class="ident">Amount</span>, <span class="ident">GlobalSlotNumber</span>, <span class="ident">Length</span>},
+};
+<span class="kw">use</span> <span class="ident">blake2</span>::{
+    <span class="ident">digest</span>::{<span class="ident">Update</span>, <span class="ident">VariableOutput</span>},
+    <span class="ident">Blake2bVar</span>,
 };
 <span class="kw">use</span> <span class="ident">mina_serialization_types</span>::{<span class="ident">json</span>::<span class="kw-2">*</span>, <span class="ident">v1</span>::<span class="kw-2">*</span>, <span class="kw-2">*</span>};
 <span class="kw">use</span> <span class="ident">mina_serialization_types_macros::AutoFrom</span>;
@@ -155,6 +188,15 @@
 <span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">mina_serialization_types::consensus_state::VrfOutputTruncatedJson</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">VrfOutputTruncated</span>(<span class="kw">pub</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>);
 
+<span class="kw">impl</span> <span class="ident">VrfOutputTruncated</span> {
+    <span class="doccomment">/// Calculates blake2b digest</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">digest</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span> {
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">hasher</span> <span class="op">=</span> <span class="ident">Blake2bVar::new</span>(<span class="number">32</span>).<span class="ident">expect</span>(<span class="string">&quot;Invalid Blake2bVar output size&quot;</span>);
+        <span class="ident">hasher</span>.<span class="ident">update</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0</span>);
+        <span class="ident">hasher</span>.<span class="ident">finalize_boxed</span>().<span class="ident">to_vec</span>()
+    }
+}
+
 <span class="macro">impl_strconv_via_json!</span>(<span class="ident">VrfOutputTruncated</span>, <span class="ident">VrfOutputTruncatedJson</span>);
 
 <span class="kw">impl</span> <span class="ident">Hashable</span> <span class="kw">for</span> <span class="ident">VrfOutputTruncated</span> {
@@ -162,7 +204,19 @@
 
     <span class="kw">fn</span> <span class="ident">to_roinput</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">ROInput</span> {
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">roi</span> <span class="op">=</span> <span class="ident">ROInput::new</span>();
-        <span class="ident">roi</span>.<span class="ident">append_bytes</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0</span>);
+        <span class="kw">if</span> <span class="self">self</span>.<span class="number">0</span>.<span class="ident">len</span>() <span class="op">&lt;</span><span class="op">=</span> <span class="number">31</span> {
+            <span class="ident">roi</span>.<span class="ident">append_bytes</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0</span>);
+        } <span class="kw">else</span> {
+            <span class="ident">roi</span>.<span class="ident">append_bytes</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0</span>[..<span class="number">31</span>]);
+            <span class="kw">if</span> <span class="self">self</span>.<span class="number">0</span>.<span class="ident">len</span>() <span class="op">&gt;</span> <span class="number">31</span> {
+                <span class="kw">let</span> <span class="ident">last</span> <span class="op">=</span> <span class="self">self</span>.<span class="number">0</span>[<span class="number">31</span>];
+                <span class="ident">roi</span>.<span class="ident">append_bool</span>(<span class="ident">last</span> <span class="op">&amp;</span> <span class="number">0b1</span> <span class="op">&gt;</span> <span class="number">0</span>)
+                    .<span class="ident">append_bool</span>(<span class="ident">last</span> <span class="op">&amp;</span> <span class="number">0b10</span> <span class="op">&gt;</span> <span class="number">0</span>)
+                    .<span class="ident">append_bool</span>(<span class="ident">last</span> <span class="op">&amp;</span> <span class="number">0b100</span> <span class="op">&gt;</span> <span class="number">0</span>)
+                    .<span class="ident">append_bool</span>(<span class="ident">last</span> <span class="op">&amp;</span> <span class="number">0b1000</span> <span class="op">&gt;</span> <span class="number">0</span>)
+                    .<span class="ident">append_bool</span>(<span class="ident">last</span> <span class="op">&amp;</span> <span class="number">0b10000</span> <span class="op">&gt;</span> <span class="number">0</span>);
+            }
+        }
         <span class="ident">roi</span>
     }
 
@@ -235,13 +289,17 @@
         <span class="ident">roi</span>.<span class="ident">append_hashable</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">total_currency</span>);
         <span class="ident">roi</span>.<span class="ident">append_hashable</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">curr_global_slot</span>);
         <span class="ident">roi</span>.<span class="ident">append_hashable</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">global_slot_since_genesis</span>);
+        <span class="ident">roi</span>.<span class="ident">append_bool</span>(<span class="self">self</span>.<span class="ident">has_ancestor_in_same_checkpoint_window</span>);
+        <span class="ident">roi</span>.<span class="ident">append_bool</span>(<span class="self">self</span>.<span class="ident">supercharge_coinbase</span>);
         <span class="ident">roi</span>.<span class="ident">append_hashable</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">staking_epoch_data</span>);
         <span class="ident">roi</span>.<span class="ident">append_hashable</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">next_epoch_data</span>);
-        <span class="ident">roi</span>.<span class="ident">append_bool</span>(<span class="self">self</span>.<span class="ident">has_ancestor_in_same_checkpoint_window</span>);
-        <span class="ident">roi</span>.<span class="ident">append_bytes</span>(<span class="self">self</span>.<span class="ident">block_stake_winner</span>.<span class="ident">into_address</span>().<span class="ident">as_bytes</span>());
-        <span class="ident">roi</span>.<span class="ident">append_bytes</span>(<span class="self">self</span>.<span class="ident">block_creator</span>.<span class="ident">into_address</span>().<span class="ident">as_bytes</span>());
-        <span class="ident">roi</span>.<span class="ident">append_bytes</span>(<span class="self">self</span>.<span class="ident">coinbase_receiver</span>.<span class="ident">into_address</span>().<span class="ident">as_bytes</span>());
-        <span class="ident">roi</span>.<span class="ident">append_bool</span>(<span class="self">self</span>.<span class="ident">supercharge_coinbase</span>);
+        <span class="ident">roi</span>.<span class="ident">append_field</span>(<span class="self">self</span>.<span class="ident">block_stake_winner</span>.<span class="ident">x</span>);
+        <span class="ident">roi</span>.<span class="ident">append_bool</span>(<span class="self">self</span>.<span class="ident">block_stake_winner</span>.<span class="ident">is_odd</span>);
+        <span class="ident">roi</span>.<span class="ident">append_field</span>(<span class="self">self</span>.<span class="ident">block_creator</span>.<span class="ident">x</span>);
+        <span class="ident">roi</span>.<span class="ident">append_bool</span>(<span class="self">self</span>.<span class="ident">block_creator</span>.<span class="ident">is_odd</span>);
+        <span class="ident">roi</span>.<span class="ident">append_field</span>(<span class="self">self</span>.<span class="ident">coinbase_receiver</span>.<span class="ident">x</span>);
+        <span class="ident">roi</span>.<span class="ident">append_bool</span>(<span class="self">self</span>.<span class="ident">coinbase_receiver</span>.<span class="ident">is_odd</span>);
+
         <span class="ident">roi</span>
     }
 
@@ -257,5 +315,5 @@
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_rs_base" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (27eb6d701 2022-07-04)" ></div>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_rs_base" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (7665c3543 2022-07-06)" ></div>
 </body></html>
