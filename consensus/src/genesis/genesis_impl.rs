@@ -12,11 +12,11 @@ impl Genesis for ExternalTransition {
                 blockchain_state: config.blockchain_state.clone(),
                 constants: config.constants.clone(),
                 consensus_state: ConsensusState {
-                    block_creator: config.block_creator,
-                    block_stake_winner: config.block_stake_winner,
+                    block_creator: config.block_creator.clone(),
+                    block_stake_winner: config.block_stake_winner.clone(),
                     blockchain_length: 1_u32.into(),
                     epoch_count: 0_u32.into(),
-                    coinbase_receiver: config.coinbase_receiver,
+                    coinbase_receiver: config.coinbase_receiver.clone(),
                     curr_global_slot: GlobalSlot {
                         slot_number: 0_u32.into(),
                         slots_per_epoch: config.constants.slots_per_epoch,

@@ -23,9 +23,12 @@ proof-systems = {path = "../../proof-systems-shim"}
 test-fixtures = {path = "../test-fixtures"}
 
 anyhow = "1"
+ark-ff = "0.3"
 base64 = "0.13"
 bs58 = {version = "0.4", features = ["check"]}
 criterion = {version = "0.3", features = ["html_reports"]}
+hex = "0.4"
+num = "0.4"
 pretty_assertions = "1"
 rand = "0.8"
 serde = {version = "1", features = ["derive"]}

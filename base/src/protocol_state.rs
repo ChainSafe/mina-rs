@@ -47,9 +47,9 @@ impl Hashable for ProtocolConstants {
     fn to_roinput(&self) -> ROInput {
         let mut roi = ROInput::new();
         roi.append_hashable(&self.k);
+        roi.append_hashable(&self.delta);
         roi.append_hashable(&self.slots_per_epoch);
         roi.append_hashable(&self.slots_per_sub_window);
-        roi.append_hashable(&self.delta);
         roi.append_hashable(&self.genesis_state_timestamp);
         roi
     }
@@ -75,14 +75,21 @@ impl Hashable for ProtocolState {
     type D = ();
 
     fn to_roinput(&self) -> ROInput {
+        static HASHER_POOL: OnceCell<SpinLockObjectPool<PoseidonHasherLegacy<ProtocolStateBody>>> =
+            OnceCell::new();
+        let pool =
+            HASHER_POOL.get_or_init(|| SpinLockObjectPool::new(|| create_legacy(()), |_| ()));
+        let mut hasher = pool.pull();
+        let body_hash = hasher.hash(&self.body);
+
         let mut roi = ROInput::new();
         roi.append_hashable(&self.previous_state_hash);
-        roi.append_hashable(&self.body);
+        roi.append_field(body_hash);
         roi
     }
 
     fn domain_string(_: Self::D) -> Option<String> {
-        None
+        Some("CodaProtoState".into())
     }
 }
 
@@ -134,15 +141,15 @@ impl Hashable for ProtocolStateBody {
 
     fn to_roinput(&self) -> ROInput {
         let mut roi = ROInput::new();
+        roi.append_hashable(&self.constants);
         roi.append_hashable(&self.genesis_state_hash);
         roi.append_hashable(&self.blockchain_state);
         roi.append_hashable(&self.consensus_state);
-        roi.append_hashable(&self.constants);
         roi
     }
 
     fn domain_string(_: Self::D) -> Option<String> {
-        None
+        Some("CodaProtoStateBody".into())
     }
 }
 

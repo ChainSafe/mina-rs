@@ -12,7 +12,6 @@ mina-serialization-types = {path = "../protocol/serialization-types"}
 proof-systems = {path = "../proof-systems-shim"}
 versioned = {path = "../protocol/versioned"}
 
-ark-serialize = "0.3"
 base64 = "0.13"
 blake2 = "0.10"
 bs58 = {version = "0.4", features = ["check"]}
@@ -21,6 +20,7 @@ hex = "0.4"
 num = "0.4"
 serde = {version = "1", features = ["derive"]}
 serde_json = "1"
+sha2 = "0.10"
 thiserror = "1"
 
 [dev-dependencies]

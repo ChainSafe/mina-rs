@@ -8,6 +8,10 @@ use crate::{
     global_slot::GlobalSlot,
     numbers::{Amount, GlobalSlotNumber, Length},
 };
+use blake2::{
+    digest::{Update, VariableOutput},
+    Blake2bVar,
+};
 use mina_serialization_types::{json::*, v1::*, *};
 use mina_serialization_types_macros::AutoFrom;
 use proof_systems::mina_hasher::{Hashable, ROInput};
@@ -23,6 +27,15 @@ use versioned::*;
 #[auto_from(mina_serialization_types::consensus_state::VrfOutputTruncatedJson)]
 pub struct VrfOutputTruncated(pub Vec<u8>);
 
+impl VrfOutputTruncated {
+    /// Calculates blake2b digest
+    pub fn digest(&self) -> Vec<u8> {
+        let mut hasher = Blake2bVar::new(32).expect("Invalid Blake2bVar output size");
+        hasher.update(&self.0);
+        hasher.finalize_boxed().to_vec()
+    }
+}
+
 impl_strconv_via_json!(VrfOutputTruncated, VrfOutputTruncatedJson);
 
 impl Hashable for VrfOutputTruncated {
@@ -30,7 +43,19 @@ impl Hashable for VrfOutputTruncated {
 
     fn to_roinput(&self) -> ROInput {
         let mut roi = ROInput::new();
-        roi.append_bytes(&self.0);
+        if self.0.len() <= 31 {
+            roi.append_bytes(&self.0);
+        } else {
+            roi.append_bytes(&self.0[..31]);
+            if self.0.len() > 31 {
+                let last = self.0[31];
+                roi.append_bool(last & 0b1 > 0)
+                    .append_bool(last & 0b10 > 0)
+                    .append_bool(last & 0b100 > 0)
+                    .append_bool(last & 0b1000 > 0)
+                    .append_bool(last & 0b10000 > 0);
+            }
+        }
         roi
     }
 
@@ -103,13 +128,17 @@ impl Hashable for ConsensusState {
         roi.append_hashable(&self.total_currency);
         roi.append_hashable(&self.curr_global_slot);
         roi.append_hashable(&self.global_slot_since_genesis);
+        roi.append_bool(self.has_ancestor_in_same_checkpoint_window);
+        roi.append_bool(self.supercharge_coinbase);
         roi.append_hashable(&self.staking_epoch_data);
         roi.append_hashable(&self.next_epoch_data);
-        roi.append_bool(self.has_ancestor_in_same_checkpoint_window);
-        roi.append_bytes(self.block_stake_winner.into_address().as_bytes());
-        roi.append_bytes(self.block_creator.into_address().as_bytes());
-        roi.append_bytes(self.coinbase_receiver.into_address().as_bytes());
-        roi.append_bool(self.supercharge_coinbase);
+        roi.append_field(self.block_stake_winner.x);
+        roi.append_bool(self.block_stake_winner.is_odd);
+        roi.append_field(self.block_creator.x);
+        roi.append_bool(self.block_creator.is_odd);
+        roi.append_field(self.coinbase_receiver.x);
+        roi.append_bool(self.coinbase_receiver.is_odd);
+
         roi
     }
 

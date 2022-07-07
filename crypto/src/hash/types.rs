@@ -10,12 +10,12 @@
 //! Depending on the type of hash a different byte prefix is used in the human readable form
 //!
 
-use ark_serialize::CanonicalSerialize;
 use mina_serialization_types::{impl_strconv_via_json, json::*, v1::*};
 use proof_systems::{
     mina_hasher::{Fp, Hashable, ROInput},
     o1_utils::{field_helpers::FieldHelpersError, FieldHelpers},
 };
+use sha2::{Digest, Sha256};
 use versioned::*;
 
 #[derive(Clone, Debug, Default, PartialEq, derive_more::From, derive_more::Into)]
@@ -26,7 +26,7 @@ impl Hashable for BaseHash {
 
     fn to_roinput(&self) -> ROInput {
         let mut roi = ROInput::new();
-        roi.append_bytes(&self.0);
+        roi.append_field(self.try_into().expect("Failed to convert Hash into Fp"));
         roi
     }
 
@@ -45,9 +45,7 @@ impl From<&[u8]> for BaseHash {
 
 impl From<&Fp> for BaseHash {
     fn from(i: &Fp) -> Self {
-        let mut bytes: Vec<u8> = Vec::with_capacity(32);
-        i.serialize(&mut bytes).expect("Failed to serialize Fp");
-        bytes.as_slice().into()
+        i.to_bytes().as_slice().into()
     }
 }
 
@@ -108,10 +106,7 @@ impl Hashable for StateHash {
 
     fn to_roinput(&self) -> ROInput {
         let mut roi = ROInput::new();
-        roi.append_field(
-            self.try_into()
-                .expect("Failed to convert StateHash into Fp"),
-        );
+        roi.append_hashable(&self.0);
         roi
     }
 
@@ -149,10 +144,7 @@ impl Hashable for LedgerHash {
 
     fn to_roinput(&self) -> ROInput {
         let mut roi = ROInput::new();
-        roi.append_field(
-            self.try_into()
-                .expect("Failed to convert StateHash into Fp"),
-        );
+        roi.append_hashable(&self.0);
         roi
     }
 
@@ -247,14 +239,23 @@ pub struct NonSnarkStagedLedgerHash {
     pub pending_coinbase_aux: PendingCoinbaseAuxHash,
 }
 
+impl NonSnarkStagedLedgerHash {
+    pub fn digest(&self) -> Vec<u8> {
+        let mut hasher = Sha256::new();
+        let ledger_hash_bytes: Vec<u8> = self.ledger_hash.0 .0.iter().rev().cloned().collect();
+        hasher.update(&ledger_hash_bytes);
+        hasher.update(&self.aux_hash.0);
+        hasher.update(&self.pending_coinbase_aux.0);
+        hasher.finalize().to_vec()
+    }
+}
+
 impl Hashable for NonSnarkStagedLedgerHash {
     type D = ();
 
     fn to_roinput(&self) -> ROInput {
         let mut roi = ROInput::new();
-        roi.append_hashable(&self.ledger_hash);
-        roi.append_hashable(&self.aux_hash);
-        roi.append_hashable(&self.pending_coinbase_aux);
+        roi.append_bytes(&self.digest());
         roi
     }
 
@@ -269,20 +270,6 @@ pub struct AuxHash(pub Vec<u8>);
 impl_from_for_newtype!(AuxHash, AuxHashJson);
 impl_strconv_via_json!(AuxHash, AuxHashJson);
 
-impl Hashable for AuxHash {
-    type D = ();
-
-    fn to_roinput(&self) -> ROInput {
-        let mut roi = ROInput::new();
-        roi.append_bytes(&self.0);
-        roi
-    }
-
-    fn domain_string(_: Self::D) -> Option<String> {
-        None
-    }
-}
-
 //////////////////////////////////////////////////////////////////////////
 
 #[derive(Clone, Default, Debug, PartialEq, derive_more::From)]
@@ -290,20 +277,6 @@ pub struct PendingCoinbaseAuxHash(pub Vec<u8>);
 
 impl_from_for_newtype!(PendingCoinbaseAuxHash, PendingCoinbaseAuxHashJson);
 impl_strconv_via_json!(PendingCoinbaseAuxHash, PendingCoinbaseAuxHashJson);
-
-impl Hashable for PendingCoinbaseAuxHash {
-    type D = ();
-
-    fn to_roinput(&self) -> ROInput {
-        let mut roi = ROInput::new();
-        roi.append_bytes(&self.0);
-        roi
-    }
-
-    fn domain_string(_: Self::D) -> Option<String> {
-        None
-    }
-}
 
 //////////////////////////////////////////////////////////////////////////
 

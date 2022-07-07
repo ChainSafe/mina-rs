@@ -37,7 +37,7 @@ impl SignedTransferCommandBuilder {
     ) -> Self {
         Self {
             to,
-            from,
+            from: from.clone(),
             amount: amount.into(),
             transfer_token: TokenId(1),
             fee_token: TokenId(1),

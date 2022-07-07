@@ -54,11 +54,13 @@ impl Hashable for EpochData {
 
     fn to_roinput(&self) -> ROInput {
         let mut roi = ROInput::new();
-        roi.append_hashable(&self.ledger);
+
         roi.append_hashable(&self.seed);
         roi.append_hashable(&self.start_checkpoint);
-        roi.append_hashable(&self.lock_checkpoint);
         roi.append_hashable(&self.epoch_length);
+        roi.append_hashable(&self.ledger);
+        roi.append_hashable(&self.lock_checkpoint);
+
         roi
     }
 
