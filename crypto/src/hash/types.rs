@@ -86,6 +86,18 @@ impl_from_for_hash!(StateHash, HashV1);
 impl_from_for_generic_with_proxy!(StateHash, HashV1, StateHashV1Json);
 impl_strconv_via_json!(StateHash, StateHashV1Json);
 
+impl From<[u8; 32]> for StateHash {
+    fn from(v: [u8; 32]) -> Self {
+        Self(BaseHash(v))
+    }
+}
+
+impl From<StateHash> for [u8; 32] {
+    fn from(v: StateHash) -> Self {
+        v.0 .0
+    }
+}
+
 impl From<&Fp> for StateHash {
     fn from(i: &Fp) -> Self {
         let base: BaseHash = i.into();
@@ -161,6 +173,18 @@ pub struct ChainHash(BaseHash);
 impl_from_for_hash!(ChainHash, HashV1);
 impl_from_for_generic_with_proxy!(ChainHash, HashV1, ChainHashV1Json);
 impl_strconv_via_json!(ChainHash, ChainHashV1Json);
+
+impl From<[u8; 32]> for ChainHash {
+    fn from(v: [u8; 32]) -> Self {
+        Self(BaseHash(v))
+    }
+}
+
+impl From<ChainHash> for [u8; 32] {
+    fn from(v: ChainHash) -> Self {
+        v.0 .0
+    }
+}
 
 //////////////////////////////////////////////////////////////////////////
 

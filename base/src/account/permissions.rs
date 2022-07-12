@@ -26,6 +26,7 @@ pub enum AuthRequired {
 /// Permissions associated with the account
 #[derive(Clone, Debug, AutoFrom)]
 #[auto_from(mina_serialization_types::account::Permissions)]
+#[auto_from(mina_serialization_types::account::PermissionsV0)]
 pub struct Permissions {
     /// If the account can stake
     pub stake: bool,

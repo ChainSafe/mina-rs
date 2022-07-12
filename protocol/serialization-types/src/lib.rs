@@ -43,6 +43,11 @@ pub mod version_bytes;
 mod type_annotations;
 pub use type_annotations::*;
 
+/// Unversioned serialization types for the Mina protocol
+pub mod unversioned {
+    pub use super::account::{AccountV0, TimedDataV0, TimingV0};
+}
+
 /// Version 1 serialization types for the Mina protocol
 pub mod v1 {
     pub use super::account::{

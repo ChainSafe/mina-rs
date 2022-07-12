@@ -11,6 +11,7 @@ bin-prot = {path = "../protocol/bin-prot"}
 mina-crypto = {path = "../crypto"}
 mina-merkle = {path = "../merkle"}
 mina-rs-base = {path = "../base"}
+proof-systems = {path = "../proof-systems-shim"}
 
 thiserror = "1"
 

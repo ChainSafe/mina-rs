@@ -27,7 +27,6 @@ mod tests {
         }
     }
 
-    impl_poseidon_legacy_hasher_pool_provider!(TestLeafNode);
     struct TestHasher;
 
     impl MerkleHasher for TestHasher {

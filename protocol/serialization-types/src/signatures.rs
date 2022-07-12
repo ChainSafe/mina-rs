@@ -121,6 +121,11 @@ mod conversions {
             }
         }
     }
+    impl From<CompressedCurvePoint> for CompressedPubKey {
+        fn from(t: CompressedCurvePoint) -> Self {
+            Self::from(&t)
+        }
+    }
     impl From<&CompressedPubKey> for CompressedCurvePoint {
         fn from(t: &CompressedPubKey) -> Self {
             CompressedCurvePoint {
@@ -133,6 +138,11 @@ mod conversions {
                     .expect("Wrong number of bytes encountered when converting to FieldElement"),
                 is_odd: t.is_odd,
             }
+        }
+    }
+    impl From<CompressedPubKey> for CompressedCurvePoint {
+        fn from(t: CompressedPubKey) -> Self {
+            Self::from(&t)
         }
     }
 
