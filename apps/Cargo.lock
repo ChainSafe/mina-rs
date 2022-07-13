@@ -1059,17 +1059,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "mina-merkle"
-version = "0.1.0"
-dependencies = [
- "ark-ff",
- "lockfree-object-pool",
- "once_cell",
- "proof-systems",
- "thiserror",
-]
-
-[[package]]
 name = "mina-rs-base"
 version = "0.1.0"
 dependencies = [
@@ -1083,7 +1072,6 @@ dependencies = [
  "hex",
  "lockfree-object-pool",
  "mina-crypto",
- "mina-merkle",
  "mina-serialization-types",
  "mina-serialization-types-macros",
  "num",
