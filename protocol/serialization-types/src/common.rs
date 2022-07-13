@@ -329,8 +329,8 @@ where
             .into_vec()
             .map_err(crate::errors::Error::Base58DecodeError)?;
         // skip the version check byte
-        let data: T =
-            bin_prot::from_reader(&bytes[1..]).map_err(crate::errors::Error::BinProtError)?;
+        let data: T = bin_prot::from_reader_strict(&bytes[1..])
+            .map_err(crate::errors::Error::BinProtError)?;
         Ok(Self(data))
     }
 }

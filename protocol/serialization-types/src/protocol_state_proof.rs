@@ -59,7 +59,7 @@ impl<'de> Deserialize<'de> for ProtocolStateProofBase64Json {
         let s = String::deserialize(deserializer)?;
         let bytes = base64::decode_config(s, base64::URL_SAFE)
             .map_err(<D::Error as serde::de::Error>::custom)?;
-        let t: ProtocolStateProofV1 = bin_prot::from_reader(bytes.as_slice())
+        let t: ProtocolStateProofV1 = bin_prot::from_reader_strict(bytes.as_slice())
             .map_err(<D::Error as serde::de::Error>::custom)?;
         Ok(t.into())
     }

@@ -4,7 +4,7 @@
 #[cfg(all(test, feature = "browser"))]
 wasm_bindgen_test::wasm_bindgen_test_configure!(run_in_browser);
 
-use bin_prot::from_reader;
+use bin_prot::*;
 use mina_serialization_types::v1::*;
 use wasm_bindgen_test::*;
 
@@ -37,6 +37,6 @@ const ACCOUNT_BYTE_EXAMPLES: &[&[u8]] = &[
 #[wasm_bindgen_test]
 fn smoke_test_account_deserialization() {
     for account_bytes in ACCOUNT_BYTE_EXAMPLES {
-        let _acc: AccountV1 = from_reader(*account_bytes).unwrap();
+        let _acc: AccountV1 = from_reader_strict(*account_bytes).unwrap();
     }
 }

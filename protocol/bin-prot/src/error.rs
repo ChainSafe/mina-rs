@@ -112,6 +112,10 @@ pub enum Error {
     #[error("Unrecognised Polyvar tag {0}")]
     UnknownPolyvarTag(u32),
 
+    /// When deserializing a polyvar the tag does not match any known tags for the type
+    #[error("Input stream has {0} unconsumed bytes")]
+    StreamNotFullyConsumed(usize),
+
     //////////////////////////////////
     /// Some user-defined error occurred.
     #[error("{message}")]

@@ -62,6 +62,18 @@ pub fn from_reader<'de, R: Read, T: Deserialize<'de>>(rdr: R) -> Result<T> {
     Ok(value)
 }
 
+/// Convenience method, create a BinProt deserializer from the given reader and then
+/// read from it.
+/// This method also ensures the input byte stream is fully consumed.
+pub fn from_reader_strict<'de, R: Read, T: Deserialize<'de>>(rdr: R) -> Result<T> {
+    let mut de = Deserializer::from_reader(rdr);
+    let value = Deserialize::deserialize(&mut de)?;
+    match de.rdr.buffer().len() {
+        0 => Ok(value),
+        unconsumed => Err(Error::StreamNotFullyConsumed(unconsumed)),
+    }
+}
+
 // In the loosely typed case we want to use deserialize_any for every field
 // This includes the hybrid strong/loose case
 #[cfg(feature = "loose_deserialization")]

@@ -11,7 +11,7 @@ pub mod token_permissions;
 use crate::{types::*, *};
 
 use mina_serialization_types_macros::AutoFrom;
-pub use permissions::{AuthRequired, Permissions};
+pub use permissions::{AuthRequired, Permissions, PermissionsHardFork};
 pub use timing::Timing;
 pub use token_permissions::TokenPermissions;
 
@@ -111,7 +111,7 @@ pub struct AccountHardFork {
     /// Used for vesting
     pub timing: Timing,
     /// Level of permission required to do different account actions
-    pub permissions: Permissions,
+    pub permissions: PermissionsHardFork,
     /// TODO: This should contain a Snapp account data once we have something to test against
     pub zkapp: Option<()>,
     /// TODO: This should contain a Snapp account data once we have something to test against

@@ -66,9 +66,9 @@ pub struct AccountV0 {
     pub voting_for: [u8; 32],
     /// Any timing limitations places on this accounts balance
     /// Used for vesting
-    pub timing: Timing,
+    pub timing: TimingV0,
     /// Level of permission required to do different account actions
-    pub permissions: PermissionsV0,
+    pub permissions: PermissionsHardFork,
     /// TODO: This should contain a Snapp account data once we have something to test against
     pub zkapp: Option<()>,
     /// TODO: This should contain a Snapp account data once we have something to test against
@@ -114,9 +114,7 @@ pub struct Permissions {
 
 /// Permissions associated with the account
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
-pub struct PermissionsV0 {
-    /// If the account can stake
-    pub stake: bool,
+pub struct PermissionsHardFork {
     /// Permission required to edit state
     pub edit_state: AuthRequired,
     /// Permission required to send a balance
@@ -129,6 +127,16 @@ pub struct PermissionsV0 {
     pub set_permissions: AuthRequired,
     /// Permission require to set verification key
     pub set_verification_key: AuthRequired,
+    /// Permission require to set zkapp uri
+    pub set_zkapp_uri: AuthRequired,
+    /// Permission require to edit sequence state
+    pub edit_sequence_state: AuthRequired,
+    /// Permission require to set token symbol
+    pub set_token_symbol: AuthRequired,
+    /// Permission require to increment nonce
+    pub increment_nonce: AuthRequired,
+    /// Permission require to set voting for
+    pub set_voting_for: AuthRequired,
 }
 
 /// Permissions associated with the account (v1)
@@ -145,6 +153,7 @@ pub enum AuthRequired {
     Proof,
     /// Signature must be provided
     Signature,
+    // FIXME: Both is removed from hard fork
     /// Both proof and signature must be provided
     Both,
     /// This action can never occur
@@ -198,10 +207,10 @@ pub struct TimedDataV0 {
     pub cliff_time: u64,
     /// Amount extra available when fully fested
     pub cliff_amount: u64,
-    /// Ammount released in each vesting period
-    pub vesting_increment: u64,
     /// Period in whcih allocation is released in chunks
     pub vesting_period: u64,
+    /// Ammount released in each vesting period
+    pub vesting_increment: u64,
 }
 
 /// Payload for the timing variant Timed

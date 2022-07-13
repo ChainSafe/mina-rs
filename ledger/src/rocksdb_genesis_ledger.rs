@@ -5,7 +5,7 @@
 //! This is how they are provided by Mina
 
 use crate::genesis_ledger::GenesisLedger;
-use bin_prot::from_reader;
+use bin_prot::*;
 use mina_rs_base::*;
 use proof_systems::mina_hasher::Hashable;
 use rocksdb::DB;
@@ -26,11 +26,11 @@ pub struct RocksDbGenesisLedger<
     _pd: PhantomData<Account>,
 }
 
-/// Errors than can be produces when trying to access a Rocksdb backed ledger
+/// Errors that can be produces when trying to access a Rocksdb backed ledger
 #[derive(Error, Debug)]
 pub enum Error {
-    #[error("Could not deserialize account")]
-    Disconnect(#[from] bin_prot::error::Error),
+    #[error("Could not deserialize account: {0}\nkey:{1:?}, value:{2:?}")]
+    Disconnect(bin_prot::error::Error, Vec<u8>, Vec<u8>),
 }
 
 impl<'a, const DEPTH: usize, Account: Hashable + BinProtSerializationType<'a>>
@@ -46,9 +46,10 @@ impl<'a, const DEPTH: usize, Account: Hashable + BinProtSerializationType<'a>>
 }
 
 fn decode_account_from_kv<'a, Account: BinProtSerializationType<'a>>(
-    (_k, v): (Box<[u8]>, Box<[u8]>),
+    (k, v): (Box<[u8]>, Box<[u8]>),
 ) -> Result<Account, Error> {
-    let account: <Account as BinProtSerializationType>::T = from_reader(&v[..])?;
+    let account: <Account as BinProtSerializationType>::T =
+        from_reader_strict(&v[..]).map_err(|err| Error::Disconnect(err, k.to_vec(), v.to_vec()))?;
     Ok(account.into())
 }
 
@@ -96,6 +97,7 @@ mod tests {
         account::{Account, AccountHardFork},
         types::ExternalTransition,
     };
+    use pretty_assertions::{assert_eq, assert_ne};
     use proof_systems::mina_hasher::Fp;
     use rocksdb::*;
 
@@ -106,7 +108,6 @@ mod tests {
         let genesis_ledger: RocksDbGenesisLedger<20, Account> = RocksDbGenesisLedger::new(&db);
         let accounts: Vec<_> = genesis_ledger.accounts().collect();
         assert_eq!(accounts.len(), 1676); // successfully read the correct number of accounts
-        assert!(genesis_ledger.accounts().all(|e| e.is_ok())); // All deserialied sucessfully
 
         let mut expected_account_hashes = Vec::with_capacity(accounts.len());
         let mut expected_root_height = 0;
@@ -144,7 +145,6 @@ mod tests {
         assert_ne!(merkle_ledger.root(), expected_root_hash);
         assert_eq!(accounts.len(), expected_account_hashes.len());
         for (i, account) in accounts.into_iter().enumerate() {
-            assert!(account.is_ok());
             let account = account.unwrap();
             let hash = MinaLedgerMerkleHasher::hash(&account, MerkleTreeNodeMetadata::new(0, 1));
             let hash_expected = expected_account_hashes[i];
@@ -162,9 +162,6 @@ mod tests {
         let accounts: Vec<_> = genesis_ledger.accounts().collect();
         assert_eq!(accounts.len(), 6204); // successfully read the correct number of accounts
 
-        // FIXME: Fix account deserialization
-        // assert!(genesis_ledger.accounts().all(|e| e_iso())); // All deserialied sucessfully
-
         let mut expected_account_hashes = Vec::with_capacity(accounts.len());
         let mut expected_root_height = 0;
         let mut expected_root_hash: Option<Fp> = None;
@@ -172,7 +169,6 @@ mod tests {
             .iterator(IteratorMode::Start)
             .take_while(|(key, _)| key[0] < 0xfe)
         {
-            // println!("k:{:?},v:{:?}", key, value);
             let height = key[0];
             let hash: Fp = BigInteger256::read(&value[..]).unwrap().into();
             if height > expected_root_height {
@@ -202,14 +198,12 @@ mod tests {
         // TODO: Change this to assert_eq! when Hashable is completely implemented for Account
         assert_ne!(merkle_ledger.root(), expected_root_hash);
         assert_eq!(accounts.len(), expected_account_hashes.len());
-        // FIXME: Fix account deserialization
-        // for (i, account) in accounts.into_iter().enumerate() {
-        //     assert!(account.is_ok());
-        //     let account = account.unwrap();
-        //     let hash = MinaLedgerMerkleHasher::hash(&account, MerkleTreeNodeMetadata::new(0, 1));
-        //     let hash_expected = expected_account_hashes[i];
-        //     // TODO: Change this to assert_eq! when Hashable is completely implemented for Account
-        //     assert_ne!(hash, hash_expected);
-        // }
+        for (i, account) in accounts.into_iter().enumerate() {
+            let account = account.unwrap();
+            let hash = MinaLedgerMerkleHasher::hash(&account, MerkleTreeNodeMetadata::new(0, 1));
+            let hash_expected = expected_account_hashes[i];
+            // TODO: Change this to assert_eq! when Hashable is completely implemented for Account
+            assert_ne!(hash, hash_expected);
+        }
     }
 }

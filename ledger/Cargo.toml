@@ -24,3 +24,4 @@ mina-consensus = {path = "../consensus"}
 proof-systems = {path = "../proof-systems-shim"}
 
 ark-ff = "0.3"
+pretty_assertions = "1"

@@ -14,7 +14,7 @@ pub trait BinProtSerializationType<'de>: Sized {
 
     /// Construct from binprot bytes reader
     fn try_from_binprot(rdr: impl Read) -> Result<Self, bin_prot::error::Error> {
-        let binprot: Self::T = bin_prot::from_reader(rdr)?;
+        let binprot: Self::T = bin_prot::from_reader_strict(rdr)?;
         Ok(binprot.into())
     }
 

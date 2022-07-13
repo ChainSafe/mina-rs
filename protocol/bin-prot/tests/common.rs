@@ -1,7 +1,7 @@
 // Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
-use bin_prot::{from_reader, to_writer};
+use bin_prot::*;
 use serde::{Deserialize, Serialize};
 use std::fmt::Debug;
 use std::fmt::Write;
@@ -114,5 +114,7 @@ pub fn roundtrip_test<'a, T: Serialize + Deserialize<'a> + PartialEq + Debug>(va
     let mut output = Vec::<u8>::new();
     to_writer(&mut output, &val).unwrap();
     let re_val: T = from_reader(std::io::Cursor::new(output.as_slice())).unwrap();
-    assert_eq!(val, re_val)
+    assert_eq!(val, re_val);
+    let re_val: T = from_reader_strict(std::io::Cursor::new(output.as_slice())).unwrap();
+    assert_eq!(val, re_val);
 }

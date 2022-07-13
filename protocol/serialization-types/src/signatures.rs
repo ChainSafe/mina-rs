@@ -101,7 +101,8 @@ impl<'de> Deserialize<'de> for SignatureJson {
             .into_vec()
             .map_err(<D::Error as serde::de::Error>::custom)?;
         Ok(Self(
-            bin_prot::from_reader(&bytes[1..]).map_err(<D::Error as serde::de::Error>::custom)?,
+            bin_prot::from_reader_strict(&bytes[1..])
+                .map_err(<D::Error as serde::de::Error>::custom)?,
         ))
     }
 }

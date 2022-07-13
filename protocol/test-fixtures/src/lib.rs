@@ -66,7 +66,7 @@ pub struct BlockFixture {
 
 impl BlockFixture {
     pub fn external_transitionv1(&self) -> anyhow::Result<ExternalTransitionV1> {
-        Ok(bin_prot::from_reader(self.bytes.as_slice())?)
+        Ok(bin_prot::from_reader_strict(self.bytes.as_slice())?)
     }
 }
 
