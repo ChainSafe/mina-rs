@@ -94,7 +94,7 @@ mod tests {
     use mina_crypto::hash::*;
     use mina_merkle::*;
     use mina_rs_base::{
-        account::{Account, AccountHardFork},
+        account::{Account, AccountLegacy},
         types::ExternalTransition,
     };
     use pretty_assertions::{assert_eq, assert_ne};
@@ -105,7 +105,8 @@ mod tests {
     fn test_iterate_database() {
         const DBPATH: &str =  "test-data/genesis_ledger_6a887ea130e53b06380a9ab27b327468d28d4ce47515a0cc59759d4a3912f0ef/";
         let db = rocksdb::DB::open_for_read_only(&Options::default(), DBPATH, true).unwrap();
-        let genesis_ledger: RocksDbGenesisLedger<20, Account> = RocksDbGenesisLedger::new(&db);
+        let genesis_ledger: RocksDbGenesisLedger<20, AccountLegacy> =
+            RocksDbGenesisLedger::new(&db);
         let accounts: Vec<_> = genesis_ledger.accounts().collect();
         assert_eq!(accounts.len(), 1676); // successfully read the correct number of accounts
 
@@ -157,8 +158,7 @@ mod tests {
     fn test_iterate_database_hardfork() {
         const DBPATH: &str =  "test-data/genesis_ledger_c95a000c2f9ba1dcf376ba92268d819caa3770e2ca22e585340598b6519cbc07/";
         let db = rocksdb::DB::open_for_read_only(&Options::default(), DBPATH, true).unwrap();
-        let genesis_ledger: RocksDbGenesisLedger<20, AccountHardFork> =
-            RocksDbGenesisLedger::new(&db);
+        let genesis_ledger: RocksDbGenesisLedger<20, Account> = RocksDbGenesisLedger::new(&db);
         let accounts: Vec<_> = genesis_ledger.accounts().collect();
         assert_eq!(accounts.len(), 6204); // successfully read the correct number of accounts
 

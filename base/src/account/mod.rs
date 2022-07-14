@@ -11,7 +11,7 @@ pub mod token_permissions;
 use crate::{types::*, *};
 
 use mina_serialization_types_macros::AutoFrom;
-pub use permissions::{AuthRequired, Permissions, PermissionsHardFork};
+pub use permissions::{AuthRequired, Permissions, PermissionsLegacy};
 pub use timing::Timing;
 pub use token_permissions::TokenPermissions;
 
@@ -27,7 +27,7 @@ use proof_systems::mina_signer::CompressedPubKey;
 /// be provided to perform certain actions
 #[derive(Clone, Debug, AutoFrom)]
 #[auto_from(mina_serialization_types::account::Account)]
-pub struct Account {
+pub struct AccountLegacy {
     /// Account public key
     pub public_key: CompressedPubKey,
     /// Account token ID
@@ -48,16 +48,16 @@ pub struct Account {
     /// Used for vesting
     pub timing: Timing,
     /// Level of permission required to do different account actions
-    pub permissions: Permissions,
+    pub permissions: PermissionsLegacy,
     /// TODO: This should contain a Snapp account data once we have something to test against
     pub snapp: Option<()>,
 }
 
-impl BinProtSerializationType<'_> for Account {
+impl BinProtSerializationType<'_> for AccountLegacy {
     type T = AccountV1;
 }
 
-impl mina_hasher::Hashable for Account {
+impl mina_hasher::Hashable for AccountLegacy {
     type D = ();
 
     // Uncomment these fields once they have implemented Hashable trait
@@ -88,7 +88,7 @@ impl mina_hasher::Hashable for Account {
 /// TODO
 #[derive(Clone, Debug, AutoFrom)]
 #[auto_from(mina_serialization_types::account::AccountV0)]
-pub struct AccountHardFork {
+pub struct Account {
     /// Account public key
     pub public_key: CompressedPubKey,
     /// Account token ID
@@ -111,14 +111,14 @@ pub struct AccountHardFork {
     /// Used for vesting
     pub timing: Timing,
     /// Level of permission required to do different account actions
-    pub permissions: PermissionsHardFork,
+    pub permissions: Permissions,
     /// TODO: This should contain a Snapp account data once we have something to test against
     pub zkapp: Option<()>,
     /// TODO: This should contain a Snapp account data once we have something to test against
     pub zkuri: Option<()>,
 }
 
-impl mina_hasher::Hashable for AccountHardFork {
+impl mina_hasher::Hashable for Account {
     type D = ();
 
     // Uncomment these fields once they have implemented Hashable trait
@@ -132,6 +132,6 @@ impl mina_hasher::Hashable for AccountHardFork {
     }
 }
 
-impl BinProtSerializationType<'_> for AccountHardFork {
+impl BinProtSerializationType<'_> for Account {
     type T = AccountV0;
 }

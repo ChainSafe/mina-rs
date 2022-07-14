@@ -68,7 +68,7 @@ pub struct AccountV0 {
     /// Used for vesting
     pub timing: TimingV0,
     /// Level of permission required to do different account actions
-    pub permissions: PermissionsHardFork,
+    pub permissions: Permissions,
     /// TODO: This should contain a Snapp account data once we have something to test against
     pub zkapp: Option<()>,
     /// TODO: This should contain a Snapp account data once we have something to test against
@@ -95,7 +95,7 @@ pub type TokenPermissionsV1 = Versioned<Versioned<TokenPermissions, 1>, 1>;
 
 /// Permissions associated with the account
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
-pub struct Permissions {
+pub struct PermissionsLegacy {
     /// If the account can stake
     pub stake: bool,
     /// Permission required to edit state
@@ -114,7 +114,7 @@ pub struct Permissions {
 
 /// Permissions associated with the account
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
-pub struct PermissionsHardFork {
+pub struct Permissions {
     /// Permission required to edit state
     pub edit_state: AuthRequired,
     /// Permission required to send a balance
@@ -140,7 +140,7 @@ pub struct PermissionsHardFork {
 }
 
 /// Permissions associated with the account (v1)
-pub type PermissionsV1 = Versioned<Versioned<Permissions, 1>, 1>;
+pub type PermissionsV1 = Versioned<Versioned<PermissionsLegacy, 1>, 1>;
 
 /// The level of auth required to perform a particular action with an account
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]

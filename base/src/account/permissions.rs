@@ -25,8 +25,8 @@ pub enum AuthRequired {
 
 /// Permissions associated with the account
 #[derive(Clone, Debug, AutoFrom)]
-#[auto_from(mina_serialization_types::account::Permissions)]
-pub struct Permissions {
+#[auto_from(mina_serialization_types::account::PermissionsLegacy)]
+pub struct PermissionsLegacy {
     /// If the account can stake
     pub stake: bool,
     /// Permission required to edit state
@@ -45,8 +45,8 @@ pub struct Permissions {
 
 /// Permissions associated with the account
 #[derive(Clone, Debug, AutoFrom)]
-#[auto_from(mina_serialization_types::account::PermissionsHardFork)]
-pub struct PermissionsHardFork {
+#[auto_from(mina_serialization_types::account::Permissions)]
+pub struct Permissions {
     /// Permission required to edit state
     pub edit_state: AuthRequired,
     /// Permission required to send a balance
