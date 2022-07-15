@@ -155,12 +155,12 @@ mod tests {
     }
 
     #[test]
-    fn test_iterate_database_hardfork() {
-        const DBPATH: &str =  "test-data/genesis_ledger_c95a000c2f9ba1dcf376ba92268d819caa3770e2ca22e585340598b6519cbc07/";
+    fn test_iterate_database_berkeley() {
+        const DBPATH: &str =  "test-data/genesis_ledger_266b7c62f51cf5ac895e98e681cc34bc39e5c29ee79ac069fb399c022fc5d1c4/";
         let db = rocksdb::DB::open_for_read_only(&Options::default(), DBPATH, true).unwrap();
         let genesis_ledger: RocksDbGenesisLedger<20, Account> = RocksDbGenesisLedger::new(&db);
         let accounts: Vec<_> = genesis_ledger.accounts().collect();
-        assert_eq!(accounts.len(), 6204); // successfully read the correct number of accounts
+        assert_eq!(accounts.len(), 6404); // successfully read the correct number of accounts
 
         let mut expected_account_hashes = Vec::with_capacity(accounts.len());
         let mut expected_root_height = 0;
