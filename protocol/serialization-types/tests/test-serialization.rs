@@ -495,13 +495,10 @@ fn smoke_test_roundtrip_block1() {
 #[wasm_bindgen_test]
 fn smoke_test_deserialize_block() {
     // check we can deserialize into this type without error
-    for (name, block) in TEST_BLOCKS.iter() {
+    for (_name, block) in TEST_BLOCKS.iter() {
         let et: ExternalTransitionV1 = block
             .external_transitionv1()
             .expect("Failed to deserialize block");
-
-        // TODO: Validate state hash
-        if name.ends_with(".hex") {}
 
         // check roundtrip
         test_roundtrip(&et, block.bytes.as_slice());
