@@ -115,22 +115,30 @@ mod tests {
         assert_eq!(epoch_slot, Some(2)); // slot_number(GlobalSlotNumber(1002)) % slots_per_epoch(Length(1000))
     }
 
-    // TODO: Test ProtocolStateChain state_hash() method
     // Same BlockChain length and equal last vrf output of candidate chain but different state hash
     // Current chain: https://storage.googleapis.com/mina_network_block_data/mainnet-117896-3NLPBDTckSdjcUFcQiE9raJsyzB84KayMPKi4PmwNybnA6J75GoL.json
     // Candidate chains: https://storage.googleapis.com/mina_network_block_data/mainnet-117896-3NKrv92FYZFHRNUJxiP7VGeRx3MeDY2iffFjUWXTPoXJorsS63ba.json
     #[test]
     #[wasm_bindgen_test]
     fn test_protocol_state_chain_state_hash() {
-        let mut test_chain: ProtocolStateChain = ProtocolStateChain(vec![]);
-        // Add new block `b0`
-        let mut b0: ProtocolState = Default::default();
-        b0.body.consensus_state.blockchain_length = Length(0);
-        test_chain.push(b0).unwrap();
+        // Init current chain
+        let block_from_json: ExternalTransition = read_block_json(
+            "mainnet-117896-3NLPBDTckSdjcUFcQiE9raJsyzB84KayMPKi4PmwNybnA6J75GoL.json",
+        );
+        let mut current_chain = ProtocolStateChain::default();
+        current_chain.push(block_from_json.protocol_state).unwrap();
 
-        let hash = test_chain.state_hash();
-        hash.unwrap();
-        // TODO: Validate derived state hash against ocaml derived state hash
+        // Init candidate chain from JSON
+        let block_from_json: ExternalTransition = read_block_json(
+            "mainnet-117896-3NKrv92FYZFHRNUJxiP7VGeRx3MeDY2iffFjUWXTPoXJorsS63ba.json",
+        );
+        let mut candidate_chain = ProtocolStateChain::default();
+        candidate_chain
+            .push(block_from_json.protocol_state)
+            .unwrap();
+
+        let select_result = current_chain.select_longer_chain(&candidate_chain).unwrap(); // Candidate chain has greater state hash
+        assert_eq!(select_result, &candidate_chain);
     }
 
     // Test longer chain selection method

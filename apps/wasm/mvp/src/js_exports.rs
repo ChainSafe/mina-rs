@@ -28,10 +28,7 @@ pub async fn fetch_block_previous_state_hash(
 pub async fn get_best_chain_state_hash() -> Option<String> {
     let frontier = frontier::PROCESSOR.transition_frontier().await;
     let chain = frontier.get_best_chain();
-    // TODO: use base58 string
-    chain
-        .state_hash()
-        .map(|state_hash| format!("{:?}", state_hash))
+    chain.state_hash().map(|state_hash| state_hash.to_string())
 }
 
 #[wasm_bindgen]

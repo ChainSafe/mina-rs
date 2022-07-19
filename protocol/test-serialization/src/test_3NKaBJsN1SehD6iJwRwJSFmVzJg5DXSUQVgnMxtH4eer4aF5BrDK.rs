@@ -240,8 +240,7 @@ mod tests {
                 );
                 assert_eq!(command.payload.common.fee.to_string(), "0.010000000");
                 assert_eq!(command.payload.common.fee_token.0, 1);
-                // FIXME: Fix valid_util (Extended_U32)
-                // assert_eq!(command.payload.common.valid_until.0, 4294967295);
+                assert_eq!(command.payload.common.valid_until.0, 4294967295);
                 match &command.payload.body {
                     SignedCommandPayloadBody::PaymentPayload(body) => {
                         assert_eq!(body.amount.to_string(), "0.027370000");
