@@ -169,7 +169,6 @@ impl_from_with_proxy!(
 
 #[derive(Clone, PartialEq, Debug, AutoFrom)]
 #[auto_from(mina_serialization_types::staged_ledger_diff::CoinBaseFeeTransfer)]
-// FIXME: No test coverage yet
 pub struct CoinBaseFeeTransfer {
     pub receiver_pk: CompressedPubKey,
     pub fee: Amount,
