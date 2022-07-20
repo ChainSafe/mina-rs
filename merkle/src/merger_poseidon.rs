@@ -4,8 +4,7 @@
 use super::*;
 use crate::prefixes::*;
 use ark_ff::{BigInteger256, FromBytes};
-use lockfree_object_pool::{SpinLockObjectPool, SpinLockReusable};
-use mina_hasher::{create_legacy, Fp, Hashable, Hasher, PoseidonHasherLegacy, ROInput};
+use mina_hasher::{create_legacy, Fp, Hashable, Hasher, ROInput};
 use once_cell::sync::OnceCell;
 
 /// Merger for mina binary merkle tree that uses poseidon hash
@@ -46,35 +45,18 @@ impl Hashable for MinaPoseidonMerkleTreeNonLeafNode {
     }
 }
 
-fn merge_poseidon_hash(hashes: [Option<Fp>; 2], height: u32) -> Fp {
-    static HASHER_POOL: OnceCell<
-        SpinLockObjectPool<PoseidonHasherLegacy<MinaPoseidonMerkleTreeNonLeafNode>>,
-    > = OnceCell::new();
-    // Not calling reset here because `hasher.init` is called after `pull`, which implicitly calls sponge.reset()
-    let pool = HASHER_POOL.get_or_init(|| SpinLockObjectPool::new(|| create_legacy(0), |_| ()));
-    let mut hasher = pool.pull();
-    merge_poseidon_hash_with_hasher(&mut hasher, hashes, height)
-}
-
-fn merge_poseidon_hash_with_hasher(
-    hasher: &mut SpinLockReusable<PoseidonHasherLegacy<MinaPoseidonMerkleTreeNonLeafNode>>,
-    mut hashes: [Option<Fp>; 2],
-    height: u32,
-) -> Fp {
+fn merge_poseidon_hash(mut hashes: [Option<Fp>; 2], height: u32) -> Fp {
     for hash_opt in hashes.iter_mut() {
         if hash_opt.is_none() {
-            *hash_opt = get_empty_hash(hasher, height - 1).into();
+            *hash_opt = get_empty_hash(height - 1).into();
         }
     }
+    let mut hasher = create_legacy(height);
     let hashable = MinaPoseidonMerkleTreeNonLeafNode(hashes, height);
-    hasher.init(height);
     hasher.hash(&hashable)
 }
 
-fn get_empty_hash(
-    hasher: &mut SpinLockReusable<PoseidonHasherLegacy<MinaPoseidonMerkleTreeNonLeafNode>>,
-    height: u32,
-) -> Fp {
+fn get_empty_hash(height: u32) -> Fp {
     if height == 0 {
         static EMPTY_HASH: OnceCell<Fp> = OnceCell::new();
         *EMPTY_HASH.get_or_init(|| {
@@ -100,7 +82,7 @@ fn get_empty_hash(
                 .into()
         })
     } else {
-        let child_hash = get_empty_hash(hasher, height - 1);
-        merge_poseidon_hash_with_hasher(hasher, [Some(child_hash), Some(child_hash)], height)
+        let child_hash = get_empty_hash(height - 1);
+        merge_poseidon_hash([Some(child_hash), Some(child_hash)], height)
     }
 }

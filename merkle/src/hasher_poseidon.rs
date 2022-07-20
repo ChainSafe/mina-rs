@@ -2,8 +2,8 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use super::*;
-use mina_hasher::{Fp, Hashable, Hasher};
-use proof_systems::mina_hasher::create_legacy;
+use mina_hasher::{Fp, Hashable};
+use proof_systems::mina_hasher::{create_legacy, Hasher};
 use std::marker::PhantomData;
 
 /// Hasher for mina binary merkle tree that uses poseidon hash
@@ -17,7 +17,7 @@ where
 impl<Item> MerkleHasher for MinaPoseidonMerkleHasher<Item>
 where
     Item: mina_hasher::Hashable,
-    <Item as Hashable>::D: Default,
+    <Item as mina_hasher::Hashable>::D: Default,
 {
     type Item = Item;
     type Hash = Fp;
