@@ -85,6 +85,7 @@ allow = [
   "CC0-1.0",
   "ISC",
   "OpenSSL",
+  "Unicode-DFS-2016"
 ]
 # List of explicitly disallowed licenses
 # See https://spdx.org/licenses/ for list of possible licenses
