@@ -171,22 +171,22 @@ jobs:
         run: |
           cd protocol/test-serialization
           wasm-pack test --node --release
-          wasm-pack test --headless --chrome --release --features browser
+          # wasm-pack test --headless --chrome --release --features browser
       - name: wasm-pack tests for consensus
         run: |
           cd consensus
           wasm-pack test --node --release
-          wasm-pack test --headless --chrome --release --features browser
+          # wasm-pack test --headless --chrome --release --features browser
       - name: wasm-pack tests for secrets
         run: |
           cd secrets
           wasm-pack test --node --release
-          wasm-pack test --headless --chrome --release --features browser
+          # wasm-pack test --headless --chrome --release --features browser
       - name: wasm-pack tests for network
         run: |
           cd network
           wasm-pack test --node --release
-          wasm-pack test --headless --chrome --release --features browser
+          # wasm-pack test --headless --chrome --release --features browser
   node:
     runs-on: ubuntu-latest
     steps:
