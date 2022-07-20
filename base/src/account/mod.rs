@@ -84,5 +84,3 @@ impl mina_hasher::Hashable for Account {
         Some("CodaAccount".into())
     }
 }
-
-mina_merkle::impl_poseidon_legacy_hasher_pool_provider!(Account);

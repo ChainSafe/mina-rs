@@ -59,7 +59,7 @@ jobs:
         with:
           command: check all -s
           arguments: --all-features --manifest-path apps/wasm/Cargo.toml
-      - run: cargo install cargo-udeps || echo 'already installed'
+      - run: cargo +nightly install cargo-udeps || echo 'already installed'
       - run: cargo +nightly udeps --all-targets --all-features
       - run: cargo +nightly udeps --all-targets --all-features --manifest-path apps/Cargo.toml
       - run: cargo +nightly udeps --target wasm32-unknown-unknown --all-features --manifest-path apps/wasm/Cargo.toml
@@ -171,22 +171,22 @@ jobs:
         run: |
           cd protocol/test-serialization
           wasm-pack test --node --release
-          wasm-pack test --headless --chrome --release --features browser
+          # wasm-pack test --headless --chrome --release --features browser
       - name: wasm-pack tests for consensus
         run: |
           cd consensus
           wasm-pack test --node --release
-          wasm-pack test --headless --chrome --release --features browser
+          # wasm-pack test --headless --chrome --release --features browser
       - name: wasm-pack tests for secrets
         run: |
           cd secrets
           wasm-pack test --node --release
-          wasm-pack test --headless --chrome --release --features browser
+          # wasm-pack test --headless --chrome --release --features browser
       - name: wasm-pack tests for network
         run: |
           cd network
           wasm-pack test --node --release
-          wasm-pack test --headless --chrome --release --features browser
+          # wasm-pack test --headless --chrome --release --features browser
   node:
     runs-on: ubuntu-latest
     steps:

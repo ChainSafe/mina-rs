@@ -9,14 +9,10 @@ use crate::{
     global_slot::GlobalSlot,
     numbers::{BlockTime, Length},
 };
-use lockfree_object_pool::SpinLockObjectPool;
 use mina_crypto::hash::StateHash;
 use mina_serialization_types::{json::*, v1::*};
 use mina_serialization_types_macros::AutoFrom;
-use once_cell::sync::OnceCell;
-use proof_systems::mina_hasher::{
-    create_legacy, Fp, Hashable, Hasher, PoseidonHasherLegacy, ROInput,
-};
+use proof_systems::mina_hasher::{create_legacy, Fp, Hashable, Hasher, ROInput};
 use versioned::*;
 
 /// Constants that define the consensus parameters
@@ -75,13 +71,8 @@ impl Hashable for ProtocolState {
     type D = ();
 
     fn to_roinput(&self) -> ROInput {
-        static HASHER_POOL: OnceCell<SpinLockObjectPool<PoseidonHasherLegacy<ProtocolStateBody>>> =
-            OnceCell::new();
-        let pool =
-            HASHER_POOL.get_or_init(|| SpinLockObjectPool::new(|| create_legacy(()), |_| ()));
-        let mut hasher = pool.pull();
+        let mut hasher = create_legacy(());
         let body_hash = hasher.hash(&self.body);
-
         let mut roi = ROInput::new();
         roi.append_hashable(&self.previous_state_hash);
         roi.append_field(body_hash);
@@ -101,11 +92,7 @@ impl ProtocolState {
 
     /// Calculates the state hash field of current protocol state
     pub fn state_hash_fp(&self) -> Fp {
-        static HASHER_POOL: OnceCell<SpinLockObjectPool<PoseidonHasherLegacy<ProtocolState>>> =
-            OnceCell::new();
-        let pool =
-            HASHER_POOL.get_or_init(|| SpinLockObjectPool::new(|| create_legacy(()), |_| ()));
-        let mut hasher = pool.pull();
+        let mut hasher = create_legacy(());
         hasher.hash(self)
     }
 

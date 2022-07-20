@@ -30,12 +30,3 @@ pub use metadata::*;
 pub mod prefixes;
 
 use proof_systems::*;
-
-/// Re-exports external types that macro implementations depend on,
-/// so that the crate that uses the macros do not need to depend on
-/// these external types
-pub mod macros {
-    pub use lockfree_object_pool;
-    pub use once_cell;
-    pub use proof_systems::*;
-}
