@@ -97,8 +97,12 @@ mod tests {
         account::{Account, AccountLegacy},
         types::ExternalTransition,
     };
+    use num::BigUint;
     use pretty_assertions::{assert_eq, assert_ne};
-    use proof_systems::mina_hasher::Fp;
+    use proof_systems::{
+        mina_hasher::{self, Fp, Hasher, ROInput},
+        mina_signer::CompressedPubKey,
+    };
     use rocksdb::*;
 
     #[test]
@@ -202,8 +206,99 @@ mod tests {
             let account = account.unwrap();
             let hash = MinaLedgerMerkleHasher::hash(&account, MerkleTreeNodeMetadata::new(0, 1));
             let hash_expected = expected_account_hashes[i];
+            // Test account 0
+            if i == 0 {
+                #[derive(Debug, Clone)]
+                struct CompressedPubKeyHashableWrapper<'a>(pub &'a CompressedPubKey);
+
+                impl<'a> Hashable for CompressedPubKeyHashableWrapper<'a> {
+                    type D = ();
+
+                    fn to_roinput(&self) -> ROInput {
+                        let mut roi = ROInput::new();
+                        roi.append_field(self.0.x);
+                        roi.append_bool(self.0.is_odd);
+                        roi
+                    }
+
+                    fn domain_string(_: Self::D) -> Option<String> {
+                        None
+                    }
+                }
+
+                fn fp_to_big(fp: Fp) -> BigUint {
+                    let big256: BigInteger256 = fp.into();
+                    big256.into()
+                }
+
+                fn hash<T: Hashable<D = ()>>(t: &T) -> String {
+                    let mut hasher = mina_hasher::create_kimchi(());
+                    let fp = hasher.hash(t);
+                    fp_to_big(fp).to_str_radix(10)
+                }
+                println!("{}", account.public_key.into_address());
+                assert_eq!(
+                    hash(&CompressedPubKeyHashableWrapper(&account.public_key)),
+                    "17403802830378787968845294854048648555868428232350653563068266009233402282076"
+                );
+                assert_eq!(
+                    hash(&account.token_id),
+                    "7555220006856562833147743033256142154591945963958408607501861037584894828141"
+                );
+                assert_eq!(
+                    hash(&account.balance),
+                    "9880909019220052913227433707787222982896169056561545508056145968396555243660"
+                );
+                assert_eq!(
+                    hash(&account.token_permissions),
+                    "21565680844461314807147611702860246336805372493508489110556896454939225549736"
+                );
+                assert_eq!(
+                    hash(&account.token_symbol),
+                    "21565680844461314807147611702860246336805372493508489110556896454939225549736"
+                );
+                assert_eq!(
+                    hash(&account.nonce),
+                    "21565680844461314807147611702860246336805372493508489110556896454939225549736"
+                );
+                assert_eq!(
+                    hash(&account.receipt_chain_hash),
+                    "21992065535400692533677074789790277789989066181791602188282189650879541934688"
+                );
+                match &account.delegate {
+                    Some(delegate) => {
+                        assert_eq!(
+                            hash(&CompressedPubKeyHashableWrapper(delegate)),
+                            "17403802830378787968845294854048648555868428232350653563068266009233402282076"
+                        );
+                    }
+                    None => {
+                        assert!(false);
+                    }
+                }
+                assert_eq!(
+                    hash(&account.voting_for),
+                    "21565680844461314807147611702860246336805372493508489110556896454939225549736"
+                );
+                let roi = account.timing.to_roinput();
+                println!("timing: {:?}", account.timing);
+                for f in roi.to_fields() {
+                    println!(" {}", fp_to_big(f));
+                }
+                assert_eq!(
+                    hash(&account.timing),
+                    "7555220006856562833147743033256142154591945963958408607501861037584894828141"
+                );
+            }
+
             // TODO: Change this to assert_eq! when Hashable is completely implemented for Account
-            assert_ne!(hash, hash_expected);
+            assert_eq!(
+                hash,
+                hash_expected,
+                "{} != {}",
+                StateHash::from(&hash),
+                StateHash::from(&hash_expected)
+            );
         }
     }
 }

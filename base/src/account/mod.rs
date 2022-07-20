@@ -7,6 +7,7 @@
 pub mod permissions;
 pub mod timing;
 pub mod token_permissions;
+pub mod token_symbol;
 
 use crate::{types::*, *};
 
@@ -14,6 +15,7 @@ use mina_serialization_types_macros::AutoFrom;
 pub use permissions::{AuthRequired, Permissions, PermissionsLegacy};
 pub use timing::Timing;
 pub use token_permissions::TokenPermissions;
+pub use token_symbol::TokenSymbol;
 
 use mina_crypto::hash::{ChainHash, StateHash};
 use mina_hasher::ROInput;
@@ -93,12 +95,12 @@ pub struct Account {
     pub public_key: CompressedPubKey,
     /// Account token ID
     pub token_id: TokenId,
+    /// Balance of token held by account
+    pub balance: Amount,
     /// Permission associated with the given token
     pub token_permissions: TokenPermissions,
     /// Token Symbol
-    pub token_symbol: [u8; 32],
-    /// Balance of token held by account
-    pub balance: Amount,
+    pub token_symbol: TokenSymbol,
     /// Nonce (incremented with each tx to prevent replay)
     pub nonce: AccountNonce,
     /// ?
@@ -110,10 +112,10 @@ pub struct Account {
     /// Any timing limitations places on this accounts balance
     /// Used for vesting
     pub timing: Timing,
-    /// Level of permission required to do different account actions
-    pub permissions: Permissions,
     /// TODO: This should contain a Snapp account data once we have something to test against
     pub zkapp: Option<()>,
+    /// Level of permission required to do different account actions
+    pub permissions: Permissions,
     /// TODO: This should contain a Snapp account data once we have something to test against
     pub zkuri: Option<()>,
 }

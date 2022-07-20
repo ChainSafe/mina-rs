@@ -174,6 +174,20 @@ impl_from_for_hash!(ChainHash, HashV1);
 impl_from_for_generic_with_proxy!(ChainHash, HashV1, ChainHashV1Json);
 impl_strconv_via_json!(ChainHash, ChainHashV1Json);
 
+impl Hashable for ChainHash {
+    type D = ();
+
+    fn to_roinput(&self) -> ROInput {
+        let mut roi = ROInput::new();
+        roi.append_hashable(&self.0);
+        roi
+    }
+
+    fn domain_string(_: Self::D) -> Option<String> {
+        None
+    }
+}
+
 impl From<[u8; 32]> for ChainHash {
     fn from(v: [u8; 32]) -> Self {
         Self(BaseHash(v))

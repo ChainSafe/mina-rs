@@ -75,18 +75,18 @@ pub struct AccountV0 {
     pub zkuri: Option<()>,
 }
 
-/// Need to learn exactly what this is..
+/// FIXME: Need to learn exactly what this is..
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub enum TokenPermissions {
-    /// Account owns a token
-    TokenOwned {
-        /// ?
-        disable_new_accounts: bool,
-    },
     /// Account does not own a token
     NotOwned {
         /// ?
         account_disabled: bool,
+    },
+    /// Account owns a token
+    TokenOwned {
+        /// ?
+        disable_new_accounts: bool,
     },
 }
 
