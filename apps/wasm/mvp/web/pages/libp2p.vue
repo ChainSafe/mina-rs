@@ -5,12 +5,9 @@
     <p>wasm: {{ wasmStatus() }}</p>
     <p class="prose">
       Run
-      <a
-        href="https://github.com/ChainSafe/mina-rs/tree/mvp-proxy/apps/mvp-proxy"
-      >proxy node</a>
+      <a href="https://github.com/ChainSafe/mina-rs/tree/mvp-proxy/apps/mvp-proxy">proxy node</a>
       locally, then paste node address into below input box.
     </p>
-    <p />
     <p>
       Local node address: <br>
       <input
@@ -54,12 +51,12 @@
 </template>
 
 <script lang="ts">
-import { initWasm } from "~/utils";
-import { init_logger, connect, set_event_emitter } from "~/pkg/wasm";
+import { initWasm } from "../../utils";
+import { init_logger, connect, set_event_emitter } from "../../pkg/wasm";
 import { EventEmitter } from "events";
-import { ConnectRequest } from "~/web/pb/requests";
-import { PeerStatus } from "~/web/pb/messages";
-import NavBar from "~/web/components/NavBar.vue";
+import { ConnectRequest, encodeConnectRequest } from "../pb/requests";
+import { decodePeerStatus } from "../pb/messages";
+import NavBar from "../components/NavBar.vue";
 import _ from "lodash";
 
 export default {
@@ -82,7 +79,7 @@ export default {
     this.eventEmitter.on("update", (msg) => {
       console.log(`[update] raw msg: ${msg}`);
       try {
-        let ps = PeerStatus.decode(msg);
+        let ps = decodePeerStatus(msg);
         console.log(`[update] decoded msg: ${ps}`);
         this.peers[ps.peerId] = ps;
         this.peerKeys = Object.keys(this.peers);
@@ -108,10 +105,9 @@ export default {
       this.clear();
       set_event_emitter(this.eventEmitter);
       console.log(`[JS] Connecting to ${this.addr}`);
-      let req = ConnectRequest.create();
-      req.address = this.addr;
+      let req = { address: this.addr };
       try {
-        await connect(ConnectRequest.encode(req).finish());
+        await connect(encodeConnectRequest(req));
       } catch (e) {
         alert(e);
       }

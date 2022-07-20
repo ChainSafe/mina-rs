@@ -4,7 +4,7 @@
 #[cfg(all(test, feature = "browser"))]
 wasm_bindgen_test::wasm_bindgen_test_configure!(run_in_browser);
 
-use bin_prot::{from_reader, to_writer, Value};
+use bin_prot::*;
 use mina_serialization_types::v1::*;
 use pretty_assertions::assert_eq;
 use serde::{Deserialize, Serialize};
@@ -571,7 +571,7 @@ fn test_in_block<'a, T: Serialize + Deserialize<'a>>(block: &bin_prot::Value, pa
                 )
             })
             .unwrap();
-        let re_val: T = from_reader(bytes.as_slice())
+        let re_val: T = from_reader_strict(bytes.as_slice())
             .map_err(|err| {
                 format!(
                     "Could not deserialize type, err:{err}\npath: {}\nbytes({}): {:?}\ndata: {:?}",

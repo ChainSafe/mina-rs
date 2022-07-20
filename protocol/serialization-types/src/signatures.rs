@@ -101,7 +101,8 @@ impl<'de> Deserialize<'de> for SignatureJson {
             .into_vec()
             .map_err(<D::Error as serde::de::Error>::custom)?;
         Ok(Self(
-            bin_prot::from_reader(&bytes[1..]).map_err(<D::Error as serde::de::Error>::custom)?,
+            bin_prot::from_reader_strict(&bytes[1..])
+                .map_err(<D::Error as serde::de::Error>::custom)?,
         ))
     }
 }
@@ -121,6 +122,11 @@ mod conversions {
             }
         }
     }
+    impl From<CompressedCurvePoint> for CompressedPubKey {
+        fn from(t: CompressedCurvePoint) -> Self {
+            Self::from(&t)
+        }
+    }
     impl From<&CompressedPubKey> for CompressedCurvePoint {
         fn from(t: &CompressedPubKey) -> Self {
             CompressedCurvePoint {
@@ -133,6 +139,11 @@ mod conversions {
                     .expect("Wrong number of bytes encountered when converting to FieldElement"),
                 is_odd: t.is_odd,
             }
+        }
+    }
+    impl From<CompressedPubKey> for CompressedCurvePoint {
+        fn from(t: CompressedPubKey) -> Self {
+            Self::from(&t)
         }
     }
 

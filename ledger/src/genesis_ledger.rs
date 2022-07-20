@@ -8,16 +8,16 @@
 //!
 
 use mina_merkle::*;
-use mina_rs_base::account::Account;
+use proof_systems::mina_hasher::Hashable;
 
 /// Type alias for mina merkle ledger hasher
-pub type MinaLedgerMerkleHasher = MinaPoseidonMerkleHasher<Account>;
+pub type MinaLedgerMerkleHasher<Account> = MinaPoseidonMerkleHasher<Account>;
 
 /// Type alias for mina merkle ledger
-pub type MinaLedgerMerkleTree = MinaMerkleTree<
-    <MinaLedgerMerkleHasher as MerkleHasher>::Item,
-    <MinaLedgerMerkleHasher as MerkleHasher>::Hash,
-    MinaLedgerMerkleHasher,
+pub type MinaLedgerMerkleTree<Account> = MinaMerkleTree<
+    <MinaLedgerMerkleHasher<Account> as MerkleHasher>::Item,
+    <MinaLedgerMerkleHasher<Account> as MerkleHasher>::Hash,
+    MinaLedgerMerkleHasher<Account>,
     MinaPoseidonMerkleMerger,
     FixedHeightMode,
 >;
@@ -27,8 +27,9 @@ pub type MinaLedgerMerkleTree = MinaMerkleTree<
 ///
 /// A Genesis ledger has a compile time pre-defined depth which is set here as a const generic
 /// This ensures compile-time checking that the correct depth ledger is being used in the correc place
-pub trait GenesisLedger<'a, const DEPTH: usize>
+pub trait GenesisLedger<'a, const DEPTH: usize, Account: Hashable>
 where
+    <Account as Hashable>::D: Default,
     Self: 'a,
     &'a Self: IntoIterator<Item = Result<Account, Self::Error>>,
 {
@@ -46,7 +47,7 @@ where
     }
 
     /// Build mina merkle ledger tree with a fixed height
-    fn to_mina_merkle_ledger(&'a self) -> MinaLedgerMerkleTree {
+    fn to_mina_merkle_ledger(&'a self) -> MinaLedgerMerkleTree<Account> {
         // ledger_depth is defined at <https://github.com/MinaProtocol/mina/blob/develop/docs/specs/types_and_structures/serialized_key.md#constraint_constants>
         const MINA_LEDGER_HEIGHT: u32 = 20;
 

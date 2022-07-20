@@ -11,6 +11,7 @@ use crate::numbers::{Amount, BlockTime};
 /// Payload for the timing variant Timed
 #[derive(Clone, Debug, PartialEq, AutoFrom)]
 #[auto_from(mina_serialization_types::account::TimedData)]
+#[auto_from(mina_serialization_types::account::TimedDataV0)]
 pub struct TimedData {
     /// Initial balance for the account
     pub initial_minimum_balance: Amount,
@@ -28,6 +29,7 @@ pub struct TimedData {
 /// This is to allow vesting from an initial genesis allocation
 #[derive(Debug, Clone, SmartDefault, AutoFrom)]
 #[auto_from(mina_serialization_types::account::Timing)]
+#[auto_from(mina_serialization_types::account::TimingV0)]
 pub enum Timing {
     /// Account does not have any timing limitations
     #[default]
