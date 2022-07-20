@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"enum":[["AuthRequired","The level of auth required to perform a particular action with an account"]],"struct":[["Permissions","Permissions associated with the account"]]};
+window.SIDEBAR_ITEMS = {"enum":[["AuthRequired","The level of auth required to perform a particular action with an account"]],"struct":[["Permissions","Permissions associated with the account"],["PermissionsLegacy","Permissions associated with the account"]]};

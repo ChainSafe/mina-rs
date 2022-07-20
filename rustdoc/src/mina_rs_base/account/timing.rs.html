@@ -41,6 +41,8 @@
 <span id="35">35</span>
 <span id="36">36</span>
 <span id="37">37</span>
+<span id="38">38</span>
+<span id="39">39</span>
 </pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems</span>
 <span class="comment">// SPDX-License-Identifier: Apache-2.0</span>
 
@@ -54,6 +56,7 @@
 <span class="doccomment">/// Payload for the timing variant Timed</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">PartialEq</span>, <span class="ident">AutoFrom</span>)]</span>
 <span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">mina_serialization_types::account::TimedData</span>)]</span>
+<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">mina_serialization_types::account::TimedDataV0</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">TimedData</span> {
     <span class="doccomment">/// Initial balance for the account</span>
     <span class="kw">pub</span> <span class="ident">initial_minimum_balance</span>: <span class="ident">Amount</span>,
@@ -71,6 +74,7 @@
 <span class="doccomment">/// This is to allow vesting from an initial genesis allocation</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">SmartDefault</span>, <span class="ident">AutoFrom</span>)]</span>
 <span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">mina_serialization_types::account::Timing</span>)]</span>
+<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">mina_serialization_types::account::TimingV0</span>)]</span>
 <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">Timing</span> {
     <span class="doccomment">/// Account does not have any timing limitations</span>
     <span class="attribute">#[<span class="ident">default</span>]</span>

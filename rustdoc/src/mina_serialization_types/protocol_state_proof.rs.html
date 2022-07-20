@@ -335,7 +335,7 @@
         <span class="kw">let</span> <span class="ident">s</span> <span class="op">=</span> <span class="ident">String::deserialize</span>(<span class="ident">deserializer</span>)<span class="question-mark">?</span>;
         <span class="kw">let</span> <span class="ident">bytes</span> <span class="op">=</span> <span class="ident">base64::decode_config</span>(<span class="ident">s</span>, <span class="ident">base64::URL_SAFE</span>)
             .<span class="ident">map_err</span>(<span class="op">&lt;</span><span class="ident">D::Error</span> <span class="kw">as</span> <span class="ident">serde::de::Error</span><span class="op">&gt;</span><span class="ident">::custom</span>)<span class="question-mark">?</span>;
-        <span class="kw">let</span> <span class="ident">t</span>: <span class="ident">ProtocolStateProofV1</span> <span class="op">=</span> <span class="ident">bin_prot::from_reader</span>(<span class="ident">bytes</span>.<span class="ident">as_slice</span>())
+        <span class="kw">let</span> <span class="ident">t</span>: <span class="ident">ProtocolStateProofV1</span> <span class="op">=</span> <span class="ident">bin_prot::from_reader_strict</span>(<span class="ident">bytes</span>.<span class="ident">as_slice</span>())
             .<span class="ident">map_err</span>(<span class="op">&lt;</span><span class="ident">D::Error</span> <span class="kw">as</span> <span class="ident">serde::de::Error</span><span class="op">&gt;</span><span class="ident">::custom</span>)<span class="question-mark">?</span>;
         <span class="prelude-val">Ok</span>(<span class="ident">t</span>.<span class="ident">into</span>())
     }

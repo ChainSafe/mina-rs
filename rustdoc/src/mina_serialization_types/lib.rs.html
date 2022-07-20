@@ -159,6 +159,11 @@
 <span id="153">153</span>
 <span id="154">154</span>
 <span id="155">155</span>
+<span id="156">156</span>
+<span id="157">157</span>
+<span id="158">158</span>
+<span id="159">159</span>
+<span id="160">160</span>
 </pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems</span>
 <span class="comment">// SPDX-License-Identifier: Apache-2.0</span>
 
@@ -203,6 +208,11 @@
 
 <span class="kw">mod</span> <span class="ident">type_annotations</span>;
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">type_annotations</span>::<span class="kw-2">*</span>;
+
+<span class="doccomment">/// Unversioned serialization types for the Mina protocol</span>
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">unversioned</span> {
+    <span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="kw">super</span>::account</span>::{<span class="ident">AccountV0</span>, <span class="ident">TimedDataV0</span>, <span class="ident">TimingV0</span>};
+}
 
 <span class="doccomment">/// Version 1 serialization types for the Mina protocol</span>
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">v1</span> {

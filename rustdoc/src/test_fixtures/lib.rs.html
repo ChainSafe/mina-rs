@@ -206,7 +206,7 @@
 
 <span class="kw">impl</span> <span class="ident">BlockFixture</span> {
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">external_transitionv1</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">anyhow::Result</span><span class="op">&lt;</span><span class="ident">ExternalTransitionV1</span><span class="op">&gt;</span> {
-        <span class="prelude-val">Ok</span>(<span class="ident">bin_prot::from_reader</span>(<span class="self">self</span>.<span class="ident">bytes</span>.<span class="ident">as_slice</span>())<span class="question-mark">?</span>)
+        <span class="prelude-val">Ok</span>(<span class="ident">bin_prot::from_reader_strict</span>(<span class="self">self</span>.<span class="ident">bytes</span>.<span class="ident">as_slice</span>())<span class="question-mark">?</span>)
     }
 }
 

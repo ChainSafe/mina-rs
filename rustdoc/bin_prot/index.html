@@ -96,6 +96,9 @@ the primitive values for bin_prot</p>
 <div class="item-table"><div class="item-row"><div class="item-left module-item"><a class="fn" href="fn.caml_hash_variant.html" title="bin_prot::caml_hash_variant fn">caml_hash_variant</a></div><div class="item-right docblock-short"><p>Hash the label string (ASCII not UTF-8) into a OCaml style variant hash</p>
 </div></div><div class="item-row"><div class="item-left module-item"><a class="fn" href="fn.from_reader.html" title="bin_prot::from_reader fn">from_reader</a></div><div class="item-right docblock-short"><p>Convenience method, create a BinProt deserializer from the given reader and then
 read from it</p>
+</div></div><div class="item-row"><div class="item-left module-item"><a class="fn" href="fn.from_reader_strict.html" title="bin_prot::from_reader_strict fn">from_reader_strict</a></div><div class="item-right docblock-short"><p>Convenience method, create a BinProt deserializer from the given reader and then
+read from it.
+This method also ensures the input byte stream is fully consumed.</p>
 </div></div><div class="item-row"><div class="item-left module-item"><a class="fn" href="fn.to_writer.html" title="bin_prot::to_writer fn">to_writer</a></div><div class="item-right docblock-short"><p>Convenience function, creates  serializer and uses it to write the given value
 to the writer</p>
 </div></div></div><h2 id="types" class="small-section-header"><a href="#types">Type Definitions</a></h2>

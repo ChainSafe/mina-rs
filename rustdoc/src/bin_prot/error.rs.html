@@ -142,6 +142,10 @@
 <span id="136">136</span>
 <span id="137">137</span>
 <span id="138">138</span>
+<span id="139">139</span>
+<span id="140">140</span>
+<span id="141">141</span>
+<span id="142">142</span>
 </pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems</span>
 <span class="comment">// SPDX-License-Identifier: Apache-2.0</span>
 
@@ -255,6 +259,10 @@
     <span class="doccomment">/// When deserializing a polyvar the tag does not match any known tags for the type</span>
     <span class="attribute">#[<span class="ident">error</span>(<span class="string">&quot;Unrecognised Polyvar tag {0}&quot;</span>)]</span>
     <span class="ident">UnknownPolyvarTag</span>(<span class="ident">u32</span>),
+
+    <span class="doccomment">/// When deserializing a polyvar the tag does not match any known tags for the type</span>
+    <span class="attribute">#[<span class="ident">error</span>(<span class="string">&quot;Input stream has {0} unconsumed bytes&quot;</span>)]</span>
+    <span class="ident">StreamNotFullyConsumed</span>(<span class="ident">usize</span>),
 
     <span class="comment">//////////////////////////////////</span>
     <span class="doccomment">/// Some user-defined error occurred.</span>

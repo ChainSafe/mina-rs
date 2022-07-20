@@ -795,8 +795,8 @@
             .<span class="ident">into_vec</span>()
             .<span class="ident">map_err</span>(<span class="ident"><span class="kw">crate</span>::errors::Error::Base58DecodeError</span>)<span class="question-mark">?</span>;
         <span class="comment">// skip the version check byte</span>
-        <span class="kw">let</span> <span class="ident">data</span>: <span class="ident">T</span> <span class="op">=</span>
-            <span class="ident">bin_prot::from_reader</span>(<span class="kw-2">&amp;</span><span class="ident">bytes</span>[<span class="number">1</span>..]).<span class="ident">map_err</span>(<span class="ident"><span class="kw">crate</span>::errors::Error::BinProtError</span>)<span class="question-mark">?</span>;
+        <span class="kw">let</span> <span class="ident">data</span>: <span class="ident">T</span> <span class="op">=</span> <span class="ident">bin_prot::from_reader_strict</span>(<span class="kw-2">&amp;</span><span class="ident">bytes</span>[<span class="number">1</span>..])
+            .<span class="ident">map_err</span>(<span class="ident"><span class="kw">crate</span>::errors::Error::BinProtError</span>)<span class="question-mark">?</span>;
         <span class="prelude-val">Ok</span>(<span class="self">Self</span>(<span class="ident">data</span>))
     }
 }

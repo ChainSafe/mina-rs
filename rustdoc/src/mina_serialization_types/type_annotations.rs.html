@@ -69,7 +69,7 @@
 
     <span class="doccomment">/// Construct from binprot bytes reader</span>
     <span class="kw">fn</span> <span class="ident">try_from_binprot</span>(<span class="ident">rdr</span>: <span class="kw">impl</span> <span class="ident">Read</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span>, <span class="ident">bin_prot::error::Error</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">binprot</span>: <span class="ident"><span class="self">Self</span>::T</span> <span class="op">=</span> <span class="ident">bin_prot::from_reader</span>(<span class="ident">rdr</span>)<span class="question-mark">?</span>;
+        <span class="kw">let</span> <span class="ident">binprot</span>: <span class="ident"><span class="self">Self</span>::T</span> <span class="op">=</span> <span class="ident">bin_prot::from_reader_strict</span>(<span class="ident">rdr</span>)<span class="question-mark">?</span>;
         <span class="prelude-val">Ok</span>(<span class="ident">binprot</span>.<span class="ident">into</span>())
     }
 
