@@ -92,32 +92,13 @@
 <span id="86">86</span>
 <span id="87">87</span>
 <span id="88">88</span>
-<span id="89">89</span>
-<span id="90">90</span>
-<span id="91">91</span>
-<span id="92">92</span>
-<span id="93">93</span>
-<span id="94">94</span>
-<span id="95">95</span>
-<span id="96">96</span>
-<span id="97">97</span>
-<span id="98">98</span>
-<span id="99">99</span>
-<span id="100">100</span>
-<span id="101">101</span>
-<span id="102">102</span>
-<span id="103">103</span>
-<span id="104">104</span>
-<span id="105">105</span>
-<span id="106">106</span>
 </pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems</span>
 <span class="comment">// SPDX-License-Identifier: Apache-2.0</span>
 
 <span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::prefixes</span>::<span class="kw-2">*</span>;
 <span class="kw">use</span> <span class="ident">ark_ff</span>::{<span class="ident">BigInteger256</span>, <span class="ident">FromBytes</span>};
-<span class="kw">use</span> <span class="ident">lockfree_object_pool</span>::{<span class="ident">SpinLockObjectPool</span>, <span class="ident">SpinLockReusable</span>};
-<span class="kw">use</span> <span class="ident">mina_hasher</span>::{<span class="ident">create_legacy</span>, <span class="ident">Fp</span>, <span class="ident">Hashable</span>, <span class="ident">Hasher</span>, <span class="ident">PoseidonHasherLegacy</span>, <span class="ident">ROInput</span>};
+<span class="kw">use</span> <span class="ident">mina_hasher</span>::{<span class="ident">create_legacy</span>, <span class="ident">Fp</span>, <span class="ident">Hashable</span>, <span class="ident">Hasher</span>, <span class="ident">ROInput</span>};
 <span class="kw">use</span> <span class="ident">once_cell::sync::OnceCell</span>;
 
 <span class="doccomment">/// Merger for mina binary merkle tree that uses poseidon hash</span>
@@ -158,35 +139,18 @@
     }
 }
 
-<span class="kw">fn</span> <span class="ident">merge_poseidon_hash</span>(<span class="ident">hashes</span>: [<span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Fp</span><span class="op">&gt;</span>; <span class="number">2</span>], <span class="ident">height</span>: <span class="ident">u32</span>) -&gt; <span class="ident">Fp</span> {
-    <span class="kw">static</span> <span class="ident">HASHER_POOL</span>: <span class="ident">OnceCell</span><span class="op">&lt;</span>
-        <span class="ident">SpinLockObjectPool</span><span class="op">&lt;</span><span class="ident">PoseidonHasherLegacy</span><span class="op">&lt;</span><span class="ident">MinaPoseidonMerkleTreeNonLeafNode</span><span class="op">&gt;</span><span class="op">&gt;</span>,
-    <span class="op">&gt;</span> <span class="op">=</span> <span class="ident">OnceCell::new</span>();
-    <span class="comment">// Not calling reset here because `hasher.init` is called after `pull`, which implicitly calls sponge.reset()</span>
-    <span class="kw">let</span> <span class="ident">pool</span> <span class="op">=</span> <span class="ident">HASHER_POOL</span>.<span class="ident">get_or_init</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">SpinLockObjectPool::new</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">create_legacy</span>(<span class="number">0</span>), <span class="op">|</span><span class="kw">_</span><span class="op">|</span> ()));
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">hasher</span> <span class="op">=</span> <span class="ident">pool</span>.<span class="ident">pull</span>();
-    <span class="ident">merge_poseidon_hash_with_hasher</span>(<span class="kw-2">&amp;mut</span> <span class="ident">hasher</span>, <span class="ident">hashes</span>, <span class="ident">height</span>)
-}
-
-<span class="kw">fn</span> <span class="ident">merge_poseidon_hash_with_hasher</span>(
-    <span class="ident">hasher</span>: <span class="kw-2">&amp;mut</span> <span class="ident">SpinLockReusable</span><span class="op">&lt;</span><span class="ident">PoseidonHasherLegacy</span><span class="op">&lt;</span><span class="ident">MinaPoseidonMerkleTreeNonLeafNode</span><span class="op">&gt;</span><span class="op">&gt;</span>,
-    <span class="kw-2">mut</span> <span class="ident">hashes</span>: [<span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Fp</span><span class="op">&gt;</span>; <span class="number">2</span>],
-    <span class="ident">height</span>: <span class="ident">u32</span>,
-) -&gt; <span class="ident">Fp</span> {
+<span class="kw">fn</span> <span class="ident">merge_poseidon_hash</span>(<span class="kw-2">mut</span> <span class="ident">hashes</span>: [<span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Fp</span><span class="op">&gt;</span>; <span class="number">2</span>], <span class="ident">height</span>: <span class="ident">u32</span>) -&gt; <span class="ident">Fp</span> {
     <span class="kw">for</span> <span class="ident">hash_opt</span> <span class="kw">in</span> <span class="ident">hashes</span>.<span class="ident">iter_mut</span>() {
         <span class="kw">if</span> <span class="ident">hash_opt</span>.<span class="ident">is_none</span>() {
-            <span class="kw-2">*</span><span class="ident">hash_opt</span> <span class="op">=</span> <span class="ident">get_empty_hash</span>(<span class="ident">hasher</span>, <span class="ident">height</span> <span class="op">-</span> <span class="number">1</span>).<span class="ident">into</span>();
+            <span class="kw-2">*</span><span class="ident">hash_opt</span> <span class="op">=</span> <span class="ident">get_empty_hash</span>(<span class="ident">height</span> <span class="op">-</span> <span class="number">1</span>).<span class="ident">into</span>();
         }
     }
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">hasher</span> <span class="op">=</span> <span class="ident">create_legacy</span>(<span class="ident">height</span>);
     <span class="kw">let</span> <span class="ident">hashable</span> <span class="op">=</span> <span class="ident">MinaPoseidonMerkleTreeNonLeafNode</span>(<span class="ident">hashes</span>, <span class="ident">height</span>);
-    <span class="ident">hasher</span>.<span class="ident">init</span>(<span class="ident">height</span>);
     <span class="ident">hasher</span>.<span class="ident">hash</span>(<span class="kw-2">&amp;</span><span class="ident">hashable</span>)
 }
 
-<span class="kw">fn</span> <span class="ident">get_empty_hash</span>(
-    <span class="ident">hasher</span>: <span class="kw-2">&amp;mut</span> <span class="ident">SpinLockReusable</span><span class="op">&lt;</span><span class="ident">PoseidonHasherLegacy</span><span class="op">&lt;</span><span class="ident">MinaPoseidonMerkleTreeNonLeafNode</span><span class="op">&gt;</span><span class="op">&gt;</span>,
-    <span class="ident">height</span>: <span class="ident">u32</span>,
-) -&gt; <span class="ident">Fp</span> {
+<span class="kw">fn</span> <span class="ident">get_empty_hash</span>(<span class="ident">height</span>: <span class="ident">u32</span>) -&gt; <span class="ident">Fp</span> {
     <span class="kw">if</span> <span class="ident">height</span> <span class="op">==</span> <span class="number">0</span> {
         <span class="kw">static</span> <span class="ident">EMPTY_HASH</span>: <span class="ident">OnceCell</span><span class="op">&lt;</span><span class="ident">Fp</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">OnceCell::new</span>();
         <span class="kw-2">*</span><span class="ident">EMPTY_HASH</span>.<span class="ident">get_or_init</span>(<span class="op">|</span><span class="op">|</span> {
@@ -212,10 +176,10 @@
                 .<span class="ident">into</span>()
         })
     } <span class="kw">else</span> {
-        <span class="kw">let</span> <span class="ident">child_hash</span> <span class="op">=</span> <span class="ident">get_empty_hash</span>(<span class="ident">hasher</span>, <span class="ident">height</span> <span class="op">-</span> <span class="number">1</span>);
-        <span class="ident">merge_poseidon_hash_with_hasher</span>(<span class="ident">hasher</span>, [<span class="prelude-val">Some</span>(<span class="ident">child_hash</span>), <span class="prelude-val">Some</span>(<span class="ident">child_hash</span>)], <span class="ident">height</span>)
+        <span class="kw">let</span> <span class="ident">child_hash</span> <span class="op">=</span> <span class="ident">get_empty_hash</span>(<span class="ident">height</span> <span class="op">-</span> <span class="number">1</span>);
+        <span class="ident">merge_poseidon_hash</span>([<span class="prelude-val">Some</span>(<span class="ident">child_hash</span>), <span class="prelude-val">Some</span>(<span class="ident">child_hash</span>)], <span class="ident">height</span>)
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_merkle" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (f8588549c 2022-07-18)" ></div>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_merkle" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (9a7b7d5e5 2022-07-19)" ></div>
 </body></html>
