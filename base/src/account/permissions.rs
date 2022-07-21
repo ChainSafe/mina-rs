@@ -3,7 +3,9 @@
 
 //! Account based permissions
 
+use ark_ff::BigInteger256;
 use mina_serialization_types_macros::AutoFrom;
+use proof_systems::mina_hasher::{Hashable, ROInput};
 
 /// The level of auth required to perform a particular action with an account
 #[derive(Clone, Debug, AutoFrom)]
@@ -69,4 +71,19 @@ pub struct Permissions {
     pub increment_nonce: AuthRequired,
     /// Permission require to set voting for
     pub set_voting_for: AuthRequired,
+}
+
+impl Hashable for Permissions {
+    type D = ();
+
+    fn to_roinput(&self) -> ROInput {
+        let mut roi = ROInput::new();
+        // FIXME: This is only for genesis ledger accounts
+        roi.append_field(BigInteger256::from(3681400667).into());
+        roi
+    }
+
+    fn domain_string(_: Self::D) -> Option<String> {
+        None
+    }
 }

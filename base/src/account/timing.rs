@@ -5,6 +5,7 @@
 
 use ark_ff::{One, Zero};
 use mina_serialization_types_macros::AutoFrom;
+use once_cell::sync::OnceCell;
 use proof_systems::mina_hasher::{Fp, Hashable, ROInput};
 use smart_default::SmartDefault;
 
@@ -36,6 +37,14 @@ impl Default for TimedData {
             vesting_period: 1.into(),
             vesting_increment: 0.into(),
         }
+    }
+}
+
+impl<'a> TimedData {
+    /// Get a borrow of the default value
+    pub fn borrow_default() -> &'a Self {
+        static INSTANCE: OnceCell<TimedData> = OnceCell::new();
+        INSTANCE.get_or_init(Self::default)
     }
 }
 
@@ -82,7 +91,7 @@ impl Hashable for Timing {
                 roi.append_field(Fp::one());
                 // roi.append_field(Fp::zero());
                 // roi.append_u32(1);
-                // roi.append_hashable(&TimedData::default());
+                // roi.append_hashable(TimedData::borrow_default());
             }
             Self::Timed(timed) => {
                 roi.append_field(Fp::one());

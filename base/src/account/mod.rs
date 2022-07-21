@@ -8,6 +8,7 @@ pub mod permissions;
 pub mod timing;
 pub mod token_permissions;
 pub mod token_symbol;
+pub mod zkapp;
 
 use crate::{types::*, *};
 
@@ -16,11 +17,14 @@ pub use permissions::{AuthRequired, Permissions, PermissionsLegacy};
 pub use timing::Timing;
 pub use token_permissions::TokenPermissions;
 pub use token_symbol::TokenSymbol;
+pub use zkapp::{ZkApp, ZkAppUri};
 
 use mina_crypto::hash::{ChainHash, StateHash};
 use mina_hasher::ROInput;
 use mina_serialization_types::account::*;
-use proof_systems::mina_signer::CompressedPubKey;
+use proof_systems::{mina_hasher::Hasher, mina_signer::CompressedPubKey};
+
+use self::zkapp::{ZkAppOptionHashableWrapper, ZkAppUriOptionHashableWrapper};
 
 /// An account identified by its public key and token ID. Multiple accounts may
 /// where the same public key if multiple tokens exist
@@ -113,11 +117,11 @@ pub struct Account {
     /// Used for vesting
     pub timing: Timing,
     /// TODO: This should contain a Snapp account data once we have something to test against
-    pub zkapp: Option<()>,
+    pub zkapp: Option<ZkApp>,
     /// Level of permission required to do different account actions
     pub permissions: Permissions,
     /// TODO: This should contain a Snapp account data once we have something to test against
-    pub zkuri: Option<()>,
+    pub zkapp_uri: Option<ZkAppUri>,
 }
 
 impl mina_hasher::Hashable for Account {
@@ -126,7 +130,29 @@ impl mina_hasher::Hashable for Account {
     // Uncomment these fields once they have implemented Hashable trait
     // and add unit tests when it's complete
     fn to_roinput(&self) -> ROInput {
-        ROInput::new()
+        let mut roi = ROInput::new();
+        let zkapp_hash = {
+            let mut hasher = mina_hasher::create_kimchi(());
+            hasher.hash(&ZkAppOptionHashableWrapper(&self.zkapp))
+        };
+        let zkapp_uri_hash = {
+            let mut hasher = mina_hasher::create_kimchi(());
+            hasher.hash(&ZkAppUriOptionHashableWrapper(&self.zkapp_uri))
+        };
+        roi.append_hashable(&CompressedPubKeyHashableWrapper(&self.public_key))
+            .append_hashable(&self.token_id)
+            .append_hashable(&self.balance)
+            .append_hashable(&self.token_permissions)
+            .append_hashable(&self.token_symbol)
+            .append_hashable(&self.nonce)
+            .append_hashable(&self.receipt_chain_hash)
+            .append_hashable(&CompressedPubKeyOptionHashableWrapper(&self.delegate))
+            .append_hashable(&self.voting_for)
+            .append_hashable(&self.timing)
+            .append_field(zkapp_hash)
+            .append_hashable(&self.permissions)
+            .append_field(zkapp_uri_hash);
+        roi
     }
 
     fn domain_string(_: Self::D) -> Option<String> {

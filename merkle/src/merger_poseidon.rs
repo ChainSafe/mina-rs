@@ -3,7 +3,7 @@
 
 use super::*;
 use crate::prefixes::*;
-use ark_ff::{BigInteger256, FromBytes};
+use ark_ff::BigInteger256;
 use mina_hasher::{create_legacy, Fp, Hashable, Hasher, ROInput};
 use once_cell::sync::OnceCell;
 
@@ -73,13 +73,13 @@ fn get_empty_hash(height: u32) -> Fp {
                 radix 10: 14604874247461951431777712543359658136906556694369689076707549712589474483312
                 hex:      0x204a10dde313dedb9a8a568d92ad6df0eecaff98ed379ae50896824fa1dbcc70
             */
-            const BYTES_LE: [u8; 32] = [
-                112, 204, 219, 161, 79, 130, 150, 8, 229, 154, 55, 237, 152, 255, 202, 238, 240,
-                109, 173, 146, 141, 86, 138, 154, 219, 222, 19, 227, 221, 16, 74, 32,
-            ];
-            BigInteger256::read(BYTES_LE.as_slice())
-                .expect("Failed to convert bytes to BigInteger256")
-                .into()
+            const DEFAULT_HASH: BigInteger256 = BigInteger256::new([
+                618825277339585648,
+                17206846358602357477,
+                11135808194678189552,
+                2326690702673829595,
+            ]);
+            DEFAULT_HASH.into()
         })
     } else {
         let child_hash = get_empty_hash(height - 1);

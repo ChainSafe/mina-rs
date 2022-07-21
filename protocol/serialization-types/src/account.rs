@@ -72,7 +72,7 @@ pub struct AccountV0 {
     /// TODO: This should contain a Snapp account data once we have something to test against
     pub zkapp: Option<()>,
     /// TODO: This should contain a Snapp account data once we have something to test against
-    pub zkuri: Option<()>,
+    pub zkapp_uri: Option<()>,
 }
 
 /// FIXME: Need to learn exactly what this is..
