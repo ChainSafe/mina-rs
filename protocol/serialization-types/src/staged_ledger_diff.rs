@@ -493,7 +493,6 @@ pub enum CoinBaseJson {
 impl_mina_enum_json_serde!(CoinBaseJson, CoinBaseJsonProxy);
 
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
-// FIXME: No test coverage yet
 pub struct CoinBaseFeeTransfer {
     pub receiver_pk: PublicKeyV1,
     pub fee: ExtendedU64_2,
