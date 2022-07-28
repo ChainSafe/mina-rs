@@ -85,21 +85,24 @@ impl ChunkedROInput {
     /// Serialize random oracle input to vector of base field elements
     pub fn into_fields(self) -> Vec<Fp> {
         fn shl(f: Fp, n: u32) -> Fp {
-            let mut big: BigInteger256 = f.into();
-            big.muln(n);
-            big.into()
+            if n == 0 {
+                f
+            } else {
+                let mut big: BigInteger256 = f.into();
+                big.muln(n);
+                big.into()
+            }
         }
         let size_in_bits = Fp::size_in_bits() as u32;
-
-        let mut packed_fields: Vec<Fp> = vec![];
+        let mut fields = self.fields;
         let mut acc_bits = 0;
         let mut sum = Fp::zero();
         for (f, n_bits) in self.packed.into_iter() {
             if acc_bits + n_bits < size_in_bits {
-                sum = shl(sum, acc_bits) + f;
+                sum = shl(sum, n_bits) + f;
                 acc_bits += n_bits;
             } else {
-                packed_fields.push(sum);
+                fields.push(sum);
                 acc_bits = 0;
                 sum = Fp::zero();
                 // acc_bits = n_bits;
@@ -107,12 +110,9 @@ impl ChunkedROInput {
             }
         }
         if acc_bits > 0 {
-            packed_fields.push(sum);
+            fields.push(sum);
         }
-        packed_fields.reverse();
 
-        let mut fields = self.fields;
-        fields.extend(packed_fields);
         fields
     }
 

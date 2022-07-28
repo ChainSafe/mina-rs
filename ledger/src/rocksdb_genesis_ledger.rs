@@ -97,10 +97,7 @@ mod tests {
     use mina_rs_base::{account::*, types::*};
     use num::BigUint;
     use pretty_assertions::{assert_eq, assert_ne};
-    use proof_systems::{
-        mina_hasher::{self, Fp, Hasher},
-        ChunkedROInput, ToChunkedROInput,
-    };
+    use proof_systems::mina_hasher::{self, Fp, Hasher};
     use rocksdb::*;
 
     const DBPATH_LEGACY: &str =  "test-data/genesis_ledger_6a887ea130e53b06380a9ab27b327468d28d4ce47515a0cc59759d4a3912f0ef/";
@@ -221,13 +218,6 @@ mod tests {
 
     #[test]
     fn test_genesis_ledger_account_0() -> anyhow::Result<()> {
-        // let big = BigUint::from_str_radix("3681400667", 10)?;
-        // let big_bytes = big.to_bytes_le();
-        // _ = big_bytes;
-        // // let big256 = BigInteger256::from(3681400667);
-        // let big256 = BigInteger256::read(big_bytes.as_slice())?;
-        // println!("{:?}", big256.0);
-
         const N: usize = 0;
         let account = get_nth_account(DBPATH, N)?;
         let expected_hash = get_nth_hash(DBPATH, N)?;
@@ -298,30 +288,6 @@ mod tests {
                 hash(ZkAppUri::borrow_default()),
                 "20639848968581348850513072699760590695338607317404146322838943866773129280073"
             );
-        }
-        let roi = account.to_roinput();
-        for f in roi.to_fields() {
-            println!(" field: {}", fp_to_big(f));
-        }
-        println!("account.token_permissions:{:?}", account.token_permissions);
-        let roi = ChunkedROInput::new()
-            .append(account.timing.to_chunked_roinput())
-            // .append_field((&account.voting_for).try_into().unwrap())
-            // .append(CompressedPubKeyOptionHashableWrapper(&account.delegate).to_chunked_roinput())
-            // .append_field((&account.receipt_chain_hash).try_into().unwrap())
-            // .append_u32(account.nonce.0)
-            // .append_u64(account.balance.0)
-            // .append(account.token_symbol.to_chunked_roinput())
-            // .append(account.token_permissions.to_chunked_roinput())
-            // .append_field(account.token_id.0.into())
-            // .append(CompressedPubKeyHashableWrapper(&account.public_key).to_chunked_roinput())
-            ;
-        for &(f, l) in roi.packed.iter() {
-            println!("packed({l}): {:?}", fp_to_big(f));
-        }
-        // println!("chunked roi: {:?}", &roi);
-        for f in roi.into_fields() {
-            println!("chunked field: {}", fp_to_big(f));
         }
         assert_eq!(hash(&account), fp_to_big(expected_hash).to_str_radix(10),);
         Ok(())

@@ -3,10 +3,13 @@
 
 //! zk app
 
-use ark_ff::{BigInteger256, Zero};
+use ark_ff::{BigInteger256, One, Zero};
 use derive_more::{From, Into};
 use once_cell::sync::OnceCell;
-use proof_systems::mina_hasher::{Fp, Hashable, ROInput};
+use proof_systems::{
+    mina_hasher::{Fp, Hashable, ROInput},
+    ChunkedROInput, ToChunkedROInput,
+};
 
 /// FIXME: Doc
 #[derive(Default, Debug, Clone, From, Into)]
@@ -25,6 +28,19 @@ impl Hashable for ZkApp {
 
     fn to_roinput(&self) -> ROInput {
         let mut roi = ROInput::new();
+        for f in self.to_chunked_roinput().into_fields().into_iter() {
+            roi.append_field(f);
+        }
+        roi
+    }
+
+    fn domain_string(_: Self::D) -> Option<String> {
+        Some("CodaZkappAccount".into())
+    }
+}
+
+impl ToChunkedROInput for ZkApp {
+    fn to_chunked_roinput(&self) -> ChunkedROInput {
         // FIXME: This is only for default hash
         // 19777675955122618431670853529822242067051263606115426372178827525373304476695
         const FP1: BigInteger256 = BigInteger256::new([
@@ -40,7 +56,8 @@ impl Hashable for ZkApp {
             14503003448090529760,
             2522938464542289201,
         ]);
-        roi.append_field(FP1.into())
+        ChunkedROInput::new()
+            .append_field(FP1.into())
             .append_field(FP1.into())
             .append_field(FP1.into())
             .append_field(FP1.into())
@@ -54,13 +71,9 @@ impl Hashable for ZkApp {
             .append_field(Fp::zero())
             .append_field(Fp::zero())
             .append_field(Fp::zero())
-            .append_field(Fp::zero());
-
-        roi
-    }
-
-    fn domain_string(_: Self::D) -> Option<String> {
-        Some("CodaZkappAccount".into())
+            .append_packed(Fp::zero(), 1)
+            .append_packed(Fp::zero(), 32)
+            .append_packed(Fp::zero(), 32)
     }
 }
 
@@ -82,7 +95,20 @@ impl<'a> Hashable for ZkAppOptionHashableWrapper<'a> {
     }
 
     fn domain_string(_: Self::D) -> Option<String> {
-        None
+        Some("CodaZkappAccount".into())
+    }
+}
+
+impl<'a> ToChunkedROInput for ZkAppOptionHashableWrapper<'a> {
+    fn to_chunked_roinput(&self) -> ChunkedROInput {
+        ChunkedROInput::new().append(
+            if let Some(v) = self.0 {
+                v
+            } else {
+                ZkApp::borrow_default()
+            }
+            .to_chunked_roinput(),
+        )
     }
 }
 
@@ -103,13 +129,21 @@ impl Hashable for ZkAppUri {
 
     fn to_roinput(&self) -> ROInput {
         let mut roi = ROInput::new();
-        // FIXME: This is only for default hash
-        roi.append_bool(true);
+        for f in self.to_chunked_roinput().into_fields().into_iter() {
+            roi.append_field(f);
+        }
         roi
     }
 
     fn domain_string(_: Self::D) -> Option<String> {
         Some("MinaZkappUri".into())
+    }
+}
+
+impl ToChunkedROInput for ZkAppUri {
+    fn to_chunked_roinput(&self) -> ChunkedROInput {
+        // FIXME: This is only for default hash
+        ChunkedROInput::new().append(ChunkedROInput::new().append_packed(Fp::one(), 1))
     }
 }
 
@@ -131,6 +165,19 @@ impl<'a> Hashable for ZkAppUriOptionHashableWrapper<'a> {
     }
 
     fn domain_string(_: Self::D) -> Option<String> {
-        None
+        Some("MinaZkappUri".into())
+    }
+}
+
+impl<'a> ToChunkedROInput for ZkAppUriOptionHashableWrapper<'a> {
+    fn to_chunked_roinput(&self) -> ChunkedROInput {
+        ChunkedROInput::new().append(
+            if let Some(v) = self.0 {
+                v
+            } else {
+                ZkAppUri::borrow_default()
+            }
+            .to_chunked_roinput(),
+        )
     }
 }

@@ -5,7 +5,11 @@
 
 use ark_ff::BigInteger256;
 use mina_serialization_types_macros::AutoFrom;
-use proof_systems::mina_hasher::{Hashable, ROInput};
+use proof_systems::{
+    bitvec::prelude::BitVec,
+    mina_hasher::{Hashable, ROInput},
+    ChunkedROInput, ToChunkedROInput,
+};
 
 /// The level of auth required to perform a particular action with an account
 #[derive(Clone, Debug, AutoFrom)]
@@ -23,6 +27,21 @@ pub enum AuthRequired {
     Both,
     /// This action can never occur
     Impossible,
+}
+
+impl ToChunkedROInput for AuthRequired {
+    fn to_chunked_roinput(&self) -> ChunkedROInput {
+        let mut roi = ChunkedROInput::new();
+        let constant = matches!(self, Self::Impossible | Self::None);
+        let signature_necessary = matches!(self, Self::Impossible | Self::Signature);
+        let signature_sufficient = matches!(self, Self::Either | Self::Signature | Self::None);
+        for b in [constant, signature_necessary, signature_sufficient] {
+            let mut bits = BitVec::with_capacity(1);
+            bits.push(b);
+            roi = roi.append_packed(ChunkedROInput::bits_to_fp_unsafe(bits), 1);
+        }
+        roi
+    }
 }
 
 /// Permissions associated with the account
@@ -85,5 +104,22 @@ impl Hashable for Permissions {
 
     fn domain_string(_: Self::D) -> Option<String> {
         None
+    }
+}
+
+impl ToChunkedROInput for Permissions {
+    fn to_chunked_roinput(&self) -> ChunkedROInput {
+        ChunkedROInput::new()
+            .append(self.set_voting_for.to_chunked_roinput())
+            .append(self.increment_nonce.to_chunked_roinput())
+            .append(self.set_token_symbol.to_chunked_roinput())
+            .append(self.edit_sequence_state.to_chunked_roinput())
+            .append(self.set_zkapp_uri.to_chunked_roinput())
+            .append(self.set_verification_key.to_chunked_roinput())
+            .append(self.set_permissions.to_chunked_roinput())
+            .append(self.set_delegate.to_chunked_roinput())
+            .append(self.receive.to_chunked_roinput())
+            .append(self.send.to_chunked_roinput())
+            .append(self.edit_state.to_chunked_roinput())
     }
 }
