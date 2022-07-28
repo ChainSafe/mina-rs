@@ -21,19 +21,19 @@ mod tests {
         // Init new block `b0`, add to test_chain
         // Increases blockchain length by 1
         let mut b0: ProtocolState = Default::default();
-        b0.body.consensus_state.blockchain_length = Length(0);
+        b0.body.consensus_state.blockchain_length = Length(1);
         test_chain.push(b0).unwrap();
         assert_eq!(test_chain.length(), 1);
         // Init new block `b1`, add to test_chain
         // Increases blockchain length by 1
         let mut b1: ProtocolState = Default::default();
-        b1.body.consensus_state.blockchain_length = Length(1);
+        b1.body.consensus_state.blockchain_length = Length(2);
         test_chain.push(b1).unwrap();
         assert_eq!(test_chain.length(), 2);
         // Init new block `b2`, add to test_chain
         // Increases blockchain length by 1
         let mut b2: ProtocolState = Default::default();
-        b2.body.consensus_state.blockchain_length = Length(2);
+        b2.body.consensus_state.blockchain_length = Length(3);
         test_chain.push(b2).unwrap();
         assert_eq!(test_chain.length(), 3);
 
@@ -61,14 +61,14 @@ mod tests {
         // Case 2: NonEmpty chain
         // Add new block `b0`, top -> b0
         let mut b0: ProtocolState = Default::default();
-        b0.body.consensus_state.blockchain_length = Length(0);
+        b0.body.consensus_state.blockchain_length = Length(1);
         test_chain.push(b0.clone()).unwrap();
         assert_eq!(test_chain.length(), 1);
         assert_eq!(test_chain.top(), Some(&b0)); // b0 is the latest added block
 
         // Add new block `b1`, top -> b1
         let mut b1: ProtocolState = Default::default();
-        b1.body.consensus_state.blockchain_length = Length(1);
+        b1.body.consensus_state.blockchain_length = Length(2);
         test_chain.push(b1.clone()).unwrap();
         assert_eq!(test_chain.length(), 2);
         assert_eq!(test_chain.top(), Some(&b1)); // b1 is the latest added block

@@ -125,7 +125,9 @@ impl Chain<ProtocolState> for ProtocolStateChain {
     }
 
     fn length(&self) -> usize {
-        self.0.len()
+        self.consensus_state()
+            .map(|s| s.blockchain_length.0 as usize)
+            .unwrap_or(0)
     }
 
     fn last_vrf_hash_digest(&self) -> Result<String, ConsensusError> {
