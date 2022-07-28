@@ -11,3 +11,7 @@ mina-curves = {git = "https://github.com/o1-labs/proof-systems", rev = "f5bf8e0b
 mina-hasher = {git = "https://github.com/o1-labs/proof-systems", rev = "f5bf8e0bb33e16718006c3fc544ec07fbf1a2c66"}
 mina-signer = {git = "https://github.com/o1-labs/proof-systems", rev = "f5bf8e0bb33e16718006c3fc544ec07fbf1a2c66"}
 o1-utils = {git = "https://github.com/o1-labs/proof-systems", rev = "f5bf8e0bb33e16718006c3fc544ec07fbf1a2c66"}
+
+anyhow = "1"
+ark-ff = "0.3"
+bitvec = "1"

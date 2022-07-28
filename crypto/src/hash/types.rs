@@ -188,6 +188,21 @@ impl Hashable for ChainHash {
     }
 }
 
+impl From<&Fp> for ChainHash {
+    fn from(i: &Fp) -> Self {
+        let base: BaseHash = i.into();
+        base.into()
+    }
+}
+
+impl TryFrom<&ChainHash> for Fp {
+    type Error = FieldHelpersError;
+
+    fn try_from(i: &ChainHash) -> Result<Self, Self::Error> {
+        (&i.0).try_into()
+    }
+}
+
 impl From<[u8; 32]> for ChainHash {
     fn from(v: [u8; 32]) -> Self {
         Self(BaseHash(v))

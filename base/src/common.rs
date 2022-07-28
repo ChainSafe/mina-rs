@@ -11,6 +11,7 @@ use once_cell::sync::OnceCell;
 use proof_systems::{
     mina_hasher::{Fp, Hashable, ROInput},
     mina_signer::CompressedPubKey,
+    ChunkedROInput, ToChunkedROInput,
 };
 
 /// Wrapper of Vec<u8>
@@ -47,6 +48,14 @@ impl<'a> Hashable for CompressedPubKeyHashableWrapper<'a> {
     }
 }
 
+impl<'a> ToChunkedROInput for CompressedPubKeyHashableWrapper<'a> {
+    fn to_chunked_roinput(&self) -> ChunkedROInput {
+        ChunkedROInput::new()
+            .append_field(self.0.x)
+            .append_bool(self.0.is_odd)
+    }
+}
+
 /// Wrapper of [Option<CompressedPubKey>] that implements [Hashable]
 #[derive(Debug, Clone)]
 pub struct CompressedPubKeyOptionHashableWrapper<'a>(pub &'a Option<CompressedPubKey>);
@@ -66,5 +75,16 @@ impl<'a> Hashable for CompressedPubKeyOptionHashableWrapper<'a> {
 
     fn domain_string(_: Self::D) -> Option<String> {
         None
+    }
+}
+
+impl<'a> ToChunkedROInput for CompressedPubKeyOptionHashableWrapper<'a> {
+    fn to_chunked_roinput(&self) -> ChunkedROInput {
+        if let Some(pk) = self.0 {
+            CompressedPubKeyHashableWrapper(pk)
+        } else {
+            CompressedPubKeyHashableWrapper::default()
+        }
+        .to_chunked_roinput()
     }
 }

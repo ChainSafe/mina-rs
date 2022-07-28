@@ -4,7 +4,11 @@
 //! Account token permissions
 
 use mina_serialization_types_macros::AutoFrom;
-use proof_systems::mina_hasher::{Hashable, ROInput};
+use proof_systems::{
+    bitvec::prelude::BitVec,
+    mina_hasher::{Hashable, ROInput},
+    ChunkedROInput, ToChunkedROInput,
+};
 
 /// FIXME: Need to learn exactly what this is..
 #[derive(Clone, Debug, AutoFrom)]
@@ -44,5 +48,25 @@ impl Hashable for TokenPermissions {
 
     fn domain_string(_: Self::D) -> Option<String> {
         None
+    }
+}
+
+impl ToChunkedROInput for TokenPermissions {
+    fn to_chunked_roinput(&self) -> ChunkedROInput {
+        let mut bits = BitVec::with_capacity(2);
+        match self {
+            Self::NotOwned { account_disabled } => {
+                bits.push(false);
+                bits.push(*account_disabled);
+            }
+            Self::TokenOwned {
+                disable_new_accounts,
+            } => {
+                bits.push(true);
+                bits.push(*disable_new_accounts);
+            }
+        };
+        let max_bits = bits.len() as u32;
+        ChunkedROInput::new().append_packed(ChunkedROInput::bits_to_fp_unsafe(bits), max_bits)
     }
 }

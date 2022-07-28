@@ -6,7 +6,10 @@
 use ark_ff::{One, Zero};
 use mina_serialization_types_macros::AutoFrom;
 use once_cell::sync::OnceCell;
-use proof_systems::mina_hasher::{Fp, Hashable, ROInput};
+use proof_systems::{
+    mina_hasher::{Fp, Hashable, ROInput},
+    ChunkedROInput, ToChunkedROInput,
+};
 use smart_default::SmartDefault;
 
 use crate::numbers::{Amount, BlockTime};
@@ -45,6 +48,17 @@ impl<'a> TimedData {
     pub fn borrow_default() -> &'a Self {
         static INSTANCE: OnceCell<TimedData> = OnceCell::new();
         INSTANCE.get_or_init(Self::default)
+    }
+}
+
+impl ToChunkedROInput for TimedData {
+    fn to_chunked_roinput(&self) -> ChunkedROInput {
+        ChunkedROInput::new()
+            .append_u64(self.initial_minimum_balance.0)
+            .append_u32(self.cliff_time.0 as u32)
+            .append_u64(self.cliff_amount.0)
+            .append_u32(self.vesting_period.0 as u32)
+            .append_u64(self.vesting_increment.0)
     }
 }
 
@@ -104,5 +118,18 @@ impl Hashable for Timing {
 
     fn domain_string(_: Self::D) -> Option<String> {
         None
+    }
+}
+
+impl ToChunkedROInput for Timing {
+    fn to_chunked_roinput(&self) -> ChunkedROInput {
+        match &self {
+            Self::Untimed => ChunkedROInput::new()
+                .append_packed(Fp::zero(), 1)
+                .append(TimedData::default().to_chunked_roinput()),
+            Self::Timed(timed) => ChunkedROInput::new()
+                .append_packed(Fp::one(), 1)
+                .append(timed.to_chunked_roinput()),
+        }
     }
 }

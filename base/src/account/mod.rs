@@ -22,7 +22,10 @@ pub use zkapp::{ZkApp, ZkAppUri};
 use mina_crypto::hash::{ChainHash, StateHash};
 use mina_hasher::ROInput;
 use mina_serialization_types::account::*;
-use proof_systems::{mina_hasher::Hasher, mina_signer::CompressedPubKey};
+use proof_systems::{
+    mina_hasher::{Hashable, Hasher},
+    mina_signer::CompressedPubKey,
+};
 
 use self::zkapp::{ZkAppOptionHashableWrapper, ZkAppUriOptionHashableWrapper};
 
@@ -152,6 +155,14 @@ impl mina_hasher::Hashable for Account {
             .append_field(zkapp_hash)
             .append_hashable(&self.permissions)
             .append_field(zkapp_uri_hash);
+
+        let mut roi = ROInput::new();
+        // append_hashable_as_fields(&mut roi, &self.token_permissions);
+
+        // append_hashable_as_fields(&mut roi, &self.balance);
+        append_hashable_as_fields(&mut roi, &self.token_id);
+        append_hashable_as_fields(&mut roi, &CompressedPubKeyHashableWrapper(&self.public_key));
+        roi.append_hashable(&self.balance);
         roi
     }
 
@@ -162,4 +173,12 @@ impl mina_hasher::Hashable for Account {
 
 impl BinProtSerializationType<'_> for Account {
     type T = AccountV0;
+}
+
+fn append_hashable_as_fields<T: Hashable>(roi: &mut ROInput, t: &T) {
+    let mut tmp = ROInput::new();
+    tmp.append_hashable(t);
+    for f in tmp.to_fields().into_iter() {
+        roi.append_field(f);
+    }
 }
