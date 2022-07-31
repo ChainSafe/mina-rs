@@ -13,6 +13,7 @@
 //!
 
 mod naive_transition_frontier;
+pub mod predecessor;
 pub use naive_transition_frontier::*;
 
 mod processor_impl;

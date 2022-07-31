@@ -42,13 +42,10 @@ pub async fn get_best_chain_state_json() -> Option<String> {
 }
 
 #[wasm_bindgen]
-pub async fn get_predecessor_blocks(k: usize) -> Result<ProtocolStateChain, JsError> {
+pub async fn get_predecessor_blocks(k: usize) -> Result<Node<ProtocolState>, JsError> {
     let frontier = frontier::PROCESSOR.transition_frontier().await;
     let best_chain = frontier.get_best_chain();
-    let mut predecessors = ProtocolStateChain::default();
-    predecessors
-        .push(best_chain.top())
-        .map_err(err_to_js_error)?;
+    let mut root = Node::new(best_chain.top());
     let mut state_hash = get_best_chain_state_hash().expect("Error fetching best chain state hash");
     let mut blockchain_length = best_chain
         .top()
@@ -62,12 +59,10 @@ pub async fn get_predecessor_blocks(k: usize) -> Result<ProtocolStateChain, JsEr
         let block = graphql_api_v1::fetch_block(blockchain_length, previous_state_hash)
             .await
             .map_err(err_to_js_error)?;
-        predecessors
-            .push(block.protocol_state)
-            .map_err(err_to_js_error)?;
+        root.add_child_nodes(Node::new(block.protocol_state));
         state_hash = previous_state_hash;
     }
-    Ok(predecessors)
+    Ok(root)
 }
 
 #[wasm_bindgen]
