@@ -7,7 +7,7 @@ use ark_ff::{BigInteger256, One, Zero};
 use derive_more::{From, Into};
 use once_cell::sync::OnceCell;
 use proof_systems::{
-    mina_hasher::{Fp, Hashable, ROInput},
+    mina_hasher::{self, Fp, Hashable, Hasher, ROInput},
     ChunkedROInput, ToChunkedROInput,
 };
 
@@ -82,6 +82,15 @@ impl<'a> Hashable for ZkAppOptionHashableWrapper<'a> {
     }
 }
 
+impl<'a> ToChunkedROInput for ZkAppOptionHashableWrapper<'a> {
+    fn to_chunked_roinput(&self) -> ChunkedROInput {
+        ChunkedROInput::new().append_field({
+            let mut hasher = mina_hasher::create_kimchi(());
+            hasher.hash(&ZkAppOptionHashableWrapper(self.0))
+        })
+    }
+}
+
 /// FIXME: Doc
 #[derive(Default, Debug, Clone, From, Into)]
 pub struct ZkAppUri(());
@@ -97,7 +106,7 @@ impl<'a> ZkAppUri {
 impl ToChunkedROInput for ZkAppUri {
     fn to_chunked_roinput(&self) -> ChunkedROInput {
         // FIXME: This is only for default hash
-        ChunkedROInput::new().append(ChunkedROInput::new().append_packed(Fp::one(), 1))
+        ChunkedROInput::new().append_packed(Fp::one(), 1)
     }
 }
 
@@ -119,5 +128,14 @@ impl<'a> Hashable for ZkAppUriOptionHashableWrapper<'a> {
 
     fn domain_string(_: Self::D) -> Option<String> {
         Some("MinaZkappUri".into())
+    }
+}
+
+impl<'a> ToChunkedROInput for ZkAppUriOptionHashableWrapper<'a> {
+    fn to_chunked_roinput(&self) -> ChunkedROInput {
+        ChunkedROInput::new().append_field({
+            let mut hasher = mina_hasher::create_kimchi(());
+            hasher.hash(&ZkAppUriOptionHashableWrapper(self.0))
+        })
     }
 }

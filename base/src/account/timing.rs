@@ -42,11 +42,11 @@ impl Default for TimedData {
 impl ToChunkedROInput for TimedData {
     fn to_chunked_roinput(&self) -> ChunkedROInput {
         ChunkedROInput::new()
-            .append_u64(self.initial_minimum_balance.0)
-            .append_u32(self.cliff_time.0 as u32)
-            .append_u64(self.cliff_amount.0)
-            .append_u32(self.vesting_period.0 as u32)
-            .append_u64(self.vesting_increment.0)
+            .append_chunked(&self.initial_minimum_balance)
+            .append_chunked(&self.cliff_time)
+            .append_chunked(&self.cliff_amount)
+            .append_chunked(&self.vesting_period)
+            .append_chunked(&self.vesting_increment)
     }
 }
 

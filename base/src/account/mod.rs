@@ -23,7 +23,7 @@ pub use zkapp::{ZkApp, ZkAppUri};
 use mina_crypto::hash::{ChainHash, StateHash};
 use mina_hasher::ROInput;
 use mina_serialization_types::account::*;
-use proof_systems::{mina_hasher::Hasher, mina_signer::CompressedPubKey};
+use proof_systems::mina_signer::CompressedPubKey;
 
 /// An account identified by its public key and token ID. Multiple accounts may
 /// where the same public key if multiple tokens exist
@@ -137,27 +137,19 @@ impl mina_hasher::Hashable for Account {
 
 impl ToChunkedROInput for Account {
     fn to_chunked_roinput(&self) -> ChunkedROInput {
-        let zkapp_fp = {
-            let mut hasher = mina_hasher::create_kimchi(());
-            hasher.hash(&ZkAppOptionHashableWrapper(&self.zkapp))
-        };
-        let zkapp_uri_fp = {
-            let mut hasher = mina_hasher::create_kimchi(());
-            hasher.hash(&ZkAppUriOptionHashableWrapper(&self.zkapp_uri))
-        };
         ChunkedROInput::new()
-            .append_field(zkapp_uri_fp)
-            .append_field(zkapp_fp)
+            .append_chunked(&ZkAppUriOptionHashableWrapper(&self.zkapp_uri))
+            .append_chunked(&ZkAppOptionHashableWrapper(&self.zkapp))
             .append_chunked(&self.permissions)
             .append_chunked(&self.timing)
-            .append_field((&self.voting_for).try_into().unwrap())
+            .append_chunked(&self.voting_for)
             .append_chunked(&CompressedPubKeyOptionHashableWrapper(&self.delegate))
-            .append_field((&self.receipt_chain_hash).try_into().unwrap())
-            .append_u32(self.nonce.0)
-            .append_u64(self.balance.0)
+            .append_chunked(&self.receipt_chain_hash)
+            .append_chunked(&self.nonce)
+            .append_chunked(&self.balance)
             .append_chunked(&self.token_symbol)
             .append_chunked(&self.token_permissions)
-            .append_field(self.token_id.0.into())
+            .append_chunked(&self.token_id)
             .append_chunked(&CompressedPubKeyHashableWrapper(&self.public_key))
     }
 }

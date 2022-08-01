@@ -32,6 +32,12 @@ impl Hashable for TokenId {
     }
 }
 
+impl ToChunkedROInput for TokenId {
+    fn to_chunked_roinput(&self) -> ChunkedROInput {
+        ChunkedROInput::new().append_field(self.0.into())
+    }
+}
+
 #[derive(Clone, PartialEq, PartialOrd, Debug, Copy, Default, From, Into)]
 /// Represents the length of something (e.g. an epoch or window)
 pub struct Length(pub u32);
@@ -100,6 +106,12 @@ impl Hashable for Amount {
     }
 }
 
+impl ToChunkedROInput for Amount {
+    fn to_chunked_roinput(&self) -> ChunkedROInput {
+        ChunkedROInput::new().append_u64(self.0)
+    }
+}
+
 #[derive(Debug, Error, PartialEq)]
 /// Error that can be returned when parsing an Amount from string
 pub enum ParseAmountError {
@@ -146,6 +158,12 @@ impl Hashable for AccountNonce {
 
     fn domain_string(_: Self::D) -> Option<String> {
         None
+    }
+}
+
+impl ToChunkedROInput for AccountNonce {
+    fn to_chunked_roinput(&self) -> ChunkedROInput {
+        ChunkedROInput::new().append_u32(self.0)
     }
 }
 
@@ -198,6 +216,12 @@ impl Hashable for BlockTime {
 
     fn domain_string(_: Self::D) -> Option<String> {
         None
+    }
+}
+
+impl ToChunkedROInput for BlockTime {
+    fn to_chunked_roinput(&self) -> ChunkedROInput {
+        ChunkedROInput::new().append_u32(self.0 as u32)
     }
 }
 

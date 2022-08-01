@@ -14,6 +14,7 @@ use mina_serialization_types::{impl_strconv_via_json, json::*, v1::*};
 use proof_systems::{
     mina_hasher::{Fp, Hashable, ROInput},
     o1_utils::{field_helpers::FieldHelpersError, FieldHelpers},
+    ChunkedROInput, ToChunkedROInput,
 };
 use sha2::{Digest, Sha256};
 use versioned::*;
@@ -32,6 +33,15 @@ impl Hashable for BaseHash {
 
     fn domain_string(_: Self::D) -> Option<String> {
         None
+    }
+}
+
+impl ToChunkedROInput for BaseHash {
+    fn to_chunked_roinput(&self) -> ChunkedROInput {
+        ChunkedROInput::new().append_field(
+            self.try_into()
+                .expect("Failed to convert ChainHash into Fp"),
+        )
     }
 }
 
@@ -127,6 +137,12 @@ impl Hashable for StateHash {
     }
 }
 
+impl ToChunkedROInput for StateHash {
+    fn to_chunked_roinput(&self) -> ChunkedROInput {
+        self.0.to_chunked_roinput()
+    }
+}
+
 //////////////////////////////////////////////////////////////////////////
 
 #[derive(Clone, Debug, Default, PartialEq, derive_more::From, derive_more::Into)]
@@ -185,6 +201,12 @@ impl Hashable for ChainHash {
 
     fn domain_string(_: Self::D) -> Option<String> {
         None
+    }
+}
+
+impl ToChunkedROInput for ChainHash {
+    fn to_chunked_roinput(&self) -> ChunkedROInput {
+        self.0.to_chunked_roinput()
     }
 }
 
