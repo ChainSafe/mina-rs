@@ -22,6 +22,18 @@ pub type MinaLedgerMerkleTree<Account> = MinaMerkleTree<
     FixedHeightMode,
 >;
 
+/// Type alias for mina merkle ledger hasher
+pub type MinaLedgerKimchiMerkleHasher<Account> = MinaPoseidonKimchiMerkleHasher<Account>;
+
+/// Type alias for mina merkle ledger
+pub type MinaLedgerKimchiMerkleTree<Account> = MinaMerkleTree<
+    <MinaLedgerKimchiMerkleHasher<Account> as MerkleHasher>::Item,
+    <MinaLedgerKimchiMerkleHasher<Account> as MerkleHasher>::Hash,
+    MinaLedgerKimchiMerkleHasher<Account>,
+    MinaPoseidonMerkleMerger,
+    FixedHeightMode,
+>;
+
 /// A genesis ledger provides access to its accounts by implementing IntoIterator
 /// This implementation must be provided to meet the trait requirements
 ///

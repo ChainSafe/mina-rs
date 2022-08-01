@@ -97,7 +97,10 @@ mod tests {
     use mina_rs_base::{account::*, types::*};
     use num::BigUint;
     use pretty_assertions::{assert_eq, assert_ne};
-    use proof_systems::mina_hasher::{self, Fp, Hasher};
+    use proof_systems::{
+        mina_hasher::{self, Fp, Hasher, ROInput},
+        ToChunkedROInput,
+    };
     use rocksdb::*;
 
     const DBPATH_LEGACY: &str =  "test-data/genesis_ledger_6a887ea130e53b06380a9ab27b327468d28d4ce47515a0cc59759d4a3912f0ef/";
@@ -196,19 +199,19 @@ mod tests {
         //         .blockchain_state
         //         .genesis_ledger_hash
         // );
-        // TODO: Change this to assert_eq! when Hashable is completely implemented for Account
+
         assert_ne!(merkle_ledger.root(), expected_root_hash);
         assert_eq!(accounts.len(), expected_account_hashes.len());
         for (i, account) in accounts.into_iter().enumerate() {
             let account = account?;
-            let hash = MinaLedgerMerkleHasher::hash(&account, MerkleTreeNodeMetadata::new(0, 1));
+            let hash =
+                MinaLedgerKimchiMerkleHasher::hash(&account, MerkleTreeNodeMetadata::new(0, 1));
             let hash_expected = expected_account_hashes[i];
 
-            // TODO: Change this to assert_eq! when Hashable is completely implemented for Account
-            assert_ne!(
+            assert_eq!(
                 hash,
                 hash_expected,
-                "{} != {}",
+                "account {i}: {} != {}",
                 StateHash::from(&hash),
                 StateHash::from(&hash_expected)
             );
@@ -216,6 +219,72 @@ mod tests {
         Ok(())
     }
 
+    /// Some useful OCaml code snippet for debugging
+    ///
+    /// To print the n-th account in genesis ledger, add this to `inputs_from_config_file` in `genesis_ledger_helper.ml`
+    /// ```ocaml
+    /// let accounts = genesis_ledger |> Genesis_ledger.Packed.accounts |> Lazy.force in
+    ///   let n_accounts = accounts |> List.length in
+    ///   [%log info] "genesis_ledger n_accounts: %d" (n_accounts);
+    ///   let acc_n = match List.nth accounts 1 with
+    ///     | Some (_, acc) -> acc
+    ///     | None -> (Core.exit 1) in
+    ///   [%log info] "genesis_ledger acc_n: $acc_n" ~metadata: [
+    ///     ("acc_n", acc_n |> Account.to_yojson)];
+    ///   [%log info] "genesis_ledger acc0 hash: $hash" ~metadata: [
+    ///     ("acc_n hash", acc_n |> Account.crypto_hash |> State_hash.to_yojson)];
+    /// ```
+    ///
+    /// To print inner value of random oracle input, add this to `random_oracle_iinput.ml`
+    /// ```ocaml
+    /// let print (a : _ t) field_to_str =
+    /// printf "field_elements:\n";
+    /// for i = 0 to Array.length a.field_elements - 1 do
+    ///   printf "%d field_elements: %s\n" i (a.field_elements.(i) |> field_to_str)
+    /// done;
+    /// printf "packed:\n";
+    /// for i = 0 to Array.length a.packeds - 1 do
+    ///   let (f, len) = a.packeds.(i) in
+    ///   printf "%d packed (%d): %s \n" i len (f |> field_to_str)
+    // done
+    /// ```
+    ///
+    /// To skip fields in account, replace `f` with below `f2` in `account.ml`
+    /// ```ocaml
+    /// let f2 mk acc field =
+    ///     (* printf "f2:%s\n" (Core_kernel.Field.name field); *)
+    ///     let _ignore = mk (Core_kernel.Field.get field t) in
+    ///     acc
+    ///   in
+    /// ```
+    ///
+    /// To print account hash result, add this to `genesis_ledger_helper.ml`
+    /// ```ocaml
+    /// let%test_unit "genesis ledger acc_n" =
+    ///   let acc_json =
+    ///   In_channel.with_file "/path-to/account.json" ~f:(fun in_channel ->
+    ///       try Yojson.Safe.from_channel in_channel with
+    ///       | _ ->
+    ///           Core.exit 1) in
+    ///   let acc = match acc_json |> Account.of_yojson with
+    ///       | Ok acc -> acc
+    ///       | Error _ -> Core.exit 1
+    ///   in
+    ///   let hash = acc |> Account.crypto_hash in
+    ///   printf "account hash:%s\n%s\n"
+    ///   (hash |> State_hash.to_yojson |> Yojson.Safe.to_string)
+    ///   (hash |> Snark_params.Tick.Field.to_string);
+    ///   (* Comment out fields in Account to verify hashes of every single field *)
+    ///   let chunked_input = acc |> Account.to_input in
+    ///   Random_oracle_input.Chunked.print chunked_input Snark_params.Tick.Field.to_string;
+    ///   let debug_input = chunked_input |> Random_oracle.pack_input in
+    ///   printf "debug_input fields:\n";
+    ///   for i = 0 to Array.length debug_input - 1 do
+    ///     printf "debug_input:\"%s\",\n" (debug_input.(i) |> Snark_params.Tick.Field.to_string)
+    ///   done ;
+    ///   let debug_hash = debug_input |> Random_oracle.hash |> Snark_params.Tick.Field.to_string in
+    ///   printf "account hash:%s\naccount debug hash:%s\n" (hash |> Snark_params.Tick.Field.to_string) debug_hash
+    /// ```
     #[test]
     fn test_genesis_ledger_account_0() -> anyhow::Result<()> {
         const N: usize = 0;
@@ -223,7 +292,7 @@ mod tests {
         let expected_hash = get_nth_hash(DBPATH, N)?;
 
         assert_eq!(
-            hash(&CompressedPubKeyHashableWrapper(&account.public_key)),
+            hash2(&CompressedPubKeyHashableWrapper(&account.public_key)),
             "17403802830378787968845294854048648555868428232350653563068266009233402282076"
         );
         assert_eq!(
@@ -235,11 +304,11 @@ mod tests {
             "9880909019220052913227433707787222982896169056561545508056145968396555243660"
         );
         assert_eq!(
-            hash(&account.token_permissions),
+            hash2(&account.token_permissions),
             "21565680844461314807147611702860246336805372493508489110556896454939225549736"
         );
         assert_eq!(
-            hash(&account.token_symbol),
+            hash2(&account.token_symbol),
             "21565680844461314807147611702860246336805372493508489110556896454939225549736"
         );
         assert_eq!(
@@ -253,7 +322,7 @@ mod tests {
         match &account.delegate {
             Some(delegate) => {
                 assert_eq!(
-                    hash(&CompressedPubKeyHashableWrapper(delegate)),
+                    hash2(&CompressedPubKeyHashableWrapper(delegate)),
                     "17403802830378787968845294854048648555868428232350653563068266009233402282076"
                 );
             }
@@ -266,29 +335,21 @@ mod tests {
             "21565680844461314807147611702860246336805372493508489110556896454939225549736"
         );
         assert_eq!(
-            hash(&account.timing),
+            hash2(&account.timing),
             "7555220006856562833147743033256142154591945963958408607501861037584894828141"
         );
-        if let Some(zkapp) = &account.zkapp {
-            bail!("zkapp should not present: {:?}", zkapp);
-        } else {
-            assert_eq!(
-                hash(&ZkApp::default()),
-                "22371316807638652529772065903909764704228252716310880671193348070876705445596"
-            );
-        }
         assert_eq!(
-            hash(&account.permissions),
+            hash(&ZkAppOptionHashableWrapper(&account.zkapp)),
+            "22371316807638652529772065903909764704228252716310880671193348070876705445596"
+        );
+        assert_eq!(
+            hash2(&account.permissions),
             "17687022753513245123643156797999811582870093245402815918931465038658213870633"
         );
-        if let Some(zkapp_uri) = &account.zkapp_uri {
-            bail!("zkapp uri should not present: {:?}", zkapp_uri);
-        } else {
-            assert_eq!(
-                hash(ZkAppUri::borrow_default()),
-                "20639848968581348850513072699760590695338607317404146322838943866773129280073"
-            );
-        }
+        assert_eq!(
+            hash(&ZkAppUriOptionHashableWrapper(&account.zkapp_uri)),
+            "20639848968581348850513072699760590695338607317404146322838943866773129280073"
+        );
         assert_eq!(hash(&account), fp_to_big(expected_hash).to_str_radix(10),);
         Ok(())
     }
@@ -327,5 +388,24 @@ mod tests {
         let mut hasher = mina_hasher::create_kimchi(());
         let fp = hasher.hash(t);
         fp_to_big(fp).to_str_radix(10)
+    }
+
+    fn hash2<T: ToChunkedROInput>(t: &T) -> String {
+        #[derive(Debug, Clone)]
+        struct ChunkedROInputHashableWrapper(ROInput);
+
+        impl Hashable for ChunkedROInputHashableWrapper {
+            type D = ();
+
+            fn to_roinput(&self) -> ROInput {
+                self.0.clone()
+            }
+
+            fn domain_string(_: Self::D) -> Option<String> {
+                None
+            }
+        }
+
+        hash(&ChunkedROInputHashableWrapper(t.roinput()))
     }
 }

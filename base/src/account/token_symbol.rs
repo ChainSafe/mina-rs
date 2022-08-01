@@ -5,10 +5,7 @@
 
 use ark_ff::FromBytes;
 use derive_more::{From, Into};
-use proof_systems::{
-    mina_hasher::{Fp, Hashable, ROInput},
-    ChunkedROInput, ToChunkedROInput,
-};
+use proof_systems::{mina_hasher::Fp, ChunkedROInput, ToChunkedROInput};
 
 /// FIXME: Need to learn exactly what this is..
 #[derive(Clone, Debug, From, Into)]
@@ -23,21 +20,6 @@ impl TokenSymbol {
     /// FIXME: Need to learn exactly what this is..
     pub const fn num_bits() -> usize {
         8 * Self::max_length()
-    }
-}
-
-impl Hashable for TokenSymbol {
-    type D = ();
-
-    fn to_roinput(&self) -> ROInput {
-        let mut roi = ROInput::new();
-        // FIXME: This might not be correct
-        roi.append_bytes(&self.0[..Self::max_length()]);
-        roi
-    }
-
-    fn domain_string(_: Self::D) -> Option<String> {
-        None
     }
 }
 

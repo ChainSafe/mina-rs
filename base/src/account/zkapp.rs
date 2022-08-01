@@ -23,22 +23,6 @@ impl<'a> ZkApp {
     }
 }
 
-impl Hashable for ZkApp {
-    type D = ();
-
-    fn to_roinput(&self) -> ROInput {
-        let mut roi = ROInput::new();
-        for f in self.to_chunked_roinput().into_fields().into_iter() {
-            roi.append_field(f);
-        }
-        roi
-    }
-
-    fn domain_string(_: Self::D) -> Option<String> {
-        Some("CodaZkappAccount".into())
-    }
-}
-
 impl ToChunkedROInput for ZkApp {
     fn to_chunked_roinput(&self) -> ChunkedROInput {
         // FIXME: This is only for default hash
@@ -85,30 +69,16 @@ impl<'a> Hashable for ZkAppOptionHashableWrapper<'a> {
     type D = ();
 
     fn to_roinput(&self) -> ROInput {
-        let mut roi = ROInput::new();
-        roi.append_hashable(if let Some(v) = self.0 {
+        if let Some(v) = self.0 {
             v
         } else {
             ZkApp::borrow_default()
-        });
-        roi
+        }
+        .roinput()
     }
 
     fn domain_string(_: Self::D) -> Option<String> {
         Some("CodaZkappAccount".into())
-    }
-}
-
-impl<'a> ToChunkedROInput for ZkAppOptionHashableWrapper<'a> {
-    fn to_chunked_roinput(&self) -> ChunkedROInput {
-        ChunkedROInput::new().append(
-            if let Some(v) = self.0 {
-                v
-            } else {
-                ZkApp::borrow_default()
-            }
-            .to_chunked_roinput(),
-        )
     }
 }
 
@@ -121,22 +91,6 @@ impl<'a> ZkAppUri {
     pub fn borrow_default() -> &'a Self {
         static INSTANCE: OnceCell<ZkAppUri> = OnceCell::new();
         INSTANCE.get_or_init(Self::default)
-    }
-}
-
-impl Hashable for ZkAppUri {
-    type D = ();
-
-    fn to_roinput(&self) -> ROInput {
-        let mut roi = ROInput::new();
-        for f in self.to_chunked_roinput().into_fields().into_iter() {
-            roi.append_field(f);
-        }
-        roi
-    }
-
-    fn domain_string(_: Self::D) -> Option<String> {
-        Some("MinaZkappUri".into())
     }
 }
 
@@ -155,29 +109,15 @@ impl<'a> Hashable for ZkAppUriOptionHashableWrapper<'a> {
     type D = ();
 
     fn to_roinput(&self) -> ROInput {
-        let mut roi = ROInput::new();
-        roi.append_hashable(if let Some(v) = self.0 {
+        if let Some(v) = self.0 {
             v
         } else {
             ZkAppUri::borrow_default()
-        });
-        roi
+        }
+        .roinput()
     }
 
     fn domain_string(_: Self::D) -> Option<String> {
         Some("MinaZkappUri".into())
-    }
-}
-
-impl<'a> ToChunkedROInput for ZkAppUriOptionHashableWrapper<'a> {
-    fn to_chunked_roinput(&self) -> ChunkedROInput {
-        ChunkedROInput::new().append(
-            if let Some(v) = self.0 {
-                v
-            } else {
-                ZkAppUri::borrow_default()
-            }
-            .to_chunked_roinput(),
-        )
     }
 }

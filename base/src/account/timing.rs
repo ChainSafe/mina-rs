@@ -5,11 +5,7 @@
 
 use ark_ff::{One, Zero};
 use mina_serialization_types_macros::AutoFrom;
-use once_cell::sync::OnceCell;
-use proof_systems::{
-    mina_hasher::{Fp, Hashable, ROInput},
-    ChunkedROInput, ToChunkedROInput,
-};
+use proof_systems::{mina_hasher::Fp, ChunkedROInput, ToChunkedROInput};
 use smart_default::SmartDefault;
 
 use crate::numbers::{Amount, BlockTime};
@@ -43,14 +39,6 @@ impl Default for TimedData {
     }
 }
 
-impl<'a> TimedData {
-    /// Get a borrow of the default value
-    pub fn borrow_default() -> &'a Self {
-        static INSTANCE: OnceCell<TimedData> = OnceCell::new();
-        INSTANCE.get_or_init(Self::default)
-    }
-}
-
 impl ToChunkedROInput for TimedData {
     fn to_chunked_roinput(&self) -> ChunkedROInput {
         ChunkedROInput::new()
@@ -59,24 +47,6 @@ impl ToChunkedROInput for TimedData {
             .append_u64(self.cliff_amount.0)
             .append_u32(self.vesting_period.0 as u32)
             .append_u64(self.vesting_increment.0)
-    }
-}
-
-impl Hashable for TimedData {
-    type D = ();
-
-    fn to_roinput(&self) -> ROInput {
-        let mut roi = ROInput::new();
-        roi.append_hashable(&self.initial_minimum_balance)
-            .append_hashable(&self.cliff_time)
-            .append_hashable(&self.cliff_amount)
-            .append_hashable(&self.vesting_period)
-            .append_hashable(&self.vesting_increment);
-        roi
-    }
-
-    fn domain_string(_: Self::D) -> Option<String> {
-        None
     }
 }
 
@@ -93,43 +63,15 @@ pub enum Timing {
     Timed(TimedData),
 }
 
-impl Hashable for Timing {
-    type D = ();
-
-    fn to_roinput(&self) -> ROInput {
-        let mut roi = ROInput::new();
-        match &self {
-            Self::Untimed => {
-                // FIXME: This is incorrect
-                _ = Fp::zero();
-                roi.append_field(Fp::one());
-                // roi.append_field(Fp::zero());
-                // roi.append_u32(1);
-                // roi.append_hashable(TimedData::borrow_default());
-            }
-            Self::Timed(timed) => {
-                roi.append_field(Fp::one());
-                roi.append_u32(1);
-                roi.append_hashable(timed);
-            }
-        }
-        roi
-    }
-
-    fn domain_string(_: Self::D) -> Option<String> {
-        None
-    }
-}
-
 impl ToChunkedROInput for Timing {
     fn to_chunked_roinput(&self) -> ChunkedROInput {
         match &self {
             Self::Untimed => ChunkedROInput::new()
                 .append_packed(Fp::zero(), 1)
-                .append(TimedData::default().to_chunked_roinput()),
+                .append_chunked(&TimedData::default()),
             Self::Timed(timed) => ChunkedROInput::new()
                 .append_packed(Fp::one(), 1)
-                .append(timed.to_chunked_roinput()),
+                .append_chunked(timed),
         }
     }
 }

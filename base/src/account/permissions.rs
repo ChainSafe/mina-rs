@@ -3,13 +3,8 @@
 
 //! Account based permissions
 
-use ark_ff::BigInteger256;
 use mina_serialization_types_macros::AutoFrom;
-use proof_systems::{
-    bitvec::prelude::BitVec,
-    mina_hasher::{Hashable, ROInput},
-    ChunkedROInput, ToChunkedROInput,
-};
+use proof_systems::{bitvec::prelude::BitVec, ChunkedROInput, ToChunkedROInput};
 
 /// The level of auth required to perform a particular action with an account
 #[derive(Clone, Debug, AutoFrom)]
@@ -92,34 +87,19 @@ pub struct Permissions {
     pub set_voting_for: AuthRequired,
 }
 
-impl Hashable for Permissions {
-    type D = ();
-
-    fn to_roinput(&self) -> ROInput {
-        let mut roi = ROInput::new();
-        // FIXME: This is only for genesis ledger accounts
-        roi.append_field(BigInteger256::from(3681400667).into());
-        roi
-    }
-
-    fn domain_string(_: Self::D) -> Option<String> {
-        None
-    }
-}
-
 impl ToChunkedROInput for Permissions {
     fn to_chunked_roinput(&self) -> ChunkedROInput {
         ChunkedROInput::new()
-            .append(self.set_voting_for.to_chunked_roinput())
-            .append(self.increment_nonce.to_chunked_roinput())
-            .append(self.set_token_symbol.to_chunked_roinput())
-            .append(self.edit_sequence_state.to_chunked_roinput())
-            .append(self.set_zkapp_uri.to_chunked_roinput())
-            .append(self.set_verification_key.to_chunked_roinput())
-            .append(self.set_permissions.to_chunked_roinput())
-            .append(self.set_delegate.to_chunked_roinput())
-            .append(self.receive.to_chunked_roinput())
-            .append(self.send.to_chunked_roinput())
-            .append(self.edit_state.to_chunked_roinput())
+            .append_chunked(&self.set_voting_for)
+            .append_chunked(&self.increment_nonce)
+            .append_chunked(&self.set_token_symbol)
+            .append_chunked(&self.edit_sequence_state)
+            .append_chunked(&self.set_zkapp_uri)
+            .append_chunked(&self.set_verification_key)
+            .append_chunked(&self.set_permissions)
+            .append_chunked(&self.set_delegate)
+            .append_chunked(&self.receive)
+            .append_chunked(&self.send)
+            .append_chunked(&self.edit_state)
     }
 }

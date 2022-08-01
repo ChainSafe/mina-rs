@@ -12,6 +12,7 @@ pub mod zkapp;
 
 use crate::{types::*, *};
 
+pub use self::zkapp::{ZkAppOptionHashableWrapper, ZkAppUriOptionHashableWrapper};
 use mina_serialization_types_macros::AutoFrom;
 pub use permissions::{AuthRequired, Permissions, PermissionsLegacy};
 pub use timing::Timing;
@@ -23,8 +24,6 @@ use mina_crypto::hash::{ChainHash, StateHash};
 use mina_hasher::ROInput;
 use mina_serialization_types::account::*;
 use proof_systems::{mina_hasher::Hasher, mina_signer::CompressedPubKey};
-
-use self::zkapp::{ZkAppOptionHashableWrapper, ZkAppUriOptionHashableWrapper};
 
 /// An account identified by its public key and token ID. Multiple accounts may
 /// where the same public key if multiple tokens exist
@@ -127,14 +126,8 @@ pub struct Account {
 impl mina_hasher::Hashable for Account {
     type D = ();
 
-    // Uncomment these fields once they have implemented Hashable trait
-    // and add unit tests when it's complete
     fn to_roinput(&self) -> ROInput {
-        let mut roi = ROInput::new();
-        for f in self.to_chunked_roinput().into_fields().into_iter() {
-            roi.append_field(f);
-        }
-        roi
+        self.roinput()
     }
 
     fn domain_string(_: Self::D) -> Option<String> {
@@ -155,17 +148,17 @@ impl ToChunkedROInput for Account {
         ChunkedROInput::new()
             .append_field(zkapp_uri_fp)
             .append_field(zkapp_fp)
-            .append(self.permissions.to_chunked_roinput())
-            .append(self.timing.to_chunked_roinput())
+            .append_chunked(&self.permissions)
+            .append_chunked(&self.timing)
             .append_field((&self.voting_for).try_into().unwrap())
-            .append(CompressedPubKeyOptionHashableWrapper(&self.delegate).to_chunked_roinput())
+            .append_chunked(&CompressedPubKeyOptionHashableWrapper(&self.delegate))
             .append_field((&self.receipt_chain_hash).try_into().unwrap())
             .append_u32(self.nonce.0)
             .append_u64(self.balance.0)
-            .append(self.token_symbol.to_chunked_roinput())
-            .append(self.token_permissions.to_chunked_roinput())
+            .append_chunked(&self.token_symbol)
+            .append_chunked(&self.token_permissions)
             .append_field(self.token_id.0.into())
-            .append(CompressedPubKeyHashableWrapper(&self.public_key).to_chunked_roinput())
+            .append_chunked(&CompressedPubKeyHashableWrapper(&self.public_key))
     }
 }
 

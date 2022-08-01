@@ -11,6 +11,10 @@ use o1_utils::FieldHelpers;
 /// Trait that converts a struct to [ChunkedROInput]
 pub trait ToChunkedROInput {
     fn to_chunked_roinput(&self) -> ChunkedROInput;
+
+    fn roinput(&self) -> ROInput {
+        self.to_chunked_roinput().into()
+    }
 }
 
 /// Chunked Random Oracle input
@@ -31,6 +35,11 @@ impl ChunkedROInput {
         self.fields.extend(other.fields.into_iter());
         self.packed.extend(other.packed.into_iter());
         self
+    }
+
+    /// Append [ToChunkedROInput]
+    pub fn append_chunked(self, other: &impl ToChunkedROInput) -> Self {
+        self.append(other.to_chunked_roinput())
     }
 
     /// Append a base field element
@@ -117,6 +126,8 @@ impl ChunkedROInput {
     }
 
     /// Convert [BitVec] to [Fp]
+    /// Note this is a temparory solution before chunked roinput is
+    /// supported in proof-systems, use [anyhow::Result] for convinience
     pub fn bits_to_fp(mut bits: BitVec<u8>) -> anyhow::Result<Fp> {
         let size_in_bits = Fp::size_in_bits();
         if bits.len() > size_in_bits {

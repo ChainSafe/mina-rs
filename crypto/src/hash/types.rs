@@ -188,13 +188,6 @@ impl Hashable for ChainHash {
     }
 }
 
-impl From<&Fp> for ChainHash {
-    fn from(i: &Fp) -> Self {
-        let base: BaseHash = i.into();
-        base.into()
-    }
-}
-
 impl TryFrom<&ChainHash> for Fp {
     type Error = FieldHelpersError;
 
