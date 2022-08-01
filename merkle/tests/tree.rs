@@ -164,7 +164,6 @@ mod tests {
         tree.add_batch(v);
         let root_hash = tree.root().unwrap();
         for i in 0..n {
-            println!("{i}");
             let proof = tree.get_proof(i).unwrap();
             assert!(proof.verify(&root_hash));
         }

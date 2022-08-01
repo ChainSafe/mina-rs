@@ -47,7 +47,7 @@ mod tests {
             }
         }
 
-        let mut merkle_ledger = genesis_ledger.to_mina_merkle_ledger();
+        let mut merkle_ledger = genesis_ledger.to_mina_merkle_ledger_legacy();
         assert!(expected_root_hash.is_some());
         assert_eq!(merkle_ledger.height(), expected_root_height as u32);
         let ledger_hash = LedgerHash::try_from(&expected_root_hash.unwrap())?;
@@ -115,7 +115,7 @@ mod tests {
         //         .genesis_ledger_hash
         // );
 
-        assert_ne!(merkle_ledger.root(), expected_root_hash);
+        assert_eq!(merkle_ledger.root(), expected_root_hash);
         assert_eq!(accounts.len(), expected_account_hashes.len());
         for (i, account) in accounts.into_iter().enumerate() {
             let account = account?;
