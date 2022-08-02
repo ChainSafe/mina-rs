@@ -4,6 +4,7 @@
 //! Account based permissions
 
 use mina_serialization_types_macros::AutoFrom;
+use proof_systems::{bitvec::prelude::BitVec, ChunkedROInput, ToChunkedROInput};
 
 /// The level of auth required to perform a particular action with an account
 #[derive(Clone, Debug, AutoFrom)]
@@ -21,6 +22,21 @@ pub enum AuthRequired {
     Both,
     /// This action can never occur
     Impossible,
+}
+
+impl ToChunkedROInput for AuthRequired {
+    fn to_chunked_roinput(&self) -> ChunkedROInput {
+        let mut roi = ChunkedROInput::new();
+        let constant = matches!(self, Self::Impossible | Self::None);
+        let signature_necessary = matches!(self, Self::Impossible | Self::Signature);
+        let signature_sufficient = matches!(self, Self::Either | Self::Signature | Self::None);
+        for b in [constant, signature_necessary, signature_sufficient] {
+            let mut bits = BitVec::with_capacity(1);
+            bits.push(b);
+            roi = roi.append_packed(ChunkedROInput::bits_to_fp_unsafe(bits), 1);
+        }
+        roi
+    }
 }
 
 /// Permissions associated with the account
@@ -69,4 +85,21 @@ pub struct Permissions {
     pub increment_nonce: AuthRequired,
     /// Permission require to set voting for
     pub set_voting_for: AuthRequired,
+}
+
+impl ToChunkedROInput for Permissions {
+    fn to_chunked_roinput(&self) -> ChunkedROInput {
+        ChunkedROInput::new()
+            .append_chunked(&self.edit_state)
+            .append_chunked(&self.send)
+            .append_chunked(&self.receive)
+            .append_chunked(&self.set_delegate)
+            .append_chunked(&self.set_permissions)
+            .append_chunked(&self.set_verification_key)
+            .append_chunked(&self.set_zkapp_uri)
+            .append_chunked(&self.edit_sequence_state)
+            .append_chunked(&self.set_token_symbol)
+            .append_chunked(&self.increment_nonce)
+            .append_chunked(&self.set_voting_for)
+    }
 }

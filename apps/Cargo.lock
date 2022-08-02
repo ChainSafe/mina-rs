@@ -48,9 +48,9 @@ dependencies = [
 
 [[package]]
 name = "anyhow"
-version = "1.0.58"
+version = "1.0.59"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "bb07d2053ccdbe10e2af2995a2f116c1330396493dc1269f6a91d0ae82e19704"
+checksum = "c91f1f46651137be86f3a2b9a8359f9ab421d04d941c62b5982e1ca21113adf9"
 
 [[package]]
 name = "ark-ec"
@@ -278,7 +278,7 @@ dependencies = [
 name = "blocks-crawler"
 version = "0.1.0"
 dependencies = [
- "clap 3.2.15",
+ "clap 3.2.16",
  "env_logger",
  "futures",
  "log",
@@ -312,9 +312,9 @@ checksum = "14c189c53d098945499cdfa7ecc63567cf3886b3332b312a5b4585d8d3a6a610"
 
 [[package]]
 name = "bytes"
-version = "1.2.0"
+version = "1.2.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f0b3de4a0c5e67e16066a0715723abd91edc2f9001d09c46e1dca929351e130e"
+checksum = "ec8a7b6a70fde80372154c65702f00a0f56f3e1c36abbc6c440484be248856db"
 
 [[package]]
 name = "cc"
@@ -345,9 +345,9 @@ dependencies = [
 
 [[package]]
 name = "clap"
-version = "3.2.15"
+version = "3.2.16"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "44bbe24bbd31a185bc2c4f7c2abe80bea13a20d57ee4e55be70ac512bdc76417"
+checksum = "a3dbbb6653e7c55cc8595ad3e1f7be8f32aba4eb7ff7f0fd1163d4f3d137c0a9"
 dependencies = [
  "atty",
  "bitflags",
@@ -1033,7 +1033,7 @@ dependencies = [
 [[package]]
 name = "mina-curves"
 version = "0.1.0"
-source = "git+https://github.com/o1-labs/proof-systems?rev=e9b7c6d1265fcf031d61d68e59cc7608d134e9a3#e9b7c6d1265fcf031d61d68e59cc7608d134e9a3"
+source = "git+https://github.com/o1-labs/proof-systems?rev=6777654470ba69bcc01f70c0c7b69c44943f4dc6#6777654470ba69bcc01f70c0c7b69c44943f4dc6"
 dependencies = [
  "ark-ec",
  "ark-ff",
@@ -1042,7 +1042,7 @@ dependencies = [
 [[package]]
 name = "mina-hasher"
 version = "0.1.0"
-source = "git+https://github.com/o1-labs/proof-systems?rev=e9b7c6d1265fcf031d61d68e59cc7608d134e9a3#e9b7c6d1265fcf031d61d68e59cc7608d134e9a3"
+source = "git+https://github.com/o1-labs/proof-systems?rev=6777654470ba69bcc01f70c0c7b69c44943f4dc6#6777654470ba69bcc01f70c0c7b69c44943f4dc6"
 dependencies = [
  "ark-ff",
  "bitvec",
@@ -1068,6 +1068,7 @@ dependencies = [
  "mina-serialization-types",
  "mina-serialization-types-macros",
  "num",
+ "once_cell",
  "proof-systems",
  "serde",
  "serde_json",
@@ -1083,7 +1084,7 @@ version = "0.1.0"
 dependencies = [
  "anyhow",
  "bin-prot",
- "clap 3.2.15",
+ "clap 3.2.16",
  "dhat",
  "mina-rs-base",
  "serde",
@@ -1120,7 +1121,7 @@ dependencies = [
 [[package]]
 name = "mina-signer"
 version = "0.1.0"
-source = "git+https://github.com/o1-labs/proof-systems?rev=e9b7c6d1265fcf031d61d68e59cc7608d134e9a3#e9b7c6d1265fcf031d61d68e59cc7608d134e9a3"
+source = "git+https://github.com/o1-labs/proof-systems?rev=6777654470ba69bcc01f70c0c7b69c44943f4dc6#6777654470ba69bcc01f70c0c7b69c44943f4dc6"
 dependencies = [
  "ark-ec",
  "ark-ff",
@@ -1273,7 +1274,7 @@ dependencies = [
 [[package]]
 name = "o1-utils"
 version = "0.1.0"
-source = "git+https://github.com/o1-labs/proof-systems?rev=e9b7c6d1265fcf031d61d68e59cc7608d134e9a3#e9b7c6d1265fcf031d61d68e59cc7608d134e9a3"
+source = "git+https://github.com/o1-labs/proof-systems?rev=6777654470ba69bcc01f70c0c7b69c44943f4dc6#6777654470ba69bcc01f70c0c7b69c44943f4dc6"
 dependencies = [
  "ark-ec",
  "ark-ff",
@@ -1358,7 +1359,7 @@ dependencies = [
 [[package]]
 name = "oracle"
 version = "0.1.0"
-source = "git+https://github.com/o1-labs/proof-systems?rev=e9b7c6d1265fcf031d61d68e59cc7608d134e9a3#e9b7c6d1265fcf031d61d68e59cc7608d134e9a3"
+source = "git+https://github.com/o1-labs/proof-systems?rev=6777654470ba69bcc01f70c0c7b69c44943f4dc6#6777654470ba69bcc01f70c0c7b69c44943f4dc6"
 dependencies = [
  "ark-ec",
  "ark-ff",
@@ -1417,10 +1418,11 @@ checksum = "d4fd5641d01c8f18a23da7b6fe29298ff4b55afcccdf78973b24cf3175fee32e"
 
 [[package]]
 name = "pest"
-version = "2.1.3"
+version = "2.2.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "10f4872ae94d7b90ae48754df22fd42ad52ce740b8f370b03da4835417403e53"
+checksum = "69486e2b8c2d2aeb9762db7b4e00b0331156393555cff467f4163ff06821eef8"
 dependencies = [
+ "thiserror",
  "ucd-trie",
 ]
 
@@ -1485,6 +1487,9 @@ dependencies = [
 name = "proof-systems"
 version = "0.1.0"
 dependencies = [
+ "anyhow",
+ "ark-ff",
+ "bitvec",
  "mina-curves",
  "mina-hasher",
  "mina-signer",
@@ -1742,18 +1747,18 @@ dependencies = [
 
 [[package]]
 name = "serde"
-version = "1.0.140"
+version = "1.0.141"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "fc855a42c7967b7c369eb5860f7164ef1f6f81c20c7cc1141f2a604e18723b03"
+checksum = "7af873f2c95b99fcb0bd0fe622a43e29514658873c8ceba88c4cb88833a22500"
 dependencies = [
  "serde_derive",
 ]
 
 [[package]]
 name = "serde_derive"
-version = "1.0.140"
+version = "1.0.141"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6f2122636b9fe3b81f1cb25099fcf2d3f542cdb1d45940d56c713158884a05da"
+checksum = "75743a150d003dd863b51dc809bcad0d73f2102c53632f1e954e738192a3413f"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -2025,10 +2030,11 @@ checksum = "3bf63baf9f5039dadc247375c29eb13706706cfde997d0330d05aa63a77d8820"
 
 [[package]]
 name = "time"
-version = "0.3.11"
+version = "0.3.12"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "72c91f41dcb2f096c05f0873d667dceec1087ce5bcf984ec8ffb19acddbb3217"
+checksum = "74b7cc93fc23ba97fde84f7eea56c55d1ba183f495c6715defdfc7b9cb8c870f"
 dependencies = [
+ "js-sys",
  "libc",
  "num_threads",
 ]
@@ -2110,9 +2116,9 @@ checksum = "b6bc1c9ce2b5135ac7f93c72918fc37feb872bdc6a5533a8b85eb4b86bfdae52"
 
 [[package]]
 name = "tracing"
-version = "0.1.35"
+version = "0.1.36"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a400e31aa60b9d44a52a8ee0343b5b18566b03a8321e0d321f695cf56e940160"
+checksum = "2fce9567bd60a67d08a16488756721ba392f24f29006402881e43b19aac64307"
 dependencies = [
  "cfg-if",
  "pin-project-lite",
@@ -2121,9 +2127,9 @@ dependencies = [
 
 [[package]]
 name = "tracing-core"
-version = "0.1.28"
+version = "0.1.29"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7b7358be39f2f274f322d2aaed611acc57f382e8eb1e5b48cb9ae30933495ce7"
+checksum = "5aeea4303076558a00714b823f9ad67d58a3bbda1df83d8827d21193156e22f7"
 dependencies = [
  "once_cell",
 ]

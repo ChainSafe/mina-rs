@@ -7,13 +7,18 @@
 pub mod permissions;
 pub mod timing;
 pub mod token_permissions;
+pub mod token_symbol;
+pub mod zkapp;
 
 use crate::{types::*, *};
 
+pub use self::zkapp::{ZkAppOptionHashableWrapper, ZkAppUriOptionHashableWrapper};
 use mina_serialization_types_macros::AutoFrom;
 pub use permissions::{AuthRequired, Permissions, PermissionsLegacy};
 pub use timing::Timing;
 pub use token_permissions::TokenPermissions;
+pub use token_symbol::TokenSymbol;
+pub use zkapp::{ZkApp, ZkAppUri};
 
 use mina_crypto::hash::{ChainHash, StateHash};
 use mina_hasher::ROInput;
@@ -63,21 +68,18 @@ impl mina_hasher::Hashable for AccountLegacy {
     // Uncomment these fields once they have implemented Hashable trait
     // and add unit tests when it's complete
     fn to_roinput(&self) -> ROInput {
-        let mut roi = ROInput::new();
-        roi
+        ROInput::new()
             // .append_hashable(self.public_key)
             .append_hashable(&self.token_id)
             // .append_hashable(self.token_permissions)
             .append_hashable(&self.balance)
-            // .append_hashable(self.nonce)
-            // .append_hashable(self.receipt_chain_hash)
-            // .append_hashable(self.delegate)
-            // .append_hashable(self.voting_for)
-            // .append_hashable(self.timing)
-            // .append_hashable(self.permissions)
-            // .append_hashable(self.snapp)
-            ;
-        roi
+        // .append_hashable(self.nonce)
+        // .append_hashable(self.receipt_chain_hash)
+        // .append_hashable(self.delegate)
+        // .append_hashable(self.voting_for)
+        // .append_hashable(self.timing)
+        // .append_hashable(self.permissions)
+        // .append_hashable(self.snapp)
     }
 
     fn domain_string(_: Self::D) -> Option<String> {
@@ -93,12 +95,12 @@ pub struct Account {
     pub public_key: CompressedPubKey,
     /// Account token ID
     pub token_id: TokenId,
+    /// Balance of token held by account
+    pub balance: Amount,
     /// Permission associated with the given token
     pub token_permissions: TokenPermissions,
     /// Token Symbol
-    pub token_symbol: [u8; 32],
-    /// Balance of token held by account
-    pub balance: Amount,
+    pub token_symbol: TokenSymbol,
     /// Nonce (incremented with each tx to prevent replay)
     pub nonce: AccountNonce,
     /// ?
@@ -113,22 +115,39 @@ pub struct Account {
     /// Level of permission required to do different account actions
     pub permissions: Permissions,
     /// TODO: This should contain a Snapp account data once we have something to test against
-    pub zkapp: Option<()>,
+    pub zkapp: Option<ZkApp>,
     /// TODO: This should contain a Snapp account data once we have something to test against
-    pub zkuri: Option<()>,
+    pub zkapp_uri: Option<ZkAppUri>,
 }
 
 impl mina_hasher::Hashable for Account {
     type D = ();
 
-    // Uncomment these fields once they have implemented Hashable trait
-    // and add unit tests when it's complete
     fn to_roinput(&self) -> ROInput {
-        ROInput::new()
+        self.roinput()
     }
 
     fn domain_string(_: Self::D) -> Option<String> {
         Some("CodaAccount".into())
+    }
+}
+
+impl ToChunkedROInput for Account {
+    fn to_chunked_roinput(&self) -> ChunkedROInput {
+        ChunkedROInput::new()
+            .append_chunked(&ZkAppUriOptionHashableWrapper(&self.zkapp_uri))
+            .append_chunked(&ZkAppOptionHashableWrapper(&self.zkapp))
+            .append_chunked(&self.permissions)
+            .append_chunked(&self.timing)
+            .append_chunked(&self.voting_for)
+            .append_chunked(&CompressedPubKeyOptionHashableWrapper(&self.delegate))
+            .append_chunked(&self.receipt_chain_hash)
+            .append_chunked(&self.nonce)
+            .append_chunked(&self.balance)
+            .append_chunked(&self.token_symbol)
+            .append_chunked(&self.token_permissions)
+            .append_chunked(&self.token_id)
+            .append_chunked(&CompressedPubKeyHashableWrapper(&self.public_key))
     }
 }
 

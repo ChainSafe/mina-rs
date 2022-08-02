@@ -42,21 +42,21 @@ impl Hashable for VrfOutputTruncated {
     type D = ();
 
     fn to_roinput(&self) -> ROInput {
-        let mut roi = ROInput::new();
         if self.0.len() <= 31 {
-            roi.append_bytes(&self.0);
+            ROInput::new().append_bytes(&self.0)
         } else {
-            roi.append_bytes(&self.0[..31]);
+            let roi = ROInput::new().append_bytes(&self.0[..31]);
             if self.0.len() > 31 {
                 let last = self.0[31];
                 roi.append_bool(last & 0b1 > 0)
                     .append_bool(last & 0b10 > 0)
                     .append_bool(last & 0b100 > 0)
                     .append_bool(last & 0b1000 > 0)
-                    .append_bool(last & 0b10000 > 0);
+                    .append_bool(last & 0b10000 > 0)
+            } else {
+                roi
             }
         }
-        roi
     }
 
     fn domain_string(_: Self::D) -> Option<String> {
@@ -117,29 +117,27 @@ impl Hashable for ConsensusState {
     type D = ();
 
     fn to_roinput(&self) -> ROInput {
-        let mut roi = ROInput::new();
-        roi.append_hashable(&self.blockchain_length);
-        roi.append_hashable(&self.epoch_count);
-        roi.append_hashable(&self.min_window_density);
+        let mut roi = ROInput::new()
+            .append_hashable(&self.blockchain_length)
+            .append_hashable(&self.epoch_count)
+            .append_hashable(&self.min_window_density);
         for v in &self.sub_window_densities {
-            roi.append_hashable(v);
+            roi = roi.append_hashable(v);
         }
-        roi.append_hashable(&self.last_vrf_output);
-        roi.append_hashable(&self.total_currency);
-        roi.append_hashable(&self.curr_global_slot);
-        roi.append_hashable(&self.global_slot_since_genesis);
-        roi.append_bool(self.has_ancestor_in_same_checkpoint_window);
-        roi.append_bool(self.supercharge_coinbase);
-        roi.append_hashable(&self.staking_epoch_data);
-        roi.append_hashable(&self.next_epoch_data);
-        roi.append_field(self.block_stake_winner.x);
-        roi.append_bool(self.block_stake_winner.is_odd);
-        roi.append_field(self.block_creator.x);
-        roi.append_bool(self.block_creator.is_odd);
-        roi.append_field(self.coinbase_receiver.x);
-        roi.append_bool(self.coinbase_receiver.is_odd);
-
-        roi
+        roi.append_hashable(&self.last_vrf_output)
+            .append_hashable(&self.total_currency)
+            .append_hashable(&self.curr_global_slot)
+            .append_hashable(&self.global_slot_since_genesis)
+            .append_bool(self.has_ancestor_in_same_checkpoint_window)
+            .append_bool(self.supercharge_coinbase)
+            .append_hashable(&self.staking_epoch_data)
+            .append_hashable(&self.next_epoch_data)
+            .append_field(self.block_stake_winner.x)
+            .append_bool(self.block_stake_winner.is_odd)
+            .append_field(self.block_creator.x)
+            .append_bool(self.block_creator.is_odd)
+            .append_field(self.coinbase_receiver.x)
+            .append_bool(self.coinbase_receiver.is_odd)
     }
 
     fn domain_string(_: Self::D) -> Option<String> {

@@ -22,13 +22,17 @@ impl Hashable for TokenId {
     type D = ();
 
     fn to_roinput(&self) -> ROInput {
-        let mut roi = ROInput::new();
-        roi.append_u64(self.0);
-        roi
+        ROInput::new().append_u64(self.0)
     }
 
     fn domain_string(_: Self::D) -> Option<String> {
         None
+    }
+}
+
+impl ToChunkedROInput for TokenId {
+    fn to_chunked_roinput(&self) -> ChunkedROInput {
+        ChunkedROInput::new().append_field(self.0.into())
     }
 }
 
@@ -40,9 +44,7 @@ impl Hashable for Length {
     type D = ();
 
     fn to_roinput(&self) -> ROInput {
-        let mut roi = ROInput::new();
-        roi.append_u32(self.0);
-        roi
+        ROInput::new().append_u32(self.0)
     }
 
     fn domain_string(_: Self::D) -> Option<String> {
@@ -90,13 +92,17 @@ impl Hashable for Amount {
     type D = ();
 
     fn to_roinput(&self) -> ROInput {
-        let mut roi = ROInput::new();
-        roi.append_u64(self.0);
-        roi
+        ROInput::new().append_u64(self.0)
     }
 
     fn domain_string(_: Self::D) -> Option<String> {
         None
+    }
+}
+
+impl ToChunkedROInput for Amount {
+    fn to_chunked_roinput(&self) -> ChunkedROInput {
+        ChunkedROInput::new().append_u64(self.0)
     }
 }
 
@@ -135,6 +141,24 @@ impl std::str::FromStr for Amount {
 #[derive(Copy, Clone, PartialEq, Debug, Default, From, Into)]
 pub struct AccountNonce(pub u32);
 
+impl Hashable for AccountNonce {
+    type D = ();
+
+    fn to_roinput(&self) -> ROInput {
+        ROInput::new().append_u32(self.0)
+    }
+
+    fn domain_string(_: Self::D) -> Option<String> {
+        None
+    }
+}
+
+impl ToChunkedROInput for AccountNonce {
+    fn to_chunked_roinput(&self) -> ChunkedROInput {
+        ChunkedROInput::new().append_u32(self.0)
+    }
+}
+
 /// Consensus slot index
 #[derive(Copy, Clone, PartialEq, Debug, Default, From, Into)]
 pub struct GlobalSlotNumber(pub u32);
@@ -159,9 +183,7 @@ impl Hashable for GlobalSlotNumber {
     type D = ();
 
     fn to_roinput(&self) -> ROInput {
-        let mut roi = ROInput::new();
-        roi.append_u32(self.0);
-        roi
+        ROInput::new().append_u32(self.0)
     }
 
     fn domain_string(_: Self::D) -> Option<String> {
@@ -177,13 +199,17 @@ impl Hashable for BlockTime {
     type D = ();
 
     fn to_roinput(&self) -> ROInput {
-        let mut roi = ROInput::new();
-        roi.append_u64(self.0);
-        roi
+        ROInput::new().append_u64(self.0)
     }
 
     fn domain_string(_: Self::D) -> Option<String> {
         None
+    }
+}
+
+impl ToChunkedROInput for BlockTime {
+    fn to_chunked_roinput(&self) -> ChunkedROInput {
+        ChunkedROInput::new().append_u32(self.0 as u32)
     }
 }
 

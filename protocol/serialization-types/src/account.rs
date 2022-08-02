@@ -72,21 +72,21 @@ pub struct AccountV0 {
     /// TODO: This should contain a Snapp account data once we have something to test against
     pub zkapp: Option<()>,
     /// TODO: This should contain a Snapp account data once we have something to test against
-    pub zkuri: Option<()>,
+    pub zkapp_uri: Option<()>,
 }
 
-/// Need to learn exactly what this is..
+/// FIXME: Need to learn exactly what this is..
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub enum TokenPermissions {
-    /// Account owns a token
-    TokenOwned {
-        /// ?
-        disable_new_accounts: bool,
-    },
     /// Account does not own a token
     NotOwned {
         /// ?
         account_disabled: bool,
+    },
+    /// Account owns a token
+    TokenOwned {
+        /// ?
+        disable_new_accounts: bool,
     },
 }
 
@@ -192,7 +192,7 @@ pub struct TimedData {
     pub cliff_time: BlockTimeV1,
     /// Amount extra available when fully fested
     pub cliff_amount: AmountV1,
-    /// Ammount released in each vesting period
+    /// Amount released in each vesting period
     pub vesting_increment: AmountV1,
     /// Period in whcih allocation is released in chunks
     pub vesting_period: BlockTimeV1,
@@ -209,7 +209,7 @@ pub struct TimedDataV0 {
     pub cliff_amount: u64,
     /// Period in whcih allocation is released in chunks
     pub vesting_period: u64,
-    /// Ammount released in each vesting period
+    /// Amount released in each vesting period
     pub vesting_increment: u64,
 }
 

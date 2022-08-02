@@ -14,6 +14,7 @@ use mina_serialization_types::{impl_strconv_via_json, json::*, v1::*};
 use proof_systems::{
     mina_hasher::{Fp, Hashable, ROInput},
     o1_utils::{field_helpers::FieldHelpersError, FieldHelpers},
+    ChunkedROInput, ToChunkedROInput,
 };
 use sha2::{Digest, Sha256};
 use versioned::*;
@@ -25,13 +26,20 @@ impl Hashable for BaseHash {
     type D = ();
 
     fn to_roinput(&self) -> ROInput {
-        let mut roi = ROInput::new();
-        roi.append_field(self.try_into().expect("Failed to convert Hash into Fp"));
-        roi
+        ROInput::new().append_field(self.try_into().expect("Failed to convert Hash into Fp"))
     }
 
     fn domain_string(_: Self::D) -> Option<String> {
         None
+    }
+}
+
+impl ToChunkedROInput for BaseHash {
+    fn to_chunked_roinput(&self) -> ChunkedROInput {
+        ChunkedROInput::new().append_field(
+            self.try_into()
+                .expect("Failed to convert ChainHash into Fp"),
+        )
     }
 }
 
@@ -117,13 +125,17 @@ impl Hashable for StateHash {
     type D = ();
 
     fn to_roinput(&self) -> ROInput {
-        let mut roi = ROInput::new();
-        roi.append_hashable(&self.0);
-        roi
+        ROInput::new().append_hashable(&self.0)
     }
 
     fn domain_string(_: Self::D) -> Option<String> {
         None
+    }
+}
+
+impl ToChunkedROInput for StateHash {
+    fn to_chunked_roinput(&self) -> ChunkedROInput {
+        self.0.to_chunked_roinput()
     }
 }
 
@@ -155,9 +167,7 @@ impl Hashable for LedgerHash {
     type D = ();
 
     fn to_roinput(&self) -> ROInput {
-        let mut roi = ROInput::new();
-        roi.append_hashable(&self.0);
-        roi
+        ROInput::new().append_hashable(&self.0)
     }
 
     fn domain_string(_: Self::D) -> Option<String> {
@@ -173,6 +183,32 @@ pub struct ChainHash(BaseHash);
 impl_from_for_hash!(ChainHash, HashV1);
 impl_from_for_generic_with_proxy!(ChainHash, HashV1, ChainHashV1Json);
 impl_strconv_via_json!(ChainHash, ChainHashV1Json);
+
+impl Hashable for ChainHash {
+    type D = ();
+
+    fn to_roinput(&self) -> ROInput {
+        ROInput::new().append_hashable(&self.0)
+    }
+
+    fn domain_string(_: Self::D) -> Option<String> {
+        None
+    }
+}
+
+impl ToChunkedROInput for ChainHash {
+    fn to_chunked_roinput(&self) -> ChunkedROInput {
+        self.0.to_chunked_roinput()
+    }
+}
+
+impl TryFrom<&ChainHash> for Fp {
+    type Error = FieldHelpersError;
+
+    fn try_from(i: &ChainHash) -> Result<Self, Self::Error> {
+        (&i.0).try_into()
+    }
+}
 
 impl From<[u8; 32]> for ChainHash {
     fn from(v: [u8; 32]) -> Self {
@@ -200,9 +236,7 @@ impl Hashable for CoinBaseHash {
     type D = ();
 
     fn to_roinput(&self) -> ROInput {
-        let mut roi = ROInput::new();
-        roi.append_hashable(&self.0);
-        roi
+        ROInput::new().append_hashable(&self.0)
     }
 
     fn domain_string(_: Self::D) -> Option<String> {
@@ -223,9 +257,7 @@ impl Hashable for EpochSeed {
     type D = ();
 
     fn to_roinput(&self) -> ROInput {
-        let mut roi = ROInput::new();
-        roi.append_hashable(&self.0);
-        roi
+        ROInput::new().append_hashable(&self.0)
     }
 
     fn domain_string(_: Self::D) -> Option<String> {
@@ -245,10 +277,9 @@ impl Hashable for StagedLedgerHash {
     type D = ();
 
     fn to_roinput(&self) -> ROInput {
-        let mut roi = ROInput::new();
-        roi.append_hashable(&self.non_snark);
-        roi.append_hashable(&self.pending_coinbase_hash);
-        roi
+        ROInput::new()
+            .append_hashable(&self.non_snark)
+            .append_hashable(&self.pending_coinbase_hash)
     }
 
     fn domain_string(_: Self::D) -> Option<String> {
@@ -278,9 +309,7 @@ impl Hashable for NonSnarkStagedLedgerHash {
     type D = ();
 
     fn to_roinput(&self) -> ROInput {
-        let mut roi = ROInput::new();
-        roi.append_bytes(&self.digest());
-        roi
+        ROInput::new().append_bytes(&self.digest())
     }
 
     fn domain_string(_: Self::D) -> Option<String> {

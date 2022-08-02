@@ -85,56 +85,55 @@ impl Hashable for SignedCommandPayload {
         let mut roi = ROInput::new();
         match &self.body {
             SignedCommandPayloadBody::PaymentPayload(pp) => {
-                roi.append_field(self.common.fee_payer_pk.x);
-                roi.append_field(pp.source_pk.x);
-                roi.append_field(pp.receiver_pk.x);
-
-                roi.append_u64(self.common.fee.0);
-                roi.append_u64(self.common.fee_token.0);
-                roi.append_bool(self.common.fee_payer_pk.is_odd);
-                roi.append_u32(self.common.nonce.0);
-                roi.append_u32(self.common.valid_until.0);
-                roi.append_bytes(&self.common.memo.0);
+                roi = roi
+                    .append_field(self.common.fee_payer_pk.x)
+                    .append_field(pp.source_pk.x)
+                    .append_field(pp.receiver_pk.x)
+                    .append_u64(self.common.fee.0)
+                    .append_u64(self.common.fee_token.0)
+                    .append_bool(self.common.fee_payer_pk.is_odd)
+                    .append_u32(self.common.nonce.0)
+                    .append_u32(self.common.valid_until.0)
+                    .append_bytes(&self.common.memo.0);
 
                 for tag_bit in PAYMENT_TX_TAG {
-                    roi.append_bool(tag_bit);
+                    roi = roi.append_bool(tag_bit);
                 }
 
-                roi.append_bool(pp.source_pk.is_odd);
-                roi.append_bool(pp.receiver_pk.is_odd);
-                roi.append_u64(pp.token_id.0);
-                roi.append_u64(pp.amount.0);
-                roi.append_bool(false); // this is the token locked field. Not sure where this belongs yet
+                roi.append_bool(pp.source_pk.is_odd)
+                    .append_bool(pp.receiver_pk.is_odd)
+                    .append_u64(pp.token_id.0)
+                    .append_u64(pp.amount.0)
+                    .append_bool(false) // this is the token locked field. Not sure where this belongs yet
             }
             SignedCommandPayloadBody::StakeDelegation(s) => match s {
                 StakeDelegation::SetDelegate {
                     delegator,
                     new_delegate,
                 } => {
-                    roi.append_field(self.common.fee_payer_pk.x);
-                    roi.append_field(delegator.x);
-                    roi.append_field(new_delegate.x);
-
-                    roi.append_u64(self.common.fee.0);
-                    roi.append_u64(self.common.fee_token.0);
-                    roi.append_bool(self.common.fee_payer_pk.is_odd);
-                    roi.append_u32(self.common.nonce.0);
-                    roi.append_u32(self.common.valid_until.0);
-                    roi.append_bytes(&self.common.memo.0);
+                    roi = roi
+                        .append_field(self.common.fee_payer_pk.x)
+                        .append_field(delegator.x)
+                        .append_field(new_delegate.x)
+                        .append_u64(self.common.fee.0)
+                        .append_u64(self.common.fee_token.0)
+                        .append_bool(self.common.fee_payer_pk.is_odd)
+                        .append_u32(self.common.nonce.0)
+                        .append_u32(self.common.valid_until.0)
+                        .append_bytes(&self.common.memo.0);
 
                     for tag_bit in DELEGATION_TX_TAG {
-                        roi.append_bool(tag_bit);
+                        roi = roi.append_bool(tag_bit);
                     }
 
-                    roi.append_bool(delegator.is_odd);
-                    roi.append_bool(new_delegate.is_odd);
-                    roi.append_u64(1);
-                    roi.append_u64(0);
-                    roi.append_bool(false); // this is the token locked field. Not sure where this belongs yet
+                    roi.append_bool(delegator.is_odd)
+                        .append_bool(new_delegate.is_odd)
+                        .append_u64(1)
+                        .append_u64(0)
+                        .append_bool(false) // this is the token locked field. Not sure where this belongs yet
                 }
             },
-        };
-        roi
+        }
     }
 
     fn domain_string(network_id: NetworkId) -> Option<String> {

@@ -4,8 +4,8 @@
 use super::{constants::*, utils::*, *};
 use argon2::{self, password_hash::SaltString, Argon2, ParamsBuilder, PasswordHasher};
 use xsalsa20poly1305::{
-    aead::{generic_array::GenericArray, Aead, NewAead},
-    XSalsa20Poly1305,
+    aead::{generic_array::GenericArray, Aead},
+    KeyInit, XSalsa20Poly1305,
 };
 
 impl TryFrom<SecretBoxJson> for SecretBox {

@@ -21,10 +21,9 @@ impl Hashable for GlobalSlot {
     type D = ();
 
     fn to_roinput(&self) -> ROInput {
-        let mut roi = ROInput::new();
-        roi.append_hashable(&self.slot_number);
-        roi.append_hashable(&self.slots_per_epoch);
-        roi
+        ROInput::new()
+            .append_hashable(&self.slot_number)
+            .append_hashable(&self.slots_per_epoch)
     }
 
     fn domain_string(_: Self::D) -> Option<String> {

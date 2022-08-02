@@ -18,3 +18,10 @@ pub use mina_curves;
 pub use mina_hasher;
 pub use mina_signer;
 pub use o1_utils;
+
+/// Temporary implementation for chunked random oracle input
+mod roinput;
+pub use roinput::*;
+
+/// Reexport [bitvec]
+pub use bitvec;
