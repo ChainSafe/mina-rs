@@ -1033,7 +1033,7 @@ dependencies = [
 [[package]]
 name = "mina-curves"
 version = "0.1.0"
-source = "git+https://github.com/o1-labs/proof-systems?rev=e9b7c6d1265fcf031d61d68e59cc7608d134e9a3#e9b7c6d1265fcf031d61d68e59cc7608d134e9a3"
+source = "git+https://github.com/o1-labs/proof-systems?rev=6777654470ba69bcc01f70c0c7b69c44943f4dc6#6777654470ba69bcc01f70c0c7b69c44943f4dc6"
 dependencies = [
  "ark-ec",
  "ark-ff",
@@ -1042,7 +1042,7 @@ dependencies = [
 [[package]]
 name = "mina-hasher"
 version = "0.1.0"
-source = "git+https://github.com/o1-labs/proof-systems?rev=e9b7c6d1265fcf031d61d68e59cc7608d134e9a3#e9b7c6d1265fcf031d61d68e59cc7608d134e9a3"
+source = "git+https://github.com/o1-labs/proof-systems?rev=6777654470ba69bcc01f70c0c7b69c44943f4dc6#6777654470ba69bcc01f70c0c7b69c44943f4dc6"
 dependencies = [
  "ark-ff",
  "bitvec",
@@ -1121,7 +1121,7 @@ dependencies = [
 [[package]]
 name = "mina-signer"
 version = "0.1.0"
-source = "git+https://github.com/o1-labs/proof-systems?rev=e9b7c6d1265fcf031d61d68e59cc7608d134e9a3#e9b7c6d1265fcf031d61d68e59cc7608d134e9a3"
+source = "git+https://github.com/o1-labs/proof-systems?rev=6777654470ba69bcc01f70c0c7b69c44943f4dc6#6777654470ba69bcc01f70c0c7b69c44943f4dc6"
 dependencies = [
  "ark-ec",
  "ark-ff",
@@ -1274,7 +1274,7 @@ dependencies = [
 [[package]]
 name = "o1-utils"
 version = "0.1.0"
-source = "git+https://github.com/o1-labs/proof-systems?rev=e9b7c6d1265fcf031d61d68e59cc7608d134e9a3#e9b7c6d1265fcf031d61d68e59cc7608d134e9a3"
+source = "git+https://github.com/o1-labs/proof-systems?rev=6777654470ba69bcc01f70c0c7b69c44943f4dc6#6777654470ba69bcc01f70c0c7b69c44943f4dc6"
 dependencies = [
  "ark-ec",
  "ark-ff",
@@ -1359,7 +1359,7 @@ dependencies = [
 [[package]]
 name = "oracle"
 version = "0.1.0"
-source = "git+https://github.com/o1-labs/proof-systems?rev=e9b7c6d1265fcf031d61d68e59cc7608d134e9a3#e9b7c6d1265fcf031d61d68e59cc7608d134e9a3"
+source = "git+https://github.com/o1-labs/proof-systems?rev=6777654470ba69bcc01f70c0c7b69c44943f4dc6#6777654470ba69bcc01f70c0c7b69c44943f4dc6"
 dependencies = [
  "ark-ec",
  "ark-ff",

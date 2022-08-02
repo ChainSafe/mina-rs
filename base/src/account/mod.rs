@@ -68,21 +68,18 @@ impl mina_hasher::Hashable for AccountLegacy {
     // Uncomment these fields once they have implemented Hashable trait
     // and add unit tests when it's complete
     fn to_roinput(&self) -> ROInput {
-        let mut roi = ROInput::new();
-        roi
+        ROInput::new()
             // .append_hashable(self.public_key)
             .append_hashable(&self.token_id)
             // .append_hashable(self.token_permissions)
             .append_hashable(&self.balance)
-            // .append_hashable(self.nonce)
-            // .append_hashable(self.receipt_chain_hash)
-            // .append_hashable(self.delegate)
-            // .append_hashable(self.voting_for)
-            // .append_hashable(self.timing)
-            // .append_hashable(self.permissions)
-            // .append_hashable(self.snapp)
-            ;
-        roi
+        // .append_hashable(self.nonce)
+        // .append_hashable(self.receipt_chain_hash)
+        // .append_hashable(self.delegate)
+        // .append_hashable(self.voting_for)
+        // .append_hashable(self.timing)
+        // .append_hashable(self.permissions)
+        // .append_hashable(self.snapp)
     }
 
     fn domain_string(_: Self::D) -> Option<String> {

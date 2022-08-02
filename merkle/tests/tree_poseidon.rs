@@ -20,9 +20,7 @@ mod tests {
         type D = ();
 
         fn to_roinput(&self) -> mina_hasher::ROInput {
-            let mut roi = ROInput::new();
-            roi.append_field(self.0);
-            roi
+            ROInput::new().append_field(self.0)
         }
 
         fn domain_string(_: Self::D) -> Option<String> {

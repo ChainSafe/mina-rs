@@ -41,13 +41,12 @@ impl Hashable for ProtocolConstants {
     type D = ();
 
     fn to_roinput(&self) -> ROInput {
-        let mut roi = ROInput::new();
-        roi.append_hashable(&self.k);
-        roi.append_hashable(&self.delta);
-        roi.append_hashable(&self.slots_per_epoch);
-        roi.append_hashable(&self.slots_per_sub_window);
-        roi.append_hashable(&self.genesis_state_timestamp);
-        roi
+        ROInput::new()
+            .append_hashable(&self.k)
+            .append_hashable(&self.delta)
+            .append_hashable(&self.slots_per_epoch)
+            .append_hashable(&self.slots_per_sub_window)
+            .append_hashable(&self.genesis_state_timestamp)
     }
 
     fn domain_string(_: Self::D) -> Option<String> {
@@ -73,10 +72,9 @@ impl Hashable for ProtocolState {
     fn to_roinput(&self) -> ROInput {
         let mut hasher = create_legacy(());
         let body_hash = hasher.hash(&self.body);
-        let mut roi = ROInput::new();
-        roi.append_hashable(&self.previous_state_hash);
-        roi.append_field(body_hash);
-        roi
+        ROInput::new()
+            .append_hashable(&self.previous_state_hash)
+            .append_field(body_hash)
     }
 
     fn domain_string(_: Self::D) -> Option<String> {
@@ -127,12 +125,11 @@ impl Hashable for ProtocolStateBody {
     type D = ();
 
     fn to_roinput(&self) -> ROInput {
-        let mut roi = ROInput::new();
-        roi.append_hashable(&self.constants);
-        roi.append_hashable(&self.genesis_state_hash);
-        roi.append_hashable(&self.blockchain_state);
-        roi.append_hashable(&self.consensus_state);
-        roi
+        ROInput::new()
+            .append_hashable(&self.constants)
+            .append_hashable(&self.genesis_state_hash)
+            .append_hashable(&self.blockchain_state)
+            .append_hashable(&self.consensus_state)
     }
 
     fn domain_string(_: Self::D) -> Option<String> {

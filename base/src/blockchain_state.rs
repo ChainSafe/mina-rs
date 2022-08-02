@@ -32,13 +32,12 @@ impl Hashable for BlockchainState {
     type D = ();
 
     fn to_roinput(&self) -> ROInput {
-        let mut roi = ROInput::new();
-        roi.append_hashable(&self.staged_ledger_hash);
-        roi.append_hashable(&self.snarked_ledger_hash);
-        roi.append_hashable(&self.genesis_ledger_hash);
-        roi.append_hashable(&self.snarked_next_available_token);
-        roi.append_hashable(&self.timestamp);
-        roi
+        ROInput::new()
+            .append_hashable(&self.staged_ledger_hash)
+            .append_hashable(&self.snarked_ledger_hash)
+            .append_hashable(&self.genesis_ledger_hash)
+            .append_hashable(&self.snarked_next_available_token)
+            .append_hashable(&self.timestamp)
     }
 
     fn domain_string(_: Self::D) -> Option<String> {

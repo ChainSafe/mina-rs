@@ -26,9 +26,7 @@ impl Hashable for BaseHash {
     type D = ();
 
     fn to_roinput(&self) -> ROInput {
-        let mut roi = ROInput::new();
-        roi.append_field(self.try_into().expect("Failed to convert Hash into Fp"));
-        roi
+        ROInput::new().append_field(self.try_into().expect("Failed to convert Hash into Fp"))
     }
 
     fn domain_string(_: Self::D) -> Option<String> {
@@ -127,9 +125,7 @@ impl Hashable for StateHash {
     type D = ();
 
     fn to_roinput(&self) -> ROInput {
-        let mut roi = ROInput::new();
-        roi.append_hashable(&self.0);
-        roi
+        ROInput::new().append_hashable(&self.0)
     }
 
     fn domain_string(_: Self::D) -> Option<String> {
@@ -171,9 +167,7 @@ impl Hashable for LedgerHash {
     type D = ();
 
     fn to_roinput(&self) -> ROInput {
-        let mut roi = ROInput::new();
-        roi.append_hashable(&self.0);
-        roi
+        ROInput::new().append_hashable(&self.0)
     }
 
     fn domain_string(_: Self::D) -> Option<String> {
@@ -194,9 +188,7 @@ impl Hashable for ChainHash {
     type D = ();
 
     fn to_roinput(&self) -> ROInput {
-        let mut roi = ROInput::new();
-        roi.append_hashable(&self.0);
-        roi
+        ROInput::new().append_hashable(&self.0)
     }
 
     fn domain_string(_: Self::D) -> Option<String> {
@@ -244,9 +236,7 @@ impl Hashable for CoinBaseHash {
     type D = ();
 
     fn to_roinput(&self) -> ROInput {
-        let mut roi = ROInput::new();
-        roi.append_hashable(&self.0);
-        roi
+        ROInput::new().append_hashable(&self.0)
     }
 
     fn domain_string(_: Self::D) -> Option<String> {
@@ -267,9 +257,7 @@ impl Hashable for EpochSeed {
     type D = ();
 
     fn to_roinput(&self) -> ROInput {
-        let mut roi = ROInput::new();
-        roi.append_hashable(&self.0);
-        roi
+        ROInput::new().append_hashable(&self.0)
     }
 
     fn domain_string(_: Self::D) -> Option<String> {
@@ -289,10 +277,9 @@ impl Hashable for StagedLedgerHash {
     type D = ();
 
     fn to_roinput(&self) -> ROInput {
-        let mut roi = ROInput::new();
-        roi.append_hashable(&self.non_snark);
-        roi.append_hashable(&self.pending_coinbase_hash);
-        roi
+        ROInput::new()
+            .append_hashable(&self.non_snark)
+            .append_hashable(&self.pending_coinbase_hash)
     }
 
     fn domain_string(_: Self::D) -> Option<String> {
@@ -322,9 +309,7 @@ impl Hashable for NonSnarkStagedLedgerHash {
     type D = ();
 
     fn to_roinput(&self) -> ROInput {
-        let mut roi = ROInput::new();
-        roi.append_bytes(&self.digest());
-        roi
+        ROInput::new().append_bytes(&self.digest())
     }
 
     fn domain_string(_: Self::D) -> Option<String> {

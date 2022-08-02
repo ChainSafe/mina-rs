@@ -22,10 +22,9 @@ impl Hashable for EpochLedger {
     type D = ();
 
     fn to_roinput(&self) -> ROInput {
-        let mut roi = ROInput::new();
-        roi.append_hashable(&self.hash);
-        roi.append_hashable(&self.total_currency);
-        roi
+        ROInput::new()
+            .append_hashable(&self.hash)
+            .append_hashable(&self.total_currency)
     }
 
     fn domain_string(_: Self::D) -> Option<String> {
@@ -53,15 +52,12 @@ impl Hashable for EpochData {
     type D = ();
 
     fn to_roinput(&self) -> ROInput {
-        let mut roi = ROInput::new();
-
-        roi.append_hashable(&self.seed);
-        roi.append_hashable(&self.start_checkpoint);
-        roi.append_hashable(&self.epoch_length);
-        roi.append_hashable(&self.ledger);
-        roi.append_hashable(&self.lock_checkpoint);
-
-        roi
+        ROInput::new()
+            .append_hashable(&self.seed)
+            .append_hashable(&self.start_checkpoint)
+            .append_hashable(&self.epoch_length)
+            .append_hashable(&self.ledger)
+            .append_hashable(&self.lock_checkpoint)
     }
 
     fn domain_string(_: Self::D) -> Option<String> {

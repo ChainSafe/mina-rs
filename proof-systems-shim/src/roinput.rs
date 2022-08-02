@@ -136,7 +136,7 @@ impl From<ChunkedROInput> for ROInput {
     fn from(i: ChunkedROInput) -> Self {
         let mut roi = ROInput::new();
         for f in i.into_fields() {
-            roi.append_field(f);
+            roi = roi.append_field(f);
         }
         roi
     }

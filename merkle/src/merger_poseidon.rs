@@ -45,7 +45,7 @@ impl Hashable for MinaPoseidonMerkleTreeNonLeafNode {
     fn to_roinput(&self) -> mina_hasher::ROInput {
         let mut roi = ROInput::new();
         for hash in self.0.into_iter().flatten() {
-            roi.append_field(hash);
+            roi = roi.append_field(hash);
         }
         roi
     }
