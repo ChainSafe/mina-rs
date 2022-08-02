@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"enum":[["TokenPermissions","Need to learn exactly what this is.."]]};
+window.SIDEBAR_ITEMS = {"enum":[["TokenPermissions","FIXME: Need to learn exactly what this is.."]]};

@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {};
+window.SIDEBAR_ITEMS = {"struct":[["ChunkedROInput","Chunked Random Oracle input"]],"trait":[["ToChunkedROInput","Trait that converts a struct to [ChunkedROInput]"]]};

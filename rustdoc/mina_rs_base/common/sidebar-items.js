@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"struct":[["ByteVec","Wrapper of Vec"]]};
+window.SIDEBAR_ITEMS = {"struct":[["ByteVec","Wrapper of Vec"],["CompressedPubKeyHashableWrapper","Wrapper of [CompressedPubKey] that implements [ToChunkedROInput]"],["CompressedPubKeyOptionHashableWrapper","Wrapper of [Option] that implements [ToChunkedROInput]"]]};

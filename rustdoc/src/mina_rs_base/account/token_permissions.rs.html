@@ -20,27 +20,69 @@
 <span id="20">20</span>
 <span id="21">21</span>
 <span id="22">22</span>
+<span id="23">23</span>
+<span id="24">24</span>
+<span id="25">25</span>
+<span id="26">26</span>
+<span id="27">27</span>
+<span id="28">28</span>
+<span id="29">29</span>
+<span id="30">30</span>
+<span id="31">31</span>
+<span id="32">32</span>
+<span id="33">33</span>
+<span id="34">34</span>
+<span id="35">35</span>
+<span id="36">36</span>
+<span id="37">37</span>
+<span id="38">38</span>
+<span id="39">39</span>
+<span id="40">40</span>
+<span id="41">41</span>
+<span id="42">42</span>
+<span id="43">43</span>
 </pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems</span>
 <span class="comment">// SPDX-License-Identifier: Apache-2.0</span>
 
 <span class="doccomment">//! Account token permissions</span>
 
 <span class="kw">use</span> <span class="ident">mina_serialization_types_macros::AutoFrom</span>;
+<span class="kw">use</span> <span class="ident">proof_systems</span>::{<span class="ident">bitvec::prelude::BitVec</span>, <span class="ident">ChunkedROInput</span>, <span class="ident">ToChunkedROInput</span>};
 
-<span class="doccomment">/// Need to learn exactly what this is..</span>
+<span class="doccomment">/// FIXME: Need to learn exactly what this is..</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">AutoFrom</span>)]</span>
 <span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">mina_serialization_types::account::TokenPermissions</span>)]</span>
 <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">TokenPermissions</span> {
-    <span class="doccomment">/// Account owns a token</span>
-    <span class="ident">TokenOwned</span> {
-        <span class="doccomment">/// ?</span>
-        <span class="ident">disable_new_accounts</span>: <span class="ident">bool</span>,
-    },
     <span class="doccomment">/// Account does not own a token</span>
     <span class="ident">NotOwned</span> {
         <span class="doccomment">/// ?</span>
         <span class="ident">account_disabled</span>: <span class="ident">bool</span>,
     },
+    <span class="doccomment">/// Account owns a token</span>
+    <span class="ident">TokenOwned</span> {
+        <span class="doccomment">/// ?</span>
+        <span class="ident">disable_new_accounts</span>: <span class="ident">bool</span>,
+    },
+}
+
+<span class="kw">impl</span> <span class="ident">ToChunkedROInput</span> <span class="kw">for</span> <span class="ident">TokenPermissions</span> {
+    <span class="kw">fn</span> <span class="ident">to_chunked_roinput</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">ChunkedROInput</span> {
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">bits</span> <span class="op">=</span> <span class="ident">BitVec::with_capacity</span>(<span class="number">2</span>);
+        <span class="kw">match</span> <span class="self">self</span> {
+            <span class="ident"><span class="self">Self</span>::NotOwned</span> { <span class="ident">account_disabled</span> } =&gt; {
+                <span class="ident">bits</span>.<span class="ident">push</span>(<span class="bool-val">false</span>);
+                <span class="ident">bits</span>.<span class="ident">push</span>(<span class="kw-2">*</span><span class="ident">account_disabled</span>);
+            }
+            <span class="ident"><span class="self">Self</span>::TokenOwned</span> {
+                <span class="ident">disable_new_accounts</span>,
+            } =&gt; {
+                <span class="ident">bits</span>.<span class="ident">push</span>(<span class="bool-val">true</span>);
+                <span class="ident">bits</span>.<span class="ident">push</span>(<span class="kw-2">*</span><span class="ident">disable_new_accounts</span>);
+            }
+        };
+        <span class="kw">let</span> <span class="ident">max_bits</span> <span class="op">=</span> <span class="ident">bits</span>.<span class="ident">len</span>() <span class="kw">as</span> <span class="ident">u32</span>;
+        <span class="ident">ChunkedROInput::new</span>().<span class="ident">append_packed</span>(<span class="ident">ChunkedROInput::bits_to_fp_unsafe</span>(<span class="ident">bits</span>), <span class="ident">max_bits</span>)
+    }
 }
 </code></pre></div>
 </section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="mina_rs_base" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (fe3342816 2022-08-01)" ></div></body></html>

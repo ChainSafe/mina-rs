@@ -337,7 +337,6 @@
 <span id="337">337</span>
 <span id="338">338</span>
 <span id="339">339</span>
-<span id="340">340</span>
 </pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems</span>
 <span class="comment">// SPDX-License-Identifier: Apache-2.0</span>
 
@@ -425,56 +424,55 @@
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">roi</span> <span class="op">=</span> <span class="ident">ROInput::new</span>();
         <span class="kw">match</span> <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">body</span> {
             <span class="ident">SignedCommandPayloadBody::PaymentPayload</span>(<span class="ident">pp</span>) =&gt; {
-                <span class="ident">roi</span>.<span class="ident">append_field</span>(<span class="self">self</span>.<span class="ident">common</span>.<span class="ident">fee_payer_pk</span>.<span class="ident">x</span>);
-                <span class="ident">roi</span>.<span class="ident">append_field</span>(<span class="ident">pp</span>.<span class="ident">source_pk</span>.<span class="ident">x</span>);
-                <span class="ident">roi</span>.<span class="ident">append_field</span>(<span class="ident">pp</span>.<span class="ident">receiver_pk</span>.<span class="ident">x</span>);
-
-                <span class="ident">roi</span>.<span class="ident">append_u64</span>(<span class="self">self</span>.<span class="ident">common</span>.<span class="ident">fee</span>.<span class="number">0</span>);
-                <span class="ident">roi</span>.<span class="ident">append_u64</span>(<span class="self">self</span>.<span class="ident">common</span>.<span class="ident">fee_token</span>.<span class="number">0</span>);
-                <span class="ident">roi</span>.<span class="ident">append_bool</span>(<span class="self">self</span>.<span class="ident">common</span>.<span class="ident">fee_payer_pk</span>.<span class="ident">is_odd</span>);
-                <span class="ident">roi</span>.<span class="ident">append_u32</span>(<span class="self">self</span>.<span class="ident">common</span>.<span class="ident">nonce</span>.<span class="number">0</span>);
-                <span class="ident">roi</span>.<span class="ident">append_u32</span>(<span class="self">self</span>.<span class="ident">common</span>.<span class="ident">valid_until</span>.<span class="number">0</span>);
-                <span class="ident">roi</span>.<span class="ident">append_bytes</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">common</span>.<span class="ident">memo</span>.<span class="number">0</span>);
+                <span class="ident">roi</span> <span class="op">=</span> <span class="ident">roi</span>
+                    .<span class="ident">append_field</span>(<span class="self">self</span>.<span class="ident">common</span>.<span class="ident">fee_payer_pk</span>.<span class="ident">x</span>)
+                    .<span class="ident">append_field</span>(<span class="ident">pp</span>.<span class="ident">source_pk</span>.<span class="ident">x</span>)
+                    .<span class="ident">append_field</span>(<span class="ident">pp</span>.<span class="ident">receiver_pk</span>.<span class="ident">x</span>)
+                    .<span class="ident">append_u64</span>(<span class="self">self</span>.<span class="ident">common</span>.<span class="ident">fee</span>.<span class="number">0</span>)
+                    .<span class="ident">append_u64</span>(<span class="self">self</span>.<span class="ident">common</span>.<span class="ident">fee_token</span>.<span class="number">0</span>)
+                    .<span class="ident">append_bool</span>(<span class="self">self</span>.<span class="ident">common</span>.<span class="ident">fee_payer_pk</span>.<span class="ident">is_odd</span>)
+                    .<span class="ident">append_u32</span>(<span class="self">self</span>.<span class="ident">common</span>.<span class="ident">nonce</span>.<span class="number">0</span>)
+                    .<span class="ident">append_u32</span>(<span class="self">self</span>.<span class="ident">common</span>.<span class="ident">valid_until</span>.<span class="number">0</span>)
+                    .<span class="ident">append_bytes</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">common</span>.<span class="ident">memo</span>.<span class="number">0</span>);
 
                 <span class="kw">for</span> <span class="ident">tag_bit</span> <span class="kw">in</span> <span class="ident">PAYMENT_TX_TAG</span> {
-                    <span class="ident">roi</span>.<span class="ident">append_bool</span>(<span class="ident">tag_bit</span>);
+                    <span class="ident">roi</span> <span class="op">=</span> <span class="ident">roi</span>.<span class="ident">append_bool</span>(<span class="ident">tag_bit</span>);
                 }
 
-                <span class="ident">roi</span>.<span class="ident">append_bool</span>(<span class="ident">pp</span>.<span class="ident">source_pk</span>.<span class="ident">is_odd</span>);
-                <span class="ident">roi</span>.<span class="ident">append_bool</span>(<span class="ident">pp</span>.<span class="ident">receiver_pk</span>.<span class="ident">is_odd</span>);
-                <span class="ident">roi</span>.<span class="ident">append_u64</span>(<span class="ident">pp</span>.<span class="ident">token_id</span>.<span class="number">0</span>);
-                <span class="ident">roi</span>.<span class="ident">append_u64</span>(<span class="ident">pp</span>.<span class="ident">amount</span>.<span class="number">0</span>);
-                <span class="ident">roi</span>.<span class="ident">append_bool</span>(<span class="bool-val">false</span>); <span class="comment">// this is the token locked field. Not sure where this belongs yet</span>
+                <span class="ident">roi</span>.<span class="ident">append_bool</span>(<span class="ident">pp</span>.<span class="ident">source_pk</span>.<span class="ident">is_odd</span>)
+                    .<span class="ident">append_bool</span>(<span class="ident">pp</span>.<span class="ident">receiver_pk</span>.<span class="ident">is_odd</span>)
+                    .<span class="ident">append_u64</span>(<span class="ident">pp</span>.<span class="ident">token_id</span>.<span class="number">0</span>)
+                    .<span class="ident">append_u64</span>(<span class="ident">pp</span>.<span class="ident">amount</span>.<span class="number">0</span>)
+                    .<span class="ident">append_bool</span>(<span class="bool-val">false</span>) <span class="comment">// this is the token locked field. Not sure where this belongs yet</span>
             }
             <span class="ident">SignedCommandPayloadBody::StakeDelegation</span>(<span class="ident">s</span>) =&gt; <span class="kw">match</span> <span class="ident">s</span> {
                 <span class="ident">StakeDelegation::SetDelegate</span> {
                     <span class="ident">delegator</span>,
                     <span class="ident">new_delegate</span>,
                 } =&gt; {
-                    <span class="ident">roi</span>.<span class="ident">append_field</span>(<span class="self">self</span>.<span class="ident">common</span>.<span class="ident">fee_payer_pk</span>.<span class="ident">x</span>);
-                    <span class="ident">roi</span>.<span class="ident">append_field</span>(<span class="ident">delegator</span>.<span class="ident">x</span>);
-                    <span class="ident">roi</span>.<span class="ident">append_field</span>(<span class="ident">new_delegate</span>.<span class="ident">x</span>);
-
-                    <span class="ident">roi</span>.<span class="ident">append_u64</span>(<span class="self">self</span>.<span class="ident">common</span>.<span class="ident">fee</span>.<span class="number">0</span>);
-                    <span class="ident">roi</span>.<span class="ident">append_u64</span>(<span class="self">self</span>.<span class="ident">common</span>.<span class="ident">fee_token</span>.<span class="number">0</span>);
-                    <span class="ident">roi</span>.<span class="ident">append_bool</span>(<span class="self">self</span>.<span class="ident">common</span>.<span class="ident">fee_payer_pk</span>.<span class="ident">is_odd</span>);
-                    <span class="ident">roi</span>.<span class="ident">append_u32</span>(<span class="self">self</span>.<span class="ident">common</span>.<span class="ident">nonce</span>.<span class="number">0</span>);
-                    <span class="ident">roi</span>.<span class="ident">append_u32</span>(<span class="self">self</span>.<span class="ident">common</span>.<span class="ident">valid_until</span>.<span class="number">0</span>);
-                    <span class="ident">roi</span>.<span class="ident">append_bytes</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">common</span>.<span class="ident">memo</span>.<span class="number">0</span>);
+                    <span class="ident">roi</span> <span class="op">=</span> <span class="ident">roi</span>
+                        .<span class="ident">append_field</span>(<span class="self">self</span>.<span class="ident">common</span>.<span class="ident">fee_payer_pk</span>.<span class="ident">x</span>)
+                        .<span class="ident">append_field</span>(<span class="ident">delegator</span>.<span class="ident">x</span>)
+                        .<span class="ident">append_field</span>(<span class="ident">new_delegate</span>.<span class="ident">x</span>)
+                        .<span class="ident">append_u64</span>(<span class="self">self</span>.<span class="ident">common</span>.<span class="ident">fee</span>.<span class="number">0</span>)
+                        .<span class="ident">append_u64</span>(<span class="self">self</span>.<span class="ident">common</span>.<span class="ident">fee_token</span>.<span class="number">0</span>)
+                        .<span class="ident">append_bool</span>(<span class="self">self</span>.<span class="ident">common</span>.<span class="ident">fee_payer_pk</span>.<span class="ident">is_odd</span>)
+                        .<span class="ident">append_u32</span>(<span class="self">self</span>.<span class="ident">common</span>.<span class="ident">nonce</span>.<span class="number">0</span>)
+                        .<span class="ident">append_u32</span>(<span class="self">self</span>.<span class="ident">common</span>.<span class="ident">valid_until</span>.<span class="number">0</span>)
+                        .<span class="ident">append_bytes</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">common</span>.<span class="ident">memo</span>.<span class="number">0</span>);
 
                     <span class="kw">for</span> <span class="ident">tag_bit</span> <span class="kw">in</span> <span class="ident">DELEGATION_TX_TAG</span> {
-                        <span class="ident">roi</span>.<span class="ident">append_bool</span>(<span class="ident">tag_bit</span>);
+                        <span class="ident">roi</span> <span class="op">=</span> <span class="ident">roi</span>.<span class="ident">append_bool</span>(<span class="ident">tag_bit</span>);
                     }
 
-                    <span class="ident">roi</span>.<span class="ident">append_bool</span>(<span class="ident">delegator</span>.<span class="ident">is_odd</span>);
-                    <span class="ident">roi</span>.<span class="ident">append_bool</span>(<span class="ident">new_delegate</span>.<span class="ident">is_odd</span>);
-                    <span class="ident">roi</span>.<span class="ident">append_u64</span>(<span class="number">1</span>);
-                    <span class="ident">roi</span>.<span class="ident">append_u64</span>(<span class="number">0</span>);
-                    <span class="ident">roi</span>.<span class="ident">append_bool</span>(<span class="bool-val">false</span>); <span class="comment">// this is the token locked field. Not sure where this belongs yet</span>
+                    <span class="ident">roi</span>.<span class="ident">append_bool</span>(<span class="ident">delegator</span>.<span class="ident">is_odd</span>)
+                        .<span class="ident">append_bool</span>(<span class="ident">new_delegate</span>.<span class="ident">is_odd</span>)
+                        .<span class="ident">append_u64</span>(<span class="number">1</span>)
+                        .<span class="ident">append_u64</span>(<span class="number">0</span>)
+                        .<span class="ident">append_bool</span>(<span class="bool-val">false</span>) <span class="comment">// this is the token locked field. Not sure where this belongs yet</span>
                 }
             },
-        };
-        <span class="ident">roi</span>
+        }
     }
 
     <span class="kw">fn</span> <span class="ident">domain_string</span>(<span class="ident">network_id</span>: <span class="ident">NetworkId</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> {

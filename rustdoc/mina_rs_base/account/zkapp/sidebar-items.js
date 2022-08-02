@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":[["ZkApp","FIXME: Doc"],["ZkAppOptionHashableWrapper","Wrapper of [Option] that implements [Hashable]"],["ZkAppUri","FIXME: Doc"],["ZkAppUriOptionHashableWrapper","Wrapper of [Option] that implements [Hashable]"]]};

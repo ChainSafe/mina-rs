@@ -151,8 +151,6 @@
 <span id="151">151</span>
 <span id="152">152</span>
 <span id="153">153</span>
-<span id="154">154</span>
-<span id="155">155</span>
 </pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems</span>
 <span class="comment">// SPDX-License-Identifier: Apache-2.0</span>
 
@@ -197,21 +195,21 @@
     <span class="kw">type</span> <span class="ident">D</span> <span class="op">=</span> ();
 
     <span class="kw">fn</span> <span class="ident">to_roinput</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">ROInput</span> {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">roi</span> <span class="op">=</span> <span class="ident">ROInput::new</span>();
         <span class="kw">if</span> <span class="self">self</span>.<span class="number">0</span>.<span class="ident">len</span>() <span class="op">&lt;</span><span class="op">=</span> <span class="number">31</span> {
-            <span class="ident">roi</span>.<span class="ident">append_bytes</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0</span>);
+            <span class="ident">ROInput::new</span>().<span class="ident">append_bytes</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0</span>)
         } <span class="kw">else</span> {
-            <span class="ident">roi</span>.<span class="ident">append_bytes</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0</span>[..<span class="number">31</span>]);
+            <span class="kw">let</span> <span class="ident">roi</span> <span class="op">=</span> <span class="ident">ROInput::new</span>().<span class="ident">append_bytes</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0</span>[..<span class="number">31</span>]);
             <span class="kw">if</span> <span class="self">self</span>.<span class="number">0</span>.<span class="ident">len</span>() <span class="op">&gt;</span> <span class="number">31</span> {
                 <span class="kw">let</span> <span class="ident">last</span> <span class="op">=</span> <span class="self">self</span>.<span class="number">0</span>[<span class="number">31</span>];
                 <span class="ident">roi</span>.<span class="ident">append_bool</span>(<span class="ident">last</span> <span class="op">&amp;</span> <span class="number">0b1</span> <span class="op">&gt;</span> <span class="number">0</span>)
                     .<span class="ident">append_bool</span>(<span class="ident">last</span> <span class="op">&amp;</span> <span class="number">0b10</span> <span class="op">&gt;</span> <span class="number">0</span>)
                     .<span class="ident">append_bool</span>(<span class="ident">last</span> <span class="op">&amp;</span> <span class="number">0b100</span> <span class="op">&gt;</span> <span class="number">0</span>)
                     .<span class="ident">append_bool</span>(<span class="ident">last</span> <span class="op">&amp;</span> <span class="number">0b1000</span> <span class="op">&gt;</span> <span class="number">0</span>)
-                    .<span class="ident">append_bool</span>(<span class="ident">last</span> <span class="op">&amp;</span> <span class="number">0b10000</span> <span class="op">&gt;</span> <span class="number">0</span>);
+                    .<span class="ident">append_bool</span>(<span class="ident">last</span> <span class="op">&amp;</span> <span class="number">0b10000</span> <span class="op">&gt;</span> <span class="number">0</span>)
+            } <span class="kw">else</span> {
+                <span class="ident">roi</span>
             }
         }
-        <span class="ident">roi</span>
     }
 
     <span class="kw">fn</span> <span class="ident">domain_string</span>(<span class="kw">_</span>: <span class="ident"><span class="self">Self</span>::D</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> {
@@ -272,29 +270,27 @@
     <span class="kw">type</span> <span class="ident">D</span> <span class="op">=</span> ();
 
     <span class="kw">fn</span> <span class="ident">to_roinput</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">ROInput</span> {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">roi</span> <span class="op">=</span> <span class="ident">ROInput::new</span>();
-        <span class="ident">roi</span>.<span class="ident">append_hashable</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">blockchain_length</span>);
-        <span class="ident">roi</span>.<span class="ident">append_hashable</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">epoch_count</span>);
-        <span class="ident">roi</span>.<span class="ident">append_hashable</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">min_window_density</span>);
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">roi</span> <span class="op">=</span> <span class="ident">ROInput::new</span>()
+            .<span class="ident">append_hashable</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">blockchain_length</span>)
+            .<span class="ident">append_hashable</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">epoch_count</span>)
+            .<span class="ident">append_hashable</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">min_window_density</span>);
         <span class="kw">for</span> <span class="ident">v</span> <span class="kw">in</span> <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">sub_window_densities</span> {
-            <span class="ident">roi</span>.<span class="ident">append_hashable</span>(<span class="ident">v</span>);
+            <span class="ident">roi</span> <span class="op">=</span> <span class="ident">roi</span>.<span class="ident">append_hashable</span>(<span class="ident">v</span>);
         }
-        <span class="ident">roi</span>.<span class="ident">append_hashable</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">last_vrf_output</span>);
-        <span class="ident">roi</span>.<span class="ident">append_hashable</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">total_currency</span>);
-        <span class="ident">roi</span>.<span class="ident">append_hashable</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">curr_global_slot</span>);
-        <span class="ident">roi</span>.<span class="ident">append_hashable</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">global_slot_since_genesis</span>);
-        <span class="ident">roi</span>.<span class="ident">append_bool</span>(<span class="self">self</span>.<span class="ident">has_ancestor_in_same_checkpoint_window</span>);
-        <span class="ident">roi</span>.<span class="ident">append_bool</span>(<span class="self">self</span>.<span class="ident">supercharge_coinbase</span>);
-        <span class="ident">roi</span>.<span class="ident">append_hashable</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">staking_epoch_data</span>);
-        <span class="ident">roi</span>.<span class="ident">append_hashable</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">next_epoch_data</span>);
-        <span class="ident">roi</span>.<span class="ident">append_field</span>(<span class="self">self</span>.<span class="ident">block_stake_winner</span>.<span class="ident">x</span>);
-        <span class="ident">roi</span>.<span class="ident">append_bool</span>(<span class="self">self</span>.<span class="ident">block_stake_winner</span>.<span class="ident">is_odd</span>);
-        <span class="ident">roi</span>.<span class="ident">append_field</span>(<span class="self">self</span>.<span class="ident">block_creator</span>.<span class="ident">x</span>);
-        <span class="ident">roi</span>.<span class="ident">append_bool</span>(<span class="self">self</span>.<span class="ident">block_creator</span>.<span class="ident">is_odd</span>);
-        <span class="ident">roi</span>.<span class="ident">append_field</span>(<span class="self">self</span>.<span class="ident">coinbase_receiver</span>.<span class="ident">x</span>);
-        <span class="ident">roi</span>.<span class="ident">append_bool</span>(<span class="self">self</span>.<span class="ident">coinbase_receiver</span>.<span class="ident">is_odd</span>);
-
-        <span class="ident">roi</span>
+        <span class="ident">roi</span>.<span class="ident">append_hashable</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">last_vrf_output</span>)
+            .<span class="ident">append_hashable</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">total_currency</span>)
+            .<span class="ident">append_hashable</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">curr_global_slot</span>)
+            .<span class="ident">append_hashable</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">global_slot_since_genesis</span>)
+            .<span class="ident">append_bool</span>(<span class="self">self</span>.<span class="ident">has_ancestor_in_same_checkpoint_window</span>)
+            .<span class="ident">append_bool</span>(<span class="self">self</span>.<span class="ident">supercharge_coinbase</span>)
+            .<span class="ident">append_hashable</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">staking_epoch_data</span>)
+            .<span class="ident">append_hashable</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">next_epoch_data</span>)
+            .<span class="ident">append_field</span>(<span class="self">self</span>.<span class="ident">block_stake_winner</span>.<span class="ident">x</span>)
+            .<span class="ident">append_bool</span>(<span class="self">self</span>.<span class="ident">block_stake_winner</span>.<span class="ident">is_odd</span>)
+            .<span class="ident">append_field</span>(<span class="self">self</span>.<span class="ident">block_creator</span>.<span class="ident">x</span>)
+            .<span class="ident">append_bool</span>(<span class="self">self</span>.<span class="ident">block_creator</span>.<span class="ident">is_odd</span>)
+            .<span class="ident">append_field</span>(<span class="self">self</span>.<span class="ident">coinbase_receiver</span>.<span class="ident">x</span>)
+            .<span class="ident">append_bool</span>(<span class="self">self</span>.<span class="ident">coinbase_receiver</span>.<span class="ident">is_odd</span>)
     }
 
     <span class="kw">fn</span> <span class="ident">domain_string</span>(<span class="kw">_</span>: <span class="ident"><span class="self">Self</span>::D</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> {

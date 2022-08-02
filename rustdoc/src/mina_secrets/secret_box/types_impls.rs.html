@@ -136,8 +136,8 @@
 <span class="kw">use</span> <span class="kw">super</span>::{<span class="ident">constants</span>::<span class="kw-2">*</span>, <span class="ident">utils</span>::<span class="kw-2">*</span>, <span class="kw-2">*</span>};
 <span class="kw">use</span> <span class="ident">argon2</span>::{<span class="self">self</span>, <span class="ident">password_hash::SaltString</span>, <span class="ident">Argon2</span>, <span class="ident">ParamsBuilder</span>, <span class="ident">PasswordHasher</span>};
 <span class="kw">use</span> <span class="ident">xsalsa20poly1305</span>::{
-    <span class="ident">aead</span>::{<span class="ident">generic_array::GenericArray</span>, <span class="ident">Aead</span>, <span class="ident">NewAead</span>},
-    <span class="ident">XSalsa20Poly1305</span>,
+    <span class="ident">aead</span>::{<span class="ident">generic_array::GenericArray</span>, <span class="ident">Aead</span>},
+    <span class="ident">KeyInit</span>, <span class="ident">XSalsa20Poly1305</span>,
 };
 
 <span class="kw">impl</span> <span class="ident">TryFrom</span><span class="op">&lt;</span><span class="ident">SecretBoxJson</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">SecretBox</span> {

@@ -293,21 +293,21 @@
     <span class="doccomment">/// TODO: This should contain a Snapp account data once we have something to test against</span>
     <span class="kw">pub</span> <span class="ident">zkapp</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span>()<span class="op">&gt;</span>,
     <span class="doccomment">/// TODO: This should contain a Snapp account data once we have something to test against</span>
-    <span class="kw">pub</span> <span class="ident">zkuri</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span>()<span class="op">&gt;</span>,
+    <span class="kw">pub</span> <span class="ident">zkapp_uri</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span>()<span class="op">&gt;</span>,
 }
 
-<span class="doccomment">/// Need to learn exactly what this is..</span>
+<span class="doccomment">/// FIXME: Need to learn exactly what this is..</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">PartialEq</span>)]</span>
 <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">TokenPermissions</span> {
-    <span class="doccomment">/// Account owns a token</span>
-    <span class="ident">TokenOwned</span> {
-        <span class="doccomment">/// ?</span>
-        <span class="ident">disable_new_accounts</span>: <span class="ident">bool</span>,
-    },
     <span class="doccomment">/// Account does not own a token</span>
     <span class="ident">NotOwned</span> {
         <span class="doccomment">/// ?</span>
         <span class="ident">account_disabled</span>: <span class="ident">bool</span>,
+    },
+    <span class="doccomment">/// Account owns a token</span>
+    <span class="ident">TokenOwned</span> {
+        <span class="doccomment">/// ?</span>
+        <span class="ident">disable_new_accounts</span>: <span class="ident">bool</span>,
     },
 }
 
@@ -413,7 +413,7 @@
     <span class="kw">pub</span> <span class="ident">cliff_time</span>: <span class="ident">BlockTimeV1</span>,
     <span class="doccomment">/// Amount extra available when fully fested</span>
     <span class="kw">pub</span> <span class="ident">cliff_amount</span>: <span class="ident">AmountV1</span>,
-    <span class="doccomment">/// Ammount released in each vesting period</span>
+    <span class="doccomment">/// Amount released in each vesting period</span>
     <span class="kw">pub</span> <span class="ident">vesting_increment</span>: <span class="ident">AmountV1</span>,
     <span class="doccomment">/// Period in whcih allocation is released in chunks</span>
     <span class="kw">pub</span> <span class="ident">vesting_period</span>: <span class="ident">BlockTimeV1</span>,
@@ -430,7 +430,7 @@
     <span class="kw">pub</span> <span class="ident">cliff_amount</span>: <span class="ident">u64</span>,
     <span class="doccomment">/// Period in whcih allocation is released in chunks</span>
     <span class="kw">pub</span> <span class="ident">vesting_period</span>: <span class="ident">u64</span>,
-    <span class="doccomment">/// Ammount released in each vesting period</span>
+    <span class="doccomment">/// Amount released in each vesting period</span>
     <span class="kw">pub</span> <span class="ident">vesting_increment</span>: <span class="ident">u64</span>,
 }
 

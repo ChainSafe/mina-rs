@@ -18,6 +18,13 @@
 <span id="18">18</span>
 <span id="19">19</span>
 <span id="20">20</span>
+<span id="21">21</span>
+<span id="22">22</span>
+<span id="23">23</span>
+<span id="24">24</span>
+<span id="25">25</span>
+<span id="26">26</span>
+<span id="27">27</span>
 </pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems</span>
 <span class="comment">// SPDX-License-Identifier: Apache-2.0</span>
 
@@ -38,5 +45,12 @@
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">mina_hasher</span>;
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">mina_signer</span>;
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">o1_utils</span>;
+
+<span class="doccomment">/// Temporary implementation for chunked random oracle input</span>
+<span class="kw">mod</span> <span class="ident">roinput</span>;
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">roinput</span>::<span class="kw-2">*</span>;
+
+<span class="doccomment">/// Reexport [bitvec]</span>
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">bitvec</span>;
 </code></pre></div>
 </section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="proof_systems" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (fe3342816 2022-08-01)" ></div></body></html>

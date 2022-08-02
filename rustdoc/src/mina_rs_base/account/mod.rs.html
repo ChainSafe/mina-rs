@@ -135,6 +135,25 @@
 <span id="135">135</span>
 <span id="136">136</span>
 <span id="137">137</span>
+<span id="138">138</span>
+<span id="139">139</span>
+<span id="140">140</span>
+<span id="141">141</span>
+<span id="142">142</span>
+<span id="143">143</span>
+<span id="144">144</span>
+<span id="145">145</span>
+<span id="146">146</span>
+<span id="147">147</span>
+<span id="148">148</span>
+<span id="149">149</span>
+<span id="150">150</span>
+<span id="151">151</span>
+<span id="152">152</span>
+<span id="153">153</span>
+<span id="154">154</span>
+<span id="155">155</span>
+<span id="156">156</span>
 </pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems</span>
 <span class="comment">// SPDX-License-Identifier: Apache-2.0</span>
 
@@ -144,13 +163,18 @@
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">permissions</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">timing</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">token_permissions</span>;
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">token_symbol</span>;
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">zkapp</span>;
 
 <span class="kw">use</span> <span class="kw">crate</span>::{<span class="ident">types</span>::<span class="kw-2">*</span>, <span class="kw-2">*</span>};
 
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="self">self</span>::zkapp</span>::{<span class="ident">ZkAppOptionHashableWrapper</span>, <span class="ident">ZkAppUriOptionHashableWrapper</span>};
 <span class="kw">use</span> <span class="ident">mina_serialization_types_macros::AutoFrom</span>;
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">permissions</span>::{<span class="ident">AuthRequired</span>, <span class="ident">Permissions</span>, <span class="ident">PermissionsLegacy</span>};
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">timing::Timing</span>;
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">token_permissions::TokenPermissions</span>;
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">token_symbol::TokenSymbol</span>;
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">zkapp</span>::{<span class="ident">ZkApp</span>, <span class="ident">ZkAppUri</span>};
 
 <span class="kw">use</span> <span class="ident">mina_crypto::hash</span>::{<span class="ident">ChainHash</span>, <span class="ident">StateHash</span>};
 <span class="kw">use</span> <span class="ident">mina_hasher::ROInput</span>;
@@ -200,21 +224,18 @@
     <span class="comment">// Uncomment these fields once they have implemented Hashable trait</span>
     <span class="comment">// and add unit tests when it&#39;s complete</span>
     <span class="kw">fn</span> <span class="ident">to_roinput</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">ROInput</span> {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">roi</span> <span class="op">=</span> <span class="ident">ROInput::new</span>();
-        <span class="ident">roi</span>
+        <span class="ident">ROInput::new</span>()
             <span class="comment">// .append_hashable(self.public_key)</span>
             .<span class="ident">append_hashable</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">token_id</span>)
             <span class="comment">// .append_hashable(self.token_permissions)</span>
             .<span class="ident">append_hashable</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">balance</span>)
-            <span class="comment">// .append_hashable(self.nonce)</span>
-            <span class="comment">// .append_hashable(self.receipt_chain_hash)</span>
-            <span class="comment">// .append_hashable(self.delegate)</span>
-            <span class="comment">// .append_hashable(self.voting_for)</span>
-            <span class="comment">// .append_hashable(self.timing)</span>
-            <span class="comment">// .append_hashable(self.permissions)</span>
-            <span class="comment">// .append_hashable(self.snapp)</span>
-            ;
-        <span class="ident">roi</span>
+        <span class="comment">// .append_hashable(self.nonce)</span>
+        <span class="comment">// .append_hashable(self.receipt_chain_hash)</span>
+        <span class="comment">// .append_hashable(self.delegate)</span>
+        <span class="comment">// .append_hashable(self.voting_for)</span>
+        <span class="comment">// .append_hashable(self.timing)</span>
+        <span class="comment">// .append_hashable(self.permissions)</span>
+        <span class="comment">// .append_hashable(self.snapp)</span>
     }
 
     <span class="kw">fn</span> <span class="ident">domain_string</span>(<span class="kw">_</span>: <span class="ident"><span class="self">Self</span>::D</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> {
@@ -230,12 +251,12 @@
     <span class="kw">pub</span> <span class="ident">public_key</span>: <span class="ident">CompressedPubKey</span>,
     <span class="doccomment">/// Account token ID</span>
     <span class="kw">pub</span> <span class="ident">token_id</span>: <span class="ident">TokenId</span>,
+    <span class="doccomment">/// Balance of token held by account</span>
+    <span class="kw">pub</span> <span class="ident">balance</span>: <span class="ident">Amount</span>,
     <span class="doccomment">/// Permission associated with the given token</span>
     <span class="kw">pub</span> <span class="ident">token_permissions</span>: <span class="ident">TokenPermissions</span>,
     <span class="doccomment">/// Token Symbol</span>
-    <span class="kw">pub</span> <span class="ident">token_symbol</span>: [<span class="ident">u8</span>; <span class="number">32</span>],
-    <span class="doccomment">/// Balance of token held by account</span>
-    <span class="kw">pub</span> <span class="ident">balance</span>: <span class="ident">Amount</span>,
+    <span class="kw">pub</span> <span class="ident">token_symbol</span>: <span class="ident">TokenSymbol</span>,
     <span class="doccomment">/// Nonce (incremented with each tx to prevent replay)</span>
     <span class="kw">pub</span> <span class="ident">nonce</span>: <span class="ident">AccountNonce</span>,
     <span class="doccomment">/// ?</span>
@@ -250,22 +271,39 @@
     <span class="doccomment">/// Level of permission required to do different account actions</span>
     <span class="kw">pub</span> <span class="ident">permissions</span>: <span class="ident">Permissions</span>,
     <span class="doccomment">/// TODO: This should contain a Snapp account data once we have something to test against</span>
-    <span class="kw">pub</span> <span class="ident">zkapp</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span>()<span class="op">&gt;</span>,
+    <span class="kw">pub</span> <span class="ident">zkapp</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">ZkApp</span><span class="op">&gt;</span>,
     <span class="doccomment">/// TODO: This should contain a Snapp account data once we have something to test against</span>
-    <span class="kw">pub</span> <span class="ident">zkuri</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span>()<span class="op">&gt;</span>,
+    <span class="kw">pub</span> <span class="ident">zkapp_uri</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">ZkAppUri</span><span class="op">&gt;</span>,
 }
 
 <span class="kw">impl</span> <span class="ident">mina_hasher::Hashable</span> <span class="kw">for</span> <span class="ident">Account</span> {
     <span class="kw">type</span> <span class="ident">D</span> <span class="op">=</span> ();
 
-    <span class="comment">// Uncomment these fields once they have implemented Hashable trait</span>
-    <span class="comment">// and add unit tests when it&#39;s complete</span>
     <span class="kw">fn</span> <span class="ident">to_roinput</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">ROInput</span> {
-        <span class="ident">ROInput::new</span>()
+        <span class="self">self</span>.<span class="ident">roinput</span>()
     }
 
     <span class="kw">fn</span> <span class="ident">domain_string</span>(<span class="kw">_</span>: <span class="ident"><span class="self">Self</span>::D</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> {
         <span class="prelude-val">Some</span>(<span class="string">&quot;CodaAccount&quot;</span>.<span class="ident">into</span>())
+    }
+}
+
+<span class="kw">impl</span> <span class="ident">ToChunkedROInput</span> <span class="kw">for</span> <span class="ident">Account</span> {
+    <span class="kw">fn</span> <span class="ident">to_chunked_roinput</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">ChunkedROInput</span> {
+        <span class="ident">ChunkedROInput::new</span>()
+            .<span class="ident">append_chunked</span>(<span class="kw-2">&amp;</span><span class="ident">ZkAppUriOptionHashableWrapper</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">zkapp_uri</span>))
+            .<span class="ident">append_chunked</span>(<span class="kw-2">&amp;</span><span class="ident">ZkAppOptionHashableWrapper</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">zkapp</span>))
+            .<span class="ident">append_chunked</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">permissions</span>)
+            .<span class="ident">append_chunked</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">timing</span>)
+            .<span class="ident">append_chunked</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">voting_for</span>)
+            .<span class="ident">append_chunked</span>(<span class="kw-2">&amp;</span><span class="ident">CompressedPubKeyOptionHashableWrapper</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">delegate</span>))
+            .<span class="ident">append_chunked</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">receipt_chain_hash</span>)
+            .<span class="ident">append_chunked</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">nonce</span>)
+            .<span class="ident">append_chunked</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">balance</span>)
+            .<span class="ident">append_chunked</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">token_symbol</span>)
+            .<span class="ident">append_chunked</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">token_permissions</span>)
+            .<span class="ident">append_chunked</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">token_id</span>)
+            .<span class="ident">append_chunked</span>(<span class="kw-2">&amp;</span><span class="ident">CompressedPubKeyHashableWrapper</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">public_key</span>))
     }
 }
 
