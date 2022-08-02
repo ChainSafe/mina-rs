@@ -110,7 +110,6 @@ impl ChunkedROInput {
         if acc_bits > 0 {
             fields.push(sum);
         }
-
         fields
     }
 

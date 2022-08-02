@@ -23,7 +23,7 @@ pub struct TimedData {
     pub cliff_amount: Amount,
     /// Period in whcih allocation is released in chunks
     pub vesting_period: BlockTime,
-    /// Ammount released in each vesting period
+    /// Amount released in each vesting period
     pub vesting_increment: Amount,
 }
 

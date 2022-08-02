@@ -86,7 +86,7 @@ impl<'a> ToChunkedROInput for ZkAppOptionHashableWrapper<'a> {
     fn to_chunked_roinput(&self) -> ChunkedROInput {
         ChunkedROInput::new().append_field({
             let mut hasher = mina_hasher::create_kimchi(());
-            hasher.hash(&ZkAppOptionHashableWrapper(self.0))
+            hasher.hash(self)
         })
     }
 }

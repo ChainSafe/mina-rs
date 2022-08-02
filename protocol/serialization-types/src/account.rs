@@ -192,7 +192,7 @@ pub struct TimedData {
     pub cliff_time: BlockTimeV1,
     /// Amount extra available when fully fested
     pub cliff_amount: AmountV1,
-    /// Ammount released in each vesting period
+    /// Amount released in each vesting period
     pub vesting_increment: AmountV1,
     /// Period in whcih allocation is released in chunks
     pub vesting_period: BlockTimeV1,
@@ -209,7 +209,7 @@ pub struct TimedDataV0 {
     pub cliff_amount: u64,
     /// Period in whcih allocation is released in chunks
     pub vesting_period: u64,
-    /// Ammount released in each vesting period
+    /// Amount released in each vesting period
     pub vesting_increment: u64,
 }
 
