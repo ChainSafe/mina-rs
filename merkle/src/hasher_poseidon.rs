@@ -7,14 +7,14 @@ use proof_systems::mina_hasher::{create_kimchi, create_legacy, Hasher};
 use std::marker::PhantomData;
 
 /// Hasher for mina binary merkle tree that uses poseidon hash
-pub struct MinaPoseidonMerkleHasher<Item>
+pub struct MinaPoseidonMerkleHasherLegacy<Item>
 where
     Item: mina_hasher::Hashable,
 {
     _pd: PhantomData<Item>,
 }
 
-impl<Item> MerkleHasher for MinaPoseidonMerkleHasher<Item>
+impl<Item> MerkleHasher for MinaPoseidonMerkleHasherLegacy<Item>
 where
     Item: mina_hasher::Hashable,
     <Item as mina_hasher::Hashable>::D: Default,
@@ -28,14 +28,14 @@ where
 }
 
 /// Hasher for mina binary merkle tree that uses kimchi poseidon hash
-pub struct MinaPoseidonKimchiMerkleHasher<Item>
+pub struct MinaPoseidonMerkleHasher<Item>
 where
     Item: mina_hasher::Hashable,
 {
     _pd: PhantomData<Item>,
 }
 
-impl<Item> MerkleHasher for MinaPoseidonKimchiMerkleHasher<Item>
+impl<Item> MerkleHasher for MinaPoseidonMerkleHasher<Item>
 where
     Item: mina_hasher::Hashable,
     <Item as mina_hasher::Hashable>::D: Default,

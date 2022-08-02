@@ -10,9 +10,9 @@ use proof_systems::mina_hasher::create_kimchi;
 
 /// Merger for mina binary merkle tree that uses poseidon hash
 /// with mina specific domain string calculated from node height
-pub struct MinaPoseidonMerkleMerger;
+pub struct MinaPoseidonMerkleMergerLegacy;
 
-impl MerkleMerger for MinaPoseidonMerkleMerger {
+impl MerkleMerger for MinaPoseidonMerkleMergerLegacy {
     type Hash = Fp;
     fn merge(
         hashes: [Option<Self::Hash>; 2],
@@ -24,9 +24,9 @@ impl MerkleMerger for MinaPoseidonMerkleMerger {
 
 /// Merger for mina binary merkle tree that uses poseidon hash
 /// with mina specific domain string calculated from node height
-pub struct MinaPoseidonKimchiMerkleMerger;
+pub struct MinaPoseidonMerkleMerger;
 
-impl MerkleMerger for MinaPoseidonKimchiMerkleMerger {
+impl MerkleMerger for MinaPoseidonMerkleMerger {
     type Hash = Fp;
     fn merge(
         hashes: [Option<Self::Hash>; 2],

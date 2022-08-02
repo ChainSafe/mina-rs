@@ -44,8 +44,16 @@ mod tests {
         <TestHasher as MerkleHasher>::Item,
         <TestHasher as MerkleHasher>::Hash,
         TestHasher,
-        MinaPoseidonMerkleMerger,
+        MinaPoseidonMerkleMergerLegacy,
         VariableHeightMode,
+    >;
+
+    type TestFixedHeightMerkleTreeLegacy = MinaMerkleTree<
+        <TestHasher as MerkleHasher>::Item,
+        <TestHasher as MerkleHasher>::Hash,
+        TestHasher,
+        MinaPoseidonMerkleMergerLegacy,
+        FixedHeightMode,
     >;
 
     type TestFixedHeightMerkleTree = MinaMerkleTree<
@@ -53,14 +61,6 @@ mod tests {
         <TestHasher as MerkleHasher>::Hash,
         TestHasher,
         MinaPoseidonMerkleMerger,
-        FixedHeightMode,
-    >;
-
-    type TestFixedHeightKimchiMerkleTree = MinaMerkleTree<
-        <TestHasher as MerkleHasher>::Item,
-        <TestHasher as MerkleHasher>::Hash,
-        TestHasher,
-        MinaPoseidonKimchiMerkleMerger,
         FixedHeightMode,
     >;
 
@@ -104,7 +104,7 @@ mod tests {
         }
         let meta = MerkleTreeNodeMetadata::new(node_index, tree.height());
         let merged =
-            MinaPoseidonMerkleMerger::merge([Some(h1), Some(h2)], meta).unwrap_or_default();
+            MinaPoseidonMerkleMergerLegacy::merge([Some(h1), Some(h2)], meta).unwrap_or_default();
         assert_eq!(h3, merged);
     }
 
@@ -129,7 +129,8 @@ mod tests {
         .unwrap()
         .into();
         let meta = MerkleTreeNodeMetadata::new(0, 12);
-        let merged = MinaPoseidonMerkleMerger::merge([Some(h1), None], meta).unwrap_or_default();
+        let merged =
+            MinaPoseidonMerkleMergerLegacy::merge([Some(h1), None], meta).unwrap_or_default();
         assert_eq!(h2, merged);
     }
 
@@ -137,7 +138,7 @@ mod tests {
     #[test]
     fn mina_merkle_tree_genesis_ledger_parity_test_legacy() {
         let fixed_height = 20;
-        let mut merkle_ledger = TestFixedHeightMerkleTree::new(fixed_height);
+        let mut merkle_ledger = TestFixedHeightMerkleTreeLegacy::new(fixed_height);
 
         // TODO: Use API from DbBackedGenesisLedger to iterate over hash nodes
         let db = DB::open_for_read_only(&Options::default(), DB_PATH_LEGACY, true).unwrap();
@@ -216,7 +217,7 @@ mod tests {
                 // Index is 0 because this is the root node the subtree
                 let meta = MerkleTreeNodeMetadata::new(0, height as u32);
                 let merged =
-                    MinaPoseidonMerkleMerger::merge([left, right], meta).unwrap_or_default();
+                    MinaPoseidonMerkleMergerLegacy::merge([left, right], meta).unwrap_or_default();
                 assert_eq!(hash, &merged, "fail at height {height}, i {i}");
                 assert_hit = true;
             }
@@ -228,7 +229,7 @@ mod tests {
     #[test]
     fn mina_merkle_tree_genesis_ledger_parity_test_berkeley() {
         let fixed_height = 20;
-        let mut merkle_ledger = TestFixedHeightKimchiMerkleTree::new(fixed_height);
+        let mut merkle_ledger = TestFixedHeightMerkleTree::new(fixed_height);
 
         // TODO: Use API from DbBackedGenesisLedger to iterate over hash nodes
         let db = DB::open_for_read_only(&Options::default(), DB_PATH_BERKELEY, true).unwrap();
@@ -307,7 +308,7 @@ mod tests {
                 // Index is 0 because this is the root node the subtree
                 let meta = MerkleTreeNodeMetadata::new(0, height as u32);
                 let merged =
-                    MinaPoseidonKimchiMerkleMerger::merge([left, right], meta).unwrap_or_default();
+                    MinaPoseidonMerkleMerger::merge([left, right], meta).unwrap_or_default();
                 assert_eq!(
                     hash, &merged,
                     "fail at height {height}, i {i}, left: {:?}, right: {:?}",

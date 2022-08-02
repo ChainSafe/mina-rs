@@ -11,6 +11,18 @@ use mina_merkle::*;
 use proof_systems::mina_hasher::Hashable;
 
 /// Type alias for mina merkle ledger hasher
+pub type MinaLedgerMerkleHasherLegacy<Account> = MinaPoseidonMerkleHasherLegacy<Account>;
+
+/// Type alias for mina merkle ledger
+pub type MinaLedgerMerkleTreeLegacy<Account> = MinaMerkleTree<
+    <MinaLedgerMerkleHasherLegacy<Account> as MerkleHasher>::Item,
+    <MinaLedgerMerkleHasherLegacy<Account> as MerkleHasher>::Hash,
+    MinaLedgerMerkleHasherLegacy<Account>,
+    MinaPoseidonMerkleMergerLegacy,
+    FixedHeightMode,
+>;
+
+/// Type alias for mina merkle ledger hasher
 pub type MinaLedgerMerkleHasher<Account> = MinaPoseidonMerkleHasher<Account>;
 
 /// Type alias for mina merkle ledger
@@ -19,18 +31,6 @@ pub type MinaLedgerMerkleTree<Account> = MinaMerkleTree<
     <MinaLedgerMerkleHasher<Account> as MerkleHasher>::Hash,
     MinaLedgerMerkleHasher<Account>,
     MinaPoseidonMerkleMerger,
-    FixedHeightMode,
->;
-
-/// Type alias for mina merkle ledger hasher
-pub type MinaLedgerKimchiMerkleHasher<Account> = MinaPoseidonKimchiMerkleHasher<Account>;
-
-/// Type alias for mina merkle ledger
-pub type MinaLedgerKimchiMerkleTree<Account> = MinaMerkleTree<
-    <MinaLedgerKimchiMerkleHasher<Account> as MerkleHasher>::Item,
-    <MinaLedgerKimchiMerkleHasher<Account> as MerkleHasher>::Hash,
-    MinaLedgerKimchiMerkleHasher<Account>,
-    MinaPoseidonKimchiMerkleMerger,
     FixedHeightMode,
 >;
 
@@ -59,21 +59,21 @@ where
     }
 
     /// Build legacy mina merkle ledger tree with a fixed height that uses legacy hasher
-    fn to_mina_merkle_ledger_legacy(&'a self) -> MinaLedgerMerkleTree<Account> {
+    fn to_mina_merkle_ledger_legacy(&'a self) -> MinaLedgerMerkleTreeLegacy<Account> {
         // ledger_depth is defined at <https://github.com/MinaProtocol/mina/blob/develop/docs/specs/types_and_structures/serialized_key.md#constraint_constants>
         const MINA_LEDGER_HEIGHT: u32 = 20;
 
-        let mut tree = MinaLedgerMerkleTree::new(MINA_LEDGER_HEIGHT);
+        let mut tree = MinaLedgerMerkleTreeLegacy::new(MINA_LEDGER_HEIGHT);
         tree.add_batch(self.accounts().flatten());
         tree
     }
 
     /// Build mina merkle ledger tree with a fixed height that uses kimchi hasher
-    fn to_mina_merkle_ledger(&'a self) -> MinaLedgerKimchiMerkleTree<Account> {
+    fn to_mina_merkle_ledger(&'a self) -> MinaLedgerMerkleTree<Account> {
         // ledger_depth is defined at <https://github.com/MinaProtocol/mina/blob/develop/docs/specs/types_and_structures/serialized_key.md#constraint_constants>
         const MINA_LEDGER_HEIGHT: u32 = 20;
 
-        let mut tree = MinaLedgerKimchiMerkleTree::new(MINA_LEDGER_HEIGHT);
+        let mut tree = MinaLedgerMerkleTree::new(MINA_LEDGER_HEIGHT);
         tree.add_batch(self.accounts().flatten());
         tree
     }
