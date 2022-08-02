@@ -64,15 +64,6 @@ impl ChunkedROInput {
         self.append_packed(f, 1)
     }
 
-    /// Append bytes
-    // pub fn append_bytes(mut self, bytes: &[u8]) -> Self {
-    //     let f = {
-    //         let bits = bytes.as_bits::<Lsb0>().to_bitvec();
-    //         Self::bits_to_fp_unsafe(bits)
-    //     };
-    //     self.append_packed(f, size)
-    // }
-
     /// Append a 32-bit unsigned integer
     pub fn append_u32(self, x: u32) -> Self {
         let f = {
@@ -112,10 +103,8 @@ impl ChunkedROInput {
                 acc_bits += n_bits;
             } else {
                 fields.push(sum);
-                acc_bits = 0;
-                sum = Fp::zero();
-                // acc_bits = n_bits;
-                // sum = f;
+                acc_bits = n_bits;
+                sum = f;
             }
         }
         if acc_bits > 0 {

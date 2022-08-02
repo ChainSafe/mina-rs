@@ -90,16 +90,16 @@ pub struct Permissions {
 impl ToChunkedROInput for Permissions {
     fn to_chunked_roinput(&self) -> ChunkedROInput {
         ChunkedROInput::new()
-            .append_chunked(&self.set_voting_for)
-            .append_chunked(&self.increment_nonce)
-            .append_chunked(&self.set_token_symbol)
-            .append_chunked(&self.edit_sequence_state)
-            .append_chunked(&self.set_zkapp_uri)
-            .append_chunked(&self.set_verification_key)
-            .append_chunked(&self.set_permissions)
-            .append_chunked(&self.set_delegate)
-            .append_chunked(&self.receive)
-            .append_chunked(&self.send)
             .append_chunked(&self.edit_state)
+            .append_chunked(&self.send)
+            .append_chunked(&self.receive)
+            .append_chunked(&self.set_delegate)
+            .append_chunked(&self.set_permissions)
+            .append_chunked(&self.set_verification_key)
+            .append_chunked(&self.set_zkapp_uri)
+            .append_chunked(&self.edit_sequence_state)
+            .append_chunked(&self.set_token_symbol)
+            .append_chunked(&self.increment_nonce)
+            .append_chunked(&self.set_voting_for)
     }
 }

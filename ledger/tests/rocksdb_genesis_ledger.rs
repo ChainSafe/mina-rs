@@ -19,7 +19,7 @@ mod tests {
     use rocksdb::*;
 
     const DBPATH_LEGACY: &str =  "test-data/genesis_ledger_6a887ea130e53b06380a9ab27b327468d28d4ce47515a0cc59759d4a3912f0ef/";
-    const DBPATH: &str =  "test-data/genesis_ledger_266b7c62f51cf5ac895e98e681cc34bc39e5c29ee79ac069fb399c022fc5d1c4/";
+    const DBPATH: &str =  "test-data/genesis_ledger_4632a9b3c063ed3664a93932a52e560fcdf124b2259fe150d6b98d12485cd15d/";
 
     #[test]
     fn test_iterate_database() -> anyhow::Result<()> {
@@ -102,6 +102,7 @@ mod tests {
         let mut merkle_ledger = genesis_ledger.to_mina_merkle_ledger();
         assert!(expected_root_hash.is_some());
         assert_eq!(merkle_ledger.height(), expected_root_height as u32);
+
         // FIXME: Use genesis block from hard fork instead
         // let ledger_hash = LedgerHash::try_from(&expected_root_hash?)?;
         // let genesis_block =
@@ -115,7 +116,6 @@ mod tests {
         //         .genesis_ledger_hash
         // );
 
-        assert_eq!(merkle_ledger.root(), expected_root_hash);
         assert_eq!(accounts.len(), expected_account_hashes.len());
         for (i, account) in accounts.into_iter().enumerate() {
             let account = account?;
@@ -131,6 +131,7 @@ mod tests {
                 StateHash::from(&hash_expected)
             );
         }
+        assert_eq!(merkle_ledger.root(), expected_root_hash);
         Ok(())
     }
 
@@ -259,13 +260,24 @@ mod tests {
         );
         assert_eq!(
             hash2(&account.permissions),
-            "17687022753513245123643156797999811582870093245402815918931465038658213870633"
+            "16635426044810448678497814093228922638194894868380016207845695006196167659883"
         );
         assert_eq!(
             hash(&ZkAppUriOptionHashableWrapper(&account.zkapp_uri)),
             "20639848968581348850513072699760590695338607317404146322838943866773129280073"
         );
-        assert_eq!(hash(&account), fp_to_big(expected_hash).to_str_radix(10),);
+        println!("permissions: {:?}", account.permissions);
+        let roi = account.to_chunked_roinput();
+        for f in roi.fields.iter() {
+            println!("fields: {}", fp_to_big(*f).to_str_radix(10));
+        }
+        for (i, (f, l)) in roi.packed.iter().enumerate() {
+            println!("{i} packed: {} {l}", fp_to_big(*f).to_str_radix(10));
+        }
+        for f in roi.into_fields() {
+            println!("packed fields: {}", fp_to_big(f).to_str_radix(10));
+        }
+        assert_eq!(hash(&account), fp_to_big(expected_hash).to_str_radix(10));
         Ok(())
     }
 

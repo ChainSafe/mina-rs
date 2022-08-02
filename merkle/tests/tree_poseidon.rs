@@ -11,7 +11,7 @@ mod tests {
     use std::collections::HashMap;
 
     const DB_PATH_LEGACY: &str = "../ledger/test-data/genesis_ledger_6a887ea130e53b06380a9ab27b327468d28d4ce47515a0cc59759d4a3912f0ef/";
-    const DB_PATH_BERKELEY: &str = "../ledger/test-data/genesis_ledger_266b7c62f51cf5ac895e98e681cc34bc39e5c29ee79ac069fb399c022fc5d1c4/";
+    const DB_PATH_BERKELEY: &str = "../ledger/test-data/genesis_ledger_4632a9b3c063ed3664a93932a52e560fcdf124b2259fe150d6b98d12485cd15d/";
 
     #[derive(Debug, Clone)]
     struct TestLeafNode(Fp);
