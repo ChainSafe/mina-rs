@@ -38,7 +38,7 @@ pub struct GenesisInitConfig {
     pub(crate) coinbase_receiver: CompressedPubKey,
     pub(crate) genesis_state_hash: StateHash,
     pub(crate) previous_state_hash: StateHash,
-    pub(crate) blockchain_state: BlockchainState,
+    pub(crate) blockchain_state: BlockchainStateLegacy,
     pub(crate) protocol_state_proof: ProtocolStateProof,
     pub(crate) delta_transition_chain_proof: DeltaTransitionChainProof,
 }
@@ -91,7 +91,7 @@ impl GenesisInitConfig {
             data
         };
 
-        let blockchain_state = BlockchainState {
+        let blockchain_state = BlockchainStateLegacy {
             timestamp: BlockTime::from_unix_epoch(1615939200),
             snarked_next_available_token: TokenId(2),
             snarked_ledger_hash: LedgerHash::from_str(

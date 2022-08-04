@@ -118,12 +118,12 @@ impl ChunkedROInput {
     /// supported in proof-systems, use [anyhow::Result] for convinience
     pub fn bits_to_fp(mut bits: BitVec<u8>) -> anyhow::Result<Fp> {
         let size_in_bits = Fp::size_in_bits();
-        if bits.len() > size_in_bits {
-            anyhow::bail!("Input should not be greater than {size_in_bits} bits")
-        } else {
-            bits.resize(size_in_bits, false);
-            Ok(Fp::from_bytes(&bits.into_vec())?)
-        }
+        anyhow::ensure!(
+            bits.len() <= size_in_bits,
+            "Input should not be greater than {size_in_bits} bits",
+        );
+        bits.resize(size_in_bits, false);
+        Ok(Fp::from_bytes(&bits.into_vec())?)
     }
 
     /// Convert [BitVec] to [Fp], panics when any error occurs

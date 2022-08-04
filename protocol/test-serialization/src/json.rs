@@ -250,7 +250,7 @@ mod tests {
     #[wasm_bindgen_test]
     fn blockchain_state_json_serde_roundtrip() {
         json_serde_roundtrip!(
-            BlockchainState,
+            BlockchainStateLegacy,
             BlockchainStateJson,
             "protocol_state/body/blockchain_state"
         );

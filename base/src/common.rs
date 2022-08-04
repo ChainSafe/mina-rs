@@ -5,12 +5,9 @@
 //! Common data types.
 //!
 
-use ark_ff::Zero;
 use mina_serialization_types_macros::AutoFrom;
 use once_cell::sync::OnceCell;
-use proof_systems::{
-    mina_hasher::Fp, mina_signer::CompressedPubKey, ChunkedROInput, ToChunkedROInput,
-};
+use proof_systems::{mina_signer::CompressedPubKey, ChunkedROInput, ToChunkedROInput};
 
 /// Wrapper of Vec<u8>
 #[derive(Clone, Debug, PartialEq, AutoFrom)]
@@ -24,10 +21,7 @@ pub struct CompressedPubKeyHashableWrapper<'a>(pub &'a CompressedPubKey);
 impl<'a> Default for CompressedPubKeyHashableWrapper<'a> {
     fn default() -> Self {
         static INSTANCE: OnceCell<CompressedPubKey> = OnceCell::new();
-        Self(INSTANCE.get_or_init(|| CompressedPubKey {
-            x: Fp::zero(),
-            is_odd: false,
-        }))
+        Self(INSTANCE.get_or_init(CompressedPubKey::empty))
     }
 }
 

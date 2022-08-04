@@ -4,7 +4,7 @@
 //! Types related to the Mina protocol state
 
 use crate::{
-    blockchain_state::BlockchainState,
+    blockchain_state::BlockchainStateLegacy,
     consensus_state::ConsensusState,
     global_slot::GlobalSlot,
     numbers::{BlockTime, Length},
@@ -108,7 +108,7 @@ pub struct ProtocolStateBody {
     /// Genesis protocol state hash (used for hardforks)
     pub genesis_state_hash: StateHash,
     /// Ledger related state
-    pub blockchain_state: BlockchainState,
+    pub blockchain_state: BlockchainStateLegacy,
     /// Consensus related state
     pub consensus_state: ConsensusState,
     /// Consensus constants

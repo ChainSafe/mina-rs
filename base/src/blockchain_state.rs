@@ -13,7 +13,7 @@ use versioned::*;
 #[derive(Clone, Default, Debug, PartialEq, AutoFrom)]
 #[auto_from(mina_serialization_types::blockchain_state::BlockchainState)]
 /// Mina blockchain state struct
-pub struct BlockchainState {
+pub struct BlockchainStateLegacy {
     /// Hash of the proposed next state of the blockchain
     pub staged_ledger_hash: StagedLedgerHash,
     /// Hash of the most recently proven state of the blockchain
@@ -26,9 +26,13 @@ pub struct BlockchainState {
     pub timestamp: BlockTime,
 }
 
-impl_from_with_proxy!(BlockchainState, BlockchainStateV1, BlockchainStateJson);
+impl_from_with_proxy!(
+    BlockchainStateLegacy,
+    BlockchainStateV1,
+    BlockchainStateJson
+);
 
-impl Hashable for BlockchainState {
+impl Hashable for BlockchainStateLegacy {
     type D = ();
 
     fn to_roinput(&self) -> ROInput {
