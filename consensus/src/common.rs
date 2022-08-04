@@ -154,21 +154,21 @@ pub trait Consensus {
     fn select_secure_chain<'a>(
         &'a self,
         candidates: &'a [Self::Chain],
-    ) -> Result<&'a ProtocolStateChain, ConsensusError>;
+    ) -> Result<&'a Self::Chain, ConsensusError>;
 
     /// Selects the longer chain when there's a short range fork.
     fn select_longer_chain<'a>(
         &'a self,
-        candidate: &'a ProtocolStateChain,
-    ) -> Result<&'a ProtocolStateChain, ConsensusError>;
+        candidate: &'a Self::Chain,
+    ) -> Result<&'a Self::Chain, ConsensusError>;
 
     /// Checks whether the fork is short range wrt to candidate chain
-    fn is_short_range(&self, candidate: &ProtocolStateChain) -> Result<bool, ConsensusError>;
+    fn is_short_range(&self, candidate: &Self::Chain) -> Result<bool, ConsensusError>;
 
     /// Calculates the relate minimum window density wrt to candidate chain.
     fn relative_min_window_density(
         &self,
-        candidate: &ProtocolStateChain,
+        candidate: &Self::Chain,
     ) -> Result<u32, ConsensusError>;
 
     /// Constants used for consensus
@@ -180,7 +180,7 @@ impl Consensus for ProtocolStateChain {
     fn select_secure_chain<'a>(
         &'a self,
         candidates: &'a [Self::Chain],
-    ) -> Result<&'a ProtocolStateChain, ConsensusError> {
+    ) -> Result<&'a Self::Chain, ConsensusError> {
         let tip = candidates.iter().fold(Ok(self), |tip, candidate| {
             if self.is_short_range(candidate)? {
                 // short-range fork, select longer chain
@@ -221,8 +221,8 @@ impl Consensus for ProtocolStateChain {
 
     fn select_longer_chain<'a>(
         &'a self,
-        candidate: &'a ProtocolStateChain,
-    ) -> Result<&'a ProtocolStateChain, ConsensusError> {
+        candidate: &'a Self::Chain,
+    ) -> Result<&'a Self::Chain, ConsensusError> {
         let top_state = self
             .consensus_state()
             .ok_or(ConsensusError::ConsensusStateNotFound)?;
@@ -250,7 +250,7 @@ impl Consensus for ProtocolStateChain {
         Ok(self)
     }
 
-    fn is_short_range(&self, candidate: &ProtocolStateChain) -> Result<bool, ConsensusError> {
+    fn is_short_range(&self, candidate: &Self::Chain) -> Result<bool, ConsensusError> {
         let a = &self
             .consensus_state()
             .ok_or(ConsensusError::ConsensusStateNotFound)?;
@@ -291,7 +291,7 @@ impl Consensus for ProtocolStateChain {
     /// <https://github.com/MinaProtocol/mina/blob/02dfc3ff0160ba3c1bbc732baa07502fe4312b04/docs/specs/consensus/README.md#5412-relative-minimum-window-density>
     fn relative_min_window_density(
         &self,
-        chain_b: &ProtocolStateChain,
+        chain_b: &Self::Chain,
     ) -> Result<u32, ConsensusError> {
         let tip_state = self
             .consensus_state()
