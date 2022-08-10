@@ -54,6 +54,14 @@ impl ChunkedROInput {
         self
     }
 
+    /// Append bytes
+    pub fn append_bytes(mut self, bytes: &[u8]) -> Self {
+        for b in bytes.as_bits::<Lsb0>().to_bitvec() {
+            self = self.append_bool(b);
+        }
+        self
+    }
+
     /// Append a single bit
     pub fn append_bool(self, b: bool) -> Self {
         let f = {

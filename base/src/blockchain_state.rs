@@ -7,12 +7,15 @@ use crate::numbers::{BlockTime, TokenId};
 use mina_crypto::hash::*;
 use mina_serialization_types::{json::*, v1::*};
 use mina_serialization_types_macros::AutoFrom;
-use proof_systems::mina_hasher::{Hashable, ROInput};
+use proof_systems::{
+    mina_hasher::{Hashable, ROInput},
+    ChunkedROInput, ToChunkedROInput,
+};
 use versioned::*;
 
 #[derive(Clone, Default, Debug, PartialEq, AutoFrom)]
 #[auto_from(mina_serialization_types::blockchain_state::BlockchainState)]
-/// Mina blockchain state struct
+/// Mina blockchain state struct (legacy)
 pub struct BlockchainStateLegacy {
     /// Hash of the proposed next state of the blockchain
     pub staged_ledger_hash: StagedLedgerHash,
@@ -46,5 +49,27 @@ impl Hashable for BlockchainStateLegacy {
 
     fn domain_string(_: Self::D) -> Option<String> {
         None
+    }
+}
+
+#[derive(Clone, Default, Debug, PartialEq)]
+// #[auto_from(mina_serialization_types::blockchain_state::BlockchainState)]
+/// Mina blockchain state struct
+pub struct BlockchainState {
+    /// Hash of the proposed next state of the blockchain
+    pub staged_ledger_hash: StagedLedgerHash,
+    /// Hash of the genesis state
+    pub genesis_ledger_hash: LedgerHash,
+    // /// Registers
+    // pub registers: Registers,
+    /// Timestamps for blocks
+    pub timestamp: BlockTime,
+    // /// Body reference
+    // pub body_reference: BodyReference,
+}
+
+impl ToChunkedROInput for BlockchainState {
+    fn to_chunked_roinput(&self) -> ChunkedROInput {
+        ChunkedROInput::new().append_chunked(&self.staged_ledger_hash)
     }
 }

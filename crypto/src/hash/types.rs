@@ -232,6 +232,12 @@ impl_from_for_hash!(CoinBaseHash, Hash2V1);
 impl_from_for_generic_with_proxy!(CoinBaseHash, HashV1, CoinBaseHashV1Json);
 impl_strconv_via_json!(CoinBaseHash, CoinBaseHashV1Json);
 
+impl ToChunkedROInput for CoinBaseHash {
+    fn to_chunked_roinput(&self) -> ChunkedROInput {
+        self.0.to_chunked_roinput()
+    }
+}
+
 impl Hashable for CoinBaseHash {
     type D = ();
 
@@ -273,6 +279,14 @@ pub struct StagedLedgerHash {
     pub pending_coinbase_hash: CoinBaseHash,
 }
 
+impl ToChunkedROInput for StagedLedgerHash {
+    fn to_chunked_roinput(&self) -> ChunkedROInput {
+        ChunkedROInput::new()
+            .append_chunked(&self.non_snark)
+            .append_chunked(&self.pending_coinbase_hash)
+    }
+}
+
 impl Hashable for StagedLedgerHash {
     type D = ();
 
@@ -302,6 +316,12 @@ impl NonSnarkStagedLedgerHash {
         hasher.update(&self.aux_hash.0);
         hasher.update(&self.pending_coinbase_aux.0);
         hasher.finalize().to_vec()
+    }
+}
+
+impl ToChunkedROInput for NonSnarkStagedLedgerHash {
+    fn to_chunked_roinput(&self) -> ChunkedROInput {
+        ChunkedROInput::new().append_bytes(&self.digest())
     }
 }
 
