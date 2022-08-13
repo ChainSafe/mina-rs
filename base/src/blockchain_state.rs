@@ -13,7 +13,7 @@ use proof_systems::{
 };
 use versioned::*;
 
-#[derive(Clone, Default, Debug, PartialEq, AutoFrom)]
+#[derive(Clone, Default, Debug, Eq, PartialEq, AutoFrom)]
 #[auto_from(mina_serialization_types::blockchain_state::BlockchainState)]
 /// Mina blockchain state struct (legacy)
 pub struct BlockchainStateLegacy {
@@ -52,7 +52,7 @@ impl Hashable for BlockchainStateLegacy {
     }
 }
 
-#[derive(Clone, Default, Debug, PartialEq)]
+#[derive(Clone, Default, Debug, Eq, PartialEq)]
 // #[auto_from(mina_serialization_types::blockchain_state::BlockchainState)]
 /// Mina blockchain state struct
 pub struct BlockchainState {
@@ -61,7 +61,7 @@ pub struct BlockchainState {
     /// Hash of the genesis state
     pub genesis_ledger_hash: LedgerHash,
     // /// Registers
-    // pub registers: Registers,
+    // pub registers: BlockchainStateRegisters,
     /// Timestamps for blocks
     pub timestamp: BlockTime,
     // /// Body reference

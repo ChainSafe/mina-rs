@@ -3,6 +3,8 @@
 
 //! Module contains the implementation of chunked Random Oracle input
 
+use std::fmt::Display;
+
 use ark_ff::{fields::PrimeField, BigInteger, BigInteger256, Zero};
 use bitvec::prelude::*;
 use mina_hasher::{Fp, ROInput};
@@ -18,7 +20,7 @@ pub trait ToChunkedROInput {
 }
 
 /// Chunked Random Oracle input
-#[derive(Default, Debug, Clone, PartialEq)]
+#[derive(Default, Debug, Clone, Eq, PartialEq)]
 pub struct ChunkedROInput {
     pub fields: Vec<Fp>,
     pub packed: Vec<(Fp, u32)>,
@@ -147,5 +149,13 @@ impl From<ChunkedROInput> for ROInput {
             roi = roi.append_field(f);
         }
         roi
+    }
+}
+
+impl Display for ChunkedROInput {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        writeln!(f, "fields ({}):", self.fields.len())?;
+        writeln!(f, "packed: ({}):", self.packed.len())?;
+        Ok(())
     }
 }

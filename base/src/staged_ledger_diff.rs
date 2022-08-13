@@ -18,7 +18,7 @@ use proof_systems::mina_signer::{CompressedPubKey, Signer};
 use smart_default::SmartDefault;
 use versioned::*;
 
-#[derive(Clone, PartialEq, Debug, Default, AutoFrom)]
+#[derive(Clone, Eq, PartialEq, Debug, Default, AutoFrom)]
 #[auto_from(mina_serialization_types::staged_ledger_diff::StagedLedgerDiff)]
 /// Top level wrapper type for a StagedLedgerDiff
 pub struct StagedLedgerDiff {
@@ -42,7 +42,7 @@ where
     }
 }
 
-#[derive(Clone, PartialEq, Debug, Default, AutoFrom)]
+#[derive(Clone, Eq, PartialEq, Debug, Default, AutoFrom)]
 #[auto_from(mina_serialization_types::staged_ledger_diff::StagedLedgerDiffTuple)]
 pub struct StagedLedgerDiffTuple(
     pub(crate) StagedLedgerPreDiff,
@@ -59,7 +59,7 @@ impl StagedLedgerDiffTuple {
     }
 }
 
-#[derive(Clone, PartialEq, Debug, Default, AutoFrom)]
+#[derive(Clone, Eq, PartialEq, Debug, Default, AutoFrom)]
 #[auto_from(mina_serialization_types::staged_ledger_diff::StagedLedgerPreDiff)]
 pub struct StagedLedgerPreDiff {
     pub completed_works: Vec<TransactionSnarkWork>,
@@ -81,7 +81,7 @@ where
     }
 }
 
-#[derive(Clone, PartialEq, Debug, AutoFrom)]
+#[derive(Clone, Eq, PartialEq, Debug, AutoFrom)]
 #[auto_from(mina_serialization_types::staged_ledger_diff::UserCommandWithStatus)]
 pub struct UserCommandWithStatus {
     pub data: UserCommand,
@@ -94,7 +94,7 @@ impl_from_with_proxy!(
     UserCommandWithStatusJson
 );
 
-#[derive(Clone, PartialEq, Debug, AutoFrom)]
+#[derive(Clone, Eq, PartialEq, Debug, AutoFrom)]
 #[auto_from(mina_serialization_types::staged_ledger_diff::TransactionStatus)]
 pub enum TransactionStatus {
     Applied(TransactionStatusAuxiliaryData, TransactionStatusBalanceData),
@@ -110,7 +110,7 @@ impl_from_with_proxy!(
     TransactionStatusJson
 );
 
-#[derive(Clone, PartialEq, Debug, AutoFrom)]
+#[derive(Clone, Eq, PartialEq, Debug, AutoFrom)]
 #[auto_from(mina_serialization_types::staged_ledger_diff::TransactionStatusAuxiliaryData)]
 pub struct TransactionStatusAuxiliaryData {
     pub fee_payer_account_creation_fee_paid: Option<Amount>,
@@ -118,7 +118,7 @@ pub struct TransactionStatusAuxiliaryData {
     pub created_token: Option<TokenId>,
 }
 
-#[derive(Clone, PartialEq, Debug, AutoFrom)]
+#[derive(Clone, Eq, PartialEq, Debug, AutoFrom)]
 #[auto_from(mina_serialization_types::staged_ledger_diff::TransactionStatusBalanceData)]
 pub struct TransactionStatusBalanceData {
     pub fee_payer_balance: Option<Amount>,
@@ -126,7 +126,7 @@ pub struct TransactionStatusBalanceData {
     pub receiver_balance: Option<Amount>,
 }
 
-#[derive(Clone, PartialEq, Debug, AutoFrom)]
+#[derive(Clone, Eq, PartialEq, Debug, AutoFrom)]
 #[auto_from(mina_serialization_types::staged_ledger_diff::TransactionStatusFailedType)]
 pub enum TransactionStatusFailedType {
     Predicate,
@@ -152,7 +152,7 @@ impl_from_with_proxy!(
     TransactionStatusFailedTypeJson
 );
 
-#[derive(Clone, PartialEq, Debug, SmartDefault, AutoFrom)]
+#[derive(Clone, Eq, PartialEq, Debug, SmartDefault, AutoFrom)]
 #[auto_from(mina_serialization_types::staged_ledger_diff::CoinBase)]
 pub enum CoinBase {
     #[default]
@@ -167,14 +167,14 @@ impl_from_with_proxy!(
     CoinBaseJson
 );
 
-#[derive(Clone, PartialEq, Debug, AutoFrom)]
+#[derive(Clone, Eq, PartialEq, Debug, AutoFrom)]
 #[auto_from(mina_serialization_types::staged_ledger_diff::CoinBaseFeeTransfer)]
 pub struct CoinBaseFeeTransfer {
     pub receiver_pk: CompressedPubKey,
     pub fee: Amount,
 }
 
-#[derive(Clone, PartialEq, Debug, AutoFrom)]
+#[derive(Clone, Eq, PartialEq, Debug, AutoFrom)]
 #[auto_from(mina_serialization_types::staged_ledger_diff::InternalCommandBalanceData)]
 pub enum InternalCommandBalanceData {
     CoinBase(CoinBaseBalanceData),
@@ -187,7 +187,7 @@ impl_from_with_proxy!(
     InternalCommandBalanceDataJson
 );
 
-#[derive(Clone, PartialEq, Debug, AutoFrom)]
+#[derive(Clone, Eq, PartialEq, Debug, AutoFrom)]
 #[auto_from(mina_serialization_types::staged_ledger_diff::CoinBaseBalanceData)]
 pub struct CoinBaseBalanceData {
     pub coinbase_receiver_balance: Amount,
@@ -195,7 +195,7 @@ pub struct CoinBaseBalanceData {
     pub fee_transfer_receiver_balance: Option<Amount>,
 }
 
-#[derive(Clone, PartialEq, Debug, AutoFrom)]
+#[derive(Clone, Eq, PartialEq, Debug, AutoFrom)]
 #[auto_from(mina_serialization_types::staged_ledger_diff::FeeTransferBalanceData)]
 pub struct FeeTransferBalanceData {
     pub receiver1_balance: Amount,

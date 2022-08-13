@@ -19,7 +19,7 @@ const PAYMENT_TX_TAG: [bool; TAG_BITS] = [false, false, false];
 const DELEGATION_TX_TAG: [bool; TAG_BITS] = [false, false, true];
 
 /// Top level signed command type
-#[derive(Clone, PartialEq, Debug, AutoFrom)]
+#[derive(Clone, Eq, PartialEq, Debug, AutoFrom)]
 #[auto_from(mina_serialization_types::staged_ledger_diff::SignedCommand)]
 pub struct SignedCommand {
     /// The payload to sign
@@ -62,7 +62,7 @@ where
 }
 
 /// The part of a signed command that needs to be serialized and signed
-#[derive(Clone, PartialEq, Debug, AutoFrom)]
+#[derive(Clone, Eq, PartialEq, Debug, AutoFrom)]
 #[auto_from(mina_serialization_types::staged_ledger_diff::SignedCommandPayload)]
 pub struct SignedCommandPayload {
     /// Fields common to all command types
@@ -147,7 +147,7 @@ impl Hashable for SignedCommandPayload {
 }
 
 /// Common fields required by all signed commands
-#[derive(Clone, PartialEq, Debug, AutoFrom)]
+#[derive(Clone, Eq, PartialEq, Debug, AutoFrom)]
 #[auto_from(mina_serialization_types::staged_ledger_diff::SignedCommandPayloadCommon)]
 pub struct SignedCommandPayloadCommon {
     /// Amount paid in fees to include this command in a block
@@ -165,7 +165,7 @@ pub struct SignedCommandPayloadCommon {
 }
 
 /// Enum of variable fields in a signed command
-#[derive(Clone, PartialEq, Debug, AutoFrom)]
+#[derive(Clone, Eq, PartialEq, Debug, AutoFrom)]
 #[auto_from(mina_serialization_types::staged_ledger_diff::SignedCommandPayloadBody)]
 pub enum SignedCommandPayloadBody {
     /// Payment transfer fields
@@ -176,7 +176,7 @@ pub enum SignedCommandPayloadBody {
 }
 
 /// Enum of variable fields for stake delegation
-#[derive(Clone, PartialEq, Debug, AutoFrom)]
+#[derive(Clone, Eq, PartialEq, Debug, AutoFrom)]
 #[auto_from(mina_serialization_types::staged_ledger_diff::StakeDelegation)]
 pub enum StakeDelegation {
     /// Set Delegate

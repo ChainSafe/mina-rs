@@ -5,7 +5,7 @@
 
 use mina_serialization_types_macros::AutoFrom;
 
-#[derive(Clone, Debug, PartialEq, AutoFrom)]
+#[derive(Clone, Debug, Eq, PartialEq, AutoFrom)]
 #[auto_from(mina_serialization_types::protocol_version::ProtocolVersion)]
 /// Defines a version of the Mina protocol in semver format
 pub struct ProtocolVersion {

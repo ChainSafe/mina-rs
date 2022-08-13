@@ -5,14 +5,14 @@
 mod tests {
     use mina_serialization_types_macros::*;
 
-    #[derive(Debug, Clone, PartialEq, derive_more::From, derive_more::Into)]
+    #[derive(Debug, Clone, Eq, PartialEq, derive_more::From, derive_more::Into)]
     struct I64(pub i64);
 
-    #[derive(Debug, Clone, PartialEq, AutoFrom)]
+    #[derive(Debug, Clone, Eq, PartialEq, AutoFrom)]
     #[auto_from(Bar)]
     struct Foo(i64, pub i64, i64, Vec<i64>, Option<i64>, Box<i64>);
 
-    #[derive(Debug, Clone, PartialEq)]
+    #[derive(Debug, Clone, Eq, PartialEq)]
     struct Bar(pub I64, I64, I64, Vec<I64>, Option<I64>, Box<I64>);
 
     type BarV1 = ::versioned::Versioned<Bar, 1>;

@@ -29,7 +29,7 @@ pub trait MerkleProof {
 }
 
 /// Type that represents errors in calculating hashes for a merkle proof
-#[derive(thiserror::Error, Debug, PartialEq)]
+#[derive(thiserror::Error, Debug, Eq, PartialEq)]
 pub enum MerkleProofError {
     /// Index of a data node should be positive
     #[error("Index of a data node should be positive")]

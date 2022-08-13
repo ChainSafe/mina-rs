@@ -8,7 +8,7 @@
 use std::str::Utf8Error;
 
 /// Type that represents errors in mina consensus operations
-#[derive(thiserror::Error, Debug, PartialEq)]
+#[derive(thiserror::Error, Debug, Eq, PartialEq)]
 pub enum ConsensusError {
     /// header must have height 1 greater than top
     #[error("header must have height 1 greater than top")]

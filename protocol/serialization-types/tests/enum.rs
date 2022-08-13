@@ -17,9 +17,9 @@ mod tests {
 
     #[test]
     fn mina_list_tagged_enum() -> anyhow::Result<()> {
-        #[derive(Debug, Clone, PartialEq, serde::Serialize, serde::Deserialize)]
+        #[derive(Debug, Clone, Eq, PartialEq, serde::Serialize, serde::Deserialize)]
         struct Tuple(i32, i32);
-        #[derive(Debug, Clone, PartialEq, serde::Serialize, serde::Deserialize)]
+        #[derive(Debug, Clone, Eq, PartialEq, serde::Serialize, serde::Deserialize)]
         enum EnumA {
             V1,
             V2(i32),
@@ -30,7 +30,7 @@ mod tests {
             V7(Tuple),
         }
 
-        #[derive(Debug, Clone, PartialEq, AutoFrom)]
+        #[derive(Debug, Clone, Eq, PartialEq, AutoFrom)]
         #[auto_from(EnumA)]
         enum EnumAListTagged {
             V1,

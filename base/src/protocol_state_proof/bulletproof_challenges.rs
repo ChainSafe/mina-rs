@@ -4,7 +4,7 @@
 use crate::types::Hex64;
 use mina_serialization_types_macros::AutoFrom;
 
-#[derive(Clone, Default, PartialEq, Debug, AutoFrom)]
+#[derive(Clone, Default, Eq, PartialEq, Debug, AutoFrom)]
 #[auto_from(mina_serialization_types::bulletproof_challenges::BulletproofChallenge)]
 pub struct BulletproofChallenge {
     pub prechallenge: BulletproofPreChallenge,
@@ -18,11 +18,11 @@ impl BulletproofChallenge {
     }
 }
 
-#[derive(Clone, Default, PartialEq, Debug, AutoFrom)]
+#[derive(Clone, Default, Eq, PartialEq, Debug, AutoFrom)]
 #[auto_from(mina_serialization_types::bulletproof_challenges::BulletproofChallenges)]
 pub struct BulletproofChallenges(pub Vec<BulletproofChallengeTuple18>);
 
-#[derive(Clone, Default, PartialEq, Debug, AutoFrom)]
+#[derive(Clone, Default, Eq, PartialEq, Debug, AutoFrom)]
 #[auto_from(mina_serialization_types::bulletproof_challenges::ProofStateBulletproofChallenges)]
 pub struct ProofStateBulletproofChallenges(
     pub BulletproofChallengeTuple17,
@@ -30,7 +30,7 @@ pub struct ProofStateBulletproofChallenges(
     pub (),
 );
 
-#[derive(Clone, Default, PartialEq, Debug, AutoFrom)]
+#[derive(Clone, Default, Eq, PartialEq, Debug, AutoFrom)]
 #[auto_from(mina_serialization_types::bulletproof_challenges::BulletproofChallengeTuple17)]
 pub struct BulletproofChallengeTuple17(
     pub BulletproofChallenge,
@@ -78,7 +78,7 @@ impl BulletproofChallengeTuple17 {
     }
 }
 
-#[derive(Clone, Default, PartialEq, Debug, AutoFrom)]
+#[derive(Clone, Default, Eq, PartialEq, Debug, AutoFrom)]
 #[auto_from(mina_serialization_types::bulletproof_challenges::BulletproofChallengeTuple18)]
 pub struct BulletproofChallengeTuple18(
     pub BulletproofChallenge,
@@ -128,7 +128,7 @@ impl BulletproofChallengeTuple18 {
     }
 }
 
-#[derive(Clone, PartialEq, Debug, AutoFrom)]
+#[derive(Clone, Eq, PartialEq, Debug, AutoFrom)]
 #[auto_from(mina_serialization_types::bulletproof_challenges::BulletproofPreChallenge)]
 pub enum BulletproofPreChallenge {
     ScalarChallenge(ScalarChallengeVector2),
@@ -140,7 +140,7 @@ impl BulletproofPreChallenge {
     }
 }
 
-#[derive(Clone, Default, PartialEq, Debug, AutoFrom)]
+#[derive(Clone, Default, Eq, PartialEq, Debug, AutoFrom)]
 #[auto_from(mina_serialization_types::bulletproof_challenges::ScalarChallengeVector2)]
 pub struct ScalarChallengeVector2(pub Hex64, pub Hex64, pub ());
 

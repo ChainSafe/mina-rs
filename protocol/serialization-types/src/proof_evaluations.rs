@@ -10,7 +10,7 @@ use mina_serialization_types_macros::AutoFrom;
 use serde::{Deserialize, Serialize};
 use versioned::Versioned;
 
-#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]
 pub struct ProofEvaluations {
     pub l: FieldElementVecV1,
     pub r: FieldElementVecV1,
@@ -24,7 +24,7 @@ pub struct ProofEvaluations {
 
 pub type ProofEvaluationsV1 = Versioned<ProofEvaluations, 1>;
 
-#[derive(Clone, Debug, Serialize, Deserialize, PartialEq, AutoFrom)]
+#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq, AutoFrom)]
 #[auto_from(ProofEvaluations)]
 pub struct ProofEvaluationsJson {
     pub l: FieldElementVecJson,

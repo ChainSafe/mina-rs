@@ -10,7 +10,9 @@
 //! Depending on the type of hash a different byte prefix is used in the human readable form
 //!
 
+use ark_ff::BigInteger256;
 use mina_serialization_types::{impl_strconv_via_json, json::*, v1::*};
+use num::{BigUint, Num};
 use proof_systems::{
     mina_hasher::{Fp, Hashable, ROInput},
     o1_utils::{field_helpers::FieldHelpersError, FieldHelpers},
@@ -19,7 +21,49 @@ use proof_systems::{
 use sha2::{Digest, Sha256};
 use versioned::*;
 
-#[derive(Clone, Debug, Default, PartialEq, derive_more::From, derive_more::Into)]
+#[derive(Clone, Debug, Default, Eq, PartialEq, derive_more::From, derive_more::Into)]
+pub struct Field([u8; 32]);
+
+impl Field {
+    pub fn from_str_radix(s: &str, radix: u32) -> anyhow::Result<Self> {
+        let big = BigUint::from_str_radix(s, radix)?;
+        let big256: BigInteger256 = big.try_into().map_err(anyhow::Error::msg)?;
+        Ok(Self::from(&Fp::from(big256)))
+    }
+}
+
+impl ToChunkedROInput for Field {
+    fn to_chunked_roinput(&self) -> ChunkedROInput {
+        ChunkedROInput::new().append_field(
+            self.try_into()
+                .expect("Failed to convert ChainHash into Fp"),
+        )
+    }
+}
+
+impl From<&[u8]> for Field {
+    fn from(b: &[u8]) -> Self {
+        let mut o = Field::default();
+        o.0.copy_from_slice(b);
+        o
+    }
+}
+
+impl From<&Fp> for Field {
+    fn from(i: &Fp) -> Self {
+        i.to_bytes().as_slice().into()
+    }
+}
+
+impl TryFrom<&Field> for Fp {
+    type Error = FieldHelpersError;
+
+    fn try_from(i: &Field) -> Result<Self, Self::Error> {
+        Fp::from_bytes(i.0.as_slice())
+    }
+}
+
+#[derive(Clone, Debug, Default, Eq, PartialEq, derive_more::From, derive_more::Into)]
 pub(crate) struct BaseHash(pub(crate) [u8; 32]);
 
 impl Hashable for BaseHash {
@@ -87,7 +131,7 @@ macro_rules! impl_from_for_hash {
 }
 
 //////////////////////////////////////////////////////////////////////////
-#[derive(Clone, Debug, Default, PartialEq, derive_more::From, derive_more::Into)]
+#[derive(Clone, Debug, Default, Eq, PartialEq, derive_more::From, derive_more::Into)]
 pub struct StateHash(BaseHash);
 
 impl_from_for_hash!(StateHash, HashV1);
@@ -141,7 +185,7 @@ impl ToChunkedROInput for StateHash {
 
 //////////////////////////////////////////////////////////////////////////
 
-#[derive(Clone, Debug, Default, PartialEq, derive_more::From, derive_more::Into)]
+#[derive(Clone, Debug, Default, Eq, PartialEq, derive_more::From, derive_more::Into)]
 pub struct LedgerHash(BaseHash);
 
 impl_from_for_hash!(LedgerHash, HashV1);
@@ -175,9 +219,15 @@ impl Hashable for LedgerHash {
     }
 }
 
+impl ToChunkedROInput for LedgerHash {
+    fn to_chunked_roinput(&self) -> ChunkedROInput {
+        self.0.to_chunked_roinput()
+    }
+}
+
 //////////////////////////////////////////////////////////////////////////
 
-#[derive(Clone, Default, Debug, PartialEq, derive_more::From, derive_more::Into)]
+#[derive(Clone, Default, Debug, Eq, PartialEq, derive_more::From, derive_more::Into)]
 pub struct ChainHash(BaseHash);
 
 impl_from_for_hash!(ChainHash, HashV1);
@@ -224,7 +274,7 @@ impl From<ChainHash> for [u8; 32] {
 
 //////////////////////////////////////////////////////////////////////////
 
-#[derive(Clone, Default, Debug, PartialEq, derive_more::From, derive_more::Into)]
+#[derive(Clone, Default, Debug, Eq, PartialEq, derive_more::From, derive_more::Into)]
 pub struct CoinBaseHash(BaseHash);
 
 impl_from_for_hash!(CoinBaseHash, HashV1);
@@ -252,7 +302,7 @@ impl Hashable for CoinBaseHash {
 
 //////////////////////////////////////////////////////////////////////////
 
-#[derive(Clone, Default, Debug, PartialEq, derive_more::From, derive_more::Into)]
+#[derive(Clone, Default, Debug, Eq, PartialEq, derive_more::From, derive_more::Into)]
 pub struct EpochSeed(BaseHash);
 
 impl_from_for_hash!(EpochSeed, HashV1);
@@ -273,7 +323,7 @@ impl Hashable for EpochSeed {
 
 //////////////////////////////////////////////////////////////////////////
 
-#[derive(Clone, Default, Debug, PartialEq)]
+#[derive(Clone, Default, Debug, Eq, PartialEq)]
 pub struct StagedLedgerHash {
     pub non_snark: NonSnarkStagedLedgerHash,
     pub pending_coinbase_hash: CoinBaseHash,
@@ -301,7 +351,7 @@ impl Hashable for StagedLedgerHash {
     }
 }
 
-#[derive(Clone, Default, Debug, PartialEq)]
+#[derive(Clone, Default, Debug, Eq, PartialEq)]
 pub struct NonSnarkStagedLedgerHash {
     pub ledger_hash: LedgerHash,
     pub aux_hash: AuxHash,
@@ -337,7 +387,7 @@ impl Hashable for NonSnarkStagedLedgerHash {
     }
 }
 
-#[derive(Clone, Default, Debug, PartialEq, derive_more::From, derive_more::Into)]
+#[derive(Clone, Default, Debug, Eq, PartialEq, derive_more::From, derive_more::Into)]
 pub struct AuxHash(pub Vec<u8>);
 
 impl_from_for_newtype!(AuxHash, AuxHashJson);
@@ -345,7 +395,7 @@ impl_strconv_via_json!(AuxHash, AuxHashJson);
 
 //////////////////////////////////////////////////////////////////////////
 
-#[derive(Clone, Default, Debug, PartialEq, derive_more::From)]
+#[derive(Clone, Default, Debug, Eq, PartialEq, derive_more::From)]
 pub struct PendingCoinbaseAuxHash(pub Vec<u8>);
 
 impl_from_for_newtype!(PendingCoinbaseAuxHash, PendingCoinbaseAuxHashJson);
@@ -353,7 +403,7 @@ impl_strconv_via_json!(PendingCoinbaseAuxHash, PendingCoinbaseAuxHashJson);
 
 //////////////////////////////////////////////////////////////////////////
 
-#[derive(Clone, Default, Debug, PartialEq)]
+#[derive(Clone, Default, Debug, Eq, PartialEq)]
 pub struct VrfOutputHash(BaseHash);
 
 impl_from_for_hash!(VrfOutputHash, HashV1);

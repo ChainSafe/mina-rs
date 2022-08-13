@@ -10,7 +10,7 @@ use mina_serialization_types_macros::AutoFrom;
 use serde::{Deserialize, Serialize};
 use versioned::Versioned;
 
-#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]
 pub struct ProofMessages {
     pub l_comm: ProofMessageWithoutDegreeBoundListV1,
     pub r_comm: ProofMessageWithoutDegreeBoundListV1,
@@ -21,7 +21,7 @@ pub struct ProofMessages {
 
 pub type ProofMessagesV1 = Versioned<ProofMessages, 1>;
 
-#[derive(Clone, Debug, Serialize, Deserialize, PartialEq, AutoFrom)]
+#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq, AutoFrom)]
 #[auto_from(ProofMessages)]
 pub struct ProofMessagesJson {
     pub l_comm: ProofMessageWithoutDegreeBoundListJson,
@@ -31,17 +31,17 @@ pub struct ProofMessagesJson {
     pub t_comm: ProofMessageWithDegreeBoundJson,
 }
 
-#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]
 pub struct ProofMessageWithoutDegreeBoundList(pub Vec<FiniteECPoint>);
 
 pub type ProofMessageWithoutDegreeBoundListV1 =
     Versioned<Versioned<ProofMessageWithoutDegreeBoundList, 1>, 1>;
 
-#[derive(Clone, Debug, Serialize, Deserialize, PartialEq, AutoFrom)]
+#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq, AutoFrom)]
 #[auto_from(ProofMessageWithoutDegreeBoundList)]
 pub struct ProofMessageWithoutDegreeBoundListJson(pub Vec<FiniteECPointJson>);
 
-#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]
 pub struct ProofMessageWithDegreeBound {
     pub unshifted: ECPointVecV1,
     pub shifted: ECPointV1,
@@ -49,7 +49,7 @@ pub struct ProofMessageWithDegreeBound {
 
 pub type ProofMessageWithDegreeBoundV1 = Versioned<ProofMessageWithDegreeBound, 1>;
 
-#[derive(Clone, Debug, Serialize, Deserialize, PartialEq, AutoFrom)]
+#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq, AutoFrom)]
 #[auto_from(ProofMessageWithDegreeBound)]
 pub struct ProofMessageWithDegreeBoundJson {
     pub unshifted: ECPointVecJson,

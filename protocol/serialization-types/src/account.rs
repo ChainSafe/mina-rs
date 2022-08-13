@@ -13,7 +13,7 @@ use serde::{Deserialize, Serialize};
 use versioned::Versioned;
 
 /// An account as is serialized into the Mina ledger database stores
-#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]
 pub struct Account {
     /// Account public key
     pub public_key: PublicKey2V1,
@@ -44,7 +44,7 @@ pub struct Account {
 pub type AccountV1 = Versioned<Versioned<Versioned<Account, 1>, 1>, 1>;
 
 /// An account as is serialized into the Mina ledger database stores (unversioned)
-#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]
 pub struct AccountV0 {
     /// Account public key
     pub public_key: CompressedCurvePoint,
@@ -76,7 +76,7 @@ pub struct AccountV0 {
 }
 
 /// FIXME: Need to learn exactly what this is..
-#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]
 pub enum TokenPermissions {
     /// Account does not own a token
     NotOwned {
@@ -94,7 +94,7 @@ pub enum TokenPermissions {
 pub type TokenPermissionsV1 = Versioned<Versioned<TokenPermissions, 1>, 1>;
 
 /// Permissions associated with the account
-#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]
 pub struct PermissionsLegacy {
     /// If the account can stake
     pub stake: bool,
@@ -113,7 +113,7 @@ pub struct PermissionsLegacy {
 }
 
 /// Permissions associated with the account
-#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]
 pub struct Permissions {
     /// Permission required to edit state
     pub edit_state: AuthRequired,
@@ -143,7 +143,7 @@ pub struct Permissions {
 pub type PermissionsV1 = Versioned<Versioned<PermissionsLegacy, 1>, 1>;
 
 /// The level of auth required to perform a particular action with an account
-#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]
 pub enum AuthRequired {
     /// None required
     None,
@@ -165,7 +165,7 @@ pub type AuthRequiredV1 = Versioned<AuthRequired, 1>;
 
 /// Timing information for an account with regard to when its balance is accessable
 /// This is to allow vesting from an initial genesis allocation
-#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]
 pub enum Timing {
     /// Account does not have any timing limitations
     Untimed,
@@ -174,7 +174,7 @@ pub enum Timing {
 }
 
 /// TODO
-#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]
 pub enum TimingV0 {
     /// Account does not have any timing limitations
     Untimed,
@@ -184,7 +184,7 @@ pub enum TimingV0 {
 
 /// Payload for the timing variant Timed
 /// Needs its own version byte
-#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]
 pub struct TimedData {
     /// Initial balance for the account
     pub initial_minimum_balance: AmountV1,
@@ -199,7 +199,7 @@ pub struct TimedData {
 }
 
 /// TODO
-#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]
 pub struct TimedDataV0 {
     /// Initial balance for the account
     pub initial_minimum_balance: u64,

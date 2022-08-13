@@ -21,7 +21,7 @@ use versioned::*;
 
 /// Wrapper struct for the output for a VRF
 #[derive(
-    Clone, Default, PartialEq, Debug, derive_more::From, derive_more::Into, AutoFrom, PartialOrd,
+    Clone, Default, Eq, PartialEq, Debug, derive_more::From, derive_more::Into, AutoFrom, PartialOrd,
 )]
 #[auto_from(mina_serialization_types::consensus_state::VrfOutputTruncated)]
 #[auto_from(mina_serialization_types::consensus_state::VrfOutputTruncatedJson)]
@@ -73,7 +73,7 @@ impl Hashable for VrfOutputTruncated {
 /// approach where the future stake distribution snapshot is prepared by the current consensus epoch.
 ///
 /// Samasika prepares the past for the future! This future state is stored in the next_epoch_data field.
-#[derive(Clone, Debug, PartialEq, SmartDefault, AutoFrom)]
+#[derive(Clone, Debug, Eq, PartialEq, SmartDefault, AutoFrom)]
 #[auto_from(mina_serialization_types::consensus_state::ConsensusState)]
 pub struct ConsensusState {
     /// Height of block

@@ -29,7 +29,7 @@ pub type AccountNonceV1 = Versioned<Versioned<u32, 1>, 1>;
 
 /// u32 wrapper (json)
 /// Note that integers are represented as string in mina json
-#[derive(Clone, Debug, PartialEq, derive_more::From)]
+#[derive(Clone, Debug, Eq, PartialEq, derive_more::From)]
 pub struct U32Json(pub u32);
 
 impl Serialize for U32Json {
@@ -57,7 +57,7 @@ impl<'de> Deserialize<'de> for U32Json {
 
 /// u64 wrapper (json)
 /// Note that integers are represented as string in mina json
-#[derive(Clone, Debug, PartialEq, derive_more::From)]
+#[derive(Clone, Debug, Eq, PartialEq, derive_more::From)]
 pub struct U64Json(pub u64);
 
 impl Serialize for U64Json {
@@ -84,12 +84,14 @@ impl<'de> Deserialize<'de> for U64Json {
 }
 
 /// i64 wrapper (json)
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, derive_more::From, derive_more::Into)]
+#[derive(
+    Clone, Debug, Eq, PartialEq, Serialize, Deserialize, derive_more::From, derive_more::Into,
+)]
 pub struct I64(pub i64);
 
 /// u64 wrapper (json)
 /// Note that integers are represented as string in mina json
-#[derive(Clone, Debug, PartialEq, derive_more::From)]
+#[derive(Clone, Debug, Eq, PartialEq, derive_more::From)]
 pub struct DecimalJson(pub u64);
 
 const MINA_PRECISION: u64 = 1000000000;
@@ -181,7 +183,7 @@ pub type CharV1 = Versioned<u8, 1>;
 impl_from_for_newtype!(CharJson, CharV1);
 
 /// char (json)
-#[derive(Debug, Clone, PartialEq, From, Into)]
+#[derive(Debug, Clone, Eq, PartialEq, From, Into)]
 pub struct CharJson(pub u8);
 
 impl Serialize for CharJson {
@@ -208,13 +210,13 @@ impl<'de> Deserialize<'de> for CharJson {
 pub type BigInt256 = [u8; 32];
 
 /// Wrapper of Vec<u8>
-#[derive(Clone, Debug, Serialize, Deserialize, PartialEq, derive_more::From)]
+#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq, derive_more::From)]
 pub struct ByteVec(pub Vec<u8>);
 
 impl_from_versioned!(ByteVec);
 
 /// Wrapper of Vec<u8> (json)
-#[derive(Debug, Clone, PartialEq, From, Into, AutoFrom)]
+#[derive(Debug, Clone, Eq, PartialEq, From, Into, AutoFrom)]
 #[auto_from(ByteVec)]
 pub struct ByteVecJson(pub Vec<u8>);
 
@@ -243,7 +245,7 @@ impl<'de> Deserialize<'de> for ByteVecJson {
 pub type ByteVecV1 = Versioned<ByteVec, 1>;
 
 /// A wrapper of versioned type that is base58 encodable
-#[derive(Debug, Clone, PartialEq, derive_more::From)]
+#[derive(Debug, Clone, Eq, PartialEq, derive_more::From)]
 pub struct Base58EncodableType<const VERSION_BYTE: u8, T>(pub T);
 
 impl<const VERSION_BYTE: u8, T> Base58EncodableType<VERSION_BYTE, T>
@@ -315,7 +317,7 @@ where
 }
 
 /// A wrapper of versioned type that is base58 encodable with an version byte
-#[derive(Debug, Clone, PartialEq, derive_more::From)]
+#[derive(Debug, Clone, Eq, PartialEq, derive_more::From)]
 pub struct Base58EncodableVersionedType<const VERSION_BYTE: u8, T>(pub T);
 
 impl<'de, const VERSION_BYTE: u8, T> Base58EncodableVersionedType<VERSION_BYTE, T>

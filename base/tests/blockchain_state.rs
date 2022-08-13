@@ -7,6 +7,7 @@ pub mod tests {
     use ark_ff::BigInteger256;
     use mina_crypto::hash::*;
     use mina_hasher::Fp;
+    use mina_rs_base::types::*;
     use num::BigUint;
     use proof_systems::*;
     use std::str::FromStr;
@@ -30,6 +31,34 @@ pub mod tests {
         };
         let roinput = staged_ledger_hash.to_chunked_roinput();
         assert_eq!(roinput, genesis_staged_ledger_hash_chunked_roinput()?);
+
+        let local_state = BlockchainStateRegistersLocalState {
+            stack_frame: Field::from_str_radix(
+                "02F99BCFB0AA7F48C1888DA5A67196A2410FB084CD2DB1AF5216C5122AEBC054",
+                16,
+            )?,
+            call_stack: Field::from_str_radix(
+                "0000000000000000000000000000000000000000000000000000000000000000",
+                16,
+            )?,
+            transaction_commitment: Field::from_str_radix(
+                "0000000000000000000000000000000000000000000000000000000000000000",
+                16,
+            )?,
+            full_transaction_commitment: Field::from_str_radix(
+                "0000000000000000000000000000000000000000000000000000000000000000",
+                16,
+            )?,
+            token_id: TokenId(1),
+            excess: Amount(0),
+            ledger: LedgerHash::from_str("jw6bz2wud1N6itRUHZ5ypo3267stk4UgzkiuWtAMPRZo9g4Udyd")?,
+            success: true,
+            party_index: MinaIndex(0),
+            failure_status_tbl: Default::default(),
+        };
+        let roinput = local_state.to_chunked_roinput();
+        println!("roinput:\n{roinput}");
+
         Ok(())
     }
 

@@ -14,7 +14,7 @@ use crate::{
 use versioned::*;
 
 /// Epoch Ledger
-#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]
 pub struct EpochLedger {
     /// A unique identifier of the EpochLedger
     pub hash: HashV1,
@@ -26,7 +26,7 @@ pub struct EpochLedger {
 pub type EpochLedgerV1 = Versioned<Versioned<EpochLedger, 1>, 1>;
 
 /// Epoch Ledger (json)
-#[derive(Clone, Debug, Serialize, Deserialize, PartialEq, AutoFrom)]
+#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq, AutoFrom)]
 #[auto_from(EpochLedger)]
 pub struct EpochLedgerJson {
     /// A unique identifier of the EpochLedger
@@ -36,7 +36,7 @@ pub struct EpochLedgerJson {
 }
 
 /// Epoch data
-#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]
 pub struct EpochData {
     /// Epoch Ledger, contains ledger related data for the epoch
     pub ledger: EpochLedgerV1,
@@ -54,7 +54,7 @@ pub struct EpochData {
 pub type EpochDataV1 = Versioned<Versioned<EpochData, 1>, 1>;
 
 /// Epoch data (json)
-#[derive(Clone, Debug, Serialize, Deserialize, PartialEq, AutoFrom)]
+#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq, AutoFrom)]
 #[auto_from(EpochData)]
 pub struct EpochDataJson {
     /// Epoch Ledger, contains ledger related data for the epoch

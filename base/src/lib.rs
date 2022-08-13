@@ -12,6 +12,7 @@
 
 pub mod account;
 pub mod blockchain_state;
+pub mod blockchain_state_registers;
 pub mod common;
 pub mod consensus_state;
 mod constants;
@@ -40,6 +41,7 @@ pub use mina_serialization_types::{BinProtSerializationType, JsonSerializationTy
 pub mod types {
     pub use super::account::*;
     pub use super::blockchain_state::*;
+    pub use super::blockchain_state_registers::*;
     pub use super::common::*;
     pub use super::consensus_state::*;
     pub use super::delta_transition_chain_proof::*;

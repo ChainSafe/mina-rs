@@ -8,10 +8,10 @@ use mina_serialization_types_macros::AutoFrom;
 use serde::{Deserialize, Serialize};
 
 /// Proof that the block was produced within the allotted slot time
-#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]
 pub struct DeltaTransitionChainProof(pub HashV1, pub Vec<HashV1>);
 
 /// Proof that the block was produced within the allotted slot time (json)
-#[derive(Clone, Debug, Serialize, Deserialize, PartialEq, AutoFrom)]
+#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq, AutoFrom)]
 #[auto_from(DeltaTransitionChainProof)]
 pub struct DeltaTransitionChainProofJson(pub LedgerHashV1Json, pub Vec<LedgerHashV1Json>);

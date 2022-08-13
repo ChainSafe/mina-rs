@@ -11,7 +11,7 @@ use proof_systems::mina_signer::Signer;
 use versioned::*;
 
 /// This structure represents a mina block
-#[derive(Clone, Debug, PartialEq, AutoFrom)]
+#[derive(Clone, Debug, Eq, PartialEq, AutoFrom)]
 #[auto_from(mina_serialization_types::external_transition::ExternalTransition)]
 /// This structure represents a mina block received from an external block producer
 pub struct ExternalTransition {

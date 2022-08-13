@@ -12,6 +12,8 @@ mina-serialization-types = {path = "../protocol/serialization-types"}
 proof-systems = {path = "../proof-systems-shim"}
 versioned = {path = "../protocol/versioned"}
 
+anyhow = "1"
+ark-ff = "0.3"
 base64 = "0.13"
 blake2 = "0.10"
 bs58 = {version = "0.4", features = ["check"]}
@@ -24,4 +26,3 @@ sha2 = "0.10"
 thiserror = "1"
 
 [dev-dependencies]
-anyhow = "1"
