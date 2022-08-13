@@ -8,10 +8,10 @@
 //! # Example
 //!
 //! ```
-//! #[derive(Debug, Clone, PartialEq, derive_more::From, derive_more::Into)]
+//! #[derive(Debug, Clone, Eq, PartialEq, derive_more::From, derive_more::Into)]
 //! struct I64(pub i64);
 //!
-//! #[derive(Debug, Clone, PartialEq, mina_serialization_types_macros::AutoFrom)]
+//! #[derive(Debug, Clone, Eq, PartialEq, mina_serialization_types_macros::AutoFrom)]
 //! #[auto_from(Bar)]
 //! enum Foo {
 //!     V1,
@@ -28,7 +28,7 @@
 //!     },
 //! }
 
-//! #[derive(Debug, Clone, PartialEq)]
+//! #[derive(Debug, Clone, Eq, PartialEq)]
 //! enum Bar {
 //!     V1,
 //!     V2(I64),

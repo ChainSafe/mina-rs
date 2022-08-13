@@ -11,7 +11,7 @@ use smart_default::SmartDefault;
 use crate::numbers::{Amount, BlockTime};
 
 /// Payload for the timing variant Timed
-#[derive(Clone, Debug, PartialEq, AutoFrom)]
+#[derive(Clone, Debug, Eq, PartialEq, AutoFrom)]
 #[auto_from(mina_serialization_types::account::TimedData)]
 #[auto_from(mina_serialization_types::account::TimedDataV0)]
 pub struct TimedData {

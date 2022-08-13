@@ -9,7 +9,7 @@ use mina_serialization_types_macros::AutoFrom;
 use thiserror::Error;
 
 /// A memo byte strong for a signed command
-#[derive(Clone, Default, PartialEq, Debug, derive_more::From, derive_more::Into, AutoFrom)]
+#[derive(Clone, Default, Eq, PartialEq, Debug, derive_more::From, derive_more::Into, AutoFrom)]
 #[auto_from(mina_serialization_types::staged_ledger_diff::SignedCommandMemo)]
 #[auto_from(mina_serialization_types::staged_ledger_diff::SignedCommandMemoJson)]
 pub struct SignedCommandMemo(pub Vec<u8>);

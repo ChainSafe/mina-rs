@@ -17,7 +17,7 @@ pub mod macros;
 use serde::{Deserialize, Serialize};
 
 /// A generic version wrapper around another type
-#[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
+#[derive(Debug, Eq, PartialEq, Serialize, Deserialize, Clone)]
 pub struct Versioned<T, const V: u16> {
     /// Version byte to be encoded first when the whole wrapper is serialized
     pub version: u16,

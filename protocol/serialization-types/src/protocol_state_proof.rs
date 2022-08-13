@@ -11,7 +11,7 @@ use mina_serialization_types_macros::AutoFrom;
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
 use versioned::*;
 
-#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]
 /// SNARK proof of the protocol state at some point in time
 pub struct ProtocolStateProof {
     pub statement: ProofStatementV1,
@@ -24,7 +24,7 @@ pub struct ProtocolStateProof {
 pub type ProtocolStateProofV1 =
     Versioned<Versioned<Versioned<Versioned<ProtocolStateProof, 1>, 1>, 1>, 1>;
 
-#[derive(Clone, Debug, Serialize, Deserialize, PartialEq, AutoFrom)]
+#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq, AutoFrom)]
 #[auto_from(ProtocolStateProof)]
 /// SNARK proof of the protocol state at some point in time (json)
 pub struct ProtocolStateProofJson {
@@ -35,7 +35,7 @@ pub struct ProtocolStateProofJson {
 }
 
 /// SNARK proof of the protocol state at some point in time (base64 json)
-#[derive(Clone, Debug, PartialEq, derive_more::From, derive_more::Into)]
+#[derive(Clone, Debug, Eq, PartialEq, derive_more::From, derive_more::Into)]
 pub struct ProtocolStateProofBase64Json(pub ProtocolStateProofV1);
 
 impl Serialize for ProtocolStateProofBase64Json {
@@ -65,7 +65,7 @@ impl<'de> Deserialize<'de> for ProtocolStateProofBase64Json {
     }
 }
 
-#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]
 pub struct ProofStatement {
     pub proof_state: ProofStateV1,
     pub pass_through: PairingBasedV1,
@@ -73,14 +73,14 @@ pub struct ProofStatement {
 
 pub type ProofStatementV1 = Versioned<Versioned<ProofStatement, 1>, 1>;
 
-#[derive(Clone, Debug, Serialize, Deserialize, PartialEq, AutoFrom)]
+#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq, AutoFrom)]
 #[auto_from(ProofStatement)]
 pub struct ProofStatementJson {
     pub proof_state: ProofStateJson,
     pub pass_through: PairingBasedJson,
 }
 
-#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]
 pub struct ProofState {
     pub deferred_values: ProofStateDeferredValuesV1,
     pub sponge_digest_before_evaluations: SpongeDigestBeforeEvaluationsV1,
@@ -89,7 +89,7 @@ pub struct ProofState {
 
 pub type ProofStateV1 = Versioned<ProofState, 1>;
 
-#[derive(Clone, Debug, Serialize, Deserialize, PartialEq, AutoFrom)]
+#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq, AutoFrom)]
 #[auto_from(ProofState)]
 pub struct ProofStateJson {
     pub deferred_values: ProofStateDeferredValuesJson,
@@ -97,7 +97,7 @@ pub struct ProofStateJson {
     pub me_only: ProofStatePairingBasedJson,
 }
 
-#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]
 pub struct ProofStateDeferredValues {
     pub plonk: PlonkV1,
     pub combined_inner_product: ShiftedValueV1,
@@ -109,7 +109,7 @@ pub struct ProofStateDeferredValues {
 
 pub type ProofStateDeferredValuesV1 = Versioned<ProofStateDeferredValues, 1>;
 
-#[derive(Clone, Debug, Serialize, Deserialize, PartialEq, AutoFrom)]
+#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq, AutoFrom)]
 #[auto_from(ProofStateDeferredValues)]
 pub struct ProofStateDeferredValuesJson {
     pub plonk: PlonkJson,
@@ -120,7 +120,7 @@ pub struct ProofStateDeferredValuesJson {
     pub which_branch: CharJson,
 }
 
-#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]
 pub struct Plonk {
     pub alpha: BulletproofPreChallengeV1,
     pub beta: ScalarChallengeVector2V1,
@@ -130,7 +130,7 @@ pub struct Plonk {
 
 pub type PlonkV1 = Versioned<Plonk, 1>;
 
-#[derive(Clone, Debug, Serialize, Deserialize, PartialEq, AutoFrom)]
+#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq, AutoFrom)]
 #[auto_from(Plonk)]
 pub struct PlonkJson {
     pub alpha: BulletproofPreChallengeJson,
@@ -139,20 +139,20 @@ pub struct PlonkJson {
     pub zeta: BulletproofPreChallengeJson,
 }
 
-#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]
 pub enum ShiftedValue {
     ShiftedValue(BigInt256),
 }
 
 pub type ShiftedValueV1 = Versioned<ShiftedValue, 1>;
 
-#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]
 enum ShiftedValueJsonProxy {
     #[serde(rename = "Shifted_value")]
     ShiftedValue(FieldElementJson),
 }
 
-#[derive(Clone, Debug, PartialEq, AutoFrom)]
+#[derive(Clone, Debug, Eq, PartialEq, AutoFrom)]
 #[auto_from(ShiftedValue)]
 #[auto_from(ShiftedValueJsonProxy)]
 pub enum ShiftedValueJson {
@@ -160,7 +160,7 @@ pub enum ShiftedValueJson {
 }
 impl_mina_enum_json_serde!(ShiftedValueJson, ShiftedValueJsonProxy);
 
-#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]
 pub struct SpongeDigestBeforeEvaluations(
     pub Hex64V1,
     pub Hex64V1,
@@ -172,7 +172,7 @@ pub struct SpongeDigestBeforeEvaluations(
 pub type SpongeDigestBeforeEvaluationsV1 =
     Versioned<Versioned<SpongeDigestBeforeEvaluations, 1>, 1>;
 
-#[derive(Clone, Debug, Serialize, Deserialize, PartialEq, AutoFrom)]
+#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq, AutoFrom)]
 #[auto_from(SpongeDigestBeforeEvaluations)]
 pub struct SpongeDigestBeforeEvaluationsJson(
     pub I64,
@@ -182,7 +182,7 @@ pub struct SpongeDigestBeforeEvaluationsJson(
     #[serde(skip)] pub (),
 );
 
-#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]
 pub struct ProofStatePairingBased {
     pub sg: FiniteECPoint,
     pub old_bulletproof_challenges: ProofStateBulletproofChallengesV1,
@@ -190,14 +190,14 @@ pub struct ProofStatePairingBased {
 
 pub type ProofStatePairingBasedV1 = Versioned<ProofStatePairingBased, 1>;
 
-#[derive(Clone, Debug, Serialize, Deserialize, PartialEq, AutoFrom)]
+#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq, AutoFrom)]
 #[auto_from(ProofStatePairingBased)]
 pub struct ProofStatePairingBasedJson {
     pub sg: FiniteECPointJson,
     pub old_bulletproof_challenges: ProofStateBulletproofChallengesJson,
 }
 
-#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]
 pub struct PairingBased {
     pub app_state: (),
     pub sg: FiniteECPointVecV1,
@@ -206,7 +206,7 @@ pub struct PairingBased {
 
 pub type PairingBasedV1 = Versioned<PairingBased, 1>;
 
-#[derive(Clone, Debug, Serialize, Deserialize, PartialEq, AutoFrom)]
+#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq, AutoFrom)]
 #[auto_from(PairingBased)]
 pub struct PairingBasedJson {
     pub app_state: (),
@@ -214,25 +214,25 @@ pub struct PairingBasedJson {
     pub old_bulletproof_challenges: BulletproofChallengesJson,
 }
 
-#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]
 pub struct PrevEvals(pub ProofEvaluationsV1, pub ProofEvaluationsV1);
 
 pub type PrevEvalsV1 = Versioned<PrevEvals, 1>;
 
-#[derive(Clone, Debug, Serialize, Deserialize, PartialEq, AutoFrom)]
+#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq, AutoFrom)]
 #[auto_from(PrevEvals)]
 pub struct PrevEvalsJson(pub ProofEvaluationsJson, pub ProofEvaluationsJson);
 
-#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]
 pub struct PrevXHat(pub FiniteECPoint);
 
 pub type PrevXHatV1 = Versioned<PrevXHat, 1>;
 
-#[derive(Clone, Debug, Serialize, Deserialize, PartialEq, AutoFrom)]
+#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq, AutoFrom)]
 #[auto_from(PrevXHat)]
 pub struct PrevXHatJson(pub FiniteECPointJson);
 
-#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]
 pub struct Proof {
     pub messages: ProofMessagesV1,
     pub openings: ProofOpeningsV1,
@@ -240,21 +240,21 @@ pub struct Proof {
 
 pub type ProofV1 = Versioned<Versioned<Proof, 1>, 1>;
 
-#[derive(Clone, Debug, Serialize, Deserialize, PartialEq, AutoFrom)]
+#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq, AutoFrom)]
 #[auto_from(Proof)]
 pub struct ProofJson {
     pub messages: ProofMessagesJson,
     pub openings: ProofOpeningsJson,
 }
 
-#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]
 pub struct ProofOpeningsEvals(pub ProofEvaluationsV1, pub ProofEvaluationsV1);
 
-#[derive(Clone, Debug, Serialize, Deserialize, PartialEq, AutoFrom)]
+#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq, AutoFrom)]
 #[auto_from(ProofOpeningsEvals)]
 pub struct ProofOpeningsEvalsJson(pub ProofEvaluationsJson, pub ProofEvaluationsJson);
 
-#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]
 pub struct ProofOpenings {
     pub proof: OpeningProofV1,
     pub evals: ProofOpeningsEvals,
@@ -262,7 +262,7 @@ pub struct ProofOpenings {
 
 pub type ProofOpeningsV1 = Versioned<ProofOpenings, 1>;
 
-#[derive(Clone, Debug, Serialize, Deserialize, PartialEq, AutoFrom)]
+#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq, AutoFrom)]
 #[auto_from(ProofOpenings)]
 pub struct ProofOpeningsJson {
     pub proof: OpeningProofJson,

@@ -11,7 +11,7 @@ use serde::{Deserialize, Serialize};
 use versioned::Versioned;
 
 /// Mina blockchain state struct
-#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]
 pub struct BlockchainState {
     /// Hash of the proposed next state of the blockchain
     pub staged_ledger_hash: StagedLedgerHashV1,
@@ -29,7 +29,7 @@ pub struct BlockchainState {
 pub type BlockchainStateV1 = Versioned<Versioned<BlockchainState, 1>, 1>;
 
 /// Mina blockchain state struct (json)
-#[derive(Clone, Debug, Serialize, Deserialize, PartialEq, AutoFrom)]
+#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq, AutoFrom)]
 #[auto_from(BlockchainState)]
 pub struct BlockchainStateJson {
     /// Hash of the proposed next state of the blockchain
@@ -45,7 +45,7 @@ pub struct BlockchainStateJson {
 }
 
 /// Staged ledger hash structure
-#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]
 pub struct StagedLedgerHash {
     pub non_snark: NonSnarkStagedLedgerHashV1,
     pub pending_coinbase_hash: Hash2V1,
@@ -55,7 +55,7 @@ pub struct StagedLedgerHash {
 pub type StagedLedgerHashV1 = Versioned<Versioned<StagedLedgerHash, 1>, 1>;
 
 /// Staged ledger hash structure (json)
-#[derive(Clone, Debug, Serialize, Deserialize, PartialEq, AutoFrom)]
+#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq, AutoFrom)]
 #[auto_from(StagedLedgerHash)]
 pub struct StagedLedgerHashJson {
     pub non_snark: NonSnarkStagedLedgerHashJson,
@@ -63,7 +63,7 @@ pub struct StagedLedgerHashJson {
 }
 
 /// Non-snarked ledger hash
-#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]
 pub struct NonSnarkStagedLedgerHash {
     pub ledger_hash: HashV1,
     pub aux_hash: ByteVecV1,
@@ -74,7 +74,7 @@ pub struct NonSnarkStagedLedgerHash {
 pub type NonSnarkStagedLedgerHashV1 = Versioned<NonSnarkStagedLedgerHash, 1>;
 
 /// Non-snarked ledger hash (json)
-#[derive(Clone, Debug, Serialize, Deserialize, PartialEq, AutoFrom)]
+#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq, AutoFrom)]
 #[auto_from(NonSnarkStagedLedgerHash)]
 pub struct NonSnarkStagedLedgerHashJson {
     pub ledger_hash: LedgerHashV1Json,

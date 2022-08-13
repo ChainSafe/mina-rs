@@ -15,7 +15,7 @@ use crate::numbers::BigInt256;
 pub type FieldElement = BigInt256;
 
 /// Vector of finite field elements (with version number defined in the WireType)
-#[derive(Clone, Default, PartialEq, Debug, AutoFrom)]
+#[derive(Clone, Default, Eq, PartialEq, Debug, AutoFrom)]
 #[auto_from(mina_serialization_types::field_and_curve_elements::FieldElementVec)]
 pub struct FieldElementVec(pub Vec<FieldElement>);
 
@@ -58,7 +58,7 @@ where
 
 /// An elliptic curve point defined over a base field with elements that fit in a BigInt256
 /// This is a Finite elliptic curve point as this type cannot be used to encode the point-at-infinity
-#[derive(Clone, Default, PartialEq, Debug, AutoFrom)]
+#[derive(Clone, Default, Eq, PartialEq, Debug, AutoFrom)]
 #[auto_from(mina_serialization_types::field_and_curve_elements::FiniteECPoint)]
 pub struct FiniteECPoint(pub FieldElement, pub FieldElement);
 
@@ -89,7 +89,7 @@ macro_rules! finite_ec_point {
 }
 
 /// Vector of finite EC points (with version number defined in the WireType)
-#[derive(Clone, Default, PartialEq, Debug, AutoFrom)]
+#[derive(Clone, Default, Eq, PartialEq, Debug, AutoFrom)]
 #[auto_from(mina_serialization_types::field_and_curve_elements::FiniteECPointVec)]
 pub struct FiniteECPointVec(pub Vec<FiniteECPoint>);
 
@@ -103,7 +103,7 @@ where
     }
 }
 
-#[derive(Clone, Default, PartialEq, Debug, AutoFrom)]
+#[derive(Clone, Default, Eq, PartialEq, Debug, AutoFrom)]
 #[auto_from(mina_serialization_types::field_and_curve_elements::FiniteECPointPair)]
 pub struct FiniteECPointPair(pub FiniteECPoint, pub FiniteECPoint);
 
@@ -122,7 +122,7 @@ macro_rules! finite_ec_point_pair {
 }
 
 /// Vector of 2-tuples of finite EC points (with version number defined in the WireType)
-#[derive(Clone, Default, PartialEq, Debug, AutoFrom)]
+#[derive(Clone, Default, Eq, PartialEq, Debug, AutoFrom)]
 #[auto_from(mina_serialization_types::field_and_curve_elements::FiniteECPointPairVec)]
 pub struct FiniteECPointPairVec(pub Vec<FiniteECPointPair>);
 
@@ -140,7 +140,7 @@ where
 
 /// Elliptic curve point that can either be the coordinates of a point on the curve
 /// OR it can be the point-at-infinity
-#[derive(Clone, PartialEq, Debug, SmartDefault, AutoFrom)]
+#[derive(Clone, Eq, PartialEq, Debug, SmartDefault, AutoFrom)]
 #[auto_from(mina_serialization_types::field_and_curve_elements::ECPoint)]
 pub enum ECPoint {
     // elliptic curve point, can be the point at infinity
@@ -167,7 +167,7 @@ where
 }
 
 /// Vector of EC points (with version number defined in the WireType)
-#[derive(Clone, Default, PartialEq, Debug, AutoFrom)]
+#[derive(Clone, Default, Eq, PartialEq, Debug, AutoFrom)]
 #[auto_from(mina_serialization_types::field_and_curve_elements::ECPointVec)]
 pub struct ECPointVec(pub Vec<ECPoint>);
 

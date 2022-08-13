@@ -5,7 +5,7 @@ use mina_serialization_types_macros::AutoFrom;
 
 use crate::types::FieldElementVec;
 
-#[derive(Clone, Default, PartialEq, Debug, AutoFrom)]
+#[derive(Clone, Default, Eq, PartialEq, Debug, AutoFrom)]
 #[auto_from(mina_serialization_types::proof_evaluations::ProofEvaluations)]
 pub struct ProofEvaluations {
     pub l: FieldElementVec,

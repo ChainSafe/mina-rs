@@ -25,55 +25,55 @@ pub(crate) struct A {
     pub(crate) y: f64,
 }
 
-#[derive(Serialize, Deserialize, Debug, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Eq, PartialEq)]
 pub(crate) struct B {
     pub(crate) y: BInner,
     pub(crate) z: Option<i64>,
 }
-#[derive(Serialize, Deserialize, Debug, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Eq, PartialEq)]
 pub(crate) struct B2 {
     pub(crate) y: BInner3,
     pub(crate) z: Option<i64>,
 }
 
-#[derive(Serialize, Deserialize, Debug, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Eq, PartialEq)]
 pub(crate) struct B3 {
     pub(crate) y: BInner2,
     pub(crate) z: Option<i64>,
 }
-#[derive(Serialize, Deserialize, Debug, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Eq, PartialEq)]
 pub(crate) struct BInner {
     pub(crate) w: i64,
     pub(crate) x: i64,
 }
 
-#[derive(Serialize, Deserialize, Debug, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Eq, PartialEq)]
 pub(crate) enum BInner2 {
     V0(BInner),
     V1(BInner4),
 }
-#[derive(Serialize, Deserialize, Debug, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Eq, PartialEq)]
 pub(crate) struct BInner3 {
     pub(crate) dummy: i64,
     pub(crate) inner: BInner2,
 }
-#[derive(Serialize, Deserialize, Debug, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Eq, PartialEq)]
 pub(crate) enum BInner4 {
     V0(BInner),
 }
 
-#[derive(Serialize, Deserialize, Debug, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Eq, PartialEq)]
 pub(crate) struct C {
     pub(crate) y: CInner,
     pub(crate) z: Option<i64>,
 }
 
-#[derive(Serialize, Deserialize, Debug, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Eq, PartialEq)]
 pub(crate) enum CInner2 {
     V0,
     V1(()),
 }
-#[derive(Serialize, Deserialize, Debug, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Eq, PartialEq)]
 pub(crate) enum CInner {
     V0,
     V1(CInner2),

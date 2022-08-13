@@ -13,7 +13,7 @@ use proof_systems::{
 };
 
 /// Wrapper of Vec<u8>
-#[derive(Clone, Debug, PartialEq, AutoFrom)]
+#[derive(Clone, Debug, Eq, PartialEq, AutoFrom)]
 #[auto_from(mina_serialization_types::common::ByteVec)]
 pub struct ByteVec(pub Vec<u8>);
 

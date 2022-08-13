@@ -15,14 +15,14 @@ use serde::{Deserialize, Deserializer, Serialize, Serializer};
 use versioned::*;
 
 /// Wrapper struct for the output for a VRF
-#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]
 pub struct VrfOutputTruncated(pub Vec<u8>);
 
 /// Wrapper struct for the output for a VRF, with version
 pub type VrfOutputTruncatedV1 = Versioned<VrfOutputTruncated, 1>;
 
 /// Wrapper struct for the output for a VRF (json)
-#[derive(Clone, Debug, PartialEq, AutoFrom)]
+#[derive(Clone, Debug, Eq, PartialEq, AutoFrom)]
 #[auto_from(VrfOutputTruncated)]
 pub struct VrfOutputTruncatedJson(pub Vec<u8>);
 
@@ -58,7 +58,7 @@ impl<'de> Deserialize<'de> for VrfOutputTruncatedJson {
 /// approach where the future stake distribution snapshot is prepared by the current consensus epoch.
 ///
 /// Samasika prepares the past for the future! This future state is stored in the next_epoch_data field.
-#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]
 pub struct ConsensusState {
     /// Height of block
     pub blockchain_length: LengthV1,
@@ -96,7 +96,7 @@ pub struct ConsensusState {
 pub type ConsensusStateV1 = Versioned<Versioned<ConsensusState, 1>, 1>;
 
 /// json protocol version of the consensus state
-#[derive(Clone, Debug, Serialize, Deserialize, PartialEq, AutoFrom)]
+#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq, AutoFrom)]
 #[auto_from(ConsensusState)]
 pub struct ConsensusStateJson {
     /// Height of block

@@ -11,7 +11,7 @@ use mina_serialization_types_macros::AutoFrom;
 use proof_systems::mina_signer::CompressedPubKey;
 use versioned::*;
 
-#[derive(Clone, Debug, PartialEq, AutoFrom)]
+#[derive(Clone, Debug, Eq, PartialEq, AutoFrom)]
 #[auto_from(mina_serialization_types::snark_work::TransactionSnarkWork)]
 pub struct TransactionSnarkWork {
     pub fee: Amount,
@@ -25,7 +25,7 @@ impl_from_with_proxy!(
     TransactionSnarkWorkJson
 );
 
-#[derive(Clone, Debug, PartialEq, AutoFrom)]
+#[derive(Clone, Debug, Eq, PartialEq, AutoFrom)]
 #[auto_from(mina_serialization_types::snark_work::OneORTwo)]
 pub enum OneORTwo {
     // Versioned 1 byte
@@ -33,14 +33,14 @@ pub enum OneORTwo {
     Two(Box<TransactionSnark>, Box<TransactionSnark>),
 }
 
-#[derive(Clone, Debug, PartialEq, AutoFrom)]
+#[derive(Clone, Debug, Eq, PartialEq, AutoFrom)]
 #[auto_from(mina_serialization_types::snark_work::TransactionSnark)]
 pub struct TransactionSnark {
     pub statement: Statement,
     pub transaction_snark_proof: ProtocolStateProof,
 }
 
-#[derive(Clone, Debug, PartialEq, AutoFrom)]
+#[derive(Clone, Debug, Eq, PartialEq, AutoFrom)]
 #[auto_from(mina_serialization_types::snark_work::Statement)]
 pub struct Statement {
     pub source: StateHash,
@@ -59,46 +59,46 @@ impl_from_with_proxy!(
     StatementJson
 );
 
-#[derive(Clone, Debug, PartialEq, AutoFrom)]
+#[derive(Clone, Debug, Eq, PartialEq, AutoFrom)]
 #[auto_from(mina_serialization_types::snark_work::PendingCoinbaseStackState)]
 pub struct PendingCoinbaseStackState {
     pub source: PendingCoinbase,
     pub target: PendingCoinbase,
 }
 
-#[derive(Clone, Debug, PartialEq, AutoFrom)]
+#[derive(Clone, Debug, Eq, PartialEq, AutoFrom)]
 #[auto_from(mina_serialization_types::snark_work::PendingCoinbase)]
 pub struct PendingCoinbase {
     pub data_stack: StateHash,
     pub state_stack: StateStack,
 }
 
-#[derive(Clone, Debug, PartialEq, AutoFrom)]
+#[derive(Clone, Debug, Eq, PartialEq, AutoFrom)]
 #[auto_from(mina_serialization_types::snark_work::StateStack)]
 pub struct StateStack {
     pub init: StateHash,
     pub curr: StateHash,
 }
 
-#[derive(Clone, Debug, PartialEq, AutoFrom)]
+#[derive(Clone, Debug, Eq, PartialEq, AutoFrom)]
 #[auto_from(mina_serialization_types::snark_work::FeeExcessPair)]
 pub struct FeeExcessPair(pub FeeExcess, pub FeeExcess);
 
-#[derive(Clone, Debug, PartialEq, AutoFrom)]
+#[derive(Clone, Debug, Eq, PartialEq, AutoFrom)]
 #[auto_from(mina_serialization_types::snark_work::FeeExcess)]
 pub struct FeeExcess {
     pub token: TokenId,
     pub amount: Signed,
 }
 
-#[derive(Clone, Debug, PartialEq, AutoFrom)]
+#[derive(Clone, Debug, Eq, PartialEq, AutoFrom)]
 #[auto_from(mina_serialization_types::snark_work::Signed)]
 pub struct Signed {
     pub magnitude: Amount,
     pub sgn: SgnType,
 }
 
-#[derive(Clone, Debug, PartialEq, AutoFrom)]
+#[derive(Clone, Debug, Eq, PartialEq, AutoFrom)]
 #[auto_from(mina_serialization_types::snark_work::SgnType)]
 pub enum SgnType {
     Pos,

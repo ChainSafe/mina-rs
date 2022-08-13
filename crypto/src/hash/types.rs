@@ -19,7 +19,7 @@ use proof_systems::{
 use sha2::{Digest, Sha256};
 use versioned::*;
 
-#[derive(Clone, Debug, Default, PartialEq, derive_more::From, derive_more::Into)]
+#[derive(Clone, Debug, Default, Eq, PartialEq, derive_more::From, derive_more::Into)]
 pub(crate) struct BaseHash(pub(crate) [u8; 32]);
 
 impl Hashable for BaseHash {
@@ -87,7 +87,7 @@ macro_rules! impl_from_for_hash {
 }
 
 //////////////////////////////////////////////////////////////////////////
-#[derive(Clone, Debug, Default, PartialEq, derive_more::From, derive_more::Into)]
+#[derive(Clone, Debug, Default, Eq, PartialEq, derive_more::From, derive_more::Into)]
 pub struct StateHash(BaseHash);
 
 impl_from_for_hash!(StateHash, HashV1);
@@ -141,7 +141,7 @@ impl ToChunkedROInput for StateHash {
 
 //////////////////////////////////////////////////////////////////////////
 
-#[derive(Clone, Debug, Default, PartialEq, derive_more::From, derive_more::Into)]
+#[derive(Clone, Debug, Default, Eq, PartialEq, derive_more::From, derive_more::Into)]
 pub struct LedgerHash(BaseHash);
 
 impl_from_for_hash!(LedgerHash, HashV1);
@@ -177,7 +177,7 @@ impl Hashable for LedgerHash {
 
 //////////////////////////////////////////////////////////////////////////
 
-#[derive(Clone, Default, Debug, PartialEq, derive_more::From, derive_more::Into)]
+#[derive(Clone, Default, Debug, Eq, PartialEq, derive_more::From, derive_more::Into)]
 pub struct ChainHash(BaseHash);
 
 impl_from_for_hash!(ChainHash, HashV1);
@@ -224,7 +224,7 @@ impl From<ChainHash> for [u8; 32] {
 
 //////////////////////////////////////////////////////////////////////////
 
-#[derive(Clone, Default, Debug, PartialEq, derive_more::From, derive_more::Into)]
+#[derive(Clone, Default, Debug, Eq, PartialEq, derive_more::From, derive_more::Into)]
 pub struct CoinBaseHash(BaseHash);
 
 impl_from_for_hash!(CoinBaseHash, HashV1);
@@ -246,7 +246,7 @@ impl Hashable for CoinBaseHash {
 
 //////////////////////////////////////////////////////////////////////////
 
-#[derive(Clone, Default, Debug, PartialEq, derive_more::From, derive_more::Into)]
+#[derive(Clone, Default, Debug, Eq, PartialEq, derive_more::From, derive_more::Into)]
 pub struct EpochSeed(BaseHash);
 
 impl_from_for_hash!(EpochSeed, HashV1);
@@ -267,7 +267,7 @@ impl Hashable for EpochSeed {
 
 //////////////////////////////////////////////////////////////////////////
 
-#[derive(Clone, Default, Debug, PartialEq)]
+#[derive(Clone, Default, Debug, Eq, PartialEq)]
 pub struct StagedLedgerHash {
     pub non_snark: NonSnarkStagedLedgerHash,
     pub pending_coinbase_hash: CoinBaseHash,
@@ -287,7 +287,7 @@ impl Hashable for StagedLedgerHash {
     }
 }
 
-#[derive(Clone, Default, Debug, PartialEq)]
+#[derive(Clone, Default, Debug, Eq, PartialEq)]
 pub struct NonSnarkStagedLedgerHash {
     pub ledger_hash: LedgerHash,
     pub aux_hash: AuxHash,
@@ -317,7 +317,7 @@ impl Hashable for NonSnarkStagedLedgerHash {
     }
 }
 
-#[derive(Clone, Default, Debug, PartialEq, derive_more::From, derive_more::Into)]
+#[derive(Clone, Default, Debug, Eq, PartialEq, derive_more::From, derive_more::Into)]
 pub struct AuxHash(pub Vec<u8>);
 
 impl_from_for_newtype!(AuxHash, AuxHashJson);
@@ -325,7 +325,7 @@ impl_strconv_via_json!(AuxHash, AuxHashJson);
 
 //////////////////////////////////////////////////////////////////////////
 
-#[derive(Clone, Default, Debug, PartialEq, derive_more::From)]
+#[derive(Clone, Default, Debug, Eq, PartialEq, derive_more::From)]
 pub struct PendingCoinbaseAuxHash(pub Vec<u8>);
 
 impl_from_for_newtype!(PendingCoinbaseAuxHash, PendingCoinbaseAuxHashJson);
@@ -333,7 +333,7 @@ impl_strconv_via_json!(PendingCoinbaseAuxHash, PendingCoinbaseAuxHashJson);
 
 //////////////////////////////////////////////////////////////////////////
 
-#[derive(Clone, Default, Debug, PartialEq)]
+#[derive(Clone, Default, Debug, Eq, PartialEq)]
 pub struct VrfOutputHash(BaseHash);
 
 impl_from_for_hash!(VrfOutputHash, HashV1);

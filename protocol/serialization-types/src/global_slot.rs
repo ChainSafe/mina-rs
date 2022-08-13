@@ -13,7 +13,7 @@ use crate::{
 };
 
 /// A global slot
-#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]
 pub struct GlobalSlot {
     /// The global slot number of a chain or block
     pub slot_number: GlobalSlotNumberV1,
@@ -25,7 +25,7 @@ pub struct GlobalSlot {
 pub type GlobalSlotV1 = Versioned<Versioned<GlobalSlot, 1>, 1>;
 
 /// A global slot (json)
-#[derive(Clone, Debug, Serialize, Deserialize, PartialEq, AutoFrom)]
+#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq, AutoFrom)]
 #[auto_from(GlobalSlot)]
 pub struct GlobalSlotJson {
     /// The global slot number of a chain or block
