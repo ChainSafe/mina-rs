@@ -81,7 +81,7 @@ mod tests {
         let rule: BinProtRule = serde_json::from_str(RECORD_RULE).unwrap();
         let example = vec![0x05, 0x00, 0x01];
 
-        #[derive(Serialize, Deserialize, Debug, Eq, PartialEq)]
+        #[derive(Serialize, Deserialize, Debug, PartialEq)]
         struct PartialType {
             first: u8,
             second: Value,

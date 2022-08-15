@@ -144,7 +144,14 @@ mod tests {
         let mut expected_root_hash: Option<Fp> = None;
         for (key, value) in db
             .iterator(IteratorMode::Start)
-            .take_while(|(key, _)| key[0] < 0xfe)
+            .take_while(|r| {
+                if let Ok((key, _)) = r {
+                    key[0] < 0xfe
+                } else {
+                    false
+                }
+            })
+            .flatten()
         {
             let height = key[0];
             let hash: Fp = BigInteger256::read(&value[2..]).unwrap().into();
@@ -182,7 +189,14 @@ mod tests {
         let mut max_height = 0;
         for (height, hash) in db
             .iterator(IteratorMode::Start)
-            .take_while(|(key, _)| key[0] < 0xfe)
+            .take_while(|r| {
+                if let Ok((key, _)) = r {
+                    key[0] < 0xfe
+                } else {
+                    false
+                }
+            })
+            .flatten()
             .map(|(key, value)| {
                 let height = key[0];
                 let hash: Fp = BigInteger256::read(&value[2..]).unwrap().into();
@@ -235,7 +249,14 @@ mod tests {
         let mut expected_root_hash: Option<Fp> = None;
         for (key, value) in db
             .iterator(IteratorMode::Start)
-            .take_while(|(key, _)| key[0] < 0xfe)
+            .take_while(|r| {
+                if let Ok((key, _)) = r {
+                    key[0] < 0xfe
+                } else {
+                    false
+                }
+            })
+            .flatten()
         {
             let height = key[0];
             let hash: Fp = BigInteger256::read(&value[..]).unwrap().into();
@@ -273,7 +294,14 @@ mod tests {
         let mut max_height = 0;
         for (height, hash) in db
             .iterator(IteratorMode::Start)
-            .take_while(|(key, _)| key[0] < 0xfe)
+            .take_while(|r| {
+                if let Ok((key, _)) = r {
+                    key[0] < 0xfe
+                } else {
+                    false
+                }
+            })
+            .flatten()
             .map(|(key, value)| {
                 let height = key[0];
                 let hash: Fp = BigInteger256::read(&value[..]).unwrap().into();

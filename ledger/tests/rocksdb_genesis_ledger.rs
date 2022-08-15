@@ -33,7 +33,14 @@ mod tests {
         let mut expected_root_hash: Option<Fp> = None;
         for (key, value) in db
             .iterator(IteratorMode::Start)
-            .take_while(|(key, _)| key[0] < 0xfe)
+            .take_while(|r| {
+                if let Ok((key, _)) = r {
+                    key[0] < 0xfe
+                } else {
+                    false
+                }
+            })
+            .flatten()
         {
             let height = key[0];
             let hash: Fp = BigInteger256::read(&value[2..])?.into();
@@ -86,7 +93,14 @@ mod tests {
         let mut expected_root_hash: Option<Fp> = None;
         for (key, value) in db
             .iterator(IteratorMode::Start)
-            .take_while(|(key, _)| key[0] < 0xfe)
+            .take_while(|r| {
+                if let Ok((key, _)) = r {
+                    key[0] < 0xfe
+                } else {
+                    false
+                }
+            })
+            .flatten()
         {
             let height = key[0];
             let hash: Fp = BigInteger256::read(&value[..])?.into();
@@ -273,9 +287,15 @@ mod tests {
 
     fn get_nth_hash(db_path: impl AsRef<str>, n: usize) -> anyhow::Result<Fp> {
         let db = rocksdb::DB::open_for_read_only(&Options::default(), db_path.as_ref(), true)?;
-        let r = if let Some((_, value)) = db
+        let r = if let Some(Ok((_, value))) = db
             .iterator(IteratorMode::Start)
-            .take_while(|(key, _)| key[0] < 0xfe)
+            .take_while(|r| {
+                if let Ok((key, _)) = r {
+                    key[0] < 0xfe
+                } else {
+                    false
+                }
+            })
             .nth(n)
         {
             BigInteger256::read(&value[..])?.into()

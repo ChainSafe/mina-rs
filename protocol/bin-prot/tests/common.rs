@@ -19,7 +19,7 @@ macro_rules! bin_prot_test {
     };
 }
 
-#[derive(Serialize, Deserialize, Debug, Eq, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, PartialEq)]
 pub(crate) struct A {
     pub(crate) x: i64,
     pub(crate) y: f64,
