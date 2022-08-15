@@ -16,6 +16,8 @@ use thiserror::Error;
 /// that indicates the value is an Account (leaf node)
 const ACCOUNT_PREFIX: u8 = 0xfe;
 
+type RocksDBResult = Result<(Box<[u8]>, Box<[u8]>), rocksdb::Error>;
+
 /// A genesis ledger backed by a RocksDB instance
 pub struct RocksDbGenesisLedger<
     'a,
@@ -31,6 +33,9 @@ pub struct RocksDbGenesisLedger<
 pub enum Error {
     #[error("Could not deserialize account: {0}\nkey:{1:?}, value:{2:?}")]
     Disconnect(bin_prot::error::Error, Vec<u8>, Vec<u8>),
+
+    #[error("RocksDBError: {0}")]
+    RocksDBError(rocksdb::Error),
 }
 
 impl<'a, const DEPTH: usize, Account: Hashable + BinProtSerializationType<'a>>
@@ -46,8 +51,9 @@ impl<'a, const DEPTH: usize, Account: Hashable + BinProtSerializationType<'a>>
 }
 
 fn decode_account_from_kv<'a, Account: BinProtSerializationType<'a>>(
-    (k, v): (Box<[u8]>, Box<[u8]>),
+    r: RocksDBResult,
 ) -> Result<Account, Error> {
+    let (k, v) = r.map_err(Error::RocksDBError)?;
     let account: <Account as BinProtSerializationType>::T =
         from_reader_strict(&v[..]).map_err(|err| Error::Disconnect(err, k.to_vec(), v.to_vec()))?;
     Ok(account.into())
@@ -70,7 +76,13 @@ impl<'a, const DEPTH: usize, Account: Hashable + BinProtSerializationType<'a> + 
         let db_iter = self
             .db
             .prefix_iterator(&[ACCOUNT_PREFIX]) // This will ensure the iterator doesnt start until the prefix byte is matched
-            .take_while(|(k, _)| k.first() == Some(&ACCOUNT_PREFIX)); // Ensures the iterator stops when the prefix stops matching
+            .take_while(|r| {
+                if let Ok((k, _)) = r {
+                    k.first() == Some(&ACCOUNT_PREFIX)
+                } else {
+                    false
+                }
+            }); // Ensures the iterator stops when the prefix stops matching
 
         Box::new(db_iter.map(decode_account_from_kv))
     }
