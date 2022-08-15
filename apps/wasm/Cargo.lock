@@ -1426,7 +1426,7 @@ dependencies = [
  "libp2p-yamux",
  "multiaddr",
  "parking_lot 0.12.1",
- "pin-project 1.0.11",
+ "pin-project 1.0.12",
  "rand 0.7.3",
  "smallvec",
 ]
@@ -1471,7 +1471,7 @@ dependencies = [
  "multihash",
  "multistream-select",
  "parking_lot 0.12.1",
- "pin-project 1.0.11",
+ "pin-project 1.0.12",
  "prost",
  "prost-build",
  "rand 0.8.5",
@@ -1719,7 +1719,7 @@ checksum = "0f1a458bbda880107b5b36fcb9b5a1ef0c329685da0e203ed692a8ebe64cc92c"
 dependencies = [
  "futures",
  "log",
- "pin-project 1.0.11",
+ "pin-project 1.0.12",
  "rand 0.7.3",
  "salsa20",
  "sha3 0.9.1",
@@ -1740,7 +1740,7 @@ dependencies = [
  "libp2p-core",
  "libp2p-swarm",
  "log",
- "pin-project 1.0.11",
+ "pin-project 1.0.12",
  "prost",
  "prost-build",
  "rand 0.8.5",
@@ -1805,7 +1805,7 @@ dependencies = [
  "instant",
  "libp2p-core",
  "log",
- "pin-project 1.0.11",
+ "pin-project 1.0.12",
  "rand 0.7.3",
  "smallvec",
  "thiserror",
@@ -2289,7 +2289,7 @@ dependencies = [
  "bytes",
  "futures",
  "log",
- "pin-project 1.0.11",
+ "pin-project 1.0.12",
  "smallvec",
  "unsigned-varint",
 ]
@@ -2632,11 +2632,11 @@ dependencies = [
 
 [[package]]
 name = "pin-project"
-version = "1.0.11"
+version = "1.0.12"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "78203e83c48cffbe01e4a2d35d566ca4de445d79a85372fc64e378bfc812a260"
+checksum = "ad29a609b6bcd67fee905812e544992d216af9d755757c05ed2d0e15a74c6ecc"
 dependencies = [
- "pin-project-internal 1.0.11",
+ "pin-project-internal 1.0.12",
 ]
 
 [[package]]
@@ -2652,9 +2652,9 @@ dependencies = [
 
 [[package]]
 name = "pin-project-internal"
-version = "1.0.11"
+version = "1.0.12"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "710faf75e1b33345361201d36d04e98ac1ed8909151a017ed384700836104c74"
+checksum = "069bdb1e05adc7a8990dce9cc75370895fbe4e3d58b9b73bf1aee56359344a55"
 dependencies = [
  "proc-macro2",
  "quote",
