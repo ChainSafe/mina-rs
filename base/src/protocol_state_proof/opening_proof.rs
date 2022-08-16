@@ -5,7 +5,7 @@ use mina_serialization_types_macros::AutoFrom;
 
 use crate::types::{FieldElement, FiniteECPoint, FiniteECPointPairVec};
 
-#[derive(Clone, Default, PartialEq, Debug, AutoFrom)]
+#[derive(Clone, Default, Eq, PartialEq, Debug, AutoFrom)]
 #[auto_from(mina_serialization_types::opening_proof::OpeningProof)]
 pub struct OpeningProof {
     pub lr: FiniteECPointPairVec,

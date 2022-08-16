@@ -5,18 +5,18 @@ use bin_prot::integers::{integer, nat0};
 use serde::{Deserialize, Serialize};
 mod common;
 
-#[derive(Serialize, Deserialize, PartialEq, Debug)]
+#[derive(Serialize, Deserialize, Eq, PartialEq, Debug)]
 struct TestTupleStruct(bool, i8, i16, i32, i64, (), Option<()>, [u8; 3], char);
 
-#[derive(Serialize, Deserialize, PartialEq, Debug)]
+#[derive(Serialize, Deserialize, Eq, PartialEq, Debug)]
 struct A(bool);
 
-#[derive(Serialize, Deserialize, PartialEq, Debug)]
+#[derive(Serialize, Deserialize, Eq, PartialEq, Debug)]
 struct B {
     a: A,
 }
 
-#[derive(Serialize, Deserialize, PartialEq, Debug)]
+#[derive(Serialize, Deserialize, Eq, PartialEq, Debug)]
 struct TestFieldAttrs {
     #[serde(with = "nat0")]
     n: u8,
@@ -24,21 +24,21 @@ struct TestFieldAttrs {
     i: i16,
 }
 
-#[derive(Clone, Serialize, Deserialize, Debug, PartialEq)]
+#[derive(Clone, Serialize, Deserialize, Debug, Eq, PartialEq)]
 pub struct CompressedPoly {
     version: u8,
     x: [u8; 32],
     is_odd: bool,
 }
 
-#[derive(Clone, Serialize, Deserialize, Debug, PartialEq)]
+#[derive(Clone, Serialize, Deserialize, Debug, Eq, PartialEq)]
 pub enum E {
     A,
     B,
     C,
 }
 
-#[derive(Clone, Serialize, Deserialize, Debug, PartialEq)]
+#[derive(Clone, Serialize, Deserialize, Debug, Eq, PartialEq)]
 pub struct PublicKey {
     version: u8,
     poly: CompressedPoly,

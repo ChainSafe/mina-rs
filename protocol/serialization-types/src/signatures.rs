@@ -13,7 +13,7 @@ use serde::{Deserialize, Deserializer, Serialize, Serializer};
 use versioned::Versioned;
 
 /// An EC point stored in compressed form containing only the x coordinate and one extra bit
-#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]
 pub struct CompressedCurvePoint {
     /// The x coordinate of the EC point
     pub x: FieldElement,
@@ -22,7 +22,7 @@ pub struct CompressedCurvePoint {
 }
 
 /// An EC point stored in compressed form containing only the x coordinate and one extra bit (json)
-#[derive(Clone, Debug, PartialEq, AutoFrom)]
+#[derive(Clone, Debug, Eq, PartialEq, AutoFrom)]
 #[auto_from(CompressedCurvePoint)]
 pub struct PublicKeyJson {
     /// The x coordinate of the EC point
@@ -61,19 +61,19 @@ impl<'de> Deserialize<'de> for PublicKeyJson {
 }
 
 /// Public key (v1)
-#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]
 pub struct PublicKeyV1(pub Versioned<Versioned<CompressedCurvePoint, 1>, 1>);
 
 /// Public key (v1) with an extra version byte
-#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]
 pub struct PublicKey2V1(pub Versioned<PublicKeyV1, 1>); // with an extra version wrapper
 
 /// Signature (v1)
-#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]
 pub struct SignatureV1(pub Versioned<Versioned<(FieldElement, InnerCurveScalar), 1>, 1>);
 
 /// Signature (json)
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone, Debug, Eq, PartialEq)]
 pub struct SignatureJson(pub Versioned<(FieldElement, InnerCurveScalar), 1>);
 
 impl Serialize for SignatureJson {

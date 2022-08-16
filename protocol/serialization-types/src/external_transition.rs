@@ -20,7 +20,7 @@ use crate::{
 use versioned::*;
 
 /// This structure represents a mina block received from an external block producer
-#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]
 pub struct ExternalTransition {
     /// The blockchain state, including consensus and the ledger
     pub protocol_state: ProtocolStateV1,
@@ -45,7 +45,7 @@ pub type ExternalTransitionV1 = Versioned<ExternalTransition, 1>;
 
 /// This structure represents a mina block received from an external block producer
 /// that is convertible from / to the mina specific json representation
-#[derive(Clone, Debug, Serialize, Deserialize, PartialEq, AutoFrom)]
+#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq, AutoFrom)]
 #[auto_from(ExternalTransition)]
 pub struct ExternalTransitionJson {
     /// The blockchain state, including consensus and the ledger

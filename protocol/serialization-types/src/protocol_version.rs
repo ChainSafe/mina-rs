@@ -8,7 +8,7 @@ use smart_default::SmartDefault;
 use versioned::Versioned;
 
 /// Defines a version of the Mina protocol in semver format
-#[derive(Clone, Debug, Serialize, Deserialize, PartialEq, SmartDefault)]
+#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq, SmartDefault)]
 pub struct ProtocolVersion {
     /// Major version number
     #[default(2)]

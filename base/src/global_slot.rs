@@ -7,7 +7,7 @@ use crate::numbers::{self, Length};
 use mina_serialization_types_macros::AutoFrom;
 use proof_systems::mina_hasher::{Hashable, ROInput};
 
-#[derive(Clone, Default, PartialEq, Debug, AutoFrom)]
+#[derive(Clone, Default, Eq, PartialEq, Debug, AutoFrom)]
 #[auto_from(mina_serialization_types::global_slot::GlobalSlot)]
 /// A global slot
 pub struct GlobalSlot {

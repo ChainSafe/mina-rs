@@ -5,10 +5,10 @@
 mod tests {
     use mina_serialization_types_macros::*;
 
-    #[derive(Debug, Clone, PartialEq, derive_more::From, derive_more::Into)]
+    #[derive(Debug, Clone, Eq, PartialEq, derive_more::From, derive_more::Into)]
     struct I64(pub i64);
 
-    #[derive(Debug, Clone, PartialEq, AutoFrom)]
+    #[derive(Debug, Clone, Eq, PartialEq, AutoFrom)]
     #[auto_from(Bar)]
     #[auto_from(Bar2)]
     struct Foo {
@@ -20,7 +20,7 @@ mod tests {
         f6: Box<i64>,
     }
 
-    #[derive(Debug, Clone, PartialEq)]
+    #[derive(Debug, Clone, Eq, PartialEq)]
     struct Bar {
         pub f1: I64,
         f2: I64,
@@ -30,7 +30,7 @@ mod tests {
         f6: Box<I64>,
     }
 
-    #[derive(Debug, Clone, PartialEq)]
+    #[derive(Debug, Clone, Eq, PartialEq)]
     struct Bar2 {
         f1: I64,
         f2: I64,

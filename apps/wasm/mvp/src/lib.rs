@@ -107,13 +107,13 @@ impl ProtocolName for NodeStatusProtocol {
 #[derive(Clone)]
 struct NodeStatusCodec;
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, Eq, PartialEq)]
 struct NodeStatusRequest;
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, Eq, PartialEq)]
 struct NodeStatusResponse(String);
 
-#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
+#[derive(Debug, Clone, Eq, PartialEq, serde::Serialize, serde::Deserialize)]
 struct PeerStatusJson {
     pub connected: bool,
     pub peer_id: String,

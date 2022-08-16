@@ -14,7 +14,7 @@ use crate::{
 };
 
 /// Constants that define the consensus parameters
-#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]
 pub struct ProtocolConstants {
     /// Point of finality (number of confirmations)
     pub k: LengthV1,
@@ -32,7 +32,7 @@ pub struct ProtocolConstants {
 pub type ProtocolConstantsV1 = Versioned<Versioned<ProtocolConstants, 1>, 1>;
 
 /// Constants that define the consensus parameters (json)
-#[derive(Clone, Debug, Serialize, Deserialize, PartialEq, AutoFrom)]
+#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq, AutoFrom)]
 #[auto_from(ProtocolConstants)]
 pub struct ProtocolConstantsJson {
     /// Point of finality (number of confirmations)

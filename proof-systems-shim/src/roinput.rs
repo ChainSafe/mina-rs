@@ -18,7 +18,7 @@ pub trait ToChunkedROInput {
 }
 
 /// Chunked Random Oracle input
-#[derive(Default, Debug, Clone, PartialEq)]
+#[derive(Default, Debug, Clone, Eq, PartialEq)]
 pub struct ChunkedROInput {
     pub fields: Vec<Fp>,
     pub packed: Vec<(Fp, u32)>,

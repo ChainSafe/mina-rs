@@ -9,7 +9,7 @@ use mina_serialization_types_macros::AutoFrom;
 use versioned::*;
 
 /// Proof that the block was produced within the allotted slot time
-#[derive(Clone, Debug, Default, PartialEq, derive_more::From, derive_more::Into, AutoFrom)]
+#[derive(Clone, Debug, Default, Eq, PartialEq, derive_more::From, derive_more::Into, AutoFrom)]
 #[auto_from(mina_serialization_types::delta_transition_chain_proof::DeltaTransitionChainProof)]
 pub struct DeltaTransitionChainProof(pub StateHash, pub Vec<StateHash>);
 

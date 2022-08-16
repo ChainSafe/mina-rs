@@ -17,4 +17,4 @@ thiserror = "1"
 
 # RocksDB cannot build with the wasm target
 [target.'cfg(not(target_arch = "wasm32"))'.dev-dependencies]
-rocksdb = "0.18.0"
+rocksdb = "0.19.0"

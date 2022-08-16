@@ -14,7 +14,7 @@ use mina_serialization_types_macros::AutoFrom;
 use serde::{Deserialize, Serialize};
 use versioned::Versioned;
 
-#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]
 pub struct OpeningProof {
     pub lr: FiniteECPointPairVecV1,
     pub z_1: FieldElement,
@@ -25,7 +25,7 @@ pub struct OpeningProof {
 
 pub type OpeningProofV1 = Versioned<OpeningProof, 1>;
 
-#[derive(Clone, Debug, Serialize, Deserialize, PartialEq, AutoFrom)]
+#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq, AutoFrom)]
 #[auto_from(OpeningProof)]
 pub struct OpeningProofJson {
     pub lr: FiniteECPointPairVecJson,

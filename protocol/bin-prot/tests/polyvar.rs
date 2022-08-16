@@ -8,7 +8,7 @@ use serde::{Deserialize, Serialize};
 
 mod common;
 
-#[derive(Serialize, Deserialize, Debug, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Eq, PartialEq)]
 #[serde(rename = "Polyvar")]
 enum TestPolyvar {
     // Hash repr 870530776_u32
@@ -25,7 +25,7 @@ enum TestPolyvar {
     VariantTwo(TestPolyvar2),
 }
 
-#[derive(Serialize, Deserialize, Debug, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Eq, PartialEq)]
 #[serde(rename = "Polyvar")]
 enum TestPolyvar2 {
     // Hash repr 925978388_u32

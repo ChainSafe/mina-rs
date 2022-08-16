@@ -8,7 +8,7 @@ use mina_crypto::hash::*;
 use mina_serialization_types_macros::AutoFrom;
 use proof_systems::mina_hasher::{Hashable, ROInput};
 
-#[derive(Clone, Default, PartialEq, Debug, AutoFrom)]
+#[derive(Clone, Default, Eq, PartialEq, Debug, AutoFrom)]
 #[auto_from(mina_serialization_types::epoch_data::EpochLedger)]
 /// Epoch Ledger
 pub struct EpochLedger {
@@ -32,7 +32,7 @@ impl Hashable for EpochLedger {
     }
 }
 
-#[derive(Clone, Default, PartialEq, Debug, AutoFrom)]
+#[derive(Clone, Default, Eq, PartialEq, Debug, AutoFrom)]
 #[auto_from(mina_serialization_types::epoch_data::EpochData)]
 /// Epoch data
 pub struct EpochData {

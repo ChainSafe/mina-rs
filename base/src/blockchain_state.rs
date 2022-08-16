@@ -10,7 +10,7 @@ use mina_serialization_types_macros::AutoFrom;
 use proof_systems::mina_hasher::{Hashable, ROInput};
 use versioned::*;
 
-#[derive(Clone, Default, Debug, PartialEq, AutoFrom)]
+#[derive(Clone, Default, Debug, Eq, PartialEq, AutoFrom)]
 #[auto_from(mina_serialization_types::blockchain_state::BlockchainState)]
 /// Mina blockchain state struct
 pub struct BlockchainState {

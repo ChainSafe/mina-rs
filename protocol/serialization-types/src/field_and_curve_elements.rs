@@ -18,63 +18,63 @@ pub type FieldElement = BigInt256;
 pub type InnerCurveScalar = BigInt256;
 
 /// Vector of finite field elements
-#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]
 pub struct FieldElementVec(pub Vec<FieldElement>);
 
 /// Vector of finite field elements (v1)
 pub type FieldElementVecV1 = Versioned<FieldElementVec, 1>;
 
 /// Vector of finite field elements (json)
-#[derive(Clone, Debug, Serialize, Deserialize, PartialEq, AutoFrom)]
+#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq, AutoFrom)]
 #[auto_from(FieldElementVec)]
 pub struct FieldElementVecJson(pub Vec<FieldElementJson>);
 
 /// An elliptic curve point defined over a base field with elements that fit in a BigInt256
 /// This is a Finite elliptic curve point as this type cannot be used to encode the point-at-infinity
-#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]
 pub struct FiniteECPoint(pub FieldElement, pub FieldElement);
 
 /// A finite EC point (json)
-#[derive(Clone, Debug, Serialize, Deserialize, PartialEq, AutoFrom)]
+#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq, AutoFrom)]
 #[auto_from(FiniteECPoint)]
 pub struct FiniteECPointJson(pub FieldElementJson, pub FieldElementJson);
 
 /// Vector of finite EC points
-#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]
 pub struct FiniteECPointVec(pub Vec<FiniteECPoint>);
 
 /// Vector of finite EC points (with version number)
 pub type FiniteECPointVecV1 = Versioned<FiniteECPointVec, 1>;
 
 /// Vector of finite EC points (json)
-#[derive(Clone, Debug, Serialize, Deserialize, PartialEq, AutoFrom)]
+#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq, AutoFrom)]
 #[auto_from(FiniteECPointVec)]
 pub struct FiniteECPointVecJson(pub Vec<FiniteECPointJson>);
 
 /// Pair if finite EC Points
-#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]
 pub struct FiniteECPointPair(pub FiniteECPoint, pub FiniteECPoint);
 
 /// Pair if finite EC Points (json)
-#[derive(Clone, Debug, Serialize, Deserialize, PartialEq, AutoFrom)]
+#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq, AutoFrom)]
 #[auto_from(FiniteECPointPair)]
 pub struct FiniteECPointPairJson(pub FiniteECPointJson, pub FiniteECPointJson);
 
 /// Vector of 2-tuples of finite EC points
-#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]
 pub struct FiniteECPointPairVec(pub Vec<FiniteECPointPair>);
 
 /// Vector of 2-tuples of finite EC points (with version number)
 pub type FiniteECPointPairVecV1 = Versioned<FiniteECPointPairVec, 1>;
 
 /// Vector of 2-tuples of finite EC points (json)
-#[derive(Clone, Debug, Serialize, Deserialize, PartialEq, AutoFrom)]
+#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq, AutoFrom)]
 #[auto_from(FiniteECPointPairVec)]
 pub struct FiniteECPointPairVecJson(pub Vec<FiniteECPointPairJson>);
 
 /// Elliptic curve point that can either be the coordinates of a point on the curve
 /// OR it can be the point-at-infinity
-#[derive(Clone, Debug, Serialize, Deserialize, PartialEq, SmartDefault)]
+#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq, SmartDefault)]
 pub enum ECPoint {
     /// The point at infinity
     #[default]
@@ -89,7 +89,7 @@ pub type ECPointV1 = Versioned<ECPoint, 1>;
 
 /// Elliptic curve point that can either be the coordinates of a point on the curve
 /// OR it can be the point-at-infinity (json)
-#[derive(Clone, Debug, Serialize, Deserialize, PartialEq, SmartDefault)]
+#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq, SmartDefault)]
 enum ECPointJsonProxy {
     /// The point at infinity
     #[default]
@@ -100,7 +100,7 @@ enum ECPointJsonProxy {
 
 /// Elliptic curve point that can either be the coordinates of a point on the curve
 /// OR it can be the point-at-infinity (mina json)
-#[derive(Clone, Debug, PartialEq, SmartDefault, AutoFrom)]
+#[derive(Clone, Debug, Eq, PartialEq, SmartDefault, AutoFrom)]
 #[auto_from(ECPoint)]
 #[auto_from(ECPointJsonProxy)]
 pub enum ECPointJson {
@@ -114,19 +114,19 @@ pub enum ECPointJson {
 impl_mina_enum_json_serde_with_option!(ECPointJson, ECPointJsonProxy, false);
 
 /// Vector of EC points
-#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]
 pub struct ECPointVec(pub Vec<ECPointV1>);
 
 /// Vector of EC points (with version number defined in the WireType)
 pub type ECPointVecV1 = Versioned<ECPointVec, 1>;
 
 /// Vector of EC points (json)
-#[derive(Clone, Debug, Serialize, Deserialize, PartialEq, AutoFrom)]
+#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq, AutoFrom)]
 #[auto_from(ECPointVec)]
 pub struct ECPointVecJson(pub Vec<ECPointJson>);
 
 /// Field element (json)
-#[derive(Debug, Clone, PartialEq, From, Into)]
+#[derive(Debug, Clone, Eq, PartialEq, From, Into)]
 pub struct FieldElementJson(pub FieldElement);
 
 impl FieldElementJson {

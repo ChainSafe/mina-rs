@@ -9,7 +9,7 @@ use serde::{Deserialize, Serialize};
 use versioned::*;
 
 /// Body of the protocol state
-#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]
 pub struct ProtocolStateBody {
     /// Genesis protocol state hash (used for hardforks)
     pub genesis_state_hash: HashV1,
@@ -25,7 +25,7 @@ pub struct ProtocolStateBody {
 pub type ProtocolStateBodyV1 = Versioned<Versioned<ProtocolStateBody, 1>, 1>;
 
 /// Body of the protocol state (json)
-#[derive(Clone, Debug, Serialize, Deserialize, PartialEq, AutoFrom)]
+#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq, AutoFrom)]
 #[auto_from(ProtocolStateBody)]
 pub struct ProtocolStateBodyJson {
     /// Genesis protocol state hash (used for hardforks)
