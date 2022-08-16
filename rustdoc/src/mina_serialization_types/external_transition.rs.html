@@ -68,75 +68,75 @@
 <span id="68">68</span>
 <span id="69">69</span>
 <span id="70">70</span>
-</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems</span>
-<span class="comment">// SPDX-License-Identifier: Apache-2.0</span>
+</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems
+// SPDX-License-Identifier: Apache-2.0
 
-<span class="doccomment">//! Mina ExternalTransition</span>
+</span><span class="doccomment">//! Mina ExternalTransition
 
-<span class="kw">use</span> <span class="ident">mina_serialization_types_macros::AutoFrom</span>;
-<span class="kw">use</span> <span class="ident">serde</span>::{<span class="ident">Deserialize</span>, <span class="ident">Serialize</span>};
+</span><span class="kw">use </span>mina_serialization_types_macros::AutoFrom;
+<span class="kw">use </span>serde::{Deserialize, Serialize};
 
-<span class="kw">use</span> <span class="kw">crate</span>::{
-    <span class="ident">delta_transition_chain_proof::DeltaTransitionChainProofJson</span>,
-    <span class="ident">protocol_state::ProtocolStateJson</span>,
-    <span class="ident">protocol_state_proof::ProtocolStateProofBase64Json</span>,
-    <span class="ident">protocol_version::ProtocolVersionJson</span>,
-    <span class="ident">staged_ledger_diff::StagedLedgerDiffJson</span>,
-    <span class="ident">v1</span>::{
-        <span class="ident">DeltaTransitionChainProof</span>, <span class="ident">ProtocolStateProofV1</span>, <span class="ident">ProtocolStateV1</span>, <span class="ident">ProtocolVersionV1</span>,
-        <span class="ident">StagedLedgerDiffV1</span>,
+<span class="kw">use crate</span>::{
+    delta_transition_chain_proof::DeltaTransitionChainProofJson,
+    protocol_state::ProtocolStateJson,
+    protocol_state_proof::ProtocolStateProofBase64Json,
+    protocol_version::ProtocolVersionJson,
+    staged_ledger_diff::StagedLedgerDiffJson,
+    v1::{
+        DeltaTransitionChainProof, ProtocolStateProofV1, ProtocolStateV1, ProtocolVersionV1,
+        StagedLedgerDiffV1,
     },
 };
-<span class="kw">use</span> <span class="ident">versioned</span>::<span class="kw-2">*</span>;
+<span class="kw">use </span>versioned::<span class="kw-2">*</span>;
 
-<span class="doccomment">/// This structure represents a mina block received from an external block producer</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">PartialEq</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ExternalTransition</span> {
-    <span class="doccomment">/// The blockchain state, including consensus and the ledger</span>
-    <span class="kw">pub</span> <span class="ident">protocol_state</span>: <span class="ident">ProtocolStateV1</span>,
-    <span class="doccomment">/// Proof that the protocol state and entire history of the chain is valid</span>
-    <span class="kw">pub</span> <span class="ident">protocol_state_proof</span>: <span class="ident">ProtocolStateProofV1</span>,
-    <span class="doccomment">/// Diff of the proposed next state of the blockchain</span>
-    <span class="kw">pub</span> <span class="ident">staged_ledger_diff</span>: <span class="ident">StagedLedgerDiffV1</span>,
-    <span class="doccomment">/// Proof that the block was produced within the allotted slot time</span>
-    <span class="kw">pub</span> <span class="ident">delta_transition_chain_proof</span>: <span class="ident">DeltaTransitionChainProof</span>,
-    <span class="doccomment">/// Current protocol version</span>
-    <span class="kw">pub</span> <span class="ident">current_protocol_version</span>: <span class="ident">ProtocolVersionV1</span>,
-    <span class="doccomment">/// Proposed protocol version</span>
-    <span class="kw">pub</span> <span class="ident">proposed_protocol_version_opt</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">ProtocolVersionV1</span><span class="op">&gt;</span>,
-    <span class="doccomment">/// Callback used for validating external transition received over the network.</span>
-    <span class="doccomment">/// This is not actually send over the network but requires a unit type to meet the</span>
-    <span class="doccomment">/// serialization requirements</span>
-    <span class="kw">pub</span> <span class="ident">validation_callback</span>: (),
+<span class="doccomment">/// This structure represents a mina block received from an external block producer
+</span><span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]</span>
+<span class="kw">pub struct </span>ExternalTransition {
+    <span class="doccomment">/// The blockchain state, including consensus and the ledger
+    </span><span class="kw">pub </span>protocol_state: ProtocolStateV1,
+    <span class="doccomment">/// Proof that the protocol state and entire history of the chain is valid
+    </span><span class="kw">pub </span>protocol_state_proof: ProtocolStateProofV1,
+    <span class="doccomment">/// Diff of the proposed next state of the blockchain
+    </span><span class="kw">pub </span>staged_ledger_diff: StagedLedgerDiffV1,
+    <span class="doccomment">/// Proof that the block was produced within the allotted slot time
+    </span><span class="kw">pub </span>delta_transition_chain_proof: DeltaTransitionChainProof,
+    <span class="doccomment">/// Current protocol version
+    </span><span class="kw">pub </span>current_protocol_version: ProtocolVersionV1,
+    <span class="doccomment">/// Proposed protocol version
+    </span><span class="kw">pub </span>proposed_protocol_version_opt: <span class="prelude-ty">Option</span>&lt;ProtocolVersionV1&gt;,
+    <span class="doccomment">/// Callback used for validating external transition received over the network.
+    /// This is not actually send over the network but requires a unit type to meet the
+    /// serialization requirements
+    </span><span class="kw">pub </span>validation_callback: (),
 }
 
-<span class="doccomment">/// Versioned structure to use externally</span>
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">ExternalTransitionV1</span> <span class="op">=</span> <span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">ExternalTransition</span>, <span class="number">1</span><span class="op">&gt;</span>;
+<span class="doccomment">/// Versioned structure to use externally
+</span><span class="kw">pub type </span>ExternalTransitionV1 = Versioned&lt;ExternalTransition, <span class="number">1</span>&gt;;
 
-<span class="doccomment">/// This structure represents a mina block received from an external block producer</span>
-<span class="doccomment">/// that is convertible from / to the mina specific json representation</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">PartialEq</span>, <span class="ident">AutoFrom</span>)]</span>
-<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">ExternalTransition</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ExternalTransitionJson</span> {
-    <span class="doccomment">/// The blockchain state, including consensus and the ledger</span>
-    <span class="kw">pub</span> <span class="ident">protocol_state</span>: <span class="ident">ProtocolStateJson</span>,
-    <span class="doccomment">/// Proof that the protocol state and entire history of the chain is valid</span>
-    <span class="kw">pub</span> <span class="ident">protocol_state_proof</span>: <span class="ident">ProtocolStateProofBase64Json</span>,
-    <span class="doccomment">/// Diff of the proposed next state of the blockchain</span>
-    <span class="kw">pub</span> <span class="ident">staged_ledger_diff</span>: <span class="ident">StagedLedgerDiffJson</span>,
-    <span class="doccomment">/// Proof that the block was produced within the allotted slot time</span>
-    <span class="kw">pub</span> <span class="ident">delta_transition_chain_proof</span>: <span class="ident">DeltaTransitionChainProofJson</span>,
-    <span class="doccomment">/// Current protocol version</span>
-    <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">skip</span>)]</span>
-    <span class="kw">pub</span> <span class="ident">current_protocol_version</span>: <span class="ident">ProtocolVersionJson</span>,
-    <span class="doccomment">/// Proposed protocol version</span>
-    <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">skip</span>)]</span>
-    <span class="kw">pub</span> <span class="ident">proposed_protocol_version_opt</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">ProtocolVersionJson</span><span class="op">&gt;</span>,
-    <span class="doccomment">/// Callback used for validating external transition received over the network.</span>
-    <span class="doccomment">/// This is not actually send over the network but requires a unit type to meet the</span>
-    <span class="doccomment">/// serialization requirements</span>
-    <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">skip</span>)]</span>
-    <span class="kw">pub</span> <span class="ident">validation_callback</span>: (),
+<span class="doccomment">/// This structure represents a mina block received from an external block producer
+/// that is convertible from / to the mina specific json representation
+</span><span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq, AutoFrom)]</span>
+<span class="attribute">#[auto_from(ExternalTransition)]</span>
+<span class="kw">pub struct </span>ExternalTransitionJson {
+    <span class="doccomment">/// The blockchain state, including consensus and the ledger
+    </span><span class="kw">pub </span>protocol_state: ProtocolStateJson,
+    <span class="doccomment">/// Proof that the protocol state and entire history of the chain is valid
+    </span><span class="kw">pub </span>protocol_state_proof: ProtocolStateProofBase64Json,
+    <span class="doccomment">/// Diff of the proposed next state of the blockchain
+    </span><span class="kw">pub </span>staged_ledger_diff: StagedLedgerDiffJson,
+    <span class="doccomment">/// Proof that the block was produced within the allotted slot time
+    </span><span class="kw">pub </span>delta_transition_chain_proof: DeltaTransitionChainProofJson,
+    <span class="doccomment">/// Current protocol version
+    </span><span class="attribute">#[serde(skip)]</span>
+    <span class="kw">pub </span>current_protocol_version: ProtocolVersionJson,
+    <span class="doccomment">/// Proposed protocol version
+    </span><span class="attribute">#[serde(skip)]</span>
+    <span class="kw">pub </span>proposed_protocol_version_opt: <span class="prelude-ty">Option</span>&lt;ProtocolVersionJson&gt;,
+    <span class="doccomment">/// Callback used for validating external transition received over the network.
+    /// This is not actually send over the network but requires a unit type to meet the
+    /// serialization requirements
+    </span><span class="attribute">#[serde(skip)]</span>
+    <span class="kw">pub </span>validation_callback: (),
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_serialization_types" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (fe3342816 2022-08-01)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_serialization_types" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (40336865f 2022-08-15)" ></div></body></html>

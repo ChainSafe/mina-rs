@@ -534,278 +534,278 @@
 <span id="534">534</span>
 <span id="535">535</span>
 <span id="536">536</span>
-</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems</span>
-<span class="comment">// SPDX-License-Identifier: Apache-2.0</span>
+</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems
+// SPDX-License-Identifier: Apache-2.0
 
-<span class="kw">use</span> <span class="ident">std::str::FromStr</span>;
+</span><span class="kw">use </span>std::str::FromStr;
 
-<span class="kw">use</span> <span class="ident">mina_crypto</span>::{<span class="ident">hash</span>::<span class="kw-2">*</span>, <span class="ident">prelude</span>::<span class="kw-2">*</span>};
-<span class="kw">use</span> <span class="ident">mina_rs_base</span>::{
-    <span class="ident">finite_ec_point</span>, <span class="ident">finite_ec_point_pair</span>,
-    <span class="ident">types</span>::{<span class="ident">proof_messages::ProofMessageWithoutDegreeBoundList</span>, <span class="kw-2">*</span>},
+<span class="kw">use </span>mina_crypto::{hash::<span class="kw-2">*</span>, prelude::<span class="kw-2">*</span>};
+<span class="kw">use </span>mina_rs_base::{
+    finite_ec_point, finite_ec_point_pair,
+    types::{proof_messages::ProofMessageWithoutDegreeBoundList, <span class="kw-2">*</span>},
 };
-<span class="kw">use</span> <span class="ident">proof_systems::mina_signer::CompressedPubKey</span>;
+<span class="kw">use </span>proof_systems::mina_signer::CompressedPubKey;
 
-<span class="comment">// Panic messages for hard coded genesis block</span>
-<span class="comment">// Avoid using unwrap or expect elsewhere without justification</span>
-<span class="kw">const</span> <span class="ident">ERR_FAIL_TO_DECODE_B58</span>: <span class="kw-2">&amp;</span><span class="ident">str</span> <span class="op">=</span> <span class="string">&quot;Failed to decode hash from base58&quot;</span>;
-<span class="kw">const</span> <span class="ident">ERR_FAIL_TO_DECODE_B64</span>: <span class="kw-2">&amp;</span><span class="ident">str</span> <span class="op">=</span> <span class="string">&quot;Failed to decode hash from base64&quot;</span>;
-<span class="kw">const</span> <span class="ident">ERR_FAIL_TO_DECODE_HEX</span>: <span class="kw-2">&amp;</span><span class="ident">str</span> <span class="op">=</span> <span class="string">&quot;Failed to decode hash from hex&quot;</span>;
+<span class="comment">// Panic messages for hard coded genesis block
+// Avoid using unwrap or expect elsewhere without justification
+</span><span class="kw">const </span>ERR_FAIL_TO_DECODE_B58: <span class="kw-2">&amp;</span>str = <span class="string">&quot;Failed to decode hash from base58&quot;</span>;
+<span class="kw">const </span>ERR_FAIL_TO_DECODE_B64: <span class="kw-2">&amp;</span>str = <span class="string">&quot;Failed to decode hash from base64&quot;</span>;
+<span class="kw">const </span>ERR_FAIL_TO_DECODE_HEX: <span class="kw-2">&amp;</span>str = <span class="string">&quot;Failed to decode hash from hex&quot;</span>;
 
 <span class="macro">lazy_static::lazy_static!</span> {
-    <span class="doccomment">/// Config instance for initializing genesis block in mainnet</span>
-    <span class="kw">pub</span> <span class="kw">static</span> <span class="kw-2">ref</span> <span class="ident">MAINNET_CONFIG</span>: <span class="ident">GenesisInitConfig</span> <span class="op">=</span> <span class="ident">GenesisInitConfig::mainnet</span>();
-    <span class="doccomment">/// Config instance for initializing genesis block in devnet</span>
-    <span class="kw">pub</span> <span class="kw">static</span> <span class="kw-2">ref</span> <span class="ident">DEVNET_CONFIG</span>: <span class="ident">GenesisInitConfig</span> <span class="op">=</span> <span class="ident">GenesisInitConfig::devnet</span>();
+    <span class="doccomment">/// Config instance for initializing genesis block in mainnet
+    </span><span class="kw">pub static </span><span class="kw-2">ref </span>MAINNET_CONFIG: GenesisInitConfig = GenesisInitConfig::mainnet();
+    <span class="doccomment">/// Config instance for initializing genesis block in devnet
+    </span><span class="kw">pub static </span><span class="kw-2">ref </span>DEVNET_CONFIG: GenesisInitConfig = GenesisInitConfig::devnet();
 }
 
-<span class="doccomment">/// Config for initializing genesis block</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">GenesisInitConfig</span> {
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="ident">constants</span>: <span class="ident">ProtocolConstants</span>,
+<span class="doccomment">/// Config for initializing genesis block
+</span><span class="kw">pub struct </span>GenesisInitConfig {
+    <span class="kw">pub</span>(<span class="kw">crate</span>) constants: ProtocolConstants,
 
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="ident">sub_windows_per_window</span>: <span class="ident">u32</span>,
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="ident">last_vrf_output</span>: <span class="ident">VrfOutputTruncated</span>,
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="ident">total_currency</span>: <span class="ident">Amount</span>,
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="ident">sub_window_densities</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Length</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="ident">staking_epoch_data</span>: <span class="ident">EpochData</span>,
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="ident">next_epoch_data</span>: <span class="ident">EpochData</span>,
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="ident">block_stake_winner</span>: <span class="ident">CompressedPubKey</span>,
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="ident">block_creator</span>: <span class="ident">CompressedPubKey</span>,
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="ident">coinbase_receiver</span>: <span class="ident">CompressedPubKey</span>,
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="ident">genesis_state_hash</span>: <span class="ident">StateHash</span>,
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="ident">previous_state_hash</span>: <span class="ident">StateHash</span>,
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="ident">blockchain_state</span>: <span class="ident">BlockchainState</span>,
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="ident">protocol_state_proof</span>: <span class="ident">ProtocolStateProof</span>,
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="ident">delta_transition_chain_proof</span>: <span class="ident">DeltaTransitionChainProof</span>,
+    <span class="kw">pub</span>(<span class="kw">crate</span>) sub_windows_per_window: u32,
+    <span class="kw">pub</span>(<span class="kw">crate</span>) last_vrf_output: VrfOutputTruncated,
+    <span class="kw">pub</span>(<span class="kw">crate</span>) total_currency: Amount,
+    <span class="kw">pub</span>(<span class="kw">crate</span>) sub_window_densities: Vec&lt;Length&gt;,
+    <span class="kw">pub</span>(<span class="kw">crate</span>) staking_epoch_data: EpochData,
+    <span class="kw">pub</span>(<span class="kw">crate</span>) next_epoch_data: EpochData,
+    <span class="kw">pub</span>(<span class="kw">crate</span>) block_stake_winner: CompressedPubKey,
+    <span class="kw">pub</span>(<span class="kw">crate</span>) block_creator: CompressedPubKey,
+    <span class="kw">pub</span>(<span class="kw">crate</span>) coinbase_receiver: CompressedPubKey,
+    <span class="kw">pub</span>(<span class="kw">crate</span>) genesis_state_hash: StateHash,
+    <span class="kw">pub</span>(<span class="kw">crate</span>) previous_state_hash: StateHash,
+    <span class="kw">pub</span>(<span class="kw">crate</span>) blockchain_state: BlockchainState,
+    <span class="kw">pub</span>(<span class="kw">crate</span>) protocol_state_proof: ProtocolStateProof,
+    <span class="kw">pub</span>(<span class="kw">crate</span>) delta_transition_chain_proof: DeltaTransitionChainProof,
 }
 
-<span class="kw">impl</span> <span class="ident">GenesisInitConfig</span> {
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">mainnet</span>() -&gt; <span class="self">Self</span> {
-        <span class="comment">// https://github.com/MinaProtocol/mina/tree/feature/9665-spec-ouroboros-samasika-checkpointing/docs/specs/consensus#3-constants</span>
-        <span class="kw">let</span> <span class="ident">constants</span> <span class="op">=</span> <span class="ident">ProtocolConstants</span> {
-            <span class="ident">k</span>: <span class="number">290_u32</span>.<span class="ident">into</span>(),
-            <span class="ident">slots_per_epoch</span>: <span class="number">7140_u32</span>.<span class="ident">into</span>(),
-            <span class="ident">slots_per_sub_window</span>: <span class="number">7_u32</span>.<span class="ident">into</span>(),
-            <span class="ident">delta</span>: <span class="number">0_u32</span>.<span class="ident">into</span>(),
-            <span class="ident">genesis_state_timestamp</span>: <span class="ident">BlockTime::from_unix_epoch</span>(<span class="number">1615939200</span>),
+<span class="kw">impl </span>GenesisInitConfig {
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>mainnet() -&gt; <span class="self">Self </span>{
+        <span class="comment">// https://github.com/MinaProtocol/mina/tree/feature/9665-spec-ouroboros-samasika-checkpointing/docs/specs/consensus#3-constants
+        </span><span class="kw">let </span>constants = ProtocolConstants {
+            k: <span class="number">290_u32</span>.into(),
+            slots_per_epoch: <span class="number">7140_u32</span>.into(),
+            slots_per_sub_window: <span class="number">7_u32</span>.into(),
+            delta: <span class="number">0_u32</span>.into(),
+            genesis_state_timestamp: BlockTime::from_unix_epoch(<span class="number">1615939200</span>),
         };
-        <span class="kw">let</span> <span class="ident">total_currency</span> <span class="op">=</span> <span class="ident">Amount</span>(<span class="number">805385692840039233</span>);
+        <span class="kw">let </span>total_currency = Amount(<span class="number">805385692840039233</span>);
 
-        <span class="kw">let</span> <span class="ident">staking_epoch_data</span> <span class="op">=</span> {
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">data</span> <span class="op">=</span> <span class="ident">EpochData::default</span>();
-            <span class="ident">data</span>.<span class="ident">epoch_length</span>.<span class="number">0</span> <span class="op">=</span> <span class="number">1</span>;
-            <span class="ident">data</span>.<span class="ident">ledger</span>.<span class="ident">hash</span> <span class="op">=</span>
-                <span class="ident">LedgerHash::from_str</span>(<span class="string">&quot;jx7buQVWFLsXTtzRgSxbYcT8EYLS8KCZbLrfDcJxMtyy4thw2Ee&quot;</span>)
-                    .<span class="ident">expect</span>(<span class="ident">ERR_FAIL_TO_DECODE_B58</span>);
-            <span class="ident">data</span>.<span class="ident">ledger</span>.<span class="ident">total_currency</span> <span class="op">=</span> <span class="ident">total_currency</span>;
-            <span class="ident">data</span>.<span class="ident">seed</span> <span class="op">=</span> <span class="ident">EpochSeed::from_str</span>(<span class="string">&quot;2va9BGv9JrLTtrzZttiEMDYw1Zj6a6EHzXjmP9evHDTG3oEquURA&quot;</span>)
-                .<span class="ident">expect</span>(<span class="ident">ERR_FAIL_TO_DECODE_B58</span>);
-            <span class="ident">data</span>.<span class="ident">start_checkpoint</span> <span class="op">=</span>
-                <span class="ident">StateHash::from_str</span>(<span class="string">&quot;3NK2tkzqqK5spR2sZ7tujjqPksL45M3UUrcA4WhCkeiPtnugyE2x&quot;</span>)
-                    .<span class="ident">expect</span>(<span class="ident">ERR_FAIL_TO_DECODE_B58</span>);
-            <span class="ident">data</span>.<span class="ident">lock_checkpoint</span> <span class="op">=</span>
-                <span class="ident">StateHash::from_str</span>(<span class="string">&quot;3NK2tkzqqK5spR2sZ7tujjqPksL45M3UUrcA4WhCkeiPtnugyE2x&quot;</span>)
-                    .<span class="ident">expect</span>(<span class="ident">ERR_FAIL_TO_DECODE_B58</span>);
-            <span class="ident">data</span>
-        };
-
-        <span class="kw">let</span> <span class="ident">next_epoch_data</span> <span class="op">=</span> {
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">data</span> <span class="op">=</span> <span class="ident">EpochData::default</span>();
-            <span class="ident">data</span>.<span class="ident">epoch_length</span>.<span class="number">0</span> <span class="op">=</span> <span class="number">2</span>;
-            <span class="ident">data</span>.<span class="ident">ledger</span>.<span class="ident">hash</span> <span class="op">=</span>
-                <span class="ident">LedgerHash::from_str</span>(<span class="string">&quot;jx7buQVWFLsXTtzRgSxbYcT8EYLS8KCZbLrfDcJxMtyy4thw2Ee&quot;</span>)
-                    .<span class="ident">expect</span>(<span class="ident">ERR_FAIL_TO_DECODE_B58</span>);
-            <span class="ident">data</span>.<span class="ident">ledger</span>.<span class="ident">total_currency</span> <span class="op">=</span> <span class="ident">total_currency</span>;
-            <span class="ident">data</span>.<span class="ident">seed</span> <span class="op">=</span> <span class="ident">EpochSeed::from_str</span>(<span class="string">&quot;2vaRh7FQ5wSzmpFReF9gcRKjv48CcJvHs25aqb3SSZiPgHQBy5Dt&quot;</span>)
-                .<span class="ident">expect</span>(<span class="ident">ERR_FAIL_TO_DECODE_B58</span>);
-            <span class="ident">data</span>.<span class="ident">start_checkpoint</span> <span class="op">=</span>
-                <span class="ident">StateHash::from_str</span>(<span class="string">&quot;3NK2tkzqqK5spR2sZ7tujjqPksL45M3UUrcA4WhCkeiPtnugyE2x&quot;</span>)
-                    .<span class="ident">expect</span>(<span class="ident">ERR_FAIL_TO_DECODE_B58</span>);
-            <span class="ident">data</span>.<span class="ident">lock_checkpoint</span> <span class="op">=</span>
-                <span class="ident">StateHash::from_str</span>(<span class="string">&quot;3NLoKn22eMnyQ7rxh5pxB6vBA3XhSAhhrf7akdqS6HbAKD14Dh1d&quot;</span>)
-                    .<span class="ident">expect</span>(<span class="ident">ERR_FAIL_TO_DECODE_B58</span>);
-            <span class="ident">data</span>
+        <span class="kw">let </span>staking_epoch_data = {
+            <span class="kw">let </span><span class="kw-2">mut </span>data = EpochData::default();
+            data.epoch_length.<span class="number">0 </span>= <span class="number">1</span>;
+            data.ledger.hash =
+                LedgerHash::from_str(<span class="string">&quot;jx7buQVWFLsXTtzRgSxbYcT8EYLS8KCZbLrfDcJxMtyy4thw2Ee&quot;</span>)
+                    .expect(ERR_FAIL_TO_DECODE_B58);
+            data.ledger.total_currency = total_currency;
+            data.seed = EpochSeed::from_str(<span class="string">&quot;2va9BGv9JrLTtrzZttiEMDYw1Zj6a6EHzXjmP9evHDTG3oEquURA&quot;</span>)
+                .expect(ERR_FAIL_TO_DECODE_B58);
+            data.start_checkpoint =
+                StateHash::from_str(<span class="string">&quot;3NK2tkzqqK5spR2sZ7tujjqPksL45M3UUrcA4WhCkeiPtnugyE2x&quot;</span>)
+                    .expect(ERR_FAIL_TO_DECODE_B58);
+            data.lock_checkpoint =
+                StateHash::from_str(<span class="string">&quot;3NK2tkzqqK5spR2sZ7tujjqPksL45M3UUrcA4WhCkeiPtnugyE2x&quot;</span>)
+                    .expect(ERR_FAIL_TO_DECODE_B58);
+            data
         };
 
-        <span class="kw">let</span> <span class="ident">blockchain_state</span> <span class="op">=</span> <span class="ident">BlockchainState</span> {
-            <span class="ident">timestamp</span>: <span class="ident">BlockTime::from_unix_epoch</span>(<span class="number">1615939200</span>),
-            <span class="ident">snarked_next_available_token</span>: <span class="ident">TokenId</span>(<span class="number">2</span>),
-            <span class="ident">snarked_ledger_hash</span>: <span class="ident">LedgerHash::from_str</span>(
+        <span class="kw">let </span>next_epoch_data = {
+            <span class="kw">let </span><span class="kw-2">mut </span>data = EpochData::default();
+            data.epoch_length.<span class="number">0 </span>= <span class="number">2</span>;
+            data.ledger.hash =
+                LedgerHash::from_str(<span class="string">&quot;jx7buQVWFLsXTtzRgSxbYcT8EYLS8KCZbLrfDcJxMtyy4thw2Ee&quot;</span>)
+                    .expect(ERR_FAIL_TO_DECODE_B58);
+            data.ledger.total_currency = total_currency;
+            data.seed = EpochSeed::from_str(<span class="string">&quot;2vaRh7FQ5wSzmpFReF9gcRKjv48CcJvHs25aqb3SSZiPgHQBy5Dt&quot;</span>)
+                .expect(ERR_FAIL_TO_DECODE_B58);
+            data.start_checkpoint =
+                StateHash::from_str(<span class="string">&quot;3NK2tkzqqK5spR2sZ7tujjqPksL45M3UUrcA4WhCkeiPtnugyE2x&quot;</span>)
+                    .expect(ERR_FAIL_TO_DECODE_B58);
+            data.lock_checkpoint =
+                StateHash::from_str(<span class="string">&quot;3NLoKn22eMnyQ7rxh5pxB6vBA3XhSAhhrf7akdqS6HbAKD14Dh1d&quot;</span>)
+                    .expect(ERR_FAIL_TO_DECODE_B58);
+            data
+        };
+
+        <span class="kw">let </span>blockchain_state = BlockchainState {
+            timestamp: BlockTime::from_unix_epoch(<span class="number">1615939200</span>),
+            snarked_next_available_token: TokenId(<span class="number">2</span>),
+            snarked_ledger_hash: LedgerHash::from_str(
                 <span class="string">&quot;jx7buQVWFLsXTtzRgSxbYcT8EYLS8KCZbLrfDcJxMtyy4thw2Ee&quot;</span>,
             )
-            .<span class="ident">expect</span>(<span class="ident">ERR_FAIL_TO_DECODE_B58</span>),
-            <span class="ident">genesis_ledger_hash</span>: <span class="ident">LedgerHash::from_str</span>(
+            .expect(ERR_FAIL_TO_DECODE_B58),
+            genesis_ledger_hash: LedgerHash::from_str(
                 <span class="string">&quot;jx7buQVWFLsXTtzRgSxbYcT8EYLS8KCZbLrfDcJxMtyy4thw2Ee&quot;</span>,
             )
-            .<span class="ident">expect</span>(<span class="ident">ERR_FAIL_TO_DECODE_B58</span>),
-            <span class="ident">staged_ledger_hash</span>: <span class="ident">StagedLedgerHash</span> {
-                <span class="ident">non_snark</span>: <span class="ident">NonSnarkStagedLedgerHash</span> {
-                    <span class="ident">ledger_hash</span>: <span class="ident">LedgerHash::from_str</span>(
+            .expect(ERR_FAIL_TO_DECODE_B58),
+            staged_ledger_hash: StagedLedgerHash {
+                non_snark: NonSnarkStagedLedgerHash {
+                    ledger_hash: LedgerHash::from_str(
                         <span class="string">&quot;jx7buQVWFLsXTtzRgSxbYcT8EYLS8KCZbLrfDcJxMtyy4thw2Ee&quot;</span>,
                     )
-                    .<span class="ident">expect</span>(<span class="ident">ERR_FAIL_TO_DECODE_B58</span>),
-                    <span class="ident">aux_hash</span>: <span class="ident">AuxHash::from_str</span>(
+                    .expect(ERR_FAIL_TO_DECODE_B58),
+                    aux_hash: AuxHash::from_str(
                         <span class="string">&quot;UDRUFHSvxUAtV8sh7gzMVPqpbd46roG1wzWR6dYvB6RunPihom&quot;</span>,
                     )
-                    .<span class="ident">expect</span>(<span class="ident">ERR_FAIL_TO_DECODE_B58</span>),
-                    <span class="ident">pending_coinbase_aux</span>: <span class="ident">PendingCoinbaseAuxHash::from_str</span>(
+                    .expect(ERR_FAIL_TO_DECODE_B58),
+                    pending_coinbase_aux: PendingCoinbaseAuxHash::from_str(
                         <span class="string">&quot;WAAeUjUnP9Q2JiabhJzJozcjiEmkZe8ob4cfFKSuq6pQSNmHh7&quot;</span>,
                     )
-                    .<span class="ident">expect</span>(<span class="ident">ERR_FAIL_TO_DECODE_B58</span>),
+                    .expect(ERR_FAIL_TO_DECODE_B58),
                 },
-                <span class="ident">pending_coinbase_hash</span>: <span class="ident">CoinBaseHash::from_str</span>(
+                pending_coinbase_hash: CoinBaseHash::from_str(
                     <span class="string">&quot;2n1tLdP2gkifmyVmrmzYXTS4ohPbZPJn6Qq4x55ywrbRWB4543cC&quot;</span>,
                 )
-                .<span class="ident">expect</span>(<span class="ident">ERR_FAIL_TO_DECODE_B58</span>),
+                .expect(ERR_FAIL_TO_DECODE_B58),
             },
         };
 
-        <span class="kw">let</span> <span class="ident">protocol_state_proof</span> <span class="op">=</span> {
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">p</span> <span class="op">=</span> <span class="ident">ProtocolStateProof::default</span>();
+        <span class="kw">let </span>protocol_state_proof = {
+            <span class="kw">let </span><span class="kw-2">mut </span>p = ProtocolStateProof::default();
 
-            <span class="ident">p</span>.<span class="ident">statement</span>.<span class="ident">pass_through</span>.<span class="ident">sg</span> <span class="op">=</span> (<span class="op">|</span><span class="op">|</span> {
-                <span class="kw">let</span> <span class="ident">fpp</span> <span class="op">=</span> <span class="macro">finite_ec_point!</span>(
+            p.statement.pass_through.sg = (|| {
+                <span class="kw">let </span>fpp = <span class="macro">finite_ec_point!</span>(
                     <span class="string">&quot;0x9c84b80df8bb7db9a77648695dc02c08996d3b6ce15a9bca579dd4d1ef2ca831&quot;</span>,
-                    <span class="string">&quot;0x46fa45bdaa020b13e81365a2df2685c07d355deb88e2adf6a98769ab64177335&quot;</span>
-                )<span class="question-mark">?</span>;
-                <span class="prelude-val">Ok</span>::<span class="op">&lt;</span><span class="kw">_</span>, <span class="ident">hex::FromHexError</span><span class="op">&gt;</span>(<span class="ident">FiniteECPointVec</span>(<span class="macro">vec!</span>[<span class="ident">fpp</span>.<span class="ident">clone</span>(), <span class="ident">fpp</span>]))
+                    <span class="string">&quot;0x46fa45bdaa020b13e81365a2df2685c07d355deb88e2adf6a98769ab64177335&quot;
+                </span>)<span class="question-mark">?</span>;
+                <span class="prelude-val">Ok</span>::&lt;<span class="kw">_</span>, hex::FromHexError&gt;(FiniteECPointVec(<span class="macro">vec!</span>[fpp.clone(), fpp]))
             })()
-            .<span class="ident">expect</span>(<span class="ident">ERR_FAIL_TO_DECODE_HEX</span>);
+            .expect(ERR_FAIL_TO_DECODE_HEX);
 
-            <span class="ident">p</span>.<span class="ident">statement</span>.<span class="ident">pass_through</span>.<span class="ident">old_bulletproof_challenges</span> <span class="op">=</span> {
-                <span class="kw">let</span> <span class="ident">t18</span> <span class="op">=</span> <span class="ident">BulletproofChallengeTuple18::new</span>([
+            p.statement.pass_through.old_bulletproof_challenges = {
+                <span class="kw">let </span>t18 = BulletproofChallengeTuple18::new([
                     <span class="number">621834770194220300</span>,
-                    <span class="op">-</span><span class="number">4327941673388439925</span>,
+                    -<span class="number">4327941673388439925</span>,
                     <span class="number">8902445049614368905</span>,
-                    <span class="op">-</span><span class="number">5479804816757020655</span>,
+                    -<span class="number">5479804816757020655</span>,
                     <span class="number">8345091427968288705</span>,
                     <span class="number">8258453988658898844</span>,
                     <span class="number">746390447645740837</span>,
-                    <span class="op">-</span><span class="number">5643124118675291918</span>,
-                    <span class="op">-</span><span class="number">5948286762976073031</span>,
+                    -<span class="number">5643124118675291918</span>,
+                    -<span class="number">5948286762976073031</span>,
                     <span class="number">3913620533516803836</span>,
                     <span class="number">6451156200849374208</span>,
-                    <span class="op">-</span><span class="number">7149474906925249401</span>,
+                    -<span class="number">7149474906925249401</span>,
                     <span class="number">2545802753099625135</span>,
-                    <span class="op">-</span><span class="number">3046285123411643010</span>,
+                    -<span class="number">3046285123411643010</span>,
                     <span class="number">1476045778313053942</span>,
                     <span class="number">7088211501506636392</span>,
-                    <span class="op">-</span><span class="number">5780902958823199474</span>,
+                    -<span class="number">5780902958823199474</span>,
                     <span class="number">684672559108579835</span>,
-                    <span class="op">-</span><span class="number">479599555522051695</span>,
+                    -<span class="number">479599555522051695</span>,
                     <span class="number">6277689784759994790</span>,
-                    <span class="op">-</span><span class="number">6174909374622547011</span>,
-                    <span class="op">-</span><span class="number">2876420228592515736</span>,
-                    <span class="op">-</span><span class="number">5612139484668830099</span>,
-                    <span class="op">-</span><span class="number">141685165274757211</span>,
-                    <span class="op">-</span><span class="number">9057284384873862529</span>,
-                    <span class="op">-</span><span class="number">218923106050670804</span>,
-                    <span class="op">-</span><span class="number">4381571242292214582</span>,
-                    <span class="op">-</span><span class="number">7982158890774157783</span>,
-                    <span class="op">-</span><span class="number">2589693721356185105</span>,
+                    -<span class="number">6174909374622547011</span>,
+                    -<span class="number">2876420228592515736</span>,
+                    -<span class="number">5612139484668830099</span>,
+                    -<span class="number">141685165274757211</span>,
+                    -<span class="number">9057284384873862529</span>,
+                    -<span class="number">218923106050670804</span>,
+                    -<span class="number">4381571242292214582</span>,
+                    -<span class="number">7982158890774157783</span>,
+                    -<span class="number">2589693721356185105</span>,
                     <span class="number">47703702537737607</span>,
                     <span class="number">6933529253212730047</span>,
-                    <span class="op">-</span><span class="number">453811945482877525</span>,
-                    <span class="op">-</span><span class="number">7749055720453093542</span>,
-                    <span class="op">-</span><span class="number">3329383869546507530</span>,
-                    <span class="op">-</span><span class="number">4722006655881085948</span>,
-                    <span class="op">-</span><span class="number">2216518060947545516</span>,
+                    -<span class="number">453811945482877525</span>,
+                    -<span class="number">7749055720453093542</span>,
+                    -<span class="number">3329383869546507530</span>,
+                    -<span class="number">4722006655881085948</span>,
+                    -<span class="number">2216518060947545516</span>,
                 ]);
-                <span class="ident">BulletproofChallenges</span>(<span class="macro">vec!</span>[<span class="ident">t18</span>.<span class="ident">clone</span>(), <span class="ident">t18</span>])
+                BulletproofChallenges(<span class="macro">vec!</span>[t18.clone(), t18])
             };
 
-            <span class="ident">p</span>.<span class="ident">statement</span>.<span class="ident">proof_state</span>.<span class="ident">deferred_values</span>.<span class="ident">plonk</span>.<span class="ident">alpha</span> <span class="op">=</span>
-                <span class="ident">BulletproofPreChallenge::scalar</span>(<span class="number">8485106177194710905</span>, <span class="op">-</span><span class="number">1312226530362767951</span>);
-            <span class="ident">p</span>.<span class="ident">statement</span>.<span class="ident">proof_state</span>.<span class="ident">deferred_values</span>.<span class="ident">plonk</span>.<span class="ident">beta</span> <span class="op">=</span>
-                <span class="ident">ScalarChallengeVector2::new</span>(<span class="op">-</span><span class="number">6430667927186375774</span>, <span class="op">-</span><span class="number">3337607204513408471</span>);
-            <span class="ident">p</span>.<span class="ident">statement</span>.<span class="ident">proof_state</span>.<span class="ident">deferred_values</span>.<span class="ident">plonk</span>.<span class="ident">gamma</span> <span class="op">=</span>
-                <span class="ident">ScalarChallengeVector2::new</span>(<span class="number">8370999550582557960</span>, <span class="number">2564953582899372946</span>);
-            <span class="ident">p</span>.<span class="ident">statement</span>.<span class="ident">proof_state</span>.<span class="ident">deferred_values</span>.<span class="ident">plonk</span>.<span class="ident">zeta</span> <span class="op">=</span>
-                <span class="ident">BulletproofPreChallenge::scalar</span>(<span class="number">723815570568662761</span>, <span class="op">-</span><span class="number">7895844621402831008</span>);
-            <span class="ident">p</span>.<span class="ident">statement</span>
-                .<span class="ident">proof_state</span>
-                .<span class="ident">deferred_values</span>
-                .<span class="ident">combined_inner_product</span> <span class="op">=</span> <span class="ident">ShiftedValue::ShiftedValue</span>(
-                <span class="ident">BigInt256::try_from_hex</span>(
+            p.statement.proof_state.deferred_values.plonk.alpha =
+                BulletproofPreChallenge::scalar(<span class="number">8485106177194710905</span>, -<span class="number">1312226530362767951</span>);
+            p.statement.proof_state.deferred_values.plonk.beta =
+                ScalarChallengeVector2::new(-<span class="number">6430667927186375774</span>, -<span class="number">3337607204513408471</span>);
+            p.statement.proof_state.deferred_values.plonk.gamma =
+                ScalarChallengeVector2::new(<span class="number">8370999550582557960</span>, <span class="number">2564953582899372946</span>);
+            p.statement.proof_state.deferred_values.plonk.zeta =
+                BulletproofPreChallenge::scalar(<span class="number">723815570568662761</span>, -<span class="number">7895844621402831008</span>);
+            p.statement
+                .proof_state
+                .deferred_values
+                .combined_inner_product = ShiftedValue::ShiftedValue(
+                BigInt256::try_from_hex(
                     <span class="string">&quot;0x000c4669b4dcafbb30ba5442962c0e352818b397156aa59c007e1f2af989b938&quot;</span>,
                 )
-                .<span class="ident">expect</span>(<span class="ident">ERR_FAIL_TO_DECODE_HEX</span>),
+                .expect(ERR_FAIL_TO_DECODE_HEX),
             );
-            <span class="ident">p</span>.<span class="ident">statement</span>.<span class="ident">proof_state</span>.<span class="ident">deferred_values</span>.<span class="ident">b</span> <span class="op">=</span> <span class="ident">ShiftedValue::ShiftedValue</span>(
-                <span class="ident">BigInt256::try_from_hex</span>(
+            p.statement.proof_state.deferred_values.b = ShiftedValue::ShiftedValue(
+                BigInt256::try_from_hex(
                     <span class="string">&quot;0x405fb711eae9fca78875db8db66189c56d426fea068f2826fe5cb0b0afe06a0e&quot;</span>,
                 )
-                .<span class="ident">expect</span>(<span class="ident">ERR_FAIL_TO_DECODE_HEX</span>),
+                .expect(ERR_FAIL_TO_DECODE_HEX),
             );
-            <span class="ident">p</span>.<span class="ident">statement</span>.<span class="ident">proof_state</span>.<span class="ident">deferred_values</span>.<span class="ident">xi</span> <span class="op">=</span>
-                <span class="ident">BulletproofPreChallenge::scalar</span>(<span class="number">9192024484525083167</span>, <span class="op">-</span><span class="number">4963136190301137182</span>);
-            <span class="ident">p</span>.<span class="ident">statement</span>
-                .<span class="ident">proof_state</span>
-                .<span class="ident">deferred_values</span>
-                .<span class="ident">bulletproof_challenges</span> <span class="op">=</span>
-                <span class="ident">p</span>.<span class="ident">statement</span>.<span class="ident">pass_through</span>.<span class="ident">old_bulletproof_challenges</span>.<span class="number">0</span>[<span class="number">0</span>].<span class="ident">clone</span>();
-            <span class="ident">p</span>.<span class="ident">statement</span>.<span class="ident">proof_state</span>.<span class="ident">deferred_values</span>.<span class="ident">which_branch</span> <span class="op">=</span> <span class="ident">Char</span>(<span class="number">0</span>);
+            p.statement.proof_state.deferred_values.xi =
+                BulletproofPreChallenge::scalar(<span class="number">9192024484525083167</span>, -<span class="number">4963136190301137182</span>);
+            p.statement
+                .proof_state
+                .deferred_values
+                .bulletproof_challenges =
+                p.statement.pass_through.old_bulletproof_challenges.<span class="number">0</span>[<span class="number">0</span>].clone();
+            p.statement.proof_state.deferred_values.which_branch = Char(<span class="number">0</span>);
 
-            <span class="ident">p</span>.<span class="ident">statement</span>.<span class="ident">proof_state</span>.<span class="ident">me_only</span>.<span class="ident">sg</span> <span class="op">=</span> <span class="macro">finite_ec_point!</span>(
+            p.statement.proof_state.me_only.sg = <span class="macro">finite_ec_point!</span>(
                 <span class="string">&quot;0xc60a524476af46c04d571246d5dfd73b82d34a5cc50d3e279dd4e96239879c1b&quot;</span>,
-                <span class="string">&quot;0xb9840fae14d5456882791e827d1b21be94a173c96e149e0a226af7d47431d604&quot;</span>
-            )
-            .<span class="ident">expect</span>(<span class="ident">ERR_FAIL_TO_DECODE_HEX</span>);
-            <span class="ident">p</span>.<span class="ident">statement</span>.<span class="ident">proof_state</span>.<span class="ident">me_only</span>.<span class="ident">old_bulletproof_challenges</span> <span class="op">=</span> {
-                <span class="kw">let</span> <span class="ident">t17</span> <span class="op">=</span> <span class="ident">BulletproofChallengeTuple17::new</span>([
-                    <span class="op">-</span><span class="number">4147613965780683501</span>,
+                <span class="string">&quot;0xb9840fae14d5456882791e827d1b21be94a173c96e149e0a226af7d47431d604&quot;
+            </span>)
+            .expect(ERR_FAIL_TO_DECODE_HEX);
+            p.statement.proof_state.me_only.old_bulletproof_challenges = {
+                <span class="kw">let </span>t17 = BulletproofChallengeTuple17::new([
+                    -<span class="number">4147613965780683501</span>,
                     <span class="number">1618424163113385480</span>,
                     <span class="number">5242665654050011345</span>,
                     <span class="number">1974270862881305038</span>,
                     <span class="number">3711726721677311855</span>,
                     <span class="number">8761545649494038627</span>,
-                    <span class="op">-</span><span class="number">2505642933990422633</span>,
-                    <span class="op">-</span><span class="number">2487422680924118585</span>,
-                    <span class="op">-</span><span class="number">4113786261177851957</span>,
+                    -<span class="number">2505642933990422633</span>,
+                    -<span class="number">2487422680924118585</span>,
+                    -<span class="number">4113786261177851957</span>,
                     <span class="number">566815174034496733</span>,
                     <span class="number">5993263758714673683</span>,
-                    <span class="op">-</span><span class="number">6259514542256722053</span>,
-                    <span class="op">-</span><span class="number">2117686120277866613</span>,
-                    <span class="op">-</span><span class="number">550460597093069586</span>,
+                    -<span class="number">6259514542256722053</span>,
+                    -<span class="number">2117686120277866613</span>,
+                    -<span class="number">550460597093069586</span>,
                     <span class="number">2143052809542605959</span>,
                     <span class="number">5556201566125368992</span>,
-                    <span class="op">-</span><span class="number">7172698754141626607</span>,
-                    <span class="op">-</span><span class="number">6773867482688065048</span>,
+                    -<span class="number">7172698754141626607</span>,
+                    -<span class="number">6773867482688065048</span>,
                     <span class="number">6641554769559773261</span>,
                     <span class="number">6524714810323564443</span>,
                     <span class="number">2504198601910020936</span>,
-                    <span class="op">-</span><span class="number">6446749539458519571</span>,
-                    <span class="op">-</span><span class="number">8068243033437084562</span>,
-                    <span class="op">-</span><span class="number">4483743298391994862</span>,
+                    -<span class="number">6446749539458519571</span>,
+                    -<span class="number">8068243033437084562</span>,
+                    -<span class="number">4483743298391994862</span>,
                     <span class="number">4919588161765452745</span>,
-                    <span class="op">-</span><span class="number">7115468514000056859</span>,
+                    -<span class="number">7115468514000056859</span>,
                     <span class="number">4798728907681213006</span>,
-                    <span class="op">-</span><span class="number">7518434295045703748</span>,
-                    <span class="op">-</span><span class="number">7365006775264907657</span>,
-                    <span class="op">-</span><span class="number">1160122940338191724</span>,
+                    -<span class="number">7518434295045703748</span>,
+                    -<span class="number">7365006775264907657</span>,
+                    -<span class="number">1160122940338191724</span>,
                     <span class="number">5439700123898059092</span>,
-                    <span class="op">-</span><span class="number">7701257753186809792</span>,
+                    -<span class="number">7701257753186809792</span>,
                     <span class="number">3229587527204030387</span>,
                     <span class="number">6616313680930013725</span>,
                 ]);
-                <span class="ident">ProofStateBulletproofChallenges</span>(<span class="ident">t17</span>.<span class="ident">clone</span>(), <span class="ident">t17</span>, ())
+                ProofStateBulletproofChallenges(t17.clone(), t17, ())
             };
 
-            <span class="ident">p</span>.<span class="ident">prev_evals</span>.<span class="number">0</span> <span class="op">=</span> (<span class="op">|</span><span class="op">|</span> {
-                <span class="prelude-val">Ok</span>::<span class="op">&lt;</span><span class="kw">_</span>, <span class="ident">hex::FromHexError</span><span class="op">&gt;</span>(<span class="ident">ProofEvaluations</span> {
-                    <span class="ident">l</span>: <span class="ident">FieldElementVec::try_from_hex</span>(
+            p.prev_evals.<span class="number">0 </span>= (|| {
+                <span class="prelude-val">Ok</span>::&lt;<span class="kw">_</span>, hex::FromHexError&gt;(ProofEvaluations {
+                    l: FieldElementVec::try_from_hex(
                         <span class="string">&quot;0x0e5019ef595b796f872edae874df3e6bd1e94424aed7ba4d7ac5fe5ae2252415&quot;</span>,
                     )<span class="question-mark">?</span>,
-                    <span class="ident">r</span>: <span class="ident">FieldElementVec::try_from_hex</span>(
+                    r: FieldElementVec::try_from_hex(
                         <span class="string">&quot;0xcece924af1289b226fbb6cbef809b94422a9d91f0782ada0d87efc83d019b91b&quot;</span>,
                     )<span class="question-mark">?</span>,
-                    <span class="ident">o</span>: <span class="ident">FieldElementVec::try_from_hex</span>(
+                    o: FieldElementVec::try_from_hex(
                         <span class="string">&quot;0x4a4ee9d8cef37e704d57836e2bd42c696466e27197e166e5a4ac87af6f17a924&quot;</span>,
                     )<span class="question-mark">?</span>,
-                    <span class="ident">z</span>: <span class="ident">FieldElementVec::try_from_hex</span>(
+                    z: FieldElementVec::try_from_hex(
                         <span class="string">&quot;0xde7e57ed0235ed1315ee7c76582fe85ef13410571a7537bcd7bd3919f266ec1e&quot;</span>,
                     )<span class="question-mark">?</span>,
-                    <span class="ident">t</span>: <span class="ident">FieldElementVec::try_from_hex</span>(
+                    t: FieldElementVec::try_from_hex(
                         [
                             <span class="string">&quot;8d1ef8e24acf35e68f404480324352e921645bc354b05644e7bd4eb3a80e9d13&quot;</span>,
                             <span class="string">&quot;d23d44555c569324067d82817632a4b48be314267101a09873197275d0284f05&quot;</span>,
@@ -813,36 +813,36 @@
                             <span class="string">&quot;9d53c85bdbc8b9f895fd3cf285409ade24d077c6b1fb884be8ed03a609207a15&quot;</span>,
                             <span class="string">&quot;7ea8c0fb257e5118e548d9c7d59f5858ca153b9f785062313d250e24e2032914&quot;</span>,
                         ]
-                        .<span class="ident">join</span>(<span class="string">&quot;&quot;</span>),
+                        .join(<span class="string">&quot;&quot;</span>),
                     )<span class="question-mark">?</span>,
-                    <span class="ident">f</span>: <span class="ident">FieldElementVec::try_from_hex</span>(
+                    f: FieldElementVec::try_from_hex(
                         <span class="string">&quot;0xadb1afcfaffe7569656b54d5ce39f7c11a55958f63f432efba9aa96334e3f013&quot;</span>,
                     )<span class="question-mark">?</span>,
-                    <span class="ident">sigma1</span>: <span class="ident">FieldElementVec::try_from_hex</span>(
+                    sigma1: FieldElementVec::try_from_hex(
                         <span class="string">&quot;0x0d19edbacb9cf02bbf5c1c1053d422479526855038c072772a0a970f3a54d525&quot;</span>,
                     )<span class="question-mark">?</span>,
-                    <span class="ident">sigma2</span>: <span class="ident">FieldElementVec::try_from_hex</span>(
+                    sigma2: FieldElementVec::try_from_hex(
                         <span class="string">&quot;0x89ac7052c36f50a89bcd060ba67fa9446dfeb0b6d80a74ef617dd4af66cc2039&quot;</span>,
                     )<span class="question-mark">?</span>,
                 })
             })()
-            .<span class="ident">expect</span>(<span class="ident">ERR_FAIL_TO_DECODE_HEX</span>);
+            .expect(ERR_FAIL_TO_DECODE_HEX);
 
-            <span class="ident">p</span>.<span class="ident">prev_evals</span>.<span class="number">1</span> <span class="op">=</span> (<span class="op">|</span><span class="op">|</span> {
-                <span class="prelude-val">Ok</span>::<span class="op">&lt;</span><span class="kw">_</span>, <span class="ident">hex::FromHexError</span><span class="op">&gt;</span>(<span class="ident">ProofEvaluations</span> {
-                    <span class="ident">l</span>: <span class="ident">FieldElementVec::try_from_hex</span>(
+            p.prev_evals.<span class="number">1 </span>= (|| {
+                <span class="prelude-val">Ok</span>::&lt;<span class="kw">_</span>, hex::FromHexError&gt;(ProofEvaluations {
+                    l: FieldElementVec::try_from_hex(
                         <span class="string">&quot;0xac5d1055e6dc85e696cde2e4cd58e4117556622de616c04b3427ebcf4e792139&quot;</span>,
                     )<span class="question-mark">?</span>,
-                    <span class="ident">r</span>: <span class="ident">FieldElementVec::try_from_hex</span>(
+                    r: FieldElementVec::try_from_hex(
                         <span class="string">&quot;0xa2e054c65b914b2ecca3a9baa335a0d6a5019cfbb19ce073ead52e1f0f963f30&quot;</span>,
                     )<span class="question-mark">?</span>,
-                    <span class="ident">o</span>: <span class="ident">FieldElementVec::try_from_hex</span>(
+                    o: FieldElementVec::try_from_hex(
                         <span class="string">&quot;0xde64bff3163383af2268774d29f97382656925a3846e08d1b9dbfd8107095008&quot;</span>,
                     )<span class="question-mark">?</span>,
-                    <span class="ident">z</span>: <span class="ident">FieldElementVec::try_from_hex</span>(
+                    z: FieldElementVec::try_from_hex(
                         <span class="string">&quot;0x1a79c92067af3a93e38e3b7ab551ed30cb2598be3d531afcb3161ff46452790c&quot;</span>,
                     )<span class="question-mark">?</span>,
-                    <span class="ident">t</span>: <span class="ident">FieldElementVec::try_from_hex</span>(
+                    t: FieldElementVec::try_from_hex(
                         [
                             <span class="string">&quot;ffdb4e909d77296575ef162db731581693a8ae1a2628e9d7b114f6e64832300a&quot;</span>,
                             <span class="string">&quot;17e6fcda006321d26f68e2968b0848763607f832f9adb0baa71a15b92f798825&quot;</span>,
@@ -850,105 +850,105 @@
                             <span class="string">&quot;2888c27164b90b341a97a882c5454f5868a8d68796b3f18ef54280ee3f96283a&quot;</span>,
                             <span class="string">&quot;c3181d87d0ab4a99cec885b3d4de51b0bca32b306ebece8dca1a872bc0efc41d&quot;</span>,
                         ]
-                        .<span class="ident">join</span>(<span class="string">&quot;&quot;</span>),
+                        .join(<span class="string">&quot;&quot;</span>),
                     )<span class="question-mark">?</span>,
-                    <span class="ident">f</span>: <span class="ident">FieldElementVec::try_from_hex</span>(
+                    f: FieldElementVec::try_from_hex(
                         <span class="string">&quot;0x40128adc323cecd24b5f4deff834be960c90a5c97d16ce6d123ede8c95b2bf3c&quot;</span>,
                     )<span class="question-mark">?</span>,
-                    <span class="ident">sigma1</span>: <span class="ident">FieldElementVec::try_from_hex</span>(
+                    sigma1: FieldElementVec::try_from_hex(
                         <span class="string">&quot;0x92f5fcdc0c4cd3f6de427948b078312e0b3744b64932b55af6141ce8fe6ed82c&quot;</span>,
                     )<span class="question-mark">?</span>,
-                    <span class="ident">sigma2</span>: <span class="ident">FieldElementVec::try_from_hex</span>(
+                    sigma2: FieldElementVec::try_from_hex(
                         <span class="string">&quot;0x4cb1e1bcec843fab7e37780f44880d58ebfa3c28b4c0c913ae41495a5bcf5b19&quot;</span>,
                     )<span class="question-mark">?</span>,
                 })
             })()
-            .<span class="ident">expect</span>(<span class="ident">ERR_FAIL_TO_DECODE_HEX</span>);
+            .expect(ERR_FAIL_TO_DECODE_HEX);
 
-            <span class="ident">p</span>.<span class="ident">prev_x_hat</span> <span class="op">=</span> <span class="ident">PrevXHat</span>(
+            p.prev_x_hat = PrevXHat(
                 <span class="macro">finite_ec_point!</span>(
                     <span class="string">&quot;0xc0c84dfea15306bb962715b921c0117fde9f3f9dffa9734fca977cae86549037&quot;</span>,
-                    <span class="string">&quot;0xad6cf259ffead18d3afd382f410e771a3d5d0f261454fa699693d81c45cc803c&quot;</span>
-                )
-                .<span class="ident">expect</span>(<span class="ident">ERR_FAIL_TO_DECODE_HEX</span>),
+                    <span class="string">&quot;0xad6cf259ffead18d3afd382f410e771a3d5d0f261454fa699693d81c45cc803c&quot;
+                </span>)
+                .expect(ERR_FAIL_TO_DECODE_HEX),
             );
 
-            <span class="kw">let</span> <span class="ident">pm</span> <span class="op">=</span> <span class="kw-2">&amp;mut</span> <span class="ident">p</span>.<span class="ident">proof</span>.<span class="ident">messages</span>;
-            <span class="kw">let</span> <span class="ident">ec_point</span> <span class="op">=</span> <span class="macro">finite_ec_point!</span>(
+            <span class="kw">let </span>pm = <span class="kw-2">&amp;mut </span>p.proof.messages;
+            <span class="kw">let </span>ec_point = <span class="macro">finite_ec_point!</span>(
                 <span class="string">&quot;0x0100000000000000000000000000000000000000000000000000000000000000&quot;</span>,
-                <span class="string">&quot;0xbb2aedca237acf1971473d33d45b658f54ee7863f0a9df537c93120aa3b5741b&quot;</span>
-            )
-            .<span class="ident">expect</span>(<span class="ident">ERR_FAIL_TO_DECODE_HEX</span>);
-            <span class="kw">let</span> <span class="ident">comm</span> <span class="op">=</span> <span class="ident">ProofMessageWithoutDegreeBoundList</span>(<span class="macro">vec!</span>[<span class="ident">ec_point</span>.<span class="ident">clone</span>()]);
-            <span class="ident">pm</span>.<span class="ident">l_comm</span> <span class="op">=</span> <span class="ident">comm</span>.<span class="ident">clone</span>();
-            <span class="ident">pm</span>.<span class="ident">r_comm</span> <span class="op">=</span> <span class="ident">comm</span>.<span class="ident">clone</span>();
-            <span class="ident">pm</span>.<span class="ident">o_comm</span> <span class="op">=</span> <span class="ident">comm</span>.<span class="ident">clone</span>();
-            <span class="ident">pm</span>.<span class="ident">z_comm</span> <span class="op">=</span> <span class="ident">comm</span>;
+                <span class="string">&quot;0xbb2aedca237acf1971473d33d45b658f54ee7863f0a9df537c93120aa3b5741b&quot;
+            </span>)
+            .expect(ERR_FAIL_TO_DECODE_HEX);
+            <span class="kw">let </span>comm = ProofMessageWithoutDegreeBoundList(<span class="macro">vec!</span>[ec_point.clone()]);
+            pm.l_comm = comm.clone();
+            pm.r_comm = comm.clone();
+            pm.o_comm = comm.clone();
+            pm.z_comm = comm;
 
-            <span class="ident">pm</span>.<span class="ident">t_comm</span>.<span class="ident">shifted</span> <span class="op">=</span> <span class="ident">ECPoint::Finite</span>(<span class="ident">ec_point</span>.<span class="ident">clone</span>());
-            <span class="ident">pm</span>.<span class="ident">t_comm</span>.<span class="ident">unshifted</span> <span class="op">=</span> <span class="ident">ECPointVec</span>(<span class="macro">vec!</span>[
-                <span class="ident">ECPoint::Finite</span>(<span class="ident">ec_point</span>.<span class="ident">clone</span>()),
-                <span class="ident">ECPoint::Finite</span>(<span class="ident">ec_point</span>.<span class="ident">clone</span>()),
-                <span class="ident">ECPoint::Finite</span>(<span class="ident">ec_point</span>.<span class="ident">clone</span>()),
-                <span class="ident">ECPoint::Finite</span>(<span class="ident">ec_point</span>.<span class="ident">clone</span>()),
-                <span class="ident">ECPoint::Finite</span>(<span class="ident">ec_point</span>.<span class="ident">clone</span>()),
+            pm.t_comm.shifted = ECPoint::Finite(ec_point.clone());
+            pm.t_comm.unshifted = ECPointVec(<span class="macro">vec!</span>[
+                ECPoint::Finite(ec_point.clone()),
+                ECPoint::Finite(ec_point.clone()),
+                ECPoint::Finite(ec_point.clone()),
+                ECPoint::Finite(ec_point.clone()),
+                ECPoint::Finite(ec_point.clone()),
             ]);
 
-            <span class="kw">let</span> <span class="ident">pr</span> <span class="op">=</span> <span class="kw-2">&amp;mut</span> <span class="ident">p</span>.<span class="ident">proof</span>.<span class="ident">openings</span>.<span class="ident">proof</span>;
-            <span class="ident">pr</span>.<span class="ident">lr</span> <span class="op">=</span> (<span class="op">|</span><span class="op">|</span> {
-                <span class="kw">let</span> <span class="ident">pair</span> <span class="op">=</span> <span class="macro">finite_ec_point_pair!</span>(
+            <span class="kw">let </span>pr = <span class="kw-2">&amp;mut </span>p.proof.openings.proof;
+            pr.lr = (|| {
+                <span class="kw">let </span>pair = <span class="macro">finite_ec_point_pair!</span>(
                     <span class="string">&quot;0x0100000000000000000000000000000000000000000000000000000000000000&quot;</span>,
                     <span class="string">&quot;0xbb2aedca237acf1971473d33d45b658f54ee7863f0a9df537c93120aa3b5741b&quot;</span>,
                     <span class="string">&quot;0x0100000000000000000000000000000000000000000000000000000000000000&quot;</span>,
-                    <span class="string">&quot;0xbb2aedca237acf1971473d33d45b658f54ee7863f0a9df537c93120aa3b5741b&quot;</span>
-                )<span class="question-mark">?</span>;
-                <span class="prelude-val">Ok</span>::<span class="op">&lt;</span><span class="kw">_</span>, <span class="ident">hex::FromHexError</span><span class="op">&gt;</span>(<span class="ident">FiniteECPointPairVec</span>(<span class="macro">vec!</span>[
-                    <span class="ident">pair</span>.<span class="ident">clone</span>(),
-                    <span class="ident">pair</span>.<span class="ident">clone</span>(),
-                    <span class="ident">pair</span>.<span class="ident">clone</span>(),
-                    <span class="ident">pair</span>.<span class="ident">clone</span>(),
-                    <span class="ident">pair</span>.<span class="ident">clone</span>(),
-                    <span class="ident">pair</span>.<span class="ident">clone</span>(),
-                    <span class="ident">pair</span>.<span class="ident">clone</span>(),
-                    <span class="ident">pair</span>.<span class="ident">clone</span>(),
-                    <span class="ident">pair</span>.<span class="ident">clone</span>(),
-                    <span class="ident">pair</span>.<span class="ident">clone</span>(),
-                    <span class="ident">pair</span>.<span class="ident">clone</span>(),
-                    <span class="ident">pair</span>.<span class="ident">clone</span>(),
-                    <span class="ident">pair</span>.<span class="ident">clone</span>(),
-                    <span class="ident">pair</span>.<span class="ident">clone</span>(),
-                    <span class="ident">pair</span>.<span class="ident">clone</span>(),
-                    <span class="ident">pair</span>.<span class="ident">clone</span>(),
-                    <span class="ident">pair</span>,
+                    <span class="string">&quot;0xbb2aedca237acf1971473d33d45b658f54ee7863f0a9df537c93120aa3b5741b&quot;
+                </span>)<span class="question-mark">?</span>;
+                <span class="prelude-val">Ok</span>::&lt;<span class="kw">_</span>, hex::FromHexError&gt;(FiniteECPointPairVec(<span class="macro">vec!</span>[
+                    pair.clone(),
+                    pair.clone(),
+                    pair.clone(),
+                    pair.clone(),
+                    pair.clone(),
+                    pair.clone(),
+                    pair.clone(),
+                    pair.clone(),
+                    pair.clone(),
+                    pair.clone(),
+                    pair.clone(),
+                    pair.clone(),
+                    pair.clone(),
+                    pair.clone(),
+                    pair.clone(),
+                    pair.clone(),
+                    pair,
                 ]))
             })()
-            .<span class="ident">expect</span>(<span class="ident">ERR_FAIL_TO_DECODE_HEX</span>);
-            <span class="ident">pr</span>.<span class="ident">z_1</span> <span class="op">=</span> <span class="ident">BigInt256::try_from_hex</span>(
+            .expect(ERR_FAIL_TO_DECODE_HEX);
+            pr.z_1 = BigInt256::try_from_hex(
                 <span class="string">&quot;0x27a6753e3c16b98921d53d185402e874f318a819fdf2f3ac6667262045aa8a26&quot;</span>,
             )
-            .<span class="ident">expect</span>(<span class="ident">ERR_FAIL_TO_DECODE_HEX</span>);
-            <span class="ident">pr</span>.<span class="ident">z_2</span> <span class="op">=</span> <span class="ident">BigInt256::try_from_hex</span>(
+            .expect(ERR_FAIL_TO_DECODE_HEX);
+            pr.z_2 = BigInt256::try_from_hex(
                 <span class="string">&quot;0x664e7ca6fe93f151f069508b826ad5d06c71549318cbc911da6b74d06efe2806&quot;</span>,
             )
-            .<span class="ident">expect</span>(<span class="ident">ERR_FAIL_TO_DECODE_HEX</span>);
-            <span class="ident">pr</span>.<span class="ident">delta</span> <span class="op">=</span> <span class="ident">ec_point</span>.<span class="ident">clone</span>();
-            <span class="ident">pr</span>.<span class="ident">sg</span> <span class="op">=</span> <span class="ident">ec_point</span>;
+            .expect(ERR_FAIL_TO_DECODE_HEX);
+            pr.delta = ec_point.clone();
+            pr.sg = ec_point;
 
-            <span class="ident">p</span>.<span class="ident">proof</span>.<span class="ident">openings</span>.<span class="ident">evals</span>.<span class="number">0</span> <span class="op">=</span> (<span class="op">|</span><span class="op">|</span> {
-                <span class="prelude-val">Ok</span>::<span class="op">&lt;</span><span class="kw">_</span>, <span class="ident">hex::FromHexError</span><span class="op">&gt;</span>(<span class="ident">ProofEvaluations</span> {
-                    <span class="ident">l</span>: <span class="ident">FieldElementVec::try_from_hex</span>(
+            p.proof.openings.evals.<span class="number">0 </span>= (|| {
+                <span class="prelude-val">Ok</span>::&lt;<span class="kw">_</span>, hex::FromHexError&gt;(ProofEvaluations {
+                    l: FieldElementVec::try_from_hex(
                         <span class="string">&quot;0x2e53605b801ad7fea745e9766add8da9ed33589d758fb339fed40c329c59aa27&quot;</span>,
                     )<span class="question-mark">?</span>,
-                    <span class="ident">r</span>: <span class="ident">FieldElementVec::try_from_hex</span>(
+                    r: FieldElementVec::try_from_hex(
                         <span class="string">&quot;0xb77a8788b07f7cd1c9c61618755cca3d0d303a7b096124ce0c02dc5f451a0f03&quot;</span>,
                     )<span class="question-mark">?</span>,
-                    <span class="ident">o</span>: <span class="ident">FieldElementVec::try_from_hex</span>(
+                    o: FieldElementVec::try_from_hex(
                         <span class="string">&quot;0x2e1e68731d00b84720038823777ec6522d9a1e9e365920c3e7ce064ade0c2e1e&quot;</span>,
                     )<span class="question-mark">?</span>,
-                    <span class="ident">z</span>: <span class="ident">FieldElementVec::try_from_hex</span>(
+                    z: FieldElementVec::try_from_hex(
                         <span class="string">&quot;0xd96d62e54a0a49d3a44c919eb4b089333d64a236edcda1921274ac6903bad937&quot;</span>,
                     )<span class="question-mark">?</span>,
-                    <span class="ident">t</span>: <span class="ident">FieldElementVec::try_from_hex</span>(
+                    t: FieldElementVec::try_from_hex(
                         [
                             <span class="string">&quot;717115e59713c84f88babe2ec0292518060d2cc82b54e9a9c9a2d2a87ce91e15&quot;</span>,
                             <span class="string">&quot;6994e270f284a557c418afebfaaca2794c8af6a476cb1b9478c205e8a901170f&quot;</span>,
@@ -956,36 +956,36 @@
                             <span class="string">&quot;c37d692c8473aa9a246bb85e5c4323cd0c5a69e4b9ce1ae160f961447c31ae2e&quot;</span>,
                             <span class="string">&quot;cce3a78dfa242d8c53e89467cc986dfd332db987d76c66e7735a47ef34e90f28&quot;</span>,
                         ]
-                        .<span class="ident">join</span>(<span class="string">&quot;&quot;</span>),
+                        .join(<span class="string">&quot;&quot;</span>),
                     )<span class="question-mark">?</span>,
-                    <span class="ident">f</span>: <span class="ident">FieldElementVec::try_from_hex</span>(
+                    f: FieldElementVec::try_from_hex(
                         <span class="string">&quot;0x5dd93c9b2c3fcee30fa34960f2472fcd04d9de8486f635c9b96d776fae31221f&quot;</span>,
                     )<span class="question-mark">?</span>,
-                    <span class="ident">sigma1</span>: <span class="ident">FieldElementVec::try_from_hex</span>(
+                    sigma1: FieldElementVec::try_from_hex(
                         <span class="string">&quot;0xa84f94a0d6d64be0b97049b92ae2c58a8cb93e792179fab57fa32c4695abe724&quot;</span>,
                     )<span class="question-mark">?</span>,
-                    <span class="ident">sigma2</span>: <span class="ident">FieldElementVec::try_from_hex</span>(
+                    sigma2: FieldElementVec::try_from_hex(
                         <span class="string">&quot;0x2c7c6aa5123b41aa8eace85a7eeeb8ebb22219c9353b9276711199aaa8018217&quot;</span>,
                     )<span class="question-mark">?</span>,
                 })
             })()
-            .<span class="ident">expect</span>(<span class="ident">ERR_FAIL_TO_DECODE_HEX</span>);
+            .expect(ERR_FAIL_TO_DECODE_HEX);
 
-            <span class="ident">p</span>.<span class="ident">proof</span>.<span class="ident">openings</span>.<span class="ident">evals</span>.<span class="number">1</span> <span class="op">=</span> (<span class="op">|</span><span class="op">|</span> {
-                <span class="prelude-val">Ok</span>::<span class="op">&lt;</span><span class="kw">_</span>, <span class="ident">hex::FromHexError</span><span class="op">&gt;</span>(<span class="ident">ProofEvaluations</span> {
-                    <span class="ident">l</span>: <span class="ident">FieldElementVec::try_from_hex</span>(
+            p.proof.openings.evals.<span class="number">1 </span>= (|| {
+                <span class="prelude-val">Ok</span>::&lt;<span class="kw">_</span>, hex::FromHexError&gt;(ProofEvaluations {
+                    l: FieldElementVec::try_from_hex(
                         <span class="string">&quot;0x16eba2ebda9feac442e29ef9293f5c4576933d531a6e3c07518e352241055f3d&quot;</span>,
                     )<span class="question-mark">?</span>,
-                    <span class="ident">r</span>: <span class="ident">FieldElementVec::try_from_hex</span>(
+                    r: FieldElementVec::try_from_hex(
                         <span class="string">&quot;0xdcf5b2e12453b8369c420e76ada0fb6c6e173f2271aa19ec6db8010112611605&quot;</span>,
                     )<span class="question-mark">?</span>,
-                    <span class="ident">o</span>: <span class="ident">FieldElementVec::try_from_hex</span>(
+                    o: FieldElementVec::try_from_hex(
                         <span class="string">&quot;0x35362d986f20c598e53c3de0b8fc41300484243172af893cc99ca199aa16163c&quot;</span>,
                     )<span class="question-mark">?</span>,
-                    <span class="ident">z</span>: <span class="ident">FieldElementVec::try_from_hex</span>(
+                    z: FieldElementVec::try_from_hex(
                         <span class="string">&quot;0xf0951e6a385fb4ea8b5e2cf0e89e54807a99938b0ab69c77f1b9b210a05d152e&quot;</span>,
                     )<span class="question-mark">?</span>,
-                    <span class="ident">t</span>: <span class="ident">FieldElementVec::try_from_hex</span>(
+                    t: FieldElementVec::try_from_hex(
                         [
                             <span class="string">&quot;b5c98d3a881eaad5600d89920dff83025079d27bde3ceadd14425bfc8a40d310&quot;</span>,
                             <span class="string">&quot;ee802beaf4ddbaf3b69698689d7e76b670caa65ddbd92197227ab0c8dfba3624&quot;</span>,
@@ -993,82 +993,82 @@
                             <span class="string">&quot;e00d36cc2b6076c23184046c0a2a062085215644fe29549a6252025055bdfb1c&quot;</span>,
                             <span class="string">&quot;37befa9d80c628fb8b3f7f5316912c175426a0ad9a83db780847d636f1ccab09&quot;</span>,
                         ]
-                        .<span class="ident">join</span>(<span class="string">&quot;&quot;</span>),
+                        .join(<span class="string">&quot;&quot;</span>),
                     )<span class="question-mark">?</span>,
-                    <span class="ident">f</span>: <span class="ident">FieldElementVec::try_from_hex</span>(
+                    f: FieldElementVec::try_from_hex(
                         <span class="string">&quot;0xc0441628012519d76fef0107434dc56bb174e7d1610cde2fc86d6aa72b75ad1a&quot;</span>,
                     )<span class="question-mark">?</span>,
-                    <span class="ident">sigma1</span>: <span class="ident">FieldElementVec::try_from_hex</span>(
+                    sigma1: FieldElementVec::try_from_hex(
                         <span class="string">&quot;0xcd71c8afe1a719f2e5e83fce7941fb9a313e2b9262480afa68675dcfab64b20a&quot;</span>,
                     )<span class="question-mark">?</span>,
-                    <span class="ident">sigma2</span>: <span class="ident">FieldElementVec::try_from_hex</span>(
+                    sigma2: FieldElementVec::try_from_hex(
                         <span class="string">&quot;0xe580093d240406f6684b313ce40669bd5ba1c8df3ed53ced2f473c037af19a08&quot;</span>,
                     )<span class="question-mark">?</span>,
                 })
             })()
-            .<span class="ident">expect</span>(<span class="ident">ERR_FAIL_TO_DECODE_HEX</span>);
+            .expect(ERR_FAIL_TO_DECODE_HEX);
 
-            <span class="ident">p</span>
+            p
         };
 
-        <span class="self">Self</span> {
-            <span class="ident">sub_windows_per_window</span>: <span class="number">11</span>,
-            <span class="ident">last_vrf_output</span>: <span class="ident">VrfOutputTruncated::from_str</span>(
+        <span class="self">Self </span>{
+            sub_windows_per_window: <span class="number">11</span>,
+            last_vrf_output: VrfOutputTruncated::from_str(
                 <span class="string">&quot;NfThG1r1GxQuhaGLSJWGxcpv24SudtXG4etB0TnGqwg=&quot;</span>,
             )
-            .<span class="ident">expect</span>(<span class="ident">ERR_FAIL_TO_DECODE_B64</span>),
-            <span class="ident">total_currency</span>,
-            <span class="ident">sub_window_densities</span>: <span class="macro">vec!</span>[
-                <span class="ident">Length</span>(<span class="number">1</span>),
-                <span class="ident">Length</span>(<span class="number">7</span>),
-                <span class="ident">Length</span>(<span class="number">7</span>),
-                <span class="ident">Length</span>(<span class="number">7</span>),
-                <span class="ident">Length</span>(<span class="number">7</span>),
-                <span class="ident">Length</span>(<span class="number">7</span>),
-                <span class="ident">Length</span>(<span class="number">7</span>),
-                <span class="ident">Length</span>(<span class="number">7</span>),
-                <span class="ident">Length</span>(<span class="number">7</span>),
-                <span class="ident">Length</span>(<span class="number">7</span>),
-                <span class="ident">Length</span>(<span class="number">7</span>),
+            .expect(ERR_FAIL_TO_DECODE_B64),
+            total_currency,
+            sub_window_densities: <span class="macro">vec!</span>[
+                Length(<span class="number">1</span>),
+                Length(<span class="number">7</span>),
+                Length(<span class="number">7</span>),
+                Length(<span class="number">7</span>),
+                Length(<span class="number">7</span>),
+                Length(<span class="number">7</span>),
+                Length(<span class="number">7</span>),
+                Length(<span class="number">7</span>),
+                Length(<span class="number">7</span>),
+                Length(<span class="number">7</span>),
+                Length(<span class="number">7</span>),
             ],
-            <span class="ident">constants</span>,
-            <span class="ident">staking_epoch_data</span>,
-            <span class="ident">next_epoch_data</span>,
-            <span class="ident">block_stake_winner</span>: <span class="ident">CompressedPubKey::from_address</span>(
+            constants,
+            staking_epoch_data,
+            next_epoch_data,
+            block_stake_winner: CompressedPubKey::from_address(
                 <span class="string">&quot;B62qiy32p8kAKnny8ZFwoMhYpBppM1DWVCqAPBYNcXnsAHhnfAAuXgg&quot;</span>,
             )
-            .<span class="ident">expect</span>(<span class="ident">ERR_FAIL_TO_DECODE_B58</span>),
-            <span class="ident">block_creator</span>: <span class="ident">CompressedPubKey::from_address</span>(
+            .expect(ERR_FAIL_TO_DECODE_B58),
+            block_creator: CompressedPubKey::from_address(
                 <span class="string">&quot;B62qiy32p8kAKnny8ZFwoMhYpBppM1DWVCqAPBYNcXnsAHhnfAAuXgg&quot;</span>,
             )
-            .<span class="ident">expect</span>(<span class="ident">ERR_FAIL_TO_DECODE_B58</span>),
-            <span class="ident">coinbase_receiver</span>: <span class="ident">CompressedPubKey::from_address</span>(
+            .expect(ERR_FAIL_TO_DECODE_B58),
+            coinbase_receiver: CompressedPubKey::from_address(
                 <span class="string">&quot;B62qiy32p8kAKnny8ZFwoMhYpBppM1DWVCqAPBYNcXnsAHhnfAAuXgg&quot;</span>,
             )
-            .<span class="ident">expect</span>(<span class="ident">ERR_FAIL_TO_DECODE_B58</span>),
-            <span class="ident">genesis_state_hash</span>: <span class="ident">StateHash::from_str</span>(
+            .expect(ERR_FAIL_TO_DECODE_B58),
+            genesis_state_hash: StateHash::from_str(
                 <span class="string">&quot;3NLoKn22eMnyQ7rxh5pxB6vBA3XhSAhhrf7akdqS6HbAKD14Dh1d&quot;</span>,
             )
-            .<span class="ident">expect</span>(<span class="ident">ERR_FAIL_TO_DECODE_B58</span>),
-            <span class="ident">previous_state_hash</span>: <span class="ident">StateHash::from_str</span>(
+            .expect(ERR_FAIL_TO_DECODE_B58),
+            previous_state_hash: StateHash::from_str(
                 <span class="string">&quot;3NLoKn22eMnyQ7rxh5pxB6vBA3XhSAhhrf7akdqS6HbAKD14Dh1d&quot;</span>,
             )
-            .<span class="ident">expect</span>(<span class="ident">ERR_FAIL_TO_DECODE_B58</span>),
-            <span class="ident">blockchain_state</span>,
-            <span class="ident">protocol_state_proof</span>,
-            <span class="ident">delta_transition_chain_proof</span>: (
-                <span class="ident">StateHash::from_str</span>(<span class="string">&quot;3NLoKn22eMnyQ7rxh5pxB6vBA3XhSAhhrf7akdqS6HbAKD14Dh1d&quot;</span>)
-                    .<span class="ident">expect</span>(<span class="ident">ERR_FAIL_TO_DECODE_B58</span>),
-                <span class="ident">Default::default</span>(),
+            .expect(ERR_FAIL_TO_DECODE_B58),
+            blockchain_state,
+            protocol_state_proof,
+            delta_transition_chain_proof: (
+                StateHash::from_str(<span class="string">&quot;3NLoKn22eMnyQ7rxh5pxB6vBA3XhSAhhrf7akdqS6HbAKD14Dh1d&quot;</span>)
+                    .expect(ERR_FAIL_TO_DECODE_B58),
+                Default::default(),
             )
-                .<span class="ident">into</span>(),
+                .into(),
         }
     }
 
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">devnet</span>() -&gt; <span class="self">Self</span> {
-        <span class="comment">// FIXME: Figure out devnet config</span>
-        <span class="ident"><span class="self">Self</span>::mainnet</span>()
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>devnet() -&gt; <span class="self">Self </span>{
+        <span class="comment">// FIXME: Figure out devnet config
+        </span><span class="self">Self</span>::mainnet()
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="mina_consensus" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (fe3342816 2022-08-01)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="mina_consensus" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (40336865f 2022-08-15)" ></div></body></html>

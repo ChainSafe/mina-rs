@@ -86,93 +86,93 @@
 <span id="86">86</span>
 <span id="87">87</span>
 <span id="88">88</span>
-</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems</span>
-<span class="comment">// SPDX-License-Identifier: Apache-2.0</span>
+</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems
+// SPDX-License-Identifier: Apache-2.0
 
-<span class="doccomment">//!</span>
-<span class="doccomment">//! Implementation agnostic abstraction of networking</span>
-<span class="doccomment">//! operations and the transition frontier for mina node(s).</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! The goal of this module is to provide extensible traits to</span>
-<span class="doccomment">//! support graphql and libp2p backend, etc. to power</span>
-<span class="doccomment">//! both wasm node(s) that run in browser and cli node(s)</span>
-<span class="doccomment">//! that run on x86-64 and arm-64 CPU(s). It also makes it easy to mock</span>
-<span class="doccomment">//! the networking layer to unittest the [TransitionFrontier]</span>
-<span class="doccomment">//!</span>
+</span><span class="doccomment">//!
+//! Implementation agnostic abstraction of networking
+//! operations and the transition frontier for mina node(s).
+//!
+//! The goal of this module is to provide extensible traits to
+//! support graphql and libp2p backend, etc. to power
+//! both wasm node(s) that run in browser and cli node(s)
+//! that run on x86-64 and arm-64 CPU(s). It also makes it easy to mock
+//! the networking layer to unittest the [TransitionFrontier]
+//!
 
-<span class="kw">mod</span> <span class="ident">naive_transition_frontier</span>;
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">naive_transition_frontier</span>::<span class="kw-2">*</span>;
+</span><span class="kw">mod </span>naive_transition_frontier;
+<span class="kw">pub use </span>naive_transition_frontier::<span class="kw-2">*</span>;
 
-<span class="kw">mod</span> <span class="ident">processor_impl</span>;
+<span class="kw">mod </span>processor_impl;
 
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;wasm32&quot;</span>)]</span>
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">js</span>;
+<span class="attribute">#[cfg(target_arch = <span class="string">&quot;wasm32&quot;</span>)]</span>
+<span class="kw">pub mod </span>js;
 
-<span class="kw">use</span> <span class="ident">async_trait::async_trait</span>;
-<span class="kw">use</span> <span class="ident">tokio::sync</span>::{<span class="ident">mpsc</span>, <span class="ident">RwLock</span>};
+<span class="kw">use </span>async_trait::async_trait;
+<span class="kw">use </span>tokio::sync::{mpsc, RwLock};
 
-<span class="doccomment">/// Request struct for querying a block</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">QueryBlockRequest</span> {
-    <span class="doccomment">/// Height of the block</span>
-    <span class="kw">pub</span> <span class="ident">height</span>: <span class="ident">usize</span>,
-    <span class="doccomment">/// State hash of the block</span>
-    <span class="kw">pub</span> <span class="ident">state_hash</span>: <span class="ident">String</span>,
+<span class="doccomment">/// Request struct for querying a block
+</span><span class="kw">pub struct </span>QueryBlockRequest {
+    <span class="doccomment">/// Height of the block
+    </span><span class="kw">pub </span>height: usize,
+    <span class="doccomment">/// State hash of the block
+    </span><span class="kw">pub </span>state_hash: String,
 }
 
-<span class="doccomment">/// This struct handles the blocks that are received from the</span>
-<span class="doccomment">/// network and has the capability of interacting asynchronously</span>
-<span class="doccomment">/// with the networking layer</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// TODO: Should this below to its own crate?</span>
-<span class="attribute">#[<span class="ident">async_trait</span>(<span class="question-mark">?</span><span class="ident">Send</span>)]</span>
-<span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">TransitionFrontier</span> {
-    <span class="doccomment">/// Type that represents a block</span>
-    <span class="kw">type</span> <span class="ident">Block</span>;
+<span class="doccomment">/// This struct handles the blocks that are received from the
+/// network and has the capability of interacting asynchronously
+/// with the networking layer
+///
+/// TODO: Should this below to its own crate?
+</span><span class="attribute">#[async_trait(<span class="question-mark">?</span>Send)]</span>
+<span class="kw">pub trait </span>TransitionFrontier {
+    <span class="doccomment">/// Type that represents a block
+    </span><span class="kw">type </span>Block;
 
-    <span class="doccomment">/// Adds a block that is received from networking layer.</span>
-    <span class="doccomment">/// The block could be either pushed by other peers or</span>
-    <span class="doccomment">/// the response of [QueryBlockRequest].</span>
-    <span class="kw">async</span> <span class="kw">fn</span> <span class="ident">add_block</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">block</span>: <span class="ident"><span class="self">Self</span>::Block</span>) -&gt; <span class="ident">anyhow::Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span>;
+    <span class="doccomment">/// Adds a block that is received from networking layer.
+    /// The block could be either pushed by other peers or
+    /// the response of [QueryBlockRequest].
+    </span><span class="kw">async fn </span>add_block(<span class="kw-2">&amp;mut </span><span class="self">self</span>, block: <span class="self">Self</span>::Block) -&gt; anyhow::Result&lt;()&gt;;
 
-    <span class="doccomment">/// Sets the block requester for querying a block, e.g. parent of certain block</span>
-    <span class="doccomment">/// The responses will be recieved in a asynchronous way by the `add_block` API</span>
-    <span class="kw">fn</span> <span class="ident">set_block_requester</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">sender</span>: <span class="ident">mpsc::Sender</span><span class="op">&lt;</span><span class="ident">QueryBlockRequest</span><span class="op">&gt;</span>);
+    <span class="doccomment">/// Sets the block requester for querying a block, e.g. parent of certain block
+    /// The responses will be recieved in a asynchronous way by the `add_block` API
+    </span><span class="kw">fn </span>set_block_requester(<span class="kw-2">&amp;mut </span><span class="self">self</span>, sender: mpsc::Sender&lt;QueryBlockRequest&gt;);
 }
 
-<span class="doccomment">/// abstraction of networking operations for</span>
-<span class="doccomment">/// non-consensus mina node(s).</span>
-<span class="attribute">#[<span class="ident">async_trait</span>(<span class="question-mark">?</span><span class="ident">Send</span>)]</span>
-<span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">NonConsensusNetworkingOps</span> {
-    <span class="doccomment">/// Type that represents a block</span>
-    <span class="kw">type</span> <span class="ident">Block</span>;
+<span class="doccomment">/// abstraction of networking operations for
+/// non-consensus mina node(s).
+</span><span class="attribute">#[async_trait(<span class="question-mark">?</span>Send)]</span>
+<span class="kw">pub trait </span>NonConsensusNetworkingOps {
+    <span class="doccomment">/// Type that represents a block
+    </span><span class="kw">type </span>Block;
 
-    <span class="doccomment">/// Sets the block responder that sends the blocks to the [TransitionFrontier]</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// Note that it only assumes that new blocks are being pushed</span>
-    <span class="doccomment">/// from the network, to support polling with the graphql API(s),</span>
-    <span class="doccomment">/// there should be a separate long running function in the [NonConsensusNetworkingOps] impl</span>
-    <span class="doccomment">/// that is invoked or scheduled separately</span>
-    <span class="kw">fn</span> <span class="ident">set_block_responder</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">sender</span>: <span class="ident">mpsc::Sender</span><span class="op">&lt;</span><span class="ident"><span class="self">Self</span>::Block</span><span class="op">&gt;</span>);
+    <span class="doccomment">/// Sets the block responder that sends the blocks to the [TransitionFrontier]
+    ///
+    /// Note that it only assumes that new blocks are being pushed
+    /// from the network, to support polling with the graphql API(s),
+    /// there should be a separate long running function in the [NonConsensusNetworkingOps] impl
+    /// that is invoked or scheduled separately
+    </span><span class="kw">fn </span>set_block_responder(<span class="kw-2">&amp;mut </span><span class="self">self</span>, sender: mpsc::Sender&lt;<span class="self">Self</span>::Block&gt;);
 
-    <span class="doccomment">/// Queries a block with its height and state hash</span>
-    <span class="kw">async</span> <span class="kw">fn</span> <span class="ident">query_block</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">request</span>: <span class="kw-2">&amp;</span><span class="ident">QueryBlockRequest</span>) -&gt; <span class="ident">anyhow::Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span>;
+    <span class="doccomment">/// Queries a block with its height and state hash
+    </span><span class="kw">async fn </span>query_block(<span class="kw-2">&amp;mut </span><span class="self">self</span>, request: <span class="kw-2">&amp;</span>QueryBlockRequest) -&gt; anyhow::Result&lt;()&gt;;
 }
 
-<span class="doccomment">/// This struct processes all the interactions and data exchanges</span>
-<span class="doccomment">/// between the [NonConsensusNetworkingOps] and the [TransitionFrontier]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">NetworkMessageProcessor</span><span class="op">&lt;</span><span class="ident">NetworkBlock</span>, <span class="ident">FrontierBlock</span>, <span class="ident">TF</span>, <span class="ident">NCOps</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">TF</span>: <span class="ident">TransitionFrontier</span><span class="op">&lt;</span><span class="ident">Block</span> <span class="op">=</span> <span class="ident">FrontierBlock</span><span class="op">&gt;</span>,
-    <span class="ident">NCOps</span>: <span class="ident">NonConsensusNetworkingOps</span><span class="op">&lt;</span><span class="ident">Block</span> <span class="op">=</span> <span class="ident">NetworkBlock</span><span class="op">&gt;</span>,
+<span class="doccomment">/// This struct processes all the interactions and data exchanges
+/// between the [NonConsensusNetworkingOps] and the [TransitionFrontier]
+</span><span class="kw">pub struct </span>NetworkMessageProcessor&lt;NetworkBlock, FrontierBlock, TF, NCOps&gt;
+<span class="kw">where
+    </span>TF: TransitionFrontier&lt;Block = FrontierBlock&gt;,
+    NCOps: NonConsensusNetworkingOps&lt;Block = NetworkBlock&gt;,
 {
-    <span class="doccomment">/// The [TransitionFrontier] instance</span>
-    <span class="ident">transition_frontier</span>: <span class="ident">RwLock</span><span class="op">&lt;</span><span class="ident">TF</span><span class="op">&gt;</span>,
-    <span class="doccomment">/// The [NonConsensusNetworkingOps] instance</span>
-    <span class="ident">nonconsensus_ops</span>: <span class="ident">RwLock</span><span class="op">&lt;</span><span class="ident">NCOps</span><span class="op">&gt;</span>,
-    <span class="doccomment">/// Block receiver</span>
-    <span class="ident">block_receiver</span>: <span class="ident">RwLock</span><span class="op">&lt;</span><span class="ident">mpsc::Receiver</span><span class="op">&lt;</span><span class="ident">NetworkBlock</span><span class="op">&gt;</span><span class="op">&gt;</span>,
-    <span class="doccomment">/// [QueryBlockRequest] receiver</span>
-    <span class="ident">query_block_request_receiver</span>: <span class="ident">RwLock</span><span class="op">&lt;</span><span class="ident">mpsc::Receiver</span><span class="op">&lt;</span><span class="ident">QueryBlockRequest</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+    <span class="doccomment">/// The [TransitionFrontier] instance
+    </span>transition_frontier: RwLock&lt;TF&gt;,
+    <span class="doccomment">/// The [NonConsensusNetworkingOps] instance
+    </span>nonconsensus_ops: RwLock&lt;NCOps&gt;,
+    <span class="doccomment">/// Block receiver
+    </span>block_receiver: RwLock&lt;mpsc::Receiver&lt;NetworkBlock&gt;&gt;,
+    <span class="doccomment">/// [QueryBlockRequest] receiver
+    </span>query_block_request_receiver: RwLock&lt;mpsc::Receiver&lt;QueryBlockRequest&gt;&gt;,
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="mina_network" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (fe3342816 2022-08-01)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="mina_network" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (40336865f 2022-08-15)" ></div></body></html>

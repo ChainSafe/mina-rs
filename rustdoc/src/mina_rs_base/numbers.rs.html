@@ -278,285 +278,285 @@
 <span id="278">278</span>
 <span id="279">279</span>
 <span id="280">280</span>
-</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems</span>
-<span class="comment">// SPDX-License-Identifier: Apache-2.0</span>
+</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems
+// SPDX-License-Identifier: Apache-2.0
 
-<span class="doccomment">//! Newtypes for different numeric types used throughout Mina</span>
+</span><span class="doccomment">//! Newtypes for different numeric types used throughout Mina
 
-<span class="kw">use</span> <span class="kw">crate</span>::{<span class="ident">constants</span>::<span class="kw-2">*</span>, <span class="kw-2">*</span>};
-<span class="kw">use</span> <span class="ident">derive_more</span>::{<span class="ident">From</span>, <span class="ident">Into</span>};
-<span class="kw">use</span> <span class="ident">mina_crypto::prelude</span>::<span class="kw-2">*</span>;
-<span class="kw">use</span> <span class="ident">mina_hasher</span>::{<span class="ident">Hashable</span>, <span class="ident">ROInput</span>};
-<span class="kw">use</span> <span class="ident">mina_serialization_types</span>::{<span class="ident">json</span>::<span class="kw-2">*</span>, <span class="kw-2">*</span>};
-<span class="kw">use</span> <span class="ident">mina_serialization_types_macros</span>::<span class="kw-2">*</span>;
-<span class="kw">use</span> <span class="ident">num::Integer</span>;
-<span class="kw">use</span> <span class="ident">std::fmt</span>;
-<span class="kw">use</span> <span class="ident">thiserror::Error</span>;
-<span class="kw">use</span> <span class="ident">time::Duration</span>;
+</span><span class="kw">use crate</span>::{constants::<span class="kw-2">*</span>, <span class="kw-2">*</span>};
+<span class="kw">use </span>derive_more::{From, Into};
+<span class="kw">use </span>mina_crypto::prelude::<span class="kw-2">*</span>;
+<span class="kw">use </span>mina_hasher::{Hashable, ROInput};
+<span class="kw">use </span>mina_serialization_types::{json::<span class="kw-2">*</span>, <span class="kw-2">*</span>};
+<span class="kw">use </span>mina_serialization_types_macros::<span class="kw-2">*</span>;
+<span class="kw">use </span>num::Integer;
+<span class="kw">use </span>std::fmt;
+<span class="kw">use </span>thiserror::Error;
+<span class="kw">use </span>time::Duration;
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Default</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>, <span class="ident">From</span>, <span class="ident">Into</span>)]</span>
-<span class="doccomment">/// Newtype for TokenIds</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">TokenId</span>(<span class="kw">pub</span> <span class="ident">u64</span>);
+<span class="attribute">#[derive(Clone, Default, Eq, PartialEq, Debug, From, Into)]</span>
+<span class="doccomment">/// Newtype for TokenIds
+</span><span class="kw">pub struct </span>TokenId(<span class="kw">pub </span>u64);
 
-<span class="kw">impl</span> <span class="ident">Hashable</span> <span class="kw">for</span> <span class="ident">TokenId</span> {
-    <span class="kw">type</span> <span class="ident">D</span> <span class="op">=</span> ();
+<span class="kw">impl </span>Hashable <span class="kw">for </span>TokenId {
+    <span class="kw">type </span>D = ();
 
-    <span class="kw">fn</span> <span class="ident">to_roinput</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">ROInput</span> {
-        <span class="ident">ROInput::new</span>().<span class="ident">append_u64</span>(<span class="self">self</span>.<span class="number">0</span>)
+    <span class="kw">fn </span>to_roinput(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; ROInput {
+        ROInput::new().append_u64(<span class="self">self</span>.<span class="number">0</span>)
     }
 
-    <span class="kw">fn</span> <span class="ident">domain_string</span>(<span class="kw">_</span>: <span class="ident"><span class="self">Self</span>::D</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> {
-        <span class="prelude-val">None</span>
+    <span class="kw">fn </span>domain_string(<span class="kw">_</span>: <span class="self">Self</span>::D) -&gt; <span class="prelude-ty">Option</span>&lt;String&gt; {
+        <span class="prelude-val">None
+    </span>}
+}
+
+<span class="kw">impl </span>ToChunkedROInput <span class="kw">for </span>TokenId {
+    <span class="kw">fn </span>to_chunked_roinput(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; ChunkedROInput {
+        ChunkedROInput::new().append_field(<span class="self">self</span>.<span class="number">0</span>.into())
     }
 }
 
-<span class="kw">impl</span> <span class="ident">ToChunkedROInput</span> <span class="kw">for</span> <span class="ident">TokenId</span> {
-    <span class="kw">fn</span> <span class="ident">to_chunked_roinput</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">ChunkedROInput</span> {
-        <span class="ident">ChunkedROInput::new</span>().<span class="ident">append_field</span>(<span class="self">self</span>.<span class="number">0</span>.<span class="ident">into</span>())
+<span class="attribute">#[derive(Clone, Eq, PartialEq, PartialOrd, Debug, Copy, Default, From, Into)]</span>
+<span class="doccomment">/// Represents the length of something (e.g. an epoch or window)
+</span><span class="kw">pub struct </span>Length(<span class="kw">pub </span>u32);
+
+<span class="kw">impl </span>Hashable <span class="kw">for </span>Length {
+    <span class="kw">type </span>D = ();
+
+    <span class="kw">fn </span>to_roinput(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; ROInput {
+        ROInput::new().append_u32(<span class="self">self</span>.<span class="number">0</span>)
+    }
+
+    <span class="kw">fn </span>domain_string(<span class="kw">_</span>: <span class="self">Self</span>::D) -&gt; <span class="prelude-ty">Option</span>&lt;String&gt; {
+        <span class="prelude-val">None
+    </span>}
+}
+
+<span class="attribute">#[derive(Clone, Eq, PartialEq, PartialOrd, Debug, Copy, Default, From, Into)]</span>
+
+<span class="doccomment">/// Represents a difference between two lengths
+</span><span class="kw">pub struct </span>Delta(<span class="kw">pub </span>u32);
+
+<span class="attribute">#[derive(Clone, Eq, PartialEq, PartialOrd, Debug, Copy, Default, From, Into)]</span>
+<span class="comment">// FIXME: 255 255 cannot be deserialized to u32, use i32 for now
+// Note: Extended_Uint32 is not defined in bin_prot, but comes from mina
+// Block path: t/staged_ledger_diff/t/diff/t/0/t/t/commands/0/t/data/t/t/t/t/payload/t/t/common/t/t/t/valid_until
+</span><span class="doccomment">/// u32 wrapped in 1 version byte
+/// This will not be part of the public API once the deserialization refactor is complete
+</span><span class="kw">pub struct </span>ExtendedU32(<span class="kw">pub </span>i32);
+
+<span class="attribute">#[derive(Clone, Eq, PartialEq, PartialOrd, Debug, Copy, Default, From, Into)]</span>
+<span class="doccomment">/// This will not be part of the public API once the deserialization refactor is complete
+</span><span class="kw">pub struct </span>ExtendedU64(<span class="kw">pub </span>u64);
+
+<span class="doccomment">/// This structure represents fixed point numbers
+/// typically amounts of Mina currency
+/// # Example
+/// ```
+/// use mina_rs_base::numbers::*;
+///
+/// let amount = Amount(1000000030);
+/// assert_eq!(amount.to_string(), &quot;1.000000030&quot;);
+/// ```
+</span><span class="attribute">#[derive(Copy, Clone, Eq, PartialEq, Debug, Default, From, Into)]</span>
+<span class="kw">pub struct </span>Amount(<span class="kw">pub </span>u64);
+
+<span class="kw">impl </span>fmt::Display <span class="kw">for </span>Amount {
+    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>fmt::Formatter) -&gt; fmt::Result {
+        <span class="kw">let </span>(q, r) = <span class="self">self</span>.<span class="number">0</span>.div_rem(<span class="kw-2">&amp;</span>MINA_PRECISION);
+        <span class="macro">write!</span>(f, <span class="string">&quot;{}.{:#09}&quot;</span>, q, r)
     }
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">PartialOrd</span>, <span class="ident">Debug</span>, <span class="ident">Copy</span>, <span class="ident">Default</span>, <span class="ident">From</span>, <span class="ident">Into</span>)]</span>
-<span class="doccomment">/// Represents the length of something (e.g. an epoch or window)</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Length</span>(<span class="kw">pub</span> <span class="ident">u32</span>);
+<span class="kw">impl </span>Hashable <span class="kw">for </span>Amount {
+    <span class="kw">type </span>D = ();
 
-<span class="kw">impl</span> <span class="ident">Hashable</span> <span class="kw">for</span> <span class="ident">Length</span> {
-    <span class="kw">type</span> <span class="ident">D</span> <span class="op">=</span> ();
-
-    <span class="kw">fn</span> <span class="ident">to_roinput</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">ROInput</span> {
-        <span class="ident">ROInput::new</span>().<span class="ident">append_u32</span>(<span class="self">self</span>.<span class="number">0</span>)
+    <span class="kw">fn </span>to_roinput(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; ROInput {
+        ROInput::new().append_u64(<span class="self">self</span>.<span class="number">0</span>)
     }
 
-    <span class="kw">fn</span> <span class="ident">domain_string</span>(<span class="kw">_</span>: <span class="ident"><span class="self">Self</span>::D</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> {
-        <span class="prelude-val">None</span>
+    <span class="kw">fn </span>domain_string(<span class="kw">_</span>: <span class="self">Self</span>::D) -&gt; <span class="prelude-ty">Option</span>&lt;String&gt; {
+        <span class="prelude-val">None
+    </span>}
+}
+
+<span class="kw">impl </span>ToChunkedROInput <span class="kw">for </span>Amount {
+    <span class="kw">fn </span>to_chunked_roinput(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; ChunkedROInput {
+        ChunkedROInput::new().append_u64(<span class="self">self</span>.<span class="number">0</span>)
     }
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">PartialOrd</span>, <span class="ident">Debug</span>, <span class="ident">Copy</span>, <span class="ident">Default</span>, <span class="ident">From</span>, <span class="ident">Into</span>)]</span>
+<span class="attribute">#[derive(Debug, Error, Eq, PartialEq)]</span>
+<span class="doccomment">/// Error that can be returned when parsing an Amount from string
+</span><span class="kw">pub enum </span>ParseAmountError {
+    <span class="doccomment">/// Error occurs when parsing the integer components
+    </span><span class="attribute">#[error(<span class="string">&quot;Error parsing integer in Amount&quot;</span>)]</span>
+    ErrorParsingInteger(<span class="attribute">#[from]</span> std::num::ParseIntError),
 
-<span class="doccomment">/// Represents a difference between two lengths</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Delta</span>(<span class="kw">pub</span> <span class="ident">u32</span>);
-
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">PartialOrd</span>, <span class="ident">Debug</span>, <span class="ident">Copy</span>, <span class="ident">Default</span>, <span class="ident">From</span>, <span class="ident">Into</span>)]</span>
-<span class="comment">// FIXME: 255 255 cannot be deserialized to u32, use i32 for now</span>
-<span class="comment">// Note: Extended_Uint32 is not defined in bin_prot, but comes from mina</span>
-<span class="comment">// Block path: t/staged_ledger_diff/t/diff/t/0/t/t/commands/0/t/data/t/t/t/t/payload/t/t/common/t/t/t/valid_until</span>
-<span class="doccomment">/// u32 wrapped in 1 version byte</span>
-<span class="doccomment">/// This will not be part of the public API once the deserialization refactor is complete</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ExtendedU32</span>(<span class="kw">pub</span> <span class="ident">i32</span>);
-
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">PartialOrd</span>, <span class="ident">Debug</span>, <span class="ident">Copy</span>, <span class="ident">Default</span>, <span class="ident">From</span>, <span class="ident">Into</span>)]</span>
-<span class="doccomment">/// This will not be part of the public API once the deserialization refactor is complete</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ExtendedU64</span>(<span class="kw">pub</span> <span class="ident">u64</span>);
-
-<span class="doccomment">/// This structure represents fixed point numbers</span>
-<span class="doccomment">/// typically amounts of Mina currency</span>
-<span class="doccomment">/// # Example</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">/// use mina_rs_base::numbers::*;</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// let amount = Amount(1000000030);</span>
-<span class="doccomment">/// assert_eq!(amount.to_string(), &quot;1.000000030&quot;);</span>
-<span class="doccomment">/// ```</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Copy</span>, <span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>, <span class="ident">Default</span>, <span class="ident">From</span>, <span class="ident">Into</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Amount</span>(<span class="kw">pub</span> <span class="ident">u64</span>);
-
-<span class="kw">impl</span> <span class="ident">fmt::Display</span> <span class="kw">for</span> <span class="ident">Amount</span> {
-    <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;mut</span> <span class="ident">fmt::Formatter</span>) -&gt; <span class="ident">fmt::Result</span> {
-        <span class="kw">let</span> (<span class="ident">q</span>, <span class="ident">r</span>) <span class="op">=</span> <span class="self">self</span>.<span class="number">0</span>.<span class="ident">div_rem</span>(<span class="kw-2">&amp;</span><span class="ident">MINA_PRECISION</span>);
-        <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;{}.{:#09}&quot;</span>, <span class="ident">q</span>, <span class="ident">r</span>)
-    }
+    <span class="doccomment">/// Unable to split the string on a &#39;.&#39; into to integer parts
+    </span><span class="attribute">#[error(<span class="string">&quot;Unexpected formatting, does not contain two integers seperated by a &#39;.&#39;. Got: {0}&quot;</span>)]</span>
+    ErrorInvalidFormat(String),
 }
 
-<span class="kw">impl</span> <span class="ident">Hashable</span> <span class="kw">for</span> <span class="ident">Amount</span> {
-    <span class="kw">type</span> <span class="ident">D</span> <span class="op">=</span> ();
-
-    <span class="kw">fn</span> <span class="ident">to_roinput</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">ROInput</span> {
-        <span class="ident">ROInput::new</span>().<span class="ident">append_u64</span>(<span class="self">self</span>.<span class="number">0</span>)
-    }
-
-    <span class="kw">fn</span> <span class="ident">domain_string</span>(<span class="kw">_</span>: <span class="ident"><span class="self">Self</span>::D</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> {
-        <span class="prelude-val">None</span>
-    }
-}
-
-<span class="kw">impl</span> <span class="ident">ToChunkedROInput</span> <span class="kw">for</span> <span class="ident">Amount</span> {
-    <span class="kw">fn</span> <span class="ident">to_chunked_roinput</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">ChunkedROInput</span> {
-        <span class="ident">ChunkedROInput::new</span>().<span class="ident">append_u64</span>(<span class="self">self</span>.<span class="number">0</span>)
-    }
-}
-
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Error</span>, <span class="ident">PartialEq</span>)]</span>
-<span class="doccomment">/// Error that can be returned when parsing an Amount from string</span>
-<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">ParseAmountError</span> {
-    <span class="doccomment">/// Error occurs when parsing the integer components</span>
-    <span class="attribute">#[<span class="ident">error</span>(<span class="string">&quot;Error parsing integer in Amount&quot;</span>)]</span>
-    <span class="ident">ErrorParsingInteger</span>(<span class="attribute">#[<span class="ident">from</span>]</span> <span class="ident">std::num::ParseIntError</span>),
-
-    <span class="doccomment">/// Unable to split the string on a &#39;.&#39; into to integer parts</span>
-    <span class="attribute">#[<span class="ident">error</span>(<span class="string">&quot;Unexpected formatting, does not contain two integers seperated by a &#39;.&#39;. Got: {0}&quot;</span>)]</span>
-    <span class="ident">ErrorInvalidFormat</span>(<span class="ident">String</span>),
-}
-
-<span class="kw">impl</span> <span class="ident">std::str::FromStr</span> <span class="kw">for</span> <span class="ident">Amount</span> {
-    <span class="kw">type</span> <span class="prelude-val">Err</span> <span class="op">=</span> <span class="ident">ParseAmountError</span>;
-    <span class="kw">fn</span> <span class="ident">from_str</span>(<span class="ident">s</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span>, <span class="ident"><span class="self">Self</span>::Err</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">iter</span> <span class="op">=</span> <span class="ident">s</span>.<span class="ident">split</span>(<span class="string">&#39;.&#39;</span>);
-        <span class="kw">let</span> <span class="ident">q</span>: <span class="ident">u64</span> <span class="op">=</span> <span class="ident">iter</span>
-            .<span class="ident">next</span>()
-            .<span class="ident">ok_or_else</span>(<span class="op">|</span><span class="op">|</span> <span class="ident"><span class="self">Self</span>::Err::ErrorInvalidFormat</span>(<span class="ident">s</span>.<span class="ident">to_string</span>()))<span class="question-mark">?</span>
-            .<span class="ident">parse</span>()<span class="question-mark">?</span>;
-        <span class="kw">let</span> <span class="ident">r_str</span> <span class="op">=</span> <span class="ident">iter</span>.<span class="ident">next</span>().<span class="ident">unwrap_or</span>(<span class="string">&quot;0&quot;</span>);
-        <span class="kw">let</span> <span class="ident">r</span>: <span class="ident">u64</span> <span class="op">=</span> <span class="macro">format!</span>(<span class="string">&quot;{:0&lt;9}&quot;</span>, <span class="ident">r_str</span>).<span class="ident">parse</span>()<span class="question-mark">?</span>;
-        <span class="kw">if</span> <span class="ident">iter</span>.<span class="ident">next</span>().<span class="ident">is_none</span>() {
-            <span class="comment">// ensure there isn&#39;t more to parse as that is undefined</span>
-            <span class="prelude-val">Ok</span>(<span class="ident">Amount</span>(<span class="ident">r</span> <span class="op">+</span> <span class="ident">MINA_PRECISION</span> <span class="op">*</span> <span class="ident">q</span>))
-        } <span class="kw">else</span> {
-            <span class="prelude-val">Err</span>(<span class="ident"><span class="self">Self</span>::Err::ErrorInvalidFormat</span>(<span class="ident">s</span>.<span class="ident">to_string</span>()))
+<span class="kw">impl </span>std::str::FromStr <span class="kw">for </span>Amount {
+    <span class="kw">type </span><span class="prelude-val">Err </span>= ParseAmountError;
+    <span class="kw">fn </span>from_str(s: <span class="kw-2">&amp;</span>str) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>, <span class="self">Self</span>::Err&gt; {
+        <span class="kw">let </span><span class="kw-2">mut </span>iter = s.split(<span class="string">&#39;.&#39;</span>);
+        <span class="kw">let </span>q: u64 = iter
+            .next()
+            .ok_or_else(|| <span class="self">Self</span>::Err::ErrorInvalidFormat(s.to_string()))<span class="question-mark">?
+            </span>.parse()<span class="question-mark">?</span>;
+        <span class="kw">let </span>r_str = iter.next().unwrap_or(<span class="string">&quot;0&quot;</span>);
+        <span class="kw">let </span>r: u64 = <span class="macro">format!</span>(<span class="string">&quot;{:0&lt;9}&quot;</span>, r_str).parse()<span class="question-mark">?</span>;
+        <span class="kw">if </span>iter.next().is_none() {
+            <span class="comment">// ensure there isn&#39;t more to parse as that is undefined
+            </span><span class="prelude-val">Ok</span>(Amount(r + MINA_PRECISION * q))
+        } <span class="kw">else </span>{
+            <span class="prelude-val">Err</span>(<span class="self">Self</span>::Err::ErrorInvalidFormat(s.to_string()))
         }
     }
 }
 
-<span class="doccomment">/// Number representing how many txns sent from an account</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Copy</span>, <span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>, <span class="ident">Default</span>, <span class="ident">From</span>, <span class="ident">Into</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">AccountNonce</span>(<span class="kw">pub</span> <span class="ident">u32</span>);
+<span class="doccomment">/// Number representing how many txns sent from an account
+</span><span class="attribute">#[derive(Copy, Clone, Eq, PartialEq, Debug, Default, From, Into)]</span>
+<span class="kw">pub struct </span>AccountNonce(<span class="kw">pub </span>u32);
 
-<span class="kw">impl</span> <span class="ident">Hashable</span> <span class="kw">for</span> <span class="ident">AccountNonce</span> {
-    <span class="kw">type</span> <span class="ident">D</span> <span class="op">=</span> ();
+<span class="kw">impl </span>Hashable <span class="kw">for </span>AccountNonce {
+    <span class="kw">type </span>D = ();
 
-    <span class="kw">fn</span> <span class="ident">to_roinput</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">ROInput</span> {
-        <span class="ident">ROInput::new</span>().<span class="ident">append_u32</span>(<span class="self">self</span>.<span class="number">0</span>)
+    <span class="kw">fn </span>to_roinput(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; ROInput {
+        ROInput::new().append_u32(<span class="self">self</span>.<span class="number">0</span>)
     }
 
-    <span class="kw">fn</span> <span class="ident">domain_string</span>(<span class="kw">_</span>: <span class="ident"><span class="self">Self</span>::D</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> {
-        <span class="prelude-val">None</span>
+    <span class="kw">fn </span>domain_string(<span class="kw">_</span>: <span class="self">Self</span>::D) -&gt; <span class="prelude-ty">Option</span>&lt;String&gt; {
+        <span class="prelude-val">None
+    </span>}
+}
+
+<span class="kw">impl </span>ToChunkedROInput <span class="kw">for </span>AccountNonce {
+    <span class="kw">fn </span>to_chunked_roinput(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; ChunkedROInput {
+        ChunkedROInput::new().append_u32(<span class="self">self</span>.<span class="number">0</span>)
     }
 }
 
-<span class="kw">impl</span> <span class="ident">ToChunkedROInput</span> <span class="kw">for</span> <span class="ident">AccountNonce</span> {
-    <span class="kw">fn</span> <span class="ident">to_chunked_roinput</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">ChunkedROInput</span> {
-        <span class="ident">ChunkedROInput::new</span>().<span class="ident">append_u32</span>(<span class="self">self</span>.<span class="number">0</span>)
+<span class="doccomment">/// Consensus slot index
+</span><span class="attribute">#[derive(Copy, Clone, Eq, PartialEq, Debug, Default, From, Into)]</span>
+<span class="kw">pub struct </span>GlobalSlotNumber(<span class="kw">pub </span>u32);
+
+<span class="kw">impl </span>GlobalSlotNumber {
+    <span class="doccomment">/// Maximum value this type can hold
+    </span><span class="kw">pub const </span>MAX: <span class="self">Self </span>= <span class="self">Self</span>(u32::MAX);
+}
+
+<span class="attribute">#[derive(Clone, Eq, PartialEq, Debug, Default, From, Into)]</span>
+<span class="doccomment">/// 4 bytes wrapped by a version
+/// Will not form part of the public API when deserialization refactor is complete
+</span><span class="kw">pub struct </span>Hex64(<span class="kw">pub </span>i64);
+
+<span class="attribute">#[derive(Clone, Eq, PartialEq, Debug, Default, From, Into, AutoFrom)]</span>
+<span class="attribute">#[auto_from(mina_serialization_types::json::CharJson)]</span>
+<span class="doccomment">/// A single char defined by a single byte (not variable length like a Rust char)
+</span><span class="kw">pub struct </span>Char(<span class="kw">pub </span>u8);
+<span class="macro">impl_strconv_via_json!</span>(Char, mina_serialization_types::json::CharJson);
+
+<span class="kw">impl </span>Hashable <span class="kw">for </span>GlobalSlotNumber {
+    <span class="kw">type </span>D = ();
+
+    <span class="kw">fn </span>to_roinput(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; ROInput {
+        ROInput::new().append_u32(<span class="self">self</span>.<span class="number">0</span>)
+    }
+
+    <span class="kw">fn </span>domain_string(<span class="kw">_</span>: <span class="self">Self</span>::D) -&gt; <span class="prelude-ty">Option</span>&lt;String&gt; {
+        <span class="prelude-val">None
+    </span>}
+}
+
+<span class="attribute">#[derive(Clone, Eq, PartialEq, Debug, Default, From, Into)]</span>
+<span class="doccomment">/// Block time numeric type
+</span><span class="kw">pub struct </span>BlockTime(<span class="kw">pub </span>u64);
+
+<span class="kw">impl </span>Hashable <span class="kw">for </span>BlockTime {
+    <span class="kw">type </span>D = ();
+
+    <span class="kw">fn </span>to_roinput(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; ROInput {
+        ROInput::new().append_u64(<span class="self">self</span>.<span class="number">0</span>)
+    }
+
+    <span class="kw">fn </span>domain_string(<span class="kw">_</span>: <span class="self">Self</span>::D) -&gt; <span class="prelude-ty">Option</span>&lt;String&gt; {
+        <span class="prelude-val">None
+    </span>}
+}
+
+<span class="kw">impl </span>ToChunkedROInput <span class="kw">for </span>BlockTime {
+    <span class="kw">fn </span>to_chunked_roinput(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; ChunkedROInput {
+        ChunkedROInput::new().append_u32(<span class="self">self</span>.<span class="number">0 </span><span class="kw">as </span>u32)
     }
 }
 
-<span class="doccomment">/// Consensus slot index</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Copy</span>, <span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>, <span class="ident">Default</span>, <span class="ident">From</span>, <span class="ident">Into</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">GlobalSlotNumber</span>(<span class="kw">pub</span> <span class="ident">u32</span>);
-
-<span class="kw">impl</span> <span class="ident">GlobalSlotNumber</span> {
-    <span class="doccomment">/// Maximum value this type can hold</span>
-    <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">MAX</span>: <span class="self">Self</span> <span class="op">=</span> <span class="self">Self</span>(<span class="ident">u32::MAX</span>);
-}
-
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>, <span class="ident">Default</span>, <span class="ident">From</span>, <span class="ident">Into</span>)]</span>
-<span class="doccomment">/// 4 bytes wrapped by a version</span>
-<span class="doccomment">/// Will not form part of the public API when deserialization refactor is complete</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Hex64</span>(<span class="kw">pub</span> <span class="ident">i64</span>);
-
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>, <span class="ident">Default</span>, <span class="ident">From</span>, <span class="ident">Into</span>, <span class="ident">AutoFrom</span>)]</span>
-<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">mina_serialization_types::json::CharJson</span>)]</span>
-<span class="doccomment">/// A single char defined by a single byte (not variable length like a Rust char)</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Char</span>(<span class="kw">pub</span> <span class="ident">u8</span>);
-<span class="macro">impl_strconv_via_json!</span>(<span class="ident">Char</span>, <span class="ident">mina_serialization_types::json::CharJson</span>);
-
-<span class="kw">impl</span> <span class="ident">Hashable</span> <span class="kw">for</span> <span class="ident">GlobalSlotNumber</span> {
-    <span class="kw">type</span> <span class="ident">D</span> <span class="op">=</span> ();
-
-    <span class="kw">fn</span> <span class="ident">to_roinput</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">ROInput</span> {
-        <span class="ident">ROInput::new</span>().<span class="ident">append_u32</span>(<span class="self">self</span>.<span class="number">0</span>)
+<span class="kw">impl </span>BlockTime {
+    <span class="doccomment">/// Unix timestamp conversion (seconds since the unix epoch)
+    </span><span class="kw">pub const fn </span>from_unix_epoch(ts: u64) -&gt; <span class="self">Self </span>{
+        <span class="self">Self</span>::from_unix_epoch_millis(ts * <span class="number">1000</span>)
     }
 
-    <span class="kw">fn</span> <span class="ident">domain_string</span>(<span class="kw">_</span>: <span class="ident"><span class="self">Self</span>::D</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> {
-        <span class="prelude-val">None</span>
-    }
-}
-
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>, <span class="ident">Default</span>, <span class="ident">From</span>, <span class="ident">Into</span>)]</span>
-<span class="doccomment">/// Block time numeric type</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">BlockTime</span>(<span class="kw">pub</span> <span class="ident">u64</span>);
-
-<span class="kw">impl</span> <span class="ident">Hashable</span> <span class="kw">for</span> <span class="ident">BlockTime</span> {
-    <span class="kw">type</span> <span class="ident">D</span> <span class="op">=</span> ();
-
-    <span class="kw">fn</span> <span class="ident">to_roinput</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">ROInput</span> {
-        <span class="ident">ROInput::new</span>().<span class="ident">append_u64</span>(<span class="self">self</span>.<span class="number">0</span>)
+    <span class="doccomment">/// Unix timestamp conversion (milliseconds since the unix epoch)
+    </span><span class="kw">pub const fn </span>from_unix_epoch_millis(ts: u64) -&gt; <span class="self">Self </span>{
+        <span class="self">Self</span>(ts)
     }
 
-    <span class="kw">fn</span> <span class="ident">domain_string</span>(<span class="kw">_</span>: <span class="ident"><span class="self">Self</span>::D</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> {
-        <span class="prelude-val">None</span>
-    }
-}
+    <span class="doccomment">/// Gets unix timestamp in milliseconds
+    </span><span class="kw">pub const fn </span>epoch_millis(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; u64 {
+        <span class="self">self</span>.<span class="number">0
+    </span>}
 
-<span class="kw">impl</span> <span class="ident">ToChunkedROInput</span> <span class="kw">for</span> <span class="ident">BlockTime</span> {
-    <span class="kw">fn</span> <span class="ident">to_chunked_roinput</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">ChunkedROInput</span> {
-        <span class="ident">ChunkedROInput::new</span>().<span class="ident">append_u32</span>(<span class="self">self</span>.<span class="number">0</span> <span class="kw">as</span> <span class="ident">u32</span>)
-    }
-}
-
-<span class="kw">impl</span> <span class="ident">BlockTime</span> {
-    <span class="doccomment">/// Unix timestamp conversion (seconds since the unix epoch)</span>
-    <span class="kw">pub</span> <span class="kw">const</span> <span class="kw">fn</span> <span class="ident">from_unix_epoch</span>(<span class="ident">ts</span>: <span class="ident">u64</span>) -&gt; <span class="self">Self</span> {
-        <span class="ident"><span class="self">Self</span>::from_unix_epoch_millis</span>(<span class="ident">ts</span> <span class="op">*</span> <span class="number">1000</span>)
-    }
-
-    <span class="doccomment">/// Unix timestamp conversion (milliseconds since the unix epoch)</span>
-    <span class="kw">pub</span> <span class="kw">const</span> <span class="kw">fn</span> <span class="ident">from_unix_epoch_millis</span>(<span class="ident">ts</span>: <span class="ident">u64</span>) -&gt; <span class="self">Self</span> {
-        <span class="self">Self</span>(<span class="ident">ts</span>)
-    }
-
-    <span class="doccomment">/// Gets unix timestamp in milliseconds</span>
-    <span class="kw">pub</span> <span class="kw">const</span> <span class="kw">fn</span> <span class="ident">epoch_millis</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">u64</span> {
-        <span class="self">self</span>.<span class="number">0</span>
-    }
-
-    <span class="doccomment">/// Gets timestamp in [time::OffsetDateTime] format</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">datetime</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">time::OffsetDateTime</span> {
-        <span class="kw">use</span> <span class="ident">time::OffsetDateTime</span>;
-        <span class="kw">let</span> (<span class="ident">q</span>, <span class="ident">r</span>) <span class="op">=</span> (<span class="self">self</span>.<span class="number">0</span> <span class="kw">as</span> <span class="ident">i64</span>).<span class="ident">div_rem</span>(<span class="kw-2">&amp;</span><span class="number">1000</span>);
-        <span class="kw">let</span> <span class="ident">dt</span> <span class="op">=</span> <span class="ident">OffsetDateTime::from_unix_timestamp</span>(<span class="ident">q</span>).<span class="ident">expect</span>(<span class="string">&quot;Invalid block time&quot;</span>);
-        <span class="kw">if</span> <span class="ident">r</span> <span class="op">==</span> <span class="number">0</span> {
-            <span class="ident">dt</span>
-        } <span class="kw">else</span> {
-            <span class="ident">dt</span> <span class="op">+</span> <span class="ident">Duration::milliseconds</span>(<span class="ident">r</span>)
+    <span class="doccomment">/// Gets timestamp in [time::OffsetDateTime] format
+    </span><span class="kw">pub fn </span>datetime(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; time::OffsetDateTime {
+        <span class="kw">use </span>time::OffsetDateTime;
+        <span class="kw">let </span>(q, r) = (<span class="self">self</span>.<span class="number">0 </span><span class="kw">as </span>i64).div_rem(<span class="kw-2">&amp;</span><span class="number">1000</span>);
+        <span class="kw">let </span>dt = OffsetDateTime::from_unix_timestamp(q).expect(<span class="string">&quot;Invalid block time&quot;</span>);
+        <span class="kw">if </span>r == <span class="number">0 </span>{
+            dt
+        } <span class="kw">else </span>{
+            dt + Duration::milliseconds(r)
         }
     }
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>, <span class="ident">Default</span>, <span class="ident">From</span>, <span class="ident">Into</span>)]</span>
-<span class="doccomment">/// Time span between two block time instants</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">BlockTimeSpan</span>(<span class="kw">pub</span> <span class="ident">u64</span>);
+<span class="attribute">#[derive(Clone, Eq, PartialEq, Debug, Default, From, Into)]</span>
+<span class="doccomment">/// Time span between two block time instants
+</span><span class="kw">pub struct </span>BlockTimeSpan(<span class="kw">pub </span>u64);
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Default</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>, <span class="ident">From</span>, <span class="ident">Into</span>)]</span>
-<span class="doccomment">/// Mina 256 bit Bit Integer type</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">BigInt256</span>(<span class="kw">pub</span> [<span class="ident">u8</span>; <span class="number">32</span>]);
+<span class="attribute">#[derive(Clone, Default, Eq, PartialEq, Debug, From, Into)]</span>
+<span class="doccomment">/// Mina 256 bit Bit Integer type
+</span><span class="kw">pub struct </span>BigInt256(<span class="kw">pub </span>[u8; <span class="number">32</span>]);
 
-<span class="kw">impl</span> <span class="ident">AsRef</span><span class="op">&lt;</span>[<span class="ident">u8</span>]<span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">BigInt256</span> {
-    <span class="kw">fn</span> <span class="ident">as_ref</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>[<span class="ident">u8</span>] {
-        <span class="self">self</span>.<span class="number">0</span>.<span class="ident">as_ref</span>()
+<span class="kw">impl </span>AsRef&lt;[u8]&gt; <span class="kw">for </span>BigInt256 {
+    <span class="kw">fn </span>as_ref(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>[u8] {
+        <span class="self">self</span>.<span class="number">0</span>.as_ref()
     }
 }
 
-<span class="kw">impl</span> <span class="ident">HexEncodable</span> <span class="kw">for</span> <span class="ident">BigInt256</span> {
-    <span class="kw">type</span> <span class="ident">Error</span> <span class="op">=</span> <span class="ident">hex::FromHexError</span>;
+<span class="kw">impl </span>HexEncodable <span class="kw">for </span>BigInt256 {
+    <span class="kw">type </span>Error = hex::FromHexError;
 
-    <span class="kw">fn</span> <span class="ident">to_hex_string</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">String</span>
-    <span class="kw">where</span>
-        <span class="self">Self</span>: <span class="ident">AsRef</span><span class="op">&lt;</span>[<span class="ident">u8</span>]<span class="op">&gt;</span>,
+    <span class="kw">fn </span>to_hex_string(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; String
+    <span class="kw">where
+        </span><span class="self">Self</span>: AsRef&lt;[u8]&gt;,
     {
-        <span class="ident">hex::encode</span>(<span class="self">self</span>)
+        hex::encode(<span class="self">self</span>)
     }
 
-    <span class="kw">fn</span> <span class="ident">try_from_hex</span>(<span class="ident">s</span>: <span class="kw">impl</span> <span class="ident">AsRef</span><span class="op">&lt;</span>[<span class="ident">u8</span>]<span class="op">&gt;</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span>, <span class="ident"><span class="self">Self</span>::Error</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">json</span> <span class="op">=</span> <span class="ident">FieldElementJson::try_from_hex_str</span>(<span class="ident">s</span>)<span class="question-mark">?</span>;
-        <span class="prelude-val">Ok</span>(<span class="self">Self</span>(<span class="ident">json</span>.<span class="number">0</span>))
+    <span class="kw">fn </span>try_from_hex(s: <span class="kw">impl </span>AsRef&lt;[u8]&gt;) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>, <span class="self">Self</span>::Error&gt; {
+        <span class="kw">let </span>json = FieldElementJson::try_from_hex_str(s)<span class="question-mark">?</span>;
+        <span class="prelude-val">Ok</span>(<span class="self">Self</span>(json.<span class="number">0</span>))
     }
 }
 
-<span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">BigInt256</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ark_ff::BigInteger256</span> {
-    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">i</span>: <span class="kw-2">&amp;</span><span class="ident">BigInt256</span>) -&gt; <span class="self">Self</span> {
-        <span class="kw">use</span> <span class="ident">ark_ff::bytes::FromBytes</span>;
-        <span class="ident"><span class="self">Self</span>::read</span>(<span class="kw-2">&amp;</span><span class="ident">i</span>.<span class="number">0</span>[..]).<span class="ident">unwrap</span>()
+<span class="kw">impl </span>From&lt;<span class="kw-2">&amp;</span>BigInt256&gt; <span class="kw">for </span>ark_ff::BigInteger256 {
+    <span class="kw">fn </span>from(i: <span class="kw-2">&amp;</span>BigInt256) -&gt; <span class="self">Self </span>{
+        <span class="kw">use </span>ark_ff::bytes::FromBytes;
+        <span class="self">Self</span>::read(<span class="kw-2">&amp;</span>i.<span class="number">0</span>[..]).unwrap()
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_rs_base" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (fe3342816 2022-08-01)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_rs_base" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (40336865f 2022-08-15)" ></div></body></html>

@@ -21,28 +21,28 @@
 <span id="21">21</span>
 <span id="22">22</span>
 <span id="23">23</span>
-</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems</span>
-<span class="comment">// SPDX-License-Identifier: Apache-2.0</span>
+</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems
+// SPDX-License-Identifier: Apache-2.0
 
-<span class="doccomment">//! Payment commands are for transfering some token amounts between accounts</span>
+</span><span class="doccomment">//! Payment commands are for transfering some token amounts between accounts
 
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::numbers</span>::{<span class="ident">Amount</span>, <span class="ident">TokenId</span>};
+</span><span class="kw">use </span><span class="kw">crate</span>::numbers::{Amount, TokenId};
 
-<span class="kw">use</span> <span class="ident">mina_serialization_types_macros::AutoFrom</span>;
-<span class="kw">use</span> <span class="ident">proof_systems::mina_signer::CompressedPubKey</span>;
+<span class="kw">use </span>mina_serialization_types_macros::AutoFrom;
+<span class="kw">use </span>proof_systems::mina_signer::CompressedPubKey;
 
-<span class="doccomment">/// The data specific to payload commands</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>, <span class="ident">AutoFrom</span>)]</span>
-<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">mina_serialization_types::staged_ledger_diff::PaymentPayload</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">PaymentPayload</span> {
-    <span class="doccomment">/// Account to transfer from</span>
-    <span class="kw">pub</span> <span class="ident">source_pk</span>: <span class="ident">CompressedPubKey</span>,
-    <span class="doccomment">/// Account to transfer to</span>
-    <span class="kw">pub</span> <span class="ident">receiver_pk</span>: <span class="ident">CompressedPubKey</span>,
-    <span class="doccomment">/// The token to transfer</span>
-    <span class="kw">pub</span> <span class="ident">token_id</span>: <span class="ident">TokenId</span>,
-    <span class="doccomment">/// The ammount of that token to transfer</span>
-    <span class="kw">pub</span> <span class="ident">amount</span>: <span class="ident">Amount</span>,
+<span class="doccomment">/// The data specific to payload commands
+</span><span class="attribute">#[derive(Clone, Eq, PartialEq, Debug, AutoFrom)]</span>
+<span class="attribute">#[auto_from(mina_serialization_types::staged_ledger_diff::PaymentPayload)]</span>
+<span class="kw">pub struct </span>PaymentPayload {
+    <span class="doccomment">/// Account to transfer from
+    </span><span class="kw">pub </span>source_pk: CompressedPubKey,
+    <span class="doccomment">/// Account to transfer to
+    </span><span class="kw">pub </span>receiver_pk: CompressedPubKey,
+    <span class="doccomment">/// The token to transfer
+    </span><span class="kw">pub </span>token_id: TokenId,
+    <span class="doccomment">/// The ammount of that token to transfer
+    </span><span class="kw">pub </span>amount: Amount,
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="mina_rs_base" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (fe3342816 2022-08-01)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="mina_rs_base" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (40336865f 2022-08-15)" ></div></body></html>

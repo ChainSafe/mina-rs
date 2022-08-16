@@ -1,3 +1,3 @@
-(function() {var implementors = {};
-implementors["mina_rs_base"] = [{"text":"impl <a class=\"trait\" href=\"https://doc.rust-lang.org/nightly/core/convert/trait.AsRef.html\" title=\"trait core::convert::AsRef\">AsRef</a>&lt;[<a class=\"primitive\" href=\"https://doc.rust-lang.org/nightly/std/primitive.u8.html\">u8</a>]&gt; for <a class=\"struct\" href=\"mina_rs_base/numbers/struct.BigInt256.html\" title=\"struct mina_rs_base::numbers::BigInt256\">BigInt256</a>","synthetic":false,"types":["mina_rs_base::numbers::BigInt256"]}];
-if (window.register_implementors) {window.register_implementors(implementors);} else {window.pending_implementors = implementors;}})()
+(function() {var implementors = {
+"mina_rs_base":[["impl <a class=\"trait\" href=\"https://doc.rust-lang.org/nightly/core/convert/trait.AsRef.html\" title=\"trait core::convert::AsRef\">AsRef</a>&lt;[<a class=\"primitive\" href=\"https://doc.rust-lang.org/nightly/std/primitive.u8.html\">u8</a>]&gt; for <a class=\"struct\" href=\"mina_rs_base/numbers/struct.BigInt256.html\" title=\"struct mina_rs_base::numbers::BigInt256\">BigInt256</a>"]]
+};if (window.register_implementors) {window.register_implementors(implementors);} else {window.pending_implementors = implementors;}})()

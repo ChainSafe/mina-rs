@@ -567,574 +567,574 @@
 <span id="567">567</span>
 <span id="568">568</span>
 <span id="569">569</span>
-</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems</span>
-<span class="comment">// SPDX-License-Identifier: Apache-2.0</span>
+</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems
+// SPDX-License-Identifier: Apache-2.0
 
-<span class="doccomment">//! In this context a diff refers to a difference between two states of the blockchain.</span>
-<span class="doccomment">//! In this case it is between the current state and the proposed next state.</span>
+</span><span class="doccomment">//! In this context a diff refers to a difference between two states of the blockchain.
+//! In this case it is between the current state and the proposed next state.
 
-<span class="attribute">#![<span class="ident">allow</span>(<span class="ident">missing_docs</span>)]</span> <span class="comment">// Don&#39;t actually know what many of the types fields are for yet</span>
+</span><span class="attribute">#![allow(missing_docs)]</span> <span class="comment">// Don&#39;t actually know what many of the types fields are for yet
 
-<span class="kw">use</span> <span class="kw">crate</span>::{<span class="ident">common</span>::<span class="kw-2">*</span>, <span class="ident">json</span>::<span class="kw-2">*</span>, <span class="ident">signatures</span>::<span class="kw-2">*</span>, <span class="ident">v1</span>::<span class="kw-2">*</span>, <span class="ident">version_bytes</span>, <span class="kw-2">*</span>};
-<span class="kw">use</span> <span class="ident">mina_serialization_types_macros::AutoFrom</span>;
-<span class="kw">use</span> <span class="ident">serde</span>::{<span class="ident">Deserialize</span>, <span class="ident">Deserializer</span>, <span class="ident">Serialize</span>, <span class="ident">Serializer</span>};
-<span class="kw">use</span> <span class="ident">smart_default::SmartDefault</span>;
-<span class="kw">use</span> <span class="ident">versioned</span>::<span class="kw-2">*</span>;
+</span><span class="kw">use crate</span>::{common::<span class="kw-2">*</span>, json::<span class="kw-2">*</span>, signatures::<span class="kw-2">*</span>, v1::<span class="kw-2">*</span>, version_bytes, <span class="kw-2">*</span>};
+<span class="kw">use </span>mina_serialization_types_macros::AutoFrom;
+<span class="kw">use </span>serde::{Deserialize, Deserializer, Serialize, Serializer};
+<span class="kw">use </span>smart_default::SmartDefault;
+<span class="kw">use </span>versioned::<span class="kw-2">*</span>;
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">PartialEq</span>)]</span>
-<span class="doccomment">/// Top level wrapper type for a StagedLedgerDiff</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">StagedLedgerDiff</span> {
-    <span class="kw">pub</span> <span class="ident">diff</span>: <span class="ident">StagedLedgerDiffTupleV1</span>,
+<span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]</span>
+<span class="doccomment">/// Top level wrapper type for a StagedLedgerDiff
+</span><span class="kw">pub struct </span>StagedLedgerDiff {
+    <span class="kw">pub </span>diff: StagedLedgerDiffTupleV1,
 }
 
-<span class="doccomment">/// Top level wrapper type for a StagedLedgerDiff (v1)</span>
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">StagedLedgerDiffV1</span> <span class="op">=</span> <span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">StagedLedgerDiff</span>, <span class="number">1</span><span class="op">&gt;</span>;
+<span class="doccomment">/// Top level wrapper type for a StagedLedgerDiff (v1)
+</span><span class="kw">pub type </span>StagedLedgerDiffV1 = Versioned&lt;StagedLedgerDiff, <span class="number">1</span>&gt;;
 
-<span class="doccomment">/// Top level wrapper type for a StagedLedgerDiff (json)</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">PartialEq</span>, <span class="ident">AutoFrom</span>)]</span>
-<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">StagedLedgerDiff</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">StagedLedgerDiffJson</span> {
-    <span class="kw">pub</span> <span class="ident">diff</span>: <span class="ident">StagedLedgerDiffTupleJson</span>,
+<span class="doccomment">/// Top level wrapper type for a StagedLedgerDiff (json)
+</span><span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq, AutoFrom)]</span>
+<span class="attribute">#[auto_from(StagedLedgerDiff)]</span>
+<span class="kw">pub struct </span>StagedLedgerDiffJson {
+    <span class="kw">pub </span>diff: StagedLedgerDiffTupleJson,
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">PartialEq</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">StagedLedgerDiffTuple</span>(<span class="kw">pub</span> <span class="ident">StagedLedgerPreDiffV1</span>, <span class="kw">pub</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">StagedLedgerPreDiffV1</span><span class="op">&gt;</span>);
+<span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]</span>
+<span class="kw">pub struct </span>StagedLedgerDiffTuple(<span class="kw">pub </span>StagedLedgerPreDiffV1, <span class="kw">pub </span><span class="prelude-ty">Option</span>&lt;StagedLedgerPreDiffV1&gt;);
 
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">StagedLedgerDiffTupleV1</span> <span class="op">=</span> <span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">StagedLedgerDiffTuple</span>, <span class="number">1</span><span class="op">&gt;</span>;
+<span class="kw">pub type </span>StagedLedgerDiffTupleV1 = Versioned&lt;StagedLedgerDiffTuple, <span class="number">1</span>&gt;;
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">PartialEq</span>, <span class="ident">AutoFrom</span>)]</span>
-<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">StagedLedgerDiffTuple</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">StagedLedgerDiffTupleJson</span>(
-    <span class="kw">pub</span> <span class="ident">StagedLedgerPreDiffJson</span>,
-    <span class="kw">pub</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">StagedLedgerPreDiffJson</span><span class="op">&gt;</span>,
+<span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq, AutoFrom)]</span>
+<span class="attribute">#[auto_from(StagedLedgerDiffTuple)]</span>
+<span class="kw">pub struct </span>StagedLedgerDiffTupleJson(
+    <span class="kw">pub </span>StagedLedgerPreDiffJson,
+    <span class="kw">pub </span><span class="prelude-ty">Option</span>&lt;StagedLedgerPreDiffJson&gt;,
 );
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">PartialEq</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">StagedLedgerPreDiff</span> {
-    <span class="kw">pub</span> <span class="ident">completed_works</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">TransactionSnarkWorkV1</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">commands</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">UserCommandWithStatusV1</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">coinbase</span>: <span class="ident">CoinBaseV1</span>,
-    <span class="kw">pub</span> <span class="ident">internal_command_balances</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">InternalCommandBalanceDataV1</span><span class="op">&gt;</span>,
+<span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]</span>
+<span class="kw">pub struct </span>StagedLedgerPreDiff {
+    <span class="kw">pub </span>completed_works: Vec&lt;TransactionSnarkWorkV1&gt;,
+    <span class="kw">pub </span>commands: Vec&lt;UserCommandWithStatusV1&gt;,
+    <span class="kw">pub </span>coinbase: CoinBaseV1,
+    <span class="kw">pub </span>internal_command_balances: Vec&lt;InternalCommandBalanceDataV1&gt;,
 }
 
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">StagedLedgerPreDiffV1</span> <span class="op">=</span> <span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">StagedLedgerPreDiff</span>, <span class="number">1</span><span class="op">&gt;</span>, <span class="number">1</span><span class="op">&gt;</span>;
+<span class="kw">pub type </span>StagedLedgerPreDiffV1 = Versioned&lt;Versioned&lt;StagedLedgerPreDiff, <span class="number">1</span>&gt;, <span class="number">1</span>&gt;;
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">PartialEq</span>, <span class="ident">AutoFrom</span>)]</span>
-<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">StagedLedgerPreDiff</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">StagedLedgerPreDiffJson</span> {
-    <span class="kw">pub</span> <span class="ident">completed_works</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">TransactionSnarkWorkJson</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">commands</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">UserCommandWithStatusJson</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">coinbase</span>: <span class="ident">CoinBaseJson</span>,
-    <span class="kw">pub</span> <span class="ident">internal_command_balances</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">InternalCommandBalanceDataJson</span><span class="op">&gt;</span>,
+<span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq, AutoFrom)]</span>
+<span class="attribute">#[auto_from(StagedLedgerPreDiff)]</span>
+<span class="kw">pub struct </span>StagedLedgerPreDiffJson {
+    <span class="kw">pub </span>completed_works: Vec&lt;TransactionSnarkWorkJson&gt;,
+    <span class="kw">pub </span>commands: Vec&lt;UserCommandWithStatusJson&gt;,
+    <span class="kw">pub </span>coinbase: CoinBaseJson,
+    <span class="kw">pub </span>internal_command_balances: Vec&lt;InternalCommandBalanceDataJson&gt;,
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">PartialEq</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">UserCommandWithStatus</span> {
-    <span class="kw">pub</span> <span class="ident">data</span>: <span class="ident">UserCommandV1</span>,
-    <span class="kw">pub</span> <span class="ident">status</span>: <span class="ident">TransactionStatusV1</span>,
+<span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]</span>
+<span class="kw">pub struct </span>UserCommandWithStatus {
+    <span class="kw">pub </span>data: UserCommandV1,
+    <span class="kw">pub </span>status: TransactionStatusV1,
 }
 
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">UserCommandWithStatusV1</span> <span class="op">=</span> <span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">UserCommandWithStatus</span>, <span class="number">1</span><span class="op">&gt;</span>;
+<span class="kw">pub type </span>UserCommandWithStatusV1 = Versioned&lt;UserCommandWithStatus, <span class="number">1</span>&gt;;
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">PartialEq</span>, <span class="ident">AutoFrom</span>)]</span>
-<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">UserCommandWithStatus</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">UserCommandWithStatusJson</span> {
-    <span class="kw">pub</span> <span class="ident">data</span>: <span class="ident">UserCommandJson</span>,
-    <span class="kw">pub</span> <span class="ident">status</span>: <span class="ident">TransactionStatusJson</span>,
+<span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq, AutoFrom)]</span>
+<span class="attribute">#[auto_from(UserCommandWithStatus)]</span>
+<span class="kw">pub struct </span>UserCommandWithStatusJson {
+    <span class="kw">pub </span>data: UserCommandJson,
+    <span class="kw">pub </span>status: TransactionStatusJson,
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">PartialEq</span>)]</span>
-<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">UserCommand</span> {
-    <span class="ident">SignedCommand</span>(<span class="ident">SignedCommandV1</span>),
-    <span class="comment">// FIXME: other variants are not covered by current test block</span>
+<span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]</span>
+<span class="kw">pub enum </span>UserCommand {
+    SignedCommand(SignedCommandV1),
+    <span class="comment">// FIXME: other variants are not covered by current test block
+</span>}
+
+<span class="kw">pub type </span>UserCommandV1 = Versioned&lt;Versioned&lt;UserCommand, <span class="number">1</span>&gt;, <span class="number">1</span>&gt;;
+
+<span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]</span>
+<span class="kw">enum </span>UserCommandJsonProxy {
+    <span class="attribute">#[serde(rename = <span class="string">&quot;Signed_command&quot;</span>)]</span>
+    SignedCommand(SignedCommandJson),
 }
 
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">UserCommandV1</span> <span class="op">=</span> <span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">UserCommand</span>, <span class="number">1</span><span class="op">&gt;</span>, <span class="number">1</span><span class="op">&gt;</span>;
-
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">PartialEq</span>)]</span>
-<span class="kw">enum</span> <span class="ident">UserCommandJsonProxy</span> {
-    <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">rename</span> <span class="op">=</span> <span class="string">&quot;Signed_command&quot;</span>)]</span>
-    <span class="ident">SignedCommand</span>(<span class="ident">SignedCommandJson</span>),
+<span class="attribute">#[derive(Clone, Debug, Eq, PartialEq, AutoFrom)]</span>
+<span class="attribute">#[auto_from(UserCommand)]</span>
+<span class="attribute">#[auto_from(UserCommandJsonProxy)]</span>
+<span class="kw">pub enum </span>UserCommandJson {
+    SignedCommand(SignedCommandJson),
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">PartialEq</span>, <span class="ident">AutoFrom</span>)]</span>
-<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">UserCommand</span>)]</span>
-<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">UserCommandJsonProxy</span>)]</span>
-<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">UserCommandJson</span> {
-    <span class="ident">SignedCommand</span>(<span class="ident">SignedCommandJson</span>),
+<span class="macro">impl_mina_enum_json_serde!</span>(UserCommandJson, UserCommandJsonProxy);
+
+<span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]</span>
+<span class="kw">pub struct </span>SignedCommand {
+    <span class="kw">pub </span>payload: SignedCommandPayloadV1,
+    <span class="kw">pub </span>signer: PublicKey2V1,
+    <span class="kw">pub </span>signature: SignatureV1,
 }
 
-<span class="macro">impl_mina_enum_json_serde!</span>(<span class="ident">UserCommandJson</span>, <span class="ident">UserCommandJsonProxy</span>);
+<span class="kw">pub type </span>SignedCommandV1 = Versioned&lt;Versioned&lt;SignedCommand, <span class="number">1</span>&gt;, <span class="number">1</span>&gt;;
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">PartialEq</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">SignedCommand</span> {
-    <span class="kw">pub</span> <span class="ident">payload</span>: <span class="ident">SignedCommandPayloadV1</span>,
-    <span class="kw">pub</span> <span class="ident">signer</span>: <span class="ident">PublicKey2V1</span>,
-    <span class="kw">pub</span> <span class="ident">signature</span>: <span class="ident">SignatureV1</span>,
+<span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq, AutoFrom)]</span>
+<span class="attribute">#[auto_from(SignedCommand)]</span>
+<span class="kw">pub struct </span>SignedCommandJson {
+    <span class="kw">pub </span>payload: SignedCommandPayloadJson,
+    <span class="kw">pub </span>signer: PublicKeyJson,
+    <span class="kw">pub </span>signature: SignatureJson,
 }
 
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">SignedCommandV1</span> <span class="op">=</span> <span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">SignedCommand</span>, <span class="number">1</span><span class="op">&gt;</span>, <span class="number">1</span><span class="op">&gt;</span>;
-
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">PartialEq</span>, <span class="ident">AutoFrom</span>)]</span>
-<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">SignedCommand</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">SignedCommandJson</span> {
-    <span class="kw">pub</span> <span class="ident">payload</span>: <span class="ident">SignedCommandPayloadJson</span>,
-    <span class="kw">pub</span> <span class="ident">signer</span>: <span class="ident">PublicKeyJson</span>,
-    <span class="kw">pub</span> <span class="ident">signature</span>: <span class="ident">SignatureJson</span>,
+<span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]</span>
+<span class="kw">pub struct </span>SignedCommandPayload {
+    <span class="kw">pub </span>common: SignedCommandPayloadCommonV1,
+    <span class="kw">pub </span>body: SignedCommandPayloadBodyV1,
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">PartialEq</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">SignedCommandPayload</span> {
-    <span class="kw">pub</span> <span class="ident">common</span>: <span class="ident">SignedCommandPayloadCommonV1</span>,
-    <span class="kw">pub</span> <span class="ident">body</span>: <span class="ident">SignedCommandPayloadBodyV1</span>,
+<span class="kw">pub type </span>SignedCommandPayloadV1 = Versioned&lt;Versioned&lt;SignedCommandPayload, <span class="number">1</span>&gt;, <span class="number">1</span>&gt;;
+
+<span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq, AutoFrom)]</span>
+<span class="attribute">#[auto_from(SignedCommandPayload)]</span>
+<span class="kw">pub struct </span>SignedCommandPayloadJson {
+    <span class="kw">pub </span>common: SignedCommandPayloadCommonJson,
+    <span class="kw">pub </span>body: SignedCommandPayloadBodyJson,
 }
 
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">SignedCommandPayloadV1</span> <span class="op">=</span> <span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">SignedCommandPayload</span>, <span class="number">1</span><span class="op">&gt;</span>, <span class="number">1</span><span class="op">&gt;</span>;
-
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">PartialEq</span>, <span class="ident">AutoFrom</span>)]</span>
-<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">SignedCommandPayload</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">SignedCommandPayloadJson</span> {
-    <span class="kw">pub</span> <span class="ident">common</span>: <span class="ident">SignedCommandPayloadCommonJson</span>,
-    <span class="kw">pub</span> <span class="ident">body</span>: <span class="ident">SignedCommandPayloadBodyJson</span>,
+<span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]</span>
+<span class="kw">pub struct </span>SignedCommandPayloadCommon {
+    <span class="kw">pub </span>fee: AmountV1,
+    <span class="kw">pub </span>fee_token: SignedCommandFeeTokenV1,
+    <span class="kw">pub </span>fee_payer_pk: PublicKeyV1,
+    <span class="kw">pub </span>nonce: ExtendedU32,
+    <span class="kw">pub </span>valid_until: ExtendedU32,
+    <span class="kw">pub </span>memo: SignedCommandMemoV1,
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">PartialEq</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">SignedCommandPayloadCommon</span> {
-    <span class="kw">pub</span> <span class="ident">fee</span>: <span class="ident">AmountV1</span>,
-    <span class="kw">pub</span> <span class="ident">fee_token</span>: <span class="ident">SignedCommandFeeTokenV1</span>,
-    <span class="kw">pub</span> <span class="ident">fee_payer_pk</span>: <span class="ident">PublicKeyV1</span>,
-    <span class="kw">pub</span> <span class="ident">nonce</span>: <span class="ident">ExtendedU32</span>,
-    <span class="kw">pub</span> <span class="ident">valid_until</span>: <span class="ident">ExtendedU32</span>,
-    <span class="kw">pub</span> <span class="ident">memo</span>: <span class="ident">SignedCommandMemoV1</span>,
+<span class="kw">pub type </span>SignedCommandPayloadCommonV1 =
+    Versioned&lt;Versioned&lt;Versioned&lt;SignedCommandPayloadCommon, <span class="number">1</span>&gt;, <span class="number">1</span>&gt;, <span class="number">1</span>&gt;;
+
+<span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq, AutoFrom)]</span>
+<span class="attribute">#[auto_from(SignedCommandPayloadCommon)]</span>
+<span class="kw">pub struct </span>SignedCommandPayloadCommonJson {
+    <span class="kw">pub </span>fee: DecimalJson,
+    <span class="kw">pub </span>fee_token: U64Json,
+    <span class="kw">pub </span>fee_payer_pk: PublicKeyJson,
+    <span class="kw">pub </span>nonce: U32Json,
+    <span class="kw">pub </span>valid_until: U32Json,
+    <span class="kw">pub </span>memo: SignedCommandMemoJson,
 }
 
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">SignedCommandPayloadCommonV1</span> <span class="op">=</span>
-    <span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">SignedCommandPayloadCommon</span>, <span class="number">1</span><span class="op">&gt;</span>, <span class="number">1</span><span class="op">&gt;</span>, <span class="number">1</span><span class="op">&gt;</span>;
+<span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]</span>
+<span class="kw">pub enum </span>SignedCommandPayloadBody {
+    PaymentPayload(PaymentPayloadV1),
+    StakeDelegation(StakeDelegationV1),
+    <span class="comment">// FIXME: other variants are not covered by current test block
+</span>}
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">PartialEq</span>, <span class="ident">AutoFrom</span>)]</span>
-<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">SignedCommandPayloadCommon</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">SignedCommandPayloadCommonJson</span> {
-    <span class="kw">pub</span> <span class="ident">fee</span>: <span class="ident">DecimalJson</span>,
-    <span class="kw">pub</span> <span class="ident">fee_token</span>: <span class="ident">U64Json</span>,
-    <span class="kw">pub</span> <span class="ident">fee_payer_pk</span>: <span class="ident">PublicKeyJson</span>,
-    <span class="kw">pub</span> <span class="ident">nonce</span>: <span class="ident">U32Json</span>,
-    <span class="kw">pub</span> <span class="ident">valid_until</span>: <span class="ident">U32Json</span>,
-    <span class="kw">pub</span> <span class="ident">memo</span>: <span class="ident">SignedCommandMemoJson</span>,
+<span class="kw">pub type </span>SignedCommandPayloadBodyV1 = Versioned&lt;Versioned&lt;SignedCommandPayloadBody, <span class="number">1</span>&gt;, <span class="number">1</span>&gt;;
+
+<span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]</span>
+<span class="kw">enum </span>SignedCommandPayloadBodyJsonProxy {
+    <span class="attribute">#[serde(rename = <span class="string">&quot;Payment&quot;</span>)]</span>
+    PaymentPayload(PaymentPayloadJson),
+    <span class="attribute">#[serde(rename = <span class="string">&quot;Stake_delegation&quot;</span>)]</span>
+    StakeDelegation(StakeDelegationJson),
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">PartialEq</span>)]</span>
-<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">SignedCommandPayloadBody</span> {
-    <span class="ident">PaymentPayload</span>(<span class="ident">PaymentPayloadV1</span>),
-    <span class="ident">StakeDelegation</span>(<span class="ident">StakeDelegationV1</span>),
-    <span class="comment">// FIXME: other variants are not covered by current test block</span>
-}
-
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">SignedCommandPayloadBodyV1</span> <span class="op">=</span> <span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">SignedCommandPayloadBody</span>, <span class="number">1</span><span class="op">&gt;</span>, <span class="number">1</span><span class="op">&gt;</span>;
-
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">PartialEq</span>)]</span>
-<span class="kw">enum</span> <span class="ident">SignedCommandPayloadBodyJsonProxy</span> {
-    <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">rename</span> <span class="op">=</span> <span class="string">&quot;Payment&quot;</span>)]</span>
-    <span class="ident">PaymentPayload</span>(<span class="ident">PaymentPayloadJson</span>),
-    <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">rename</span> <span class="op">=</span> <span class="string">&quot;Stake_delegation&quot;</span>)]</span>
-    <span class="ident">StakeDelegation</span>(<span class="ident">StakeDelegationJson</span>),
-}
-
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">PartialEq</span>, <span class="ident">AutoFrom</span>)]</span>
-<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">SignedCommandPayloadBody</span>)]</span>
-<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">SignedCommandPayloadBodyJsonProxy</span>)]</span>
-<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">SignedCommandPayloadBodyJson</span> {
-    <span class="ident">PaymentPayload</span>(<span class="ident">PaymentPayloadJson</span>),
-    <span class="ident">StakeDelegation</span>(<span class="ident">StakeDelegationJson</span>),
+<span class="attribute">#[derive(Clone, Debug, Eq, PartialEq, AutoFrom)]</span>
+<span class="attribute">#[auto_from(SignedCommandPayloadBody)]</span>
+<span class="attribute">#[auto_from(SignedCommandPayloadBodyJsonProxy)]</span>
+<span class="kw">pub enum </span>SignedCommandPayloadBodyJson {
+    PaymentPayload(PaymentPayloadJson),
+    StakeDelegation(StakeDelegationJson),
 }
 
 <span class="macro">impl_mina_enum_json_serde_with_option!</span>(
-    <span class="ident">SignedCommandPayloadBodyJson</span>,
-    <span class="ident">SignedCommandPayloadBodyJsonProxy</span>,
-    <span class="bool-val">false</span>
-);
+    SignedCommandPayloadBodyJson,
+    SignedCommandPayloadBodyJsonProxy,
+    <span class="bool-val">false
+</span>);
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">PartialEq</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">PaymentPayload</span> {
-    <span class="kw">pub</span> <span class="ident">source_pk</span>: <span class="ident">PublicKeyV1</span>,
-    <span class="kw">pub</span> <span class="ident">receiver_pk</span>: <span class="ident">PublicKeyV1</span>,
-    <span class="kw">pub</span> <span class="ident">token_id</span>: <span class="ident">ExtendedU64_3</span>,
-    <span class="kw">pub</span> <span class="ident">amount</span>: <span class="ident">AmountV1</span>,
+<span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]</span>
+<span class="kw">pub struct </span>PaymentPayload {
+    <span class="kw">pub </span>source_pk: PublicKeyV1,
+    <span class="kw">pub </span>receiver_pk: PublicKeyV1,
+    <span class="kw">pub </span>token_id: ExtendedU64_3,
+    <span class="kw">pub </span>amount: AmountV1,
 }
 
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">PaymentPayloadV1</span> <span class="op">=</span> <span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">PaymentPayload</span>, <span class="number">1</span><span class="op">&gt;</span>, <span class="number">1</span><span class="op">&gt;</span>;
+<span class="kw">pub type </span>PaymentPayloadV1 = Versioned&lt;Versioned&lt;PaymentPayload, <span class="number">1</span>&gt;, <span class="number">1</span>&gt;;
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">PartialEq</span>, <span class="ident">AutoFrom</span>)]</span>
-<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">PaymentPayload</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">PaymentPayloadJson</span> {
-    <span class="kw">pub</span> <span class="ident">source_pk</span>: <span class="ident">PublicKeyJson</span>,
-    <span class="kw">pub</span> <span class="ident">receiver_pk</span>: <span class="ident">PublicKeyJson</span>,
-    <span class="kw">pub</span> <span class="ident">token_id</span>: <span class="ident">U64Json</span>,
-    <span class="kw">pub</span> <span class="ident">amount</span>: <span class="ident">U64Json</span>,
+<span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq, AutoFrom)]</span>
+<span class="attribute">#[auto_from(PaymentPayload)]</span>
+<span class="kw">pub struct </span>PaymentPayloadJson {
+    <span class="kw">pub </span>source_pk: PublicKeyJson,
+    <span class="kw">pub </span>receiver_pk: PublicKeyJson,
+    <span class="kw">pub </span>token_id: U64Json,
+    <span class="kw">pub </span>amount: U64Json,
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">PartialEq</span>)]</span>
-<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">StakeDelegation</span> {
-    <span class="ident">SetDelegate</span> {
-        <span class="ident">delegator</span>: <span class="ident">PublicKeyV1</span>,
-        <span class="ident">new_delegate</span>: <span class="ident">PublicKeyV1</span>,
+<span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]</span>
+<span class="kw">pub enum </span>StakeDelegation {
+    SetDelegate {
+        delegator: PublicKeyV1,
+        new_delegate: PublicKeyV1,
     },
 }
 
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">StakeDelegationV1</span> <span class="op">=</span> <span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">StakeDelegation</span>, <span class="number">1</span><span class="op">&gt;</span>;
+<span class="kw">pub type </span>StakeDelegationV1 = Versioned&lt;StakeDelegation, <span class="number">1</span>&gt;;
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">PartialEq</span>)]</span>
-<span class="kw">enum</span> <span class="ident">StakeDelegationJsonProxy</span> {
-    <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">rename</span> <span class="op">=</span> <span class="string">&quot;Set_delegate&quot;</span>)]</span>
-    <span class="ident">SetDelegate</span> {
-        <span class="ident">delegator</span>: <span class="ident">PublicKeyJson</span>,
-        <span class="ident">new_delegate</span>: <span class="ident">PublicKeyJson</span>,
+<span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]</span>
+<span class="kw">enum </span>StakeDelegationJsonProxy {
+    <span class="attribute">#[serde(rename = <span class="string">&quot;Set_delegate&quot;</span>)]</span>
+    SetDelegate {
+        delegator: PublicKeyJson,
+        new_delegate: PublicKeyJson,
     },
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">PartialEq</span>, <span class="ident">AutoFrom</span>)]</span>
-<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">StakeDelegation</span>)]</span>
-<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">StakeDelegationJsonProxy</span>)]</span>
-<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">StakeDelegationJson</span> {
-    <span class="ident">SetDelegate</span> {
-        <span class="ident">delegator</span>: <span class="ident">PublicKeyJson</span>,
-        <span class="ident">new_delegate</span>: <span class="ident">PublicKeyJson</span>,
+<span class="attribute">#[derive(Clone, Debug, Eq, PartialEq, AutoFrom)]</span>
+<span class="attribute">#[auto_from(StakeDelegation)]</span>
+<span class="attribute">#[auto_from(StakeDelegationJsonProxy)]</span>
+<span class="kw">pub enum </span>StakeDelegationJson {
+    SetDelegate {
+        delegator: PublicKeyJson,
+        new_delegate: PublicKeyJson,
     },
 }
 
-<span class="macro">impl_mina_enum_json_serde!</span>(<span class="ident">StakeDelegationJson</span>, <span class="ident">StakeDelegationJsonProxy</span>);
+<span class="macro">impl_mina_enum_json_serde!</span>(StakeDelegationJson, StakeDelegationJsonProxy);
 
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">SignedCommandFeeTokenV1</span> <span class="op">=</span> <span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">u64</span>, <span class="number">1</span><span class="op">&gt;</span>, <span class="number">1</span><span class="op">&gt;</span>, <span class="number">1</span><span class="op">&gt;</span>;
+<span class="kw">pub type </span>SignedCommandFeeTokenV1 = Versioned&lt;Versioned&lt;Versioned&lt;u64, <span class="number">1</span>&gt;, <span class="number">1</span>&gt;, <span class="number">1</span>&gt;;
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">PartialEq</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">SignedCommandMemo</span>(<span class="kw">pub</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>);
+<span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]</span>
+<span class="kw">pub struct </span>SignedCommandMemo(<span class="kw">pub </span>Vec&lt;u8&gt;);
 
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">SignedCommandMemoV1</span> <span class="op">=</span> <span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">SignedCommandMemo</span>, <span class="number">1</span><span class="op">&gt;</span>;
+<span class="kw">pub type </span>SignedCommandMemoV1 = Versioned&lt;SignedCommandMemo, <span class="number">1</span>&gt;;
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">PartialEq</span>, <span class="ident">AutoFrom</span>)]</span>
-<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">SignedCommandMemo</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">SignedCommandMemoJson</span>(<span class="kw">pub</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>);
+<span class="attribute">#[derive(Clone, Debug, Eq, PartialEq, AutoFrom)]</span>
+<span class="attribute">#[auto_from(SignedCommandMemo)]</span>
+<span class="kw">pub struct </span>SignedCommandMemoJson(<span class="kw">pub </span>Vec&lt;u8&gt;);
 
-<span class="kw">impl</span> <span class="ident">Serialize</span> <span class="kw">for</span> <span class="ident">SignedCommandMemoJson</span> {
-    <span class="kw">fn</span> <span class="ident">serialize</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">serializer</span>: <span class="ident">S</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">S::Ok</span>, <span class="ident">S::Error</span><span class="op">&gt;</span>
-    <span class="kw">where</span>
-        <span class="ident">S</span>: <span class="ident">Serializer</span>,
+<span class="kw">impl </span>Serialize <span class="kw">for </span>SignedCommandMemoJson {
+    <span class="kw">fn </span>serialize&lt;S&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, serializer: S) -&gt; <span class="prelude-ty">Result</span>&lt;S::Ok, S::Error&gt;
+    <span class="kw">where
+        </span>S: Serializer,
     {
-        <span class="kw">let</span> <span class="ident">s</span> <span class="op">=</span> <span class="ident">bs58::encode</span>(<span class="self">self</span>.<span class="number">0</span>.<span class="ident">as_slice</span>())
-            .<span class="ident">with_check_version</span>(<span class="ident">version_bytes::USER_COMMAND_MEMO</span>)
-            .<span class="ident">into_string</span>();
-        <span class="ident">serializer</span>.<span class="ident">serialize_str</span>(<span class="kw-2">&amp;</span><span class="ident">s</span>)
+        <span class="kw">let </span>s = bs58::encode(<span class="self">self</span>.<span class="number">0</span>.as_slice())
+            .with_check_version(version_bytes::USER_COMMAND_MEMO)
+            .into_string();
+        serializer.serialize_str(<span class="kw-2">&amp;</span>s)
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;de</span><span class="op">&gt;</span> <span class="ident">Deserialize</span><span class="op">&lt;</span><span class="lifetime">&#39;de</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">SignedCommandMemoJson</span> {
-    <span class="kw">fn</span> <span class="ident">deserialize</span><span class="op">&lt;</span><span class="ident">D</span><span class="op">&gt;</span>(<span class="ident">deserializer</span>: <span class="ident">D</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span>, <span class="ident">D::Error</span><span class="op">&gt;</span>
-    <span class="kw">where</span>
-        <span class="ident">D</span>: <span class="ident">Deserializer</span><span class="op">&lt;</span><span class="lifetime">&#39;de</span><span class="op">&gt;</span>,
+<span class="kw">impl</span>&lt;<span class="lifetime">&#39;de</span>&gt; Deserialize&lt;<span class="lifetime">&#39;de</span>&gt; <span class="kw">for </span>SignedCommandMemoJson {
+    <span class="kw">fn </span>deserialize&lt;D&gt;(deserializer: D) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>, D::Error&gt;
+    <span class="kw">where
+        </span>D: Deserializer&lt;<span class="lifetime">&#39;de</span>&gt;,
     {
-        <span class="kw">let</span> <span class="ident">s</span> <span class="op">=</span> <span class="ident">String::deserialize</span>(<span class="ident">deserializer</span>)<span class="question-mark">?</span>;
-        <span class="kw">let</span> <span class="ident">decoded</span> <span class="op">=</span> <span class="ident">bs58::decode</span>(<span class="ident">s</span>)
-            .<span class="ident">with_check</span>(<span class="prelude-val">Some</span>(<span class="ident">version_bytes::USER_COMMAND_MEMO</span>))
-            .<span class="ident">into_vec</span>()
-            .<span class="ident">map_err</span>(<span class="op">&lt;</span><span class="ident">D::Error</span> <span class="kw">as</span> <span class="ident">serde::de::Error</span><span class="op">&gt;</span><span class="ident">::custom</span>)<span class="question-mark">?</span>;
-        <span class="comment">// Skip base58 check byte</span>
-        <span class="prelude-val">Ok</span>(<span class="self">Self</span>(<span class="ident">decoded</span>.<span class="ident">into_iter</span>().<span class="ident">skip</span>(<span class="number">1</span>).<span class="ident">collect</span>()))
+        <span class="kw">let </span>s = String::deserialize(deserializer)<span class="question-mark">?</span>;
+        <span class="kw">let </span>decoded = bs58::decode(s)
+            .with_check(<span class="prelude-val">Some</span>(version_bytes::USER_COMMAND_MEMO))
+            .into_vec()
+            .map_err(&lt;D::Error <span class="kw">as </span>serde::de::Error&gt;::custom)<span class="question-mark">?</span>;
+        <span class="comment">// Skip base58 check byte
+        </span><span class="prelude-val">Ok</span>(<span class="self">Self</span>(decoded.into_iter().skip(<span class="number">1</span>).collect()))
     }
 }
 
-<span class="comment">// FIXME: No test coverage yet</span>
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">SnappCommand</span> <span class="op">=</span> <span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">Versioned</span><span class="op">&lt;</span>(), <span class="number">1</span><span class="op">&gt;</span>, <span class="number">1</span><span class="op">&gt;</span>;
+<span class="comment">// FIXME: No test coverage yet
+</span><span class="kw">pub type </span>SnappCommand = Versioned&lt;Versioned&lt;(), <span class="number">1</span>&gt;, <span class="number">1</span>&gt;;
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">PartialEq</span>)]</span>
-<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">TransactionStatus</span> {
-    <span class="ident">Applied</span>(
-        <span class="ident">TransactionStatusAuxiliaryDataV1</span>,
-        <span class="ident">TransactionStatusBalanceDataV1</span>,
+<span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]</span>
+<span class="kw">pub enum </span>TransactionStatus {
+    Applied(
+        TransactionStatusAuxiliaryDataV1,
+        TransactionStatusBalanceDataV1,
     ),
-    <span class="ident">Failed</span>(
-        <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">TransactionStatusFailedTypeV1</span><span class="op">&gt;</span>,
-        <span class="ident">TransactionStatusBalanceDataV1</span>,
-    ),
-}
-
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">TransactionStatusV1</span> <span class="op">=</span> <span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">TransactionStatus</span>, <span class="number">1</span><span class="op">&gt;</span>;
-
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">PartialEq</span>)]</span>
-<span class="kw">enum</span> <span class="ident">TransactionStatusJsonProxy</span> {
-    <span class="ident">Applied</span>(
-        <span class="ident">TransactionStatusAuxiliaryDataJson</span>,
-        <span class="ident">TransactionStatusBalanceDataJson</span>,
-    ),
-    <span class="ident">Failed</span>(
-        <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">TransactionStatusFailedTypeJson</span><span class="op">&gt;</span>,
-        <span class="ident">TransactionStatusBalanceDataJson</span>,
+    Failed(
+        Vec&lt;TransactionStatusFailedTypeV1&gt;,
+        TransactionStatusBalanceDataV1,
     ),
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">PartialEq</span>, <span class="ident">AutoFrom</span>)]</span>
-<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">TransactionStatus</span>)]</span>
-<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">TransactionStatusJsonProxy</span>)]</span>
-<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">TransactionStatusJson</span> {
-    <span class="ident">Applied</span>(
-        <span class="ident">TransactionStatusAuxiliaryDataJson</span>,
-        <span class="ident">TransactionStatusBalanceDataJson</span>,
+<span class="kw">pub type </span>TransactionStatusV1 = Versioned&lt;TransactionStatus, <span class="number">1</span>&gt;;
+
+<span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]</span>
+<span class="kw">enum </span>TransactionStatusJsonProxy {
+    Applied(
+        TransactionStatusAuxiliaryDataJson,
+        TransactionStatusBalanceDataJson,
     ),
-    <span class="ident">Failed</span>(
-        <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">TransactionStatusFailedTypeJson</span><span class="op">&gt;</span>,
-        <span class="ident">TransactionStatusBalanceDataJson</span>,
-    ),
-}
-
-<span class="macro">impl_mina_enum_json_serde!</span>(<span class="ident">TransactionStatusJson</span>, <span class="ident">TransactionStatusJsonProxy</span>);
-
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">PartialEq</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">TransactionStatusAuxiliaryData</span> {
-    <span class="kw">pub</span> <span class="ident">fee_payer_account_creation_fee_paid</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">AmountV1</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">receiver_account_creation_fee_paid</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">AmountV1</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">created_token</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">ExtendedU64_3</span><span class="op">&gt;</span>,
-}
-
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">TransactionStatusAuxiliaryDataV1</span> <span class="op">=</span> <span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">TransactionStatusAuxiliaryData</span>, <span class="number">1</span><span class="op">&gt;</span>;
-
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">PartialEq</span>, <span class="ident">AutoFrom</span>)]</span>
-<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">TransactionStatusAuxiliaryData</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">TransactionStatusAuxiliaryDataJson</span> {
-    <span class="kw">pub</span> <span class="ident">fee_payer_account_creation_fee_paid</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">U64Json</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">receiver_account_creation_fee_paid</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">U64Json</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">created_token</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">U64Json</span><span class="op">&gt;</span>,
-}
-
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">PartialEq</span>)]</span>
-<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">TransactionStatusFailedType</span> {
-    <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">rename</span> <span class="op">=</span> <span class="string">&quot;Predicate&quot;</span>)]</span>
-    <span class="ident">Predicate</span>,
-    <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">rename</span> <span class="op">=</span> <span class="string">&quot;Source_not_present&quot;</span>)]</span>
-    <span class="ident">SourceNotPresent</span>,
-    <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">rename</span> <span class="op">=</span> <span class="string">&quot;Receiver_not_present&quot;</span>)]</span>
-    <span class="ident">ReceiverNotPresent</span>,
-    <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">rename</span> <span class="op">=</span> <span class="string">&quot;Amount_insufficient_to_create_account&quot;</span>)]</span>
-    <span class="ident">AmountInsufficientToCreateAccount</span>,
-    <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">rename</span> <span class="op">=</span> <span class="string">&quot;Cannot_pay_creation_fee_in_token&quot;</span>)]</span>
-    <span class="ident">CannotPayCreationFeeInToken</span>,
-    <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">rename</span> <span class="op">=</span> <span class="string">&quot;Source_insufficient_balance&quot;</span>)]</span>
-    <span class="ident">SourceInsufficientBalance</span>,
-    <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">rename</span> <span class="op">=</span> <span class="string">&quot;Source_minimum_balance_violation&quot;</span>)]</span>
-    <span class="ident">SourceMinimumBalanceViolation</span>,
-    <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">rename</span> <span class="op">=</span> <span class="string">&quot;Receiver_already_exists&quot;</span>)]</span>
-    <span class="ident">ReceiverAlreadyExists</span>,
-    <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">rename</span> <span class="op">=</span> <span class="string">&quot;Not_token_owner&quot;</span>)]</span>
-    <span class="ident">NotTokenOwner</span>,
-    <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">rename</span> <span class="op">=</span> <span class="string">&quot;Mismatched_token_permissions&quot;</span>)]</span>
-    <span class="ident">MismatchedTokenPermissions</span>,
-    <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">rename</span> <span class="op">=</span> <span class="string">&quot;Overflow&quot;</span>)]</span>
-    <span class="ident">Overflow</span>,
-    <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">rename</span> <span class="op">=</span> <span class="string">&quot;Signed_command_on_snapp_account&quot;</span>)]</span>
-    <span class="ident">SignedCommandOnSnappAccount</span>,
-    <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">rename</span> <span class="op">=</span> <span class="string">&quot;Snapp_account_not_present&quot;</span>)]</span>
-    <span class="ident">SnappAccountNotPresent</span>,
-    <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">rename</span> <span class="op">=</span> <span class="string">&quot;Update_not_permitted&quot;</span>)]</span>
-    <span class="ident">UpdateNotPermitted</span>,
-    <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">rename</span> <span class="op">=</span> <span class="string">&quot;Incorrect_nonce&quot;</span>)]</span>
-    <span class="ident">IncorrectNonce</span>,
-}
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">TransactionStatusFailedTypeV1</span> <span class="op">=</span> <span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">TransactionStatusFailedType</span>, <span class="number">1</span><span class="op">&gt;</span>;
-
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">PartialEq</span>)]</span>
-<span class="kw">enum</span> <span class="ident">TransactionStatusFailedTypeJsonProxy</span> {
-    <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">rename</span> <span class="op">=</span> <span class="string">&quot;Predicate&quot;</span>)]</span>
-    <span class="ident">Predicate</span>,
-    <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">rename</span> <span class="op">=</span> <span class="string">&quot;Source_not_present&quot;</span>)]</span>
-    <span class="ident">SourceNotPresent</span>,
-    <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">rename</span> <span class="op">=</span> <span class="string">&quot;Receiver_not_present&quot;</span>)]</span>
-    <span class="ident">ReceiverNotPresent</span>,
-    <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">rename</span> <span class="op">=</span> <span class="string">&quot;Amount_insufficient_to_create_account&quot;</span>)]</span>
-    <span class="ident">AmountInsufficientToCreateAccount</span>,
-    <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">rename</span> <span class="op">=</span> <span class="string">&quot;Cannot_pay_creation_fee_in_token&quot;</span>)]</span>
-    <span class="ident">CannotPayCreationFeeInToken</span>,
-    <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">rename</span> <span class="op">=</span> <span class="string">&quot;Source_insufficient_balance&quot;</span>)]</span>
-    <span class="ident">SourceInsufficientBalance</span>,
-    <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">rename</span> <span class="op">=</span> <span class="string">&quot;Source_minimum_balance_violation&quot;</span>)]</span>
-    <span class="ident">SourceMinimumBalanceViolation</span>,
-    <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">rename</span> <span class="op">=</span> <span class="string">&quot;Receiver_already_exists&quot;</span>)]</span>
-    <span class="ident">ReceiverAlreadyExists</span>,
-    <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">rename</span> <span class="op">=</span> <span class="string">&quot;Not_token_owner&quot;</span>)]</span>
-    <span class="ident">NotTokenOwner</span>,
-    <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">rename</span> <span class="op">=</span> <span class="string">&quot;Mismatched_token_permissions&quot;</span>)]</span>
-    <span class="ident">MismatchedTokenPermissions</span>,
-    <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">rename</span> <span class="op">=</span> <span class="string">&quot;Overflow&quot;</span>)]</span>
-    <span class="ident">Overflow</span>,
-    <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">rename</span> <span class="op">=</span> <span class="string">&quot;Signed_command_on_snapp_account&quot;</span>)]</span>
-    <span class="ident">SignedCommandOnSnappAccount</span>,
-    <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">rename</span> <span class="op">=</span> <span class="string">&quot;Snapp_account_not_present&quot;</span>)]</span>
-    <span class="ident">SnappAccountNotPresent</span>,
-    <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">rename</span> <span class="op">=</span> <span class="string">&quot;Update_not_permitted&quot;</span>)]</span>
-    <span class="ident">UpdateNotPermitted</span>,
-    <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">rename</span> <span class="op">=</span> <span class="string">&quot;Incorrect_nonce&quot;</span>)]</span>
-    <span class="ident">IncorrectNonce</span>,
-}
-
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">PartialEq</span>, <span class="ident">AutoFrom</span>)]</span>
-<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">TransactionStatusFailedType</span>)]</span>
-<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">TransactionStatusFailedTypeJsonProxy</span>)]</span>
-<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">TransactionStatusFailedTypeJson</span> {
-    <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">rename</span> <span class="op">=</span> <span class="string">&quot;Predicate&quot;</span>)]</span>
-    <span class="ident">Predicate</span>,
-    <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">rename</span> <span class="op">=</span> <span class="string">&quot;Source_not_present&quot;</span>)]</span>
-    <span class="ident">SourceNotPresent</span>,
-    <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">rename</span> <span class="op">=</span> <span class="string">&quot;Receiver_not_present&quot;</span>)]</span>
-    <span class="ident">ReceiverNotPresent</span>,
-    <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">rename</span> <span class="op">=</span> <span class="string">&quot;Amount_insufficient_to_create_account&quot;</span>)]</span>
-    <span class="ident">AmountInsufficientToCreateAccount</span>,
-    <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">rename</span> <span class="op">=</span> <span class="string">&quot;Cannot_pay_creation_fee_in_token&quot;</span>)]</span>
-    <span class="ident">CannotPayCreationFeeInToken</span>,
-    <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">rename</span> <span class="op">=</span> <span class="string">&quot;Source_insufficient_balance&quot;</span>)]</span>
-    <span class="ident">SourceInsufficientBalance</span>,
-    <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">rename</span> <span class="op">=</span> <span class="string">&quot;Source_minimum_balance_violation&quot;</span>)]</span>
-    <span class="ident">SourceMinimumBalanceViolation</span>,
-    <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">rename</span> <span class="op">=</span> <span class="string">&quot;Receiver_already_exists&quot;</span>)]</span>
-    <span class="ident">ReceiverAlreadyExists</span>,
-    <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">rename</span> <span class="op">=</span> <span class="string">&quot;Not_token_owner&quot;</span>)]</span>
-    <span class="ident">NotTokenOwner</span>,
-    <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">rename</span> <span class="op">=</span> <span class="string">&quot;Mismatched_token_permissions&quot;</span>)]</span>
-    <span class="ident">MismatchedTokenPermissions</span>,
-    <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">rename</span> <span class="op">=</span> <span class="string">&quot;Overflow&quot;</span>)]</span>
-    <span class="ident">Overflow</span>,
-    <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">rename</span> <span class="op">=</span> <span class="string">&quot;Signed_command_on_snapp_account&quot;</span>)]</span>
-    <span class="ident">SignedCommandOnSnappAccount</span>,
-    <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">rename</span> <span class="op">=</span> <span class="string">&quot;Snapp_account_not_present&quot;</span>)]</span>
-    <span class="ident">SnappAccountNotPresent</span>,
-    <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">rename</span> <span class="op">=</span> <span class="string">&quot;Update_not_permitted&quot;</span>)]</span>
-    <span class="ident">UpdateNotPermitted</span>,
-    <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">rename</span> <span class="op">=</span> <span class="string">&quot;Incorrect_nonce&quot;</span>)]</span>
-    <span class="ident">IncorrectNonce</span>,
-}
-
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">PartialEq</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">TransactionStatusBalanceData</span> {
-    <span class="kw">pub</span> <span class="ident">fee_payer_balance</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">ExtendedU64_3</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">source_balance</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">ExtendedU64_3</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">receiver_balance</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">ExtendedU64_3</span><span class="op">&gt;</span>,
-}
-
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">TransactionStatusBalanceDataV1</span> <span class="op">=</span> <span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">TransactionStatusBalanceData</span>, <span class="number">1</span><span class="op">&gt;</span>;
-
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">PartialEq</span>, <span class="ident">AutoFrom</span>)]</span>
-<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">TransactionStatusBalanceData</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">TransactionStatusBalanceDataJson</span> {
-    <span class="kw">pub</span> <span class="ident">fee_payer_balance</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">U64Json</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">source_balance</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">U64Json</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">receiver_balance</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">U64Json</span><span class="op">&gt;</span>,
-}
-
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">PartialEq</span>, <span class="ident">SmartDefault</span>)]</span>
-<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">CoinBase</span> {
-    <span class="attribute">#[<span class="ident">default</span>]</span>
-    <span class="ident">Zero</span>,
-    <span class="ident">One</span>(<span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">CoinBaseFeeTransferV1</span><span class="op">&gt;</span>),
-    <span class="ident">Two</span>(<span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">CoinBaseFeeTransferV1</span><span class="op">&gt;</span>, <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">CoinBaseFeeTransferV1</span><span class="op">&gt;</span>),
-}
-
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">CoinBaseV1</span> <span class="op">=</span> <span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">CoinBase</span>, <span class="number">1</span><span class="op">&gt;</span>;
-
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">SmartDefault</span>)]</span>
-<span class="kw">enum</span> <span class="ident">CoinBaseJsonProxy</span> {
-    <span class="attribute">#[<span class="ident">default</span>]</span>
-    <span class="ident">Zero</span>,
-    <span class="ident">One</span>(<span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">CoinBaseFeeTransferJson</span><span class="op">&gt;</span>),
-    <span class="ident">Two</span>(
-        <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">CoinBaseFeeTransferJson</span><span class="op">&gt;</span>,
-        <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">CoinBaseFeeTransferJson</span><span class="op">&gt;</span>,
+    Failed(
+        Vec&lt;TransactionStatusFailedTypeJson&gt;,
+        TransactionStatusBalanceDataJson,
     ),
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">PartialEq</span>, <span class="ident">SmartDefault</span>, <span class="ident">AutoFrom</span>)]</span>
-<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">CoinBase</span>)]</span>
-<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">CoinBaseJsonProxy</span>)]</span>
-<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">CoinBaseJson</span> {
-    <span class="attribute">#[<span class="ident">default</span>]</span>
-    <span class="ident">Zero</span>,
-    <span class="ident">One</span>(<span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">CoinBaseFeeTransferJson</span><span class="op">&gt;</span>),
-    <span class="ident">Two</span>(
-        <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">CoinBaseFeeTransferJson</span><span class="op">&gt;</span>,
-        <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">CoinBaseFeeTransferJson</span><span class="op">&gt;</span>,
+<span class="attribute">#[derive(Clone, Debug, Eq, PartialEq, AutoFrom)]</span>
+<span class="attribute">#[auto_from(TransactionStatus)]</span>
+<span class="attribute">#[auto_from(TransactionStatusJsonProxy)]</span>
+<span class="kw">pub enum </span>TransactionStatusJson {
+    Applied(
+        TransactionStatusAuxiliaryDataJson,
+        TransactionStatusBalanceDataJson,
+    ),
+    Failed(
+        Vec&lt;TransactionStatusFailedTypeJson&gt;,
+        TransactionStatusBalanceDataJson,
     ),
 }
 
-<span class="macro">impl_mina_enum_json_serde!</span>(<span class="ident">CoinBaseJson</span>, <span class="ident">CoinBaseJsonProxy</span>);
+<span class="macro">impl_mina_enum_json_serde!</span>(TransactionStatusJson, TransactionStatusJsonProxy);
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">PartialEq</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">CoinBaseFeeTransfer</span> {
-    <span class="kw">pub</span> <span class="ident">receiver_pk</span>: <span class="ident">PublicKeyV1</span>,
-    <span class="kw">pub</span> <span class="ident">fee</span>: <span class="ident">ExtendedU64_2</span>,
+<span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]</span>
+<span class="kw">pub struct </span>TransactionStatusAuxiliaryData {
+    <span class="kw">pub </span>fee_payer_account_creation_fee_paid: <span class="prelude-ty">Option</span>&lt;AmountV1&gt;,
+    <span class="kw">pub </span>receiver_account_creation_fee_paid: <span class="prelude-ty">Option</span>&lt;AmountV1&gt;,
+    <span class="kw">pub </span>created_token: <span class="prelude-ty">Option</span>&lt;ExtendedU64_3&gt;,
 }
 
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">CoinBaseFeeTransferV1</span> <span class="op">=</span> <span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">CoinBaseFeeTransfer</span>, <span class="number">1</span><span class="op">&gt;</span>, <span class="number">1</span><span class="op">&gt;</span>;
+<span class="kw">pub type </span>TransactionStatusAuxiliaryDataV1 = Versioned&lt;TransactionStatusAuxiliaryData, <span class="number">1</span>&gt;;
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">PartialEq</span>, <span class="ident">AutoFrom</span>)]</span>
-<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">CoinBaseFeeTransfer</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">CoinBaseFeeTransferJson</span> {
-    <span class="kw">pub</span> <span class="ident">receiver_pk</span>: <span class="ident">PublicKeyJson</span>,
-    <span class="kw">pub</span> <span class="ident">fee</span>: <span class="ident">DecimalJson</span>,
+<span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq, AutoFrom)]</span>
+<span class="attribute">#[auto_from(TransactionStatusAuxiliaryData)]</span>
+<span class="kw">pub struct </span>TransactionStatusAuxiliaryDataJson {
+    <span class="kw">pub </span>fee_payer_account_creation_fee_paid: <span class="prelude-ty">Option</span>&lt;U64Json&gt;,
+    <span class="kw">pub </span>receiver_account_creation_fee_paid: <span class="prelude-ty">Option</span>&lt;U64Json&gt;,
+    <span class="kw">pub </span>created_token: <span class="prelude-ty">Option</span>&lt;U64Json&gt;,
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">PartialEq</span>)]</span>
-<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">InternalCommandBalanceData</span> {
-    <span class="ident">CoinBase</span>(<span class="ident">CoinBaseBalanceDataV1</span>),
-    <span class="ident">FeeTransfer</span>(<span class="ident">FeeTransferBalanceDataV1</span>),
+<span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]</span>
+<span class="kw">pub enum </span>TransactionStatusFailedType {
+    <span class="attribute">#[serde(rename = <span class="string">&quot;Predicate&quot;</span>)]</span>
+    Predicate,
+    <span class="attribute">#[serde(rename = <span class="string">&quot;Source_not_present&quot;</span>)]</span>
+    SourceNotPresent,
+    <span class="attribute">#[serde(rename = <span class="string">&quot;Receiver_not_present&quot;</span>)]</span>
+    ReceiverNotPresent,
+    <span class="attribute">#[serde(rename = <span class="string">&quot;Amount_insufficient_to_create_account&quot;</span>)]</span>
+    AmountInsufficientToCreateAccount,
+    <span class="attribute">#[serde(rename = <span class="string">&quot;Cannot_pay_creation_fee_in_token&quot;</span>)]</span>
+    CannotPayCreationFeeInToken,
+    <span class="attribute">#[serde(rename = <span class="string">&quot;Source_insufficient_balance&quot;</span>)]</span>
+    SourceInsufficientBalance,
+    <span class="attribute">#[serde(rename = <span class="string">&quot;Source_minimum_balance_violation&quot;</span>)]</span>
+    SourceMinimumBalanceViolation,
+    <span class="attribute">#[serde(rename = <span class="string">&quot;Receiver_already_exists&quot;</span>)]</span>
+    ReceiverAlreadyExists,
+    <span class="attribute">#[serde(rename = <span class="string">&quot;Not_token_owner&quot;</span>)]</span>
+    NotTokenOwner,
+    <span class="attribute">#[serde(rename = <span class="string">&quot;Mismatched_token_permissions&quot;</span>)]</span>
+    MismatchedTokenPermissions,
+    <span class="attribute">#[serde(rename = <span class="string">&quot;Overflow&quot;</span>)]</span>
+    Overflow,
+    <span class="attribute">#[serde(rename = <span class="string">&quot;Signed_command_on_snapp_account&quot;</span>)]</span>
+    SignedCommandOnSnappAccount,
+    <span class="attribute">#[serde(rename = <span class="string">&quot;Snapp_account_not_present&quot;</span>)]</span>
+    SnappAccountNotPresent,
+    <span class="attribute">#[serde(rename = <span class="string">&quot;Update_not_permitted&quot;</span>)]</span>
+    UpdateNotPermitted,
+    <span class="attribute">#[serde(rename = <span class="string">&quot;Incorrect_nonce&quot;</span>)]</span>
+    IncorrectNonce,
+}
+<span class="kw">pub type </span>TransactionStatusFailedTypeV1 = Versioned&lt;TransactionStatusFailedType, <span class="number">1</span>&gt;;
+
+<span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]</span>
+<span class="kw">enum </span>TransactionStatusFailedTypeJsonProxy {
+    <span class="attribute">#[serde(rename = <span class="string">&quot;Predicate&quot;</span>)]</span>
+    Predicate,
+    <span class="attribute">#[serde(rename = <span class="string">&quot;Source_not_present&quot;</span>)]</span>
+    SourceNotPresent,
+    <span class="attribute">#[serde(rename = <span class="string">&quot;Receiver_not_present&quot;</span>)]</span>
+    ReceiverNotPresent,
+    <span class="attribute">#[serde(rename = <span class="string">&quot;Amount_insufficient_to_create_account&quot;</span>)]</span>
+    AmountInsufficientToCreateAccount,
+    <span class="attribute">#[serde(rename = <span class="string">&quot;Cannot_pay_creation_fee_in_token&quot;</span>)]</span>
+    CannotPayCreationFeeInToken,
+    <span class="attribute">#[serde(rename = <span class="string">&quot;Source_insufficient_balance&quot;</span>)]</span>
+    SourceInsufficientBalance,
+    <span class="attribute">#[serde(rename = <span class="string">&quot;Source_minimum_balance_violation&quot;</span>)]</span>
+    SourceMinimumBalanceViolation,
+    <span class="attribute">#[serde(rename = <span class="string">&quot;Receiver_already_exists&quot;</span>)]</span>
+    ReceiverAlreadyExists,
+    <span class="attribute">#[serde(rename = <span class="string">&quot;Not_token_owner&quot;</span>)]</span>
+    NotTokenOwner,
+    <span class="attribute">#[serde(rename = <span class="string">&quot;Mismatched_token_permissions&quot;</span>)]</span>
+    MismatchedTokenPermissions,
+    <span class="attribute">#[serde(rename = <span class="string">&quot;Overflow&quot;</span>)]</span>
+    Overflow,
+    <span class="attribute">#[serde(rename = <span class="string">&quot;Signed_command_on_snapp_account&quot;</span>)]</span>
+    SignedCommandOnSnappAccount,
+    <span class="attribute">#[serde(rename = <span class="string">&quot;Snapp_account_not_present&quot;</span>)]</span>
+    SnappAccountNotPresent,
+    <span class="attribute">#[serde(rename = <span class="string">&quot;Update_not_permitted&quot;</span>)]</span>
+    UpdateNotPermitted,
+    <span class="attribute">#[serde(rename = <span class="string">&quot;Incorrect_nonce&quot;</span>)]</span>
+    IncorrectNonce,
 }
 
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">InternalCommandBalanceDataV1</span> <span class="op">=</span> <span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">InternalCommandBalanceData</span>, <span class="number">1</span><span class="op">&gt;</span>;
-
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>)]</span>
-<span class="kw">enum</span> <span class="ident">InternalCommandBalanceDataJsonProxy</span> {
-    <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">rename</span> <span class="op">=</span> <span class="string">&quot;Coinbase&quot;</span>)]</span>
-    <span class="ident">CoinBase</span>(<span class="ident">CoinBaseBalanceDataJson</span>),
-    <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">rename</span> <span class="op">=</span> <span class="string">&quot;Fee_transfer&quot;</span>)]</span>
-    <span class="ident">FeeTransfer</span>(<span class="ident">FeeTransferBalanceDataJson</span>),
+<span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq, AutoFrom)]</span>
+<span class="attribute">#[auto_from(TransactionStatusFailedType)]</span>
+<span class="attribute">#[auto_from(TransactionStatusFailedTypeJsonProxy)]</span>
+<span class="kw">pub enum </span>TransactionStatusFailedTypeJson {
+    <span class="attribute">#[serde(rename = <span class="string">&quot;Predicate&quot;</span>)]</span>
+    Predicate,
+    <span class="attribute">#[serde(rename = <span class="string">&quot;Source_not_present&quot;</span>)]</span>
+    SourceNotPresent,
+    <span class="attribute">#[serde(rename = <span class="string">&quot;Receiver_not_present&quot;</span>)]</span>
+    ReceiverNotPresent,
+    <span class="attribute">#[serde(rename = <span class="string">&quot;Amount_insufficient_to_create_account&quot;</span>)]</span>
+    AmountInsufficientToCreateAccount,
+    <span class="attribute">#[serde(rename = <span class="string">&quot;Cannot_pay_creation_fee_in_token&quot;</span>)]</span>
+    CannotPayCreationFeeInToken,
+    <span class="attribute">#[serde(rename = <span class="string">&quot;Source_insufficient_balance&quot;</span>)]</span>
+    SourceInsufficientBalance,
+    <span class="attribute">#[serde(rename = <span class="string">&quot;Source_minimum_balance_violation&quot;</span>)]</span>
+    SourceMinimumBalanceViolation,
+    <span class="attribute">#[serde(rename = <span class="string">&quot;Receiver_already_exists&quot;</span>)]</span>
+    ReceiverAlreadyExists,
+    <span class="attribute">#[serde(rename = <span class="string">&quot;Not_token_owner&quot;</span>)]</span>
+    NotTokenOwner,
+    <span class="attribute">#[serde(rename = <span class="string">&quot;Mismatched_token_permissions&quot;</span>)]</span>
+    MismatchedTokenPermissions,
+    <span class="attribute">#[serde(rename = <span class="string">&quot;Overflow&quot;</span>)]</span>
+    Overflow,
+    <span class="attribute">#[serde(rename = <span class="string">&quot;Signed_command_on_snapp_account&quot;</span>)]</span>
+    SignedCommandOnSnappAccount,
+    <span class="attribute">#[serde(rename = <span class="string">&quot;Snapp_account_not_present&quot;</span>)]</span>
+    SnappAccountNotPresent,
+    <span class="attribute">#[serde(rename = <span class="string">&quot;Update_not_permitted&quot;</span>)]</span>
+    UpdateNotPermitted,
+    <span class="attribute">#[serde(rename = <span class="string">&quot;Incorrect_nonce&quot;</span>)]</span>
+    IncorrectNonce,
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">PartialEq</span>, <span class="ident">AutoFrom</span>)]</span>
-<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">InternalCommandBalanceData</span>)]</span>
-<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">InternalCommandBalanceDataJsonProxy</span>)]</span>
-<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">InternalCommandBalanceDataJson</span> {
-    <span class="ident">CoinBase</span>(<span class="ident">CoinBaseBalanceDataJson</span>),
-    <span class="ident">FeeTransfer</span>(<span class="ident">FeeTransferBalanceDataJson</span>),
+<span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]</span>
+<span class="kw">pub struct </span>TransactionStatusBalanceData {
+    <span class="kw">pub </span>fee_payer_balance: <span class="prelude-ty">Option</span>&lt;ExtendedU64_3&gt;,
+    <span class="kw">pub </span>source_balance: <span class="prelude-ty">Option</span>&lt;ExtendedU64_3&gt;,
+    <span class="kw">pub </span>receiver_balance: <span class="prelude-ty">Option</span>&lt;ExtendedU64_3&gt;,
+}
+
+<span class="kw">pub type </span>TransactionStatusBalanceDataV1 = Versioned&lt;TransactionStatusBalanceData, <span class="number">1</span>&gt;;
+
+<span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq, AutoFrom)]</span>
+<span class="attribute">#[auto_from(TransactionStatusBalanceData)]</span>
+<span class="kw">pub struct </span>TransactionStatusBalanceDataJson {
+    <span class="kw">pub </span>fee_payer_balance: <span class="prelude-ty">Option</span>&lt;U64Json&gt;,
+    <span class="kw">pub </span>source_balance: <span class="prelude-ty">Option</span>&lt;U64Json&gt;,
+    <span class="kw">pub </span>receiver_balance: <span class="prelude-ty">Option</span>&lt;U64Json&gt;,
+}
+
+<span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq, SmartDefault)]</span>
+<span class="kw">pub enum </span>CoinBase {
+    <span class="attribute">#[default]</span>
+    Zero,
+    One(<span class="prelude-ty">Option</span>&lt;CoinBaseFeeTransferV1&gt;),
+    Two(<span class="prelude-ty">Option</span>&lt;CoinBaseFeeTransferV1&gt;, <span class="prelude-ty">Option</span>&lt;CoinBaseFeeTransferV1&gt;),
+}
+
+<span class="kw">pub type </span>CoinBaseV1 = Versioned&lt;CoinBase, <span class="number">1</span>&gt;;
+
+<span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, SmartDefault)]</span>
+<span class="kw">enum </span>CoinBaseJsonProxy {
+    <span class="attribute">#[default]</span>
+    Zero,
+    One(<span class="prelude-ty">Option</span>&lt;CoinBaseFeeTransferJson&gt;),
+    Two(
+        <span class="prelude-ty">Option</span>&lt;CoinBaseFeeTransferJson&gt;,
+        <span class="prelude-ty">Option</span>&lt;CoinBaseFeeTransferJson&gt;,
+    ),
+}
+
+<span class="attribute">#[derive(Clone, Debug, Eq, PartialEq, SmartDefault, AutoFrom)]</span>
+<span class="attribute">#[auto_from(CoinBase)]</span>
+<span class="attribute">#[auto_from(CoinBaseJsonProxy)]</span>
+<span class="kw">pub enum </span>CoinBaseJson {
+    <span class="attribute">#[default]</span>
+    Zero,
+    One(<span class="prelude-ty">Option</span>&lt;CoinBaseFeeTransferJson&gt;),
+    Two(
+        <span class="prelude-ty">Option</span>&lt;CoinBaseFeeTransferJson&gt;,
+        <span class="prelude-ty">Option</span>&lt;CoinBaseFeeTransferJson&gt;,
+    ),
+}
+
+<span class="macro">impl_mina_enum_json_serde!</span>(CoinBaseJson, CoinBaseJsonProxy);
+
+<span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]</span>
+<span class="kw">pub struct </span>CoinBaseFeeTransfer {
+    <span class="kw">pub </span>receiver_pk: PublicKeyV1,
+    <span class="kw">pub </span>fee: ExtendedU64_2,
+}
+
+<span class="kw">pub type </span>CoinBaseFeeTransferV1 = Versioned&lt;Versioned&lt;CoinBaseFeeTransfer, <span class="number">1</span>&gt;, <span class="number">1</span>&gt;;
+
+<span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq, AutoFrom)]</span>
+<span class="attribute">#[auto_from(CoinBaseFeeTransfer)]</span>
+<span class="kw">pub struct </span>CoinBaseFeeTransferJson {
+    <span class="kw">pub </span>receiver_pk: PublicKeyJson,
+    <span class="kw">pub </span>fee: DecimalJson,
+}
+
+<span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]</span>
+<span class="kw">pub enum </span>InternalCommandBalanceData {
+    CoinBase(CoinBaseBalanceDataV1),
+    FeeTransfer(FeeTransferBalanceDataV1),
+}
+
+<span class="kw">pub type </span>InternalCommandBalanceDataV1 = Versioned&lt;InternalCommandBalanceData, <span class="number">1</span>&gt;;
+
+<span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize)]</span>
+<span class="kw">enum </span>InternalCommandBalanceDataJsonProxy {
+    <span class="attribute">#[serde(rename = <span class="string">&quot;Coinbase&quot;</span>)]</span>
+    CoinBase(CoinBaseBalanceDataJson),
+    <span class="attribute">#[serde(rename = <span class="string">&quot;Fee_transfer&quot;</span>)]</span>
+    FeeTransfer(FeeTransferBalanceDataJson),
+}
+
+<span class="attribute">#[derive(Clone, Debug, Eq, PartialEq, AutoFrom)]</span>
+<span class="attribute">#[auto_from(InternalCommandBalanceData)]</span>
+<span class="attribute">#[auto_from(InternalCommandBalanceDataJsonProxy)]</span>
+<span class="kw">pub enum </span>InternalCommandBalanceDataJson {
+    CoinBase(CoinBaseBalanceDataJson),
+    FeeTransfer(FeeTransferBalanceDataJson),
 }
 
 <span class="macro">impl_mina_enum_json_serde!</span>(
-    <span class="ident">InternalCommandBalanceDataJson</span>,
-    <span class="ident">InternalCommandBalanceDataJsonProxy</span>
+    InternalCommandBalanceDataJson,
+    InternalCommandBalanceDataJsonProxy
 );
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">PartialEq</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">CoinBaseBalanceData</span> {
-    <span class="kw">pub</span> <span class="ident">coinbase_receiver_balance</span>: <span class="ident">ExtendedU64_3</span>,
-    <span class="comment">// FIXME: No test coverage yet</span>
-    <span class="kw">pub</span> <span class="ident">fee_transfer_receiver_balance</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">ExtendedU64_3</span><span class="op">&gt;</span>,
+<span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]</span>
+<span class="kw">pub struct </span>CoinBaseBalanceData {
+    <span class="kw">pub </span>coinbase_receiver_balance: ExtendedU64_3,
+    <span class="comment">// FIXME: No test coverage yet
+    </span><span class="kw">pub </span>fee_transfer_receiver_balance: <span class="prelude-ty">Option</span>&lt;ExtendedU64_3&gt;,
 }
 
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">CoinBaseBalanceDataV1</span> <span class="op">=</span> <span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">CoinBaseBalanceData</span>, <span class="number">1</span><span class="op">&gt;</span>;
+<span class="kw">pub type </span>CoinBaseBalanceDataV1 = Versioned&lt;CoinBaseBalanceData, <span class="number">1</span>&gt;;
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">PartialEq</span>, <span class="ident">AutoFrom</span>)]</span>
-<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">CoinBaseBalanceData</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">CoinBaseBalanceDataJson</span> {
-    <span class="kw">pub</span> <span class="ident">coinbase_receiver_balance</span>: <span class="ident">U64Json</span>,
-    <span class="kw">pub</span> <span class="ident">fee_transfer_receiver_balance</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">U64Json</span><span class="op">&gt;</span>,
+<span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq, AutoFrom)]</span>
+<span class="attribute">#[auto_from(CoinBaseBalanceData)]</span>
+<span class="kw">pub struct </span>CoinBaseBalanceDataJson {
+    <span class="kw">pub </span>coinbase_receiver_balance: U64Json,
+    <span class="kw">pub </span>fee_transfer_receiver_balance: <span class="prelude-ty">Option</span>&lt;U64Json&gt;,
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">PartialEq</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">FeeTransferBalanceData</span> {
-    <span class="kw">pub</span> <span class="ident">receiver1_balance</span>: <span class="ident">ExtendedU64_3</span>,
-    <span class="comment">// FIXME: No test coverage yet</span>
-    <span class="kw">pub</span> <span class="ident">receiver2_balance</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">ExtendedU64_3</span><span class="op">&gt;</span>,
+<span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]</span>
+<span class="kw">pub struct </span>FeeTransferBalanceData {
+    <span class="kw">pub </span>receiver1_balance: ExtendedU64_3,
+    <span class="comment">// FIXME: No test coverage yet
+    </span><span class="kw">pub </span>receiver2_balance: <span class="prelude-ty">Option</span>&lt;ExtendedU64_3&gt;,
 }
 
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">FeeTransferBalanceDataV1</span> <span class="op">=</span> <span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">FeeTransferBalanceData</span>, <span class="number">1</span><span class="op">&gt;</span>;
+<span class="kw">pub type </span>FeeTransferBalanceDataV1 = Versioned&lt;FeeTransferBalanceData, <span class="number">1</span>&gt;;
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">PartialEq</span>, <span class="ident">AutoFrom</span>)]</span>
-<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">FeeTransferBalanceData</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">FeeTransferBalanceDataJson</span> {
-    <span class="kw">pub</span> <span class="ident">receiver1_balance</span>: <span class="ident">U64Json</span>,
-    <span class="kw">pub</span> <span class="ident">receiver2_balance</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">U64Json</span><span class="op">&gt;</span>,
+<span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq, AutoFrom)]</span>
+<span class="attribute">#[auto_from(FeeTransferBalanceData)]</span>
+<span class="kw">pub struct </span>FeeTransferBalanceDataJson {
+    <span class="kw">pub </span>receiver1_balance: U64Json,
+    <span class="kw">pub </span>receiver2_balance: <span class="prelude-ty">Option</span>&lt;U64Json&gt;,
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_serialization_types" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (fe3342816 2022-08-01)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_serialization_types" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (40336865f 2022-08-15)" ></div></body></html>

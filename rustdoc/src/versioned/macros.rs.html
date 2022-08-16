@@ -116,123 +116,123 @@
 <span id="116">116</span>
 <span id="117">117</span>
 <span id="118">118</span>
-</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems</span>
-<span class="comment">// SPDX-License-Identifier: Apache-2.0</span>
+</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems
+// SPDX-License-Identifier: Apache-2.0
 
-<span class="doccomment">//!</span>
-<span class="doccomment">//! Macros that help implement common traits for versioned wrapper types</span>
-<span class="doccomment">//!</span>
+</span><span class="doccomment">//!
+//! Macros that help implement common traits for versioned wrapper types
+//!
 
-<span class="doccomment">/// Macro that implements [From] trait for for a struct and its versioned wrapper</span>
-<span class="attribute">#[<span class="ident">macro_export</span>]</span>
-<span class="macro">macro_rules!</span> <span class="ident">impl_from_versioned</span> {
-    (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>:<span class="ident">ty</span>) =&gt; {
-        <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">V</span>: <span class="ident">u16</span><span class="op">&gt;</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">::versioned::Versioned</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>, <span class="ident">V</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span> {
-            <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">t</span>: <span class="ident">::versioned::Versioned</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>, <span class="ident">V</span><span class="op">&gt;</span>) -&gt; <span class="self">Self</span> {
-                <span class="kw">let</span> (<span class="ident">t</span>,) <span class="op">=</span> <span class="ident">t</span>.<span class="ident">into</span>();
-                <span class="ident">t</span>
+/// Macro that implements [From] trait for for a struct and its versioned wrapper
+</span><span class="attribute">#[macro_export]</span>
+<span class="macro">macro_rules!</span> impl_from_versioned {
+    (<span class="macro-nonterminal">$t</span>:ty) =&gt; {
+        <span class="kw">impl</span>&lt;<span class="kw">const </span>V: u16&gt; From&lt;::versioned::Versioned&lt;<span class="macro-nonterminal">$t</span>, V&gt;&gt; <span class="kw">for </span><span class="macro-nonterminal">$t </span>{
+            <span class="kw">fn </span>from(t: ::versioned::Versioned&lt;<span class="macro-nonterminal">$t</span>, V&gt;) -&gt; <span class="self">Self </span>{
+                <span class="kw">let </span>(t,) = t.into();
+                t
             }
         }
 
-        <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">V1</span>: <span class="ident">u16</span>, <span class="kw">const</span> <span class="ident">V2</span>: <span class="ident">u16</span><span class="op">&gt;</span>
-            <span class="ident">From</span><span class="op">&lt;</span><span class="ident">::versioned::Versioned</span><span class="op">&lt;</span><span class="ident">::versioned::Versioned</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>, <span class="ident">V1</span><span class="op">&gt;</span>, <span class="ident">V2</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>
-        {
-            <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">t</span>: <span class="ident">::versioned::Versioned</span><span class="op">&lt;</span><span class="ident">::versioned::Versioned</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>, <span class="ident">V1</span><span class="op">&gt;</span>, <span class="ident">V2</span><span class="op">&gt;</span>) -&gt; <span class="self">Self</span> {
-                <span class="kw">let</span> (<span class="ident">t</span>,) <span class="op">=</span> <span class="ident">t</span>.<span class="ident">into</span>();
-                <span class="ident">t</span>
-            }
-        }
-    };
-}
-
-<span class="doccomment">/// Macro that implements [From] trait for a newtype struct and its versioned wrapper</span>
-<span class="attribute">#[<span class="ident">macro_export</span>]</span>
-<span class="macro">macro_rules!</span> <span class="ident">impl_from_for_newtype</span> {
-    (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>:<span class="ident">ty</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">tv</span>:<span class="ident">ty</span>) =&gt; {
-        <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">tv</span> {
-            <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">t</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>) -&gt; <span class="self">Self</span> {
-                <span class="ident">t</span>.<span class="number">0</span>.<span class="ident">into</span>()
-            }
-        }
-
-        <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">tv</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span> {
-            <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">t</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">tv</span>) -&gt; <span class="self">Self</span> {
-                <span class="kw">let</span> (<span class="ident">t</span>,) <span class="op">=</span> <span class="ident">t</span>.<span class="ident">into</span>();
-                <span class="self">Self</span>(<span class="ident">t</span>)
+        <span class="kw">impl</span>&lt;<span class="kw">const </span>V1: u16, <span class="kw">const </span>V2: u16&gt;
+            From&lt;::versioned::Versioned&lt;::versioned::Versioned&lt;<span class="macro-nonterminal">$t</span>, V1&gt;, V2&gt;&gt; <span class="kw">for </span><span class="macro-nonterminal">$t
+        </span>{
+            <span class="kw">fn </span>from(t: ::versioned::Versioned&lt;::versioned::Versioned&lt;<span class="macro-nonterminal">$t</span>, V1&gt;, V2&gt;) -&gt; <span class="self">Self </span>{
+                <span class="kw">let </span>(t,) = t.into();
+                t
             }
         }
     };
 }
 
-<span class="doccomment">/// Macro that implements [From] trait for 2-way conversion</span>
-<span class="doccomment">/// between the orignal type and the target json type, via an</span>
-<span class="doccomment">/// intermidate versioned type that is convertible from and to</span>
-<span class="doccomment">/// both orignal and target types.</span>
-<span class="doccomment">/// It also implements BinProtSerializationType and JsonSerializationType</span>
-<span class="doccomment">/// for convenience</span>
-<span class="attribute">#[<span class="ident">macro_export</span>]</span>
-<span class="macro">macro_rules!</span> <span class="ident">impl_from_with_proxy</span> {
-    (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>:<span class="ident">ty</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">t_versioned</span>:<span class="ident">ty</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">t_json</span>:<span class="ident">ty</span>) =&gt; {
-        <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">t_json</span> {
-            <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">t</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>) -&gt; <span class="self">Self</span> {
-                <span class="kw">let</span> <span class="ident">intermidate</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">t_versioned</span> <span class="op">=</span> <span class="ident">t</span>.<span class="ident">into</span>();
-                <span class="ident">intermidate</span>.<span class="ident">into</span>()
+<span class="doccomment">/// Macro that implements [From] trait for a newtype struct and its versioned wrapper
+</span><span class="attribute">#[macro_export]</span>
+<span class="macro">macro_rules!</span> impl_from_for_newtype {
+    (<span class="macro-nonterminal">$t</span>:ty, <span class="macro-nonterminal">$tv</span>:ty) =&gt; {
+        <span class="kw">impl </span>From&lt;<span class="macro-nonterminal">$t</span>&gt; <span class="kw">for </span><span class="macro-nonterminal">$tv </span>{
+            <span class="kw">fn </span>from(t: <span class="macro-nonterminal">$t</span>) -&gt; <span class="self">Self </span>{
+                t.<span class="number">0</span>.into()
             }
         }
 
-        <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">t_json</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span> {
-            <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">t</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">t_json</span>) -&gt; <span class="self">Self</span> {
-                <span class="kw">let</span> <span class="ident">intermidate</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">t_versioned</span> <span class="op">=</span> <span class="ident">t</span>.<span class="ident">into</span>();
-                <span class="ident">intermidate</span>.<span class="ident">into</span>()
+        <span class="kw">impl </span>From&lt;<span class="macro-nonterminal">$tv</span>&gt; <span class="kw">for </span><span class="macro-nonterminal">$t </span>{
+            <span class="kw">fn </span>from(t: <span class="macro-nonterminal">$tv</span>) -&gt; <span class="self">Self </span>{
+                <span class="kw">let </span>(t,) = t.into();
+                <span class="self">Self</span>(t)
             }
         }
     };
 }
 
-<span class="doccomment">/// Macro that implements [From] trait for 2-way conversion</span>
-<span class="doccomment">/// between the orignal type and the versioned target type, using the</span>
-<span class="doccomment">/// intermidate type that is convertible from and to both</span>
-<span class="doccomment">/// orignal and target types</span>
-<span class="attribute">#[<span class="ident">macro_export</span>]</span>
-<span class="macro">macro_rules!</span> <span class="ident">impl_from_for_versioned_with_proxy</span> {
-    (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>:<span class="ident">ty</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">ti</span>:<span class="ident">ty</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">t2</span>:<span class="ident">ty</span>) =&gt; {
-        <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">t2</span> {
-            <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">t</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>) -&gt; <span class="self">Self</span> {
-                <span class="kw">let</span> <span class="ident">intermidate</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">ti</span> <span class="op">=</span> <span class="ident">t</span>.<span class="ident">into</span>();
-                <span class="ident">intermidate</span>.<span class="ident">into</span>()
+<span class="doccomment">/// Macro that implements [From] trait for 2-way conversion
+/// between the orignal type and the target json type, via an
+/// intermidate versioned type that is convertible from and to
+/// both orignal and target types.
+/// It also implements BinProtSerializationType and JsonSerializationType
+/// for convenience
+</span><span class="attribute">#[macro_export]</span>
+<span class="macro">macro_rules!</span> impl_from_with_proxy {
+    (<span class="macro-nonterminal">$t</span>:ty, <span class="macro-nonterminal">$t_versioned</span>:ty, <span class="macro-nonterminal">$t_json</span>:ty) =&gt; {
+        <span class="kw">impl </span>From&lt;<span class="macro-nonterminal">$t</span>&gt; <span class="kw">for </span><span class="macro-nonterminal">$t_json </span>{
+            <span class="kw">fn </span>from(t: <span class="macro-nonterminal">$t</span>) -&gt; <span class="self">Self </span>{
+                <span class="kw">let </span>intermidate: <span class="macro-nonterminal">$t_versioned </span>= t.into();
+                intermidate.into()
             }
         }
 
-        <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">t2</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span> {
-            <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">t</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">t2</span>) -&gt; <span class="self">Self</span> {
-                <span class="kw">let</span> (<span class="ident">intermidate</span>,): (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">ti</span>,) <span class="op">=</span> <span class="ident">t</span>.<span class="ident">into</span>();
-                <span class="ident">intermidate</span>.<span class="ident">into</span>()
+        <span class="kw">impl </span>From&lt;<span class="macro-nonterminal">$t_json</span>&gt; <span class="kw">for </span><span class="macro-nonterminal">$t </span>{
+            <span class="kw">fn </span>from(t: <span class="macro-nonterminal">$t_json</span>) -&gt; <span class="self">Self </span>{
+                <span class="kw">let </span>intermidate: <span class="macro-nonterminal">$t_versioned </span>= t.into();
+                intermidate.into()
             }
         }
     };
 }
 
-<span class="doccomment">/// Macro that implements [From] trait for 2-way conversion</span>
-<span class="doccomment">/// between the orignal type and the generic target type, using the</span>
-<span class="doccomment">/// intermidate type that is convertible from and to both</span>
-<span class="doccomment">/// orignal and target types</span>
-<span class="attribute">#[<span class="ident">macro_export</span>]</span>
-<span class="macro">macro_rules!</span> <span class="ident">impl_from_for_generic_with_proxy</span> {
-    (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>:<span class="ident">ty</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">ti</span>:<span class="ident">ty</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">t2</span>:<span class="ident">ty</span>) =&gt; {
-        <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">t2</span> {
-            <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">t</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>) -&gt; <span class="self">Self</span> {
-                <span class="kw">let</span> <span class="ident">intermidate</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">ti</span> <span class="op">=</span> <span class="ident">t</span>.<span class="ident">into</span>();
-                <span class="ident">intermidate</span>.<span class="ident">into</span>()
+<span class="doccomment">/// Macro that implements [From] trait for 2-way conversion
+/// between the orignal type and the versioned target type, using the
+/// intermidate type that is convertible from and to both
+/// orignal and target types
+</span><span class="attribute">#[macro_export]</span>
+<span class="macro">macro_rules!</span> impl_from_for_versioned_with_proxy {
+    (<span class="macro-nonterminal">$t</span>:ty, <span class="macro-nonterminal">$ti</span>:ty, <span class="macro-nonterminal">$t2</span>:ty) =&gt; {
+        <span class="kw">impl </span>From&lt;<span class="macro-nonterminal">$t</span>&gt; <span class="kw">for </span><span class="macro-nonterminal">$t2 </span>{
+            <span class="kw">fn </span>from(t: <span class="macro-nonterminal">$t</span>) -&gt; <span class="self">Self </span>{
+                <span class="kw">let </span>intermidate: <span class="macro-nonterminal">$ti </span>= t.into();
+                intermidate.into()
             }
         }
 
-        <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">t2</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span> {
-            <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">t</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">t2</span>) -&gt; <span class="self">Self</span> {
-                <span class="kw">let</span> (<span class="ident">intermidate</span>,): (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">ti</span>,) <span class="op">=</span> <span class="ident">t</span>.<span class="ident">into</span>();
-                <span class="ident">intermidate</span>.<span class="ident">into</span>()
+        <span class="kw">impl </span>From&lt;<span class="macro-nonterminal">$t2</span>&gt; <span class="kw">for </span><span class="macro-nonterminal">$t </span>{
+            <span class="kw">fn </span>from(t: <span class="macro-nonterminal">$t2</span>) -&gt; <span class="self">Self </span>{
+                <span class="kw">let </span>(intermidate,): (<span class="macro-nonterminal">$ti</span>,) = t.into();
+                intermidate.into()
+            }
+        }
+    };
+}
+
+<span class="doccomment">/// Macro that implements [From] trait for 2-way conversion
+/// between the orignal type and the generic target type, using the
+/// intermidate type that is convertible from and to both
+/// orignal and target types
+</span><span class="attribute">#[macro_export]</span>
+<span class="macro">macro_rules!</span> impl_from_for_generic_with_proxy {
+    (<span class="macro-nonterminal">$t</span>:ty, <span class="macro-nonterminal">$ti</span>:ty, <span class="macro-nonterminal">$t2</span>:ty) =&gt; {
+        <span class="kw">impl </span>From&lt;<span class="macro-nonterminal">$t</span>&gt; <span class="kw">for </span><span class="macro-nonterminal">$t2 </span>{
+            <span class="kw">fn </span>from(t: <span class="macro-nonterminal">$t</span>) -&gt; <span class="self">Self </span>{
+                <span class="kw">let </span>intermidate: <span class="macro-nonterminal">$ti </span>= t.into();
+                intermidate.into()
+            }
+        }
+
+        <span class="kw">impl </span>From&lt;<span class="macro-nonterminal">$t2</span>&gt; <span class="kw">for </span><span class="macro-nonterminal">$t </span>{
+            <span class="kw">fn </span>from(t: <span class="macro-nonterminal">$t2</span>) -&gt; <span class="self">Self </span>{
+                <span class="kw">let </span>(intermidate,): (<span class="macro-nonterminal">$ti</span>,) = t.into();
+                intermidate.into()
             }
         }
     };
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="versioned" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (fe3342816 2022-08-01)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="versioned" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (40336865f 2022-08-15)" ></div></body></html>

@@ -219,226 +219,226 @@
 <span id="219">219</span>
 <span id="220">220</span>
 <span id="221">221</span>
-</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems</span>
-<span class="comment">// SPDX-License-Identifier: Apache-2.0</span>
+</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems
+// SPDX-License-Identifier: Apache-2.0
 
-<span class="doccomment">//! Types related to the Transaction Snark Work</span>
-<span class="attribute">#![<span class="ident">allow</span>(<span class="ident">missing_docs</span>)]</span>
+</span><span class="doccomment">//! Types related to the Transaction Snark Work
+</span><span class="attribute">#![allow(missing_docs)]</span>
 
-<span class="kw">use</span> <span class="kw">crate</span>::{<span class="ident">common</span>::<span class="kw-2">*</span>, <span class="ident">json</span>::<span class="kw-2">*</span>, <span class="ident">v1</span>::<span class="kw-2">*</span>, <span class="kw-2">*</span>};
-<span class="kw">use</span> <span class="ident">mina_serialization_types_macros::AutoFrom</span>;
-<span class="kw">use</span> <span class="ident">serde</span>::{<span class="ident">Deserialize</span>, <span class="ident">Serialize</span>};
-<span class="kw">use</span> <span class="ident">versioned::Versioned</span>;
+<span class="kw">use crate</span>::{common::<span class="kw-2">*</span>, json::<span class="kw-2">*</span>, v1::<span class="kw-2">*</span>, <span class="kw-2">*</span>};
+<span class="kw">use </span>mina_serialization_types_macros::AutoFrom;
+<span class="kw">use </span>serde::{Deserialize, Serialize};
+<span class="kw">use </span>versioned::Versioned;
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">PartialEq</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">TransactionSnarkWork</span> {
-    <span class="comment">// Versioned 1 byte</span>
-    <span class="kw">pub</span> <span class="ident">fee</span>: <span class="ident">AmountV1</span>,
-    <span class="kw">pub</span> <span class="ident">proofs</span>: <span class="ident">OneORTwoV1</span>,
-    <span class="kw">pub</span> <span class="ident">prover</span>: <span class="ident">PublicKeyV1</span>,
+<span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]</span>
+<span class="kw">pub struct </span>TransactionSnarkWork {
+    <span class="comment">// Versioned 1 byte
+    </span><span class="kw">pub </span>fee: AmountV1,
+    <span class="kw">pub </span>proofs: OneORTwoV1,
+    <span class="kw">pub </span>prover: PublicKeyV1,
 }
 
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">TransactionSnarkWorkV1</span> <span class="op">=</span> <span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">TransactionSnarkWork</span>, <span class="number">1</span><span class="op">&gt;</span>;
+<span class="kw">pub type </span>TransactionSnarkWorkV1 = Versioned&lt;TransactionSnarkWork, <span class="number">1</span>&gt;;
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">PartialEq</span>, <span class="ident">AutoFrom</span>)]</span>
-<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">TransactionSnarkWork</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">TransactionSnarkWorkJson</span> {
-    <span class="comment">// Versioned 1 byte</span>
-    <span class="kw">pub</span> <span class="ident">fee</span>: <span class="ident">DecimalJson</span>,
-    <span class="kw">pub</span> <span class="ident">proofs</span>: <span class="ident">OneORTwoJson</span>,
-    <span class="kw">pub</span> <span class="ident">prover</span>: <span class="ident">PublicKeyJson</span>,
+<span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq, AutoFrom)]</span>
+<span class="attribute">#[auto_from(TransactionSnarkWork)]</span>
+<span class="kw">pub struct </span>TransactionSnarkWorkJson {
+    <span class="comment">// Versioned 1 byte
+    </span><span class="kw">pub </span>fee: DecimalJson,
+    <span class="kw">pub </span>proofs: OneORTwoJson,
+    <span class="kw">pub </span>prover: PublicKeyJson,
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">PartialEq</span>)]</span>
-<span class="attribute">#[<span class="ident">serde</span>(<span class="ident">rename</span> <span class="op">=</span> <span class="string">&quot;Polyvar&quot;</span>)]</span>
-<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">OneORTwo</span> {
-    <span class="comment">// Versioned 1 byte</span>
-    <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">rename</span> <span class="op">=</span> <span class="string">&quot;One&quot;</span>)]</span>
-    <span class="ident">One</span>(<span class="ident">Box</span><span class="op">&lt;</span><span class="ident">LedgerProofV1</span><span class="op">&gt;</span>),
-    <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">rename</span> <span class="op">=</span> <span class="string">&quot;Two&quot;</span>)]</span>
-    <span class="ident">Two</span>(<span class="ident">Box</span><span class="op">&lt;</span><span class="ident">LedgerProofV1</span><span class="op">&gt;</span>, <span class="ident">Box</span><span class="op">&lt;</span><span class="ident">LedgerProofV1</span><span class="op">&gt;</span>),
+<span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]</span>
+<span class="attribute">#[serde(rename = <span class="string">&quot;Polyvar&quot;</span>)]</span>
+<span class="kw">pub enum </span>OneORTwo {
+    <span class="comment">// Versioned 1 byte
+    </span><span class="attribute">#[serde(rename = <span class="string">&quot;One&quot;</span>)]</span>
+    One(Box&lt;LedgerProofV1&gt;),
+    <span class="attribute">#[serde(rename = <span class="string">&quot;Two&quot;</span>)]</span>
+    Two(Box&lt;LedgerProofV1&gt;, Box&lt;LedgerProofV1&gt;),
 }
 
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">OneORTwoV1</span> <span class="op">=</span> <span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">OneORTwo</span>, <span class="number">1</span><span class="op">&gt;</span>;
+<span class="kw">pub type </span>OneORTwoV1 = Versioned&lt;OneORTwo, <span class="number">1</span>&gt;;
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">PartialEq</span>, <span class="ident">AutoFrom</span>)]</span>
-<span class="kw">enum</span> <span class="ident">OneORTwoJsonProxy</span> {
-    <span class="ident">One</span>(<span class="ident">Box</span><span class="op">&lt;</span><span class="ident">TransactionSnarkJson</span><span class="op">&gt;</span>),
-    <span class="ident">Two</span>(<span class="ident">Box</span><span class="op">&lt;</span><span class="ident">TransactionSnarkJson</span><span class="op">&gt;</span>, <span class="ident">Box</span><span class="op">&lt;</span><span class="ident">TransactionSnarkJson</span><span class="op">&gt;</span>),
+<span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq, AutoFrom)]</span>
+<span class="kw">enum </span>OneORTwoJsonProxy {
+    One(Box&lt;TransactionSnarkJson&gt;),
+    Two(Box&lt;TransactionSnarkJson&gt;, Box&lt;TransactionSnarkJson&gt;),
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">PartialEq</span>, <span class="ident">AutoFrom</span>)]</span>
-<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">OneORTwo</span>)]</span>
-<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">OneORTwoJsonProxy</span>)]</span>
-<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">OneORTwoJson</span> {
-    <span class="ident">One</span>(<span class="ident">Box</span><span class="op">&lt;</span><span class="ident">TransactionSnarkJson</span><span class="op">&gt;</span>),
-    <span class="ident">Two</span>(<span class="ident">Box</span><span class="op">&lt;</span><span class="ident">TransactionSnarkJson</span><span class="op">&gt;</span>, <span class="ident">Box</span><span class="op">&lt;</span><span class="ident">TransactionSnarkJson</span><span class="op">&gt;</span>),
+<span class="attribute">#[derive(Clone, Debug, Eq, PartialEq, AutoFrom)]</span>
+<span class="attribute">#[auto_from(OneORTwo)]</span>
+<span class="attribute">#[auto_from(OneORTwoJsonProxy)]</span>
+<span class="kw">pub enum </span>OneORTwoJson {
+    One(Box&lt;TransactionSnarkJson&gt;),
+    Two(Box&lt;TransactionSnarkJson&gt;, Box&lt;TransactionSnarkJson&gt;),
 }
 
-<span class="macro">impl_mina_enum_json_serde!</span>(<span class="ident">OneORTwoJson</span>, <span class="ident">OneORTwoJsonProxy</span>);
+<span class="macro">impl_mina_enum_json_serde!</span>(OneORTwoJson, OneORTwoJsonProxy);
 
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">LedgerProofV1</span> <span class="op">=</span> <span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">TransactionSnarkV1</span>, <span class="number">1</span><span class="op">&gt;</span>;
+<span class="kw">pub type </span>LedgerProofV1 = Versioned&lt;TransactionSnarkV1, <span class="number">1</span>&gt;;
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">PartialEq</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">TransactionSnark</span> {
-    <span class="kw">pub</span> <span class="ident">statement</span>: <span class="ident">StatementV1</span>,
-    <span class="kw">pub</span> <span class="ident">transaction_snark_proof</span>: <span class="ident">ProtocolStateProofV1</span>,
+<span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]</span>
+<span class="kw">pub struct </span>TransactionSnark {
+    <span class="kw">pub </span>statement: StatementV1,
+    <span class="kw">pub </span>transaction_snark_proof: ProtocolStateProofV1,
 }
 
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">TransactionSnarkV1</span> <span class="op">=</span> <span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">TransactionSnark</span>, <span class="number">1</span><span class="op">&gt;</span>;
+<span class="kw">pub type </span>TransactionSnarkV1 = Versioned&lt;TransactionSnark, <span class="number">1</span>&gt;;
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">PartialEq</span>, <span class="ident">AutoFrom</span>)]</span>
-<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">TransactionSnark</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">TransactionSnarkJson</span> {
-    <span class="kw">pub</span> <span class="ident">statement</span>: <span class="ident">StatementJson</span>,
+<span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq, AutoFrom)]</span>
+<span class="attribute">#[auto_from(TransactionSnark)]</span>
+<span class="kw">pub struct </span>TransactionSnarkJson {
+    <span class="kw">pub </span>statement: StatementJson,
 
-    <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">rename</span> <span class="op">=</span> <span class="string">&quot;proof&quot;</span>)]</span>
-    <span class="kw">pub</span> <span class="ident">transaction_snark_proof</span>: <span class="ident">ProtocolStateProofJson</span>,
+    <span class="attribute">#[serde(rename = <span class="string">&quot;proof&quot;</span>)]</span>
+    <span class="kw">pub </span>transaction_snark_proof: ProtocolStateProofJson,
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">PartialEq</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Statement</span> {
-    <span class="comment">// Versioned 2 byte</span>
-    <span class="kw">pub</span> <span class="ident">source</span>: <span class="ident">HashV1</span>,
-    <span class="kw">pub</span> <span class="ident">target</span>: <span class="ident">HashV1</span>,
-    <span class="kw">pub</span> <span class="ident">supply_increase</span>: <span class="ident">AmountV1</span>,
-    <span class="kw">pub</span> <span class="ident">pending_coinbase_stack_state</span>: <span class="ident">PendingCoinbaseStackStateV1</span>,
-    <span class="kw">pub</span> <span class="ident">fee_excess</span>: <span class="ident">FeeExcessPairV1</span>,
-    <span class="kw">pub</span> <span class="ident">next_available_token_before</span>: <span class="ident">TokenIdV1</span>,
-    <span class="kw">pub</span> <span class="ident">next_available_token_after</span>: <span class="ident">TokenIdV1</span>,
-    <span class="kw">pub</span> <span class="ident">sok_digest</span>: <span class="ident">ByteVecV1</span>,
+<span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]</span>
+<span class="kw">pub struct </span>Statement {
+    <span class="comment">// Versioned 2 byte
+    </span><span class="kw">pub </span>source: HashV1,
+    <span class="kw">pub </span>target: HashV1,
+    <span class="kw">pub </span>supply_increase: AmountV1,
+    <span class="kw">pub </span>pending_coinbase_stack_state: PendingCoinbaseStackStateV1,
+    <span class="kw">pub </span>fee_excess: FeeExcessPairV1,
+    <span class="kw">pub </span>next_available_token_before: TokenIdV1,
+    <span class="kw">pub </span>next_available_token_after: TokenIdV1,
+    <span class="kw">pub </span>sok_digest: ByteVecV1,
 }
 
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">StatementV1</span> <span class="op">=</span> <span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">Statement</span>, <span class="number">1</span><span class="op">&gt;</span>, <span class="number">1</span><span class="op">&gt;</span>;
+<span class="kw">pub type </span>StatementV1 = Versioned&lt;Versioned&lt;Statement, <span class="number">1</span>&gt;, <span class="number">1</span>&gt;;
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">PartialEq</span>, <span class="ident">AutoFrom</span>)]</span>
-<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">Statement</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">StatementJson</span> {
-    <span class="comment">// Versioned 2 byte</span>
-    <span class="kw">pub</span> <span class="ident">source</span>: <span class="ident">LedgerHashV1Json</span>,
-    <span class="kw">pub</span> <span class="ident">target</span>: <span class="ident">LedgerHashV1Json</span>,
-    <span class="kw">pub</span> <span class="ident">supply_increase</span>: <span class="ident">U64Json</span>,
-    <span class="kw">pub</span> <span class="ident">pending_coinbase_stack_state</span>: <span class="ident">PendingCoinbaseStackStateJson</span>,
-    <span class="kw">pub</span> <span class="ident">fee_excess</span>: <span class="ident">FeeExcessPairJson</span>,
-    <span class="kw">pub</span> <span class="ident">next_available_token_before</span>: <span class="ident">U64Json</span>,
-    <span class="kw">pub</span> <span class="ident">next_available_token_after</span>: <span class="ident">U64Json</span>,
-    <span class="kw">pub</span> <span class="ident">sok_digest</span>: <span class="ident">ByteVecJson</span>,
+<span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq, AutoFrom)]</span>
+<span class="attribute">#[auto_from(Statement)]</span>
+<span class="kw">pub struct </span>StatementJson {
+    <span class="comment">// Versioned 2 byte
+    </span><span class="kw">pub </span>source: LedgerHashV1Json,
+    <span class="kw">pub </span>target: LedgerHashV1Json,
+    <span class="kw">pub </span>supply_increase: U64Json,
+    <span class="kw">pub </span>pending_coinbase_stack_state: PendingCoinbaseStackStateJson,
+    <span class="kw">pub </span>fee_excess: FeeExcessPairJson,
+    <span class="kw">pub </span>next_available_token_before: U64Json,
+    <span class="kw">pub </span>next_available_token_after: U64Json,
+    <span class="kw">pub </span>sok_digest: ByteVecJson,
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">PartialEq</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">PendingCoinbaseStackState</span> {
-    <span class="comment">// Versioned 2 byte</span>
-    <span class="kw">pub</span> <span class="ident">source</span>: <span class="ident">PendingCoinbaseV1</span>,
-    <span class="kw">pub</span> <span class="ident">target</span>: <span class="ident">PendingCoinbaseV1</span>,
+<span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]</span>
+<span class="kw">pub struct </span>PendingCoinbaseStackState {
+    <span class="comment">// Versioned 2 byte
+    </span><span class="kw">pub </span>source: PendingCoinbaseV1,
+    <span class="kw">pub </span>target: PendingCoinbaseV1,
 }
 
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">PendingCoinbaseStackStateV1</span> <span class="op">=</span> <span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">PendingCoinbaseStackState</span>, <span class="number">1</span><span class="op">&gt;</span>, <span class="number">1</span><span class="op">&gt;</span>;
+<span class="kw">pub type </span>PendingCoinbaseStackStateV1 = Versioned&lt;Versioned&lt;PendingCoinbaseStackState, <span class="number">1</span>&gt;, <span class="number">1</span>&gt;;
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">PartialEq</span>, <span class="ident">AutoFrom</span>)]</span>
-<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">PendingCoinbaseStackState</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">PendingCoinbaseStackStateJson</span> {
-    <span class="comment">// Versioned 2 byte</span>
-    <span class="kw">pub</span> <span class="ident">source</span>: <span class="ident">PendingCoinbaseJson</span>,
-    <span class="kw">pub</span> <span class="ident">target</span>: <span class="ident">PendingCoinbaseJson</span>,
+<span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq, AutoFrom)]</span>
+<span class="attribute">#[auto_from(PendingCoinbaseStackState)]</span>
+<span class="kw">pub struct </span>PendingCoinbaseStackStateJson {
+    <span class="comment">// Versioned 2 byte
+    </span><span class="kw">pub </span>source: PendingCoinbaseJson,
+    <span class="kw">pub </span>target: PendingCoinbaseJson,
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">PartialEq</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">PendingCoinbase</span> {
-    <span class="comment">// Versioned 2 byte</span>
-    <span class="kw">pub</span> <span class="ident">data_stack</span>: <span class="ident">HashV1</span>,
-    <span class="kw">pub</span> <span class="ident">state_stack</span>: <span class="ident">StateStackV1</span>,
+<span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]</span>
+<span class="kw">pub struct </span>PendingCoinbase {
+    <span class="comment">// Versioned 2 byte
+    </span><span class="kw">pub </span>data_stack: HashV1,
+    <span class="kw">pub </span>state_stack: StateStackV1,
 }
 
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">PendingCoinbaseV1</span> <span class="op">=</span> <span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">PendingCoinbase</span>, <span class="number">1</span><span class="op">&gt;</span>, <span class="number">1</span><span class="op">&gt;</span>;
+<span class="kw">pub type </span>PendingCoinbaseV1 = Versioned&lt;Versioned&lt;PendingCoinbase, <span class="number">1</span>&gt;, <span class="number">1</span>&gt;;
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">PartialEq</span>, <span class="ident">AutoFrom</span>)]</span>
-<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">PendingCoinbase</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">PendingCoinbaseJson</span> {
-    <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">rename</span> <span class="op">=</span> <span class="string">&quot;data&quot;</span>)]</span>
-    <span class="kw">pub</span> <span class="ident">data_stack</span>: <span class="ident">CoinBaseStackDataV1Json</span>,
-    <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">rename</span> <span class="op">=</span> <span class="string">&quot;state&quot;</span>)]</span>
-    <span class="kw">pub</span> <span class="ident">state_stack</span>: <span class="ident">StateStackJson</span>,
+<span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq, AutoFrom)]</span>
+<span class="attribute">#[auto_from(PendingCoinbase)]</span>
+<span class="kw">pub struct </span>PendingCoinbaseJson {
+    <span class="attribute">#[serde(rename = <span class="string">&quot;data&quot;</span>)]</span>
+    <span class="kw">pub </span>data_stack: CoinBaseStackDataV1Json,
+    <span class="attribute">#[serde(rename = <span class="string">&quot;state&quot;</span>)]</span>
+    <span class="kw">pub </span>state_stack: StateStackJson,
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">PartialEq</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">StateStack</span> {
-    <span class="comment">// Versioned 2 byte</span>
-    <span class="kw">pub</span> <span class="ident">init</span>: <span class="ident">HashV1</span>,
-    <span class="kw">pub</span> <span class="ident">curr</span>: <span class="ident">HashV1</span>,
+<span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]</span>
+<span class="kw">pub struct </span>StateStack {
+    <span class="comment">// Versioned 2 byte
+    </span><span class="kw">pub </span>init: HashV1,
+    <span class="kw">pub </span>curr: HashV1,
 }
 
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">StateStackV1</span> <span class="op">=</span> <span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">StateStack</span>, <span class="number">1</span><span class="op">&gt;</span>, <span class="number">1</span><span class="op">&gt;</span>;
+<span class="kw">pub type </span>StateStackV1 = Versioned&lt;Versioned&lt;StateStack, <span class="number">1</span>&gt;, <span class="number">1</span>&gt;;
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">PartialEq</span>, <span class="ident">AutoFrom</span>)]</span>
-<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">StateStack</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">StateStackJson</span> {
-    <span class="comment">// Versioned 2 byte</span>
-    <span class="kw">pub</span> <span class="ident">init</span>: <span class="ident">CoinBaseStackHashV1Json</span>,
-    <span class="kw">pub</span> <span class="ident">curr</span>: <span class="ident">CoinBaseStackHashV1Json</span>,
+<span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq, AutoFrom)]</span>
+<span class="attribute">#[auto_from(StateStack)]</span>
+<span class="kw">pub struct </span>StateStackJson {
+    <span class="comment">// Versioned 2 byte
+    </span><span class="kw">pub </span>init: CoinBaseStackHashV1Json,
+    <span class="kw">pub </span>curr: CoinBaseStackHashV1Json,
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">PartialEq</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">FeeExcess</span> {
-    <span class="kw">pub</span> <span class="ident">token</span>: <span class="ident">TokenIdV1</span>,
-    <span class="kw">pub</span> <span class="ident">amount</span>: <span class="ident">SignedV1</span>,
+<span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]</span>
+<span class="kw">pub struct </span>FeeExcess {
+    <span class="kw">pub </span>token: TokenIdV1,
+    <span class="kw">pub </span>amount: SignedV1,
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">PartialEq</span>, <span class="ident">AutoFrom</span>)]</span>
-<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">FeeExcess</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">FeeExcessJson</span> {
-    <span class="kw">pub</span> <span class="ident">token</span>: <span class="ident">U64Json</span>,
-    <span class="kw">pub</span> <span class="ident">amount</span>: <span class="ident">SignedJson</span>,
+<span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq, AutoFrom)]</span>
+<span class="attribute">#[auto_from(FeeExcess)]</span>
+<span class="kw">pub struct </span>FeeExcessJson {
+    <span class="kw">pub </span>token: U64Json,
+    <span class="kw">pub </span>amount: SignedJson,
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">PartialEq</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">FeeExcessPair</span>(<span class="kw">pub</span> <span class="ident">FeeExcess</span>, <span class="kw">pub</span> <span class="ident">FeeExcess</span>);
+<span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]</span>
+<span class="kw">pub struct </span>FeeExcessPair(<span class="kw">pub </span>FeeExcess, <span class="kw">pub </span>FeeExcess);
 
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">FeeExcessPairV1</span> <span class="op">=</span> <span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">FeeExcessPair</span>, <span class="number">1</span><span class="op">&gt;</span>, <span class="number">1</span><span class="op">&gt;</span>;
+<span class="kw">pub type </span>FeeExcessPairV1 = Versioned&lt;Versioned&lt;FeeExcessPair, <span class="number">1</span>&gt;, <span class="number">1</span>&gt;;
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">PartialEq</span>, <span class="ident">AutoFrom</span>)]</span>
-<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">FeeExcessPair</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">FeeExcessPairJson</span>(<span class="kw">pub</span> <span class="ident">FeeExcessJson</span>, <span class="kw">pub</span> <span class="ident">FeeExcessJson</span>);
+<span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq, AutoFrom)]</span>
+<span class="attribute">#[auto_from(FeeExcessPair)]</span>
+<span class="kw">pub struct </span>FeeExcessPairJson(<span class="kw">pub </span>FeeExcessJson, <span class="kw">pub </span>FeeExcessJson);
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">PartialEq</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Signed</span> {
-    <span class="comment">// Versioned 1 byte</span>
-    <span class="kw">pub</span> <span class="ident">magnitude</span>: <span class="ident">AmountV1</span>,
-    <span class="kw">pub</span> <span class="ident">sgn</span>: <span class="ident">SgnTypeV1</span>,
+<span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]</span>
+<span class="kw">pub struct </span>Signed {
+    <span class="comment">// Versioned 1 byte
+    </span><span class="kw">pub </span>magnitude: AmountV1,
+    <span class="kw">pub </span>sgn: SgnTypeV1,
 }
 
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">SignedV1</span> <span class="op">=</span> <span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">Signed</span>, <span class="number">1</span><span class="op">&gt;</span>;
+<span class="kw">pub type </span>SignedV1 = Versioned&lt;Signed, <span class="number">1</span>&gt;;
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">PartialEq</span>, <span class="ident">AutoFrom</span>)]</span>
-<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">Signed</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">SignedJson</span> {
-    <span class="comment">// Versioned 1 byte</span>
-    <span class="kw">pub</span> <span class="ident">magnitude</span>: <span class="ident">DecimalJson</span>,
-    <span class="kw">pub</span> <span class="ident">sgn</span>: <span class="ident">SgnTypeJson</span>,
+<span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq, AutoFrom)]</span>
+<span class="attribute">#[auto_from(Signed)]</span>
+<span class="kw">pub struct </span>SignedJson {
+    <span class="comment">// Versioned 1 byte
+    </span><span class="kw">pub </span>magnitude: DecimalJson,
+    <span class="kw">pub </span>sgn: SgnTypeJson,
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">PartialEq</span>)]</span>
-<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">SgnType</span> {
-    <span class="comment">// Versioned 1 byte</span>
-    <span class="ident">Pos</span>,
-    <span class="ident">Neg</span>,
+<span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]</span>
+<span class="kw">pub enum </span>SgnType {
+    <span class="comment">// Versioned 1 byte
+    </span>Pos,
+    Neg,
 }
 
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">SgnTypeV1</span> <span class="op">=</span> <span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">SgnType</span>, <span class="number">1</span><span class="op">&gt;</span>;
+<span class="kw">pub type </span>SgnTypeV1 = Versioned&lt;SgnType, <span class="number">1</span>&gt;;
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">PartialEq</span>, <span class="ident">AutoFrom</span>)]</span>
-<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">SgnTypeJsonProxy</span> {
-    <span class="ident">Pos</span>,
-    <span class="ident">Neg</span>,
+<span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq, AutoFrom)]</span>
+<span class="kw">pub enum </span>SgnTypeJsonProxy {
+    Pos,
+    Neg,
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">PartialEq</span>, <span class="ident">AutoFrom</span>)]</span>
-<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">SgnType</span>)]</span>
-<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">SgnTypeJsonProxy</span>)]</span>
-<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">SgnTypeJson</span> {
-    <span class="ident">Pos</span>,
-    <span class="ident">Neg</span>,
+<span class="attribute">#[derive(Clone, Debug, Eq, PartialEq, AutoFrom)]</span>
+<span class="attribute">#[auto_from(SgnType)]</span>
+<span class="attribute">#[auto_from(SgnTypeJsonProxy)]</span>
+<span class="kw">pub enum </span>SgnTypeJson {
+    Pos,
+    Neg,
 }
 
-<span class="macro">impl_mina_enum_json_serde!</span>(<span class="ident">SgnTypeJson</span>, <span class="ident">SgnTypeJsonProxy</span>);
+<span class="macro">impl_mina_enum_json_serde!</span>(SgnTypeJson, SgnTypeJsonProxy);
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_serialization_types" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (fe3342816 2022-08-01)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_serialization_types" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (40336865f 2022-08-15)" ></div></body></html>

@@ -138,145 +138,145 @@
 <span id="138">138</span>
 <span id="139">139</span>
 <span id="140">140</span>
-</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems</span>
-<span class="comment">// SPDX-License-Identifier: Apache-2.0</span>
+</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems
+// SPDX-License-Identifier: Apache-2.0
 
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::consts</span>::<span class="kw-2">*</span>;
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::error</span>::{<span class="ident">Error</span>, <span class="prelude-ty">Result</span>};
-<span class="kw">use</span> <span class="ident">byteorder</span>::{<span class="ident">LittleEndian</span>, <span class="ident">ReadBytesExt</span>};
-<span class="kw">use</span> <span class="ident">num</span>::{<span class="ident">FromPrimitive</span>, <span class="ident">Unsigned</span>};
-<span class="kw">use</span> <span class="ident">std::io</span>;
+</span><span class="kw">use </span><span class="kw">crate</span>::consts::<span class="kw-2">*</span>;
+<span class="kw">use </span><span class="kw">crate</span>::error::{Error, <span class="prelude-ty">Result</span>};
+<span class="kw">use </span>byteorder::{LittleEndian, ReadBytesExt};
+<span class="kw">use </span>num::{FromPrimitive, Unsigned};
+<span class="kw">use </span>std::io;
 
-<span class="doccomment">/// Extension trait for readers implementing io::Read to allow them to read a bin_prot encoded values</span>
-<span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">ReadBinProtExt</span>: <span class="ident">io::Read</span> {
-    <span class="doccomment">/// Read a unit</span>
-    <span class="kw">fn</span> <span class="ident">bin_read_unit</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-        <span class="kw">match</span> <span class="self">self</span>.<span class="ident">read_u8</span>()<span class="question-mark">?</span> {
-            <span class="number">0x00</span> =&gt; <span class="prelude-val">Ok</span>(()),
-            <span class="ident">b</span> =&gt; <span class="prelude-val">Err</span>(<span class="ident">Error::InvalidByte</span> {
-                <span class="ident">byte</span>: <span class="ident">b</span>,
-                <span class="ident">dtype</span>: <span class="string">&quot;unit&quot;</span>.<span class="ident">to_string</span>(),
-                <span class="ident">allowed</span>: <span class="macro">vec!</span>[<span class="number">0x00</span>],
+<span class="doccomment">/// Extension trait for readers implementing io::Read to allow them to read a bin_prot encoded values
+</span><span class="kw">pub trait </span>ReadBinProtExt: io::Read {
+    <span class="doccomment">/// Read a unit
+    </span><span class="kw">fn </span>bin_read_unit(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+        <span class="kw">match </span><span class="self">self</span>.read_u8()<span class="question-mark">? </span>{
+            <span class="number">0x00 </span>=&gt; <span class="prelude-val">Ok</span>(()),
+            b =&gt; <span class="prelude-val">Err</span>(Error::InvalidByte {
+                byte: b,
+                dtype: <span class="string">&quot;unit&quot;</span>.to_string(),
+                allowed: <span class="macro">vec!</span>[<span class="number">0x00</span>],
             }),
         }
     }
 
-    <span class="doccomment">/// Read a bool</span>
-    <span class="kw">fn</span> <span class="ident">bin_read_bool</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span> {
-        <span class="kw">match</span> <span class="self">self</span>.<span class="ident">read_u8</span>()<span class="question-mark">?</span> {
-            <span class="number">0x00</span> =&gt; <span class="prelude-val">Ok</span>(<span class="bool-val">false</span>),
-            <span class="number">0x01</span> =&gt; <span class="prelude-val">Ok</span>(<span class="bool-val">true</span>),
-            <span class="ident">b</span> =&gt; <span class="prelude-val">Err</span>(<span class="ident">Error::InvalidByte</span> {
-                <span class="ident">byte</span>: <span class="ident">b</span>,
-                <span class="ident">dtype</span>: <span class="string">&quot;bool or option&quot;</span>.<span class="ident">to_string</span>(),
-                <span class="ident">allowed</span>: <span class="macro">vec!</span>[<span class="number">0x00</span>, <span class="number">0x01</span>],
+    <span class="doccomment">/// Read a bool
+    </span><span class="kw">fn </span>bin_read_bool(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;bool&gt; {
+        <span class="kw">match </span><span class="self">self</span>.read_u8()<span class="question-mark">? </span>{
+            <span class="number">0x00 </span>=&gt; <span class="prelude-val">Ok</span>(<span class="bool-val">false</span>),
+            <span class="number">0x01 </span>=&gt; <span class="prelude-val">Ok</span>(<span class="bool-val">true</span>),
+            b =&gt; <span class="prelude-val">Err</span>(Error::InvalidByte {
+                byte: b,
+                dtype: <span class="string">&quot;bool or option&quot;</span>.to_string(),
+                allowed: <span class="macro">vec!</span>[<span class="number">0x00</span>, <span class="number">0x01</span>],
             }),
         }
     }
 
-    <span class="doccomment">/// Read a single byte as char</span>
-    <span class="kw">fn</span> <span class="ident">bin_read_char</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">char</span><span class="op">&gt;</span> {
-        <span class="prelude-val">Ok</span>(<span class="self">self</span>.<span class="ident">read_u8</span>()<span class="question-mark">?</span> <span class="kw">as</span> <span class="ident">char</span>)
+    <span class="doccomment">/// Read a single byte as char
+    </span><span class="kw">fn </span>bin_read_char(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;char&gt; {
+        <span class="prelude-val">Ok</span>(<span class="self">self</span>.read_u8()<span class="question-mark">? </span><span class="kw">as </span>char)
     }
 
-    <span class="doccomment">/// Read a variable length integer</span>
-    <span class="kw">fn</span> <span class="ident">bin_read_integer</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">FromPrimitive</span><span class="op">&gt;</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">buf</span> <span class="op">=</span> [<span class="number">0</span>];
-        <span class="self">self</span>.<span class="ident">read_exact</span>(<span class="kw-2">&amp;mut</span> <span class="ident">buf</span>)<span class="question-mark">?</span>;
-        <span class="comment">// for the possibly signed cases, read them as signed and allow</span>
-        <span class="comment">// the conversion to fail if trying to convert a negative value</span>
-        <span class="comment">// to an unsigned integer</span>
-        <span class="kw">match</span> <span class="ident">buf</span>[<span class="number">0</span>] {
-            <span class="ident">CODE_INT16</span> =&gt; {
-                <span class="comment">// positive or negative 16 bit int</span>
-                <span class="ident">T::from_i16</span>(<span class="self">self</span>.<span class="ident">read_i16</span>::<span class="op">&lt;</span><span class="ident">LittleEndian</span><span class="op">&gt;</span>()<span class="question-mark">?</span>)
+    <span class="doccomment">/// Read a variable length integer
+    </span><span class="kw">fn </span>bin_read_integer&lt;T: FromPrimitive&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;T&gt; {
+        <span class="kw">let </span><span class="kw-2">mut </span>buf = [<span class="number">0</span>];
+        <span class="self">self</span>.read_exact(<span class="kw-2">&amp;mut </span>buf)<span class="question-mark">?</span>;
+        <span class="comment">// for the possibly signed cases, read them as signed and allow
+        // the conversion to fail if trying to convert a negative value
+        // to an unsigned integer
+        </span><span class="kw">match </span>buf[<span class="number">0</span>] {
+            CODE_INT16 =&gt; {
+                <span class="comment">// positive or negative 16 bit int
+                </span>T::from_i16(<span class="self">self</span>.read_i16::&lt;LittleEndian&gt;()<span class="question-mark">?</span>)
             }
-            <span class="ident">CODE_INT32</span> =&gt; {
-                <span class="comment">// positive or negative 32 bit int</span>
-                <span class="ident">T::from_i32</span>(<span class="self">self</span>.<span class="ident">read_i32</span>::<span class="op">&lt;</span><span class="ident">LittleEndian</span><span class="op">&gt;</span>()<span class="question-mark">?</span>)
+            CODE_INT32 =&gt; {
+                <span class="comment">// positive or negative 32 bit int
+                </span>T::from_i32(<span class="self">self</span>.read_i32::&lt;LittleEndian&gt;()<span class="question-mark">?</span>)
             }
-            <span class="ident">CODE_INT64</span> =&gt; {
-                <span class="comment">// positive or negative 64 bit int</span>
-                <span class="ident">T::from_i64</span>(<span class="self">self</span>.<span class="ident">read_i64</span>::<span class="op">&lt;</span><span class="ident">LittleEndian</span><span class="op">&gt;</span>()<span class="question-mark">?</span>)
+            CODE_INT64 =&gt; {
+                <span class="comment">// positive or negative 64 bit int
+                </span>T::from_i64(<span class="self">self</span>.read_i64::&lt;LittleEndian&gt;()<span class="question-mark">?</span>)
             }
-            <span class="ident">CODE_NEG_INT8</span> =&gt; {
-                <span class="comment">// a negative signed i8</span>
-                <span class="ident">T::from_i8</span>(<span class="self">self</span>.<span class="ident">read_i8</span>()<span class="question-mark">?</span>)
+            CODE_NEG_INT8 =&gt; {
+                <span class="comment">// a negative signed i8
+                </span>T::from_i8(<span class="self">self</span>.read_i8()<span class="question-mark">?</span>)
             }
-            <span class="ident">byte0</span> =&gt; {
-                <span class="comment">// first byte isnt a code so interpret it as a u8</span>
-                <span class="kw">if</span> <span class="ident">byte0</span> <span class="op">&gt;</span> <span class="number">0x000000080</span> {
-                    <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">Error::InvalidIntegerByte</span> { <span class="ident">byte</span>: <span class="ident">byte0</span> });
+            byte0 =&gt; {
+                <span class="comment">// first byte isnt a code so interpret it as a u8
+                </span><span class="kw">if </span>byte0 &gt; <span class="number">0x000000080 </span>{
+                    <span class="kw">return </span><span class="prelude-val">Err</span>(Error::InvalidIntegerByte { byte: byte0 });
                 }
-                <span class="ident">T::from_u8</span>(<span class="ident">byte0</span>)
+                T::from_u8(byte0)
             }
         }
-        .<span class="ident">ok_or</span>(<span class="ident">Error::DestinationIntegerOverflow</span>)
+        .ok_or(Error::DestinationIntegerOverflow)
     }
 
-    <span class="doccomment">/// Read a variable length natural integer</span>
-    <span class="kw">fn</span> <span class="ident">bin_read_nat0</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">FromPrimitive</span> <span class="op">+</span> <span class="ident">Unsigned</span><span class="op">&gt;</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">buf</span> <span class="op">=</span> [<span class="number">0</span>];
-        <span class="self">self</span>.<span class="ident">read_exact</span>(<span class="kw-2">&amp;mut</span> <span class="ident">buf</span>)<span class="question-mark">?</span>;
-        <span class="comment">// In this case it is always reading an unsigned integer</span>
-        <span class="kw">match</span> <span class="ident">buf</span>[<span class="number">0</span>] {
-            <span class="ident">CODE_INT16</span> =&gt; {
-                <span class="comment">// positive or negative 16 bit int</span>
-                <span class="ident">T::from_u16</span>(<span class="self">self</span>.<span class="ident">read_u16</span>::<span class="op">&lt;</span><span class="ident">LittleEndian</span><span class="op">&gt;</span>()<span class="question-mark">?</span>)
+    <span class="doccomment">/// Read a variable length natural integer
+    </span><span class="kw">fn </span>bin_read_nat0&lt;T: FromPrimitive + Unsigned&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;T&gt; {
+        <span class="kw">let </span><span class="kw-2">mut </span>buf = [<span class="number">0</span>];
+        <span class="self">self</span>.read_exact(<span class="kw-2">&amp;mut </span>buf)<span class="question-mark">?</span>;
+        <span class="comment">// In this case it is always reading an unsigned integer
+        </span><span class="kw">match </span>buf[<span class="number">0</span>] {
+            CODE_INT16 =&gt; {
+                <span class="comment">// positive or negative 16 bit int
+                </span>T::from_u16(<span class="self">self</span>.read_u16::&lt;LittleEndian&gt;()<span class="question-mark">?</span>)
             }
-            <span class="ident">CODE_INT32</span> =&gt; {
-                <span class="comment">// positive or negative 32 bit int</span>
-                <span class="ident">T::from_u32</span>(<span class="self">self</span>.<span class="ident">read_u32</span>::<span class="op">&lt;</span><span class="ident">LittleEndian</span><span class="op">&gt;</span>()<span class="question-mark">?</span>)
+            CODE_INT32 =&gt; {
+                <span class="comment">// positive or negative 32 bit int
+                </span>T::from_u32(<span class="self">self</span>.read_u32::&lt;LittleEndian&gt;()<span class="question-mark">?</span>)
             }
-            <span class="ident">CODE_INT64</span> =&gt; {
-                <span class="comment">// positive or negative 64 bit int</span>
-                <span class="ident">T::from_u64</span>(<span class="self">self</span>.<span class="ident">read_u64</span>::<span class="op">&lt;</span><span class="ident">LittleEndian</span><span class="op">&gt;</span>()<span class="question-mark">?</span>)
+            CODE_INT64 =&gt; {
+                <span class="comment">// positive or negative 64 bit int
+                </span>T::from_u64(<span class="self">self</span>.read_u64::&lt;LittleEndian&gt;()<span class="question-mark">?</span>)
             }
-            <span class="ident">byte0</span> =&gt; {
-                <span class="comment">// first byte isnt a code so interpret it as a u8</span>
-                <span class="kw">if</span> <span class="ident">byte0</span> <span class="op">&gt;</span> <span class="number">0x000000080</span> {
-                    <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">Error::InvalidIntegerByte</span> { <span class="ident">byte</span>: <span class="ident">byte0</span> });
+            byte0 =&gt; {
+                <span class="comment">// first byte isnt a code so interpret it as a u8
+                </span><span class="kw">if </span>byte0 &gt; <span class="number">0x000000080 </span>{
+                    <span class="kw">return </span><span class="prelude-val">Err</span>(Error::InvalidIntegerByte { byte: byte0 });
                 }
-                <span class="ident">T::from_u8</span>(<span class="ident">byte0</span>)
+                T::from_u8(byte0)
             }
         }
-        .<span class="ident">ok_or</span>(<span class="ident">Error::DestinationIntegerOverflow</span>)
+        .ok_or(Error::DestinationIntegerOverflow)
     }
 
-    <span class="doccomment">/// Read the index of a variant</span>
-    <span class="kw">fn</span> <span class="ident">bin_read_variant_index</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="ident">read_u8</span>().<span class="ident">map_err</span>(<span class="ident">Error::Io</span>)
+    <span class="doccomment">/// Read the index of a variant
+    </span><span class="kw">fn </span>bin_read_variant_index(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;u8&gt; {
+        <span class="self">self</span>.read_u8().map_err(Error::Io)
     }
 
-    <span class="doccomment">/// Read the tag of a polyvar variant (4 bytes)</span>
-    <span class="doccomment">/// You can convert between ocaml native integer using (x &lt;&lt; 1 | 1)</span>
-    <span class="kw">fn</span> <span class="ident">bin_read_polyvar_tag</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">buf</span> <span class="op">=</span> [<span class="number">0_u8</span>; <span class="number">4</span>];
-        <span class="self">self</span>.<span class="ident">read_exact</span>(<span class="kw-2">&amp;mut</span> <span class="ident">buf</span>)<span class="question-mark">?</span>;
-        <span class="prelude-val">Ok</span>(<span class="ident">u32::from_le_bytes</span>(<span class="ident">buf</span>) <span class="op">&gt;</span><span class="op">&gt;</span> <span class="number">1</span>)
+    <span class="doccomment">/// Read the tag of a polyvar variant (4 bytes)
+    /// You can convert between ocaml native integer using (x &lt;&lt; 1 | 1)
+    </span><span class="kw">fn </span>bin_read_polyvar_tag(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;u32&gt; {
+        <span class="kw">let </span><span class="kw-2">mut </span>buf = [<span class="number">0_u8</span>; <span class="number">4</span>];
+        <span class="self">self</span>.read_exact(<span class="kw-2">&amp;mut </span>buf)<span class="question-mark">?</span>;
+        <span class="prelude-val">Ok</span>(u32::from_le_bytes(buf) &gt;&gt; <span class="number">1</span>)
     }
 
-    <span class="doccomment">/// Read a string</span>
-    <span class="kw">fn</span> <span class="ident">bin_read_string</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">len</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">bin_read_nat0</span>::<span class="op">&lt;</span><span class="ident">u64</span><span class="op">&gt;</span>()<span class="question-mark">?</span> <span class="kw">as</span> <span class="ident">usize</span>;
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">buf</span> <span class="op">=</span> <span class="macro">vec!</span>[<span class="number">0u8</span>; <span class="ident">len</span> <span class="kw">as</span> <span class="ident">usize</span>];
-        <span class="self">self</span>.<span class="ident">read_exact</span>(<span class="kw-2">&amp;mut</span> <span class="ident">buf</span>)<span class="question-mark">?</span>;
-        <span class="kw">let</span> <span class="ident">s</span> <span class="op">=</span> <span class="ident">std::str::from_utf8</span>(<span class="kw-2">&amp;</span><span class="ident">buf</span>)
-            .<span class="ident">map_err</span>(<span class="op">|</span><span class="ident">e</span><span class="op">|</span> <span class="ident">io::Error::new</span>(<span class="ident">io::ErrorKind::InvalidInput</span>, <span class="ident">e</span>))<span class="question-mark">?</span>;
-        <span class="prelude-val">Ok</span>(<span class="ident">s</span>.<span class="ident">to_string</span>())
+    <span class="doccomment">/// Read a string
+    </span><span class="kw">fn </span>bin_read_string(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;String&gt; {
+        <span class="kw">let </span>len = <span class="self">self</span>.bin_read_nat0::&lt;u64&gt;()<span class="question-mark">? </span><span class="kw">as </span>usize;
+        <span class="kw">let </span><span class="kw-2">mut </span>buf = <span class="macro">vec!</span>[<span class="number">0u8</span>; len <span class="kw">as </span>usize];
+        <span class="self">self</span>.read_exact(<span class="kw-2">&amp;mut </span>buf)<span class="question-mark">?</span>;
+        <span class="kw">let </span>s = std::str::from_utf8(<span class="kw-2">&amp;</span>buf)
+            .map_err(|e| io::Error::new(io::ErrorKind::InvalidInput, e))<span class="question-mark">?</span>;
+        <span class="prelude-val">Ok</span>(s.to_string())
     }
 
-    <span class="doccomment">/// read some bytes</span>
-    <span class="kw">fn</span> <span class="ident">bin_read_bytes</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">len</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">bin_read_nat0</span>::<span class="op">&lt;</span><span class="ident">u64</span><span class="op">&gt;</span>()<span class="question-mark">?</span> <span class="kw">as</span> <span class="ident">usize</span>;
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">buf</span> <span class="op">=</span> <span class="macro">vec!</span>[<span class="number">0u8</span>; <span class="ident">len</span> <span class="kw">as</span> <span class="ident">usize</span>];
-        <span class="self">self</span>.<span class="ident">read_exact</span>(<span class="kw-2">&amp;mut</span> <span class="ident">buf</span>)<span class="question-mark">?</span>;
-        <span class="prelude-val">Ok</span>(<span class="ident">buf</span>)
+    <span class="doccomment">/// read some bytes
+    </span><span class="kw">fn </span>bin_read_bytes(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;Vec&lt;u8&gt;&gt; {
+        <span class="kw">let </span>len = <span class="self">self</span>.bin_read_nat0::&lt;u64&gt;()<span class="question-mark">? </span><span class="kw">as </span>usize;
+        <span class="kw">let </span><span class="kw-2">mut </span>buf = <span class="macro">vec!</span>[<span class="number">0u8</span>; len <span class="kw">as </span>usize];
+        <span class="self">self</span>.read_exact(<span class="kw-2">&amp;mut </span>buf)<span class="question-mark">?</span>;
+        <span class="prelude-val">Ok</span>(buf)
     }
 }
 
-<span class="doccomment">/// All types that implement `Read` get methods defined in `ReadBinProtIntegerExt`</span>
-<span class="doccomment">/// for free.</span>
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">W</span>: <span class="ident">io::Read</span> <span class="op">+</span> <span class="question-mark">?</span><span class="ident">Sized</span><span class="op">&gt;</span> <span class="ident">ReadBinProtExt</span> <span class="kw">for</span> <span class="ident">W</span> {}
+<span class="doccomment">/// All types that implement `Read` get methods defined in `ReadBinProtIntegerExt`
+/// for free.
+</span><span class="kw">impl</span>&lt;W: io::Read + <span class="question-mark">?</span>Sized&gt; ReadBinProtExt <span class="kw">for </span>W {}
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="bin_prot" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (fe3342816 2022-08-01)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="bin_prot" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (40336865f 2022-08-15)" ></div></body></html>

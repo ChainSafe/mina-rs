@@ -43,50 +43,50 @@
 <span id="43">43</span>
 <span id="44">44</span>
 <span id="45">45</span>
-</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems</span>
-<span class="comment">// SPDX-License-Identifier: Apache-2.0</span>
+</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems
+// SPDX-License-Identifier: Apache-2.0
 
-<span class="doccomment">//!</span>
-<span class="doccomment">//! All human readable values (e.g base58 encoded hashes and addresses)</span>
-<span class="doccomment">//! implement the Base58Checked encoding &lt;https://en.bitcoin.it/wiki/Base58Check_encoding&gt;</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! This adds a unique prefix byte to each type of encoding so they cannot be confused</span>
-<span class="doccomment">//! (e.g. a hash cannot be used as an address). It also adds checksum bytes to the end.</span>
-<span class="doccomment">//!</span>
+</span><span class="doccomment">//!
+//! All human readable values (e.g base58 encoded hashes and addresses)
+//! implement the Base58Checked encoding &lt;https://en.bitcoin.it/wiki/Base58Check_encoding&gt;
+//!
+//! This adds a unique prefix byte to each type of encoding so they cannot be confused
+//! (e.g. a hash cannot be used as an address). It also adds checksum bytes to the end.
+//!
 
-<span class="comment">// TODO: Move the entire version_bytes.rs under crypto crate here</span>
+</span><span class="comment">// TODO: Move the entire version_bytes.rs under crypto crate here
 
-<span class="doccomment">/// base58 version check byte for ledger hash</span>
-<span class="kw">pub</span> <span class="kw">const</span> <span class="ident">LEDGER_HASH</span>: <span class="ident">u8</span> <span class="op">=</span> <span class="number">0x05</span>;
+</span><span class="doccomment">/// base58 version check byte for ledger hash
+</span><span class="kw">pub const </span>LEDGER_HASH: u8 = <span class="number">0x05</span>;
 
-<span class="doccomment">/// base58 version check byte for coinbase hash</span>
-<span class="kw">pub</span> <span class="kw">const</span> <span class="ident">COINBASE_HASH</span>: <span class="ident">u8</span> <span class="op">=</span> <span class="number">0x0c</span>;
+<span class="doccomment">/// base58 version check byte for coinbase hash
+</span><span class="kw">pub const </span>COINBASE_HASH: u8 = <span class="number">0x0c</span>;
 
-<span class="doccomment">/// base58 version check byte for epoch seed hash</span>
-<span class="kw">pub</span> <span class="kw">const</span> <span class="ident">EPOCH_SEED</span>: <span class="ident">u8</span> <span class="op">=</span> <span class="number">0x0d</span>;
+<span class="doccomment">/// base58 version check byte for epoch seed hash
+</span><span class="kw">pub const </span>EPOCH_SEED: u8 = <span class="number">0x0d</span>;
 
-<span class="doccomment">/// base58 version check byte for state hash</span>
-<span class="kw">pub</span> <span class="kw">const</span> <span class="ident">STATE_HASH</span>: <span class="ident">u8</span> <span class="op">=</span> <span class="number">0x10</span>;
+<span class="doccomment">/// base58 version check byte for state hash
+</span><span class="kw">pub const </span>STATE_HASH: u8 = <span class="number">0x10</span>;
 
-<span class="doccomment">/// base58 version check byte for vrf output hash</span>
-<span class="kw">pub</span> <span class="kw">const</span> <span class="ident">VRF_TRUNCATED_OUTPUT</span>: <span class="ident">u8</span> <span class="op">=</span> <span class="number">0x15</span>;
+<span class="doccomment">/// base58 version check byte for vrf output hash
+</span><span class="kw">pub const </span>VRF_TRUNCATED_OUTPUT: u8 = <span class="number">0x15</span>;
 
-<span class="doccomment">/// base58 version check byte for aux hash</span>
-<span class="kw">pub</span> <span class="kw">const</span> <span class="ident">STAGED_LEDGER_HASH_AUX_HASH</span>: <span class="ident">u8</span> <span class="op">=</span> <span class="number">0x0e</span>;
+<span class="doccomment">/// base58 version check byte for aux hash
+</span><span class="kw">pub const </span>STAGED_LEDGER_HASH_AUX_HASH: u8 = <span class="number">0x0e</span>;
 
-<span class="doccomment">/// base58 version check byte for pending coinbase aux hash</span>
-<span class="kw">pub</span> <span class="kw">const</span> <span class="ident">STAGED_LEDGER_HASH_PENDING_COINBASE_AUX</span>: <span class="ident">u8</span> <span class="op">=</span> <span class="number">0x0f</span>;
+<span class="doccomment">/// base58 version check byte for pending coinbase aux hash
+</span><span class="kw">pub const </span>STAGED_LEDGER_HASH_PENDING_COINBASE_AUX: u8 = <span class="number">0x0f</span>;
 
-<span class="doccomment">/// base58 version check byte for user command memo</span>
-<span class="kw">pub</span> <span class="kw">const</span> <span class="ident">USER_COMMAND_MEMO</span>: <span class="ident">u8</span> <span class="op">=</span> <span class="number">0x14</span>;
+<span class="doccomment">/// base58 version check byte for user command memo
+</span><span class="kw">pub const </span>USER_COMMAND_MEMO: u8 = <span class="number">0x14</span>;
 
-<span class="doccomment">/// base58 version check byte for signature</span>
-<span class="kw">pub</span> <span class="kw">const</span> <span class="ident">SIGNATURE</span>: <span class="ident">u8</span> <span class="op">=</span> <span class="number">0x9a</span>;
+<span class="doccomment">/// base58 version check byte for signature
+</span><span class="kw">pub const </span>SIGNATURE: u8 = <span class="number">0x9a</span>;
 
-<span class="doccomment">/// base58 version check byte for coinbase stack data</span>
-<span class="kw">pub</span> <span class="kw">const</span> <span class="ident">COINBASE_STACK_DATA</span>: <span class="ident">u8</span> <span class="op">=</span> <span class="number">0x17</span>;
+<span class="doccomment">/// base58 version check byte for coinbase stack data
+</span><span class="kw">pub const </span>COINBASE_STACK_DATA: u8 = <span class="number">0x17</span>;
 
-<span class="doccomment">/// base58 version check byte for coinbase stack hash</span>
-<span class="kw">pub</span> <span class="kw">const</span> <span class="ident">COINBASE_STACK_HASH</span>: <span class="ident">u8</span> <span class="op">=</span> <span class="number">0x18</span>;
+<span class="doccomment">/// base58 version check byte for coinbase stack hash
+</span><span class="kw">pub const </span>COINBASE_STACK_HASH: u8 = <span class="number">0x18</span>;
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_serialization_types" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (fe3342816 2022-08-01)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_serialization_types" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (40336865f 2022-08-15)" ></div></body></html>

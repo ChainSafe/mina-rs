@@ -458,465 +458,469 @@
 <span id="458">458</span>
 <span id="459">459</span>
 <span id="460">460</span>
-</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems</span>
-<span class="comment">// SPDX-License-Identifier: Apache-2.0</span>
+<span id="461">461</span>
+<span id="462">462</span>
+</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems
+// SPDX-License-Identifier: Apache-2.0
 
-<span class="doccomment">//! Some basic versioned types used throughout</span>
+</span><span class="doccomment">//! Some basic versioned types used throughout
 
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::version_bytes</span>;
-<span class="kw">use</span> <span class="ident">bs58::encode::EncodeBuilder</span>;
-<span class="kw">use</span> <span class="ident">derive_more</span>::{<span class="ident">From</span>, <span class="ident">Into</span>};
-<span class="kw">use</span> <span class="ident">mina_serialization_types_macros::AutoFrom</span>;
-<span class="kw">use</span> <span class="ident">num::Integer</span>;
-<span class="kw">use</span> <span class="ident">serde</span>::{<span class="ident">Deserialize</span>, <span class="ident">Deserializer</span>, <span class="ident">Serialize</span>, <span class="ident">Serializer</span>};
-<span class="kw">use</span> <span class="ident">versioned</span>::<span class="kw-2">*</span>;
+</span><span class="kw">use </span><span class="kw">crate</span>::version_bytes;
+<span class="kw">use </span>bs58::encode::EncodeBuilder;
+<span class="kw">use </span>derive_more::{From, Into};
+<span class="kw">use </span>mina_serialization_types_macros::AutoFrom;
+<span class="kw">use </span>num::Integer;
+<span class="kw">use </span>serde::{Deserialize, Deserializer, Serialize, Serializer};
+<span class="kw">use </span>versioned::<span class="kw-2">*</span>;
 
-<span class="doccomment">/// 32 bytes representing a hash of some kind (v1)</span>
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">HashV1</span> <span class="op">=</span> <span class="ident">Versioned</span><span class="op">&lt;</span>[<span class="ident">u8</span>; <span class="number">32</span>], <span class="number">1</span><span class="op">&gt;</span>;
+<span class="doccomment">/// 32 bytes representing a hash of some kind (v1)
+</span><span class="kw">pub type </span>HashV1 = Versioned&lt;[u8; <span class="number">32</span>], <span class="number">1</span>&gt;;
 
-<span class="doccomment">/// 32 bytes representing a hash of some kind (v1) with extra version byte</span>
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">Hash2V1</span> <span class="op">=</span> <span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">HashV1</span>, <span class="number">1</span><span class="op">&gt;</span>;
+<span class="doccomment">/// 32 bytes representing a hash of some kind (v1) with extra version byte
+</span><span class="kw">pub type </span>Hash2V1 = Versioned&lt;HashV1, <span class="number">1</span>&gt;;
 
-<span class="doccomment">/// u64 representing a token ID (v1)</span>
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">TokenIdV1</span> <span class="op">=</span> <span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">u64</span>, <span class="number">1</span><span class="op">&gt;</span>, <span class="number">1</span><span class="op">&gt;</span>, <span class="number">1</span><span class="op">&gt;</span>;
-<span class="macro">impl_from_for_newtype!</span>(<span class="ident">U64Json</span>, <span class="ident">TokenIdV1</span>);
+<span class="doccomment">/// u64 representing a token ID (v1)
+</span><span class="kw">pub type </span>TokenIdV1 = Versioned&lt;Versioned&lt;Versioned&lt;u64, <span class="number">1</span>&gt;, <span class="number">1</span>&gt;, <span class="number">1</span>&gt;;
+<span class="macro">impl_from_for_newtype!</span>(U64Json, TokenIdV1);
 
-<span class="doccomment">/// u64 representing a block time (v1)</span>
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">BlockTimeV1</span> <span class="op">=</span> <span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">u64</span>, <span class="number">1</span><span class="op">&gt;</span>, <span class="number">1</span><span class="op">&gt;</span>;
+<span class="doccomment">/// u64 representing a block time (v1)
+</span><span class="kw">pub type </span>BlockTimeV1 = Versioned&lt;Versioned&lt;u64, <span class="number">1</span>&gt;, <span class="number">1</span>&gt;;
 
-<span class="doccomment">/// u64 representing an account nonce (v1) // This should also be an extendedu32</span>
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">AccountNonceV1</span> <span class="op">=</span> <span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">u32</span>, <span class="number">1</span><span class="op">&gt;</span>, <span class="number">1</span><span class="op">&gt;</span>;
+<span class="doccomment">/// u64 representing an account nonce (v1) // This should also be an extendedu32
+</span><span class="kw">pub type </span>AccountNonceV1 = Versioned&lt;Versioned&lt;u32, <span class="number">1</span>&gt;, <span class="number">1</span>&gt;;
 
-<span class="doccomment">/// u32 wrapper (json)</span>
-<span class="doccomment">/// Note that integers are represented as string in mina json</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">PartialEq</span>, <span class="ident">derive_more::From</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">U32Json</span>(<span class="kw">pub</span> <span class="ident">u32</span>);
+<span class="doccomment">/// u32 wrapper (json)
+/// Note that integers are represented as string in mina json
+</span><span class="attribute">#[derive(Clone, Debug, Eq, PartialEq, derive_more::From)]</span>
+<span class="kw">pub struct </span>U32Json(<span class="kw">pub </span>u32);
 
-<span class="kw">impl</span> <span class="ident">Serialize</span> <span class="kw">for</span> <span class="ident">U32Json</span> {
-    <span class="kw">fn</span> <span class="ident">serialize</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">serializer</span>: <span class="ident">S</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">S::Ok</span>, <span class="ident">S::Error</span><span class="op">&gt;</span>
-    <span class="kw">where</span>
-        <span class="ident">S</span>: <span class="ident">Serializer</span>,
+<span class="kw">impl </span>Serialize <span class="kw">for </span>U32Json {
+    <span class="kw">fn </span>serialize&lt;S&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, serializer: S) -&gt; <span class="prelude-ty">Result</span>&lt;S::Ok, S::Error&gt;
+    <span class="kw">where
+        </span>S: Serializer,
     {
-        <span class="kw">let</span> <span class="ident">s</span> <span class="op">=</span> <span class="macro">format!</span>(<span class="string">&quot;{}&quot;</span>, <span class="self">self</span>.<span class="number">0</span>);
-        <span class="ident">serializer</span>.<span class="ident">serialize_str</span>(<span class="kw-2">&amp;</span><span class="ident">s</span>)
+        <span class="kw">let </span>s = <span class="macro">format!</span>(<span class="string">&quot;{}&quot;</span>, <span class="self">self</span>.<span class="number">0</span>);
+        serializer.serialize_str(<span class="kw-2">&amp;</span>s)
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;de</span><span class="op">&gt;</span> <span class="ident">Deserialize</span><span class="op">&lt;</span><span class="lifetime">&#39;de</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">U32Json</span> {
-    <span class="kw">fn</span> <span class="ident">deserialize</span><span class="op">&lt;</span><span class="ident">D</span><span class="op">&gt;</span>(<span class="ident">deserializer</span>: <span class="ident">D</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span>, <span class="ident">D::Error</span><span class="op">&gt;</span>
-    <span class="kw">where</span>
-        <span class="ident">D</span>: <span class="ident">Deserializer</span><span class="op">&lt;</span><span class="lifetime">&#39;de</span><span class="op">&gt;</span>,
+<span class="kw">impl</span>&lt;<span class="lifetime">&#39;de</span>&gt; Deserialize&lt;<span class="lifetime">&#39;de</span>&gt; <span class="kw">for </span>U32Json {
+    <span class="kw">fn </span>deserialize&lt;D&gt;(deserializer: D) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>, D::Error&gt;
+    <span class="kw">where
+        </span>D: Deserializer&lt;<span class="lifetime">&#39;de</span>&gt;,
     {
-        <span class="kw">let</span> <span class="ident">s</span> <span class="op">=</span> <span class="ident">String::deserialize</span>(<span class="ident">deserializer</span>)<span class="question-mark">?</span>;
+        <span class="kw">let </span>s = String::deserialize(deserializer)<span class="question-mark">?</span>;
 
         <span class="prelude-val">Ok</span>(<span class="self">Self</span>(
-            <span class="ident">s</span>.<span class="ident">parse</span>().<span class="ident">map_err</span>(<span class="op">&lt;</span><span class="ident">D::Error</span> <span class="kw">as</span> <span class="ident">serde::de::Error</span><span class="op">&gt;</span><span class="ident">::custom</span>)<span class="question-mark">?</span>,
+            s.parse().map_err(&lt;D::Error <span class="kw">as </span>serde::de::Error&gt;::custom)<span class="question-mark">?</span>,
         ))
     }
 }
 
-<span class="doccomment">/// u64 wrapper (json)</span>
-<span class="doccomment">/// Note that integers are represented as string in mina json</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">PartialEq</span>, <span class="ident">derive_more::From</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">U64Json</span>(<span class="kw">pub</span> <span class="ident">u64</span>);
+<span class="doccomment">/// u64 wrapper (json)
+/// Note that integers are represented as string in mina json
+</span><span class="attribute">#[derive(Clone, Debug, Eq, PartialEq, derive_more::From)]</span>
+<span class="kw">pub struct </span>U64Json(<span class="kw">pub </span>u64);
 
-<span class="kw">impl</span> <span class="ident">Serialize</span> <span class="kw">for</span> <span class="ident">U64Json</span> {
-    <span class="kw">fn</span> <span class="ident">serialize</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">serializer</span>: <span class="ident">S</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">S::Ok</span>, <span class="ident">S::Error</span><span class="op">&gt;</span>
-    <span class="kw">where</span>
-        <span class="ident">S</span>: <span class="ident">Serializer</span>,
+<span class="kw">impl </span>Serialize <span class="kw">for </span>U64Json {
+    <span class="kw">fn </span>serialize&lt;S&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, serializer: S) -&gt; <span class="prelude-ty">Result</span>&lt;S::Ok, S::Error&gt;
+    <span class="kw">where
+        </span>S: Serializer,
     {
-        <span class="kw">let</span> <span class="ident">s</span> <span class="op">=</span> <span class="macro">format!</span>(<span class="string">&quot;{}&quot;</span>, <span class="self">self</span>.<span class="number">0</span>);
-        <span class="ident">serializer</span>.<span class="ident">serialize_str</span>(<span class="kw-2">&amp;</span><span class="ident">s</span>)
+        <span class="kw">let </span>s = <span class="macro">format!</span>(<span class="string">&quot;{}&quot;</span>, <span class="self">self</span>.<span class="number">0</span>);
+        serializer.serialize_str(<span class="kw-2">&amp;</span>s)
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;de</span><span class="op">&gt;</span> <span class="ident">Deserialize</span><span class="op">&lt;</span><span class="lifetime">&#39;de</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">U64Json</span> {
-    <span class="kw">fn</span> <span class="ident">deserialize</span><span class="op">&lt;</span><span class="ident">D</span><span class="op">&gt;</span>(<span class="ident">deserializer</span>: <span class="ident">D</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span>, <span class="ident">D::Error</span><span class="op">&gt;</span>
-    <span class="kw">where</span>
-        <span class="ident">D</span>: <span class="ident">Deserializer</span><span class="op">&lt;</span><span class="lifetime">&#39;de</span><span class="op">&gt;</span>,
+<span class="kw">impl</span>&lt;<span class="lifetime">&#39;de</span>&gt; Deserialize&lt;<span class="lifetime">&#39;de</span>&gt; <span class="kw">for </span>U64Json {
+    <span class="kw">fn </span>deserialize&lt;D&gt;(deserializer: D) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>, D::Error&gt;
+    <span class="kw">where
+        </span>D: Deserializer&lt;<span class="lifetime">&#39;de</span>&gt;,
     {
-        <span class="kw">let</span> <span class="ident">s</span> <span class="op">=</span> <span class="ident">String::deserialize</span>(<span class="ident">deserializer</span>)<span class="question-mark">?</span>;
+        <span class="kw">let </span>s = String::deserialize(deserializer)<span class="question-mark">?</span>;
 
         <span class="prelude-val">Ok</span>(<span class="self">Self</span>(
-            <span class="ident">s</span>.<span class="ident">parse</span>().<span class="ident">map_err</span>(<span class="op">&lt;</span><span class="ident">D::Error</span> <span class="kw">as</span> <span class="ident">serde::de::Error</span><span class="op">&gt;</span><span class="ident">::custom</span>)<span class="question-mark">?</span>,
+            s.parse().map_err(&lt;D::Error <span class="kw">as </span>serde::de::Error&gt;::custom)<span class="question-mark">?</span>,
         ))
     }
 }
 
-<span class="doccomment">/// i64 wrapper (json)</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">PartialEq</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">derive_more::From</span>, <span class="ident">derive_more::Into</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">I64</span>(<span class="kw">pub</span> <span class="ident">i64</span>);
+<span class="doccomment">/// i64 wrapper (json)
+</span><span class="attribute">#[derive(
+    Clone, Debug, Eq, PartialEq, Serialize, Deserialize, derive_more::From, derive_more::Into,
+)]</span>
+<span class="kw">pub struct </span>I64(<span class="kw">pub </span>i64);
 
-<span class="doccomment">/// u64 wrapper (json)</span>
-<span class="doccomment">/// Note that integers are represented as string in mina json</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">PartialEq</span>, <span class="ident">derive_more::From</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">DecimalJson</span>(<span class="kw">pub</span> <span class="ident">u64</span>);
+<span class="doccomment">/// u64 wrapper (json)
+/// Note that integers are represented as string in mina json
+</span><span class="attribute">#[derive(Clone, Debug, Eq, PartialEq, derive_more::From)]</span>
+<span class="kw">pub struct </span>DecimalJson(<span class="kw">pub </span>u64);
 
-<span class="kw">const</span> <span class="ident">MINA_PRECISION</span>: <span class="ident">u64</span> <span class="op">=</span> <span class="number">1000000000</span>;
-<span class="kw">impl</span> <span class="ident">Serialize</span> <span class="kw">for</span> <span class="ident">DecimalJson</span> {
-    <span class="kw">fn</span> <span class="ident">serialize</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">serializer</span>: <span class="ident">S</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">S::Ok</span>, <span class="ident">S::Error</span><span class="op">&gt;</span>
-    <span class="kw">where</span>
-        <span class="ident">S</span>: <span class="ident">Serializer</span>,
+<span class="kw">const </span>MINA_PRECISION: u64 = <span class="number">1000000000</span>;
+<span class="kw">impl </span>Serialize <span class="kw">for </span>DecimalJson {
+    <span class="kw">fn </span>serialize&lt;S&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, serializer: S) -&gt; <span class="prelude-ty">Result</span>&lt;S::Ok, S::Error&gt;
+    <span class="kw">where
+        </span>S: Serializer,
     {
-        <span class="kw">let</span> (<span class="ident">q</span>, <span class="ident">r</span>) <span class="op">=</span> <span class="self">self</span>.<span class="number">0</span>.<span class="ident">div_rem</span>(<span class="kw-2">&amp;</span><span class="ident">MINA_PRECISION</span>);
-        <span class="kw">let</span> <span class="ident">s</span> <span class="op">=</span> <span class="macro">format!</span>(<span class="string">&quot;{q}.{:0&gt;9}&quot;</span>, <span class="ident">r</span>);
-        <span class="ident">serializer</span>.<span class="ident">serialize_str</span>(<span class="ident">s</span>.<span class="ident">trim_end_matches</span>(<span class="string">&#39;0&#39;</span>).<span class="ident">trim_end_matches</span>(<span class="string">&#39;.&#39;</span>))
+        <span class="kw">let </span>(q, r) = <span class="self">self</span>.<span class="number">0</span>.div_rem(<span class="kw-2">&amp;</span>MINA_PRECISION);
+        <span class="kw">let </span>s = <span class="macro">format!</span>(<span class="string">&quot;{q}.{:0&gt;9}&quot;</span>, r);
+        serializer.serialize_str(s.trim_end_matches(<span class="string">&#39;0&#39;</span>).trim_end_matches(<span class="string">&#39;.&#39;</span>))
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;de</span><span class="op">&gt;</span> <span class="ident">Deserialize</span><span class="op">&lt;</span><span class="lifetime">&#39;de</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">DecimalJson</span> {
-    <span class="kw">fn</span> <span class="ident">deserialize</span><span class="op">&lt;</span><span class="ident">D</span><span class="op">&gt;</span>(<span class="ident">deserializer</span>: <span class="ident">D</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span>, <span class="ident">D::Error</span><span class="op">&gt;</span>
-    <span class="kw">where</span>
-        <span class="ident">D</span>: <span class="ident">Deserializer</span><span class="op">&lt;</span><span class="lifetime">&#39;de</span><span class="op">&gt;</span>,
+<span class="kw">impl</span>&lt;<span class="lifetime">&#39;de</span>&gt; Deserialize&lt;<span class="lifetime">&#39;de</span>&gt; <span class="kw">for </span>DecimalJson {
+    <span class="kw">fn </span>deserialize&lt;D&gt;(deserializer: D) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>, D::Error&gt;
+    <span class="kw">where
+        </span>D: Deserializer&lt;<span class="lifetime">&#39;de</span>&gt;,
     {
-        <span class="kw">let</span> <span class="ident">s</span> <span class="op">=</span> <span class="ident">String::deserialize</span>(<span class="ident">deserializer</span>)<span class="question-mark">?</span>;
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">iter</span> <span class="op">=</span> <span class="ident">s</span>.<span class="ident">split</span>(<span class="string">&#39;.&#39;</span>);
-        <span class="kw">let</span> <span class="ident">q</span>: <span class="ident">u64</span> <span class="op">=</span> <span class="ident">iter</span>
-            .<span class="ident">next</span>()
-            .<span class="ident">ok_or_else</span>(<span class="op">|</span><span class="op">|</span> <span class="op">&lt;</span><span class="ident">D::Error</span> <span class="kw">as</span> <span class="ident">serde::de::Error</span><span class="op">&gt;</span><span class="ident">::custom</span>(<span class="macro">format!</span>(<span class="string">&quot;Invalid string: {s}&quot;</span>)))<span class="question-mark">?</span>
-            .<span class="ident">parse</span>()
-            .<span class="ident">map_err</span>(<span class="op">&lt;</span><span class="ident">D::Error</span> <span class="kw">as</span> <span class="ident">serde::de::Error</span><span class="op">&gt;</span><span class="ident">::custom</span>)<span class="question-mark">?</span>;
-        <span class="kw">let</span> <span class="ident">r_str</span> <span class="op">=</span> <span class="ident">iter</span>.<span class="ident">next</span>().<span class="ident">unwrap_or</span>(<span class="string">&quot;0&quot;</span>);
-        <span class="kw">let</span> <span class="ident">r</span>: <span class="ident">u64</span> <span class="op">=</span> <span class="macro">format!</span>(<span class="string">&quot;{:0&lt;9}&quot;</span>, <span class="ident">r_str</span>)
-            .<span class="ident">parse</span>()
-            .<span class="ident">map_err</span>(<span class="op">&lt;</span><span class="ident">D::Error</span> <span class="kw">as</span> <span class="ident">serde::de::Error</span><span class="op">&gt;</span><span class="ident">::custom</span>)<span class="question-mark">?</span>;
-        <span class="kw">if</span> <span class="ident">iter</span>.<span class="ident">next</span>().<span class="ident">is_none</span>() {
-            <span class="comment">// ensure there isn&#39;t more to parse as that is undefined</span>
-            <span class="prelude-val">Ok</span>(<span class="self">Self</span>(<span class="ident">r</span> <span class="op">+</span> <span class="ident">MINA_PRECISION</span> <span class="op">*</span> <span class="ident">q</span>))
-        } <span class="kw">else</span> {
-            <span class="prelude-val">Err</span>(<span class="op">&lt;</span><span class="ident">D::Error</span> <span class="kw">as</span> <span class="ident">serde::de::Error</span><span class="op">&gt;</span><span class="ident">::custom</span>(<span class="macro">format!</span>(
-                <span class="string">&quot;Invalid string: {s}&quot;</span>
-            )))
+        <span class="kw">let </span>s = String::deserialize(deserializer)<span class="question-mark">?</span>;
+        <span class="kw">let </span><span class="kw-2">mut </span>iter = s.split(<span class="string">&#39;.&#39;</span>);
+        <span class="kw">let </span>q: u64 = iter
+            .next()
+            .ok_or_else(|| &lt;D::Error <span class="kw">as </span>serde::de::Error&gt;::custom(<span class="macro">format!</span>(<span class="string">&quot;Invalid string: {s}&quot;</span>)))<span class="question-mark">?
+            </span>.parse()
+            .map_err(&lt;D::Error <span class="kw">as </span>serde::de::Error&gt;::custom)<span class="question-mark">?</span>;
+        <span class="kw">let </span>r_str = iter.next().unwrap_or(<span class="string">&quot;0&quot;</span>);
+        <span class="kw">let </span>r: u64 = <span class="macro">format!</span>(<span class="string">&quot;{:0&lt;9}&quot;</span>, r_str)
+            .parse()
+            .map_err(&lt;D::Error <span class="kw">as </span>serde::de::Error&gt;::custom)<span class="question-mark">?</span>;
+        <span class="kw">if </span>iter.next().is_none() {
+            <span class="comment">// ensure there isn&#39;t more to parse as that is undefined
+            </span><span class="prelude-val">Ok</span>(<span class="self">Self</span>(r + MINA_PRECISION * q))
+        } <span class="kw">else </span>{
+            <span class="prelude-val">Err</span>(&lt;D::Error <span class="kw">as </span>serde::de::Error&gt;::custom(<span class="macro">format!</span>(
+                <span class="string">&quot;Invalid string: {s}&quot;
+            </span>)))
         }
     }
 }
 
-<span class="doccomment">/// u32 representing a length (v1)</span>
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">LengthV1</span> <span class="op">=</span> <span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">u32</span>, <span class="number">1</span><span class="op">&gt;</span>, <span class="number">1</span><span class="op">&gt;</span>;
-<span class="macro">impl_from_for_newtype!</span>(<span class="ident">U32Json</span>, <span class="ident">LengthV1</span>);
+<span class="doccomment">/// u32 representing a length (v1)
+</span><span class="kw">pub type </span>LengthV1 = Versioned&lt;Versioned&lt;u32, <span class="number">1</span>&gt;, <span class="number">1</span>&gt;;
+<span class="macro">impl_from_for_newtype!</span>(U32Json, LengthV1);
 
-<span class="doccomment">/// u32 representing a delta (i.e. difference) (v1)</span>
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">DeltaV1</span> <span class="op">=</span> <span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">u32</span>, <span class="number">1</span><span class="op">&gt;</span>, <span class="number">1</span><span class="op">&gt;</span>;
+<span class="doccomment">/// u32 representing a delta (i.e. difference) (v1)
+</span><span class="kw">pub type </span>DeltaV1 = Versioned&lt;Versioned&lt;u32, <span class="number">1</span>&gt;, <span class="number">1</span>&gt;;
 
-<span class="doccomment">/// u32 representing a slot number (v1)</span>
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">GlobalSlotNumberV1</span> <span class="op">=</span> <span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">u32</span>, <span class="number">1</span><span class="op">&gt;</span>, <span class="number">1</span><span class="op">&gt;</span>;
+<span class="doccomment">/// u32 representing a slot number (v1)
+</span><span class="kw">pub type </span>GlobalSlotNumberV1 = Versioned&lt;Versioned&lt;u32, <span class="number">1</span>&gt;, <span class="number">1</span>&gt;;
 
-<span class="doccomment">/// u64 representing an amount of currency (v1)</span>
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">AmountV1</span> <span class="op">=</span> <span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">u64</span>, <span class="number">1</span><span class="op">&gt;</span>, <span class="number">1</span><span class="op">&gt;</span>;
-<span class="macro">impl_from_for_newtype!</span>(<span class="ident">U64Json</span>, <span class="ident">AmountV1</span>);
-<span class="macro">impl_from_for_newtype!</span>(<span class="ident">DecimalJson</span>, <span class="ident">AmountV1</span>);
+<span class="doccomment">/// u64 representing an amount of currency (v1)
+</span><span class="kw">pub type </span>AmountV1 = Versioned&lt;Versioned&lt;u64, <span class="number">1</span>&gt;, <span class="number">1</span>&gt;;
+<span class="macro">impl_from_for_newtype!</span>(U64Json, AmountV1);
+<span class="macro">impl_from_for_newtype!</span>(DecimalJson, AmountV1);
 
-<span class="comment">// FIXME: 255 255 cannot be deserialized to u32, use i32 for now</span>
-<span class="comment">// Note: Extended_Uint32 is not defined in bin_prot, but comes from mina</span>
-<span class="comment">// Block path: t/staged_ledger_diff/t/diff/t/0/t/t/commands/0/t/data/t/t/t/t/payload/t/t/common/t/t/t/valid_until</span>
-<span class="doccomment">/// u32 wrapped in 1 version byte</span>
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">ExtendedU32</span> <span class="op">=</span> <span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">i32</span>, <span class="number">1</span><span class="op">&gt;</span>, <span class="number">1</span><span class="op">&gt;</span>;
-<span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">U32Json</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ExtendedU32</span> {
-    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">t</span>: <span class="ident">U32Json</span>) -&gt; <span class="self">Self</span> {
-        (<span class="ident">t</span>.<span class="number">0</span> <span class="kw">as</span> <span class="ident">i32</span>).<span class="ident">into</span>()
+<span class="comment">// FIXME: 255 255 cannot be deserialized to u32, use i32 for now
+// Note: Extended_Uint32 is not defined in bin_prot, but comes from mina
+// Block path: t/staged_ledger_diff/t/diff/t/0/t/t/commands/0/t/data/t/t/t/t/payload/t/t/common/t/t/t/valid_until
+</span><span class="doccomment">/// u32 wrapped in 1 version byte
+</span><span class="kw">pub type </span>ExtendedU32 = Versioned&lt;Versioned&lt;i32, <span class="number">1</span>&gt;, <span class="number">1</span>&gt;;
+<span class="kw">impl </span>From&lt;U32Json&gt; <span class="kw">for </span>ExtendedU32 {
+    <span class="kw">fn </span>from(t: U32Json) -&gt; <span class="self">Self </span>{
+        (t.<span class="number">0 </span><span class="kw">as </span>i32).into()
     }
 }
 
-<span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">ExtendedU32</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">U32Json</span> {
-    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">t</span>: <span class="ident">ExtendedU32</span>) -&gt; <span class="self">Self</span> {
-        <span class="self">Self</span>(<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">t</span> <span class="kw">as</span> <span class="ident">u32</span>)
+<span class="kw">impl </span>From&lt;ExtendedU32&gt; <span class="kw">for </span>U32Json {
+    <span class="kw">fn </span>from(t: ExtendedU32) -&gt; <span class="self">Self </span>{
+        <span class="self">Self</span>(t.t.t <span class="kw">as </span>u32)
     }
 }
 
-<span class="doccomment">/// u64 wrapped in 1 version byte</span>
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">ExtendedU64</span> <span class="op">=</span> <span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">u64</span>, <span class="number">1</span><span class="op">&gt;</span>;
+<span class="doccomment">/// u64 wrapped in 1 version byte
+</span><span class="kw">pub type </span>ExtendedU64 = Versioned&lt;u64, <span class="number">1</span>&gt;;
 
-<span class="doccomment">/// u64 wrapped in 2 version bytes</span>
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">ExtendedU64_2</span> <span class="op">=</span> <span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">ExtendedU64</span>, <span class="number">1</span><span class="op">&gt;</span>;
+<span class="doccomment">/// u64 wrapped in 2 version bytes
+</span><span class="kw">pub type </span>ExtendedU64_2 = Versioned&lt;ExtendedU64, <span class="number">1</span>&gt;;
 
-<span class="doccomment">/// u64 wrapped in 3 version bytes</span>
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">ExtendedU64_3</span> <span class="op">=</span> <span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">ExtendedU64_2</span>, <span class="number">1</span><span class="op">&gt;</span>;
+<span class="doccomment">/// u64 wrapped in 3 version bytes
+</span><span class="kw">pub type </span>ExtendedU64_3 = Versioned&lt;ExtendedU64_2, <span class="number">1</span>&gt;;
 
-<span class="doccomment">/// Versioned 64 bytes</span>
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">Hex64V1</span> <span class="op">=</span> <span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">i64</span>, <span class="number">1</span><span class="op">&gt;</span>;
-<span class="macro">impl_from_for_newtype!</span>(<span class="ident">I64</span>, <span class="ident">Hex64V1</span>);
+<span class="doccomment">/// Versioned 64 bytes
+</span><span class="kw">pub type </span>Hex64V1 = Versioned&lt;i64, <span class="number">1</span>&gt;;
+<span class="macro">impl_from_for_newtype!</span>(I64, Hex64V1);
 
-<span class="doccomment">/// char (v1)</span>
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">CharV1</span> <span class="op">=</span> <span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">u8</span>, <span class="number">1</span><span class="op">&gt;</span>;
-<span class="macro">impl_from_for_newtype!</span>(<span class="ident">CharJson</span>, <span class="ident">CharV1</span>);
+<span class="doccomment">/// char (v1)
+</span><span class="kw">pub type </span>CharV1 = Versioned&lt;u8, <span class="number">1</span>&gt;;
+<span class="macro">impl_from_for_newtype!</span>(CharJson, CharV1);
 
-<span class="doccomment">/// char (json)</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">From</span>, <span class="ident">Into</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">CharJson</span>(<span class="kw">pub</span> <span class="ident">u8</span>);
+<span class="doccomment">/// char (json)
+</span><span class="attribute">#[derive(Debug, Clone, Eq, PartialEq, From, Into)]</span>
+<span class="kw">pub struct </span>CharJson(<span class="kw">pub </span>u8);
 
-<span class="kw">impl</span> <span class="ident">Serialize</span> <span class="kw">for</span> <span class="ident">CharJson</span> {
-    <span class="kw">fn</span> <span class="ident">serialize</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">serializer</span>: <span class="ident">S</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">S::Ok</span>, <span class="ident">S::Error</span><span class="op">&gt;</span>
-    <span class="kw">where</span>
-        <span class="ident">S</span>: <span class="ident">Serializer</span>,
+<span class="kw">impl </span>Serialize <span class="kw">for </span>CharJson {
+    <span class="kw">fn </span>serialize&lt;S&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, serializer: S) -&gt; <span class="prelude-ty">Result</span>&lt;S::Ok, S::Error&gt;
+    <span class="kw">where
+        </span>S: Serializer,
     {
-        <span class="kw">let</span> <span class="ident">s</span> <span class="op">=</span> <span class="kw">unsafe</span> { <span class="ident">String::from_utf8_unchecked</span>(<span class="macro">vec!</span>[<span class="self">self</span>.<span class="number">0</span>]) };
-        <span class="ident">serializer</span>.<span class="ident">serialize_str</span>(<span class="kw-2">&amp;</span><span class="ident">s</span>)
+        <span class="kw">let </span>s = <span class="kw">unsafe </span>{ String::from_utf8_unchecked(<span class="macro">vec!</span>[<span class="self">self</span>.<span class="number">0</span>]) };
+        serializer.serialize_str(<span class="kw-2">&amp;</span>s)
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;de</span><span class="op">&gt;</span> <span class="ident">Deserialize</span><span class="op">&lt;</span><span class="lifetime">&#39;de</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">CharJson</span> {
-    <span class="kw">fn</span> <span class="ident">deserialize</span><span class="op">&lt;</span><span class="ident">D</span><span class="op">&gt;</span>(<span class="ident">deserializer</span>: <span class="ident">D</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span>, <span class="ident">D::Error</span><span class="op">&gt;</span>
-    <span class="kw">where</span>
-        <span class="ident">D</span>: <span class="ident">Deserializer</span><span class="op">&lt;</span><span class="lifetime">&#39;de</span><span class="op">&gt;</span>,
+<span class="kw">impl</span>&lt;<span class="lifetime">&#39;de</span>&gt; Deserialize&lt;<span class="lifetime">&#39;de</span>&gt; <span class="kw">for </span>CharJson {
+    <span class="kw">fn </span>deserialize&lt;D&gt;(deserializer: D) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>, D::Error&gt;
+    <span class="kw">where
+        </span>D: Deserializer&lt;<span class="lifetime">&#39;de</span>&gt;,
     {
-        <span class="kw">let</span> <span class="ident">s</span> <span class="op">=</span> <span class="ident">String::deserialize</span>(<span class="ident">deserializer</span>)<span class="question-mark">?</span>;
-        <span class="prelude-val">Ok</span>(<span class="ident">s</span>.<span class="ident">as_bytes</span>()[<span class="number">0</span>].<span class="ident">into</span>())
+        <span class="kw">let </span>s = String::deserialize(deserializer)<span class="question-mark">?</span>;
+        <span class="prelude-val">Ok</span>(s.as_bytes()[<span class="number">0</span>].into())
     }
 }
 
-<span class="doccomment">/// 32 bytes representing a BigInt256</span>
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">BigInt256</span> <span class="op">=</span> [<span class="ident">u8</span>; <span class="number">32</span>];
+<span class="doccomment">/// 32 bytes representing a BigInt256
+</span><span class="kw">pub type </span>BigInt256 = [u8; <span class="number">32</span>];
 
-<span class="doccomment">/// Wrapper of Vec&lt;u8&gt;</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">PartialEq</span>, <span class="ident">derive_more::From</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ByteVec</span>(<span class="kw">pub</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>);
+<span class="doccomment">/// Wrapper of Vec&lt;u8&gt;
+</span><span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq, derive_more::From)]</span>
+<span class="kw">pub struct </span>ByteVec(<span class="kw">pub </span>Vec&lt;u8&gt;);
 
-<span class="macro">impl_from_versioned!</span>(<span class="ident">ByteVec</span>);
+<span class="macro">impl_from_versioned!</span>(ByteVec);
 
-<span class="doccomment">/// Wrapper of Vec&lt;u8&gt; (json)</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">From</span>, <span class="ident">Into</span>, <span class="ident">AutoFrom</span>)]</span>
-<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">ByteVec</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ByteVecJson</span>(<span class="kw">pub</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>);
+<span class="doccomment">/// Wrapper of Vec&lt;u8&gt; (json)
+</span><span class="attribute">#[derive(Debug, Clone, Eq, PartialEq, From, Into, AutoFrom)]</span>
+<span class="attribute">#[auto_from(ByteVec)]</span>
+<span class="kw">pub struct </span>ByteVecJson(<span class="kw">pub </span>Vec&lt;u8&gt;);
 
-<span class="kw">impl</span> <span class="ident">Serialize</span> <span class="kw">for</span> <span class="ident">ByteVecJson</span> {
-    <span class="kw">fn</span> <span class="ident">serialize</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">serializer</span>: <span class="ident">S</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">S::Ok</span>, <span class="ident">S::Error</span><span class="op">&gt;</span>
-    <span class="kw">where</span>
-        <span class="ident">S</span>: <span class="ident">Serializer</span>,
+<span class="kw">impl </span>Serialize <span class="kw">for </span>ByteVecJson {
+    <span class="kw">fn </span>serialize&lt;S&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, serializer: S) -&gt; <span class="prelude-ty">Result</span>&lt;S::Ok, S::Error&gt;
+    <span class="kw">where
+        </span>S: Serializer,
     {
-        <span class="kw">let</span> <span class="ident">s</span> <span class="op">=</span> <span class="kw">unsafe</span> { <span class="ident">String::from_utf8_unchecked</span>(<span class="self">self</span>.<span class="number">0</span>.<span class="ident">clone</span>()) };
-        <span class="ident">serializer</span>.<span class="ident">serialize_str</span>(<span class="kw-2">&amp;</span><span class="ident">s</span>)
+        <span class="kw">let </span>s = <span class="kw">unsafe </span>{ String::from_utf8_unchecked(<span class="self">self</span>.<span class="number">0</span>.clone()) };
+        serializer.serialize_str(<span class="kw-2">&amp;</span>s)
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;de</span><span class="op">&gt;</span> <span class="ident">Deserialize</span><span class="op">&lt;</span><span class="lifetime">&#39;de</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ByteVecJson</span> {
-    <span class="kw">fn</span> <span class="ident">deserialize</span><span class="op">&lt;</span><span class="ident">D</span><span class="op">&gt;</span>(<span class="ident">deserializer</span>: <span class="ident">D</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span>, <span class="ident">D::Error</span><span class="op">&gt;</span>
-    <span class="kw">where</span>
-        <span class="ident">D</span>: <span class="ident">Deserializer</span><span class="op">&lt;</span><span class="lifetime">&#39;de</span><span class="op">&gt;</span>,
+<span class="kw">impl</span>&lt;<span class="lifetime">&#39;de</span>&gt; Deserialize&lt;<span class="lifetime">&#39;de</span>&gt; <span class="kw">for </span>ByteVecJson {
+    <span class="kw">fn </span>deserialize&lt;D&gt;(deserializer: D) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>, D::Error&gt;
+    <span class="kw">where
+        </span>D: Deserializer&lt;<span class="lifetime">&#39;de</span>&gt;,
     {
-        <span class="kw">let</span> <span class="ident">s</span> <span class="op">=</span> <span class="ident">String::deserialize</span>(<span class="ident">deserializer</span>)<span class="question-mark">?</span>;
-        <span class="kw">let</span> <span class="ident">v</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">s</span>.<span class="ident">as_bytes</span>().<span class="ident">to_vec</span>();
-        <span class="prelude-val">Ok</span>(<span class="self">Self</span>(<span class="ident">v</span>))
+        <span class="kw">let </span>s = String::deserialize(deserializer)<span class="question-mark">?</span>;
+        <span class="kw">let </span>v: Vec&lt;u8&gt; = s.as_bytes().to_vec();
+        <span class="prelude-val">Ok</span>(<span class="self">Self</span>(v))
     }
 }
 
-<span class="doccomment">/// Vector of bytes with a version number. Also encodes its own length when encoded using bin-prot</span>
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">ByteVecV1</span> <span class="op">=</span> <span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">ByteVec</span>, <span class="number">1</span><span class="op">&gt;</span>;
+<span class="doccomment">/// Vector of bytes with a version number. Also encodes its own length when encoded using bin-prot
+</span><span class="kw">pub type </span>ByteVecV1 = Versioned&lt;ByteVec, <span class="number">1</span>&gt;;
 
-<span class="doccomment">/// A wrapper of versioned type that is base58 encodable</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">derive_more::From</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Base58EncodableType</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">VERSION_BYTE</span>: <span class="ident">u8</span>, <span class="ident">T</span><span class="op">&gt;</span>(<span class="kw">pub</span> <span class="ident">T</span>);
+<span class="doccomment">/// A wrapper of versioned type that is base58 encodable
+</span><span class="attribute">#[derive(Debug, Clone, Eq, PartialEq, derive_more::From)]</span>
+<span class="kw">pub struct </span>Base58EncodableType&lt;<span class="kw">const </span>VERSION_BYTE: u8, T&gt;(<span class="kw">pub </span>T);
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">VERSION_BYTE</span>: <span class="ident">u8</span>, <span class="ident">T</span><span class="op">&gt;</span> <span class="ident">Base58EncodableType</span><span class="op">&lt;</span><span class="ident">VERSION_BYTE</span>, <span class="ident">T</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">T</span>: <span class="ident">From</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+<span class="kw">impl</span>&lt;<span class="kw">const </span>VERSION_BYTE: u8, T&gt; Base58EncodableType&lt;VERSION_BYTE, T&gt;
+<span class="kw">where
+    </span>T: From&lt;Vec&lt;u8&gt;&gt;,
 {
-    <span class="doccomment">/// Decode input base58 encoded bytes into [Base58EncodableType]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">from_base58</span>(<span class="ident">input</span>: <span class="kw">impl</span> <span class="ident">AsRef</span><span class="op">&lt;</span>[<span class="ident">u8</span>]<span class="op">&gt;</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span>, <span class="ident"><span class="kw">crate</span>::errors::Error</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">bytes</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">bs58::decode</span>(<span class="ident">input</span>)
-            .<span class="ident">with_check</span>(<span class="prelude-val">Some</span>(<span class="ident">VERSION_BYTE</span>))
-            .<span class="ident">into_vec</span>()
-            .<span class="ident">map_err</span>(<span class="ident"><span class="kw">crate</span>::errors::Error::Base58DecodeError</span>)<span class="question-mark">?</span>;
-        <span class="comment">// skip the version check byte</span>
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">v</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">Vec::with_capacity</span>(<span class="ident">bytes</span>.<span class="ident">len</span>() <span class="op">-</span> <span class="number">1</span>);
-        <span class="ident">v</span>.<span class="ident">extend_from_slice</span>(<span class="kw-2">&amp;</span><span class="ident">bytes</span>[<span class="number">1</span>..]);
-        <span class="prelude-val">Ok</span>(<span class="self">Self</span>(<span class="ident">v</span>.<span class="ident">into</span>()))
+    <span class="doccomment">/// Decode input base58 encoded bytes into [Base58EncodableType]
+    </span><span class="kw">pub fn </span>from_base58(input: <span class="kw">impl </span>AsRef&lt;[u8]&gt;) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>, <span class="kw">crate</span>::errors::Error&gt; {
+        <span class="kw">let </span>bytes: Vec&lt;u8&gt; = bs58::decode(input)
+            .with_check(<span class="prelude-val">Some</span>(VERSION_BYTE))
+            .into_vec()
+            .map_err(<span class="kw">crate</span>::errors::Error::Base58DecodeError)<span class="question-mark">?</span>;
+        <span class="comment">// skip the version check byte
+        </span><span class="kw">let </span><span class="kw-2">mut </span>v: Vec&lt;u8&gt; = Vec::with_capacity(bytes.len() - <span class="number">1</span>);
+        v.extend_from_slice(<span class="kw-2">&amp;</span>bytes[<span class="number">1</span>..]);
+        <span class="prelude-val">Ok</span>(<span class="self">Self</span>(v.into()))
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">VERSION_BYTE</span>: <span class="ident">u8</span>, <span class="ident">T</span><span class="op">&gt;</span> <span class="ident">Base58EncodableType</span><span class="op">&lt;</span><span class="ident">VERSION_BYTE</span>, <span class="ident">T</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">T</span>: <span class="ident">Serialize</span> <span class="op">+</span> <span class="ident">AsRef</span><span class="op">&lt;</span>[<span class="ident">u8</span>]<span class="op">&gt;</span>,
+<span class="kw">impl</span>&lt;<span class="kw">const </span>VERSION_BYTE: u8, T&gt; Base58EncodableType&lt;VERSION_BYTE, T&gt;
+<span class="kw">where
+    </span>T: Serialize + AsRef&lt;[u8]&gt;,
 {
-    <span class="doccomment">/// Encode inner data with version check byte into [String]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">to_base58_string</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident"><span class="kw">crate</span>::errors::Error</span><span class="op">&gt;</span> {
-        <span class="prelude-val">Ok</span>(<span class="self">self</span>.<span class="ident">to_base58_builder</span>().<span class="ident">into_string</span>())
+    <span class="doccomment">/// Encode inner data with version check byte into [String]
+    </span><span class="kw">pub fn </span>to_base58_string(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;String, <span class="kw">crate</span>::errors::Error&gt; {
+        <span class="prelude-val">Ok</span>(<span class="self">self</span>.to_base58_builder().into_string())
     }
 
-    <span class="doccomment">/// Encode inner data with version check byte into [EncodeBuilder]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">to_base58_builder</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">EncodeBuilder</span><span class="op">&lt;</span><span class="lifetime">&#39;static</span>, <span class="kw-2">&amp;</span>[<span class="ident">u8</span>]<span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">bytes</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>] <span class="op">=</span> <span class="self">self</span>.<span class="number">0</span>.<span class="ident">as_ref</span>();
-        <span class="ident">bs58::encode</span>(<span class="ident">bytes</span>).<span class="ident">with_check_version</span>(<span class="ident">VERSION_BYTE</span>)
-    }
-}
-
-<span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">VERSION_BYTE</span>: <span class="ident">u8</span>, <span class="ident">T</span><span class="op">&gt;</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">Base58EncodableType</span><span class="op">&lt;</span><span class="ident">VERSION_BYTE</span>, <span class="ident">T</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="kw">for</span> (<span class="ident">T</span>,) {
-    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">i</span>: <span class="ident">Base58EncodableType</span><span class="op">&lt;</span><span class="ident">VERSION_BYTE</span>, <span class="ident">T</span><span class="op">&gt;</span>) -&gt; <span class="self">Self</span> {
-        (<span class="ident">i</span>.<span class="number">0</span>,)
+    <span class="doccomment">/// Encode inner data with version check byte into [EncodeBuilder]
+    </span><span class="kw">pub fn </span>to_base58_builder(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; EncodeBuilder&lt;<span class="lifetime">&#39;static</span>, <span class="kw-2">&amp;</span>[u8]&gt; {
+        <span class="kw">let </span>bytes: <span class="kw-2">&amp;</span>[u8] = <span class="self">self</span>.<span class="number">0</span>.as_ref();
+        bs58::encode(bytes).with_check_version(VERSION_BYTE)
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">VERSION_BYTE</span>: <span class="ident">u8</span>, <span class="ident">T</span><span class="op">&gt;</span> <span class="ident">Serialize</span> <span class="kw">for</span> <span class="ident">Base58EncodableType</span><span class="op">&lt;</span><span class="ident">VERSION_BYTE</span>, <span class="ident">T</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">T</span>: <span class="ident">Serialize</span> <span class="op">+</span> <span class="ident">AsRef</span><span class="op">&lt;</span>[<span class="ident">u8</span>]<span class="op">&gt;</span>,
+<span class="kw">impl</span>&lt;<span class="kw">const </span>VERSION_BYTE: u8, T&gt; From&lt;Base58EncodableType&lt;VERSION_BYTE, T&gt;&gt; <span class="kw">for </span>(T,) {
+    <span class="kw">fn </span>from(i: Base58EncodableType&lt;VERSION_BYTE, T&gt;) -&gt; <span class="self">Self </span>{
+        (i.<span class="number">0</span>,)
+    }
+}
+
+<span class="kw">impl</span>&lt;<span class="kw">const </span>VERSION_BYTE: u8, T&gt; Serialize <span class="kw">for </span>Base58EncodableType&lt;VERSION_BYTE, T&gt;
+<span class="kw">where
+    </span>T: Serialize + AsRef&lt;[u8]&gt;,
 {
-    <span class="kw">fn</span> <span class="ident">serialize</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">serializer</span>: <span class="ident">S</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">S::Ok</span>, <span class="ident">S::Error</span><span class="op">&gt;</span>
-    <span class="kw">where</span>
-        <span class="ident">S</span>: <span class="ident">Serializer</span>,
+    <span class="kw">fn </span>serialize&lt;S&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, serializer: S) -&gt; <span class="prelude-ty">Result</span>&lt;S::Ok, S::Error&gt;
+    <span class="kw">where
+        </span>S: Serializer,
     {
-        <span class="kw">let</span> <span class="ident">s</span> <span class="op">=</span> <span class="self">self</span>
-            .<span class="ident">to_base58_string</span>()
-            .<span class="ident">map_err</span>(<span class="op">&lt;</span><span class="ident">S::Error</span> <span class="kw">as</span> <span class="ident">serde::ser::Error</span><span class="op">&gt;</span><span class="ident">::custom</span>)<span class="question-mark">?</span>;
-        <span class="ident">serializer</span>.<span class="ident">serialize_str</span>(<span class="kw-2">&amp;</span><span class="ident">s</span>)
+        <span class="kw">let </span>s = <span class="self">self
+            </span>.to_base58_string()
+            .map_err(&lt;S::Error <span class="kw">as </span>serde::ser::Error&gt;::custom)<span class="question-mark">?</span>;
+        serializer.serialize_str(<span class="kw-2">&amp;</span>s)
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;de</span>, <span class="kw">const</span> <span class="ident">VERSION_BYTE</span>: <span class="ident">u8</span>, <span class="ident">T</span><span class="op">&gt;</span> <span class="ident">Deserialize</span><span class="op">&lt;</span><span class="lifetime">&#39;de</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Base58EncodableType</span><span class="op">&lt;</span><span class="ident">VERSION_BYTE</span>, <span class="ident">T</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">T</span>: <span class="ident">Deserialize</span><span class="op">&lt;</span><span class="lifetime">&#39;de</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+<span class="kw">impl</span>&lt;<span class="lifetime">&#39;de</span>, <span class="kw">const </span>VERSION_BYTE: u8, T&gt; Deserialize&lt;<span class="lifetime">&#39;de</span>&gt; <span class="kw">for </span>Base58EncodableType&lt;VERSION_BYTE, T&gt;
+<span class="kw">where
+    </span>T: Deserialize&lt;<span class="lifetime">&#39;de</span>&gt; + From&lt;Vec&lt;u8&gt;&gt;,
 {
-    <span class="kw">fn</span> <span class="ident">deserialize</span><span class="op">&lt;</span><span class="ident">D</span><span class="op">&gt;</span>(<span class="ident">deserializer</span>: <span class="ident">D</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span>, <span class="ident">D::Error</span><span class="op">&gt;</span>
-    <span class="kw">where</span>
-        <span class="ident">D</span>: <span class="ident">Deserializer</span><span class="op">&lt;</span><span class="lifetime">&#39;de</span><span class="op">&gt;</span>,
+    <span class="kw">fn </span>deserialize&lt;D&gt;(deserializer: D) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>, D::Error&gt;
+    <span class="kw">where
+        </span>D: Deserializer&lt;<span class="lifetime">&#39;de</span>&gt;,
     {
-        <span class="kw">let</span> <span class="ident">s</span> <span class="op">=</span>
-            <span class="ident">String::deserialize</span>(<span class="ident">deserializer</span>).<span class="ident">map_err</span>(<span class="op">&lt;</span><span class="ident">D::Error</span> <span class="kw">as</span> <span class="ident">serde::de::Error</span><span class="op">&gt;</span><span class="ident">::custom</span>)<span class="question-mark">?</span>;
-        <span class="ident"><span class="self">Self</span>::from_base58</span>(<span class="ident">s</span>).<span class="ident">map_err</span>(<span class="op">&lt;</span><span class="ident">D::Error</span> <span class="kw">as</span> <span class="ident">serde::de::Error</span><span class="op">&gt;</span><span class="ident">::custom</span>)
+        <span class="kw">let </span>s =
+            String::deserialize(deserializer).map_err(&lt;D::Error <span class="kw">as </span>serde::de::Error&gt;::custom)<span class="question-mark">?</span>;
+        <span class="self">Self</span>::from_base58(s).map_err(&lt;D::Error <span class="kw">as </span>serde::de::Error&gt;::custom)
     }
 }
 
-<span class="doccomment">/// A wrapper of versioned type that is base58 encodable with an version byte</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">derive_more::From</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Base58EncodableVersionedType</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">VERSION_BYTE</span>: <span class="ident">u8</span>, <span class="ident">T</span><span class="op">&gt;</span>(<span class="kw">pub</span> <span class="ident">T</span>);
+<span class="doccomment">/// A wrapper of versioned type that is base58 encodable with an version byte
+</span><span class="attribute">#[derive(Debug, Clone, Eq, PartialEq, derive_more::From)]</span>
+<span class="kw">pub struct </span>Base58EncodableVersionedType&lt;<span class="kw">const </span>VERSION_BYTE: u8, T&gt;(<span class="kw">pub </span>T);
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;de</span>, <span class="kw">const</span> <span class="ident">VERSION_BYTE</span>: <span class="ident">u8</span>, <span class="ident">T</span><span class="op">&gt;</span> <span class="ident">Base58EncodableVersionedType</span><span class="op">&lt;</span><span class="ident">VERSION_BYTE</span>, <span class="ident">T</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">T</span>: <span class="ident">Deserialize</span><span class="op">&lt;</span><span class="lifetime">&#39;de</span><span class="op">&gt;</span>,
+<span class="kw">impl</span>&lt;<span class="lifetime">&#39;de</span>, <span class="kw">const </span>VERSION_BYTE: u8, T&gt; Base58EncodableVersionedType&lt;VERSION_BYTE, T&gt;
+<span class="kw">where
+    </span>T: Deserialize&lt;<span class="lifetime">&#39;de</span>&gt;,
 {
-    <span class="doccomment">/// Decode input base58 encoded bytes into [Base58EncodableVersionedType]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">from_base58</span>(<span class="ident">input</span>: <span class="kw">impl</span> <span class="ident">AsRef</span><span class="op">&lt;</span>[<span class="ident">u8</span>]<span class="op">&gt;</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span>, <span class="ident"><span class="kw">crate</span>::errors::Error</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">bytes</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">bs58::decode</span>(<span class="ident">input</span>)
-            .<span class="ident">with_check</span>(<span class="prelude-val">Some</span>(<span class="ident">VERSION_BYTE</span>))
-            .<span class="ident">into_vec</span>()
-            .<span class="ident">map_err</span>(<span class="ident"><span class="kw">crate</span>::errors::Error::Base58DecodeError</span>)<span class="question-mark">?</span>;
-        <span class="comment">// skip the version check byte</span>
-        <span class="kw">let</span> <span class="ident">data</span>: <span class="ident">T</span> <span class="op">=</span> <span class="ident">bin_prot::from_reader_strict</span>(<span class="kw-2">&amp;</span><span class="ident">bytes</span>[<span class="number">1</span>..])
-            .<span class="ident">map_err</span>(<span class="ident"><span class="kw">crate</span>::errors::Error::BinProtError</span>)<span class="question-mark">?</span>;
-        <span class="prelude-val">Ok</span>(<span class="self">Self</span>(<span class="ident">data</span>))
+    <span class="doccomment">/// Decode input base58 encoded bytes into [Base58EncodableVersionedType]
+    </span><span class="kw">pub fn </span>from_base58(input: <span class="kw">impl </span>AsRef&lt;[u8]&gt;) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>, <span class="kw">crate</span>::errors::Error&gt; {
+        <span class="kw">let </span>bytes: Vec&lt;u8&gt; = bs58::decode(input)
+            .with_check(<span class="prelude-val">Some</span>(VERSION_BYTE))
+            .into_vec()
+            .map_err(<span class="kw">crate</span>::errors::Error::Base58DecodeError)<span class="question-mark">?</span>;
+        <span class="comment">// skip the version check byte
+        </span><span class="kw">let </span>data: T = bin_prot::from_reader_strict(<span class="kw-2">&amp;</span>bytes[<span class="number">1</span>..])
+            .map_err(<span class="kw">crate</span>::errors::Error::BinProtError)<span class="question-mark">?</span>;
+        <span class="prelude-val">Ok</span>(<span class="self">Self</span>(data))
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">VERSION_BYTE</span>: <span class="ident">u8</span>, <span class="ident">T</span><span class="op">&gt;</span> <span class="ident">Base58EncodableVersionedType</span><span class="op">&lt;</span><span class="ident">VERSION_BYTE</span>, <span class="ident">T</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">T</span>: <span class="ident">Serialize</span>,
+<span class="kw">impl</span>&lt;<span class="kw">const </span>VERSION_BYTE: u8, T&gt; Base58EncodableVersionedType&lt;VERSION_BYTE, T&gt;
+<span class="kw">where
+    </span>T: Serialize,
 {
-    <span class="doccomment">/// Encode inner data with version check byte into [String]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">to_base58_string</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident"><span class="kw">crate</span>::errors::Error</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">builder</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">to_base58_builder</span>()<span class="question-mark">?</span>;
-        <span class="prelude-val">Ok</span>(<span class="ident">builder</span>.<span class="ident">into_string</span>())
+    <span class="doccomment">/// Encode inner data with version check byte into [String]
+    </span><span class="kw">pub fn </span>to_base58_string(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;String, <span class="kw">crate</span>::errors::Error&gt; {
+        <span class="kw">let </span>builder = <span class="self">self</span>.to_base58_builder()<span class="question-mark">?</span>;
+        <span class="prelude-val">Ok</span>(builder.into_string())
     }
 
-    <span class="doccomment">/// Encode inner data with version check byte into [EncodeBuilder]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">to_base58_builder</span>(
+    <span class="doccomment">/// Encode inner data with version check byte into [EncodeBuilder]
+    </span><span class="kw">pub fn </span>to_base58_builder(
         <span class="kw-2">&amp;</span><span class="self">self</span>,
-    ) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">EncodeBuilder</span><span class="op">&lt;</span><span class="lifetime">&#39;static</span>, <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span><span class="op">&gt;</span>, <span class="ident">bin_prot::error::Error</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">buf</span> <span class="op">=</span> <span class="ident">Vec::new</span>();
-        <span class="ident">bin_prot::to_writer</span>(<span class="kw-2">&amp;mut</span> <span class="ident">buf</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0</span>)<span class="question-mark">?</span>;
-        <span class="prelude-val">Ok</span>(<span class="ident">bs58::encode</span>(<span class="ident">buf</span>).<span class="ident">with_check_version</span>(<span class="ident">VERSION_BYTE</span>))
+    ) -&gt; <span class="prelude-ty">Result</span>&lt;EncodeBuilder&lt;<span class="lifetime">&#39;static</span>, Vec&lt;u8&gt;&gt;, bin_prot::error::Error&gt; {
+        <span class="kw">let </span><span class="kw-2">mut </span>buf = Vec::new();
+        bin_prot::to_writer(<span class="kw-2">&amp;mut </span>buf, <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0</span>)<span class="question-mark">?</span>;
+        <span class="prelude-val">Ok</span>(bs58::encode(buf).with_check_version(VERSION_BYTE))
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">VERSION_BYTE</span>: <span class="ident">u8</span>, <span class="ident">T</span><span class="op">&gt;</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">Base58EncodableVersionedType</span><span class="op">&lt;</span><span class="ident">VERSION_BYTE</span>, <span class="ident">T</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="kw">for</span> (<span class="ident">T</span>,) {
-    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">i</span>: <span class="ident">Base58EncodableVersionedType</span><span class="op">&lt;</span><span class="ident">VERSION_BYTE</span>, <span class="ident">T</span><span class="op">&gt;</span>) -&gt; <span class="self">Self</span> {
-        (<span class="ident">i</span>.<span class="number">0</span>,)
+<span class="kw">impl</span>&lt;<span class="kw">const </span>VERSION_BYTE: u8, T&gt; From&lt;Base58EncodableVersionedType&lt;VERSION_BYTE, T&gt;&gt; <span class="kw">for </span>(T,) {
+    <span class="kw">fn </span>from(i: Base58EncodableVersionedType&lt;VERSION_BYTE, T&gt;) -&gt; <span class="self">Self </span>{
+        (i.<span class="number">0</span>,)
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">VERSION_BYTE</span>: <span class="ident">u8</span>, <span class="ident">T</span><span class="op">&gt;</span> <span class="ident">Serialize</span> <span class="kw">for</span> <span class="ident">Base58EncodableVersionedType</span><span class="op">&lt;</span><span class="ident">VERSION_BYTE</span>, <span class="ident">T</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">T</span>: <span class="ident">Serialize</span>,
+<span class="kw">impl</span>&lt;<span class="kw">const </span>VERSION_BYTE: u8, T&gt; Serialize <span class="kw">for </span>Base58EncodableVersionedType&lt;VERSION_BYTE, T&gt;
+<span class="kw">where
+    </span>T: Serialize,
 {
-    <span class="kw">fn</span> <span class="ident">serialize</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">serializer</span>: <span class="ident">S</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">S::Ok</span>, <span class="ident">S::Error</span><span class="op">&gt;</span>
-    <span class="kw">where</span>
-        <span class="ident">S</span>: <span class="ident">Serializer</span>,
+    <span class="kw">fn </span>serialize&lt;S&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, serializer: S) -&gt; <span class="prelude-ty">Result</span>&lt;S::Ok, S::Error&gt;
+    <span class="kw">where
+        </span>S: Serializer,
     {
-        <span class="kw">let</span> <span class="ident">s</span> <span class="op">=</span> <span class="self">self</span>
-            .<span class="ident">to_base58_string</span>()
-            .<span class="ident">map_err</span>(<span class="op">&lt;</span><span class="ident">S::Error</span> <span class="kw">as</span> <span class="ident">serde::ser::Error</span><span class="op">&gt;</span><span class="ident">::custom</span>)<span class="question-mark">?</span>;
-        <span class="ident">serializer</span>.<span class="ident">serialize_str</span>(<span class="kw-2">&amp;</span><span class="ident">s</span>)
+        <span class="kw">let </span>s = <span class="self">self
+            </span>.to_base58_string()
+            .map_err(&lt;S::Error <span class="kw">as </span>serde::ser::Error&gt;::custom)<span class="question-mark">?</span>;
+        serializer.serialize_str(<span class="kw-2">&amp;</span>s)
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;de</span>, <span class="kw">const</span> <span class="ident">VERSION_BYTE</span>: <span class="ident">u8</span>, <span class="ident">T</span><span class="op">&gt;</span> <span class="ident">Deserialize</span><span class="op">&lt;</span><span class="lifetime">&#39;de</span><span class="op">&gt;</span>
-    <span class="kw">for</span> <span class="ident">Base58EncodableVersionedType</span><span class="op">&lt;</span><span class="ident">VERSION_BYTE</span>, <span class="ident">T</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">T</span>: <span class="ident">Deserialize</span><span class="op">&lt;</span><span class="lifetime">&#39;de</span><span class="op">&gt;</span>,
+<span class="kw">impl</span>&lt;<span class="lifetime">&#39;de</span>, <span class="kw">const </span>VERSION_BYTE: u8, T&gt; Deserialize&lt;<span class="lifetime">&#39;de</span>&gt;
+    <span class="kw">for </span>Base58EncodableVersionedType&lt;VERSION_BYTE, T&gt;
+<span class="kw">where
+    </span>T: Deserialize&lt;<span class="lifetime">&#39;de</span>&gt;,
 {
-    <span class="kw">fn</span> <span class="ident">deserialize</span><span class="op">&lt;</span><span class="ident">D</span><span class="op">&gt;</span>(<span class="ident">deserializer</span>: <span class="ident">D</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span>, <span class="ident">D::Error</span><span class="op">&gt;</span>
-    <span class="kw">where</span>
-        <span class="ident">D</span>: <span class="ident">Deserializer</span><span class="op">&lt;</span><span class="lifetime">&#39;de</span><span class="op">&gt;</span>,
+    <span class="kw">fn </span>deserialize&lt;D&gt;(deserializer: D) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>, D::Error&gt;
+    <span class="kw">where
+        </span>D: Deserializer&lt;<span class="lifetime">&#39;de</span>&gt;,
     {
-        <span class="kw">let</span> <span class="ident">s</span> <span class="op">=</span>
-            <span class="ident">String::deserialize</span>(<span class="ident">deserializer</span>).<span class="ident">map_err</span>(<span class="op">&lt;</span><span class="ident">D::Error</span> <span class="kw">as</span> <span class="ident">serde::de::Error</span><span class="op">&gt;</span><span class="ident">::custom</span>)<span class="question-mark">?</span>;
-        <span class="ident"><span class="self">Self</span>::from_base58</span>(<span class="ident">s</span>).<span class="ident">map_err</span>(<span class="op">&lt;</span><span class="ident">D::Error</span> <span class="kw">as</span> <span class="ident">serde::de::Error</span><span class="op">&gt;</span><span class="ident">::custom</span>)
+        <span class="kw">let </span>s =
+            String::deserialize(deserializer).map_err(&lt;D::Error <span class="kw">as </span>serde::de::Error&gt;::custom)<span class="question-mark">?</span>;
+        <span class="self">Self</span>::from_base58(s).map_err(&lt;D::Error <span class="kw">as </span>serde::de::Error&gt;::custom)
     }
 }
 
-<span class="doccomment">/// base58 string representation of a hash</span>
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">HashV1Json</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">VERSION_BYTE</span>: <span class="ident">u8</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">Base58EncodableVersionedType</span><span class="op">&lt;</span><span class="ident">VERSION_BYTE</span>, <span class="ident">HashV1</span><span class="op">&gt;</span>;
+<span class="doccomment">/// base58 string representation of a hash
+</span><span class="kw">pub type </span>HashV1Json&lt;<span class="kw">const </span>VERSION_BYTE: u8&gt; = Base58EncodableVersionedType&lt;VERSION_BYTE, HashV1&gt;;
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">VERSION_BYTE</span>: <span class="ident">u8</span><span class="op">&gt;</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">HashV1Json</span><span class="op">&lt;</span><span class="ident">VERSION_BYTE</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">HashV1</span> {
-    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">i</span>: <span class="ident">HashV1Json</span><span class="op">&lt;</span><span class="ident">VERSION_BYTE</span><span class="op">&gt;</span>) -&gt; <span class="self">Self</span> {
-        <span class="kw">let</span> (<span class="ident">h</span>,) <span class="op">=</span> <span class="ident">i</span>.<span class="ident">into</span>();
-        <span class="ident">h</span>
+<span class="kw">impl</span>&lt;<span class="kw">const </span>VERSION_BYTE: u8&gt; From&lt;HashV1Json&lt;VERSION_BYTE&gt;&gt; <span class="kw">for </span>HashV1 {
+    <span class="kw">fn </span>from(i: HashV1Json&lt;VERSION_BYTE&gt;) -&gt; <span class="self">Self </span>{
+        <span class="kw">let </span>(h,) = i.into();
+        h
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">VERSION_BYTE</span>: <span class="ident">u8</span><span class="op">&gt;</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">HashV1Json</span><span class="op">&lt;</span><span class="ident">VERSION_BYTE</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Hash2V1</span> {
-    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">i</span>: <span class="ident">HashV1Json</span><span class="op">&lt;</span><span class="ident">VERSION_BYTE</span><span class="op">&gt;</span>) -&gt; <span class="self">Self</span> {
-        <span class="kw">let</span> <span class="ident">v1</span>: <span class="ident">HashV1</span> <span class="op">=</span> <span class="ident">i</span>.<span class="ident">into</span>();
-        <span class="ident">v1</span>.<span class="ident">into</span>()
+<span class="kw">impl</span>&lt;<span class="kw">const </span>VERSION_BYTE: u8&gt; From&lt;HashV1Json&lt;VERSION_BYTE&gt;&gt; <span class="kw">for </span>Hash2V1 {
+    <span class="kw">fn </span>from(i: HashV1Json&lt;VERSION_BYTE&gt;) -&gt; <span class="self">Self </span>{
+        <span class="kw">let </span>v1: HashV1 = i.into();
+        v1.into()
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">VERSION_BYTE</span>: <span class="ident">u8</span><span class="op">&gt;</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">Hash2V1</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">HashV1Json</span><span class="op">&lt;</span><span class="ident">VERSION_BYTE</span><span class="op">&gt;</span> {
-    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">i</span>: <span class="ident">Hash2V1</span>) -&gt; <span class="self">Self</span> {
-        <span class="ident">i</span>.<span class="ident">t</span>.<span class="ident">into</span>()
+<span class="kw">impl</span>&lt;<span class="kw">const </span>VERSION_BYTE: u8&gt; From&lt;Hash2V1&gt; <span class="kw">for </span>HashV1Json&lt;VERSION_BYTE&gt; {
+    <span class="kw">fn </span>from(i: Hash2V1) -&gt; <span class="self">Self </span>{
+        i.t.into()
     }
 }
 
-<span class="doccomment">/// base58 string representation of a ledger hash</span>
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">LedgerHashV1Json</span> <span class="op">=</span> <span class="ident">HashV1Json</span><span class="op">&lt;</span>{ <span class="ident">version_bytes::LEDGER_HASH</span> }<span class="op">&gt;</span>;
+<span class="doccomment">/// base58 string representation of a ledger hash
+</span><span class="kw">pub type </span>LedgerHashV1Json = HashV1Json&lt;{ version_bytes::LEDGER_HASH }&gt;;
 
-<span class="doccomment">/// base58 string representation of a chain hash</span>
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">ChainHashV1Json</span> <span class="op">=</span> <span class="ident">LedgerHashV1Json</span>;
+<span class="doccomment">/// base58 string representation of a chain hash
+</span><span class="kw">pub type </span>ChainHashV1Json = LedgerHashV1Json;
 
-<span class="doccomment">/// base58 string representation of a coinbase hash</span>
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">CoinBaseHashV1Json</span> <span class="op">=</span> <span class="ident">HashV1Json</span><span class="op">&lt;</span>{ <span class="ident">version_bytes::COINBASE_HASH</span> }<span class="op">&gt;</span>;
+<span class="doccomment">/// base58 string representation of a coinbase hash
+</span><span class="kw">pub type </span>CoinBaseHashV1Json = HashV1Json&lt;{ version_bytes::COINBASE_HASH }&gt;;
 
-<span class="doccomment">/// base58 string representation of a coinbase hash</span>
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">EpochSeedHashV1Json</span> <span class="op">=</span> <span class="ident">HashV1Json</span><span class="op">&lt;</span>{ <span class="ident">version_bytes::EPOCH_SEED</span> }<span class="op">&gt;</span>;
+<span class="doccomment">/// base58 string representation of a coinbase hash
+</span><span class="kw">pub type </span>EpochSeedHashV1Json = HashV1Json&lt;{ version_bytes::EPOCH_SEED }&gt;;
 
-<span class="doccomment">/// base58 string representation of a state hash</span>
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">StateHashV1Json</span> <span class="op">=</span> <span class="ident">HashV1Json</span><span class="op">&lt;</span>{ <span class="ident">version_bytes::STATE_HASH</span> }<span class="op">&gt;</span>;
+<span class="doccomment">/// base58 string representation of a state hash
+</span><span class="kw">pub type </span>StateHashV1Json = HashV1Json&lt;{ version_bytes::STATE_HASH }&gt;;
 
-<span class="doccomment">/// base58 string representation of a coinbase stack data hash</span>
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">CoinBaseStackDataV1Json</span> <span class="op">=</span> <span class="ident">HashV1Json</span><span class="op">&lt;</span>{ <span class="ident">version_bytes::COINBASE_STACK_DATA</span> }<span class="op">&gt;</span>;
+<span class="doccomment">/// base58 string representation of a coinbase stack data hash
+</span><span class="kw">pub type </span>CoinBaseStackDataV1Json = HashV1Json&lt;{ version_bytes::COINBASE_STACK_DATA }&gt;;
 
-<span class="doccomment">/// base58 string representation of a coinbase stack hash</span>
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">CoinBaseStackHashV1Json</span> <span class="op">=</span> <span class="ident">HashV1Json</span><span class="op">&lt;</span>{ <span class="ident">version_bytes::COINBASE_STACK_HASH</span> }<span class="op">&gt;</span>;
+<span class="doccomment">/// base58 string representation of a coinbase stack hash
+</span><span class="kw">pub type </span>CoinBaseStackHashV1Json = HashV1Json&lt;{ version_bytes::COINBASE_STACK_HASH }&gt;;
 
-<span class="doccomment">/// base58 string representation of a vrf output hash</span>
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">VrfOutputHashV1Json</span> <span class="op">=</span> <span class="ident">HashV1Json</span><span class="op">&lt;</span>{ <span class="ident">version_bytes::VRF_TRUNCATED_OUTPUT</span> }<span class="op">&gt;</span>;
+<span class="doccomment">/// base58 string representation of a vrf output hash
+</span><span class="kw">pub type </span>VrfOutputHashV1Json = HashV1Json&lt;{ version_bytes::VRF_TRUNCATED_OUTPUT }&gt;;
 
-<span class="doccomment">/// base58 string representation of a aux hash</span>
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">AuxHashJson</span> <span class="op">=</span> <span class="ident">Base58EncodableType</span><span class="op">&lt;</span>{ <span class="ident">version_bytes::STAGED_LEDGER_HASH_AUX_HASH</span> }, <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span><span class="op">&gt;</span>;
+<span class="doccomment">/// base58 string representation of a aux hash
+</span><span class="kw">pub type </span>AuxHashJson = Base58EncodableType&lt;{ version_bytes::STAGED_LEDGER_HASH_AUX_HASH }, Vec&lt;u8&gt;&gt;;
 
-<span class="doccomment">/// base58 string representation of a pending coinbase aux hash</span>
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">PendingCoinbaseAuxHashJson</span> <span class="op">=</span>
-    <span class="ident">Base58EncodableType</span><span class="op">&lt;</span>{ <span class="ident">version_bytes::STAGED_LEDGER_HASH_PENDING_COINBASE_AUX</span> }, <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span><span class="op">&gt;</span>;
+<span class="doccomment">/// base58 string representation of a pending coinbase aux hash
+</span><span class="kw">pub type </span>PendingCoinbaseAuxHashJson =
+    Base58EncodableType&lt;{ version_bytes::STAGED_LEDGER_HASH_PENDING_COINBASE_AUX }, Vec&lt;u8&gt;&gt;;
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">VERSION_BYTE</span>: <span class="ident">u8</span><span class="op">&gt;</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">Base58EncodableType</span><span class="op">&lt;</span><span class="ident">VERSION_BYTE</span>, <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ByteVecV1</span> {
-    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">i</span>: <span class="ident">Base58EncodableType</span><span class="op">&lt;</span><span class="ident">VERSION_BYTE</span>, <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span><span class="op">&gt;</span>) -&gt; <span class="self">Self</span> {
-        <span class="kw">let</span> <span class="ident">bv</span>: <span class="ident">ByteVec</span> <span class="op">=</span> <span class="ident">i</span>.<span class="number">0</span>.<span class="ident">into</span>();
-        <span class="ident">bv</span>.<span class="ident">into</span>()
+<span class="kw">impl</span>&lt;<span class="kw">const </span>VERSION_BYTE: u8&gt; From&lt;Base58EncodableType&lt;VERSION_BYTE, Vec&lt;u8&gt;&gt;&gt; <span class="kw">for </span>ByteVecV1 {
+    <span class="kw">fn </span>from(i: Base58EncodableType&lt;VERSION_BYTE, Vec&lt;u8&gt;&gt;) -&gt; <span class="self">Self </span>{
+        <span class="kw">let </span>bv: ByteVec = i.<span class="number">0</span>.into();
+        bv.into()
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">VERSION_BYTE</span>: <span class="ident">u8</span><span class="op">&gt;</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">ByteVecV1</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Base58EncodableType</span><span class="op">&lt;</span><span class="ident">VERSION_BYTE</span>, <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span><span class="op">&gt;</span> {
-    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">i</span>: <span class="ident">ByteVecV1</span>) -&gt; <span class="self">Self</span> {
-        <span class="kw">let</span> <span class="ident">bv</span>: <span class="ident">ByteVec</span> <span class="op">=</span> <span class="ident">i</span>.<span class="ident">into</span>();
-        <span class="ident">bv</span>.<span class="number">0</span>.<span class="ident">into</span>()
+<span class="kw">impl</span>&lt;<span class="kw">const </span>VERSION_BYTE: u8&gt; From&lt;ByteVecV1&gt; <span class="kw">for </span>Base58EncodableType&lt;VERSION_BYTE, Vec&lt;u8&gt;&gt; {
+    <span class="kw">fn </span>from(i: ByteVecV1) -&gt; <span class="self">Self </span>{
+        <span class="kw">let </span>bv: ByteVec = i.into();
+        bv.<span class="number">0</span>.into()
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_serialization_types" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (fe3342816 2022-08-01)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_serialization_types" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (40336865f 2022-08-15)" ></div></body></html>

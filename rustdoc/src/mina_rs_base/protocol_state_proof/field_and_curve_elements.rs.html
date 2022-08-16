@@ -180,187 +180,187 @@
 <span id="180">180</span>
 <span id="181">181</span>
 <span id="182">182</span>
-</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems</span>
-<span class="comment">// SPDX-License-Identifier: Apache-2.0</span>
+</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems
+// SPDX-License-Identifier: Apache-2.0
 
-<span class="kw">use</span> <span class="ident">ark_ec::models::ModelParameters</span>;
-<span class="kw">use</span> <span class="ident">ark_ec::short_weierstrass_jacobian::GroupAffine</span>;
-<span class="kw">use</span> <span class="ident">mina_crypto</span>::{<span class="ident">hex::skip_0x_prefix_when_needed</span>, <span class="ident">prelude</span>::<span class="kw-2">*</span>};
-<span class="kw">use</span> <span class="ident">mina_serialization_types_macros::AutoFrom</span>;
-<span class="kw">use</span> <span class="ident">num::Integer</span>;
-<span class="kw">use</span> <span class="ident">smart_default::SmartDefault</span>;
+</span><span class="kw">use </span>ark_ec::models::ModelParameters;
+<span class="kw">use </span>ark_ec::short_weierstrass_jacobian::GroupAffine;
+<span class="kw">use </span>mina_crypto::{hex::skip_0x_prefix_when_needed, prelude::<span class="kw-2">*</span>};
+<span class="kw">use </span>mina_serialization_types_macros::AutoFrom;
+<span class="kw">use </span>num::Integer;
+<span class="kw">use </span>smart_default::SmartDefault;
 
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::numbers::BigInt256</span>;
+<span class="kw">use </span><span class="kw">crate</span>::numbers::BigInt256;
 
-<span class="doccomment">/// Represents an element in a finite field that can be encoded as</span>
-<span class="doccomment">/// a BigInt256. All finite field elements used in Mina satisfiy this requirement</span>
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">FieldElement</span> <span class="op">=</span> <span class="ident">BigInt256</span>;
+<span class="doccomment">/// Represents an element in a finite field that can be encoded as
+/// a BigInt256. All finite field elements used in Mina satisfiy this requirement
+</span><span class="kw">pub type </span>FieldElement = BigInt256;
 
-<span class="doccomment">/// Vector of finite field elements (with version number defined in the WireType)</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Default</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>, <span class="ident">AutoFrom</span>)]</span>
-<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">mina_serialization_types::field_and_curve_elements::FieldElementVec</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">FieldElementVec</span>(<span class="kw">pub</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">FieldElement</span><span class="op">&gt;</span>);
+<span class="doccomment">/// Vector of finite field elements (with version number defined in the WireType)
+</span><span class="attribute">#[derive(Clone, Default, Eq, PartialEq, Debug, AutoFrom)]</span>
+<span class="attribute">#[auto_from(mina_serialization_types::field_and_curve_elements::FieldElementVec)]</span>
+<span class="kw">pub struct </span>FieldElementVec(<span class="kw">pub </span>Vec&lt;FieldElement&gt;);
 
-<span class="kw">impl</span> <span class="ident">HexEncodable</span> <span class="kw">for</span> <span class="ident">FieldElementVec</span> {
-    <span class="kw">type</span> <span class="ident">Error</span> <span class="op">=</span> <span class="ident">hex::FromHexError</span>;
+<span class="kw">impl </span>HexEncodable <span class="kw">for </span>FieldElementVec {
+    <span class="kw">type </span>Error = hex::FromHexError;
 
-    <span class="kw">fn</span> <span class="ident">to_hex_string</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">String</span> {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">s</span> <span class="op">=</span> <span class="ident">String::with_capacity</span>(<span class="number">64</span> <span class="op">*</span> <span class="self">self</span>.<span class="number">0</span>.<span class="ident">len</span>());
-        <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0</span> {
-            <span class="ident">s</span>.<span class="ident">push_str</span>(<span class="kw-2">&amp;</span><span class="ident">i</span>.<span class="ident">to_hex_string</span>());
+    <span class="kw">fn </span>to_hex_string(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; String {
+        <span class="kw">let </span><span class="kw-2">mut </span>s = String::with_capacity(<span class="number">64 </span>* <span class="self">self</span>.<span class="number">0</span>.len());
+        <span class="kw">for </span>i <span class="kw">in </span><span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0 </span>{
+            s.push_str(<span class="kw-2">&amp;</span>i.to_hex_string());
         }
-        <span class="ident">s</span>
+        s
     }
 
-    <span class="kw">fn</span> <span class="ident">try_from_hex</span>(<span class="ident">s</span>: <span class="kw">impl</span> <span class="ident">AsRef</span><span class="op">&lt;</span>[<span class="ident">u8</span>]<span class="op">&gt;</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span>, <span class="ident"><span class="self">Self</span>::Error</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">s</span> <span class="op">=</span> <span class="ident">skip_0x_prefix_when_needed</span>(<span class="ident">s</span>.<span class="ident">as_ref</span>());
-        <span class="kw">let</span> (<span class="ident">q</span>, <span class="ident">r</span>) <span class="op">=</span> <span class="ident">s</span>.<span class="ident">len</span>().<span class="ident">div_rem</span>(<span class="kw-2">&amp;</span><span class="number">64</span>);
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">vec</span> <span class="op">=</span> <span class="ident">Vec::with_capacity</span>(<span class="kw">match</span> <span class="ident">r</span> <span class="op">&gt;</span> <span class="number">0</span> {
-            <span class="bool-val">true</span> =&gt; <span class="ident">q</span> <span class="op">+</span> <span class="number">1</span>,
-            <span class="kw">_</span> =&gt; <span class="ident">q</span>,
+    <span class="kw">fn </span>try_from_hex(s: <span class="kw">impl </span>AsRef&lt;[u8]&gt;) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>, <span class="self">Self</span>::Error&gt; {
+        <span class="kw">let </span>s = skip_0x_prefix_when_needed(s.as_ref());
+        <span class="kw">let </span>(q, r) = s.len().div_rem(<span class="kw-2">&amp;</span><span class="number">64</span>);
+        <span class="kw">let </span><span class="kw-2">mut </span>vec = Vec::with_capacity(<span class="kw">match </span>r &gt; <span class="number">0 </span>{
+            <span class="bool-val">true </span>=&gt; q + <span class="number">1</span>,
+            <span class="kw">_ </span>=&gt; q,
         });
-        <span class="kw">for</span> <span class="ident">chunk</span> <span class="kw">in</span> <span class="ident">s</span>.<span class="ident">chunks</span>(<span class="number">64</span>) {
-            <span class="ident">vec</span>.<span class="ident">push</span>(<span class="ident">BigInt256::try_from_hex</span>(<span class="ident">chunk</span>)<span class="question-mark">?</span>);
+        <span class="kw">for </span>chunk <span class="kw">in </span>s.chunks(<span class="number">64</span>) {
+            vec.push(BigInt256::try_from_hex(chunk)<span class="question-mark">?</span>);
         }
 
-        <span class="prelude-val">Ok</span>(<span class="self">Self</span>(<span class="ident">vec</span>))
+        <span class="prelude-val">Ok</span>(<span class="self">Self</span>(vec))
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">Fs</span><span class="op">&gt;</span> <span class="ident">From</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">FieldElementVec</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Fs</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">Fs</span>: <span class="ident">From</span><span class="op">&lt;</span><span class="ident">ark_ff::BigInteger256</span><span class="op">&gt;</span>,
+<span class="kw">impl</span>&lt;Fs&gt; From&lt;<span class="kw-2">&amp;</span>FieldElementVec&gt; <span class="kw">for </span>Vec&lt;Fs&gt;
+<span class="kw">where
+    </span>Fs: From&lt;ark_ff::BigInteger256&gt;,
 {
-    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">t</span>: <span class="kw-2">&amp;</span><span class="ident">FieldElementVec</span>) -&gt; <span class="self">Self</span> {
-        <span class="ident">t</span>.<span class="number">0</span>.<span class="ident">iter</span>()
-            .<span class="ident">map</span>(<span class="op">|</span><span class="ident">i</span><span class="op">|</span> <span class="ident">ark_ff::BigInteger256::from</span>(<span class="ident">i</span>).<span class="ident">into</span>())
-            .<span class="ident">collect</span>()
+    <span class="kw">fn </span>from(t: <span class="kw-2">&amp;</span>FieldElementVec) -&gt; <span class="self">Self </span>{
+        t.<span class="number">0</span>.iter()
+            .map(|i| ark_ff::BigInteger256::from(i).into())
+            .collect()
     }
 }
 
-<span class="doccomment">/// An elliptic curve point defined over a base field with elements that fit in a BigInt256</span>
-<span class="doccomment">/// This is a Finite elliptic curve point as this type cannot be used to encode the point-at-infinity</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Default</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>, <span class="ident">AutoFrom</span>)]</span>
-<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">mina_serialization_types::field_and_curve_elements::FiniteECPoint</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">FiniteECPoint</span>(<span class="kw">pub</span> <span class="ident">FieldElement</span>, <span class="kw">pub</span> <span class="ident">FieldElement</span>);
+<span class="doccomment">/// An elliptic curve point defined over a base field with elements that fit in a BigInt256
+/// This is a Finite elliptic curve point as this type cannot be used to encode the point-at-infinity
+</span><span class="attribute">#[derive(Clone, Default, Eq, PartialEq, Debug, AutoFrom)]</span>
+<span class="attribute">#[auto_from(mina_serialization_types::field_and_curve_elements::FiniteECPoint)]</span>
+<span class="kw">pub struct </span>FiniteECPoint(<span class="kw">pub </span>FieldElement, <span class="kw">pub </span>FieldElement);
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">P</span><span class="op">&gt;</span> <span class="ident">From</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">FiniteECPoint</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">GroupAffine</span><span class="op">&lt;</span><span class="ident">P</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">P</span>: <span class="ident">ark_ec::SWModelParameters</span>,
-    <span class="op">&lt;</span><span class="ident">P</span> <span class="kw">as</span> <span class="ident">ModelParameters</span><span class="op">&gt;</span><span class="ident">::BaseField</span>: <span class="ident">From</span><span class="op">&lt;</span><span class="ident">ark_ff::BigInteger256</span><span class="op">&gt;</span>,
+<span class="kw">impl</span>&lt;P&gt; From&lt;<span class="kw-2">&amp;</span>FiniteECPoint&gt; <span class="kw">for </span>GroupAffine&lt;P&gt;
+<span class="kw">where
+    </span>P: ark_ec::SWModelParameters,
+    &lt;P <span class="kw">as </span>ModelParameters&gt;::BaseField: From&lt;ark_ff::BigInteger256&gt;,
 {
-    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">p</span>: <span class="kw-2">&amp;</span><span class="ident">FiniteECPoint</span>) -&gt; <span class="self">Self</span> {
-        <span class="ident"><span class="self">Self</span>::new</span>(
-            <span class="ident">ark_ff::BigInteger256::from</span>(<span class="kw-2">&amp;</span><span class="ident">p</span>.<span class="number">0</span>).<span class="ident">into</span>(),
-            <span class="ident">ark_ff::BigInteger256::from</span>(<span class="kw-2">&amp;</span><span class="ident">p</span>.<span class="number">1</span>).<span class="ident">into</span>(),
+    <span class="kw">fn </span>from(p: <span class="kw-2">&amp;</span>FiniteECPoint) -&gt; <span class="self">Self </span>{
+        <span class="self">Self</span>::new(
+            ark_ff::BigInteger256::from(<span class="kw-2">&amp;</span>p.<span class="number">0</span>).into(),
+            ark_ff::BigInteger256::from(<span class="kw-2">&amp;</span>p.<span class="number">1</span>).into(),
             <span class="bool-val">false</span>,
         )
     }
 }
 
-<span class="attribute">#[<span class="ident">macro_export</span>]</span>
-<span class="macro">macro_rules!</span> <span class="ident">finite_ec_point</span> {
-    (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">e1</span>:<span class="ident">expr</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">e2</span>:<span class="ident">expr</span>) =&gt; {
-        (<span class="op">|</span><span class="ident">s1</span>, <span class="ident">s2</span><span class="op">|</span> {
-            <span class="prelude-val">Ok</span>::<span class="op">&lt;</span><span class="kw">_</span>, <span class="ident">hex::FromHexError</span><span class="op">&gt;</span>(<span class="ident">FiniteECPoint</span>(
-                <span class="ident">FieldElement::try_from_hex</span>(<span class="ident">s1</span>)<span class="question-mark">?</span>,
-                <span class="ident">FieldElement::try_from_hex</span>(<span class="ident">s2</span>)<span class="question-mark">?</span>,
+<span class="attribute">#[macro_export]</span>
+<span class="macro">macro_rules!</span> finite_ec_point {
+    (<span class="macro-nonterminal">$e1</span>:expr, <span class="macro-nonterminal">$e2</span>:expr) =&gt; {
+        (|s1, s2| {
+            <span class="prelude-val">Ok</span>::&lt;<span class="kw">_</span>, hex::FromHexError&gt;(FiniteECPoint(
+                FieldElement::try_from_hex(s1)<span class="question-mark">?</span>,
+                FieldElement::try_from_hex(s2)<span class="question-mark">?</span>,
             ))
-        })(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">e1</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">e2</span>)
+        })(<span class="macro-nonterminal">$e1</span>, <span class="macro-nonterminal">$e2</span>)
     };
 }
 
-<span class="doccomment">/// Vector of finite EC points (with version number defined in the WireType)</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Default</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>, <span class="ident">AutoFrom</span>)]</span>
-<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">mina_serialization_types::field_and_curve_elements::FiniteECPointVec</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">FiniteECPointVec</span>(<span class="kw">pub</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">FiniteECPoint</span><span class="op">&gt;</span>);
+<span class="doccomment">/// Vector of finite EC points (with version number defined in the WireType)
+</span><span class="attribute">#[derive(Clone, Default, Eq, PartialEq, Debug, AutoFrom)]</span>
+<span class="attribute">#[auto_from(mina_serialization_types::field_and_curve_elements::FiniteECPointVec)]</span>
+<span class="kw">pub struct </span>FiniteECPointVec(<span class="kw">pub </span>Vec&lt;FiniteECPoint&gt;);
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">P</span><span class="op">&gt;</span> <span class="ident">From</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">FiniteECPointVec</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">GroupAffine</span><span class="op">&lt;</span><span class="ident">P</span><span class="op">&gt;</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">P</span>: <span class="ident">ark_ec::SWModelParameters</span>,
-    <span class="op">&lt;</span><span class="ident">P</span> <span class="kw">as</span> <span class="ident">ModelParameters</span><span class="op">&gt;</span><span class="ident">::BaseField</span>: <span class="ident">From</span><span class="op">&lt;</span><span class="ident">ark_ff::BigInteger256</span><span class="op">&gt;</span>,
+<span class="kw">impl</span>&lt;P&gt; From&lt;<span class="kw-2">&amp;</span>FiniteECPointVec&gt; <span class="kw">for </span>Vec&lt;GroupAffine&lt;P&gt;&gt;
+<span class="kw">where
+    </span>P: ark_ec::SWModelParameters,
+    &lt;P <span class="kw">as </span>ModelParameters&gt;::BaseField: From&lt;ark_ff::BigInteger256&gt;,
 {
-    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">v</span>: <span class="kw-2">&amp;</span><span class="ident">FiniteECPointVec</span>) -&gt; <span class="self">Self</span> {
-        <span class="ident">v</span>.<span class="number">0</span>.<span class="ident">iter</span>().<span class="ident">map</span>(<span class="ident">Into::into</span>).<span class="ident">collect</span>()
+    <span class="kw">fn </span>from(v: <span class="kw-2">&amp;</span>FiniteECPointVec) -&gt; <span class="self">Self </span>{
+        v.<span class="number">0</span>.iter().map(Into::into).collect()
     }
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Default</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>, <span class="ident">AutoFrom</span>)]</span>
-<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">mina_serialization_types::field_and_curve_elements::FiniteECPointPair</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">FiniteECPointPair</span>(<span class="kw">pub</span> <span class="ident">FiniteECPoint</span>, <span class="kw">pub</span> <span class="ident">FiniteECPoint</span>);
+<span class="attribute">#[derive(Clone, Default, Eq, PartialEq, Debug, AutoFrom)]</span>
+<span class="attribute">#[auto_from(mina_serialization_types::field_and_curve_elements::FiniteECPointPair)]</span>
+<span class="kw">pub struct </span>FiniteECPointPair(<span class="kw">pub </span>FiniteECPoint, <span class="kw">pub </span>FiniteECPoint);
 
-<span class="attribute">#[<span class="ident">macro_export</span>]</span>
-<span class="macro">macro_rules!</span> <span class="ident">finite_ec_point_pair</span> {
-    (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">e1</span>:<span class="ident">expr</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">e2</span>:<span class="ident">expr</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">e3</span>:<span class="ident">expr</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">e4</span>:<span class="ident">expr</span>) =&gt; {
-        (<span class="op">|</span><span class="ident">s1</span>, <span class="ident">s2</span>, <span class="ident">s3</span>, <span class="ident">s4</span><span class="op">|</span> {
-            <span class="kw">use</span> <span class="ident">mina_rs_base::finite_ec_point</span>;
-            <span class="kw">use</span> <span class="ident">mina_rs_base::protocol_state_proof</span>::<span class="kw-2">*</span>;
-            <span class="prelude-val">Ok</span>::<span class="op">&lt;</span><span class="kw">_</span>, <span class="ident">hex::FromHexError</span><span class="op">&gt;</span>(<span class="ident">FiniteECPointPair</span>(
-                <span class="macro">finite_ec_point!</span>(<span class="ident">s1</span>, <span class="ident">s2</span>)<span class="question-mark">?</span>,
-                <span class="macro">finite_ec_point!</span>(<span class="ident">s3</span>, <span class="ident">s4</span>)<span class="question-mark">?</span>,
+<span class="attribute">#[macro_export]</span>
+<span class="macro">macro_rules!</span> finite_ec_point_pair {
+    (<span class="macro-nonterminal">$e1</span>:expr, <span class="macro-nonterminal">$e2</span>:expr, <span class="macro-nonterminal">$e3</span>:expr, <span class="macro-nonterminal">$e4</span>:expr) =&gt; {
+        (|s1, s2, s3, s4| {
+            <span class="kw">use </span>mina_rs_base::finite_ec_point;
+            <span class="kw">use </span>mina_rs_base::protocol_state_proof::<span class="kw-2">*</span>;
+            <span class="prelude-val">Ok</span>::&lt;<span class="kw">_</span>, hex::FromHexError&gt;(FiniteECPointPair(
+                <span class="macro">finite_ec_point!</span>(s1, s2)<span class="question-mark">?</span>,
+                <span class="macro">finite_ec_point!</span>(s3, s4)<span class="question-mark">?</span>,
             ))
-        })(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">e1</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">e2</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">e3</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">e4</span>)
+        })(<span class="macro-nonterminal">$e1</span>, <span class="macro-nonterminal">$e2</span>, <span class="macro-nonterminal">$e3</span>, <span class="macro-nonterminal">$e4</span>)
     };
 }
 
-<span class="doccomment">/// Vector of 2-tuples of finite EC points (with version number defined in the WireType)</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Default</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>, <span class="ident">AutoFrom</span>)]</span>
-<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">mina_serialization_types::field_and_curve_elements::FiniteECPointPairVec</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">FiniteECPointPairVec</span>(<span class="kw">pub</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">FiniteECPointPair</span><span class="op">&gt;</span>);
+<span class="doccomment">/// Vector of 2-tuples of finite EC points (with version number defined in the WireType)
+</span><span class="attribute">#[derive(Clone, Default, Eq, PartialEq, Debug, AutoFrom)]</span>
+<span class="attribute">#[auto_from(mina_serialization_types::field_and_curve_elements::FiniteECPointPairVec)]</span>
+<span class="kw">pub struct </span>FiniteECPointPairVec(<span class="kw">pub </span>Vec&lt;FiniteECPointPair&gt;);
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">P</span><span class="op">&gt;</span> <span class="ident">From</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">FiniteECPointPairVec</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Vec</span><span class="op">&lt;</span>(<span class="ident">GroupAffine</span><span class="op">&lt;</span><span class="ident">P</span><span class="op">&gt;</span>, <span class="ident">GroupAffine</span><span class="op">&lt;</span><span class="ident">P</span><span class="op">&gt;</span>)<span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">P</span>: <span class="ident">ark_ec::SWModelParameters</span>,
-    <span class="op">&lt;</span><span class="ident">P</span> <span class="kw">as</span> <span class="ident">ModelParameters</span><span class="op">&gt;</span><span class="ident">::BaseField</span>: <span class="ident">From</span><span class="op">&lt;</span><span class="ident">ark_ff::BigInteger256</span><span class="op">&gt;</span>,
+<span class="kw">impl</span>&lt;P&gt; From&lt;<span class="kw-2">&amp;</span>FiniteECPointPairVec&gt; <span class="kw">for </span>Vec&lt;(GroupAffine&lt;P&gt;, GroupAffine&lt;P&gt;)&gt;
+<span class="kw">where
+    </span>P: ark_ec::SWModelParameters,
+    &lt;P <span class="kw">as </span>ModelParameters&gt;::BaseField: From&lt;ark_ff::BigInteger256&gt;,
 {
-    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">v</span>: <span class="kw-2">&amp;</span><span class="ident">FiniteECPointPairVec</span>) -&gt; <span class="self">Self</span> {
-        <span class="ident">v</span>.<span class="number">0</span>.<span class="ident">iter</span>()
-            .<span class="ident">map</span>(<span class="op">|</span><span class="ident">FiniteECPointPair</span>(<span class="ident">x</span>, <span class="ident">y</span>)<span class="op">|</span> (<span class="ident">x</span>.<span class="ident">into</span>(), <span class="ident">y</span>.<span class="ident">into</span>()))
-            .<span class="ident">collect</span>()
+    <span class="kw">fn </span>from(v: <span class="kw-2">&amp;</span>FiniteECPointPairVec) -&gt; <span class="self">Self </span>{
+        v.<span class="number">0</span>.iter()
+            .map(|FiniteECPointPair(x, y)| (x.into(), y.into()))
+            .collect()
     }
 }
 
-<span class="doccomment">/// Elliptic curve point that can either be the coordinates of a point on the curve</span>
-<span class="doccomment">/// OR it can be the point-at-infinity</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>, <span class="ident">SmartDefault</span>, <span class="ident">AutoFrom</span>)]</span>
-<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">mina_serialization_types::field_and_curve_elements::ECPoint</span>)]</span>
-<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">ECPoint</span> {
-    <span class="comment">// elliptic curve point, can be the point at infinity</span>
-    <span class="attribute">#[<span class="ident">default</span>]</span>
-    <span class="ident">Infinite</span>,
-    <span class="ident">Finite</span>(<span class="ident">FiniteECPoint</span>),
+<span class="doccomment">/// Elliptic curve point that can either be the coordinates of a point on the curve
+/// OR it can be the point-at-infinity
+</span><span class="attribute">#[derive(Clone, Eq, PartialEq, Debug, SmartDefault, AutoFrom)]</span>
+<span class="attribute">#[auto_from(mina_serialization_types::field_and_curve_elements::ECPoint)]</span>
+<span class="kw">pub enum </span>ECPoint {
+    <span class="comment">// elliptic curve point, can be the point at infinity
+    </span><span class="attribute">#[default]</span>
+    Infinite,
+    Finite(FiniteECPoint),
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">P</span><span class="op">&gt;</span> <span class="ident">From</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">ECPoint</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">GroupAffine</span><span class="op">&lt;</span><span class="ident">P</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">P</span>: <span class="ident">ark_ec::SWModelParameters</span>,
-    <span class="op">&lt;</span><span class="ident">P</span> <span class="kw">as</span> <span class="ident">ModelParameters</span><span class="op">&gt;</span><span class="ident">::BaseField</span>: <span class="ident">From</span><span class="op">&lt;</span><span class="ident">ark_ff::BigInteger256</span><span class="op">&gt;</span>,
+<span class="kw">impl</span>&lt;P&gt; From&lt;<span class="kw-2">&amp;</span>ECPoint&gt; <span class="kw">for </span>GroupAffine&lt;P&gt;
+<span class="kw">where
+    </span>P: ark_ec::SWModelParameters,
+    &lt;P <span class="kw">as </span>ModelParameters&gt;::BaseField: From&lt;ark_ff::BigInteger256&gt;,
 {
-    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">p</span>: <span class="kw-2">&amp;</span><span class="ident">ECPoint</span>) -&gt; <span class="self">Self</span> {
-        <span class="kw">match</span> <span class="ident">p</span> {
-            <span class="ident">ECPoint::Infinite</span> =&gt; <span class="ident"><span class="self">Self</span>::new</span>(<span class="ident">Default::default</span>(), <span class="ident">Default::default</span>(), <span class="bool-val">true</span>),
-            <span class="ident">ECPoint::Finite</span>(<span class="ident">FiniteECPoint</span>(<span class="ident">x</span>, <span class="ident">y</span>)) =&gt; <span class="ident"><span class="self">Self</span>::new</span>(
-                <span class="ident">ark_ff::BigInteger256::from</span>(<span class="ident">x</span>).<span class="ident">into</span>(),
-                <span class="ident">ark_ff::BigInteger256::from</span>(<span class="ident">y</span>).<span class="ident">into</span>(),
+    <span class="kw">fn </span>from(p: <span class="kw-2">&amp;</span>ECPoint) -&gt; <span class="self">Self </span>{
+        <span class="kw">match </span>p {
+            ECPoint::Infinite =&gt; <span class="self">Self</span>::new(Default::default(), Default::default(), <span class="bool-val">true</span>),
+            ECPoint::Finite(FiniteECPoint(x, y)) =&gt; <span class="self">Self</span>::new(
+                ark_ff::BigInteger256::from(x).into(),
+                ark_ff::BigInteger256::from(y).into(),
                 <span class="bool-val">false</span>,
             ),
         }
     }
 }
 
-<span class="doccomment">/// Vector of EC points (with version number defined in the WireType)</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Default</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>, <span class="ident">AutoFrom</span>)]</span>
-<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">mina_serialization_types::field_and_curve_elements::ECPointVec</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ECPointVec</span>(<span class="kw">pub</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">ECPoint</span><span class="op">&gt;</span>);
+<span class="doccomment">/// Vector of EC points (with version number defined in the WireType)
+</span><span class="attribute">#[derive(Clone, Default, Eq, PartialEq, Debug, AutoFrom)]</span>
+<span class="attribute">#[auto_from(mina_serialization_types::field_and_curve_elements::ECPointVec)]</span>
+<span class="kw">pub struct </span>ECPointVec(<span class="kw">pub </span>Vec&lt;ECPoint&gt;);
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">P</span><span class="op">&gt;</span> <span class="ident">From</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">ECPointVec</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">GroupAffine</span><span class="op">&lt;</span><span class="ident">P</span><span class="op">&gt;</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">P</span>: <span class="ident">ark_ec::SWModelParameters</span>,
-    <span class="op">&lt;</span><span class="ident">P</span> <span class="kw">as</span> <span class="ident">ModelParameters</span><span class="op">&gt;</span><span class="ident">::BaseField</span>: <span class="ident">From</span><span class="op">&lt;</span><span class="ident">ark_ff::BigInteger256</span><span class="op">&gt;</span>,
+<span class="kw">impl</span>&lt;P&gt; From&lt;<span class="kw-2">&amp;</span>ECPointVec&gt; <span class="kw">for </span>Vec&lt;GroupAffine&lt;P&gt;&gt;
+<span class="kw">where
+    </span>P: ark_ec::SWModelParameters,
+    &lt;P <span class="kw">as </span>ModelParameters&gt;::BaseField: From&lt;ark_ff::BigInteger256&gt;,
 {
-    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">v</span>: <span class="kw-2">&amp;</span><span class="ident">ECPointVec</span>) -&gt; <span class="self">Self</span> {
-        <span class="ident">v</span>.<span class="number">0</span>.<span class="ident">iter</span>().<span class="ident">map</span>(<span class="ident">Into::into</span>).<span class="ident">collect</span>()
+    <span class="kw">fn </span>from(v: <span class="kw-2">&amp;</span>ECPointVec) -&gt; <span class="self">Self </span>{
+        v.<span class="number">0</span>.iter().map(Into::into).collect()
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="mina_rs_base" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (fe3342816 2022-08-01)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="mina_rs_base" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (40336865f 2022-08-15)" ></div></body></html>

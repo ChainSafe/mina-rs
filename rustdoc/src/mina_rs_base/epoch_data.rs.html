@@ -64,71 +64,71 @@
 <span id="64">64</span>
 <span id="65">65</span>
 <span id="66">66</span>
-</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems</span>
-<span class="comment">// SPDX-License-Identifier: Apache-2.0</span>
+</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems
+// SPDX-License-Identifier: Apache-2.0
 
-<span class="doccomment">//! Types and functions related to the EpochData structure</span>
+</span><span class="doccomment">//! Types and functions related to the EpochData structure
 
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::numbers</span>::{<span class="ident">Amount</span>, <span class="ident">Length</span>};
-<span class="kw">use</span> <span class="ident">mina_crypto::hash</span>::<span class="kw-2">*</span>;
-<span class="kw">use</span> <span class="ident">mina_serialization_types_macros::AutoFrom</span>;
-<span class="kw">use</span> <span class="ident">proof_systems::mina_hasher</span>::{<span class="ident">Hashable</span>, <span class="ident">ROInput</span>};
+</span><span class="kw">use </span><span class="kw">crate</span>::numbers::{Amount, Length};
+<span class="kw">use </span>mina_crypto::hash::<span class="kw-2">*</span>;
+<span class="kw">use </span>mina_serialization_types_macros::AutoFrom;
+<span class="kw">use </span>proof_systems::mina_hasher::{Hashable, ROInput};
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Default</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>, <span class="ident">AutoFrom</span>)]</span>
-<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">mina_serialization_types::epoch_data::EpochLedger</span>)]</span>
-<span class="doccomment">/// Epoch Ledger</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">EpochLedger</span> {
-    <span class="doccomment">/// A unique identifier of the EpochLedger</span>
-    <span class="kw">pub</span> <span class="ident">hash</span>: <span class="ident">LedgerHash</span>,
-    <span class="doccomment">/// The total currency in circulation after the block was produced. New issuance is via the coinbase reward and new account fees can reduce the total issuance.</span>
-    <span class="kw">pub</span> <span class="ident">total_currency</span>: <span class="ident">Amount</span>,
+<span class="attribute">#[derive(Clone, Default, Eq, PartialEq, Debug, AutoFrom)]</span>
+<span class="attribute">#[auto_from(mina_serialization_types::epoch_data::EpochLedger)]</span>
+<span class="doccomment">/// Epoch Ledger
+</span><span class="kw">pub struct </span>EpochLedger {
+    <span class="doccomment">/// A unique identifier of the EpochLedger
+    </span><span class="kw">pub </span>hash: LedgerHash,
+    <span class="doccomment">/// The total currency in circulation after the block was produced. New issuance is via the coinbase reward and new account fees can reduce the total issuance.
+    </span><span class="kw">pub </span>total_currency: Amount,
 }
 
-<span class="kw">impl</span> <span class="ident">Hashable</span> <span class="kw">for</span> <span class="ident">EpochLedger</span> {
-    <span class="kw">type</span> <span class="ident">D</span> <span class="op">=</span> ();
+<span class="kw">impl </span>Hashable <span class="kw">for </span>EpochLedger {
+    <span class="kw">type </span>D = ();
 
-    <span class="kw">fn</span> <span class="ident">to_roinput</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">ROInput</span> {
-        <span class="ident">ROInput::new</span>()
-            .<span class="ident">append_hashable</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">hash</span>)
-            .<span class="ident">append_hashable</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">total_currency</span>)
+    <span class="kw">fn </span>to_roinput(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; ROInput {
+        ROInput::new()
+            .append_hashable(<span class="kw-2">&amp;</span><span class="self">self</span>.hash)
+            .append_hashable(<span class="kw-2">&amp;</span><span class="self">self</span>.total_currency)
     }
 
-    <span class="kw">fn</span> <span class="ident">domain_string</span>(<span class="kw">_</span>: <span class="ident"><span class="self">Self</span>::D</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> {
-        <span class="prelude-val">None</span>
-    }
+    <span class="kw">fn </span>domain_string(<span class="kw">_</span>: <span class="self">Self</span>::D) -&gt; <span class="prelude-ty">Option</span>&lt;String&gt; {
+        <span class="prelude-val">None
+    </span>}
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Default</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>, <span class="ident">AutoFrom</span>)]</span>
-<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">mina_serialization_types::epoch_data::EpochData</span>)]</span>
-<span class="doccomment">/// Epoch data</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">EpochData</span> {
-    <span class="doccomment">/// Epoch Ledger, contains ledger related data for the epoch</span>
-    <span class="kw">pub</span> <span class="ident">ledger</span>: <span class="ident">EpochLedger</span>,
-    <span class="doccomment">///  Initialize the random number generator</span>
-    <span class="kw">pub</span> <span class="ident">seed</span>: <span class="ident">EpochSeed</span>,
-    <span class="doccomment">/// State hash of first block of epoch</span>
-    <span class="kw">pub</span> <span class="ident">start_checkpoint</span>: <span class="ident">StateHash</span>,
-    <span class="doccomment">/// State hash of last known block in the first 2/3 of epoch (excluding the current state)</span>
-    <span class="kw">pub</span> <span class="ident">lock_checkpoint</span>: <span class="ident">StateHash</span>,
-    <span class="doccomment">/// Length of an epoch</span>
-    <span class="kw">pub</span> <span class="ident">epoch_length</span>: <span class="ident">Length</span>,
+<span class="attribute">#[derive(Clone, Default, Eq, PartialEq, Debug, AutoFrom)]</span>
+<span class="attribute">#[auto_from(mina_serialization_types::epoch_data::EpochData)]</span>
+<span class="doccomment">/// Epoch data
+</span><span class="kw">pub struct </span>EpochData {
+    <span class="doccomment">/// Epoch Ledger, contains ledger related data for the epoch
+    </span><span class="kw">pub </span>ledger: EpochLedger,
+    <span class="doccomment">///  Initialize the random number generator
+    </span><span class="kw">pub </span>seed: EpochSeed,
+    <span class="doccomment">/// State hash of first block of epoch
+    </span><span class="kw">pub </span>start_checkpoint: StateHash,
+    <span class="doccomment">/// State hash of last known block in the first 2/3 of epoch (excluding the current state)
+    </span><span class="kw">pub </span>lock_checkpoint: StateHash,
+    <span class="doccomment">/// Length of an epoch
+    </span><span class="kw">pub </span>epoch_length: Length,
 }
 
-<span class="kw">impl</span> <span class="ident">Hashable</span> <span class="kw">for</span> <span class="ident">EpochData</span> {
-    <span class="kw">type</span> <span class="ident">D</span> <span class="op">=</span> ();
+<span class="kw">impl </span>Hashable <span class="kw">for </span>EpochData {
+    <span class="kw">type </span>D = ();
 
-    <span class="kw">fn</span> <span class="ident">to_roinput</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">ROInput</span> {
-        <span class="ident">ROInput::new</span>()
-            .<span class="ident">append_hashable</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">seed</span>)
-            .<span class="ident">append_hashable</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">start_checkpoint</span>)
-            .<span class="ident">append_hashable</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">epoch_length</span>)
-            .<span class="ident">append_hashable</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">ledger</span>)
-            .<span class="ident">append_hashable</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">lock_checkpoint</span>)
+    <span class="kw">fn </span>to_roinput(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; ROInput {
+        ROInput::new()
+            .append_hashable(<span class="kw-2">&amp;</span><span class="self">self</span>.seed)
+            .append_hashable(<span class="kw-2">&amp;</span><span class="self">self</span>.start_checkpoint)
+            .append_hashable(<span class="kw-2">&amp;</span><span class="self">self</span>.epoch_length)
+            .append_hashable(<span class="kw-2">&amp;</span><span class="self">self</span>.ledger)
+            .append_hashable(<span class="kw-2">&amp;</span><span class="self">self</span>.lock_checkpoint)
     }
 
-    <span class="kw">fn</span> <span class="ident">domain_string</span>(<span class="kw">_</span>: <span class="ident"><span class="self">Self</span>::D</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> {
-        <span class="prelude-val">None</span>
-    }
+    <span class="kw">fn </span>domain_string(<span class="kw">_</span>: <span class="self">Self</span>::D) -&gt; <span class="prelude-ty">Option</span>&lt;String&gt; {
+        <span class="prelude-val">None
+    </span>}
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_rs_base" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (fe3342816 2022-08-01)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_rs_base" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (40336865f 2022-08-15)" ></div></body></html>

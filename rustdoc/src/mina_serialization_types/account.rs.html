@@ -219,226 +219,226 @@
 <span id="219">219</span>
 <span id="220">220</span>
 <span id="221">221</span>
-</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems</span>
-<span class="comment">// SPDX-License-Identifier: Apache-2.0</span>
+</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems
+// SPDX-License-Identifier: Apache-2.0
 
-<span class="doccomment">//! A Mina account record and supporting types</span>
-<span class="doccomment">//! This isn&#39;t sent over the network but is serialized and stored in</span>
-<span class="doccomment">//! kv stores, so to be compatible with those we need to support these types</span>
+</span><span class="doccomment">//! A Mina account record and supporting types
+//! This isn&#39;t sent over the network but is serialized and stored in
+//! kv stores, so to be compatible with those we need to support these types
 
-<span class="kw">use</span> <span class="kw">crate</span>::{
-    <span class="ident">signatures::CompressedCurvePoint</span>,
-    <span class="ident">v1</span>::{<span class="ident">AccountNonceV1</span>, <span class="ident">AmountV1</span>, <span class="ident">BlockTimeV1</span>, <span class="ident">HashV1</span>, <span class="ident">PublicKey2V1</span>, <span class="ident">PublicKeyV1</span>, <span class="ident">TokenIdV1</span>},
+</span><span class="kw">use crate</span>::{
+    signatures::CompressedCurvePoint,
+    v1::{AccountNonceV1, AmountV1, BlockTimeV1, HashV1, PublicKey2V1, PublicKeyV1, TokenIdV1},
 };
-<span class="kw">use</span> <span class="ident">serde</span>::{<span class="ident">Deserialize</span>, <span class="ident">Serialize</span>};
-<span class="kw">use</span> <span class="ident">versioned::Versioned</span>;
+<span class="kw">use </span>serde::{Deserialize, Serialize};
+<span class="kw">use </span>versioned::Versioned;
 
-<span class="doccomment">/// An account as is serialized into the Mina ledger database stores</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">PartialEq</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Account</span> {
-    <span class="doccomment">/// Account public key</span>
-    <span class="kw">pub</span> <span class="ident">public_key</span>: <span class="ident">PublicKey2V1</span>,
-    <span class="doccomment">/// Account token ID</span>
-    <span class="kw">pub</span> <span class="ident">token_id</span>: <span class="ident">TokenIdV1</span>,
-    <span class="doccomment">/// Permission associated with the given token</span>
-    <span class="kw">pub</span> <span class="ident">token_permissions</span>: <span class="ident">TokenPermissionsV1</span>,
-    <span class="doccomment">/// Balance of token held by account</span>
-    <span class="kw">pub</span> <span class="ident">balance</span>: <span class="ident">AmountV1</span>,
-    <span class="doccomment">/// Nonce (incremented with each tx to prevent replay)</span>
-    <span class="kw">pub</span> <span class="ident">nonce</span>: <span class="ident">AccountNonceV1</span>,
-    <span class="doccomment">/// ?</span>
-    <span class="kw">pub</span> <span class="ident">receipt_chain_hash</span>: <span class="ident">HashV1</span>,
-    <span class="doccomment">/// Delegate for staking purposes</span>
-    <span class="kw">pub</span> <span class="ident">delegate</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">PublicKeyV1</span><span class="op">&gt;</span>,
-    <span class="doccomment">/// The state hash this account is voting for</span>
-    <span class="kw">pub</span> <span class="ident">voting_for</span>: <span class="ident">HashV1</span>,
-    <span class="doccomment">/// Any timing limitations places on this accounts balance</span>
-    <span class="doccomment">/// Used for vesting</span>
-    <span class="kw">pub</span> <span class="ident">timing</span>: <span class="ident">TimingV1</span>,
-    <span class="doccomment">/// Level of permission required to do different account actions</span>
-    <span class="kw">pub</span> <span class="ident">permissions</span>: <span class="ident">PermissionsV1</span>,
-    <span class="doccomment">/// TODO: This should contain a Snapp account data once we have something to test against</span>
-    <span class="kw">pub</span> <span class="ident">snapp</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span>()<span class="op">&gt;</span>,
+<span class="doccomment">/// An account as is serialized into the Mina ledger database stores
+</span><span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]</span>
+<span class="kw">pub struct </span>Account {
+    <span class="doccomment">/// Account public key
+    </span><span class="kw">pub </span>public_key: PublicKey2V1,
+    <span class="doccomment">/// Account token ID
+    </span><span class="kw">pub </span>token_id: TokenIdV1,
+    <span class="doccomment">/// Permission associated with the given token
+    </span><span class="kw">pub </span>token_permissions: TokenPermissionsV1,
+    <span class="doccomment">/// Balance of token held by account
+    </span><span class="kw">pub </span>balance: AmountV1,
+    <span class="doccomment">/// Nonce (incremented with each tx to prevent replay)
+    </span><span class="kw">pub </span>nonce: AccountNonceV1,
+    <span class="doccomment">/// ?
+    </span><span class="kw">pub </span>receipt_chain_hash: HashV1,
+    <span class="doccomment">/// Delegate for staking purposes
+    </span><span class="kw">pub </span>delegate: <span class="prelude-ty">Option</span>&lt;PublicKeyV1&gt;,
+    <span class="doccomment">/// The state hash this account is voting for
+    </span><span class="kw">pub </span>voting_for: HashV1,
+    <span class="doccomment">/// Any timing limitations places on this accounts balance
+    /// Used for vesting
+    </span><span class="kw">pub </span>timing: TimingV1,
+    <span class="doccomment">/// Level of permission required to do different account actions
+    </span><span class="kw">pub </span>permissions: PermissionsV1,
+    <span class="doccomment">/// TODO: This should contain a Snapp account data once we have something to test against
+    </span><span class="kw">pub </span>snapp: <span class="prelude-ty">Option</span>&lt;()&gt;,
 }
 
-<span class="doccomment">/// An account as is serialized into the Mina ledger database stores (v1)</span>
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">AccountV1</span> <span class="op">=</span> <span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">Account</span>, <span class="number">1</span><span class="op">&gt;</span>, <span class="number">1</span><span class="op">&gt;</span>, <span class="number">1</span><span class="op">&gt;</span>;
+<span class="doccomment">/// An account as is serialized into the Mina ledger database stores (v1)
+</span><span class="kw">pub type </span>AccountV1 = Versioned&lt;Versioned&lt;Versioned&lt;Account, <span class="number">1</span>&gt;, <span class="number">1</span>&gt;, <span class="number">1</span>&gt;;
 
-<span class="doccomment">/// An account as is serialized into the Mina ledger database stores (unversioned)</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">PartialEq</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">AccountV0</span> {
-    <span class="doccomment">/// Account public key</span>
-    <span class="kw">pub</span> <span class="ident">public_key</span>: <span class="ident">CompressedCurvePoint</span>,
-    <span class="doccomment">/// Account token ID</span>
-    <span class="kw">pub</span> <span class="ident">token_id</span>: <span class="ident">u64</span>,
-    <span class="doccomment">/// Permission associated with the given token</span>
-    <span class="kw">pub</span> <span class="ident">token_permissions</span>: <span class="ident">TokenPermissions</span>,
-    <span class="doccomment">/// Token Symbol</span>
-    <span class="kw">pub</span> <span class="ident">token_symbol</span>: [<span class="ident">u8</span>; <span class="number">32</span>],
-    <span class="doccomment">/// Balance of token held by account</span>
-    <span class="kw">pub</span> <span class="ident">balance</span>: <span class="ident">u64</span>,
-    <span class="doccomment">/// Nonce (incremented with each tx to prevent replay)</span>
-    <span class="kw">pub</span> <span class="ident">nonce</span>: <span class="ident">u32</span>,
-    <span class="doccomment">/// ?</span>
-    <span class="kw">pub</span> <span class="ident">receipt_chain_hash</span>: [<span class="ident">u8</span>; <span class="number">32</span>],
-    <span class="doccomment">/// Delegate for staking purposes</span>
-    <span class="kw">pub</span> <span class="ident">delegate</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">CompressedCurvePoint</span><span class="op">&gt;</span>,
-    <span class="doccomment">/// The state hash this account is voting for</span>
-    <span class="kw">pub</span> <span class="ident">voting_for</span>: [<span class="ident">u8</span>; <span class="number">32</span>],
-    <span class="doccomment">/// Any timing limitations places on this accounts balance</span>
-    <span class="doccomment">/// Used for vesting</span>
-    <span class="kw">pub</span> <span class="ident">timing</span>: <span class="ident">TimingV0</span>,
-    <span class="doccomment">/// Level of permission required to do different account actions</span>
-    <span class="kw">pub</span> <span class="ident">permissions</span>: <span class="ident">Permissions</span>,
-    <span class="doccomment">/// TODO: This should contain a Snapp account data once we have something to test against</span>
-    <span class="kw">pub</span> <span class="ident">zkapp</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span>()<span class="op">&gt;</span>,
-    <span class="doccomment">/// TODO: This should contain a Snapp account data once we have something to test against</span>
-    <span class="kw">pub</span> <span class="ident">zkapp_uri</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span>()<span class="op">&gt;</span>,
+<span class="doccomment">/// An account as is serialized into the Mina ledger database stores (unversioned)
+</span><span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]</span>
+<span class="kw">pub struct </span>AccountV0 {
+    <span class="doccomment">/// Account public key
+    </span><span class="kw">pub </span>public_key: CompressedCurvePoint,
+    <span class="doccomment">/// Account token ID
+    </span><span class="kw">pub </span>token_id: u64,
+    <span class="doccomment">/// Permission associated with the given token
+    </span><span class="kw">pub </span>token_permissions: TokenPermissions,
+    <span class="doccomment">/// Token Symbol
+    </span><span class="kw">pub </span>token_symbol: [u8; <span class="number">32</span>],
+    <span class="doccomment">/// Balance of token held by account
+    </span><span class="kw">pub </span>balance: u64,
+    <span class="doccomment">/// Nonce (incremented with each tx to prevent replay)
+    </span><span class="kw">pub </span>nonce: u32,
+    <span class="doccomment">/// ?
+    </span><span class="kw">pub </span>receipt_chain_hash: [u8; <span class="number">32</span>],
+    <span class="doccomment">/// Delegate for staking purposes
+    </span><span class="kw">pub </span>delegate: <span class="prelude-ty">Option</span>&lt;CompressedCurvePoint&gt;,
+    <span class="doccomment">/// The state hash this account is voting for
+    </span><span class="kw">pub </span>voting_for: [u8; <span class="number">32</span>],
+    <span class="doccomment">/// Any timing limitations places on this accounts balance
+    /// Used for vesting
+    </span><span class="kw">pub </span>timing: TimingV0,
+    <span class="doccomment">/// Level of permission required to do different account actions
+    </span><span class="kw">pub </span>permissions: Permissions,
+    <span class="doccomment">/// TODO: This should contain a Snapp account data once we have something to test against
+    </span><span class="kw">pub </span>zkapp: <span class="prelude-ty">Option</span>&lt;()&gt;,
+    <span class="doccomment">/// TODO: This should contain a Snapp account data once we have something to test against
+    </span><span class="kw">pub </span>zkapp_uri: <span class="prelude-ty">Option</span>&lt;()&gt;,
 }
 
-<span class="doccomment">/// FIXME: Need to learn exactly what this is..</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">PartialEq</span>)]</span>
-<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">TokenPermissions</span> {
-    <span class="doccomment">/// Account does not own a token</span>
-    <span class="ident">NotOwned</span> {
-        <span class="doccomment">/// ?</span>
-        <span class="ident">account_disabled</span>: <span class="ident">bool</span>,
+<span class="doccomment">/// FIXME: Need to learn exactly what this is..
+</span><span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]</span>
+<span class="kw">pub enum </span>TokenPermissions {
+    <span class="doccomment">/// Account does not own a token
+    </span>NotOwned {
+        <span class="doccomment">/// ?
+        </span>account_disabled: bool,
     },
-    <span class="doccomment">/// Account owns a token</span>
-    <span class="ident">TokenOwned</span> {
-        <span class="doccomment">/// ?</span>
-        <span class="ident">disable_new_accounts</span>: <span class="ident">bool</span>,
+    <span class="doccomment">/// Account owns a token
+    </span>TokenOwned {
+        <span class="doccomment">/// ?
+        </span>disable_new_accounts: bool,
     },
 }
 
-<span class="doccomment">///</span>
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">TokenPermissionsV1</span> <span class="op">=</span> <span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">TokenPermissions</span>, <span class="number">1</span><span class="op">&gt;</span>, <span class="number">1</span><span class="op">&gt;</span>;
+<span class="doccomment">///
+</span><span class="kw">pub type </span>TokenPermissionsV1 = Versioned&lt;Versioned&lt;TokenPermissions, <span class="number">1</span>&gt;, <span class="number">1</span>&gt;;
 
-<span class="doccomment">/// Permissions associated with the account</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">PartialEq</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">PermissionsLegacy</span> {
-    <span class="doccomment">/// If the account can stake</span>
-    <span class="kw">pub</span> <span class="ident">stake</span>: <span class="ident">bool</span>,
-    <span class="doccomment">/// Permission required to edit state</span>
-    <span class="kw">pub</span> <span class="ident">edit_state</span>: <span class="ident">AuthRequiredV1</span>,
-    <span class="doccomment">/// Permission required to send a balance</span>
-    <span class="kw">pub</span> <span class="ident">send</span>: <span class="ident">AuthRequiredV1</span>,
-    <span class="doccomment">/// Permission required to receive balance</span>
-    <span class="kw">pub</span> <span class="ident">receive</span>: <span class="ident">AuthRequiredV1</span>,
-    <span class="doccomment">/// Permission required to set the delegate</span>
-    <span class="kw">pub</span> <span class="ident">set_delegate</span>: <span class="ident">AuthRequiredV1</span>,
-    <span class="doccomment">/// Permission required to cange permissions</span>
-    <span class="kw">pub</span> <span class="ident">set_permissions</span>: <span class="ident">AuthRequiredV1</span>,
-    <span class="doccomment">/// Permission require to set verification key</span>
-    <span class="kw">pub</span> <span class="ident">set_verification_key</span>: <span class="ident">AuthRequiredV1</span>,
+<span class="doccomment">/// Permissions associated with the account
+</span><span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]</span>
+<span class="kw">pub struct </span>PermissionsLegacy {
+    <span class="doccomment">/// If the account can stake
+    </span><span class="kw">pub </span>stake: bool,
+    <span class="doccomment">/// Permission required to edit state
+    </span><span class="kw">pub </span>edit_state: AuthRequiredV1,
+    <span class="doccomment">/// Permission required to send a balance
+    </span><span class="kw">pub </span>send: AuthRequiredV1,
+    <span class="doccomment">/// Permission required to receive balance
+    </span><span class="kw">pub </span>receive: AuthRequiredV1,
+    <span class="doccomment">/// Permission required to set the delegate
+    </span><span class="kw">pub </span>set_delegate: AuthRequiredV1,
+    <span class="doccomment">/// Permission required to cange permissions
+    </span><span class="kw">pub </span>set_permissions: AuthRequiredV1,
+    <span class="doccomment">/// Permission require to set verification key
+    </span><span class="kw">pub </span>set_verification_key: AuthRequiredV1,
 }
 
-<span class="doccomment">/// Permissions associated with the account</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">PartialEq</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Permissions</span> {
-    <span class="doccomment">/// Permission required to edit state</span>
-    <span class="kw">pub</span> <span class="ident">edit_state</span>: <span class="ident">AuthRequired</span>,
-    <span class="doccomment">/// Permission required to send a balance</span>
-    <span class="kw">pub</span> <span class="ident">send</span>: <span class="ident">AuthRequired</span>,
-    <span class="doccomment">/// Permission required to receive balance</span>
-    <span class="kw">pub</span> <span class="ident">receive</span>: <span class="ident">AuthRequired</span>,
-    <span class="doccomment">/// Permission required to set the delegate</span>
-    <span class="kw">pub</span> <span class="ident">set_delegate</span>: <span class="ident">AuthRequired</span>,
-    <span class="doccomment">/// Permission required to cange permissions</span>
-    <span class="kw">pub</span> <span class="ident">set_permissions</span>: <span class="ident">AuthRequired</span>,
-    <span class="doccomment">/// Permission require to set verification key</span>
-    <span class="kw">pub</span> <span class="ident">set_verification_key</span>: <span class="ident">AuthRequired</span>,
-    <span class="doccomment">/// Permission require to set zkapp uri</span>
-    <span class="kw">pub</span> <span class="ident">set_zkapp_uri</span>: <span class="ident">AuthRequired</span>,
-    <span class="doccomment">/// Permission require to edit sequence state</span>
-    <span class="kw">pub</span> <span class="ident">edit_sequence_state</span>: <span class="ident">AuthRequired</span>,
-    <span class="doccomment">/// Permission require to set token symbol</span>
-    <span class="kw">pub</span> <span class="ident">set_token_symbol</span>: <span class="ident">AuthRequired</span>,
-    <span class="doccomment">/// Permission require to increment nonce</span>
-    <span class="kw">pub</span> <span class="ident">increment_nonce</span>: <span class="ident">AuthRequired</span>,
-    <span class="doccomment">/// Permission require to set voting for</span>
-    <span class="kw">pub</span> <span class="ident">set_voting_for</span>: <span class="ident">AuthRequired</span>,
+<span class="doccomment">/// Permissions associated with the account
+</span><span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]</span>
+<span class="kw">pub struct </span>Permissions {
+    <span class="doccomment">/// Permission required to edit state
+    </span><span class="kw">pub </span>edit_state: AuthRequired,
+    <span class="doccomment">/// Permission required to send a balance
+    </span><span class="kw">pub </span>send: AuthRequired,
+    <span class="doccomment">/// Permission required to receive balance
+    </span><span class="kw">pub </span>receive: AuthRequired,
+    <span class="doccomment">/// Permission required to set the delegate
+    </span><span class="kw">pub </span>set_delegate: AuthRequired,
+    <span class="doccomment">/// Permission required to cange permissions
+    </span><span class="kw">pub </span>set_permissions: AuthRequired,
+    <span class="doccomment">/// Permission require to set verification key
+    </span><span class="kw">pub </span>set_verification_key: AuthRequired,
+    <span class="doccomment">/// Permission require to set zkapp uri
+    </span><span class="kw">pub </span>set_zkapp_uri: AuthRequired,
+    <span class="doccomment">/// Permission require to edit sequence state
+    </span><span class="kw">pub </span>edit_sequence_state: AuthRequired,
+    <span class="doccomment">/// Permission require to set token symbol
+    </span><span class="kw">pub </span>set_token_symbol: AuthRequired,
+    <span class="doccomment">/// Permission require to increment nonce
+    </span><span class="kw">pub </span>increment_nonce: AuthRequired,
+    <span class="doccomment">/// Permission require to set voting for
+    </span><span class="kw">pub </span>set_voting_for: AuthRequired,
 }
 
-<span class="doccomment">/// Permissions associated with the account (v1)</span>
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">PermissionsV1</span> <span class="op">=</span> <span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">PermissionsLegacy</span>, <span class="number">1</span><span class="op">&gt;</span>, <span class="number">1</span><span class="op">&gt;</span>;
+<span class="doccomment">/// Permissions associated with the account (v1)
+</span><span class="kw">pub type </span>PermissionsV1 = Versioned&lt;Versioned&lt;PermissionsLegacy, <span class="number">1</span>&gt;, <span class="number">1</span>&gt;;
 
-<span class="doccomment">/// The level of auth required to perform a particular action with an account</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">PartialEq</span>)]</span>
-<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">AuthRequired</span> {
-    <span class="doccomment">/// None required</span>
-    <span class="prelude-val">None</span>,
-    <span class="doccomment">/// Either a proof or a signature</span>
-    <span class="ident">Either</span>,
-    <span class="doccomment">/// Proof must be provided</span>
-    <span class="ident">Proof</span>,
-    <span class="doccomment">/// Signature must be provided</span>
-    <span class="ident">Signature</span>,
-    <span class="comment">// FIXME: Both is removed from hard fork</span>
-    <span class="doccomment">/// Both proof and signature must be provided</span>
-    <span class="ident">Both</span>,
-    <span class="doccomment">/// This action can never occur</span>
-    <span class="ident">Impossible</span>,
+<span class="doccomment">/// The level of auth required to perform a particular action with an account
+</span><span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]</span>
+<span class="kw">pub enum </span>AuthRequired {
+    <span class="doccomment">/// None required
+    </span><span class="prelude-val">None</span>,
+    <span class="doccomment">/// Either a proof or a signature
+    </span>Either,
+    <span class="doccomment">/// Proof must be provided
+    </span>Proof,
+    <span class="doccomment">/// Signature must be provided
+    </span>Signature,
+    <span class="comment">// FIXME: Both is removed from hard fork
+    </span><span class="doccomment">/// Both proof and signature must be provided
+    </span>Both,
+    <span class="doccomment">/// This action can never occur
+    </span>Impossible,
 }
 
-<span class="doccomment">/// The level of auth required to perform a particular action with an account (v1)</span>
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">AuthRequiredV1</span> <span class="op">=</span> <span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">AuthRequired</span>, <span class="number">1</span><span class="op">&gt;</span>;
+<span class="doccomment">/// The level of auth required to perform a particular action with an account (v1)
+</span><span class="kw">pub type </span>AuthRequiredV1 = Versioned&lt;AuthRequired, <span class="number">1</span>&gt;;
 
-<span class="doccomment">/// Timing information for an account with regard to when its balance is accessable</span>
-<span class="doccomment">/// This is to allow vesting from an initial genesis allocation</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">PartialEq</span>)]</span>
-<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">Timing</span> {
-    <span class="doccomment">/// Account does not have any timing limitations</span>
-    <span class="ident">Untimed</span>,
-    <span class="doccomment">/// Account does have timing limitations as specified</span>
-    <span class="ident">Timed</span>(<span class="ident">TimedDataV1</span>),
+<span class="doccomment">/// Timing information for an account with regard to when its balance is accessable
+/// This is to allow vesting from an initial genesis allocation
+</span><span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]</span>
+<span class="kw">pub enum </span>Timing {
+    <span class="doccomment">/// Account does not have any timing limitations
+    </span>Untimed,
+    <span class="doccomment">/// Account does have timing limitations as specified
+    </span>Timed(TimedDataV1),
 }
 
-<span class="doccomment">/// TODO</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">PartialEq</span>)]</span>
-<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">TimingV0</span> {
-    <span class="doccomment">/// Account does not have any timing limitations</span>
-    <span class="ident">Untimed</span>,
-    <span class="doccomment">/// Account does have timing limitations as specified</span>
-    <span class="ident">Timed</span>(<span class="ident">TimedDataV0</span>),
+<span class="doccomment">/// TODO
+</span><span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]</span>
+<span class="kw">pub enum </span>TimingV0 {
+    <span class="doccomment">/// Account does not have any timing limitations
+    </span>Untimed,
+    <span class="doccomment">/// Account does have timing limitations as specified
+    </span>Timed(TimedDataV0),
 }
 
-<span class="doccomment">/// Payload for the timing variant Timed</span>
-<span class="doccomment">/// Needs its own version byte</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">PartialEq</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">TimedData</span> {
-    <span class="doccomment">/// Initial balance for the account</span>
-    <span class="kw">pub</span> <span class="ident">initial_minimum_balance</span>: <span class="ident">AmountV1</span>,
-    <span class="doccomment">/// Time when all balance is avaiable</span>
-    <span class="kw">pub</span> <span class="ident">cliff_time</span>: <span class="ident">BlockTimeV1</span>,
-    <span class="doccomment">/// Amount extra available when fully fested</span>
-    <span class="kw">pub</span> <span class="ident">cliff_amount</span>: <span class="ident">AmountV1</span>,
-    <span class="doccomment">/// Amount released in each vesting period</span>
-    <span class="kw">pub</span> <span class="ident">vesting_increment</span>: <span class="ident">AmountV1</span>,
-    <span class="doccomment">/// Period in whcih allocation is released in chunks</span>
-    <span class="kw">pub</span> <span class="ident">vesting_period</span>: <span class="ident">BlockTimeV1</span>,
+<span class="doccomment">/// Payload for the timing variant Timed
+/// Needs its own version byte
+</span><span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]</span>
+<span class="kw">pub struct </span>TimedData {
+    <span class="doccomment">/// Initial balance for the account
+    </span><span class="kw">pub </span>initial_minimum_balance: AmountV1,
+    <span class="doccomment">/// Time when all balance is avaiable
+    </span><span class="kw">pub </span>cliff_time: BlockTimeV1,
+    <span class="doccomment">/// Amount extra available when fully fested
+    </span><span class="kw">pub </span>cliff_amount: AmountV1,
+    <span class="doccomment">/// Amount released in each vesting period
+    </span><span class="kw">pub </span>vesting_increment: AmountV1,
+    <span class="doccomment">/// Period in whcih allocation is released in chunks
+    </span><span class="kw">pub </span>vesting_period: BlockTimeV1,
 }
 
-<span class="doccomment">/// TODO</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">PartialEq</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">TimedDataV0</span> {
-    <span class="doccomment">/// Initial balance for the account</span>
-    <span class="kw">pub</span> <span class="ident">initial_minimum_balance</span>: <span class="ident">u64</span>,
-    <span class="doccomment">/// Time when all balance is avaiable</span>
-    <span class="kw">pub</span> <span class="ident">cliff_time</span>: <span class="ident">u64</span>,
-    <span class="doccomment">/// Amount extra available when fully fested</span>
-    <span class="kw">pub</span> <span class="ident">cliff_amount</span>: <span class="ident">u64</span>,
-    <span class="doccomment">/// Period in whcih allocation is released in chunks</span>
-    <span class="kw">pub</span> <span class="ident">vesting_period</span>: <span class="ident">u64</span>,
-    <span class="doccomment">/// Amount released in each vesting period</span>
-    <span class="kw">pub</span> <span class="ident">vesting_increment</span>: <span class="ident">u64</span>,
+<span class="doccomment">/// TODO
+</span><span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]</span>
+<span class="kw">pub struct </span>TimedDataV0 {
+    <span class="doccomment">/// Initial balance for the account
+    </span><span class="kw">pub </span>initial_minimum_balance: u64,
+    <span class="doccomment">/// Time when all balance is avaiable
+    </span><span class="kw">pub </span>cliff_time: u64,
+    <span class="doccomment">/// Amount extra available when fully fested
+    </span><span class="kw">pub </span>cliff_amount: u64,
+    <span class="doccomment">/// Period in whcih allocation is released in chunks
+    </span><span class="kw">pub </span>vesting_period: u64,
+    <span class="doccomment">/// Amount released in each vesting period
+    </span><span class="kw">pub </span>vesting_increment: u64,
 }
 
-<span class="doccomment">/// Payload for the timing variant Timed</span>
-<span class="doccomment">/// Needs its own version byte (v1)</span>
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">TimedDataV1</span> <span class="op">=</span> <span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">TimedData</span>, <span class="number">1</span><span class="op">&gt;</span>;
+<span class="doccomment">/// Payload for the timing variant Timed
+/// Needs its own version byte (v1)
+</span><span class="kw">pub type </span>TimedDataV1 = Versioned&lt;TimedData, <span class="number">1</span>&gt;;
 
-<span class="doccomment">/// Timing information for an account with regard to when its balance is accessable (v1)</span>
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">TimingV1</span> <span class="op">=</span> <span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">Timing</span>, <span class="number">1</span><span class="op">&gt;</span>, <span class="number">1</span><span class="op">&gt;</span>;
+<span class="doccomment">/// Timing information for an account with regard to when its balance is accessable (v1)
+</span><span class="kw">pub type </span>TimingV1 = Versioned&lt;Versioned&lt;Timing, <span class="number">1</span>&gt;, <span class="number">1</span>&gt;;
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_serialization_types" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (fe3342816 2022-08-01)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_serialization_types" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (40336865f 2022-08-15)" ></div></body></html>

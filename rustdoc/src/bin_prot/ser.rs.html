@@ -480,487 +480,487 @@
 <span id="480">480</span>
 <span id="481">481</span>
 <span id="482">482</span>
-</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems</span>
-<span class="comment">// SPDX-License-Identifier: Apache-2.0</span>
+</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems
+// SPDX-License-Identifier: Apache-2.0
 
-<span class="doccomment">//! Serialization for BinProt following the standard serde module layout</span>
+</span><span class="doccomment">//! Serialization for BinProt following the standard serde module layout
 
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::caml_hash_variant</span>;
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::error</span>::{<span class="ident">Error</span>, <span class="prelude-ty">Result</span>};
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::WriteBinProtExt</span>;
-<span class="kw">use</span> <span class="ident">serde::ser</span>;
-<span class="kw">use</span> <span class="ident">serde::Serialize</span>;
+</span><span class="kw">use </span><span class="kw">crate</span>::caml_hash_variant;
+<span class="kw">use </span><span class="kw">crate</span>::error::{Error, <span class="prelude-ty">Result</span>};
+<span class="kw">use </span><span class="kw">crate</span>::WriteBinProtExt;
+<span class="kw">use </span>serde::ser;
+<span class="kw">use </span>serde::Serialize;
 
-<span class="doccomment">/// Serializer for writing BinProt bytes to a writer</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Serializer</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span> {
-    <span class="ident">writer</span>: <span class="ident">W</span>,
+<span class="doccomment">/// Serializer for writing BinProt bytes to a writer
+</span><span class="kw">pub struct </span>Serializer&lt;W&gt; {
+    writer: W,
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span> <span class="ident">Serializer</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span> {
-    <span class="doccomment">/// Create a new serializer given a writer</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">writer</span>: <span class="ident">W</span>) -&gt; <span class="self">Self</span> {
-        <span class="self">Self</span> { <span class="ident">writer</span> }
+<span class="kw">impl</span>&lt;W&gt; Serializer&lt;W&gt; {
+    <span class="doccomment">/// Create a new serializer given a writer
+    </span><span class="kw">pub fn </span>new(writer: W) -&gt; <span class="self">Self </span>{
+        <span class="self">Self </span>{ writer }
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span> <span class="ident">Serializer</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">W</span>: <span class="ident">std::io::Write</span>,
+<span class="kw">impl</span>&lt;W&gt; Serializer&lt;W&gt;
+<span class="kw">where
+    </span>W: std::io::Write,
 {
-    <span class="kw">fn</span> <span class="ident">write</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">buf</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>]) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="ident">writer</span>.<span class="ident">write_all</span>(<span class="ident">buf</span>)<span class="question-mark">?</span>;
+    <span class="kw">fn </span>write(<span class="kw-2">&amp;mut </span><span class="self">self</span>, buf: <span class="kw-2">&amp;</span>[u8]) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+        <span class="self">self</span>.writer.write_all(buf)<span class="question-mark">?</span>;
         <span class="prelude-val">Ok</span>(())
     }
 
-    <span class="kw">fn</span> <span class="ident">write_byte</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">b</span>: <span class="ident">u8</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="ident">write</span>(<span class="kw-2">&amp;</span>[<span class="ident">b</span>])
+    <span class="kw">fn </span>write_byte(<span class="kw-2">&amp;mut </span><span class="self">self</span>, b: u8) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+        <span class="self">self</span>.write(<span class="kw-2">&amp;</span>[b])
     }
 
-    <span class="comment">// This can be called to serialize a Polyvar which has a 4 byte</span>
-    <span class="comment">// tag OR a variant index which is 1-2 bytes. We assume if they fit into a single byte then they</span>
-    <span class="comment">// are an index and if they are larger than 1 byte they are a polyvar.</span>
-    <span class="comment">// IMPORTANT: This could bug out in the case that a polyvar hash is zero in all places except the lowest byte.</span>
-    <span class="comment">// The probability of this happening is vanishingly small but something to be aware of.</span>
-    <span class="kw">fn</span> <span class="ident">write_variant_index_or_tag</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">name</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">variant</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">index</span>: <span class="ident">u32</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-        <span class="kw">if</span> <span class="ident">name</span> <span class="op">==</span> <span class="string">&quot;Polyvar&quot;</span> {
-            <span class="self">self</span>.<span class="ident">writer</span>
-                .<span class="ident">bin_write_polyvar_tag</span>(<span class="ident">caml_hash_variant</span>(<span class="ident">variant</span>))<span class="question-mark">?</span>;
-        } <span class="kw">else</span> <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Ok</span>(<span class="ident">b</span>) <span class="op">=</span> <span class="ident">check_variant_index</span>(<span class="ident">index</span>) {
-            <span class="comment">// it is a sum variant</span>
-            <span class="self">self</span>.<span class="ident">writer</span>.<span class="ident">bin_write_variant_index</span>(<span class="ident">b</span>)<span class="question-mark">?</span>;
-        } <span class="kw">else</span> {
-            <span class="comment">// assume it is a Polyvar tagged variant</span>
-            <span class="self">self</span>.<span class="ident">writer</span>.<span class="ident">bin_write_polyvar_tag</span>(<span class="ident">index</span>)<span class="question-mark">?</span>;
+    <span class="comment">// This can be called to serialize a Polyvar which has a 4 byte
+    // tag OR a variant index which is 1-2 bytes. We assume if they fit into a single byte then they
+    // are an index and if they are larger than 1 byte they are a polyvar.
+    // IMPORTANT: This could bug out in the case that a polyvar hash is zero in all places except the lowest byte.
+    // The probability of this happening is vanishingly small but something to be aware of.
+    </span><span class="kw">fn </span>write_variant_index_or_tag(<span class="kw-2">&amp;mut </span><span class="self">self</span>, name: <span class="kw-2">&amp;</span>str, variant: <span class="kw-2">&amp;</span>str, index: u32) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+        <span class="kw">if </span>name == <span class="string">&quot;Polyvar&quot; </span>{
+            <span class="self">self</span>.writer
+                .bin_write_polyvar_tag(caml_hash_variant(variant))<span class="question-mark">?</span>;
+        } <span class="kw">else if let </span><span class="prelude-val">Ok</span>(b) = check_variant_index(index) {
+            <span class="comment">// it is a sum variant
+            </span><span class="self">self</span>.writer.bin_write_variant_index(b)<span class="question-mark">?</span>;
+        } <span class="kw">else </span>{
+            <span class="comment">// assume it is a Polyvar tagged variant
+            </span><span class="self">self</span>.writer.bin_write_polyvar_tag(index)<span class="question-mark">?</span>;
         }
         <span class="prelude-val">Ok</span>(())
     }
 }
 
-<span class="doccomment">/// Convenience function, creates  serializer and uses it to write the given value</span>
-<span class="doccomment">/// to the writer</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">to_writer</span><span class="op">&lt;</span><span class="ident">W</span>, <span class="ident">T</span><span class="op">&gt;</span>(<span class="ident">writer</span>: <span class="kw-2">&amp;mut</span> <span class="ident">W</span>, <span class="ident">value</span>: <span class="kw-2">&amp;</span><span class="ident">T</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">W</span>: <span class="ident">std::io::Write</span>,
-    <span class="ident">T</span>: <span class="ident">Serialize</span>,
+<span class="doccomment">/// Convenience function, creates  serializer and uses it to write the given value
+/// to the writer
+</span><span class="kw">pub fn </span>to_writer&lt;W, T&gt;(writer: <span class="kw-2">&amp;mut </span>W, value: <span class="kw-2">&amp;</span>T) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt;
+<span class="kw">where
+    </span>W: std::io::Write,
+    T: Serialize,
 {
-    <span class="ident">value</span>.<span class="ident">serialize</span>(<span class="kw-2">&amp;mut</span> <span class="ident">Serializer::new</span>(<span class="ident">writer</span>))
+    value.serialize(<span class="kw-2">&amp;mut </span>Serializer::new(writer))
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">W</span><span class="op">&gt;</span> <span class="ident">ser::Serializer</span> <span class="kw">for</span> <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="kw-2">mut</span> <span class="ident">Serializer</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">W</span>: <span class="ident">std::io::Write</span>,
+<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, W&gt; ser::Serializer <span class="kw">for </span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span><span class="kw-2">mut </span>Serializer&lt;W&gt;
+<span class="kw">where
+    </span>W: std::io::Write,
 {
-    <span class="comment">// The output type produced by this `Serializer` during successful</span>
-    <span class="comment">// serialization. Most serializers that produce text or binary output should</span>
-    <span class="comment">// set `Ok = ()` and serialize into an `io::Write` or buffer contained</span>
-    <span class="comment">// within the `Serializer` instance, as happens here. Serializers that build</span>
-    <span class="comment">// in-memory data structures may be simplified by using `Ok` to propagate</span>
-    <span class="comment">// the data structure around.</span>
-    <span class="kw">type</span> <span class="prelude-val">Ok</span> <span class="op">=</span> ();
+    <span class="comment">// The output type produced by this `Serializer` during successful
+    // serialization. Most serializers that produce text or binary output should
+    // set `Ok = ()` and serialize into an `io::Write` or buffer contained
+    // within the `Serializer` instance, as happens here. Serializers that build
+    // in-memory data structures may be simplified by using `Ok` to propagate
+    // the data structure around.
+    </span><span class="kw">type </span><span class="prelude-val">Ok </span>= ();
 
-    <span class="comment">// The error type when some error occurs during serialization.</span>
-    <span class="kw">type</span> <span class="ident">Error</span> <span class="op">=</span> <span class="ident">Error</span>;
+    <span class="comment">// The error type when some error occurs during serialization.
+    </span><span class="kw">type </span>Error = Error;
 
-    <span class="comment">// Associated types for keeping track of additional state while serializing</span>
-    <span class="comment">// compound data structures like sequences and maps. In this case no</span>
-    <span class="comment">// additional state is required beyond what is already stored in the</span>
-    <span class="comment">// Serializer struct.</span>
-    <span class="kw">type</span> <span class="ident">SerializeSeq</span> <span class="op">=</span> <span class="self">Self</span>;
-    <span class="kw">type</span> <span class="ident">SerializeTuple</span> <span class="op">=</span> <span class="self">Self</span>;
-    <span class="kw">type</span> <span class="ident">SerializeTupleStruct</span> <span class="op">=</span> <span class="self">Self</span>;
-    <span class="kw">type</span> <span class="ident">SerializeTupleVariant</span> <span class="op">=</span> <span class="self">Self</span>;
-    <span class="kw">type</span> <span class="ident">SerializeMap</span> <span class="op">=</span> <span class="self">Self</span>;
-    <span class="kw">type</span> <span class="ident">SerializeStruct</span> <span class="op">=</span> <span class="self">Self</span>;
-    <span class="kw">type</span> <span class="ident">SerializeStructVariant</span> <span class="op">=</span> <span class="self">Self</span>;
+    <span class="comment">// Associated types for keeping track of additional state while serializing
+    // compound data structures like sequences and maps. In this case no
+    // additional state is required beyond what is already stored in the
+    // Serializer struct.
+    </span><span class="kw">type </span>SerializeSeq = <span class="self">Self</span>;
+    <span class="kw">type </span>SerializeTuple = <span class="self">Self</span>;
+    <span class="kw">type </span>SerializeTupleStruct = <span class="self">Self</span>;
+    <span class="kw">type </span>SerializeTupleVariant = <span class="self">Self</span>;
+    <span class="kw">type </span>SerializeMap = <span class="self">Self</span>;
+    <span class="kw">type </span>SerializeStruct = <span class="self">Self</span>;
+    <span class="kw">type </span>SerializeStructVariant = <span class="self">Self</span>;
 
-    <span class="comment">// the spec defines booleans be written as:</span>
-    <span class="comment">// false  -&gt;  0x00</span>
-    <span class="comment">// true   -&gt;  0x01</span>
-    <span class="kw">fn</span> <span class="ident">serialize_bool</span>(<span class="self">self</span>, <span class="ident">v</span>: <span class="ident">bool</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="ident">writer</span>.<span class="ident">bin_write_bool</span>(<span class="ident">v</span>)<span class="question-mark">?</span>;
+    <span class="comment">// the spec defines booleans be written as:
+    // false  -&gt;  0x00
+    // true   -&gt;  0x01
+    </span><span class="kw">fn </span>serialize_bool(<span class="self">self</span>, v: bool) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+        <span class="self">self</span>.writer.bin_write_bool(v)<span class="question-mark">?</span>;
         <span class="prelude-val">Ok</span>(())
     }
 
-    <span class="comment">// All integers by default get mapped to the Integer bin_prot</span>
-    <span class="kw">fn</span> <span class="ident">serialize_i8</span>(<span class="self">self</span>, <span class="ident">v</span>: <span class="ident">i8</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="ident">writer</span>.<span class="ident">bin_write_integer</span>(<span class="ident">v</span>)<span class="question-mark">?</span>;
+    <span class="comment">// All integers by default get mapped to the Integer bin_prot
+    </span><span class="kw">fn </span>serialize_i8(<span class="self">self</span>, v: i8) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+        <span class="self">self</span>.writer.bin_write_integer(v)<span class="question-mark">?</span>;
         <span class="prelude-val">Ok</span>(())
     }
 
-    <span class="kw">fn</span> <span class="ident">serialize_i16</span>(<span class="self">self</span>, <span class="ident">v</span>: <span class="ident">i16</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="ident">writer</span>.<span class="ident">bin_write_integer</span>(<span class="ident">v</span>)<span class="question-mark">?</span>;
+    <span class="kw">fn </span>serialize_i16(<span class="self">self</span>, v: i16) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+        <span class="self">self</span>.writer.bin_write_integer(v)<span class="question-mark">?</span>;
         <span class="prelude-val">Ok</span>(())
     }
 
-    <span class="kw">fn</span> <span class="ident">serialize_i32</span>(<span class="self">self</span>, <span class="ident">v</span>: <span class="ident">i32</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="ident">writer</span>.<span class="ident">bin_write_integer</span>(<span class="ident">v</span>)<span class="question-mark">?</span>;
+    <span class="kw">fn </span>serialize_i32(<span class="self">self</span>, v: i32) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+        <span class="self">self</span>.writer.bin_write_integer(v)<span class="question-mark">?</span>;
         <span class="prelude-val">Ok</span>(())
     }
 
-    <span class="kw">fn</span> <span class="ident">serialize_i64</span>(<span class="self">self</span>, <span class="ident">v</span>: <span class="ident">i64</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="ident">writer</span>.<span class="ident">bin_write_integer</span>(<span class="ident">v</span>)<span class="question-mark">?</span>;
+    <span class="kw">fn </span>serialize_i64(<span class="self">self</span>, v: i64) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+        <span class="self">self</span>.writer.bin_write_integer(v)<span class="question-mark">?</span>;
         <span class="prelude-val">Ok</span>(())
     }
 
-    <span class="kw">fn</span> <span class="ident">serialize_u8</span>(<span class="self">self</span>, <span class="ident">v</span>: <span class="ident">u8</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="ident">write_byte</span>(<span class="ident">v</span>)<span class="question-mark">?</span>;
+    <span class="kw">fn </span>serialize_u8(<span class="self">self</span>, v: u8) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+        <span class="self">self</span>.write_byte(v)<span class="question-mark">?</span>;
         <span class="prelude-val">Ok</span>(())
     }
 
-    <span class="kw">fn</span> <span class="ident">serialize_u16</span>(<span class="self">self</span>, <span class="ident">v</span>: <span class="ident">u16</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="ident">writer</span>.<span class="ident">bin_write_integer</span>(<span class="ident">v</span>)<span class="question-mark">?</span>;
+    <span class="kw">fn </span>serialize_u16(<span class="self">self</span>, v: u16) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+        <span class="self">self</span>.writer.bin_write_integer(v)<span class="question-mark">?</span>;
         <span class="prelude-val">Ok</span>(())
     }
 
-    <span class="kw">fn</span> <span class="ident">serialize_u32</span>(<span class="self">self</span>, <span class="ident">v</span>: <span class="ident">u32</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="ident">writer</span>.<span class="ident">bin_write_integer</span>(<span class="ident">v</span>)<span class="question-mark">?</span>;
+    <span class="kw">fn </span>serialize_u32(<span class="self">self</span>, v: u32) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+        <span class="self">self</span>.writer.bin_write_integer(v)<span class="question-mark">?</span>;
         <span class="prelude-val">Ok</span>(())
     }
 
-    <span class="kw">fn</span> <span class="ident">serialize_u64</span>(<span class="self">self</span>, <span class="ident">v</span>: <span class="ident">u64</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-        <span class="comment">// Requires cast to i64 as u64 does not implement Into&lt;i64&gt;</span>
-        <span class="comment">// This is because a u64 can hold larger positive values than an i64 as it</span>
-        <span class="comment">// doesn&#39;t require reserving the sign bit.</span>
-        <span class="comment">// This is ok to do as it is never compared with a value larger than 0x80000000</span>
-        <span class="comment">// and it is cast back to a u64 before it is serialized. Just something to be aware of.</span>
-        <span class="self">self</span>.<span class="ident">writer</span>.<span class="ident">bin_write_integer</span>(<span class="ident">v</span> <span class="kw">as</span> <span class="ident">i64</span>)<span class="question-mark">?</span>;
+    <span class="kw">fn </span>serialize_u64(<span class="self">self</span>, v: u64) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+        <span class="comment">// Requires cast to i64 as u64 does not implement Into&lt;i64&gt;
+        // This is because a u64 can hold larger positive values than an i64 as it
+        // doesn&#39;t require reserving the sign bit.
+        // This is ok to do as it is never compared with a value larger than 0x80000000
+        // and it is cast back to a u64 before it is serialized. Just something to be aware of.
+        </span><span class="self">self</span>.writer.bin_write_integer(v <span class="kw">as </span>i64)<span class="question-mark">?</span>;
         <span class="prelude-val">Ok</span>(())
     }
 
-    <span class="kw">fn</span> <span class="ident">serialize_f32</span>(<span class="self">self</span>, <span class="ident">v</span>: <span class="ident">f32</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="ident">writer</span>.<span class="ident">bin_write_float32</span>(<span class="kw-2">&amp;</span><span class="ident">v</span>)<span class="question-mark">?</span>;
+    <span class="kw">fn </span>serialize_f32(<span class="self">self</span>, v: f32) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+        <span class="self">self</span>.writer.bin_write_float32(<span class="kw-2">&amp;</span>v)<span class="question-mark">?</span>;
         <span class="prelude-val">Ok</span>(())
     }
 
-    <span class="kw">fn</span> <span class="ident">serialize_f64</span>(<span class="self">self</span>, <span class="ident">v</span>: <span class="ident">f64</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="ident">writer</span>.<span class="ident">bin_write_float64</span>(<span class="kw-2">&amp;</span><span class="ident">v</span>)<span class="question-mark">?</span>;
+    <span class="kw">fn </span>serialize_f64(<span class="self">self</span>, v: f64) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+        <span class="self">self</span>.writer.bin_write_float64(<span class="kw-2">&amp;</span>v)<span class="question-mark">?</span>;
         <span class="prelude-val">Ok</span>(())
     }
 
-    <span class="comment">// Chars are ascii encoded and should be 1 byte</span>
-    <span class="kw">fn</span> <span class="ident">serialize_char</span>(<span class="self">self</span>, <span class="ident">v</span>: <span class="ident">char</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="ident">writer</span>
-            .<span class="ident">bin_write_char</span>(<span class="ident">v</span>)
-            .<span class="ident">map</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> ())
-            .<span class="ident">map_err</span>(<span class="ident">Into::into</span>)
+    <span class="comment">// Chars are ascii encoded and should be 1 byte
+    </span><span class="kw">fn </span>serialize_char(<span class="self">self</span>, v: char) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+        <span class="self">self</span>.writer
+            .bin_write_char(v)
+            .map(|<span class="kw">_</span>| ())
+            .map_err(Into::into)
     }
 
-    <span class="comment">// First the length of the string is written as a Nat0 (in characters?)</span>
-    <span class="comment">// Then the bytes of the string verbatim</span>
-    <span class="kw">fn</span> <span class="ident">serialize_str</span>(<span class="self">self</span>, <span class="ident">v</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="ident">writer</span>.<span class="ident">bin_write_nat0</span>(<span class="ident">v</span>.<span class="ident">len</span>() <span class="kw">as</span> <span class="ident">u64</span>)<span class="question-mark">?</span>;
-        <span class="self">self</span>.<span class="ident">write</span>(<span class="ident">v</span>.<span class="ident">as_bytes</span>())
+    <span class="comment">// First the length of the string is written as a Nat0 (in characters?)
+    // Then the bytes of the string verbatim
+    </span><span class="kw">fn </span>serialize_str(<span class="self">self</span>, v: <span class="kw-2">&amp;</span>str) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+        <span class="self">self</span>.writer.bin_write_nat0(v.len() <span class="kw">as </span>u64)<span class="question-mark">?</span>;
+        <span class="self">self</span>.write(v.as_bytes())
     }
 
-    <span class="comment">// This must simply write the bytes to the output as is</span>
-    <span class="comment">// The custom implementations for different integer types</span>
-    <span class="comment">// depends on this</span>
-    <span class="kw">fn</span> <span class="ident">serialize_bytes</span>(<span class="self">self</span>, <span class="ident">v</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>]) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="ident">write</span>(<span class="ident">v</span>)
+    <span class="comment">// This must simply write the bytes to the output as is
+    // The custom implementations for different integer types
+    // depends on this
+    </span><span class="kw">fn </span>serialize_bytes(<span class="self">self</span>, v: <span class="kw-2">&amp;</span>[u8]) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+        <span class="self">self</span>.write(v)
     }
 
-    <span class="comment">// An absent optional is represented as a unit or zero byte</span>
-    <span class="kw">fn</span> <span class="ident">serialize_none</span>(<span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="ident">writer</span>.<span class="ident">bin_write_unit</span>()<span class="question-mark">?</span>;
+    <span class="comment">// An absent optional is represented as a unit or zero byte
+    </span><span class="kw">fn </span>serialize_none(<span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+        <span class="self">self</span>.writer.bin_write_unit()<span class="question-mark">?</span>;
         <span class="prelude-val">Ok</span>(())
     }
 
-    <span class="comment">// A present optional is represented as a 0x01 byte</span>
-    <span class="comment">// followed by the encoding of the value</span>
-    <span class="kw">fn</span> <span class="ident">serialize_some</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="self">self</span>, <span class="ident">value</span>: <span class="kw-2">&amp;</span><span class="ident">T</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span>
-    <span class="kw">where</span>
-        <span class="ident">T</span>: <span class="question-mark">?</span><span class="ident">Sized</span> <span class="op">+</span> <span class="ident">Serialize</span>,
+    <span class="comment">// A present optional is represented as a 0x01 byte
+    // followed by the encoding of the value
+    </span><span class="kw">fn </span>serialize_some&lt;T&gt;(<span class="self">self</span>, value: <span class="kw-2">&amp;</span>T) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt;
+    <span class="kw">where
+        </span>T: <span class="question-mark">?</span>Sized + Serialize,
     {
-        <span class="self">self</span>.<span class="ident">write_byte</span>(<span class="number">0x01</span>)<span class="question-mark">?</span>;
-        <span class="ident">value</span>.<span class="ident">serialize</span>(<span class="self">self</span>)
+        <span class="self">self</span>.write_byte(<span class="number">0x01</span>)<span class="question-mark">?</span>;
+        value.serialize(<span class="self">self</span>)
     }
 
-    <span class="comment">// In Serde, unit means an anonymous value containing no data.</span>
-    <span class="comment">// This is a zero byte</span>
-    <span class="kw">fn</span> <span class="ident">serialize_unit</span>(<span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="ident">writer</span>.<span class="ident">bin_write_unit</span>()<span class="question-mark">?</span>;
+    <span class="comment">// In Serde, unit means an anonymous value containing no data.
+    // This is a zero byte
+    </span><span class="kw">fn </span>serialize_unit(<span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+        <span class="self">self</span>.writer.bin_write_unit()<span class="question-mark">?</span>;
         <span class="prelude-val">Ok</span>(())
     }
 
-    <span class="comment">// Unit struct means a named value containing no data.</span>
-    <span class="kw">fn</span> <span class="ident">serialize_unit_struct</span>(<span class="self">self</span>, <span class="ident">_name</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="ident">serialize_unit</span>()
+    <span class="comment">// Unit struct means a named value containing no data.
+    </span><span class="kw">fn </span>serialize_unit_struct(<span class="self">self</span>, _name: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+        <span class="self">self</span>.serialize_unit()
     }
 
-    <span class="comment">// Newtype struct are like tuple structs with a single value</span>
-    <span class="comment">// Just serialize the contained value</span>
-    <span class="kw">fn</span> <span class="ident">serialize_newtype_struct</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="self">self</span>, <span class="ident">_name</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span>, <span class="ident">value</span>: <span class="kw-2">&amp;</span><span class="ident">T</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span>
-    <span class="kw">where</span>
-        <span class="ident">T</span>: <span class="question-mark">?</span><span class="ident">Sized</span> <span class="op">+</span> <span class="ident">Serialize</span>,
+    <span class="comment">// Newtype struct are like tuple structs with a single value
+    // Just serialize the contained value
+    </span><span class="kw">fn </span>serialize_newtype_struct&lt;T&gt;(<span class="self">self</span>, _name: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str, value: <span class="kw-2">&amp;</span>T) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt;
+    <span class="kw">where
+        </span>T: <span class="question-mark">?</span>Sized + Serialize,
     {
-        <span class="ident">value</span>.<span class="ident">serialize</span>(<span class="self">self</span>)
+        value.serialize(<span class="self">self</span>)
     }
 
-    <span class="comment">// Now we get to the serialization of compound types.</span>
-    <span class="comment">//</span>
-    <span class="comment">// For lists and arrays the length is written out as a Nat0.t first,</span>
-    <span class="comment">// followed by all values in the same order as in the data structure.</span>
-    <span class="comment">// This function only handles writing of the first element</span>
-    <span class="kw">fn</span> <span class="ident">serialize_seq</span>(<span class="self">self</span>, <span class="ident">len</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident"><span class="self">Self</span>::SerializeSeq</span><span class="op">&gt;</span> {
-        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">len</span>) <span class="op">=</span> <span class="ident">len</span> {
-            <span class="comment">// write the output length first</span>
-            <span class="self">self</span>.<span class="ident">writer</span>.<span class="ident">bin_write_nat0</span>(<span class="ident">len</span> <span class="kw">as</span> <span class="ident">u64</span>)<span class="question-mark">?</span>;
-            <span class="prelude-val">Ok</span>(<span class="self">self</span>) <span class="comment">// pass self as the handler for writing the elements</span>
-        } <span class="kw">else</span> {
-            <span class="prelude-val">Err</span>(<span class="ident">Error::SeqSizeNotProvided</span>)
+    <span class="comment">// Now we get to the serialization of compound types.
+    //
+    // For lists and arrays the length is written out as a Nat0.t first,
+    // followed by all values in the same order as in the data structure.
+    // This function only handles writing of the first element
+    </span><span class="kw">fn </span>serialize_seq(<span class="self">self</span>, len: <span class="prelude-ty">Option</span>&lt;usize&gt;) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>::SerializeSeq&gt; {
+        <span class="kw">if let </span><span class="prelude-val">Some</span>(len) = len {
+            <span class="comment">// write the output length first
+            </span><span class="self">self</span>.writer.bin_write_nat0(len <span class="kw">as </span>u64)<span class="question-mark">?</span>;
+            <span class="prelude-val">Ok</span>(<span class="self">self</span>) <span class="comment">// pass self as the handler for writing the elements
+        </span>} <span class="kw">else </span>{
+            <span class="prelude-val">Err</span>(Error::SeqSizeNotProvided)
         }
     }
 
-    <span class="comment">// Values in tuples and records are written out one after the other in the order</span>
-    <span class="comment">// specified in the type definition.</span>
-    <span class="comment">// Polymorphic record fields are supported unless a value of the type bound</span>
-    <span class="comment">// by the field were accessed, which would lead to an exception.</span>
-    <span class="kw">fn</span> <span class="ident">serialize_tuple</span>(<span class="self">self</span>, <span class="ident">_len</span>: <span class="ident">usize</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident"><span class="self">Self</span>::SerializeTuple</span><span class="op">&gt;</span> {
+    <span class="comment">// Values in tuples and records are written out one after the other in the order
+    // specified in the type definition.
+    // Polymorphic record fields are supported unless a value of the type bound
+    // by the field were accessed, which would lead to an exception.
+    </span><span class="kw">fn </span>serialize_tuple(<span class="self">self</span>, _len: usize) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>::SerializeTuple&gt; {
         <span class="prelude-val">Ok</span>(<span class="self">self</span>)
     }
 
-    <span class="comment">// Tuple structs look just like sequences in bin_prot.</span>
-    <span class="kw">fn</span> <span class="ident">serialize_tuple_struct</span>(
+    <span class="comment">// Tuple structs look just like sequences in bin_prot.
+    </span><span class="kw">fn </span>serialize_tuple_struct(
         <span class="self">self</span>,
-        <span class="ident">_name</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span>,
-        <span class="ident">_len</span>: <span class="ident">usize</span>,
-    ) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident"><span class="self">Self</span>::SerializeTupleStruct</span><span class="op">&gt;</span> {
+        _name: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str,
+        _len: usize,
+    ) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>::SerializeTupleStruct&gt; {
         <span class="prelude-val">Ok</span>(<span class="self">self</span>)
     }
 
-    <span class="comment">// First the size of the hash table is written out as a Nat0.t.</span>
-    <span class="comment">// Then the writer iterates over each binding in the hash table</span>
-    <span class="comment">// and writes out the key followed by the value.</span>
-    <span class="kw">fn</span> <span class="ident">serialize_map</span>(<span class="self">self</span>, <span class="ident">_len</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident"><span class="self">Self</span>::SerializeMap</span><span class="op">&gt;</span> {
+    <span class="comment">// First the size of the hash table is written out as a Nat0.t.
+    // Then the writer iterates over each binding in the hash table
+    // and writes out the key followed by the value.
+    </span><span class="kw">fn </span>serialize_map(<span class="self">self</span>, _len: <span class="prelude-ty">Option</span>&lt;usize&gt;) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>::SerializeMap&gt; {
         <span class="macro">unimplemented!</span>();
     }
 
-    <span class="kw">fn</span> <span class="ident">serialize_struct</span>(<span class="self">self</span>, <span class="ident">_name</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span>, <span class="ident">_len</span>: <span class="ident">usize</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident"><span class="self">Self</span>::SerializeStruct</span><span class="op">&gt;</span> {
+    <span class="kw">fn </span>serialize_struct(<span class="self">self</span>, _name: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str, _len: usize) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>::SerializeStruct&gt; {
         <span class="prelude-val">Ok</span>(<span class="self">self</span>)
     }
 
-    <span class="comment">// Variants/Enums</span>
-    <span class="comment">//</span>
-    <span class="comment">// // Variants refer to the different possibilities of enums that hold data</span>
-    <span class="comment">// e.g. enum Message {</span>
-    <span class="comment">//     Quit,                          // unit variant</span>
-    <span class="comment">//     ChangeColor(i32, i32, i32),    // tuple variant</span>
-    <span class="comment">//     Move { x: i32, y: i32 },       // struct variant</span>
-    <span class="comment">// }</span>
-    <span class="comment">// In each of these cases the index of the variant, n, is written out</span>
-    <span class="comment">// first followed by the data</span>
-    <span class="kw">fn</span> <span class="ident">serialize_unit_variant</span>(
+    <span class="comment">// Variants/Enums
+    //
+    // // Variants refer to the different possibilities of enums that hold data
+    // e.g. enum Message {
+    //     Quit,                          // unit variant
+    //     ChangeColor(i32, i32, i32),    // tuple variant
+    //     Move { x: i32, y: i32 },       // struct variant
+    // }
+    // In each of these cases the index of the variant, n, is written out
+    // first followed by the data
+    </span><span class="kw">fn </span>serialize_unit_variant(
         <span class="self">self</span>,
-        <span class="ident">name</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span>,
-        <span class="ident">variant_index</span>: <span class="ident">u32</span>,
-        <span class="ident">variant</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span>,
-    ) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="ident">write_variant_index_or_tag</span>(<span class="ident">name</span>, <span class="ident">variant</span>, <span class="ident">variant_index</span>)
+        name: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str,
+        variant_index: u32,
+        variant: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str,
+    ) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+        <span class="self">self</span>.write_variant_index_or_tag(name, variant, variant_index)
     }
 
-    <span class="kw">fn</span> <span class="ident">serialize_tuple_variant</span>(
+    <span class="kw">fn </span>serialize_tuple_variant(
         <span class="self">self</span>,
-        <span class="ident">name</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span>,
-        <span class="ident">variant_index</span>: <span class="ident">u32</span>,
-        <span class="ident">variant</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span>,
-        <span class="ident">_len</span>: <span class="ident">usize</span>,
-    ) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident"><span class="self">Self</span>::SerializeTupleVariant</span><span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="ident">write_variant_index_or_tag</span>(<span class="ident">name</span>, <span class="ident">variant</span>, <span class="ident">variant_index</span>)<span class="question-mark">?</span>;
+        name: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str,
+        variant_index: u32,
+        variant: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str,
+        _len: usize,
+    ) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>::SerializeTupleVariant&gt; {
+        <span class="self">self</span>.write_variant_index_or_tag(name, variant, variant_index)<span class="question-mark">?</span>;
         <span class="prelude-val">Ok</span>(<span class="self">self</span>)
     }
 
-    <span class="kw">fn</span> <span class="ident">serialize_struct_variant</span>(
+    <span class="kw">fn </span>serialize_struct_variant(
         <span class="self">self</span>,
-        <span class="ident">name</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span>,
-        <span class="ident">variant_index</span>: <span class="ident">u32</span>,
-        <span class="ident">variant</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span>,
-        <span class="ident">_len</span>: <span class="ident">usize</span>,
-    ) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident"><span class="self">Self</span>::SerializeStructVariant</span><span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="ident">write_variant_index_or_tag</span>(<span class="ident">name</span>, <span class="ident">variant</span>, <span class="ident">variant_index</span>)<span class="question-mark">?</span>;
+        name: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str,
+        variant_index: u32,
+        variant: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str,
+        _len: usize,
+    ) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>::SerializeStructVariant&gt; {
+        <span class="self">self</span>.write_variant_index_or_tag(name, variant, variant_index)<span class="question-mark">?</span>;
         <span class="prelude-val">Ok</span>(<span class="self">self</span>)
     }
 
-    <span class="comment">// These are enum variants like Some(value)</span>
-    <span class="kw">fn</span> <span class="ident">serialize_newtype_variant</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(
+    <span class="comment">// These are enum variants like Some(value)
+    </span><span class="kw">fn </span>serialize_newtype_variant&lt;T&gt;(
         <span class="self">self</span>,
-        <span class="ident">name</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span>,
-        <span class="ident">variant_index</span>: <span class="ident">u32</span>,
-        <span class="ident">variant</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span>,
-        <span class="ident">value</span>: <span class="kw-2">&amp;</span><span class="ident">T</span>,
-    ) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span>
-    <span class="kw">where</span>
-        <span class="ident">T</span>: <span class="question-mark">?</span><span class="ident">Sized</span> <span class="op">+</span> <span class="ident">Serialize</span>,
+        name: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str,
+        variant_index: u32,
+        variant: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str,
+        value: <span class="kw-2">&amp;</span>T,
+    ) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt;
+    <span class="kw">where
+        </span>T: <span class="question-mark">?</span>Sized + Serialize,
     {
-        <span class="self">self</span>.<span class="ident">write_variant_index_or_tag</span>(<span class="ident">name</span>, <span class="ident">variant</span>, <span class="ident">variant_index</span>)<span class="question-mark">?</span>;
-        <span class="ident">value</span>.<span class="ident">serialize</span>(<span class="self">self</span>)
+        <span class="self">self</span>.write_variant_index_or_tag(name, variant, variant_index)<span class="question-mark">?</span>;
+        value.serialize(<span class="self">self</span>)
     }
 }
 
-<span class="comment">// The following 7 impls deal with the serialization of compound types like</span>
-<span class="comment">// sequences and maps. Serialization of such types is begun by a Serializer</span>
-<span class="comment">// method and followed by zero or more calls to serialize individual elements of</span>
-<span class="comment">// the compound type and one call to end the compound type.</span>
+<span class="comment">// The following 7 impls deal with the serialization of compound types like
+// sequences and maps. Serialization of such types is begun by a Serializer
+// method and followed by zero or more calls to serialize individual elements of
+// the compound type and one call to end the compound type.
 
-<span class="comment">// This impl is SerializeSeq so these methods are called after `serialize_seq`</span>
-<span class="comment">// is called on the Serializer.</span>
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">W</span><span class="op">&gt;</span> <span class="ident">ser::SerializeSeq</span> <span class="kw">for</span> <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="kw-2">mut</span> <span class="ident">Serializer</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">W</span>: <span class="ident">std::io::Write</span>,
+// This impl is SerializeSeq so these methods are called after `serialize_seq`
+// is called on the Serializer.
+</span><span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, W&gt; ser::SerializeSeq <span class="kw">for </span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span><span class="kw-2">mut </span>Serializer&lt;W&gt;
+<span class="kw">where
+    </span>W: std::io::Write,
 {
-    <span class="kw">type</span> <span class="prelude-val">Ok</span> <span class="op">=</span> ();
-    <span class="kw">type</span> <span class="ident">Error</span> <span class="op">=</span> <span class="ident">Error</span>;
+    <span class="kw">type </span><span class="prelude-val">Ok </span>= ();
+    <span class="kw">type </span>Error = Error;
 
-    <span class="comment">// Serialize a single element of the sequence.</span>
-    <span class="kw">fn</span> <span class="ident">serialize_element</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">value</span>: <span class="kw-2">&amp;</span><span class="ident">T</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span>
-    <span class="kw">where</span>
-        <span class="ident">T</span>: <span class="question-mark">?</span><span class="ident">Sized</span> <span class="op">+</span> <span class="ident">Serialize</span>,
+    <span class="comment">// Serialize a single element of the sequence.
+    </span><span class="kw">fn </span>serialize_element&lt;T&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, value: <span class="kw-2">&amp;</span>T) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt;
+    <span class="kw">where
+        </span>T: <span class="question-mark">?</span>Sized + Serialize,
     {
-        <span class="ident">value</span>.<span class="ident">serialize</span>(<span class="kw-2">&amp;mut</span> <span class="kw-2">*</span><span class="kw-2">*</span><span class="self">self</span>)
+        value.serialize(<span class="kw-2">&amp;mut **</span><span class="self">self</span>)
     }
 
-    <span class="kw">fn</span> <span class="ident">end</span>(<span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
+    <span class="kw">fn </span>end(<span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
         <span class="prelude-val">Ok</span>(())
     }
 }
 
-<span class="comment">// Tuples are serialized just as the elements written consecutively</span>
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">W</span><span class="op">&gt;</span> <span class="ident">ser::SerializeTuple</span> <span class="kw">for</span> <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="kw-2">mut</span> <span class="ident">Serializer</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">W</span>: <span class="ident">std::io::Write</span>,
+<span class="comment">// Tuples are serialized just as the elements written consecutively
+</span><span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, W&gt; ser::SerializeTuple <span class="kw">for </span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span><span class="kw-2">mut </span>Serializer&lt;W&gt;
+<span class="kw">where
+    </span>W: std::io::Write,
 {
-    <span class="kw">type</span> <span class="prelude-val">Ok</span> <span class="op">=</span> ();
-    <span class="kw">type</span> <span class="ident">Error</span> <span class="op">=</span> <span class="ident">Error</span>;
+    <span class="kw">type </span><span class="prelude-val">Ok </span>= ();
+    <span class="kw">type </span>Error = Error;
 
-    <span class="kw">fn</span> <span class="ident">serialize_element</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">value</span>: <span class="kw-2">&amp;</span><span class="ident">T</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span>
-    <span class="kw">where</span>
-        <span class="ident">T</span>: <span class="question-mark">?</span><span class="ident">Sized</span> <span class="op">+</span> <span class="ident">Serialize</span>,
+    <span class="kw">fn </span>serialize_element&lt;T&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, value: <span class="kw-2">&amp;</span>T) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt;
+    <span class="kw">where
+        </span>T: <span class="question-mark">?</span>Sized + Serialize,
     {
-        <span class="ident">value</span>.<span class="ident">serialize</span>(<span class="kw-2">&amp;mut</span> <span class="kw-2">*</span><span class="kw-2">*</span><span class="self">self</span>)
+        value.serialize(<span class="kw-2">&amp;mut **</span><span class="self">self</span>)
     }
 
-    <span class="kw">fn</span> <span class="ident">end</span>(<span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
+    <span class="kw">fn </span>end(<span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
         <span class="prelude-val">Ok</span>(())
     }
 }
 
-<span class="comment">// Same thing but for tuple structs.</span>
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">W</span><span class="op">&gt;</span> <span class="ident">ser::SerializeTupleStruct</span> <span class="kw">for</span> <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="kw-2">mut</span> <span class="ident">Serializer</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">W</span>: <span class="ident">std::io::Write</span>,
+<span class="comment">// Same thing but for tuple structs.
+</span><span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, W&gt; ser::SerializeTupleStruct <span class="kw">for </span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span><span class="kw-2">mut </span>Serializer&lt;W&gt;
+<span class="kw">where
+    </span>W: std::io::Write,
 {
-    <span class="kw">type</span> <span class="prelude-val">Ok</span> <span class="op">=</span> ();
-    <span class="kw">type</span> <span class="ident">Error</span> <span class="op">=</span> <span class="ident">Error</span>;
+    <span class="kw">type </span><span class="prelude-val">Ok </span>= ();
+    <span class="kw">type </span>Error = Error;
 
-    <span class="kw">fn</span> <span class="ident">serialize_field</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">value</span>: <span class="kw-2">&amp;</span><span class="ident">T</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span>
-    <span class="kw">where</span>
-        <span class="ident">T</span>: <span class="question-mark">?</span><span class="ident">Sized</span> <span class="op">+</span> <span class="ident">Serialize</span>,
+    <span class="kw">fn </span>serialize_field&lt;T&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, value: <span class="kw-2">&amp;</span>T) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt;
+    <span class="kw">where
+        </span>T: <span class="question-mark">?</span>Sized + Serialize,
     {
-        <span class="ident">value</span>.<span class="ident">serialize</span>(<span class="kw-2">&amp;mut</span> <span class="kw-2">*</span><span class="kw-2">*</span><span class="self">self</span>)
+        value.serialize(<span class="kw-2">&amp;mut **</span><span class="self">self</span>)
     }
 
-    <span class="kw">fn</span> <span class="ident">end</span>(<span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
+    <span class="kw">fn </span>end(<span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
         <span class="prelude-val">Ok</span>(())
     }
 }
 
-<span class="comment">// Some `Serialize` types are not able to hold a key and value in memory at the</span>
-<span class="comment">// same time so `SerializeMap` implementations are required to support</span>
-<span class="comment">// `serialize_key` and `serialize_value` individually.</span>
-<span class="comment">//</span>
-<span class="comment">// There is a third optional method on the `SerializeMap` trait. The</span>
-<span class="comment">// `serialize_entry` method allows serializers to optimize for the case where</span>
-<span class="comment">// key and value are both available simultaneously.</span>
-<span class="comment">// This is no more efficient in this case</span>
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">W</span><span class="op">&gt;</span> <span class="ident">ser::SerializeMap</span> <span class="kw">for</span> <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="kw-2">mut</span> <span class="ident">Serializer</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">W</span>: <span class="ident">std::io::Write</span>,
+<span class="comment">// Some `Serialize` types are not able to hold a key and value in memory at the
+// same time so `SerializeMap` implementations are required to support
+// `serialize_key` and `serialize_value` individually.
+//
+// There is a third optional method on the `SerializeMap` trait. The
+// `serialize_entry` method allows serializers to optimize for the case where
+// key and value are both available simultaneously.
+// This is no more efficient in this case
+</span><span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, W&gt; ser::SerializeMap <span class="kw">for </span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span><span class="kw-2">mut </span>Serializer&lt;W&gt;
+<span class="kw">where
+    </span>W: std::io::Write,
 {
-    <span class="kw">type</span> <span class="prelude-val">Ok</span> <span class="op">=</span> ();
-    <span class="kw">type</span> <span class="ident">Error</span> <span class="op">=</span> <span class="ident">Error</span>;
+    <span class="kw">type </span><span class="prelude-val">Ok </span>= ();
+    <span class="kw">type </span>Error = Error;
 
-    <span class="kw">fn</span> <span class="ident">serialize_key</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">key</span>: <span class="kw-2">&amp;</span><span class="ident">T</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span>
-    <span class="kw">where</span>
-        <span class="ident">T</span>: <span class="question-mark">?</span><span class="ident">Sized</span> <span class="op">+</span> <span class="ident">Serialize</span>,
+    <span class="kw">fn </span>serialize_key&lt;T&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, key: <span class="kw-2">&amp;</span>T) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt;
+    <span class="kw">where
+        </span>T: <span class="question-mark">?</span>Sized + Serialize,
     {
-        <span class="ident">key</span>.<span class="ident">serialize</span>(<span class="kw-2">&amp;mut</span> <span class="kw-2">*</span><span class="kw-2">*</span><span class="self">self</span>)
+        key.serialize(<span class="kw-2">&amp;mut **</span><span class="self">self</span>)
     }
 
-    <span class="kw">fn</span> <span class="ident">serialize_value</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">value</span>: <span class="kw-2">&amp;</span><span class="ident">T</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span>
-    <span class="kw">where</span>
-        <span class="ident">T</span>: <span class="question-mark">?</span><span class="ident">Sized</span> <span class="op">+</span> <span class="ident">Serialize</span>,
+    <span class="kw">fn </span>serialize_value&lt;T&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, value: <span class="kw-2">&amp;</span>T) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt;
+    <span class="kw">where
+        </span>T: <span class="question-mark">?</span>Sized + Serialize,
     {
-        <span class="ident">value</span>.<span class="ident">serialize</span>(<span class="kw-2">&amp;mut</span> <span class="kw-2">*</span><span class="kw-2">*</span><span class="self">self</span>)
+        value.serialize(<span class="kw-2">&amp;mut **</span><span class="self">self</span>)
     }
 
-    <span class="kw">fn</span> <span class="ident">end</span>(<span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
+    <span class="kw">fn </span>end(<span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
         <span class="prelude-val">Ok</span>(())
     }
 }
 
-<span class="comment">// Structs are written exactly the same as Tuples</span>
-<span class="comment">// Field values are written one after the other in order</span>
-<span class="comment">// keys are ignored</span>
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">W</span><span class="op">&gt;</span> <span class="ident">ser::SerializeStruct</span> <span class="kw">for</span> <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="kw-2">mut</span> <span class="ident">Serializer</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">W</span>: <span class="ident">std::io::Write</span>,
+<span class="comment">// Structs are written exactly the same as Tuples
+// Field values are written one after the other in order
+// keys are ignored
+</span><span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, W&gt; ser::SerializeStruct <span class="kw">for </span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span><span class="kw-2">mut </span>Serializer&lt;W&gt;
+<span class="kw">where
+    </span>W: std::io::Write,
 {
-    <span class="kw">type</span> <span class="prelude-val">Ok</span> <span class="op">=</span> ();
-    <span class="kw">type</span> <span class="ident">Error</span> <span class="op">=</span> <span class="ident">Error</span>;
+    <span class="kw">type </span><span class="prelude-val">Ok </span>= ();
+    <span class="kw">type </span>Error = Error;
 
-    <span class="kw">fn</span> <span class="ident">serialize_field</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">_key</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span>, <span class="ident">value</span>: <span class="kw-2">&amp;</span><span class="ident">T</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span>
-    <span class="kw">where</span>
-        <span class="ident">T</span>: <span class="question-mark">?</span><span class="ident">Sized</span> <span class="op">+</span> <span class="ident">Serialize</span>,
+    <span class="kw">fn </span>serialize_field&lt;T&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, _key: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str, value: <span class="kw-2">&amp;</span>T) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt;
+    <span class="kw">where
+        </span>T: <span class="question-mark">?</span>Sized + Serialize,
     {
-        <span class="ident">value</span>.<span class="ident">serialize</span>(<span class="kw-2">&amp;mut</span> <span class="kw-2">*</span><span class="kw-2">*</span><span class="self">self</span>)
+        value.serialize(<span class="kw-2">&amp;mut **</span><span class="self">self</span>)
     }
 
-    <span class="kw">fn</span> <span class="ident">end</span>(<span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
+    <span class="kw">fn </span>end(<span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
         <span class="prelude-val">Ok</span>(())
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">W</span><span class="op">&gt;</span> <span class="ident">ser::SerializeTupleVariant</span> <span class="kw">for</span> <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="kw-2">mut</span> <span class="ident">Serializer</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">W</span>: <span class="ident">std::io::Write</span>,
+<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, W&gt; ser::SerializeTupleVariant <span class="kw">for </span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span><span class="kw-2">mut </span>Serializer&lt;W&gt;
+<span class="kw">where
+    </span>W: std::io::Write,
 {
-    <span class="kw">type</span> <span class="prelude-val">Ok</span> <span class="op">=</span> ();
-    <span class="kw">type</span> <span class="ident">Error</span> <span class="op">=</span> <span class="ident">Error</span>;
+    <span class="kw">type </span><span class="prelude-val">Ok </span>= ();
+    <span class="kw">type </span>Error = Error;
 
-    <span class="kw">fn</span> <span class="ident">serialize_field</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">value</span>: <span class="kw-2">&amp;</span><span class="ident">T</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span>
-    <span class="kw">where</span>
-        <span class="ident">T</span>: <span class="question-mark">?</span><span class="ident">Sized</span> <span class="op">+</span> <span class="ident">Serialize</span>,
+    <span class="kw">fn </span>serialize_field&lt;T&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, value: <span class="kw-2">&amp;</span>T) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt;
+    <span class="kw">where
+        </span>T: <span class="question-mark">?</span>Sized + Serialize,
     {
-        <span class="ident">value</span>.<span class="ident">serialize</span>(<span class="kw-2">&amp;mut</span> <span class="kw-2">*</span><span class="kw-2">*</span><span class="self">self</span>)
+        value.serialize(<span class="kw-2">&amp;mut **</span><span class="self">self</span>)
     }
 
-    <span class="kw">fn</span> <span class="ident">end</span>(<span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
+    <span class="kw">fn </span>end(<span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
         <span class="prelude-val">Ok</span>(())
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">W</span><span class="op">&gt;</span> <span class="ident">ser::SerializeStructVariant</span> <span class="kw">for</span> <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="kw-2">mut</span> <span class="ident">Serializer</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">W</span>: <span class="ident">std::io::Write</span>,
+<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, W&gt; ser::SerializeStructVariant <span class="kw">for </span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span><span class="kw-2">mut </span>Serializer&lt;W&gt;
+<span class="kw">where
+    </span>W: std::io::Write,
 {
-    <span class="kw">type</span> <span class="prelude-val">Ok</span> <span class="op">=</span> ();
-    <span class="kw">type</span> <span class="ident">Error</span> <span class="op">=</span> <span class="ident">Error</span>;
+    <span class="kw">type </span><span class="prelude-val">Ok </span>= ();
+    <span class="kw">type </span>Error = Error;
 
-    <span class="kw">fn</span> <span class="ident">serialize_field</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">_key</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span>, <span class="ident">value</span>: <span class="kw-2">&amp;</span><span class="ident">T</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span>
-    <span class="kw">where</span>
-        <span class="ident">T</span>: <span class="question-mark">?</span><span class="ident">Sized</span> <span class="op">+</span> <span class="ident">Serialize</span>,
+    <span class="kw">fn </span>serialize_field&lt;T&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, _key: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str, value: <span class="kw-2">&amp;</span>T) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt;
+    <span class="kw">where
+        </span>T: <span class="question-mark">?</span>Sized + Serialize,
     {
-        <span class="ident">value</span>.<span class="ident">serialize</span>(<span class="kw-2">&amp;mut</span> <span class="kw-2">*</span><span class="kw-2">*</span><span class="self">self</span>)
+        value.serialize(<span class="kw-2">&amp;mut **</span><span class="self">self</span>)
     }
 
-    <span class="kw">fn</span> <span class="ident">end</span>(<span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
+    <span class="kw">fn </span>end(<span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
         <span class="prelude-val">Ok</span>(())
     }
 }
 
-<span class="kw">fn</span> <span class="ident">check_variant_index</span>(<span class="ident">index</span>: <span class="ident">u32</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span> {
-    <span class="ident">index</span>
-        .<span class="ident">try_into</span>()
-        .<span class="ident">map_err</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="ident">Error::VariantIndexTooLarge</span> { <span class="ident">index</span> })
+<span class="kw">fn </span>check_variant_index(index: u32) -&gt; <span class="prelude-ty">Result</span>&lt;u8&gt; {
+    index
+        .try_into()
+        .map_err(|<span class="kw">_</span>| Error::VariantIndexTooLarge { index })
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="bin_prot" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (fe3342816 2022-08-01)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="bin_prot" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (40336865f 2022-08-15)" ></div></body></html>

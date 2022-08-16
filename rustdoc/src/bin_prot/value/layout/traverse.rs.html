@@ -151,152 +151,152 @@
 <span id="151">151</span>
 <span id="152">152</span>
 <span id="153">153</span>
-</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems</span>
-<span class="comment">// SPDX-License-Identifier: Apache-2.0</span>
+</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems
+// SPDX-License-Identifier: Apache-2.0
 
-<span class="doccomment">//!</span>
-<span class="doccomment">//! This module implements the logic for traversing a layout in a way that corresponds to how the binary data is arranged out.</span>
-<span class="doccomment">//! Since BinProtRule is a recursive data type the correct traversal is a depth first traversal of the tree defined by the data type</span>
-<span class="doccomment">//! with a few important differences.</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! The layout tree includes the concept of Sum(ocaml)/Enum(rust) types. These are nodes in the tree where only one branch should be taken</span>
-<span class="doccomment">//! depending on which variant of the enum we are deserializing. When reading an enum from binary the first byte specifies which variant to deserialize.</span>
-<span class="doccomment">//! It is the responsibility of the driving code to handle when Sum/Option rules are encountered and push the correct next rule to the stack.</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! The other interesting case is deserializing variable length vector types. When deserializing a vector the length can be read from the binary and then</span>
-<span class="doccomment">//! the element rule pushed back to the stack using the `push_n` method. It will then repeat the given node `n` times to allow it to be deserialized.</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! The traversal of a layout should be done in parallel with reading a bin_prot encoded binary such that the type tree informs the deserializer how to read the</span>
-<span class="doccomment">//! data and the data informs the traversal how it should handle enum types.</span>
-<span class="doccomment">//! Combined this allows parsing of types defined by the layout into loosely typed representations.</span>
-<span class="doccomment">//!</span>
+</span><span class="doccomment">//!
+//! This module implements the logic for traversing a layout in a way that corresponds to how the binary data is arranged out.
+//! Since BinProtRule is a recursive data type the correct traversal is a depth first traversal of the tree defined by the data type
+//! with a few important differences.
+//!
+//! The layout tree includes the concept of Sum(ocaml)/Enum(rust) types. These are nodes in the tree where only one branch should be taken
+//! depending on which variant of the enum we are deserializing. When reading an enum from binary the first byte specifies which variant to deserialize.
+//! It is the responsibility of the driving code to handle when Sum/Option rules are encountered and push the correct next rule to the stack.
+//!
+//! The other interesting case is deserializing variable length vector types. When deserializing a vector the length can be read from the binary and then
+//! the element rule pushed back to the stack using the `push_n` method. It will then repeat the given node `n` times to allow it to be deserialized.
+//!
+//! The traversal of a layout should be done in parallel with reading a bin_prot encoded binary such that the type tree informs the deserializer how to read the
+//! data and the data informs the traversal how it should handle enum types.
+//! Combined this allows parsing of types defined by the layout into loosely typed representations.
+//!
 
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::value::layout</span>::{<span class="ident">BinProtRule</span>, <span class="ident">RuleRef</span>};
+</span><span class="kw">use </span><span class="kw">crate</span>::value::layout::{BinProtRule, RuleRef};
 
-<span class="doccomment">/// Implements a depth first search of the type tree</span>
-<span class="doccomment">/// defined by a BinProtRule</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">BinProtRuleIterator</span> {
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="ident">stack</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">BinProtRule</span><span class="op">&gt;</span>, <span class="comment">// regular stack to implement the DFS</span>
-    <span class="ident">current_module_path</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>, <span class="comment">// holds on to most recent path encountered in traverse</span>
-}
+<span class="doccomment">/// Implements a depth first search of the type tree
+/// defined by a BinProtRule
+</span><span class="kw">pub struct </span>BinProtRuleIterator {
+    <span class="kw">pub</span>(<span class="kw">crate</span>) stack: Vec&lt;BinProtRule&gt;, <span class="comment">// regular stack to implement the DFS
+    </span>current_module_path: <span class="prelude-ty">Option</span>&lt;String&gt;, <span class="comment">// holds on to most recent path encountered in traverse
+</span>}
 
-<span class="kw">impl</span> <span class="ident">Iterator</span> <span class="kw">for</span> <span class="ident">BinProtRuleIterator</span> {
-    <span class="kw">type</span> <span class="ident">Item</span> <span class="op">=</span> <span class="ident">BinProtRule</span>;
+<span class="kw">impl </span>Iterator <span class="kw">for </span>BinProtRuleIterator {
+    <span class="kw">type </span>Item = BinProtRule;
 
-    <span class="kw">fn</span> <span class="ident">next</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident"><span class="self">Self</span>::Item</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">top</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">stack</span>.<span class="ident">pop</span>();
-        <span class="kw">let</span> <span class="ident">r</span> <span class="op">=</span> <span class="ident">top</span>.<span class="ident">clone</span>();
-        <span class="kw">match</span> <span class="ident">top</span> {
-            <span class="prelude-val">Some</span>(<span class="ident">rule</span>) =&gt; {
-                <span class="kw">match</span> <span class="ident">rule</span> {
-                    <span class="ident">BinProtRule::List</span>(<span class="ident">_rule</span>) =&gt; {
-                        <span class="comment">// the code driving the iterator should take the list rule, push it</span>
-                        <span class="comment">// then call repeat the required number of times</span>
+    <span class="kw">fn </span>next(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="self">Self</span>::Item&gt; {
+        <span class="kw">let </span>top = <span class="self">self</span>.stack.pop();
+        <span class="kw">let </span>r = top.clone();
+        <span class="kw">match </span>top {
+            <span class="prelude-val">Some</span>(rule) =&gt; {
+                <span class="kw">match </span>rule {
+                    BinProtRule::List(_rule) =&gt; {
+                        <span class="comment">// the code driving the iterator should take the list rule, push it
+                        // then call repeat the required number of times
+                    </span>}
+                    BinProtRule::Record(<span class="kw-2">mut </span>rules) =&gt; {
+                        <span class="self">self</span>.stack
+                            .extend(rules.drain(<span class="number">0</span>..).map(|field| field.field_rule).rev());
                     }
-                    <span class="ident">BinProtRule::Record</span>(<span class="kw-2">mut</span> <span class="ident">rules</span>) =&gt; {
-                        <span class="self">self</span>.<span class="ident">stack</span>
-                            .<span class="ident">extend</span>(<span class="ident">rules</span>.<span class="ident">drain</span>(<span class="number">0</span>..).<span class="ident">map</span>(<span class="op">|</span><span class="ident">field</span><span class="op">|</span> <span class="ident">field</span>.<span class="ident">field_rule</span>).<span class="ident">rev</span>());
+                    BinProtRule::Tuple(<span class="kw-2">mut </span>rules) =&gt; {
+                        <span class="self">self</span>.stack.extend(rules.drain(<span class="number">0</span>..).rev());
                     }
-                    <span class="ident">BinProtRule::Tuple</span>(<span class="kw-2">mut</span> <span class="ident">rules</span>) =&gt; {
-                        <span class="self">self</span>.<span class="ident">stack</span>.<span class="ident">extend</span>(<span class="ident">rules</span>.<span class="ident">drain</span>(<span class="number">0</span>..).<span class="ident">rev</span>());
-                    }
-                    <span class="ident">BinProtRule::Sum</span>(<span class="kw">_</span>) <span class="op">|</span> <span class="ident">BinProtRule::Polyvar</span>(<span class="kw">_</span>) =&gt; {
-                        <span class="comment">// don&#39;t add to the stack. Add to the branch field instead</span>
-                        <span class="comment">// this must be resolved by calling `branch` before the iterator can continue</span>
-                    }
-                    <span class="ident">BinProtRule::Option</span>(<span class="ident">_r</span>) =&gt; {
-                        <span class="comment">// Option is a special case of a Sum where the None variant contain nothing</span>
-                    }
-                    <span class="ident">BinProtRule::Reference</span>(<span class="ident">rule_ref</span>) =&gt; <span class="kw">match</span> <span class="ident">rule_ref</span> {
-                        <span class="ident">RuleRef::Unresolved</span>(<span class="ident">_payload</span>) =&gt; {
+                    BinProtRule::Sum(<span class="kw">_</span>) | BinProtRule::Polyvar(<span class="kw">_</span>) =&gt; {
+                        <span class="comment">// don&#39;t add to the stack. Add to the branch field instead
+                        // this must be resolved by calling `branch` before the iterator can continue
+                    </span>}
+                    BinProtRule::Option(_r) =&gt; {
+                        <span class="comment">// Option is a special case of a Sum where the None variant contain nothing
+                    </span>}
+                    BinProtRule::Reference(rule_ref) =&gt; <span class="kw">match </span>rule_ref {
+                        RuleRef::Unresolved(_payload) =&gt; {
                             <span class="macro">unimplemented!</span>();
                         }
-                        <span class="ident">RuleRef::Resolved</span>(<span class="ident">payload</span>) =&gt; {
-                            <span class="self">self</span>.<span class="ident">stack</span>.<span class="ident">push</span>(<span class="kw-2">*</span><span class="ident">payload</span>.<span class="ident">ref_rule</span>);
-                            <span class="self">self</span>.<span class="ident">current_module_path</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">payload</span>.<span class="ident">source_module_path</span>);
-                            <span class="kw">return</span> <span class="self">self</span>.<span class="ident">next</span>();
+                        RuleRef::Resolved(payload) =&gt; {
+                            <span class="self">self</span>.stack.push(<span class="kw-2">*</span>payload.ref_rule);
+                            <span class="self">self</span>.current_module_path = <span class="prelude-val">Some</span>(payload.source_module_path);
+                            <span class="kw">return </span><span class="self">self</span>.next();
                         }
                     },
-                    <span class="ident">BinProtRule::String</span>
-                    <span class="op">|</span> <span class="ident">BinProtRule::Int</span>
-                    <span class="op">|</span> <span class="ident">BinProtRule::Int64</span>
-                    <span class="op">|</span> <span class="ident">BinProtRule::Nat0</span>
-                    <span class="op">|</span> <span class="ident">BinProtRule::Bool</span>
-                    <span class="op">|</span> <span class="ident">BinProtRule::Unit</span>
-                    <span class="op">|</span> <span class="ident">BinProtRule::Char</span>
-                    <span class="op">|</span> <span class="ident">BinProtRule::Int32</span>
-                    <span class="op">|</span> <span class="ident">BinProtRule::NativeInt</span>
-                    <span class="op">|</span> <span class="ident">BinProtRule::Float</span> =&gt; {} <span class="comment">// These are leaves so nothing required</span>
-                    <span class="ident">BinProtRule::Custom</span>(<span class="ident">rules</span>) =&gt; {
-                        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">path</span>) <span class="op">=</span> <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">current_module_path</span> {
-                            <span class="kw">return</span> <span class="prelude-val">Some</span>(<span class="ident">BinProtRule::CustomForPath</span>(<span class="ident">path</span>.<span class="ident">to_string</span>(), <span class="ident">rules</span>));
+                    BinProtRule::String
+                    | BinProtRule::Int
+                    | BinProtRule::Int64
+                    | BinProtRule::Nat0
+                    | BinProtRule::Bool
+                    | BinProtRule::Unit
+                    | BinProtRule::Char
+                    | BinProtRule::Int32
+                    | BinProtRule::NativeInt
+                    | BinProtRule::Float =&gt; {} <span class="comment">// These are leaves so nothing required
+                    </span>BinProtRule::Custom(rules) =&gt; {
+                        <span class="kw">if let </span><span class="prelude-val">Some</span>(path) = <span class="kw-2">&amp;</span><span class="self">self</span>.current_module_path {
+                            <span class="kw">return </span><span class="prelude-val">Some</span>(BinProtRule::CustomForPath(path.to_string(), rules));
                         }
                     }
-                    <span class="kw">_</span> =&gt; <span class="macro">unimplemented!</span>(),
+                    <span class="kw">_ </span>=&gt; <span class="macro">unimplemented!</span>(),
                 };
-                <span class="ident">r</span>
+                r
             }
-            <span class="prelude-val">None</span> =&gt; <span class="prelude-val">None</span>, <span class="comment">// end of traversal</span>
+            <span class="prelude-val">None </span>=&gt; <span class="prelude-val">None</span>, <span class="comment">// end of traversal
+        </span>}
+    }
+}
+
+<span class="kw">impl </span>BinProtRuleIterator {
+    <span class="comment">// Drop a custom rule onto the stack
+    </span><span class="kw">pub fn </span>push(<span class="kw-2">&amp;mut </span><span class="self">self</span>, rules: Vec&lt;BinProtRule&gt;) {
+        <span class="self">self</span>.stack.extend(rules);
+    }
+
+    <span class="comment">// Drop a custom rule onto the stack n times
+    </span><span class="kw">pub fn </span>push_n(<span class="kw-2">&amp;mut </span><span class="self">self</span>, rule: BinProtRule, n: usize) {
+        <span class="self">self</span>.stack.extend(std::iter::repeat(rule).take(n));
+    }
+}
+
+<span class="kw">impl </span>IntoIterator <span class="kw">for </span>BinProtRule {
+    <span class="kw">type </span>Item = BinProtRule;
+    <span class="kw">type </span>IntoIter = BinProtRuleIterator;
+
+    <span class="kw">fn </span>into_iter(<span class="self">self</span>) -&gt; &lt;<span class="self">Self </span><span class="kw">as </span>IntoIterator&gt;::IntoIter {
+        BinProtRuleIterator {
+            stack: <span class="macro">vec!</span>[<span class="self">self</span>],
+            current_module_path: <span class="prelude-val">None</span>,
         }
     }
 }
 
-<span class="kw">impl</span> <span class="ident">BinProtRuleIterator</span> {
-    <span class="comment">// Drop a custom rule onto the stack</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">push</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">rules</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">BinProtRule</span><span class="op">&gt;</span>) {
-        <span class="self">self</span>.<span class="ident">stack</span>.<span class="ident">extend</span>(<span class="ident">rules</span>);
-    }
+<span class="attribute">#[cfg(test)]</span>
+<span class="kw">mod </span>tests {
+    <span class="kw">use super</span>::<span class="kw-2">*</span>;
+    <span class="kw">use </span><span class="kw">crate</span>::value::layout::Layout;
+    <span class="kw">const </span>TEST_LAYOUT: <span class="kw-2">&amp;</span>str = <span class="macro">include_str!</span>(<span class="string">&quot;./test_layouts/mina_state_hash_tuple.json&quot;</span>);
 
-    <span class="comment">// Drop a custom rule onto the stack n times</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">push_n</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">rule</span>: <span class="ident">BinProtRule</span>, <span class="ident">n</span>: <span class="ident">usize</span>) {
-        <span class="self">self</span>.<span class="ident">stack</span>.<span class="ident">extend</span>(<span class="ident">std::iter::repeat</span>(<span class="ident">rule</span>).<span class="ident">take</span>(<span class="ident">n</span>));
-    }
-}
-
-<span class="kw">impl</span> <span class="ident">IntoIterator</span> <span class="kw">for</span> <span class="ident">BinProtRule</span> {
-    <span class="kw">type</span> <span class="ident">Item</span> <span class="op">=</span> <span class="ident">BinProtRule</span>;
-    <span class="kw">type</span> <span class="ident">IntoIter</span> <span class="op">=</span> <span class="ident">BinProtRuleIterator</span>;
-
-    <span class="kw">fn</span> <span class="ident">into_iter</span>(<span class="self">self</span>) -&gt; <span class="op">&lt;</span><span class="self">Self</span> <span class="kw">as</span> <span class="ident">IntoIterator</span><span class="op">&gt;</span><span class="ident">::IntoIter</span> {
-        <span class="ident">BinProtRuleIterator</span> {
-            <span class="ident">stack</span>: <span class="macro">vec!</span>[<span class="self">self</span>],
-            <span class="ident">current_module_path</span>: <span class="prelude-val">None</span>,
-        }
-    }
-}
-
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
-<span class="kw">mod</span> <span class="ident">tests</span> {
-    <span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
-    <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::value::layout::Layout</span>;
-    <span class="kw">const</span> <span class="ident">TEST_LAYOUT</span>: <span class="kw-2">&amp;</span><span class="ident">str</span> <span class="op">=</span> <span class="macro">include_str!</span>(<span class="string">&quot;./test_layouts/mina_state_hash_tuple.json&quot;</span>);
-
-    <span class="attribute">#[<span class="ident">test</span>]</span>
-    <span class="kw">fn</span> <span class="ident">test_layout</span>() {
-        <span class="kw">let</span> <span class="ident">layout</span>: <span class="ident">Layout</span> <span class="op">=</span> <span class="ident">serde_json::from_str</span>(<span class="ident">TEST_LAYOUT</span>).<span class="ident">unwrap</span>();
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">iter</span> <span class="op">=</span> <span class="ident">layout</span>.<span class="ident">bin_prot_rule</span>.<span class="ident">into_iter</span>();
-        <span class="kw">while</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">v</span>) <span class="op">=</span> <span class="ident">iter</span>.<span class="ident">next</span>() {
-            <span class="macro">println!</span>(<span class="string">&quot;{:?}\n&quot;</span>, <span class="ident">v</span>);
+    <span class="attribute">#[test]</span>
+    <span class="kw">fn </span>test_layout() {
+        <span class="kw">let </span>layout: Layout = serde_json::from_str(TEST_LAYOUT).unwrap();
+        <span class="kw">let </span><span class="kw-2">mut </span>iter = layout.bin_prot_rule.into_iter();
+        <span class="kw">while let </span><span class="prelude-val">Some</span>(v) = iter.next() {
+            <span class="macro">println!</span>(<span class="string">&quot;{:?}\n&quot;</span>, v);
         }
     }
 
-    <span class="kw">const</span> <span class="ident">TEST_LAYOUT_SUM</span>: <span class="kw-2">&amp;</span><span class="ident">str</span> <span class="op">=</span> <span class="macro">include_str!</span>(<span class="string">&quot;./test_layouts/sum_type_layout.json&quot;</span>);
+    <span class="kw">const </span>TEST_LAYOUT_SUM: <span class="kw-2">&amp;</span>str = <span class="macro">include_str!</span>(<span class="string">&quot;./test_layouts/sum_type_layout.json&quot;</span>);
 
-    <span class="attribute">#[<span class="ident">test</span>]</span>
-    <span class="kw">fn</span> <span class="ident">test_layout_sum</span>() {
-        <span class="kw">let</span> <span class="ident">layout</span>: <span class="ident">Layout</span> <span class="op">=</span> <span class="ident">serde_json::from_str</span>(<span class="ident">TEST_LAYOUT_SUM</span>).<span class="ident">unwrap</span>();
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">iter</span> <span class="op">=</span> <span class="ident">layout</span>.<span class="ident">bin_prot_rule</span>.<span class="ident">into_iter</span>();
-        <span class="comment">// Test by taking the 0th branch at each branch node. Test is considered as pass</span>
-        <span class="comment">// if no error</span>
-        <span class="kw">loop</span> {
-            <span class="kw">match</span> <span class="ident">iter</span>.<span class="ident">next</span>() {
-                <span class="prelude-val">Some</span>(<span class="ident">v</span>) =&gt; {
-                    <span class="kw">if</span> <span class="kw">let</span> <span class="ident">BinProtRule::Sum</span>(<span class="ident">summands</span>) <span class="op">=</span> <span class="ident">v</span> {
-                        <span class="comment">// if its a sum type take the first variant in each case</span>
-                        <span class="ident">iter</span>.<span class="ident">push</span>(<span class="ident">summands</span>[<span class="number">0</span>].<span class="ident">ctor_args</span>.<span class="ident">clone</span>())
+    <span class="attribute">#[test]</span>
+    <span class="kw">fn </span>test_layout_sum() {
+        <span class="kw">let </span>layout: Layout = serde_json::from_str(TEST_LAYOUT_SUM).unwrap();
+        <span class="kw">let </span><span class="kw-2">mut </span>iter = layout.bin_prot_rule.into_iter();
+        <span class="comment">// Test by taking the 0th branch at each branch node. Test is considered as pass
+        // if no error
+        </span><span class="kw">loop </span>{
+            <span class="kw">match </span>iter.next() {
+                <span class="prelude-val">Some</span>(v) =&gt; {
+                    <span class="kw">if let </span>BinProtRule::Sum(summands) = v {
+                        <span class="comment">// if its a sum type take the first variant in each case
+                        </span>iter.push(summands[<span class="number">0</span>].ctor_args.clone())
                     }
                 }
-                <span class="prelude-val">None</span> =&gt; {
+                <span class="prelude-val">None </span>=&gt; {
                     <span class="macro">println!</span>(<span class="string">&quot;END!!!!&quot;</span>);
                     <span class="kw">break</span>;
                 }
@@ -305,4 +305,4 @@
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../../" data-current-crate="bin_prot" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (fe3342816 2022-08-01)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../../" data-current-crate="bin_prot" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (40336865f 2022-08-15)" ></div></body></html>

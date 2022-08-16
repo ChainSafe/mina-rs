@@ -97,104 +97,104 @@
 <span id="97">97</span>
 <span id="98">98</span>
 <span id="99">99</span>
-</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems</span>
-<span class="comment">// SPDX-License-Identifier: Apache-2.0</span>
+</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems
+// SPDX-License-Identifier: Apache-2.0
 
-<span class="doccomment">//! The Value enum, a loosely typed way of representing any valid bin_prot value.</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! Since bin_prot is not a self describing format, deserializing to a loosely typed value required</span>
-<span class="doccomment">//! a supplimentary file that describes the layout of the binary (see layout/)</span>
+</span><span class="doccomment">//! The Value enum, a loosely typed way of representing any valid bin_prot value.
+//!
+//! Since bin_prot is not a self describing format, deserializing to a loosely typed value required
+//! a supplimentary file that describes the layout of the binary (see layout/)
 
-<span class="kw">use</span> <span class="ident">serde::Deserialize</span>;
+</span><span class="kw">use </span>serde::Deserialize;
 
-<span class="kw">mod</span> <span class="ident">enum_data</span>;
-<span class="kw">mod</span> <span class="ident">index</span>;
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;loose_deserialization&quot;</span>)]</span>
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">layout</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">ser</span>;
-<span class="kw">mod</span> <span class="ident">visitor</span>;
+<span class="kw">mod </span>enum_data;
+<span class="kw">mod </span>index;
+<span class="attribute">#[cfg(feature = <span class="string">&quot;loose_deserialization&quot;</span>)]</span>
+<span class="kw">pub mod </span>layout;
+<span class="kw">pub mod </span>ser;
+<span class="kw">mod </span>visitor;
 
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="self">self</span>::index::Index</span>;
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">enum_data::EnumData</span>;
+<span class="kw">pub use </span><span class="self">self</span>::index::Index;
+<span class="kw">pub use </span>enum_data::EnumData;
 
-<span class="kw">use</span> <span class="ident">visitor::ValueVisitor</span>;
+<span class="kw">use </span>visitor::ValueVisitor;
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">PartialEq</span>)]</span>
-<span class="doccomment">/// Recursive enum that can define any BinProt serializable type</span>
-<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">Value</span> {
-    <span class="doccomment">/// Unit type</span>
-    <span class="ident">Unit</span>,
-    <span class="doccomment">/// Variable length natural integer</span>
-    <span class="ident">Nat0</span>(<span class="ident">u32</span>),
-    <span class="doccomment">/// Boolean</span>
-    <span class="ident">Bool</span>(<span class="ident">bool</span>),
-    <span class="doccomment">/// String</span>
-    <span class="ident">String</span>(<span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>),
-    <span class="doccomment">/// Char</span>
-    <span class="ident">Char</span>(<span class="ident">u8</span>),
-    <span class="doccomment">/// Variable length integer</span>
-    <span class="ident">Int</span>(<span class="ident">i64</span>),
-    <span class="doccomment">/// Float</span>
-    <span class="ident">Float</span>(<span class="ident">f64</span>),
-    <span class="doccomment">/// Option</span>
-    <span class="prelude-ty">Option</span>(<span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Box</span><span class="op">&lt;</span><span class="ident">Value</span><span class="op">&gt;</span><span class="op">&gt;</span>),
-    <span class="doccomment">/// records/structs</span>
-    <span class="ident">Record</span>(<span class="ident">Vec</span><span class="op">&lt;</span>(<span class="ident">String</span>, <span class="ident">Value</span>)<span class="op">&gt;</span>),
-    <span class="doccomment">/// Tuples (fixed length list)</span>
-    <span class="ident">Tuple</span>(<span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Value</span><span class="op">&gt;</span>),
-    <span class="doccomment">/// Sum/enum types</span>
-    <span class="ident">Sum</span> {
-        <span class="doccomment">/// summand/variant name</span>
-        <span class="ident">name</span>: <span class="ident">String</span>,
-        <span class="doccomment">/// summand index</span>
-        <span class="ident">index</span>: <span class="ident">u8</span>,
-        <span class="doccomment">/// value wrapped by variant</span>
-        <span class="ident">value</span>: <span class="ident">Box</span><span class="op">&lt;</span><span class="ident">Value</span><span class="op">&gt;</span>,
+<span class="attribute">#[derive(Clone, Debug, PartialEq)]</span>
+<span class="doccomment">/// Recursive enum that can define any BinProt serializable type
+</span><span class="kw">pub enum </span>Value {
+    <span class="doccomment">/// Unit type
+    </span>Unit,
+    <span class="doccomment">/// Variable length natural integer
+    </span>Nat0(u32),
+    <span class="doccomment">/// Boolean
+    </span>Bool(bool),
+    <span class="doccomment">/// String
+    </span>String(Vec&lt;u8&gt;),
+    <span class="doccomment">/// Char
+    </span>Char(u8),
+    <span class="doccomment">/// Variable length integer
+    </span>Int(i64),
+    <span class="doccomment">/// Float
+    </span>Float(f64),
+    <span class="doccomment">/// Option
+    </span><span class="prelude-ty">Option</span>(<span class="prelude-ty">Option</span>&lt;Box&lt;Value&gt;&gt;),
+    <span class="doccomment">/// records/structs
+    </span>Record(Vec&lt;(String, Value)&gt;),
+    <span class="doccomment">/// Tuples (fixed length list)
+    </span>Tuple(Vec&lt;Value&gt;),
+    <span class="doccomment">/// Sum/enum types
+    </span>Sum {
+        <span class="doccomment">/// summand/variant name
+        </span>name: String,
+        <span class="doccomment">/// summand index
+        </span>index: u8,
+        <span class="doccomment">/// value wrapped by variant
+        </span>value: Box&lt;Value&gt;,
     },
-    <span class="doccomment">/// Polymorphic Variant (Polyvar) types</span>
-    <span class="ident">Polyvar</span> {
-        <span class="doccomment">/// Polyvar variant name</span>
-        <span class="ident">name</span>: <span class="ident">String</span>,
-        <span class="doccomment">/// Polyvar variant tag (e.g. hash)</span>
-        <span class="ident">tag</span>: <span class="ident">u32</span>,
-        <span class="doccomment">/// value wrapped by variant</span>
-        <span class="ident">value</span>: <span class="ident">Box</span><span class="op">&lt;</span><span class="ident">Value</span><span class="op">&gt;</span>,
+    <span class="doccomment">/// Polymorphic Variant (Polyvar) types
+    </span>Polyvar {
+        <span class="doccomment">/// Polyvar variant name
+        </span>name: String,
+        <span class="doccomment">/// Polyvar variant tag (e.g. hash)
+        </span>tag: u32,
+        <span class="doccomment">/// value wrapped by variant
+        </span>value: Box&lt;Value&gt;,
     },
-    <span class="doccomment">/// List of types (variable length)</span>
-    <span class="ident">List</span>(<span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Value</span><span class="op">&gt;</span>),
+    <span class="doccomment">/// List of types (variable length)
+    </span>List(Vec&lt;Value&gt;),
 }
 
-<span class="kw">impl</span> <span class="ident">Default</span> <span class="kw">for</span> <span class="ident">Value</span> {
-    <span class="kw">fn</span> <span class="ident">default</span>() -&gt; <span class="ident">Value</span> {
-        <span class="ident">Value::Unit</span>
+<span class="kw">impl </span>Default <span class="kw">for </span>Value {
+    <span class="kw">fn </span>default() -&gt; Value {
+        Value::Unit
     }
 }
 
-<span class="comment">// Ensure the value visitor is always used when deserializing to a Value (see visitor.rs)</span>
-<span class="comment">//</span>
-<span class="comment">// This will always request `deserialize_any` be called since the Value implementation</span>
-<span class="comment">// does not describe its own structure. Attempting to deserialize into Value from a</span>
-<span class="comment">// non-self describing format will result in an error</span>
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;de</span><span class="op">&gt;</span> <span class="ident">Deserialize</span><span class="op">&lt;</span><span class="lifetime">&#39;de</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Value</span> {
-    <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="kw">fn</span> <span class="ident">deserialize</span><span class="op">&lt;</span><span class="ident">D</span><span class="op">&gt;</span>(<span class="ident">deserializer</span>: <span class="ident">D</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Value</span>, <span class="ident">D::Error</span><span class="op">&gt;</span>
-    <span class="kw">where</span>
-        <span class="ident">D</span>: <span class="ident">serde::Deserializer</span><span class="op">&lt;</span><span class="lifetime">&#39;de</span><span class="op">&gt;</span>,
+<span class="comment">// Ensure the value visitor is always used when deserializing to a Value (see visitor.rs)
+//
+// This will always request `deserialize_any` be called since the Value implementation
+// does not describe its own structure. Attempting to deserialize into Value from a
+// non-self describing format will result in an error
+</span><span class="kw">impl</span>&lt;<span class="lifetime">&#39;de</span>&gt; Deserialize&lt;<span class="lifetime">&#39;de</span>&gt; <span class="kw">for </span>Value {
+    <span class="attribute">#[inline]</span>
+    <span class="kw">fn </span>deserialize&lt;D&gt;(deserializer: D) -&gt; <span class="prelude-ty">Result</span>&lt;Value, D::Error&gt;
+    <span class="kw">where
+        </span>D: serde::Deserializer&lt;<span class="lifetime">&#39;de</span>&gt;,
     {
-        <span class="ident">deserializer</span>.<span class="ident">deserialize_any</span>(<span class="ident">ValueVisitor</span>)
+        deserializer.deserialize_any(ValueVisitor)
     }
 }
 
-<span class="kw">impl</span> <span class="ident">Value</span> {
-    <span class="doccomment">/// Inner reveals an Option variant as a Rust Option type</span>
-    <span class="doccomment">/// Calling inner on a non-option variant results in a panic</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">inner</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span> {
-        <span class="kw">if</span> <span class="kw">let</span> <span class="ident">Value::Option</span>(<span class="ident">inner</span>) <span class="op">=</span> <span class="self">self</span> {
-            <span class="ident">inner</span>.<span class="ident">clone</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">e</span><span class="op">|</span> <span class="kw-2">*</span><span class="ident">e</span>)
-        } <span class="kw">else</span> {
+<span class="kw">impl </span>Value {
+    <span class="doccomment">/// Inner reveals an Option variant as a Rust Option type
+    /// Calling inner on a non-option variant results in a panic
+    </span><span class="kw">pub fn </span>inner(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="self">Self</span>&gt; {
+        <span class="kw">if let </span>Value::Option(inner) = <span class="self">self </span>{
+            inner.clone().map(|e| <span class="kw-2">*</span>e)
+        } <span class="kw">else </span>{
             <span class="macro">panic!</span>(<span class="string">&quot;Called inner on a non-option variant {:?}&quot;</span>, <span class="self">self</span>)
         }
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="bin_prot" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (fe3342816 2022-08-01)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="bin_prot" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (40336865f 2022-08-15)" ></div></body></html>

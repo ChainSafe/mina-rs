@@ -25,32 +25,32 @@
 <span id="25">25</span>
 <span id="26">26</span>
 <span id="27">27</span>
-</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems</span>
-<span class="comment">// SPDX-License-Identifier: Apache-2.0</span>
+</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems
+// SPDX-License-Identifier: Apache-2.0
 
-<span class="doccomment">//! This is a shim crate that directly reexports crates under proof-systems.</span>
-<span class="doccomment">//! The idea is to manage those crates altogether,</span>
-<span class="doccomment">//! to make it easier to coordiate rev/version updates.</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! Other crates in this repo should always depend on this shim crate instead of directly</span>
-<span class="doccomment">//! depending on crates from proof systems</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! ```</span>
-<span class="doccomment">//! use proof_systems::*;</span>
-<span class="doccomment">//! use mina_hasher::Hashable;</span>
-<span class="doccomment">//! ```</span>
-<span class="doccomment">//!</span>
+</span><span class="doccomment">//! This is a shim crate that directly reexports crates under proof-systems.
+//! The idea is to manage those crates altogether,
+//! to make it easier to coordiate rev/version updates.
+//!
+//! Other crates in this repo should always depend on this shim crate instead of directly
+//! depending on crates from proof systems
+//!
+//! ```
+//! use proof_systems::*;
+//! use mina_hasher::Hashable;
+//! ```
+//!
 
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">mina_curves</span>;
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">mina_hasher</span>;
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">mina_signer</span>;
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">o1_utils</span>;
+</span><span class="kw">pub use </span>mina_curves;
+<span class="kw">pub use </span>mina_hasher;
+<span class="kw">pub use </span>mina_signer;
+<span class="kw">pub use </span>o1_utils;
 
-<span class="doccomment">/// Temporary implementation for chunked random oracle input</span>
-<span class="kw">mod</span> <span class="ident">roinput</span>;
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">roinput</span>::<span class="kw-2">*</span>;
+<span class="doccomment">/// Temporary implementation for chunked random oracle input
+</span><span class="kw">mod </span>roinput;
+<span class="kw">pub use </span>roinput::<span class="kw-2">*</span>;
 
-<span class="doccomment">/// Reexport [bitvec]</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">bitvec</span>;
+<span class="doccomment">/// Reexport [bitvec]
+</span><span class="kw">pub use </span>bitvec;
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="proof_systems" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (fe3342816 2022-08-01)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="proof_systems" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (40336865f 2022-08-15)" ></div></body></html>

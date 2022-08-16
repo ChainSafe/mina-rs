@@ -41,48 +41,48 @@
 <span id="41">41</span>
 <span id="42">42</span>
 <span id="43">43</span>
-</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems</span>
-<span class="comment">// SPDX-License-Identifier: Apache-2.0</span>
+</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems
+// SPDX-License-Identifier: Apache-2.0
 
-<span class="doccomment">//! Account token permissions</span>
+</span><span class="doccomment">//! Account token permissions
 
-<span class="kw">use</span> <span class="ident">mina_serialization_types_macros::AutoFrom</span>;
-<span class="kw">use</span> <span class="ident">proof_systems</span>::{<span class="ident">bitvec::prelude::BitVec</span>, <span class="ident">ChunkedROInput</span>, <span class="ident">ToChunkedROInput</span>};
+</span><span class="kw">use </span>mina_serialization_types_macros::AutoFrom;
+<span class="kw">use </span>proof_systems::{bitvec::prelude::BitVec, ChunkedROInput, ToChunkedROInput};
 
-<span class="doccomment">/// FIXME: Need to learn exactly what this is..</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">AutoFrom</span>)]</span>
-<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">mina_serialization_types::account::TokenPermissions</span>)]</span>
-<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">TokenPermissions</span> {
-    <span class="doccomment">/// Account does not own a token</span>
-    <span class="ident">NotOwned</span> {
-        <span class="doccomment">/// ?</span>
-        <span class="ident">account_disabled</span>: <span class="ident">bool</span>,
+<span class="doccomment">/// FIXME: Need to learn exactly what this is..
+</span><span class="attribute">#[derive(Clone, Debug, AutoFrom)]</span>
+<span class="attribute">#[auto_from(mina_serialization_types::account::TokenPermissions)]</span>
+<span class="kw">pub enum </span>TokenPermissions {
+    <span class="doccomment">/// Account does not own a token
+    </span>NotOwned {
+        <span class="doccomment">/// ?
+        </span>account_disabled: bool,
     },
-    <span class="doccomment">/// Account owns a token</span>
-    <span class="ident">TokenOwned</span> {
-        <span class="doccomment">/// ?</span>
-        <span class="ident">disable_new_accounts</span>: <span class="ident">bool</span>,
+    <span class="doccomment">/// Account owns a token
+    </span>TokenOwned {
+        <span class="doccomment">/// ?
+        </span>disable_new_accounts: bool,
     },
 }
 
-<span class="kw">impl</span> <span class="ident">ToChunkedROInput</span> <span class="kw">for</span> <span class="ident">TokenPermissions</span> {
-    <span class="kw">fn</span> <span class="ident">to_chunked_roinput</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">ChunkedROInput</span> {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">bits</span> <span class="op">=</span> <span class="ident">BitVec::with_capacity</span>(<span class="number">2</span>);
-        <span class="kw">match</span> <span class="self">self</span> {
-            <span class="ident"><span class="self">Self</span>::NotOwned</span> { <span class="ident">account_disabled</span> } =&gt; {
-                <span class="ident">bits</span>.<span class="ident">push</span>(<span class="bool-val">false</span>);
-                <span class="ident">bits</span>.<span class="ident">push</span>(<span class="kw-2">*</span><span class="ident">account_disabled</span>);
+<span class="kw">impl </span>ToChunkedROInput <span class="kw">for </span>TokenPermissions {
+    <span class="kw">fn </span>to_chunked_roinput(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; ChunkedROInput {
+        <span class="kw">let </span><span class="kw-2">mut </span>bits = BitVec::with_capacity(<span class="number">2</span>);
+        <span class="kw">match </span><span class="self">self </span>{
+            <span class="self">Self</span>::NotOwned { account_disabled } =&gt; {
+                bits.push(<span class="bool-val">false</span>);
+                bits.push(<span class="kw-2">*</span>account_disabled);
             }
-            <span class="ident"><span class="self">Self</span>::TokenOwned</span> {
-                <span class="ident">disable_new_accounts</span>,
+            <span class="self">Self</span>::TokenOwned {
+                disable_new_accounts,
             } =&gt; {
-                <span class="ident">bits</span>.<span class="ident">push</span>(<span class="bool-val">true</span>);
-                <span class="ident">bits</span>.<span class="ident">push</span>(<span class="kw-2">*</span><span class="ident">disable_new_accounts</span>);
+                bits.push(<span class="bool-val">true</span>);
+                bits.push(<span class="kw-2">*</span>disable_new_accounts);
             }
         };
-        <span class="kw">let</span> <span class="ident">max_bits</span> <span class="op">=</span> <span class="ident">bits</span>.<span class="ident">len</span>() <span class="kw">as</span> <span class="ident">u32</span>;
-        <span class="ident">ChunkedROInput::new</span>().<span class="ident">append_packed</span>(<span class="ident">ChunkedROInput::bits_to_fp_unsafe</span>(<span class="ident">bits</span>), <span class="ident">max_bits</span>)
+        <span class="kw">let </span>max_bits = bits.len() <span class="kw">as </span>u32;
+        ChunkedROInput::new().append_packed(ChunkedROInput::bits_to_fp_unsafe(bits), max_bits)
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="mina_rs_base" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (fe3342816 2022-08-01)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="mina_rs_base" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (40336865f 2022-08-15)" ></div></body></html>

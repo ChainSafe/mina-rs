@@ -40,47 +40,47 @@
 <span id="40">40</span>
 <span id="41">41</span>
 <span id="42">42</span>
-</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems</span>
-<span class="comment">// SPDX-License-Identifier: Apache-2.0</span>
+</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems
+// SPDX-License-Identifier: Apache-2.0
 
-<span class="doccomment">//!</span>
-<span class="doccomment">//! Types that represent errors in mina consensus operations</span>
-<span class="doccomment">//!</span>
+</span><span class="doccomment">//!
+//! Types that represent errors in mina consensus operations
+//!
 
-<span class="kw">use</span> <span class="ident">std::str::Utf8Error</span>;
+</span><span class="kw">use </span>std::str::Utf8Error;
 
-<span class="doccomment">/// Type that represents errors in mina consensus operations</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">thiserror::Error</span>, <span class="ident">Debug</span>, <span class="ident">PartialEq</span>)]</span>
-<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">ConsensusError</span> {
-    <span class="doccomment">/// header must have height 1 greater than top</span>
-    <span class="attribute">#[<span class="ident">error</span>(<span class="string">&quot;header must have height 1 greater than top&quot;</span>)]</span>
-    <span class="ident">InvalidHeight</span>,
+<span class="doccomment">/// Type that represents errors in mina consensus operations
+</span><span class="attribute">#[derive(thiserror::Error, Debug, Eq, PartialEq)]</span>
+<span class="kw">pub enum </span>ConsensusError {
+    <span class="doccomment">/// header must have height 1 greater than top
+    </span><span class="attribute">#[error(<span class="string">&quot;header must have height 1 greater than top&quot;</span>)]</span>
+    InvalidHeight,
 
-    <span class="doccomment">/// Top block not found</span>
-    <span class="attribute">#[<span class="ident">error</span>(<span class="string">&quot;Top block not found&quot;</span>)]</span>
-    <span class="ident">TopBlockNotFound</span>,
+    <span class="doccomment">/// Top block not found
+    </span><span class="attribute">#[error(<span class="string">&quot;Top block not found&quot;</span>)]</span>
+    TopBlockNotFound,
 
-    <span class="doccomment">/// Global slot not found</span>
-    <span class="attribute">#[<span class="ident">error</span>(<span class="string">&quot;Global slot not found&quot;</span>)]</span>
-    <span class="ident">GlobalSlotNotFound</span>,
+    <span class="doccomment">/// Global slot not found
+    </span><span class="attribute">#[error(<span class="string">&quot;Global slot not found&quot;</span>)]</span>
+    GlobalSlotNotFound,
 
-    <span class="doccomment">/// Consensus state not found</span>
-    <span class="attribute">#[<span class="ident">error</span>(<span class="string">&quot;Consensus state not found&quot;</span>)]</span>
-    <span class="ident">ConsensusStateNotFound</span>,
+    <span class="doccomment">/// Consensus state not found
+    </span><span class="attribute">#[error(<span class="string">&quot;Consensus state not found&quot;</span>)]</span>
+    ConsensusStateNotFound,
 
-    <span class="doccomment">/// candidates not found</span>
-    <span class="attribute">#[<span class="ident">error</span>(<span class="string">&quot;candidates not found&quot;</span>)]</span>
-    <span class="ident">CandidatesNotFound</span>,
-    <span class="doccomment">/// Candidates missing some sub window densities</span>
-    <span class="attribute">#[<span class="ident">error</span>(<span class="string">&quot;Candidates missing some sub window densities&quot;</span>)]</span>
-    <span class="ident">CandidatesMissingSubWindowDensities</span>,
-    <span class="doccomment">/// Invalid sub window density length</span>
-    <span class="attribute">#[<span class="ident">error</span>(<span class="string">&quot;Invalid sub window density length&quot;</span>)]</span>
-    <span class="ident">InvalidSubWindowDensityLen</span>,
+    <span class="doccomment">/// candidates not found
+    </span><span class="attribute">#[error(<span class="string">&quot;candidates not found&quot;</span>)]</span>
+    CandidatesNotFound,
+    <span class="doccomment">/// Candidates missing some sub window densities
+    </span><span class="attribute">#[error(<span class="string">&quot;Candidates missing some sub window densities&quot;</span>)]</span>
+    CandidatesMissingSubWindowDensities,
+    <span class="doccomment">/// Invalid sub window density length
+    </span><span class="attribute">#[error(<span class="string">&quot;Invalid sub window density length&quot;</span>)]</span>
+    InvalidSubWindowDensityLen,
 
-    <span class="doccomment">/// Blake2b digest generation failed</span>
-    <span class="attribute">#[<span class="ident">error</span>(<span class="string">&quot;Could not generate blake2b digest of last vrf output: {0}&quot;</span>)]</span>
-    <span class="ident">FailedVrfHashDigest</span>(<span class="ident">Utf8Error</span>),
+    <span class="doccomment">/// Blake2b digest generation failed
+    </span><span class="attribute">#[error(<span class="string">&quot;Could not generate blake2b digest of last vrf output: {0}&quot;</span>)]</span>
+    FailedVrfHashDigest(Utf8Error),
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_consensus" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (fe3342816 2022-08-01)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_consensus" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (40336865f 2022-08-15)" ></div></body></html>

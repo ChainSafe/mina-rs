@@ -32,39 +32,39 @@
 <span id="32">32</span>
 <span id="33">33</span>
 <span id="34">34</span>
-</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems</span>
-<span class="comment">// SPDX-License-Identifier: Apache-2.0</span>
+</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems
+// SPDX-License-Identifier: Apache-2.0
 
-<span class="doccomment">//! Protocol version structure</span>
+</span><span class="doccomment">//! Protocol version structure
 
-<span class="kw">use</span> <span class="ident">serde</span>::{<span class="ident">Deserialize</span>, <span class="ident">Serialize</span>};
-<span class="kw">use</span> <span class="ident">smart_default::SmartDefault</span>;
-<span class="kw">use</span> <span class="ident">versioned::Versioned</span>;
+</span><span class="kw">use </span>serde::{Deserialize, Serialize};
+<span class="kw">use </span>smart_default::SmartDefault;
+<span class="kw">use </span>versioned::Versioned;
 
-<span class="doccomment">/// Defines a version of the Mina protocol in semver format</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">PartialEq</span>, <span class="ident">SmartDefault</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ProtocolVersion</span> {
-    <span class="doccomment">/// Major version number</span>
-    <span class="attribute">#[<span class="ident">default</span>(<span class="number">2</span>)]</span>
-    <span class="kw">pub</span> <span class="ident">major</span>: <span class="ident">u32</span>,
-    <span class="doccomment">/// Minor version number</span>
-    <span class="attribute">#[<span class="ident">default</span>(<span class="number">0</span>)]</span>
-    <span class="kw">pub</span> <span class="ident">minor</span>: <span class="ident">u32</span>,
-    <span class="doccomment">/// Patch version number</span>
-    <span class="attribute">#[<span class="ident">default</span>(<span class="number">0</span>)]</span>
-    <span class="kw">pub</span> <span class="ident">patch</span>: <span class="ident">u32</span>,
+<span class="doccomment">/// Defines a version of the Mina protocol in semver format
+</span><span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq, SmartDefault)]</span>
+<span class="kw">pub struct </span>ProtocolVersion {
+    <span class="doccomment">/// Major version number
+    </span><span class="attribute">#[default(<span class="number">2</span>)]</span>
+    <span class="kw">pub </span>major: u32,
+    <span class="doccomment">/// Minor version number
+    </span><span class="attribute">#[default(<span class="number">0</span>)]</span>
+    <span class="kw">pub </span>minor: u32,
+    <span class="doccomment">/// Patch version number
+    </span><span class="attribute">#[default(<span class="number">0</span>)]</span>
+    <span class="kw">pub </span>patch: u32,
 }
 
-<span class="doccomment">/// Defines a version of the Mina protocol in semver format (v1)</span>
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">ProtocolVersionV1</span> <span class="op">=</span> <span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">ProtocolVersion</span>, <span class="number">1</span><span class="op">&gt;</span>;
+<span class="doccomment">/// Defines a version of the Mina protocol in semver format (v1)
+</span><span class="kw">pub type </span>ProtocolVersionV1 = Versioned&lt;ProtocolVersion, <span class="number">1</span>&gt;;
 
-<span class="doccomment">/// ProtocolVersion that is convertible from / to the mina specific json representation</span>
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">ProtocolVersionJson</span> <span class="op">=</span> <span class="ident">ProtocolVersion</span>;
+<span class="doccomment">/// ProtocolVersion that is convertible from / to the mina specific json representation
+</span><span class="kw">pub type </span>ProtocolVersionJson = ProtocolVersion;
 
-<span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">ProtocolVersionV1</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ProtocolVersionJson</span> {
-    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">t</span>: <span class="ident">ProtocolVersionV1</span>) -&gt; <span class="self">Self</span> {
-        <span class="ident">t</span>.<span class="ident">t</span>
+<span class="kw">impl </span>From&lt;ProtocolVersionV1&gt; <span class="kw">for </span>ProtocolVersionJson {
+    <span class="kw">fn </span>from(t: ProtocolVersionV1) -&gt; <span class="self">Self </span>{
+        t.t
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_serialization_types" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (fe3342816 2022-08-01)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_serialization_types" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (40336865f 2022-08-15)" ></div></body></html>

@@ -58,65 +58,65 @@
 <span id="58">58</span>
 <span id="59">59</span>
 <span id="60">60</span>
-</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems</span>
-<span class="comment">// SPDX-License-Identifier: Apache-2.0</span>
+</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems
+// SPDX-License-Identifier: Apache-2.0
 
-<span class="doccomment">//! Serialization implementation for a BinProt loosely typed Value</span>
+</span><span class="doccomment">//! Serialization implementation for a BinProt loosely typed Value
 
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::Value</span>;
+</span><span class="kw">use </span><span class="kw">crate</span>::Value;
 
-<span class="kw">use</span> <span class="ident">serde::ser</span>::{<span class="ident">SerializeStruct</span>, <span class="ident">SerializeTuple</span>};
-<span class="kw">use</span> <span class="ident">serde::Serialize</span>;
+<span class="kw">use </span>serde::ser::{SerializeStruct, SerializeTuple};
+<span class="kw">use </span>serde::Serialize;
 
-<span class="kw">impl</span> <span class="ident">Serialize</span> <span class="kw">for</span> <span class="ident">Value</span> {
-    <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="kw">fn</span> <span class="ident">serialize</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">serializer</span>: <span class="ident">S</span>) -&gt; <span class="ident">std::result::Result</span><span class="op">&lt;</span><span class="ident">S::Ok</span>, <span class="ident">S::Error</span><span class="op">&gt;</span>
-    <span class="kw">where</span>
-        <span class="ident">S</span>: <span class="ident">::serde::Serializer</span>,
+<span class="kw">impl </span>Serialize <span class="kw">for </span>Value {
+    <span class="attribute">#[inline]</span>
+    <span class="kw">fn </span>serialize&lt;S&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, serializer: S) -&gt; std::result::Result&lt;S::Ok, S::Error&gt;
+    <span class="kw">where
+        </span>S: ::serde::Serializer,
     {
-        <span class="kw">match</span> <span class="kw-2">*</span><span class="self">self</span> {
-            <span class="ident">Value::Unit</span> =&gt; <span class="ident">serializer</span>.<span class="ident">serialize_unit</span>(),
-            <span class="ident">Value::Nat0</span>(<span class="ident">v</span>) =&gt; <span class="ident">v</span>.<span class="ident">serialize</span>(<span class="ident">serializer</span>),
-            <span class="ident">Value::Bool</span>(<span class="ident">b</span>) =&gt; <span class="ident">serializer</span>.<span class="ident">serialize_bool</span>(<span class="ident">b</span>),
-            <span class="ident">Value::String</span>(<span class="kw-2">ref</span> <span class="ident">s</span>) =&gt; <span class="ident">s</span>.<span class="ident">serialize</span>(<span class="ident">serializer</span>),
-            <span class="ident">Value::Char</span>(<span class="ident">c</span>) =&gt; <span class="ident">serializer</span>.<span class="ident">serialize_char</span>(<span class="ident">c</span> <span class="kw">as</span> <span class="ident">char</span>),
-            <span class="ident">Value::Int</span>(<span class="ident">v</span>) =&gt; <span class="ident">v</span>.<span class="ident">serialize</span>(<span class="ident">serializer</span>),
-            <span class="ident">Value::Float</span>(<span class="ident">v</span>) =&gt; <span class="ident">v</span>.<span class="ident">serialize</span>(<span class="ident">serializer</span>),
-            <span class="ident">Value::Option</span>(<span class="kw-2">ref</span> <span class="ident">o</span>) =&gt; {
-                <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">v</span>) <span class="op">=</span> <span class="ident">o</span> {
-                    <span class="ident">serializer</span>.<span class="ident">serialize_some</span>(<span class="ident">v</span>)
-                } <span class="kw">else</span> {
-                    <span class="ident">serializer</span>.<span class="ident">serialize_none</span>()
+        <span class="kw">match </span><span class="kw-2">*</span><span class="self">self </span>{
+            Value::Unit =&gt; serializer.serialize_unit(),
+            Value::Nat0(v) =&gt; v.serialize(serializer),
+            Value::Bool(b) =&gt; serializer.serialize_bool(b),
+            Value::String(<span class="kw-2">ref </span>s) =&gt; s.serialize(serializer),
+            Value::Char(c) =&gt; serializer.serialize_char(c <span class="kw">as </span>char),
+            Value::Int(v) =&gt; v.serialize(serializer),
+            Value::Float(v) =&gt; v.serialize(serializer),
+            Value::Option(<span class="kw-2">ref </span>o) =&gt; {
+                <span class="kw">if let </span><span class="prelude-val">Some</span>(v) = o {
+                    serializer.serialize_some(v)
+                } <span class="kw">else </span>{
+                    serializer.serialize_none()
                 }
             }
-            <span class="ident">Value::Record</span>(<span class="kw-2">ref</span> <span class="ident">m</span>) =&gt; {
-                <span class="comment">// name of struct and field are lost when serializing</span>
-                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">map</span> <span class="op">=</span> <span class="ident">serializer</span>.<span class="ident">serialize_struct</span>(<span class="string">&quot;&quot;</span>, <span class="ident">m</span>.<span class="ident">len</span>())<span class="question-mark">?</span>;
-                <span class="kw">for</span> (<span class="ident">_k</span>, <span class="ident">v</span>) <span class="kw">in</span> <span class="ident">m</span> {
-                    <span class="ident">map</span>.<span class="ident">serialize_field</span>(<span class="string">&quot;&quot;</span>, <span class="ident">v</span>)<span class="question-mark">?</span>;
+            Value::Record(<span class="kw-2">ref </span>m) =&gt; {
+                <span class="comment">// name of struct and field are lost when serializing
+                </span><span class="kw">let </span><span class="kw-2">mut </span>map = serializer.serialize_struct(<span class="string">&quot;&quot;</span>, m.len())<span class="question-mark">?</span>;
+                <span class="kw">for </span>(_k, v) <span class="kw">in </span>m {
+                    map.serialize_field(<span class="string">&quot;&quot;</span>, v)<span class="question-mark">?</span>;
                 }
-                <span class="ident">map</span>.<span class="ident">end</span>()
+                map.end()
             }
-            <span class="ident">Value::Tuple</span>(<span class="kw-2">ref</span> <span class="ident">vals</span>) =&gt; {
-                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">t</span> <span class="op">=</span> <span class="ident">serializer</span>.<span class="ident">serialize_tuple</span>(<span class="ident">vals</span>.<span class="ident">len</span>())<span class="question-mark">?</span>;
-                <span class="kw">for</span> <span class="ident">v</span> <span class="kw">in</span> <span class="ident">vals</span> {
-                    <span class="ident">t</span>.<span class="ident">serialize_element</span>(<span class="ident">v</span>)<span class="question-mark">?</span>;
+            Value::Tuple(<span class="kw-2">ref </span>vals) =&gt; {
+                <span class="kw">let </span><span class="kw-2">mut </span>t = serializer.serialize_tuple(vals.len())<span class="question-mark">?</span>;
+                <span class="kw">for </span>v <span class="kw">in </span>vals {
+                    t.serialize_element(v)<span class="question-mark">?</span>;
                 }
-                <span class="ident">t</span>.<span class="ident">end</span>()
+                t.end()
             }
-            <span class="ident">Value::Sum</span> {
-                <span class="ident">name</span>: <span class="kw">_</span>,
-                <span class="kw-2">ref</span> <span class="ident">index</span>,
-                <span class="kw-2">ref</span> <span class="ident">value</span>,
-            } =&gt; <span class="ident">serializer</span>.<span class="ident">serialize_newtype_variant</span>(<span class="string">&quot;&quot;</span>, <span class="kw-2">*</span><span class="ident">index</span> <span class="kw">as</span> <span class="ident">u32</span>, <span class="string">&quot;&quot;</span>, <span class="ident">value</span>), <span class="comment">// sum types/enums</span>
-            <span class="ident">Value::Polyvar</span> {
-                <span class="ident">name</span>: <span class="kw">_</span>,
-                <span class="kw-2">ref</span> <span class="ident">tag</span>,
-                <span class="kw-2">ref</span> <span class="ident">value</span>,
-            } =&gt; <span class="ident">serializer</span>.<span class="ident">serialize_newtype_variant</span>(<span class="string">&quot;&quot;</span>, <span class="kw-2">*</span><span class="ident">tag</span> <span class="kw">as</span> <span class="ident">u32</span>, <span class="string">&quot;&quot;</span>, <span class="ident">value</span>), <span class="comment">// sum types/enums</span>
-            <span class="ident">Value::List</span>(<span class="kw-2">ref</span> <span class="ident">v</span>) =&gt; <span class="ident">v</span>.<span class="ident">serialize</span>(<span class="ident">serializer</span>),
+            Value::Sum {
+                name: <span class="kw">_</span>,
+                <span class="kw-2">ref </span>index,
+                <span class="kw-2">ref </span>value,
+            } =&gt; serializer.serialize_newtype_variant(<span class="string">&quot;&quot;</span>, <span class="kw-2">*</span>index <span class="kw">as </span>u32, <span class="string">&quot;&quot;</span>, value), <span class="comment">// sum types/enums
+            </span>Value::Polyvar {
+                name: <span class="kw">_</span>,
+                <span class="kw-2">ref </span>tag,
+                <span class="kw-2">ref </span>value,
+            } =&gt; serializer.serialize_newtype_variant(<span class="string">&quot;&quot;</span>, <span class="kw-2">*</span>tag <span class="kw">as </span>u32, <span class="string">&quot;&quot;</span>, value), <span class="comment">// sum types/enums
+            </span>Value::List(<span class="kw-2">ref </span>v) =&gt; v.serialize(serializer),
         }
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="bin_prot" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (fe3342816 2022-08-01)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="bin_prot" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (40336865f 2022-08-15)" ></div></body></html>

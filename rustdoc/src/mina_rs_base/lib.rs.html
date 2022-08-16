@@ -55,62 +55,62 @@
 <span id="55">55</span>
 <span id="56">56</span>
 <span id="57">57</span>
-</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems</span>
-<span class="comment">// SPDX-License-Identifier: Apache-2.0</span>
+</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems
+// SPDX-License-Identifier: Apache-2.0
 
-<span class="doccomment">//!</span>
-<span class="doccomment">//! This crate implements a number of the base types required to define the Mina protocol.</span>
-<span class="doccomment">//! This includes various types of state, blocks, slots, keypairs, numbers etc.</span>
-<span class="doccomment">//! All types are versioned where required.</span>
-<span class="doccomment">//!</span>
+</span><span class="doccomment">//!
+//! This crate implements a number of the base types required to define the Mina protocol.
+//! This includes various types of state, blocks, slots, keypairs, numbers etc.
+//! All types are versioned where required.
+//!
 
-<span class="attribute">#![<span class="ident">deny</span>(<span class="ident">warnings</span>)]</span>
-<span class="attribute">#![<span class="ident">deny</span>(<span class="ident">missing_docs</span>)]</span>
+</span><span class="attribute">#![deny(warnings)]</span>
+<span class="attribute">#![deny(missing_docs)]</span>
 
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">account</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">blockchain_state</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">common</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">consensus_state</span>;
-<span class="kw">mod</span> <span class="ident">constants</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">delta_transition_chain_proof</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">epoch_data</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">external_transition</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">global_slot</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">numbers</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">protocol_state</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">protocol_state_proof</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">protocol_version</span>;
-<span class="kw">mod</span> <span class="ident">serialization_type_conversions</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">snark_work</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">staged_ledger_diff</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">user_commands</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">verifiable</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">verification_key</span>;
+<span class="kw">pub mod </span>account;
+<span class="kw">pub mod </span>blockchain_state;
+<span class="kw">pub mod </span>common;
+<span class="kw">pub mod </span>consensus_state;
+<span class="kw">mod </span>constants;
+<span class="kw">pub mod </span>delta_transition_chain_proof;
+<span class="kw">pub mod </span>epoch_data;
+<span class="kw">pub mod </span>external_transition;
+<span class="kw">pub mod </span>global_slot;
+<span class="kw">pub mod </span>numbers;
+<span class="kw">pub mod </span>protocol_state;
+<span class="kw">pub mod </span>protocol_state_proof;
+<span class="kw">pub mod </span>protocol_version;
+<span class="kw">mod </span>serialization_type_conversions;
+<span class="kw">pub mod </span>snark_work;
+<span class="kw">pub mod </span>staged_ledger_diff;
+<span class="kw">pub mod </span>user_commands;
+<span class="kw">pub mod </span>verifiable;
+<span class="kw">pub mod </span>verification_key;
 
-<span class="doccomment">/// Import all crates from proof_systems</span>
-<span class="kw">use</span> <span class="ident">proof_systems</span>::<span class="kw-2">*</span>;
+<span class="doccomment">/// Import all crates from proof_systems
+</span><span class="kw">use </span>proof_systems::<span class="kw-2">*</span>;
 
-<span class="doccomment">/// Re-export serialization type annotations</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">mina_serialization_types</span>::{<span class="ident">BinProtSerializationType</span>, <span class="ident">JsonSerializationType</span>};
+<span class="doccomment">/// Re-export serialization type annotations
+</span><span class="kw">pub use </span>mina_serialization_types::{BinProtSerializationType, JsonSerializationType};
 
-<span class="doccomment">/// Re-export all the public types under this module for convenience</span>
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">types</span> {
-    <span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="kw">super</span>::account</span>::<span class="kw-2">*</span>;
-    <span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="kw">super</span>::blockchain_state</span>::<span class="kw-2">*</span>;
-    <span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="kw">super</span>::common</span>::<span class="kw-2">*</span>;
-    <span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="kw">super</span>::consensus_state</span>::<span class="kw-2">*</span>;
-    <span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="kw">super</span>::delta_transition_chain_proof</span>::<span class="kw-2">*</span>;
-    <span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="kw">super</span>::epoch_data</span>::<span class="kw-2">*</span>;
-    <span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="kw">super</span>::external_transition</span>::<span class="kw-2">*</span>;
-    <span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="kw">super</span>::global_slot</span>::<span class="kw-2">*</span>;
-    <span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="kw">super</span>::numbers</span>::<span class="kw-2">*</span>;
-    <span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="kw">super</span>::protocol_state</span>::<span class="kw-2">*</span>;
-    <span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="kw">super</span>::protocol_state_proof</span>::<span class="kw-2">*</span>;
-    <span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="kw">super</span>::protocol_version</span>::<span class="kw-2">*</span>;
-    <span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="kw">super</span>::snark_work</span>::<span class="kw-2">*</span>;
-    <span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="kw">super</span>::staged_ledger_diff</span>::<span class="kw-2">*</span>;
-    <span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="kw">super</span>::user_commands</span>::<span class="kw-2">*</span>;
-    <span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="kw">super</span>::verification_key</span>::<span class="kw-2">*</span>;
+<span class="doccomment">/// Re-export all the public types under this module for convenience
+</span><span class="kw">pub mod </span>types {
+    <span class="kw">pub use </span><span class="kw">super</span>::account::<span class="kw-2">*</span>;
+    <span class="kw">pub use </span><span class="kw">super</span>::blockchain_state::<span class="kw-2">*</span>;
+    <span class="kw">pub use </span><span class="kw">super</span>::common::<span class="kw-2">*</span>;
+    <span class="kw">pub use </span><span class="kw">super</span>::consensus_state::<span class="kw-2">*</span>;
+    <span class="kw">pub use </span><span class="kw">super</span>::delta_transition_chain_proof::<span class="kw-2">*</span>;
+    <span class="kw">pub use </span><span class="kw">super</span>::epoch_data::<span class="kw-2">*</span>;
+    <span class="kw">pub use </span><span class="kw">super</span>::external_transition::<span class="kw-2">*</span>;
+    <span class="kw">pub use </span><span class="kw">super</span>::global_slot::<span class="kw-2">*</span>;
+    <span class="kw">pub use </span><span class="kw">super</span>::numbers::<span class="kw-2">*</span>;
+    <span class="kw">pub use </span><span class="kw">super</span>::protocol_state::<span class="kw-2">*</span>;
+    <span class="kw">pub use </span><span class="kw">super</span>::protocol_state_proof::<span class="kw-2">*</span>;
+    <span class="kw">pub use </span><span class="kw">super</span>::protocol_version::<span class="kw-2">*</span>;
+    <span class="kw">pub use </span><span class="kw">super</span>::snark_work::<span class="kw-2">*</span>;
+    <span class="kw">pub use </span><span class="kw">super</span>::staged_ledger_diff::<span class="kw-2">*</span>;
+    <span class="kw">pub use </span><span class="kw">super</span>::user_commands::<span class="kw-2">*</span>;
+    <span class="kw">pub use </span><span class="kw">super</span>::verification_key::<span class="kw-2">*</span>;
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_rs_base" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (fe3342816 2022-08-01)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_rs_base" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (40336865f 2022-08-15)" ></div></body></html>

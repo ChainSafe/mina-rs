@@ -1,3 +1,3 @@
-(function() {var implementors = {};
-implementors["mina_rs_base"] = [{"text":"impl <a class=\"trait\" href=\"mina_rs_base/trait.JsonSerializationType.html\" title=\"trait mina_rs_base::JsonSerializationType\">JsonSerializationType</a>&lt;'_&gt; for <a class=\"struct\" href=\"mina_rs_base/external_transition/struct.ExternalTransition.html\" title=\"struct mina_rs_base::external_transition::ExternalTransition\">ExternalTransition</a>","synthetic":false,"types":["mina_rs_base::external_transition::ExternalTransition"]}];
-if (window.register_implementors) {window.register_implementors(implementors);} else {window.pending_implementors = implementors;}})()
+(function() {var implementors = {
+"mina_rs_base":[["impl <a class=\"trait\" href=\"mina_rs_base/trait.JsonSerializationType.html\" title=\"trait mina_rs_base::JsonSerializationType\">JsonSerializationType</a>&lt;'_&gt; for <a class=\"struct\" href=\"mina_rs_base/external_transition/struct.ExternalTransition.html\" title=\"struct mina_rs_base::external_transition::ExternalTransition\">ExternalTransition</a>"]]
+};if (window.register_implementors) {window.register_implementors(implementors);} else {window.pending_implementors = implementors;}})()

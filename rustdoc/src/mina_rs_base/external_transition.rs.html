@@ -56,63 +56,63 @@
 <span id="56">56</span>
 <span id="57">57</span>
 <span id="58">58</span>
-</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems</span>
-<span class="comment">// SPDX-License-Identifier: Apache-2.0</span>
+</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems
+// SPDX-License-Identifier: Apache-2.0
 
-<span class="doccomment">//! Mina ExternalTransition</span>
+</span><span class="doccomment">//! Mina ExternalTransition
 
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::types</span>::<span class="kw-2">*</span>;
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::verifiable::Verifiable</span>;
-<span class="kw">use</span> <span class="ident">mina_serialization_types</span>::{<span class="ident">json</span>::<span class="kw-2">*</span>, <span class="ident">v1::ExternalTransitionV1</span>, <span class="kw-2">*</span>};
-<span class="kw">use</span> <span class="ident">mina_serialization_types_macros::AutoFrom</span>;
-<span class="kw">use</span> <span class="ident">proof_systems::mina_signer::Signer</span>;
-<span class="kw">use</span> <span class="ident">versioned</span>::<span class="kw-2">*</span>;
+</span><span class="kw">use </span><span class="kw">crate</span>::types::<span class="kw-2">*</span>;
+<span class="kw">use </span><span class="kw">crate</span>::verifiable::Verifiable;
+<span class="kw">use </span>mina_serialization_types::{json::<span class="kw-2">*</span>, v1::ExternalTransitionV1, <span class="kw-2">*</span>};
+<span class="kw">use </span>mina_serialization_types_macros::AutoFrom;
+<span class="kw">use </span>proof_systems::mina_signer::Signer;
+<span class="kw">use </span>versioned::<span class="kw-2">*</span>;
 
-<span class="doccomment">/// This structure represents a mina block</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">PartialEq</span>, <span class="ident">AutoFrom</span>)]</span>
-<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">mina_serialization_types::external_transition::ExternalTransition</span>)]</span>
-<span class="doccomment">/// This structure represents a mina block received from an external block producer</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ExternalTransition</span> {
-    <span class="doccomment">/// The blockchain state, including consensus and the ledger</span>
-    <span class="kw">pub</span> <span class="ident">protocol_state</span>: <span class="ident">ProtocolState</span>,
-    <span class="doccomment">/// Proof that the protocol state and entire history of the chain is valid</span>
-    <span class="kw">pub</span> <span class="ident">protocol_state_proof</span>: <span class="ident">ProtocolStateProof</span>,
-    <span class="doccomment">/// Diff of the proposed next state of the blockchain</span>
-    <span class="kw">pub</span> <span class="ident">staged_ledger_diff</span>: <span class="ident">StagedLedgerDiff</span>,
-    <span class="doccomment">/// Proof that the block was produced within the allotted slot time</span>
-    <span class="kw">pub</span> <span class="ident">delta_transition_chain_proof</span>: <span class="ident">DeltaTransitionChainProof</span>,
-    <span class="doccomment">/// Current protocol version</span>
-    <span class="kw">pub</span> <span class="ident">current_protocol_version</span>: <span class="ident">ProtocolVersion</span>,
-    <span class="doccomment">/// Proposed protocol version</span>
-    <span class="kw">pub</span> <span class="ident">proposed_protocol_version_opt</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">ProtocolVersion</span><span class="op">&gt;</span>,
-    <span class="doccomment">/// Validation callback</span>
-    <span class="kw">pub</span> <span class="ident">validation_callback</span>: (),
+<span class="doccomment">/// This structure represents a mina block
+</span><span class="attribute">#[derive(Clone, Debug, Eq, PartialEq, AutoFrom)]</span>
+<span class="attribute">#[auto_from(mina_serialization_types::external_transition::ExternalTransition)]</span>
+<span class="doccomment">/// This structure represents a mina block received from an external block producer
+</span><span class="kw">pub struct </span>ExternalTransition {
+    <span class="doccomment">/// The blockchain state, including consensus and the ledger
+    </span><span class="kw">pub </span>protocol_state: ProtocolState,
+    <span class="doccomment">/// Proof that the protocol state and entire history of the chain is valid
+    </span><span class="kw">pub </span>protocol_state_proof: ProtocolStateProof,
+    <span class="doccomment">/// Diff of the proposed next state of the blockchain
+    </span><span class="kw">pub </span>staged_ledger_diff: StagedLedgerDiff,
+    <span class="doccomment">/// Proof that the block was produced within the allotted slot time
+    </span><span class="kw">pub </span>delta_transition_chain_proof: DeltaTransitionChainProof,
+    <span class="doccomment">/// Current protocol version
+    </span><span class="kw">pub </span>current_protocol_version: ProtocolVersion,
+    <span class="doccomment">/// Proposed protocol version
+    </span><span class="kw">pub </span>proposed_protocol_version_opt: <span class="prelude-ty">Option</span>&lt;ProtocolVersion&gt;,
+    <span class="doccomment">/// Validation callback
+    </span><span class="kw">pub </span>validation_callback: (),
 }
 
 <span class="macro">impl_from_with_proxy!</span>(
-    <span class="ident">ExternalTransition</span>,
-    <span class="ident">ExternalTransitionV1</span>,
-    <span class="ident">ExternalTransitionJson</span>
+    ExternalTransition,
+    ExternalTransitionV1,
+    ExternalTransitionJson
 );
 
-<span class="kw">impl</span> <span class="ident">BinProtSerializationType</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ExternalTransition</span> {
-    <span class="kw">type</span> <span class="ident">T</span> <span class="op">=</span> <span class="ident">ExternalTransitionV1</span>;
+<span class="kw">impl </span>BinProtSerializationType&lt;<span class="lifetime">&#39;_</span>&gt; <span class="kw">for </span>ExternalTransition {
+    <span class="kw">type </span>T = ExternalTransitionV1;
 }
 
-<span class="kw">impl</span> <span class="ident">JsonSerializationType</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ExternalTransition</span> {
-    <span class="kw">type</span> <span class="ident">T</span> <span class="op">=</span> <span class="ident">ExternalTransitionJson</span>;
+<span class="kw">impl </span>JsonSerializationType&lt;<span class="lifetime">&#39;_</span>&gt; <span class="kw">for </span>ExternalTransition {
+    <span class="kw">type </span>T = ExternalTransitionJson;
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">CTX</span><span class="op">&gt;</span> <span class="ident">Verifiable</span><span class="op">&lt;</span><span class="ident">CTX</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ExternalTransition</span>
-<span class="kw">where</span>
-    <span class="ident">CTX</span>: <span class="ident">Signer</span><span class="op">&lt;</span><span class="ident">SignedCommandPayload</span><span class="op">&gt;</span>,
+<span class="kw">impl</span>&lt;CTX&gt; Verifiable&lt;CTX&gt; <span class="kw">for </span>ExternalTransition
+<span class="kw">where
+    </span>CTX: Signer&lt;SignedCommandPayload&gt;,
 {
-    <span class="comment">// ExternalTransition is considered valid if:</span>
-    <span class="comment">// - Its staged ledger diff is valid</span>
-    <span class="comment">// - TODO</span>
-    <span class="kw">fn</span> <span class="ident">verify</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">ctx</span>: <span class="kw-2">&amp;mut</span> <span class="ident">CTX</span>) -&gt; <span class="ident">bool</span> {
-        <span class="self">self</span>.<span class="ident">staged_ledger_diff</span>.<span class="ident">verify</span>(<span class="ident">ctx</span>)
+    <span class="comment">// ExternalTransition is considered valid if:
+    // - Its staged ledger diff is valid
+    // - TODO
+    </span><span class="kw">fn </span>verify(<span class="kw-2">&amp;</span><span class="self">self</span>, ctx: <span class="kw-2">&amp;mut </span>CTX) -&gt; bool {
+        <span class="self">self</span>.staged_ledger_diff.verify(ctx)
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_rs_base" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (fe3342816 2022-08-01)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_rs_base" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (40336865f 2022-08-15)" ></div></body></html>

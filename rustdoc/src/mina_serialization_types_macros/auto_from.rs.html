@@ -366,373 +366,373 @@
 <span id="366">366</span>
 <span id="367">367</span>
 <span id="368">368</span>
-</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems</span>
-<span class="comment">// SPDX-License-Identifier: Apache-2.0</span>
+</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems
+// SPDX-License-Identifier: Apache-2.0
 
-<span class="doccomment">//!</span>
-<span class="doccomment">//! Utilities for implementing AutoFrom</span>
-<span class="doccomment">//!</span>
+</span><span class="doccomment">//!
+//! Utilities for implementing AutoFrom
+//!
 
-<span class="kw">use</span> <span class="kw">crate</span>::<span class="kw-2">*</span>;
-<span class="kw">use</span> <span class="ident">syn</span>::{<span class="ident">punctuated::Punctuated</span>, <span class="ident">AttrStyle</span>, <span class="ident">Attribute</span>, <span class="ident">Field</span>, <span class="ident">Fields</span>, <span class="ident">Token</span>, <span class="ident">Variant</span>};
+</span><span class="kw">use crate</span>::<span class="kw-2">*</span>;
+<span class="kw">use </span>syn::{punctuated::Punctuated, AttrStyle, Attribute, Field, Fields, Token, Variant};
 
-<span class="doccomment">/// Parse the attributed target type(s)</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">parse_types_from_attr</span>(<span class="ident">attributes</span>: <span class="kw-2">&amp;</span>[<span class="ident">Attribute</span>]) -&gt; <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">proc_macro2::TokenStream</span><span class="op">&gt;</span> {
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">target_types</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">proc_macro2::TokenStream</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">Vec::new</span>();
-    <span class="kw">for</span> <span class="ident">attr</span> <span class="kw">in</span> <span class="ident">attributes</span> {
-        <span class="kw">if</span> <span class="kw">let</span> <span class="ident">AttrStyle::Outer</span> <span class="op">=</span> <span class="ident">attr</span>.<span class="ident">style</span> {
-            <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">attr_id</span>) <span class="op">=</span> <span class="ident">attr</span>.<span class="ident">path</span>.<span class="ident">get_ident</span>() {
-                <span class="kw">if</span> <span class="kw-2">&amp;</span><span class="ident">attr_id</span>.<span class="ident">to_string</span>() <span class="op">==</span> <span class="string">&quot;auto_from&quot;</span> {
-                    <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Ok</span>(<span class="ident">args</span>) <span class="op">=</span> <span class="ident">attr</span>.<span class="ident">parse_args</span>::<span class="op">&lt;</span><span class="ident">proc_macro2::TokenStream</span><span class="op">&gt;</span>() {
-                        <span class="ident">target_types</span>.<span class="ident">push</span>(<span class="ident">args</span>.<span class="ident">clone</span>());
+<span class="doccomment">/// Parse the attributed target type(s)
+</span><span class="kw">pub fn </span>parse_types_from_attr(attributes: <span class="kw-2">&amp;</span>[Attribute]) -&gt; Vec&lt;proc_macro2::TokenStream&gt; {
+    <span class="kw">let </span><span class="kw-2">mut </span>target_types: Vec&lt;proc_macro2::TokenStream&gt; = Vec::new();
+    <span class="kw">for </span>attr <span class="kw">in </span>attributes {
+        <span class="kw">if let </span>AttrStyle::Outer = attr.style {
+            <span class="kw">if let </span><span class="prelude-val">Some</span>(attr_id) = attr.path.get_ident() {
+                <span class="kw">if </span><span class="kw-2">&amp;</span>attr_id.to_string() == <span class="string">&quot;auto_from&quot; </span>{
+                    <span class="kw">if let </span><span class="prelude-val">Ok</span>(args) = attr.parse_args::&lt;proc_macro2::TokenStream&gt;() {
+                        target_types.push(args.clone());
                     }
                 }
             }
         };
     }
-    <span class="ident">target_types</span>
+    target_types
 }
 
-<span class="doccomment">/// Codegen for structs with named fields</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">auto_from_for_struct_with_named_fields</span>(
-    <span class="ident">ident</span>: <span class="kw-2">&amp;</span><span class="ident">proc_macro2::Ident</span>,
-    <span class="ident">target_types</span>: <span class="kw-2">&amp;</span>[<span class="ident">proc_macro2::TokenStream</span>],
-    <span class="ident">named</span>: <span class="ident">Punctuated</span><span class="op">&lt;</span><span class="ident">Field</span>, <span class="macro">Token!</span>[,]<span class="op">&gt;</span>,
-) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">TokenStream</span><span class="op">&gt;</span> {
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">field_idents</span> <span class="op">=</span> <span class="ident">Vec::new</span>();
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">vec_field_idents</span> <span class="op">=</span> <span class="ident">Vec::new</span>();
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">option_field_idents</span> <span class="op">=</span> <span class="ident">Vec::new</span>();
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">boxed_field_idents</span> <span class="op">=</span> <span class="ident">Vec::new</span>();
-    <span class="lifetime">&#39;outer</span>: <span class="kw">for</span> <span class="ident">f</span> <span class="kw">in</span> <span class="ident">named</span> {
-        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">ident</span>) <span class="op">=</span> <span class="ident">f</span>.<span class="ident">ident</span> {
-            <span class="kw">if</span> <span class="kw">let</span> <span class="ident">syn::Type::Path</span>(<span class="ident">type_path</span>) <span class="op">=</span> <span class="ident">f</span>.<span class="ident">ty</span> {
-                <span class="kw">for</span> <span class="ident">seg</span> <span class="kw">in</span> <span class="ident">type_path</span>.<span class="ident">path</span>.<span class="ident">segments</span> {
-                    <span class="kw">match</span> <span class="ident">seg</span>.<span class="ident">ident</span>.<span class="ident">to_string</span>().<span class="ident">as_str</span>() {
-                        <span class="string">&quot;Vec&quot;</span> =&gt; {
-                            <span class="ident">vec_field_idents</span>.<span class="ident">push</span>(<span class="ident">ident</span>);
-                            <span class="kw">continue</span> <span class="lifetime">&#39;outer</span>;
+<span class="doccomment">/// Codegen for structs with named fields
+</span><span class="kw">pub fn </span>auto_from_for_struct_with_named_fields(
+    ident: <span class="kw-2">&amp;</span>proc_macro2::Ident,
+    target_types: <span class="kw-2">&amp;</span>[proc_macro2::TokenStream],
+    named: Punctuated&lt;Field, <span class="macro">Token!</span>[,]&gt;,
+) -&gt; <span class="prelude-ty">Option</span>&lt;TokenStream&gt; {
+    <span class="kw">let </span><span class="kw-2">mut </span>field_idents = Vec::new();
+    <span class="kw">let </span><span class="kw-2">mut </span>vec_field_idents = Vec::new();
+    <span class="kw">let </span><span class="kw-2">mut </span>option_field_idents = Vec::new();
+    <span class="kw">let </span><span class="kw-2">mut </span>boxed_field_idents = Vec::new();
+    <span class="lifetime">&#39;outer</span>: <span class="kw">for </span>f <span class="kw">in </span>named {
+        <span class="kw">if let </span><span class="prelude-val">Some</span>(ident) = f.ident {
+            <span class="kw">if let </span>syn::Type::Path(type_path) = f.ty {
+                <span class="kw">for </span>seg <span class="kw">in </span>type_path.path.segments {
+                    <span class="kw">match </span>seg.ident.to_string().as_str() {
+                        <span class="string">&quot;Vec&quot; </span>=&gt; {
+                            vec_field_idents.push(ident);
+                            <span class="kw">continue </span><span class="lifetime">&#39;outer</span>;
                         }
-                        <span class="string">&quot;Option&quot;</span> =&gt; {
-                            <span class="ident">option_field_idents</span>.<span class="ident">push</span>(<span class="ident">ident</span>);
-                            <span class="kw">continue</span> <span class="lifetime">&#39;outer</span>;
+                        <span class="string">&quot;Option&quot; </span>=&gt; {
+                            option_field_idents.push(ident);
+                            <span class="kw">continue </span><span class="lifetime">&#39;outer</span>;
                         }
-                        <span class="string">&quot;Box&quot;</span> =&gt; {
-                            <span class="ident">boxed_field_idents</span>.<span class="ident">push</span>(<span class="ident">ident</span>);
-                            <span class="kw">continue</span> <span class="lifetime">&#39;outer</span>;
+                        <span class="string">&quot;Box&quot; </span>=&gt; {
+                            boxed_field_idents.push(ident);
+                            <span class="kw">continue </span><span class="lifetime">&#39;outer</span>;
                         }
-                        <span class="kw">_</span> =&gt; {}
+                        <span class="kw">_ </span>=&gt; {}
                     };
                 }
             }
-            <span class="ident">field_idents</span>.<span class="ident">push</span>(<span class="ident">ident</span>);
+            field_idents.push(ident);
         }
     }
-    <span class="kw">if</span> <span class="ident">field_idents</span>.<span class="ident">is_empty</span>()
-        <span class="op">&amp;&amp;</span> <span class="ident">vec_field_idents</span>.<span class="ident">is_empty</span>()
-        <span class="op">&amp;&amp;</span> <span class="ident">option_field_idents</span>.<span class="ident">is_empty</span>()
-        <span class="op">&amp;&amp;</span> <span class="ident">boxed_field_idents</span>.<span class="ident">is_empty</span>()
+    <span class="kw">if </span>field_idents.is_empty()
+        &amp;&amp; vec_field_idents.is_empty()
+        &amp;&amp; option_field_idents.is_empty()
+        &amp;&amp; boxed_field_idents.is_empty()
     {
-        <span class="kw">return</span> <span class="prelude-val">None</span>;
+        <span class="kw">return </span><span class="prelude-val">None</span>;
     }
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">output</span> <span class="op">=</span> <span class="ident">TokenStream::default</span>();
+    <span class="kw">let </span><span class="kw-2">mut </span>output = TokenStream::default();
 
-    <span class="kw">for</span> <span class="ident">target_type</span> <span class="kw">in</span> <span class="ident">target_types</span> {
-        <span class="kw">let</span> <span class="ident">ts</span>: <span class="ident">TokenStream</span> <span class="op">=</span> <span class="macro">quote!</span> {
-            <span class="kw">impl</span> <span class="ident">::std::convert::From</span><span class="op">&lt;</span>#<span class="ident">ident</span><span class="op">&gt;</span> <span class="kw">for</span> #<span class="ident">target_type</span> {
-                <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">item</span>: #<span class="ident">ident</span>) -&gt; <span class="self">Self</span> {
-                    <span class="self">Self</span> {
-                        #(#<span class="ident">field_idents</span>: <span class="ident">item</span>.#<span class="ident">field_idents</span>.<span class="ident">into</span>(),) <span class="op">*</span>
-                        #(#<span class="ident">vec_field_idents</span>: <span class="ident">item</span>.#<span class="ident">vec_field_idents</span>.<span class="ident">into_iter</span>().<span class="ident">map</span>(<span class="ident">::std::convert::Into::into</span>).<span class="ident">collect</span>(),) <span class="op">*</span>
-                        #(#<span class="ident">option_field_idents</span>: <span class="ident">item</span>.#<span class="ident">option_field_idents</span>.<span class="ident">map</span>(<span class="ident">::std::convert::Into::into</span>),) <span class="op">*</span>
-                        #(#<span class="ident">boxed_field_idents</span>: <span class="ident">::std::boxed::Box::new</span>((<span class="kw-2">*</span><span class="ident">item</span>.#<span class="ident">boxed_field_idents</span>).<span class="ident">into</span>()),) <span class="op">*</span>
+    <span class="kw">for </span>target_type <span class="kw">in </span>target_types {
+        <span class="kw">let </span>ts: TokenStream = <span class="macro">quote!</span> {
+            <span class="kw">impl </span>::std::convert::From&lt;#ident&gt; <span class="kw">for </span>#target_type {
+                <span class="kw">fn </span>from(item: #ident) -&gt; <span class="self">Self </span>{
+                    <span class="self">Self </span>{
+                        #(#field_idents: item.#field_idents.into(),) *
+                        #(#vec_field_idents: item.#vec_field_idents.into_iter().map(::std::convert::Into::into).collect(),) *
+                        #(#option_field_idents: item.#option_field_idents.map(::std::convert::Into::into),) *
+                        #(#boxed_field_idents: ::std::boxed::Box::new((<span class="kw-2">*</span>item.#boxed_field_idents).into()),) *
                     }
                 }
             }
 
-            <span class="kw">impl</span> <span class="ident">::std::convert::From</span><span class="op">&lt;</span>#<span class="ident">target_type</span><span class="op">&gt;</span> <span class="kw">for</span> #<span class="ident">ident</span> {
-                <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">item</span>: #<span class="ident">target_type</span>) -&gt; <span class="self">Self</span> {
-                    <span class="self">Self</span> {
-                        #(#<span class="ident">field_idents</span>: <span class="ident">item</span>.#<span class="ident">field_idents</span>.<span class="ident">into</span>(),) <span class="op">*</span>
-                        #(#<span class="ident">vec_field_idents</span>: <span class="ident">item</span>.#<span class="ident">vec_field_idents</span>.<span class="ident">into_iter</span>().<span class="ident">map</span>(<span class="ident">::std::convert::Into::into</span>).<span class="ident">collect</span>(),) <span class="op">*</span>
-                        #(#<span class="ident">option_field_idents</span>: <span class="ident">item</span>.#<span class="ident">option_field_idents</span>.<span class="ident">map</span>(<span class="ident">::std::convert::Into::into</span>),) <span class="op">*</span>
-                        #(#<span class="ident">boxed_field_idents</span>: <span class="ident">::std::boxed::Box::new</span>((<span class="kw-2">*</span><span class="ident">item</span>.#<span class="ident">boxed_field_idents</span>).<span class="ident">into</span>()),) <span class="op">*</span>
+            <span class="kw">impl </span>::std::convert::From&lt;#target_type&gt; <span class="kw">for </span>#ident {
+                <span class="kw">fn </span>from(item: #target_type) -&gt; <span class="self">Self </span>{
+                    <span class="self">Self </span>{
+                        #(#field_idents: item.#field_idents.into(),) *
+                        #(#vec_field_idents: item.#vec_field_idents.into_iter().map(::std::convert::Into::into).collect(),) *
+                        #(#option_field_idents: item.#option_field_idents.map(::std::convert::Into::into),) *
+                        #(#boxed_field_idents: ::std::boxed::Box::new((<span class="kw-2">*</span>item.#boxed_field_idents).into()),) *
                     }
                 }
             }
         }
-        .<span class="ident">into</span>();
-        <span class="ident">output</span>.<span class="ident">extend</span>(<span class="ident">ts</span>);
-        <span class="ident">output</span>.<span class="ident">extend</span>(<span class="ident">impl_from_for_versioned</span>(<span class="ident">ident</span>, <span class="ident">target_type</span>));
+        .into();
+        output.extend(ts);
+        output.extend(impl_from_for_versioned(ident, target_type));
     }
 
-    <span class="prelude-val">Some</span>(<span class="ident">output</span>)
+    <span class="prelude-val">Some</span>(output)
 }
 
-<span class="doccomment">/// Codegen for structs with unnamed fields</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">auto_from_for_struct_with_unnamed_fields</span>(
-    <span class="ident">ident</span>: <span class="kw-2">&amp;</span><span class="ident">proc_macro2::Ident</span>,
-    <span class="ident">target_types</span>: <span class="kw-2">&amp;</span>[<span class="ident">proc_macro2::TokenStream</span>],
-    <span class="ident">named</span>: <span class="ident">Punctuated</span><span class="op">&lt;</span><span class="ident">Field</span>, <span class="macro">Token!</span>[,]<span class="op">&gt;</span>,
-) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">TokenStream</span><span class="op">&gt;</span> {
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">pos_token_stream</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">proc_macro2::TokenStream</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">Vec::new</span>();
-    <span class="lifetime">&#39;outer</span>: <span class="kw">for</span> <span class="ident">f</span> <span class="kw">in</span> <span class="ident">named</span> {
-        <span class="kw">if</span> <span class="ident">f</span>.<span class="ident">ident</span>.<span class="ident">is_none</span>() {
-            <span class="kw">let</span> <span class="ident">pos</span> <span class="op">=</span> <span class="ident">proc_macro2::Literal::usize_unsuffixed</span>(<span class="ident">pos_token_stream</span>.<span class="ident">len</span>());
+<span class="doccomment">/// Codegen for structs with unnamed fields
+</span><span class="kw">pub fn </span>auto_from_for_struct_with_unnamed_fields(
+    ident: <span class="kw-2">&amp;</span>proc_macro2::Ident,
+    target_types: <span class="kw-2">&amp;</span>[proc_macro2::TokenStream],
+    named: Punctuated&lt;Field, <span class="macro">Token!</span>[,]&gt;,
+) -&gt; <span class="prelude-ty">Option</span>&lt;TokenStream&gt; {
+    <span class="kw">let </span><span class="kw-2">mut </span>pos_token_stream: Vec&lt;proc_macro2::TokenStream&gt; = Vec::new();
+    <span class="lifetime">&#39;outer</span>: <span class="kw">for </span>f <span class="kw">in </span>named {
+        <span class="kw">if </span>f.ident.is_none() {
+            <span class="kw">let </span>pos = proc_macro2::Literal::usize_unsuffixed(pos_token_stream.len());
 
-            <span class="kw">if</span> <span class="kw">let</span> <span class="ident">syn::Type::Path</span>(<span class="ident">type_path</span>) <span class="op">=</span> <span class="ident">f</span>.<span class="ident">ty</span> {
-                <span class="kw">for</span> <span class="ident">seg</span> <span class="kw">in</span> <span class="ident">type_path</span>.<span class="ident">path</span>.<span class="ident">segments</span> {
-                    <span class="kw">match</span> <span class="ident">seg</span>.<span class="ident">ident</span>.<span class="ident">to_string</span>().<span class="ident">as_str</span>() {
-                        <span class="string">&quot;Vec&quot;</span> =&gt; {
-                            <span class="ident">pos_token_stream</span>.<span class="ident">push</span>(
-                                <span class="macro">quote!</span> {<span class="ident">item</span>.#<span class="ident">pos</span>.<span class="ident">into_iter</span>().<span class="ident">map</span>(<span class="ident">::std::convert::Into::into</span>).<span class="ident">collect</span>()}
+            <span class="kw">if let </span>syn::Type::Path(type_path) = f.ty {
+                <span class="kw">for </span>seg <span class="kw">in </span>type_path.path.segments {
+                    <span class="kw">match </span>seg.ident.to_string().as_str() {
+                        <span class="string">&quot;Vec&quot; </span>=&gt; {
+                            pos_token_stream.push(
+                                <span class="macro">quote!</span> {item.#pos.into_iter().map(::std::convert::Into::into).collect()}
                             );
-                            <span class="kw">continue</span> <span class="lifetime">&#39;outer</span>;
+                            <span class="kw">continue </span><span class="lifetime">&#39;outer</span>;
                         }
-                        <span class="string">&quot;Option&quot;</span> =&gt; {
-                            <span class="ident">pos_token_stream</span>
-                                .<span class="ident">push</span>(<span class="macro">quote!</span> {<span class="ident">item</span>.#<span class="ident">pos</span>.<span class="ident">map</span>(<span class="ident">::std::convert::Into::into</span>)});
-                            <span class="kw">continue</span> <span class="lifetime">&#39;outer</span>;
+                        <span class="string">&quot;Option&quot; </span>=&gt; {
+                            pos_token_stream
+                                .push(<span class="macro">quote!</span> {item.#pos.map(::std::convert::Into::into)});
+                            <span class="kw">continue </span><span class="lifetime">&#39;outer</span>;
                         }
-                        <span class="string">&quot;Box&quot;</span> =&gt; {
-                            <span class="ident">pos_token_stream</span>
-                                .<span class="ident">push</span>(<span class="macro">quote!</span> {<span class="ident">::std::boxed::Box::new</span>((<span class="kw-2">*</span><span class="ident">item</span>.#<span class="ident">pos</span>).<span class="ident">into</span>())});
-                            <span class="kw">continue</span> <span class="lifetime">&#39;outer</span>;
+                        <span class="string">&quot;Box&quot; </span>=&gt; {
+                            pos_token_stream
+                                .push(<span class="macro">quote!</span> {::std::boxed::Box::new((<span class="kw-2">*</span>item.#pos).into())});
+                            <span class="kw">continue </span><span class="lifetime">&#39;outer</span>;
                         }
-                        <span class="kw">_</span> =&gt; {}
+                        <span class="kw">_ </span>=&gt; {}
                     };
                 }
             }
 
-            <span class="ident">pos_token_stream</span>.<span class="ident">push</span>(<span class="macro">quote!</span> {<span class="ident">item</span>.#<span class="ident">pos</span>.<span class="ident">into</span>()});
+            pos_token_stream.push(<span class="macro">quote!</span> {item.#pos.into()});
         }
     }
-    <span class="kw">if</span> <span class="ident">pos_token_stream</span>.<span class="ident">is_empty</span>() {
-        <span class="kw">return</span> <span class="prelude-val">None</span>;
+    <span class="kw">if </span>pos_token_stream.is_empty() {
+        <span class="kw">return </span><span class="prelude-val">None</span>;
     }
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">output</span> <span class="op">=</span> <span class="ident">TokenStream::default</span>();
+    <span class="kw">let </span><span class="kw-2">mut </span>output = TokenStream::default();
 
-    <span class="kw">for</span> <span class="ident">target_type</span> <span class="kw">in</span> <span class="ident">target_types</span> {
-        <span class="kw">let</span> <span class="ident">ts</span>: <span class="ident">TokenStream</span> <span class="op">=</span> <span class="macro">quote!</span> {
-            <span class="kw">impl</span> <span class="ident">::std::convert::From</span><span class="op">&lt;</span>#<span class="ident">ident</span><span class="op">&gt;</span> <span class="kw">for</span> #<span class="ident">target_type</span> {
-                <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">item</span>: #<span class="ident">ident</span>) -&gt; <span class="self">Self</span> {
-                    <span class="self">Self</span> (
-                        #(#<span class="ident">pos_token_stream</span>,) <span class="op">*</span>
+    <span class="kw">for </span>target_type <span class="kw">in </span>target_types {
+        <span class="kw">let </span>ts: TokenStream = <span class="macro">quote!</span> {
+            <span class="kw">impl </span>::std::convert::From&lt;#ident&gt; <span class="kw">for </span>#target_type {
+                <span class="kw">fn </span>from(item: #ident) -&gt; <span class="self">Self </span>{
+                    <span class="self">Self </span>(
+                        #(#pos_token_stream,) *
                     )
                 }
             }
 
-            <span class="kw">impl</span> <span class="ident">::std::convert::From</span><span class="op">&lt;</span>#<span class="ident">target_type</span><span class="op">&gt;</span> <span class="kw">for</span> #<span class="ident">ident</span> {
-                <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">item</span>: #<span class="ident">target_type</span>) -&gt; <span class="self">Self</span> {
-                    <span class="self">Self</span> (
-                        #(#<span class="ident">pos_token_stream</span>,) <span class="op">*</span>
+            <span class="kw">impl </span>::std::convert::From&lt;#target_type&gt; <span class="kw">for </span>#ident {
+                <span class="kw">fn </span>from(item: #target_type) -&gt; <span class="self">Self </span>{
+                    <span class="self">Self </span>(
+                        #(#pos_token_stream,) *
                     )
                 }
             }
         }
-        .<span class="ident">into</span>();
-        <span class="ident">output</span>.<span class="ident">extend</span>(<span class="ident">ts</span>);
-        <span class="ident">output</span>.<span class="ident">extend</span>(<span class="ident">impl_from_for_versioned</span>(<span class="ident">ident</span>, <span class="ident">target_type</span>));
+        .into();
+        output.extend(ts);
+        output.extend(impl_from_for_versioned(ident, target_type));
     }
 
-    <span class="prelude-val">Some</span>(<span class="ident">output</span>)
+    <span class="prelude-val">Some</span>(output)
 }
 
-<span class="doccomment">/// Codegen for enums</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">auto_from_for_enum</span>(
-    <span class="ident">ident</span>: <span class="kw-2">&amp;</span><span class="ident">proc_macro2::Ident</span>,
-    <span class="ident">target_types</span>: <span class="kw-2">&amp;</span>[<span class="ident">proc_macro2::TokenStream</span>],
-    <span class="ident">variants</span>: <span class="ident">Punctuated</span><span class="op">&lt;</span><span class="ident">Variant</span>, <span class="macro">Token!</span>[,]<span class="op">&gt;</span>,
-) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">TokenStream</span><span class="op">&gt;</span> {
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">variant_token_streams</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">proc_macro2::TokenStream</span><span class="op">&gt;</span> <span class="op">=</span>
-        <span class="ident">Vec::with_capacity</span>(<span class="ident">variants</span>.<span class="ident">len</span>());
-    <span class="kw">for</span> <span class="ident">v</span> <span class="kw">in</span> <span class="ident">variants</span> {
-        <span class="kw">let</span> <span class="ident">ident</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">v</span>.<span class="ident">ident</span>;
-        <span class="kw">match</span> <span class="ident">v</span>.<span class="ident">fields</span>.<span class="ident">len</span>() {
-            <span class="number">0</span> =&gt; <span class="ident">variant_token_streams</span>.<span class="ident">push</span>(<span class="macro">quote!</span> {
-                <span class="ident">Other</span>::#<span class="ident">ident</span> =&gt; <span class="self">Self</span>::#<span class="ident">ident</span>
+<span class="doccomment">/// Codegen for enums
+</span><span class="kw">pub fn </span>auto_from_for_enum(
+    ident: <span class="kw-2">&amp;</span>proc_macro2::Ident,
+    target_types: <span class="kw-2">&amp;</span>[proc_macro2::TokenStream],
+    variants: Punctuated&lt;Variant, <span class="macro">Token!</span>[,]&gt;,
+) -&gt; <span class="prelude-ty">Option</span>&lt;TokenStream&gt; {
+    <span class="kw">let </span><span class="kw-2">mut </span>variant_token_streams: Vec&lt;proc_macro2::TokenStream&gt; =
+        Vec::with_capacity(variants.len());
+    <span class="kw">for </span>v <span class="kw">in </span>variants {
+        <span class="kw">let </span>ident = <span class="kw-2">&amp;</span>v.ident;
+        <span class="kw">match </span>v.fields.len() {
+            <span class="number">0 </span>=&gt; variant_token_streams.push(<span class="macro">quote!</span> {
+                Other::#ident =&gt; <span class="self">Self</span>::#ident
             }),
-            <span class="ident">fields_len</span> =&gt; <span class="kw">match</span> <span class="ident">v</span>.<span class="ident">fields</span> {
-                <span class="ident">Fields::Unnamed</span>(<span class="ident">FieldsUnnamed</span> { <span class="ident">unnamed</span>, .. }) =&gt; {
-                    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">lhs_idents</span> <span class="op">=</span> <span class="ident">Vec::with_capacity</span>(<span class="ident">fields_len</span>);
-                    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">rhs_convert</span> <span class="op">=</span> <span class="ident">Vec::with_capacity</span>(<span class="ident">fields_len</span>);
-                    <span class="lifetime">&#39;outer_unnamed</span>: <span class="kw">for</span> (<span class="ident">i</span>, <span class="ident">f</span>) <span class="kw">in</span> <span class="ident">unnamed</span>.<span class="ident">into_iter</span>().<span class="ident">enumerate</span>() {
-                        <span class="kw">let</span> <span class="ident">ident</span> <span class="op">=</span> <span class="ident">proc_macro2::Ident::new</span>(
+            fields_len =&gt; <span class="kw">match </span>v.fields {
+                Fields::Unnamed(FieldsUnnamed { unnamed, .. }) =&gt; {
+                    <span class="kw">let </span><span class="kw-2">mut </span>lhs_idents = Vec::with_capacity(fields_len);
+                    <span class="kw">let </span><span class="kw-2">mut </span>rhs_convert = Vec::with_capacity(fields_len);
+                    <span class="lifetime">&#39;outer_unnamed</span>: <span class="kw">for </span>(i, f) <span class="kw">in </span>unnamed.into_iter().enumerate() {
+                        <span class="kw">let </span>ident = proc_macro2::Ident::new(
                             <span class="kw-2">&amp;</span><span class="macro">format!</span>(<span class="string">&quot;v{i}&quot;</span>),
-                            <span class="ident">proc_macro2::Span::call_site</span>(),
+                            proc_macro2::Span::call_site(),
                         );
-                        <span class="ident">lhs_idents</span>.<span class="ident">push</span>(<span class="ident">ident</span>.<span class="ident">clone</span>());
-                        <span class="kw">if</span> <span class="kw">let</span> <span class="ident">syn::Type::Path</span>(<span class="ident">type_path</span>) <span class="op">=</span> <span class="ident">f</span>.<span class="ident">ty</span> {
-                            <span class="kw">for</span> <span class="ident">seg</span> <span class="kw">in</span> <span class="ident">type_path</span>.<span class="ident">path</span>.<span class="ident">segments</span> {
-                                <span class="kw">match</span> <span class="ident">seg</span>.<span class="ident">ident</span>.<span class="ident">to_string</span>().<span class="ident">as_str</span>() {
-                                    <span class="string">&quot;Vec&quot;</span> =&gt; {
-                                        <span class="ident">rhs_convert</span>.<span class="ident">push</span>(<span class="macro">quote!</span> {#<span class="ident">ident</span>.<span class="ident">into_iter</span>().<span class="ident">map</span>(<span class="ident">::std::convert::Into::into</span>).<span class="ident">collect</span>()});
-                                        <span class="kw">continue</span> <span class="lifetime">&#39;outer_unnamed</span>;
+                        lhs_idents.push(ident.clone());
+                        <span class="kw">if let </span>syn::Type::Path(type_path) = f.ty {
+                            <span class="kw">for </span>seg <span class="kw">in </span>type_path.path.segments {
+                                <span class="kw">match </span>seg.ident.to_string().as_str() {
+                                    <span class="string">&quot;Vec&quot; </span>=&gt; {
+                                        rhs_convert.push(<span class="macro">quote!</span> {#ident.into_iter().map(::std::convert::Into::into).collect()});
+                                        <span class="kw">continue </span><span class="lifetime">&#39;outer_unnamed</span>;
                                     }
-                                    <span class="string">&quot;Option&quot;</span> =&gt; {
-                                        <span class="ident">rhs_convert</span>
-                                            .<span class="ident">push</span>(<span class="macro">quote!</span> {#<span class="ident">ident</span>.<span class="ident">map</span>(<span class="ident">::std::convert::Into::into</span>)});
-                                        <span class="kw">continue</span> <span class="lifetime">&#39;outer_unnamed</span>;
+                                    <span class="string">&quot;Option&quot; </span>=&gt; {
+                                        rhs_convert
+                                            .push(<span class="macro">quote!</span> {#ident.map(::std::convert::Into::into)});
+                                        <span class="kw">continue </span><span class="lifetime">&#39;outer_unnamed</span>;
                                     }
-                                    <span class="string">&quot;Box&quot;</span> =&gt; {
-                                        <span class="ident">rhs_convert</span>.<span class="ident">push</span>(
-                                            <span class="macro">quote!</span> {<span class="ident">::std::boxed::Box::new</span>((<span class="kw-2">*</span>#<span class="ident">ident</span>).<span class="ident">into</span>())},
+                                    <span class="string">&quot;Box&quot; </span>=&gt; {
+                                        rhs_convert.push(
+                                            <span class="macro">quote!</span> {::std::boxed::Box::new((<span class="kw-2">*</span>#ident).into())},
                                         );
-                                        <span class="kw">continue</span> <span class="lifetime">&#39;outer_unnamed</span>;
+                                        <span class="kw">continue </span><span class="lifetime">&#39;outer_unnamed</span>;
                                     }
-                                    <span class="kw">_</span> =&gt; {}
+                                    <span class="kw">_ </span>=&gt; {}
                                 };
                             }
                         }
 
-                        <span class="ident">rhs_convert</span>.<span class="ident">push</span>(<span class="macro">quote!</span> {#<span class="ident">ident</span>.<span class="ident">into</span>()});
+                        rhs_convert.push(<span class="macro">quote!</span> {#ident.into()});
                     }
-                    <span class="ident">variant_token_streams</span>.<span class="ident">push</span>(<span class="macro">quote!</span> {
-                        <span class="ident">Other</span>::#<span class="ident">ident</span>(#(#<span class="ident">lhs_idents</span>,) <span class="kw-2">*</span>) =&gt; <span class="self">Self</span>::#<span class="ident">ident</span>(#(#<span class="ident">rhs_convert</span>,) <span class="kw-2">*</span>)
+                    variant_token_streams.push(<span class="macro">quote!</span> {
+                        Other::#ident(#(#lhs_idents,) <span class="kw-2">*</span>) =&gt; <span class="self">Self</span>::#ident(#(#rhs_convert,) <span class="kw-2">*</span>)
                     });
                 }
-                <span class="ident">Fields::Named</span>(<span class="ident">FieldsNamed</span> { <span class="ident">named</span>, .. }) =&gt; {
-                    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">lhs_idents</span> <span class="op">=</span> <span class="ident">Vec::with_capacity</span>(<span class="ident">fields_len</span>);
-                    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">rhs_convert</span> <span class="op">=</span> <span class="ident">Vec::with_capacity</span>(<span class="ident">fields_len</span>);
-                    <span class="lifetime">&#39;outer_named</span>: <span class="kw">for</span> <span class="ident">f</span> <span class="kw">in</span> <span class="ident">named</span> {
-                        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">ident</span>) <span class="op">=</span> <span class="ident">f</span>.<span class="ident">ident</span> {
-                            <span class="ident">lhs_idents</span>.<span class="ident">push</span>(<span class="ident">ident</span>.<span class="ident">clone</span>());
-                            <span class="kw">if</span> <span class="kw">let</span> <span class="ident">syn::Type::Path</span>(<span class="ident">type_path</span>) <span class="op">=</span> <span class="ident">f</span>.<span class="ident">ty</span> {
-                                <span class="kw">for</span> <span class="ident">seg</span> <span class="kw">in</span> <span class="ident">type_path</span>.<span class="ident">path</span>.<span class="ident">segments</span> {
-                                    <span class="kw">match</span> <span class="ident">seg</span>.<span class="ident">ident</span>.<span class="ident">to_string</span>().<span class="ident">as_str</span>() {
-                                        <span class="string">&quot;Vec&quot;</span> =&gt; {
-                                            <span class="ident">rhs_convert</span>.<span class="ident">push</span>(<span class="macro">quote!</span> {#<span class="ident">ident</span>: #<span class="ident">ident</span>.<span class="ident">into_iter</span>().<span class="ident">map</span>(<span class="ident">::std::convert::Into::into</span>).<span class="ident">collect</span>()});
-                                            <span class="kw">continue</span> <span class="lifetime">&#39;outer_named</span>;
+                Fields::Named(FieldsNamed { named, .. }) =&gt; {
+                    <span class="kw">let </span><span class="kw-2">mut </span>lhs_idents = Vec::with_capacity(fields_len);
+                    <span class="kw">let </span><span class="kw-2">mut </span>rhs_convert = Vec::with_capacity(fields_len);
+                    <span class="lifetime">&#39;outer_named</span>: <span class="kw">for </span>f <span class="kw">in </span>named {
+                        <span class="kw">if let </span><span class="prelude-val">Some</span>(ident) = f.ident {
+                            lhs_idents.push(ident.clone());
+                            <span class="kw">if let </span>syn::Type::Path(type_path) = f.ty {
+                                <span class="kw">for </span>seg <span class="kw">in </span>type_path.path.segments {
+                                    <span class="kw">match </span>seg.ident.to_string().as_str() {
+                                        <span class="string">&quot;Vec&quot; </span>=&gt; {
+                                            rhs_convert.push(<span class="macro">quote!</span> {#ident: #ident.into_iter().map(::std::convert::Into::into).collect()});
+                                            <span class="kw">continue </span><span class="lifetime">&#39;outer_named</span>;
                                         }
-                                        <span class="string">&quot;Option&quot;</span> =&gt; {
-                                            <span class="ident">rhs_convert</span>.<span class="ident">push</span>(
-                                                    <span class="macro">quote!</span> {#<span class="ident">ident</span>: #<span class="ident">ident</span>.<span class="ident">map</span>(<span class="ident">::std::convert::Into::into</span>)},
+                                        <span class="string">&quot;Option&quot; </span>=&gt; {
+                                            rhs_convert.push(
+                                                    <span class="macro">quote!</span> {#ident: #ident.map(::std::convert::Into::into)},
                                                 );
-                                            <span class="kw">continue</span> <span class="lifetime">&#39;outer_named</span>;
+                                            <span class="kw">continue </span><span class="lifetime">&#39;outer_named</span>;
                                         }
-                                        <span class="string">&quot;Box&quot;</span> =&gt; {
-                                            <span class="ident">rhs_convert</span>.<span class="ident">push</span>(
-                                                <span class="macro">quote!</span> {#<span class="ident">ident</span>: <span class="ident">::std::boxed::Box::new</span>((<span class="kw-2">*</span>#<span class="ident">ident</span>).<span class="ident">into</span>())},
+                                        <span class="string">&quot;Box&quot; </span>=&gt; {
+                                            rhs_convert.push(
+                                                <span class="macro">quote!</span> {#ident: ::std::boxed::Box::new((<span class="kw-2">*</span>#ident).into())},
                                             );
-                                            <span class="kw">continue</span> <span class="lifetime">&#39;outer_named</span>;
+                                            <span class="kw">continue </span><span class="lifetime">&#39;outer_named</span>;
                                         }
-                                        <span class="kw">_</span> =&gt; {}
+                                        <span class="kw">_ </span>=&gt; {}
                                     };
                                 }
                             }
-                            <span class="ident">rhs_convert</span>.<span class="ident">push</span>(<span class="macro">quote!</span> {#<span class="ident">ident</span>: #<span class="ident">ident</span>.<span class="ident">into</span>()});
+                            rhs_convert.push(<span class="macro">quote!</span> {#ident: #ident.into()});
                         }
                     }
-                    <span class="ident">variant_token_streams</span>.<span class="ident">push</span>(<span class="macro">quote!</span> {
-                        <span class="ident">Other</span>::#<span class="ident">ident</span>{#(#<span class="ident">lhs_idents</span>,) <span class="kw-2">*</span>} =&gt; <span class="self">Self</span>::#<span class="ident">ident</span>{#(#<span class="ident">rhs_convert</span>,) <span class="kw-2">*</span>}
+                    variant_token_streams.push(<span class="macro">quote!</span> {
+                        Other::#ident{#(#lhs_idents,) <span class="kw-2">*</span>} =&gt; <span class="self">Self</span>::#ident{#(#rhs_convert,) <span class="kw-2">*</span>}
                     });
                 }
-                <span class="kw">_</span> =&gt; {}
+                <span class="kw">_ </span>=&gt; {}
             },
         }
     }
 
-    <span class="kw">if</span> <span class="ident">variant_token_streams</span>.<span class="ident">is_empty</span>() {
-        <span class="kw">return</span> <span class="prelude-val">None</span>;
+    <span class="kw">if </span>variant_token_streams.is_empty() {
+        <span class="kw">return </span><span class="prelude-val">None</span>;
     }
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">output</span> <span class="op">=</span> <span class="ident">TokenStream::default</span>();
-    <span class="kw">for</span> <span class="ident">target_type</span> <span class="kw">in</span> <span class="ident">target_types</span> {
-        <span class="kw">let</span> <span class="ident">ts</span>: <span class="ident">TokenStream</span> <span class="op">=</span> <span class="macro">quote!</span> {
-            <span class="kw">impl</span> <span class="ident">::std::convert::From</span><span class="op">&lt;</span>#<span class="ident">ident</span><span class="op">&gt;</span> <span class="kw">for</span> #<span class="ident">target_type</span> {
-                <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">item</span>: #<span class="ident">ident</span>) -&gt; <span class="self">Self</span> {
-                    <span class="kw">use</span> #<span class="ident">ident</span> <span class="kw">as</span> <span class="ident">Other</span>;
-                    <span class="kw">match</span> <span class="ident">item</span> {
-                        #(#<span class="ident">variant_token_streams</span>,) <span class="op">*</span>
+    <span class="kw">let </span><span class="kw-2">mut </span>output = TokenStream::default();
+    <span class="kw">for </span>target_type <span class="kw">in </span>target_types {
+        <span class="kw">let </span>ts: TokenStream = <span class="macro">quote!</span> {
+            <span class="kw">impl </span>::std::convert::From&lt;#ident&gt; <span class="kw">for </span>#target_type {
+                <span class="kw">fn </span>from(item: #ident) -&gt; <span class="self">Self </span>{
+                    <span class="kw">use </span>#ident <span class="kw">as </span>Other;
+                    <span class="kw">match </span>item {
+                        #(#variant_token_streams,) *
                     }
                 }
             }
 
-            <span class="kw">impl</span> <span class="ident">::std::convert::From</span><span class="op">&lt;</span>#<span class="ident">target_type</span><span class="op">&gt;</span> <span class="kw">for</span> #<span class="ident">ident</span> {
-                <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">item</span>: #<span class="ident">target_type</span>) -&gt; <span class="self">Self</span> {
-                    <span class="kw">use</span> #<span class="ident">target_type</span> <span class="kw">as</span> <span class="ident">Other</span>;
-                    <span class="kw">match</span> <span class="ident">item</span> {
-                        #(#<span class="ident">variant_token_streams</span>,) <span class="op">*</span>
+            <span class="kw">impl </span>::std::convert::From&lt;#target_type&gt; <span class="kw">for </span>#ident {
+                <span class="kw">fn </span>from(item: #target_type) -&gt; <span class="self">Self </span>{
+                    <span class="kw">use </span>#target_type <span class="kw">as </span>Other;
+                    <span class="kw">match </span>item {
+                        #(#variant_token_streams,) *
                     }
                 }
             }
         }
-        .<span class="ident">into</span>();
-        <span class="ident">output</span>.<span class="ident">extend</span>(<span class="ident">ts</span>);
-        <span class="ident">output</span>.<span class="ident">extend</span>(<span class="ident">impl_from_for_versioned</span>(<span class="ident">ident</span>, <span class="ident">target_type</span>));
+        .into();
+        output.extend(ts);
+        output.extend(impl_from_for_versioned(ident, target_type));
     }
 
-    <span class="prelude-val">Some</span>(<span class="ident">output</span>)
+    <span class="prelude-val">Some</span>(output)
 }
 
-<span class="doccomment">/// Codegen for versioned target type(s)</span>
-<span class="kw">fn</span> <span class="ident">impl_from_for_versioned</span>(
-    <span class="ident">ident</span>: <span class="kw-2">&amp;</span><span class="ident">proc_macro2::Ident</span>,
-    <span class="ident">target_type</span>: <span class="kw-2">&amp;</span><span class="ident">proc_macro2::TokenStream</span>,
-) -&gt; <span class="ident">TokenStream</span> {
+<span class="doccomment">/// Codegen for versioned target type(s)
+</span><span class="kw">fn </span>impl_from_for_versioned(
+    ident: <span class="kw-2">&amp;</span>proc_macro2::Ident,
+    target_type: <span class="kw-2">&amp;</span>proc_macro2::TokenStream,
+) -&gt; TokenStream {
     <span class="macro">quote!</span> {
-        <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">V</span>: <span class="ident">u16</span><span class="op">&gt;</span> <span class="ident">::std::convert::From</span><span class="op">&lt;</span>#<span class="ident">ident</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">::versioned::Versioned</span><span class="op">&lt;</span>#<span class="ident">target_type</span>, <span class="ident">V</span><span class="op">&gt;</span> {
-            <span class="attribute">#[<span class="ident">inline</span>]</span>
-            <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">t</span>: #<span class="ident">ident</span>) -&gt; <span class="self">Self</span> {
-                <span class="kw">let</span> <span class="ident">t</span>: #<span class="ident">target_type</span> <span class="op">=</span> <span class="ident">t</span>.<span class="ident">into</span>();
-                <span class="ident">t</span>.<span class="ident">into</span>()
+        <span class="kw">impl</span>&lt;<span class="kw">const </span>V: u16&gt; ::std::convert::From&lt;#ident&gt; <span class="kw">for </span>::versioned::Versioned&lt;#target_type, V&gt; {
+            <span class="attribute">#[inline]</span>
+            <span class="kw">fn </span>from(t: #ident) -&gt; <span class="self">Self </span>{
+                <span class="kw">let </span>t: #target_type = t.into();
+                t.into()
             }
         }
 
-        <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">V</span>: <span class="ident">u16</span><span class="op">&gt;</span> <span class="ident">::std::convert::From</span><span class="op">&lt;</span><span class="ident">::versioned::Versioned</span><span class="op">&lt;</span>#<span class="ident">target_type</span>, <span class="ident">V</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="kw">for</span> #<span class="ident">ident</span> {
-            <span class="attribute">#[<span class="ident">inline</span>]</span>
-            <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">t</span>: <span class="ident">::versioned::Versioned</span><span class="op">&lt;</span>#<span class="ident">target_type</span>, <span class="ident">V</span><span class="op">&gt;</span>) -&gt; <span class="self">Self</span> {
-                <span class="kw">let</span> (<span class="ident">t</span>,): (#<span class="ident">target_type</span>,) <span class="op">=</span> <span class="ident">t</span>.<span class="ident">into</span>();
-                <span class="ident">t</span>.<span class="ident">into</span>()
+        <span class="kw">impl</span>&lt;<span class="kw">const </span>V: u16&gt; ::std::convert::From&lt;::versioned::Versioned&lt;#target_type, V&gt;&gt; <span class="kw">for </span>#ident {
+            <span class="attribute">#[inline]</span>
+            <span class="kw">fn </span>from(t: ::versioned::Versioned&lt;#target_type, V&gt;) -&gt; <span class="self">Self </span>{
+                <span class="kw">let </span>(t,): (#target_type,) = t.into();
+                t.into()
             }
         }
 
-        <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">V1</span>: <span class="ident">u16</span>, <span class="kw">const</span> <span class="ident">V2</span>: <span class="ident">u16</span><span class="op">&gt;</span> <span class="ident">::std::convert::From</span><span class="op">&lt;</span>#<span class="ident">ident</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">::versioned::Versioned</span><span class="op">&lt;</span><span class="ident">::versioned::Versioned</span><span class="op">&lt;</span>#<span class="ident">target_type</span>, <span class="ident">V1</span><span class="op">&gt;</span>, <span class="ident">V2</span><span class="op">&gt;</span> {
-            <span class="attribute">#[<span class="ident">inline</span>]</span>
-            <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">t</span>: #<span class="ident">ident</span>) -&gt; <span class="self">Self</span> {
-                <span class="kw">let</span> <span class="ident">t</span>: #<span class="ident">target_type</span> <span class="op">=</span> <span class="ident">t</span>.<span class="ident">into</span>();
-                <span class="ident">t</span>.<span class="ident">into</span>()
+        <span class="kw">impl</span>&lt;<span class="kw">const </span>V1: u16, <span class="kw">const </span>V2: u16&gt; ::std::convert::From&lt;#ident&gt; <span class="kw">for </span>::versioned::Versioned&lt;::versioned::Versioned&lt;#target_type, V1&gt;, V2&gt; {
+            <span class="attribute">#[inline]</span>
+            <span class="kw">fn </span>from(t: #ident) -&gt; <span class="self">Self </span>{
+                <span class="kw">let </span>t: #target_type = t.into();
+                t.into()
             }
         }
 
-        <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">V1</span>: <span class="ident">u16</span>, <span class="kw">const</span> <span class="ident">V2</span>: <span class="ident">u16</span><span class="op">&gt;</span> <span class="ident">::std::convert::From</span><span class="op">&lt;</span><span class="ident">::versioned::Versioned</span><span class="op">&lt;</span><span class="ident">::versioned::Versioned</span><span class="op">&lt;</span>#<span class="ident">target_type</span>, <span class="ident">V1</span><span class="op">&gt;</span>, <span class="ident">V2</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="kw">for</span> #<span class="ident">ident</span> {
-            <span class="attribute">#[<span class="ident">inline</span>]</span>
-            <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">t</span>: <span class="ident">::versioned::Versioned</span><span class="op">&lt;</span><span class="ident">::versioned::Versioned</span><span class="op">&lt;</span>#<span class="ident">target_type</span>, <span class="ident">V1</span><span class="op">&gt;</span>, <span class="ident">V2</span><span class="op">&gt;</span>) -&gt; <span class="self">Self</span> {
-                <span class="kw">let</span> (<span class="ident">t</span>,): (#<span class="ident">target_type</span>,) <span class="op">=</span> <span class="ident">t</span>.<span class="ident">into</span>();
-                <span class="ident">t</span>.<span class="ident">into</span>()
+        <span class="kw">impl</span>&lt;<span class="kw">const </span>V1: u16, <span class="kw">const </span>V2: u16&gt; ::std::convert::From&lt;::versioned::Versioned&lt;::versioned::Versioned&lt;#target_type, V1&gt;, V2&gt;&gt; <span class="kw">for </span>#ident {
+            <span class="attribute">#[inline]</span>
+            <span class="kw">fn </span>from(t: ::versioned::Versioned&lt;::versioned::Versioned&lt;#target_type, V1&gt;, V2&gt;) -&gt; <span class="self">Self </span>{
+                <span class="kw">let </span>(t,): (#target_type,) = t.into();
+                t.into()
             }
         }
 
-        <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">V1</span>: <span class="ident">u16</span>, <span class="kw">const</span> <span class="ident">V2</span>: <span class="ident">u16</span>, <span class="kw">const</span> <span class="ident">V3</span>: <span class="ident">u16</span><span class="op">&gt;</span> <span class="ident">::std::convert::From</span><span class="op">&lt;</span>#<span class="ident">ident</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">::versioned::Versioned</span><span class="op">&lt;</span><span class="ident">::versioned::Versioned</span><span class="op">&lt;</span><span class="ident">::versioned::Versioned</span><span class="op">&lt;</span>#<span class="ident">target_type</span>, <span class="ident">V1</span><span class="op">&gt;</span>, <span class="ident">V2</span><span class="op">&gt;</span>, <span class="ident">V3</span><span class="op">&gt;</span> {
-            <span class="attribute">#[<span class="ident">inline</span>]</span>
-            <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">t</span>: #<span class="ident">ident</span>) -&gt; <span class="self">Self</span> {
-                <span class="kw">let</span> <span class="ident">t</span>: #<span class="ident">target_type</span> <span class="op">=</span> <span class="ident">t</span>.<span class="ident">into</span>();
-                <span class="ident">t</span>.<span class="ident">into</span>()
+        <span class="kw">impl</span>&lt;<span class="kw">const </span>V1: u16, <span class="kw">const </span>V2: u16, <span class="kw">const </span>V3: u16&gt; ::std::convert::From&lt;#ident&gt; <span class="kw">for </span>::versioned::Versioned&lt;::versioned::Versioned&lt;::versioned::Versioned&lt;#target_type, V1&gt;, V2&gt;, V3&gt; {
+            <span class="attribute">#[inline]</span>
+            <span class="kw">fn </span>from(t: #ident) -&gt; <span class="self">Self </span>{
+                <span class="kw">let </span>t: #target_type = t.into();
+                t.into()
             }
         }
 
-        <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">V1</span>: <span class="ident">u16</span>, <span class="kw">const</span> <span class="ident">V2</span>: <span class="ident">u16</span>, <span class="kw">const</span> <span class="ident">V3</span>: <span class="ident">u16</span><span class="op">&gt;</span> <span class="ident">::std::convert::From</span><span class="op">&lt;</span><span class="ident">::versioned::Versioned</span><span class="op">&lt;</span><span class="ident">::versioned::Versioned</span><span class="op">&lt;</span><span class="ident">::versioned::Versioned</span><span class="op">&lt;</span>#<span class="ident">target_type</span>, <span class="ident">V1</span><span class="op">&gt;</span>, <span class="ident">V2</span><span class="op">&gt;</span>, <span class="ident">V3</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="kw">for</span> #<span class="ident">ident</span> {
-            <span class="attribute">#[<span class="ident">inline</span>]</span>
-            <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">t</span>: <span class="ident">::versioned::Versioned</span><span class="op">&lt;</span><span class="ident">::versioned::Versioned</span><span class="op">&lt;</span><span class="ident">::versioned::Versioned</span><span class="op">&lt;</span>#<span class="ident">target_type</span>, <span class="ident">V1</span><span class="op">&gt;</span>, <span class="ident">V2</span><span class="op">&gt;</span>, <span class="ident">V3</span><span class="op">&gt;</span>) -&gt; <span class="self">Self</span> {
-                <span class="kw">let</span> (<span class="ident">t</span>,): (#<span class="ident">target_type</span>,) <span class="op">=</span> <span class="ident">t</span>.<span class="ident">into</span>();
-                <span class="ident">t</span>.<span class="ident">into</span>()
+        <span class="kw">impl</span>&lt;<span class="kw">const </span>V1: u16, <span class="kw">const </span>V2: u16, <span class="kw">const </span>V3: u16&gt; ::std::convert::From&lt;::versioned::Versioned&lt;::versioned::Versioned&lt;::versioned::Versioned&lt;#target_type, V1&gt;, V2&gt;, V3&gt;&gt; <span class="kw">for </span>#ident {
+            <span class="attribute">#[inline]</span>
+            <span class="kw">fn </span>from(t: ::versioned::Versioned&lt;::versioned::Versioned&lt;::versioned::Versioned&lt;#target_type, V1&gt;, V2&gt;, V3&gt;) -&gt; <span class="self">Self </span>{
+                <span class="kw">let </span>(t,): (#target_type,) = t.into();
+                t.into()
             }
         }
 
-        <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">V1</span>: <span class="ident">u16</span>, <span class="kw">const</span> <span class="ident">V2</span>: <span class="ident">u16</span>, <span class="kw">const</span> <span class="ident">V3</span>: <span class="ident">u16</span>, <span class="kw">const</span> <span class="ident">V4</span>: <span class="ident">u16</span><span class="op">&gt;</span> <span class="ident">::std::convert::From</span><span class="op">&lt;</span>#<span class="ident">ident</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">::versioned::Versioned</span><span class="op">&lt;</span><span class="ident">::versioned::Versioned</span><span class="op">&lt;</span><span class="ident">::versioned::Versioned</span><span class="op">&lt;</span><span class="ident">::versioned::Versioned</span><span class="op">&lt;</span>#<span class="ident">target_type</span>, <span class="ident">V1</span><span class="op">&gt;</span>, <span class="ident">V2</span><span class="op">&gt;</span>, <span class="ident">V3</span><span class="op">&gt;</span>, <span class="ident">V4</span><span class="op">&gt;</span> {
-            <span class="attribute">#[<span class="ident">inline</span>]</span>
-            <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">t</span>: #<span class="ident">ident</span>) -&gt; <span class="self">Self</span> {
-                <span class="kw">let</span> <span class="ident">t</span>: #<span class="ident">target_type</span> <span class="op">=</span> <span class="ident">t</span>.<span class="ident">into</span>();
-                <span class="ident">t</span>.<span class="ident">into</span>()
+        <span class="kw">impl</span>&lt;<span class="kw">const </span>V1: u16, <span class="kw">const </span>V2: u16, <span class="kw">const </span>V3: u16, <span class="kw">const </span>V4: u16&gt; ::std::convert::From&lt;#ident&gt; <span class="kw">for </span>::versioned::Versioned&lt;::versioned::Versioned&lt;::versioned::Versioned&lt;::versioned::Versioned&lt;#target_type, V1&gt;, V2&gt;, V3&gt;, V4&gt; {
+            <span class="attribute">#[inline]</span>
+            <span class="kw">fn </span>from(t: #ident) -&gt; <span class="self">Self </span>{
+                <span class="kw">let </span>t: #target_type = t.into();
+                t.into()
             }
         }
 
-        <span class="kw">impl</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">V1</span>: <span class="ident">u16</span>, <span class="kw">const</span> <span class="ident">V2</span>: <span class="ident">u16</span>, <span class="kw">const</span> <span class="ident">V3</span>: <span class="ident">u16</span>, <span class="kw">const</span> <span class="ident">V4</span>: <span class="ident">u16</span><span class="op">&gt;</span> <span class="ident">::std::convert::From</span><span class="op">&lt;</span><span class="ident">::versioned::Versioned</span><span class="op">&lt;</span><span class="ident">::versioned::Versioned</span><span class="op">&lt;</span><span class="ident">::versioned::Versioned</span><span class="op">&lt;</span><span class="ident">::versioned::Versioned</span><span class="op">&lt;</span>#<span class="ident">target_type</span>, <span class="ident">V1</span><span class="op">&gt;</span>, <span class="ident">V2</span><span class="op">&gt;</span>, <span class="ident">V3</span><span class="op">&gt;</span>, <span class="ident">V4</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="kw">for</span> #<span class="ident">ident</span> {
-            <span class="attribute">#[<span class="ident">inline</span>]</span>
-            <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">t</span>: <span class="ident">::versioned::Versioned</span><span class="op">&lt;</span><span class="ident">::versioned::Versioned</span><span class="op">&lt;</span><span class="ident">::versioned::Versioned</span><span class="op">&lt;</span><span class="ident">::versioned::Versioned</span><span class="op">&lt;</span>#<span class="ident">target_type</span>, <span class="ident">V1</span><span class="op">&gt;</span>, <span class="ident">V2</span><span class="op">&gt;</span>, <span class="ident">V3</span><span class="op">&gt;</span>, <span class="ident">V4</span><span class="op">&gt;</span>) -&gt; <span class="self">Self</span> {
-                <span class="kw">let</span> (<span class="ident">t</span>,): (#<span class="ident">target_type</span>,) <span class="op">=</span> <span class="ident">t</span>.<span class="ident">into</span>();
-                <span class="ident">t</span>.<span class="ident">into</span>()
+        <span class="kw">impl</span>&lt;<span class="kw">const </span>V1: u16, <span class="kw">const </span>V2: u16, <span class="kw">const </span>V3: u16, <span class="kw">const </span>V4: u16&gt; ::std::convert::From&lt;::versioned::Versioned&lt;::versioned::Versioned&lt;::versioned::Versioned&lt;::versioned::Versioned&lt;#target_type, V1&gt;, V2&gt;, V3&gt;, V4&gt;&gt; <span class="kw">for </span>#ident {
+            <span class="attribute">#[inline]</span>
+            <span class="kw">fn </span>from(t: ::versioned::Versioned&lt;::versioned::Versioned&lt;::versioned::Versioned&lt;::versioned::Versioned&lt;#target_type, V1&gt;, V2&gt;, V3&gt;, V4&gt;) -&gt; <span class="self">Self </span>{
+                <span class="kw">let </span>(t,): (#target_type,) = t.into();
+                t.into()
             }
         }
-    }.<span class="ident">into</span>()
+    }.into()
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_serialization_types_macros" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (fe3342816 2022-08-01)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_serialization_types_macros" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (40336865f 2022-08-15)" ></div></body></html>

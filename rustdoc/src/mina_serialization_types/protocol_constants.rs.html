@@ -46,53 +46,53 @@
 <span id="46">46</span>
 <span id="47">47</span>
 <span id="48">48</span>
-</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems</span>
-<span class="comment">// SPDX-License-Identifier: Apache-2.0</span>
+</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems
+// SPDX-License-Identifier: Apache-2.0
 
-<span class="doccomment">//! Types related to the Mina protocol state</span>
+</span><span class="doccomment">//! Types related to the Mina protocol state
 
-<span class="kw">use</span> <span class="ident">mina_serialization_types_macros::AutoFrom</span>;
-<span class="kw">use</span> <span class="ident">serde</span>::{<span class="ident">Deserialize</span>, <span class="ident">Serialize</span>};
+</span><span class="kw">use </span>mina_serialization_types_macros::AutoFrom;
+<span class="kw">use </span>serde::{Deserialize, Serialize};
 
-<span class="kw">use</span> <span class="ident">versioned::Versioned</span>;
+<span class="kw">use </span>versioned::Versioned;
 
-<span class="kw">use</span> <span class="kw">crate</span>::{
-    <span class="ident">common</span>::{<span class="ident">U32Json</span>, <span class="ident">U64Json</span>},
-    <span class="ident">v1</span>::{<span class="ident">BlockTimeV1</span>, <span class="ident">LengthV1</span>},
+<span class="kw">use crate</span>::{
+    common::{U32Json, U64Json},
+    v1::{BlockTimeV1, LengthV1},
 };
 
-<span class="doccomment">/// Constants that define the consensus parameters</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">PartialEq</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ProtocolConstants</span> {
-    <span class="doccomment">/// Point of finality (number of confirmations)</span>
-    <span class="kw">pub</span> <span class="ident">k</span>: <span class="ident">LengthV1</span>,
-    <span class="doccomment">/// Number of slots per epoch</span>
-    <span class="kw">pub</span> <span class="ident">slots_per_epoch</span>: <span class="ident">LengthV1</span>,
-    <span class="doccomment">/// No of slots in a sub-window = 7</span>
-    <span class="kw">pub</span> <span class="ident">slots_per_sub_window</span>: <span class="ident">LengthV1</span>,
-    <span class="doccomment">/// Maximum permissable delay of packets (in slots after the current)</span>
-    <span class="kw">pub</span> <span class="ident">delta</span>: <span class="ident">LengthV1</span>,
-    <span class="doccomment">/// Timestamp of genesis block in unixtime</span>
-    <span class="kw">pub</span> <span class="ident">genesis_state_timestamp</span>: <span class="ident">BlockTimeV1</span>,
+<span class="doccomment">/// Constants that define the consensus parameters
+</span><span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]</span>
+<span class="kw">pub struct </span>ProtocolConstants {
+    <span class="doccomment">/// Point of finality (number of confirmations)
+    </span><span class="kw">pub </span>k: LengthV1,
+    <span class="doccomment">/// Number of slots per epoch
+    </span><span class="kw">pub </span>slots_per_epoch: LengthV1,
+    <span class="doccomment">/// No of slots in a sub-window = 7
+    </span><span class="kw">pub </span>slots_per_sub_window: LengthV1,
+    <span class="doccomment">/// Maximum permissable delay of packets (in slots after the current)
+    </span><span class="kw">pub </span>delta: LengthV1,
+    <span class="doccomment">/// Timestamp of genesis block in unixtime
+    </span><span class="kw">pub </span>genesis_state_timestamp: BlockTimeV1,
 }
 
-<span class="doccomment">/// Constants that define the consensus parameters (v1)</span>
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">ProtocolConstantsV1</span> <span class="op">=</span> <span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">ProtocolConstants</span>, <span class="number">1</span><span class="op">&gt;</span>, <span class="number">1</span><span class="op">&gt;</span>;
+<span class="doccomment">/// Constants that define the consensus parameters (v1)
+</span><span class="kw">pub type </span>ProtocolConstantsV1 = Versioned&lt;Versioned&lt;ProtocolConstants, <span class="number">1</span>&gt;, <span class="number">1</span>&gt;;
 
-<span class="doccomment">/// Constants that define the consensus parameters (json)</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">PartialEq</span>, <span class="ident">AutoFrom</span>)]</span>
-<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">ProtocolConstants</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ProtocolConstantsJson</span> {
-    <span class="doccomment">/// Point of finality (number of confirmations)</span>
-    <span class="kw">pub</span> <span class="ident">k</span>: <span class="ident">U32Json</span>,
-    <span class="doccomment">/// Number of slots per epoch</span>
-    <span class="kw">pub</span> <span class="ident">slots_per_epoch</span>: <span class="ident">U32Json</span>,
-    <span class="doccomment">/// No of slots in a sub-window = 7</span>
-    <span class="kw">pub</span> <span class="ident">slots_per_sub_window</span>: <span class="ident">U32Json</span>,
-    <span class="doccomment">/// Maximum permissable delay of packets (in slots after the current)</span>
-    <span class="kw">pub</span> <span class="ident">delta</span>: <span class="ident">U32Json</span>,
-    <span class="doccomment">/// Timestamp of genesis block in unixtime</span>
-    <span class="kw">pub</span> <span class="ident">genesis_state_timestamp</span>: <span class="ident">U64Json</span>,
+<span class="doccomment">/// Constants that define the consensus parameters (json)
+</span><span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq, AutoFrom)]</span>
+<span class="attribute">#[auto_from(ProtocolConstants)]</span>
+<span class="kw">pub struct </span>ProtocolConstantsJson {
+    <span class="doccomment">/// Point of finality (number of confirmations)
+    </span><span class="kw">pub </span>k: U32Json,
+    <span class="doccomment">/// Number of slots per epoch
+    </span><span class="kw">pub </span>slots_per_epoch: U32Json,
+    <span class="doccomment">/// No of slots in a sub-window = 7
+    </span><span class="kw">pub </span>slots_per_sub_window: U32Json,
+    <span class="doccomment">/// Maximum permissable delay of packets (in slots after the current)
+    </span><span class="kw">pub </span>delta: U32Json,
+    <span class="doccomment">/// Timestamp of genesis block in unixtime
+    </span><span class="kw">pub </span>genesis_state_timestamp: U64Json,
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_serialization_types" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (fe3342816 2022-08-01)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_serialization_types" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (40336865f 2022-08-15)" ></div></body></html>

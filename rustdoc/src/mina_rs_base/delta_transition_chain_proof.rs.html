@@ -18,25 +18,25 @@
 <span id="18">18</span>
 <span id="19">19</span>
 <span id="20">20</span>
-</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems</span>
-<span class="comment">// SPDX-License-Identifier: Apache-2.0</span>
+</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems
+// SPDX-License-Identifier: Apache-2.0
 
-<span class="doccomment">//! Delta transition chain proof structures and functions</span>
+</span><span class="doccomment">//! Delta transition chain proof structures and functions
 
-<span class="kw">use</span> <span class="ident">mina_crypto::hash</span>::<span class="kw-2">*</span>;
-<span class="kw">use</span> <span class="ident">mina_serialization_types::json</span>::<span class="kw-2">*</span>;
-<span class="kw">use</span> <span class="ident">mina_serialization_types_macros::AutoFrom</span>;
-<span class="kw">use</span> <span class="ident">versioned</span>::<span class="kw-2">*</span>;
+</span><span class="kw">use </span>mina_crypto::hash::<span class="kw-2">*</span>;
+<span class="kw">use </span>mina_serialization_types::json::<span class="kw-2">*</span>;
+<span class="kw">use </span>mina_serialization_types_macros::AutoFrom;
+<span class="kw">use </span>versioned::<span class="kw-2">*</span>;
 
-<span class="doccomment">/// Proof that the block was produced within the allotted slot time</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Default</span>, <span class="ident">PartialEq</span>, <span class="ident">derive_more::From</span>, <span class="ident">derive_more::Into</span>, <span class="ident">AutoFrom</span>)]</span>
-<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">mina_serialization_types::delta_transition_chain_proof::DeltaTransitionChainProof</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">DeltaTransitionChainProof</span>(<span class="kw">pub</span> <span class="ident">StateHash</span>, <span class="kw">pub</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">StateHash</span><span class="op">&gt;</span>);
+<span class="doccomment">/// Proof that the block was produced within the allotted slot time
+</span><span class="attribute">#[derive(Clone, Debug, Default, Eq, PartialEq, derive_more::From, derive_more::Into, AutoFrom)]</span>
+<span class="attribute">#[auto_from(mina_serialization_types::delta_transition_chain_proof::DeltaTransitionChainProof)]</span>
+<span class="kw">pub struct </span>DeltaTransitionChainProof(<span class="kw">pub </span>StateHash, <span class="kw">pub </span>Vec&lt;StateHash&gt;);
 
 <span class="macro">impl_from_with_proxy!</span>(
-    <span class="ident">DeltaTransitionChainProof</span>,
-    <span class="ident">mina_serialization_types::delta_transition_chain_proof::DeltaTransitionChainProof</span>,
-    <span class="ident">DeltaTransitionChainProofJson</span>
+    DeltaTransitionChainProof,
+    mina_serialization_types::delta_transition_chain_proof::DeltaTransitionChainProof,
+    DeltaTransitionChainProofJson
 );
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_rs_base" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (fe3342816 2022-08-01)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_rs_base" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (40336865f 2022-08-15)" ></div></body></html>

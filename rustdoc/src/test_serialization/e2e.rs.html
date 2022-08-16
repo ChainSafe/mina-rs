@@ -47,54 +47,54 @@
 <span id="47">47</span>
 <span id="48">48</span>
 <span id="49">49</span>
-</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems</span>
-<span class="comment">// SPDX-License-Identifier: Apache-2.0</span>
+</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems
+// SPDX-License-Identifier: Apache-2.0
 
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">all</span>(<span class="ident">test</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;browser&quot;</span>))]</span>
-<span class="macro">wasm_bindgen_test::wasm_bindgen_test_configure!</span>(<span class="ident">run_in_browser</span>);
+</span><span class="attribute">#[cfg(all(test, feature = <span class="string">&quot;browser&quot;</span>))]</span>
+<span class="macro">wasm_bindgen_test::wasm_bindgen_test_configure!</span>(run_in_browser);
 
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
-<span class="kw">mod</span> <span class="ident">tests</span> {
-    <span class="kw">use</span> <span class="ident">mina_rs_base::types</span>::<span class="kw-2">*</span>;
-    <span class="kw">use</span> <span class="ident">mina_serialization_types</span>::<span class="kw-2">*</span>;
-    <span class="kw">use</span> <span class="ident">pretty_assertions::assert_eq</span>;
-    <span class="kw">use</span> <span class="ident">test_fixtures::TEST_BLOCKS</span>;
-    <span class="kw">use</span> <span class="ident">wasm_bindgen_test</span>::<span class="kw-2">*</span>;
+<span class="attribute">#[cfg(test)]</span>
+<span class="kw">mod </span>tests {
+    <span class="kw">use </span>mina_rs_base::types::<span class="kw-2">*</span>;
+    <span class="kw">use </span>mina_serialization_types::<span class="kw-2">*</span>;
+    <span class="kw">use </span>pretty_assertions::assert_eq;
+    <span class="kw">use </span>test_fixtures::TEST_BLOCKS;
+    <span class="kw">use </span>wasm_bindgen_test::<span class="kw-2">*</span>;
 
-    <span class="attribute">#[<span class="ident">test</span>]</span>
-    <span class="attribute">#[<span class="ident">wasm_bindgen_test</span>]</span>
-    <span class="kw">fn</span> <span class="ident">test_block_state_hash</span>() {
-        <span class="kw">for</span> (<span class="ident">file_name</span>, <span class="ident">block_fixture</span>) <span class="kw">in</span> <span class="ident">test_fixtures::TEST_BLOCKS</span>.<span class="ident">iter</span>() {
-            <span class="kw">let</span> <span class="ident">expected_state_hash</span> <span class="op">=</span> <span class="ident">file_name</span>.<span class="ident">split</span>(<span class="string">&#39;.&#39;</span>).<span class="ident">nth</span>(<span class="number">0</span>).<span class="ident">unwrap_or_default</span>();
-            <span class="kw">if</span> <span class="op">!</span><span class="ident">expected_state_hash</span>.<span class="ident">contains</span>(<span class="string">&quot;block&quot;</span>) {
-                <span class="kw">let</span> <span class="ident">block_v1</span> <span class="op">=</span> <span class="ident">block_fixture</span>.<span class="ident">external_transitionv1</span>().<span class="ident">unwrap</span>();
-                <span class="kw">let</span> <span class="ident">block</span>: <span class="ident">ExternalTransition</span> <span class="op">=</span> <span class="ident">block_v1</span>.<span class="ident">into</span>();
-                <span class="kw">let</span> <span class="ident">state_hash</span> <span class="op">=</span> <span class="ident">block</span>.<span class="ident">protocol_state</span>.<span class="ident">state_hash</span>();
-                <span class="macro">assert_eq!</span>(<span class="kw-2">&amp;</span><span class="ident">state_hash</span>.<span class="ident">to_string</span>(), <span class="ident">expected_state_hash</span>);
+    <span class="attribute">#[test]</span>
+    <span class="attribute">#[wasm_bindgen_test]</span>
+    <span class="kw">fn </span>test_block_state_hash() {
+        <span class="kw">for </span>(file_name, block_fixture) <span class="kw">in </span>test_fixtures::TEST_BLOCKS.iter() {
+            <span class="kw">let </span>expected_state_hash = file_name.split(<span class="string">&#39;.&#39;</span>).nth(<span class="number">0</span>).unwrap_or_default();
+            <span class="kw">if </span>!expected_state_hash.contains(<span class="string">&quot;block&quot;</span>) {
+                <span class="kw">let </span>block_v1 = block_fixture.external_transitionv1().unwrap();
+                <span class="kw">let </span>block: ExternalTransition = block_v1.into();
+                <span class="kw">let </span>state_hash = block.protocol_state.state_hash();
+                <span class="macro">assert_eq!</span>(<span class="kw-2">&amp;</span>state_hash.to_string(), expected_state_hash);
             }
         }
     }
 
-    <span class="attribute">#[<span class="ident">test</span>]</span>
-    <span class="attribute">#[<span class="ident">wasm_bindgen_test</span>]</span>
-    <span class="kw">fn</span> <span class="ident">test_block_serde_roundtrip</span>() {
-        <span class="kw">for</span> <span class="ident">block</span> <span class="kw">in</span> <span class="ident">TEST_BLOCKS</span>.<span class="ident">values</span>() {
-            <span class="kw">let</span> <span class="ident">versioned</span> <span class="op">=</span> <span class="ident">block</span>.<span class="ident">external_transitionv1</span>().<span class="ident">unwrap</span>();
+    <span class="attribute">#[test]</span>
+    <span class="attribute">#[wasm_bindgen_test]</span>
+    <span class="kw">fn </span>test_block_serde_roundtrip() {
+        <span class="kw">for </span>block <span class="kw">in </span>TEST_BLOCKS.values() {
+            <span class="kw">let </span>versioned = block.external_transitionv1().unwrap();
 
-            <span class="kw">let</span> <span class="ident">et</span>: <span class="ident">ExternalTransition</span> <span class="op">=</span> <span class="ident">versioned</span>.<span class="ident">clone</span>().<span class="ident">into</span>();
-            <span class="kw">let</span> <span class="ident">et2</span>: <span class="ident">ExternalTransition</span> <span class="op">=</span>
-                <span class="op">&lt;</span><span class="ident">ExternalTransition</span> <span class="kw">as</span> <span class="ident">BinProtSerializationType</span><span class="op">&gt;</span><span class="ident">::try_from_binprot</span>(
-                    <span class="ident">block</span>.<span class="ident">bytes</span>.<span class="ident">as_slice</span>(),
+            <span class="kw">let </span>et: ExternalTransition = versioned.clone().into();
+            <span class="kw">let </span>et2: ExternalTransition =
+                &lt;ExternalTransition <span class="kw">as </span>BinProtSerializationType&gt;::try_from_binprot(
+                    block.bytes.as_slice(),
                 )
-                .<span class="ident">unwrap</span>();
-            <span class="macro">assert_eq!</span>(<span class="ident">et</span>, <span class="ident">et2</span>);
-            <span class="kw">let</span> <span class="ident">versioned2</span>: <span class="op">&lt;</span><span class="ident">ExternalTransition</span> <span class="kw">as</span> <span class="ident">BinProtSerializationType</span><span class="op">&gt;</span><span class="ident">::T</span> <span class="op">=</span> <span class="ident">et</span>.<span class="ident">clone</span>().<span class="ident">into</span>();
-            <span class="macro">assert_eq!</span>(<span class="ident">versioned</span>, <span class="ident">versioned2</span>);
+                .unwrap();
+            <span class="macro">assert_eq!</span>(et, et2);
+            <span class="kw">let </span>versioned2: &lt;ExternalTransition <span class="kw">as </span>BinProtSerializationType&gt;::T = et.clone().into();
+            <span class="macro">assert_eq!</span>(versioned, versioned2);
 
-            <span class="kw">let</span> <span class="ident">bytes</span> <span class="op">=</span> <span class="ident">et</span>.<span class="ident">try_into_binprot</span>().<span class="ident">unwrap</span>();
-            <span class="macro">assert_eq!</span>(<span class="ident">bytes</span>.<span class="ident">as_slice</span>(), <span class="ident">block</span>.<span class="ident">bytes</span>.<span class="ident">as_slice</span>());
+            <span class="kw">let </span>bytes = et.try_into_binprot().unwrap();
+            <span class="macro">assert_eq!</span>(bytes.as_slice(), block.bytes.as_slice());
         }
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="test_serialization" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (fe3342816 2022-08-01)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="test_serialization" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (40336865f 2022-08-15)" ></div></body></html>

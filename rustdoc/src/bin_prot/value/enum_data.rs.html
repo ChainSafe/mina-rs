@@ -13,20 +13,20 @@
 <span id="13">13</span>
 <span id="14">14</span>
 <span id="15">15</span>
-</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems</span>
-<span class="comment">// SPDX-License-Identifier: Apache-2.0</span>
+</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems
+// SPDX-License-Identifier: Apache-2.0
 
-<span class="kw">use</span> <span class="ident">serde</span>::{<span class="ident">Deserialize</span>, <span class="ident">Serialize</span>};
+</span><span class="kw">use </span>serde::{Deserialize, Serialize};
 
-<span class="doccomment">/// This is the data that needs to be serialized and passed</span>
-<span class="doccomment">/// to the serde deserializer so that the value::Sum can know</span>
-<span class="doccomment">/// its variant name and index as described in the layout</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Deserialize</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">EnumData</span> {
-    <span class="doccomment">/// Index of variant</span>
-    <span class="kw">pub</span> <span class="ident">index</span>: <span class="ident">u8</span>,
-    <span class="doccomment">/// Name of variant</span>
-    <span class="kw">pub</span> <span class="ident">name</span>: <span class="ident">String</span>,
+<span class="doccomment">/// This is the data that needs to be serialized and passed
+/// to the serde deserializer so that the value::Sum can know
+/// its variant name and index as described in the layout
+</span><span class="attribute">#[derive(Serialize, Deserialize)]</span>
+<span class="kw">pub struct </span>EnumData {
+    <span class="doccomment">/// Index of variant
+    </span><span class="kw">pub </span>index: u8,
+    <span class="doccomment">/// Name of variant
+    </span><span class="kw">pub </span>name: String,
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="bin_prot" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (fe3342816 2022-08-01)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="bin_prot" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (40336865f 2022-08-15)" ></div></body></html>

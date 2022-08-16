@@ -25,32 +25,32 @@
 <span id="25">25</span>
 <span id="26">26</span>
 <span id="27">27</span>
-</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems</span>
-<span class="comment">// SPDX-License-Identifier: Apache-2.0</span>
+</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems
+// SPDX-License-Identifier: Apache-2.0
 
-<span class="kw">use</span> <span class="ident">mina_serialization_types_macros::AutoFrom</span>;
+</span><span class="kw">use </span>mina_serialization_types_macros::AutoFrom;
 
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::types</span>::{<span class="ident">ECPoint</span>, <span class="ident">ECPointVec</span>, <span class="ident">FiniteECPoint</span>};
+<span class="kw">use </span><span class="kw">crate</span>::types::{ECPoint, ECPointVec, FiniteECPoint};
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Default</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>, <span class="ident">AutoFrom</span>)]</span>
-<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">mina_serialization_types::proof_messages::ProofMessages</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ProofMessages</span> {
-    <span class="kw">pub</span> <span class="ident">l_comm</span>: <span class="ident">ProofMessageWithoutDegreeBoundList</span>,
-    <span class="kw">pub</span> <span class="ident">r_comm</span>: <span class="ident">ProofMessageWithoutDegreeBoundList</span>,
-    <span class="kw">pub</span> <span class="ident">o_comm</span>: <span class="ident">ProofMessageWithoutDegreeBoundList</span>,
-    <span class="kw">pub</span> <span class="ident">z_comm</span>: <span class="ident">ProofMessageWithoutDegreeBoundList</span>,
-    <span class="kw">pub</span> <span class="ident">t_comm</span>: <span class="ident">ProofMessageWithDegreeBound</span>,
+<span class="attribute">#[derive(Clone, Default, Eq, PartialEq, Debug, AutoFrom)]</span>
+<span class="attribute">#[auto_from(mina_serialization_types::proof_messages::ProofMessages)]</span>
+<span class="kw">pub struct </span>ProofMessages {
+    <span class="kw">pub </span>l_comm: ProofMessageWithoutDegreeBoundList,
+    <span class="kw">pub </span>r_comm: ProofMessageWithoutDegreeBoundList,
+    <span class="kw">pub </span>o_comm: ProofMessageWithoutDegreeBoundList,
+    <span class="kw">pub </span>z_comm: ProofMessageWithoutDegreeBoundList,
+    <span class="kw">pub </span>t_comm: ProofMessageWithDegreeBound,
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Default</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>, <span class="ident">AutoFrom</span>)]</span>
-<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">mina_serialization_types::proof_messages::ProofMessageWithoutDegreeBoundList</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ProofMessageWithoutDegreeBoundList</span>(<span class="kw">pub</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">FiniteECPoint</span><span class="op">&gt;</span>);
+<span class="attribute">#[derive(Clone, Default, Eq, PartialEq, Debug, AutoFrom)]</span>
+<span class="attribute">#[auto_from(mina_serialization_types::proof_messages::ProofMessageWithoutDegreeBoundList)]</span>
+<span class="kw">pub struct </span>ProofMessageWithoutDegreeBoundList(<span class="kw">pub </span>Vec&lt;FiniteECPoint&gt;);
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Default</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>, <span class="ident">AutoFrom</span>)]</span>
-<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">mina_serialization_types::proof_messages::ProofMessageWithDegreeBound</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ProofMessageWithDegreeBound</span> {
-    <span class="kw">pub</span> <span class="ident">unshifted</span>: <span class="ident">ECPointVec</span>,
-    <span class="kw">pub</span> <span class="ident">shifted</span>: <span class="ident">ECPoint</span>,
+<span class="attribute">#[derive(Clone, Default, Eq, PartialEq, Debug, AutoFrom)]</span>
+<span class="attribute">#[auto_from(mina_serialization_types::proof_messages::ProofMessageWithDegreeBound)]</span>
+<span class="kw">pub struct </span>ProofMessageWithDegreeBound {
+    <span class="kw">pub </span>unshifted: ECPointVec,
+    <span class="kw">pub </span>shifted: ECPoint,
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="mina_rs_base" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (fe3342816 2022-08-01)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="mina_rs_base" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (40336865f 2022-08-15)" ></div></body></html>

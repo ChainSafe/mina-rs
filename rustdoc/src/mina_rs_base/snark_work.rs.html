@@ -104,111 +104,111 @@
 <span id="104">104</span>
 <span id="105">105</span>
 <span id="106">106</span>
-</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems</span>
-<span class="comment">// SPDX-License-Identifier: Apache-2.0</span>
+</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems
+// SPDX-License-Identifier: Apache-2.0
 
-<span class="doccomment">//! Types related to the Transaction Snark Work</span>
-<span class="attribute">#![<span class="ident">allow</span>(<span class="ident">missing_docs</span>)]</span>
+</span><span class="doccomment">//! Types related to the Transaction Snark Work
+</span><span class="attribute">#![allow(missing_docs)]</span>
 
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::types</span>::<span class="kw-2">*</span>;
-<span class="kw">use</span> <span class="ident">mina_crypto::hash</span>::<span class="kw-2">*</span>;
-<span class="kw">use</span> <span class="ident">mina_serialization_types::json</span>::<span class="kw-2">*</span>;
-<span class="kw">use</span> <span class="ident">mina_serialization_types_macros::AutoFrom</span>;
-<span class="kw">use</span> <span class="ident">proof_systems::mina_signer::CompressedPubKey</span>;
-<span class="kw">use</span> <span class="ident">versioned</span>::<span class="kw-2">*</span>;
+<span class="kw">use </span><span class="kw">crate</span>::types::<span class="kw-2">*</span>;
+<span class="kw">use </span>mina_crypto::hash::<span class="kw-2">*</span>;
+<span class="kw">use </span>mina_serialization_types::json::<span class="kw-2">*</span>;
+<span class="kw">use </span>mina_serialization_types_macros::AutoFrom;
+<span class="kw">use </span>proof_systems::mina_signer::CompressedPubKey;
+<span class="kw">use </span>versioned::<span class="kw-2">*</span>;
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">PartialEq</span>, <span class="ident">AutoFrom</span>)]</span>
-<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">mina_serialization_types::snark_work::TransactionSnarkWork</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">TransactionSnarkWork</span> {
-    <span class="kw">pub</span> <span class="ident">fee</span>: <span class="ident">Amount</span>,
-    <span class="kw">pub</span> <span class="ident">proofs</span>: <span class="ident">OneORTwo</span>,
-    <span class="kw">pub</span> <span class="ident">prover</span>: <span class="ident">CompressedPubKey</span>,
+<span class="attribute">#[derive(Clone, Debug, Eq, PartialEq, AutoFrom)]</span>
+<span class="attribute">#[auto_from(mina_serialization_types::snark_work::TransactionSnarkWork)]</span>
+<span class="kw">pub struct </span>TransactionSnarkWork {
+    <span class="kw">pub </span>fee: Amount,
+    <span class="kw">pub </span>proofs: OneORTwo,
+    <span class="kw">pub </span>prover: CompressedPubKey,
 }
 
 <span class="macro">impl_from_with_proxy!</span>(
-    <span class="ident">TransactionSnarkWork</span>,
-    <span class="ident">mina_serialization_types::snark_work::TransactionSnarkWork</span>,
-    <span class="ident">TransactionSnarkWorkJson</span>
+    TransactionSnarkWork,
+    mina_serialization_types::snark_work::TransactionSnarkWork,
+    TransactionSnarkWorkJson
 );
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">PartialEq</span>, <span class="ident">AutoFrom</span>)]</span>
-<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">mina_serialization_types::snark_work::OneORTwo</span>)]</span>
-<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">OneORTwo</span> {
-    <span class="comment">// Versioned 1 byte</span>
-    <span class="ident">One</span>(<span class="ident">Box</span><span class="op">&lt;</span><span class="ident">TransactionSnark</span><span class="op">&gt;</span>),
-    <span class="ident">Two</span>(<span class="ident">Box</span><span class="op">&lt;</span><span class="ident">TransactionSnark</span><span class="op">&gt;</span>, <span class="ident">Box</span><span class="op">&lt;</span><span class="ident">TransactionSnark</span><span class="op">&gt;</span>),
+<span class="attribute">#[derive(Clone, Debug, Eq, PartialEq, AutoFrom)]</span>
+<span class="attribute">#[auto_from(mina_serialization_types::snark_work::OneORTwo)]</span>
+<span class="kw">pub enum </span>OneORTwo {
+    <span class="comment">// Versioned 1 byte
+    </span>One(Box&lt;TransactionSnark&gt;),
+    Two(Box&lt;TransactionSnark&gt;, Box&lt;TransactionSnark&gt;),
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">PartialEq</span>, <span class="ident">AutoFrom</span>)]</span>
-<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">mina_serialization_types::snark_work::TransactionSnark</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">TransactionSnark</span> {
-    <span class="kw">pub</span> <span class="ident">statement</span>: <span class="ident">Statement</span>,
-    <span class="kw">pub</span> <span class="ident">transaction_snark_proof</span>: <span class="ident">ProtocolStateProof</span>,
+<span class="attribute">#[derive(Clone, Debug, Eq, PartialEq, AutoFrom)]</span>
+<span class="attribute">#[auto_from(mina_serialization_types::snark_work::TransactionSnark)]</span>
+<span class="kw">pub struct </span>TransactionSnark {
+    <span class="kw">pub </span>statement: Statement,
+    <span class="kw">pub </span>transaction_snark_proof: ProtocolStateProof,
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">PartialEq</span>, <span class="ident">AutoFrom</span>)]</span>
-<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">mina_serialization_types::snark_work::Statement</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Statement</span> {
-    <span class="kw">pub</span> <span class="ident">source</span>: <span class="ident">StateHash</span>,
-    <span class="kw">pub</span> <span class="ident">target</span>: <span class="ident">StateHash</span>,
-    <span class="kw">pub</span> <span class="ident">supply_increase</span>: <span class="ident">Amount</span>,
-    <span class="kw">pub</span> <span class="ident">pending_coinbase_stack_state</span>: <span class="ident">PendingCoinbaseStackState</span>,
-    <span class="kw">pub</span> <span class="ident">fee_excess</span>: <span class="ident">FeeExcessPair</span>,
-    <span class="kw">pub</span> <span class="ident">next_available_token_before</span>: <span class="ident">TokenId</span>,
-    <span class="kw">pub</span> <span class="ident">next_available_token_after</span>: <span class="ident">TokenId</span>,
-    <span class="kw">pub</span> <span class="ident">sok_digest</span>: <span class="ident">ByteVec</span>,
+<span class="attribute">#[derive(Clone, Debug, Eq, PartialEq, AutoFrom)]</span>
+<span class="attribute">#[auto_from(mina_serialization_types::snark_work::Statement)]</span>
+<span class="kw">pub struct </span>Statement {
+    <span class="kw">pub </span>source: StateHash,
+    <span class="kw">pub </span>target: StateHash,
+    <span class="kw">pub </span>supply_increase: Amount,
+    <span class="kw">pub </span>pending_coinbase_stack_state: PendingCoinbaseStackState,
+    <span class="kw">pub </span>fee_excess: FeeExcessPair,
+    <span class="kw">pub </span>next_available_token_before: TokenId,
+    <span class="kw">pub </span>next_available_token_after: TokenId,
+    <span class="kw">pub </span>sok_digest: ByteVec,
 }
 
 <span class="macro">impl_from_with_proxy!</span>(
-    <span class="ident">Statement</span>,
-    <span class="ident">mina_serialization_types::snark_work::Statement</span>,
-    <span class="ident">StatementJson</span>
+    Statement,
+    mina_serialization_types::snark_work::Statement,
+    StatementJson
 );
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">PartialEq</span>, <span class="ident">AutoFrom</span>)]</span>
-<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">mina_serialization_types::snark_work::PendingCoinbaseStackState</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">PendingCoinbaseStackState</span> {
-    <span class="kw">pub</span> <span class="ident">source</span>: <span class="ident">PendingCoinbase</span>,
-    <span class="kw">pub</span> <span class="ident">target</span>: <span class="ident">PendingCoinbase</span>,
+<span class="attribute">#[derive(Clone, Debug, Eq, PartialEq, AutoFrom)]</span>
+<span class="attribute">#[auto_from(mina_serialization_types::snark_work::PendingCoinbaseStackState)]</span>
+<span class="kw">pub struct </span>PendingCoinbaseStackState {
+    <span class="kw">pub </span>source: PendingCoinbase,
+    <span class="kw">pub </span>target: PendingCoinbase,
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">PartialEq</span>, <span class="ident">AutoFrom</span>)]</span>
-<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">mina_serialization_types::snark_work::PendingCoinbase</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">PendingCoinbase</span> {
-    <span class="kw">pub</span> <span class="ident">data_stack</span>: <span class="ident">StateHash</span>,
-    <span class="kw">pub</span> <span class="ident">state_stack</span>: <span class="ident">StateStack</span>,
+<span class="attribute">#[derive(Clone, Debug, Eq, PartialEq, AutoFrom)]</span>
+<span class="attribute">#[auto_from(mina_serialization_types::snark_work::PendingCoinbase)]</span>
+<span class="kw">pub struct </span>PendingCoinbase {
+    <span class="kw">pub </span>data_stack: StateHash,
+    <span class="kw">pub </span>state_stack: StateStack,
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">PartialEq</span>, <span class="ident">AutoFrom</span>)]</span>
-<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">mina_serialization_types::snark_work::StateStack</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">StateStack</span> {
-    <span class="kw">pub</span> <span class="ident">init</span>: <span class="ident">StateHash</span>,
-    <span class="kw">pub</span> <span class="ident">curr</span>: <span class="ident">StateHash</span>,
+<span class="attribute">#[derive(Clone, Debug, Eq, PartialEq, AutoFrom)]</span>
+<span class="attribute">#[auto_from(mina_serialization_types::snark_work::StateStack)]</span>
+<span class="kw">pub struct </span>StateStack {
+    <span class="kw">pub </span>init: StateHash,
+    <span class="kw">pub </span>curr: StateHash,
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">PartialEq</span>, <span class="ident">AutoFrom</span>)]</span>
-<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">mina_serialization_types::snark_work::FeeExcessPair</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">FeeExcessPair</span>(<span class="kw">pub</span> <span class="ident">FeeExcess</span>, <span class="kw">pub</span> <span class="ident">FeeExcess</span>);
+<span class="attribute">#[derive(Clone, Debug, Eq, PartialEq, AutoFrom)]</span>
+<span class="attribute">#[auto_from(mina_serialization_types::snark_work::FeeExcessPair)]</span>
+<span class="kw">pub struct </span>FeeExcessPair(<span class="kw">pub </span>FeeExcess, <span class="kw">pub </span>FeeExcess);
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">PartialEq</span>, <span class="ident">AutoFrom</span>)]</span>
-<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">mina_serialization_types::snark_work::FeeExcess</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">FeeExcess</span> {
-    <span class="kw">pub</span> <span class="ident">token</span>: <span class="ident">TokenId</span>,
-    <span class="kw">pub</span> <span class="ident">amount</span>: <span class="ident">Signed</span>,
+<span class="attribute">#[derive(Clone, Debug, Eq, PartialEq, AutoFrom)]</span>
+<span class="attribute">#[auto_from(mina_serialization_types::snark_work::FeeExcess)]</span>
+<span class="kw">pub struct </span>FeeExcess {
+    <span class="kw">pub </span>token: TokenId,
+    <span class="kw">pub </span>amount: Signed,
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">PartialEq</span>, <span class="ident">AutoFrom</span>)]</span>
-<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">mina_serialization_types::snark_work::Signed</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Signed</span> {
-    <span class="kw">pub</span> <span class="ident">magnitude</span>: <span class="ident">Amount</span>,
-    <span class="kw">pub</span> <span class="ident">sgn</span>: <span class="ident">SgnType</span>,
+<span class="attribute">#[derive(Clone, Debug, Eq, PartialEq, AutoFrom)]</span>
+<span class="attribute">#[auto_from(mina_serialization_types::snark_work::Signed)]</span>
+<span class="kw">pub struct </span>Signed {
+    <span class="kw">pub </span>magnitude: Amount,
+    <span class="kw">pub </span>sgn: SgnType,
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">PartialEq</span>, <span class="ident">AutoFrom</span>)]</span>
-<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">mina_serialization_types::snark_work::SgnType</span>)]</span>
-<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">SgnType</span> {
-    <span class="ident">Pos</span>,
-    <span class="ident">Neg</span>,
+<span class="attribute">#[derive(Clone, Debug, Eq, PartialEq, AutoFrom)]</span>
+<span class="attribute">#[auto_from(mina_serialization_types::snark_work::SgnType)]</span>
+<span class="kw">pub enum </span>SgnType {
+    Pos,
+    Neg,
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_rs_base" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (fe3342816 2022-08-01)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_rs_base" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (40336865f 2022-08-15)" ></div></body></html>

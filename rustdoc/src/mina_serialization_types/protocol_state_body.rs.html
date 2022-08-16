@@ -37,44 +37,44 @@
 <span id="37">37</span>
 <span id="38">38</span>
 <span id="39">39</span>
-</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems</span>
-<span class="comment">// SPDX-License-Identifier: Apache-2.0</span>
+</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems
+// SPDX-License-Identifier: Apache-2.0
 
-<span class="doccomment">//! Types related to the Mina protocol state</span>
+</span><span class="doccomment">//! Types related to the Mina protocol state
 
-<span class="kw">use</span> <span class="kw">crate</span>::{<span class="ident">json</span>::<span class="kw-2">*</span>, <span class="ident">v1</span>::<span class="kw-2">*</span>};
-<span class="kw">use</span> <span class="ident">mina_serialization_types_macros::AutoFrom</span>;
-<span class="kw">use</span> <span class="ident">serde</span>::{<span class="ident">Deserialize</span>, <span class="ident">Serialize</span>};
-<span class="kw">use</span> <span class="ident">versioned</span>::<span class="kw-2">*</span>;
+</span><span class="kw">use crate</span>::{json::<span class="kw-2">*</span>, v1::<span class="kw-2">*</span>};
+<span class="kw">use </span>mina_serialization_types_macros::AutoFrom;
+<span class="kw">use </span>serde::{Deserialize, Serialize};
+<span class="kw">use </span>versioned::<span class="kw-2">*</span>;
 
-<span class="doccomment">/// Body of the protocol state</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">PartialEq</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ProtocolStateBody</span> {
-    <span class="doccomment">/// Genesis protocol state hash (used for hardforks)</span>
-    <span class="kw">pub</span> <span class="ident">genesis_state_hash</span>: <span class="ident">HashV1</span>,
-    <span class="doccomment">/// Ledger related state</span>
-    <span class="kw">pub</span> <span class="ident">blockchain_state</span>: <span class="ident">BlockchainStateV1</span>,
-    <span class="doccomment">/// Consensus related state</span>
-    <span class="kw">pub</span> <span class="ident">consensus_state</span>: <span class="ident">ConsensusStateV1</span>,
-    <span class="doccomment">/// Consensus constants</span>
-    <span class="kw">pub</span> <span class="ident">constants</span>: <span class="ident">ProtocolConstantsV1</span>,
+<span class="doccomment">/// Body of the protocol state
+</span><span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]</span>
+<span class="kw">pub struct </span>ProtocolStateBody {
+    <span class="doccomment">/// Genesis protocol state hash (used for hardforks)
+    </span><span class="kw">pub </span>genesis_state_hash: HashV1,
+    <span class="doccomment">/// Ledger related state
+    </span><span class="kw">pub </span>blockchain_state: BlockchainStateV1,
+    <span class="doccomment">/// Consensus related state
+    </span><span class="kw">pub </span>consensus_state: ConsensusStateV1,
+    <span class="doccomment">/// Consensus constants
+    </span><span class="kw">pub </span>constants: ProtocolConstantsV1,
 }
 
-<span class="doccomment">/// Body of the protocol state (v1)</span>
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">ProtocolStateBodyV1</span> <span class="op">=</span> <span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">ProtocolStateBody</span>, <span class="number">1</span><span class="op">&gt;</span>, <span class="number">1</span><span class="op">&gt;</span>;
+<span class="doccomment">/// Body of the protocol state (v1)
+</span><span class="kw">pub type </span>ProtocolStateBodyV1 = Versioned&lt;Versioned&lt;ProtocolStateBody, <span class="number">1</span>&gt;, <span class="number">1</span>&gt;;
 
-<span class="doccomment">/// Body of the protocol state (json)</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">PartialEq</span>, <span class="ident">AutoFrom</span>)]</span>
-<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">ProtocolStateBody</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ProtocolStateBodyJson</span> {
-    <span class="doccomment">/// Genesis protocol state hash (used for hardforks)</span>
-    <span class="kw">pub</span> <span class="ident">genesis_state_hash</span>: <span class="ident">StateHashV1Json</span>,
-    <span class="doccomment">/// Ledger related state</span>
-    <span class="kw">pub</span> <span class="ident">blockchain_state</span>: <span class="ident">BlockchainStateJson</span>,
-    <span class="doccomment">/// Consensus related state</span>
-    <span class="kw">pub</span> <span class="ident">consensus_state</span>: <span class="ident">ConsensusStateJson</span>,
-    <span class="doccomment">/// Consensus constants</span>
-    <span class="kw">pub</span> <span class="ident">constants</span>: <span class="ident">ProtocolConstantsJson</span>,
+<span class="doccomment">/// Body of the protocol state (json)
+</span><span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq, AutoFrom)]</span>
+<span class="attribute">#[auto_from(ProtocolStateBody)]</span>
+<span class="kw">pub struct </span>ProtocolStateBodyJson {
+    <span class="doccomment">/// Genesis protocol state hash (used for hardforks)
+    </span><span class="kw">pub </span>genesis_state_hash: StateHashV1Json,
+    <span class="doccomment">/// Ledger related state
+    </span><span class="kw">pub </span>blockchain_state: BlockchainStateJson,
+    <span class="doccomment">/// Consensus related state
+    </span><span class="kw">pub </span>consensus_state: ConsensusStateJson,
+    <span class="doccomment">/// Consensus constants
+    </span><span class="kw">pub </span>constants: ProtocolConstantsJson,
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_serialization_types" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (fe3342816 2022-08-01)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_serialization_types" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (40336865f 2022-08-15)" ></div></body></html>

@@ -32,39 +32,39 @@
 <span id="32">32</span>
 <span id="33">33</span>
 <span id="34">34</span>
-</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems</span>
-<span class="comment">// SPDX-License-Identifier: Apache-2.0</span>
+</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems
+// SPDX-License-Identifier: Apache-2.0
 
-<span class="doccomment">//! Account token symbol</span>
+</span><span class="doccomment">//! Account token symbol
 
-<span class="kw">use</span> <span class="ident">ark_ff::FromBytes</span>;
-<span class="kw">use</span> <span class="ident">derive_more</span>::{<span class="ident">From</span>, <span class="ident">Into</span>};
-<span class="kw">use</span> <span class="ident">proof_systems</span>::{<span class="ident">mina_hasher::Fp</span>, <span class="ident">ChunkedROInput</span>, <span class="ident">ToChunkedROInput</span>};
+</span><span class="kw">use </span>ark_ff::FromBytes;
+<span class="kw">use </span>derive_more::{From, Into};
+<span class="kw">use </span>proof_systems::{mina_hasher::Fp, ChunkedROInput, ToChunkedROInput};
 
-<span class="doccomment">/// FIXME: Need to learn exactly what this is..</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">From</span>, <span class="ident">Into</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">TokenSymbol</span>([<span class="ident">u8</span>; <span class="number">32</span>]);
+<span class="doccomment">/// FIXME: Need to learn exactly what this is..
+</span><span class="attribute">#[derive(Clone, Debug, From, Into)]</span>
+<span class="kw">pub struct </span>TokenSymbol([u8; <span class="number">32</span>]);
 
-<span class="kw">impl</span> <span class="ident">TokenSymbol</span> {
-    <span class="doccomment">/// FIXME: Need to learn exactly what this is..</span>
-    <span class="kw">pub</span> <span class="kw">const</span> <span class="kw">fn</span> <span class="ident">max_length</span>() -&gt; <span class="ident">usize</span> {
-        <span class="number">6</span>
-    }
+<span class="kw">impl </span>TokenSymbol {
+    <span class="doccomment">/// FIXME: Need to learn exactly what this is..
+    </span><span class="kw">pub const fn </span>max_length() -&gt; usize {
+        <span class="number">6
+    </span>}
 
-    <span class="doccomment">/// FIXME: Need to learn exactly what this is..</span>
-    <span class="kw">pub</span> <span class="kw">const</span> <span class="kw">fn</span> <span class="ident">num_bits</span>() -&gt; <span class="ident">usize</span> {
-        <span class="number">8</span> <span class="op">*</span> <span class="ident"><span class="self">Self</span>::max_length</span>()
+    <span class="doccomment">/// FIXME: Need to learn exactly what this is..
+    </span><span class="kw">pub const fn </span>num_bits() -&gt; usize {
+        <span class="number">8 </span>* <span class="self">Self</span>::max_length()
     }
 }
 
-<span class="kw">impl</span> <span class="ident">ToChunkedROInput</span> <span class="kw">for</span> <span class="ident">TokenSymbol</span> {
-    <span class="kw">fn</span> <span class="ident">to_chunked_roinput</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">ChunkedROInput</span> {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">bytes</span> <span class="op">=</span> [<span class="number">0</span>; <span class="number">32</span>];
-        <span class="comment">// FIXME: This might not be correct</span>
-        <span class="ident">bytes</span>[..<span class="ident"><span class="self">Self</span>::max_length</span>()].<span class="ident">copy_from_slice</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0</span>[..<span class="ident"><span class="self">Self</span>::max_length</span>()]);
-        <span class="kw">let</span> <span class="ident">f</span> <span class="op">=</span> <span class="ident">Fp::read</span>(<span class="kw-2">&amp;</span><span class="ident">bytes</span>[..]).<span class="ident">unwrap</span>();
-        <span class="ident">ChunkedROInput::new</span>().<span class="ident">append_packed</span>(<span class="ident">f</span>, <span class="ident">TokenSymbol::num_bits</span>() <span class="kw">as</span> <span class="ident">u32</span>)
+<span class="kw">impl </span>ToChunkedROInput <span class="kw">for </span>TokenSymbol {
+    <span class="kw">fn </span>to_chunked_roinput(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; ChunkedROInput {
+        <span class="kw">let </span><span class="kw-2">mut </span>bytes = [<span class="number">0</span>; <span class="number">32</span>];
+        <span class="comment">// FIXME: This might not be correct
+        </span>bytes[..<span class="self">Self</span>::max_length()].copy_from_slice(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0</span>[..<span class="self">Self</span>::max_length()]);
+        <span class="kw">let </span>f = Fp::read(<span class="kw-2">&amp;</span>bytes[..]).unwrap();
+        ChunkedROInput::new().append_packed(f, TokenSymbol::num_bits() <span class="kw">as </span>u32)
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="mina_rs_base" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (fe3342816 2022-08-01)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="mina_rs_base" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (40336865f 2022-08-15)" ></div></body></html>

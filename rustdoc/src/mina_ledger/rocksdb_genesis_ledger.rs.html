@@ -83,90 +83,114 @@
 <span id="83">83</span>
 <span id="84">84</span>
 <span id="85">85</span>
-</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems</span>
-<span class="comment">// SPDX-License-Identifier: Apache-2.0</span>
+<span id="86">86</span>
+<span id="87">87</span>
+<span id="88">88</span>
+<span id="89">89</span>
+<span id="90">90</span>
+<span id="91">91</span>
+<span id="92">92</span>
+<span id="93">93</span>
+<span id="94">94</span>
+<span id="95">95</span>
+<span id="96">96</span>
+<span id="97">97</span>
+</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems
+// SPDX-License-Identifier: Apache-2.0
 
-<span class="doccomment">//! A genesis ledger backed by a Rocksdb Instance</span>
-<span class="doccomment">//! This is how they are provided by Mina</span>
+</span><span class="doccomment">//! A genesis ledger backed by a Rocksdb Instance
+//! This is how they are provided by Mina
 
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::genesis_ledger::GenesisLedger</span>;
-<span class="kw">use</span> <span class="ident">bin_prot</span>::<span class="kw-2">*</span>;
-<span class="kw">use</span> <span class="ident">mina_rs_base</span>::<span class="kw-2">*</span>;
-<span class="kw">use</span> <span class="ident">proof_systems::mina_hasher::Hashable</span>;
-<span class="kw">use</span> <span class="ident">rocksdb::DB</span>;
-<span class="kw">use</span> <span class="ident">std::marker::PhantomData</span>;
-<span class="kw">use</span> <span class="ident">thiserror::Error</span>;
+</span><span class="kw">use </span><span class="kw">crate</span>::genesis_ledger::GenesisLedger;
+<span class="kw">use </span>bin_prot::<span class="kw-2">*</span>;
+<span class="kw">use </span>mina_rs_base::<span class="kw-2">*</span>;
+<span class="kw">use </span>proof_systems::mina_hasher::Hashable;
+<span class="kw">use </span>rocksdb::DB;
+<span class="kw">use </span>std::marker::PhantomData;
+<span class="kw">use </span>thiserror::Error;
 
-<span class="doccomment">/// The first byte of keys in the RocksDB stored Ledger</span>
-<span class="doccomment">/// that indicates the value is an Account (leaf node)</span>
-<span class="kw">const</span> <span class="ident">ACCOUNT_PREFIX</span>: <span class="ident">u8</span> <span class="op">=</span> <span class="number">0xfe</span>;
+<span class="doccomment">/// The first byte of keys in the RocksDB stored Ledger
+/// that indicates the value is an Account (leaf node)
+</span><span class="kw">const </span>ACCOUNT_PREFIX: u8 = <span class="number">0xfe</span>;
 
-<span class="doccomment">/// A genesis ledger backed by a RocksDB instance</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">RocksDbGenesisLedger</span><span class="op">&lt;</span>
+<span class="kw">type </span>RocksDBResult = <span class="prelude-ty">Result</span>&lt;(Box&lt;[u8]&gt;, Box&lt;[u8]&gt;), rocksdb::Error&gt;;
+
+<span class="doccomment">/// A genesis ledger backed by a RocksDB instance
+</span><span class="kw">pub struct </span>RocksDbGenesisLedger&lt;
     <span class="lifetime">&#39;a</span>,
-    <span class="kw">const</span> <span class="ident">DEPTH</span>: <span class="ident">usize</span>,
-    <span class="ident">Account</span>: <span class="ident">Hashable</span> <span class="op">+</span> <span class="ident">BinProtSerializationType</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>,
-<span class="op">&gt;</span> {
-    <span class="ident">db</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">DB</span>,
-    <span class="ident">_pd</span>: <span class="ident">PhantomData</span><span class="op">&lt;</span><span class="ident">Account</span><span class="op">&gt;</span>,
+    <span class="kw">const </span>DEPTH: usize,
+    Account: Hashable + BinProtSerializationType&lt;<span class="lifetime">&#39;a</span>&gt;,
+&gt; {
+    db: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>DB,
+    _pd: PhantomData&lt;Account&gt;,
 }
 
-<span class="doccomment">/// Errors that can be produces when trying to access a Rocksdb backed ledger</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Error</span>, <span class="ident">Debug</span>)]</span>
-<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">Error</span> {
-    <span class="attribute">#[<span class="ident">error</span>(<span class="string">&quot;Could not deserialize account: {0}\nkey:{1:?}, value:{2:?}&quot;</span>)]</span>
-    <span class="ident">Disconnect</span>(<span class="ident">bin_prot::error::Error</span>, <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>, <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>),
+<span class="doccomment">/// Errors that can be produces when trying to access a Rocksdb backed ledger
+</span><span class="attribute">#[derive(Error, Debug)]</span>
+<span class="kw">pub enum </span>Error {
+    <span class="attribute">#[error(<span class="string">&quot;Could not deserialize account: {0}\nkey:{1:?}, value:{2:?}&quot;</span>)]</span>
+    Disconnect(bin_prot::error::Error, Vec&lt;u8&gt;, Vec&lt;u8&gt;),
+
+    <span class="attribute">#[error(<span class="string">&quot;RocksDBError: {0}&quot;</span>)]</span>
+    RocksDBError(rocksdb::Error),
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="kw">const</span> <span class="ident">DEPTH</span>: <span class="ident">usize</span>, <span class="ident">Account</span>: <span class="ident">Hashable</span> <span class="op">+</span> <span class="ident">BinProtSerializationType</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span><span class="op">&gt;</span>
-    <span class="ident">RocksDbGenesisLedger</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">DEPTH</span>, <span class="ident">Account</span><span class="op">&gt;</span>
+<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, <span class="kw">const </span>DEPTH: usize, Account: Hashable + BinProtSerializationType&lt;<span class="lifetime">&#39;a</span>&gt;&gt;
+    RocksDbGenesisLedger&lt;<span class="lifetime">&#39;a</span>, DEPTH, Account&gt;
 {
-    <span class="doccomment">/// Create a new rocksDB genesis ledger given a database connection</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">db</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">DB</span>) -&gt; <span class="self">Self</span> {
-        <span class="self">Self</span> {
-            <span class="ident">db</span>,
-            <span class="ident">_pd</span>: <span class="ident">Default::default</span>(),
+    <span class="doccomment">/// Create a new rocksDB genesis ledger given a database connection
+    </span><span class="kw">pub fn </span>new(db: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>DB) -&gt; <span class="self">Self </span>{
+        <span class="self">Self </span>{
+            db,
+            _pd: Default::default(),
         }
     }
 }
 
-<span class="kw">fn</span> <span class="ident">decode_account_from_kv</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">Account</span>: <span class="ident">BinProtSerializationType</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span><span class="op">&gt;</span>(
-    (<span class="ident">k</span>, <span class="ident">v</span>): (<span class="ident">Box</span><span class="op">&lt;</span>[<span class="ident">u8</span>]<span class="op">&gt;</span>, <span class="ident">Box</span><span class="op">&lt;</span>[<span class="ident">u8</span>]<span class="op">&gt;</span>),
-) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Account</span>, <span class="ident">Error</span><span class="op">&gt;</span> {
-    <span class="kw">let</span> <span class="ident">account</span>: <span class="op">&lt;</span><span class="ident">Account</span> <span class="kw">as</span> <span class="ident">BinProtSerializationType</span><span class="op">&gt;</span><span class="ident">::T</span> <span class="op">=</span>
-        <span class="ident">from_reader_strict</span>(<span class="kw-2">&amp;</span><span class="ident">v</span>[..]).<span class="ident">map_err</span>(<span class="op">|</span><span class="ident">err</span><span class="op">|</span> <span class="ident">Error::Disconnect</span>(<span class="ident">err</span>, <span class="ident">k</span>.<span class="ident">to_vec</span>(), <span class="ident">v</span>.<span class="ident">to_vec</span>()))<span class="question-mark">?</span>;
-    <span class="prelude-val">Ok</span>(<span class="ident">account</span>.<span class="ident">into</span>())
+<span class="kw">fn </span>decode_account_from_kv&lt;<span class="lifetime">&#39;a</span>, Account: BinProtSerializationType&lt;<span class="lifetime">&#39;a</span>&gt;&gt;(
+    r: RocksDBResult,
+) -&gt; <span class="prelude-ty">Result</span>&lt;Account, Error&gt; {
+    <span class="kw">let </span>(k, v) = r.map_err(Error::RocksDBError)<span class="question-mark">?</span>;
+    <span class="kw">let </span>account: &lt;Account <span class="kw">as </span>BinProtSerializationType&gt;::T =
+        from_reader_strict(<span class="kw-2">&amp;</span>v[..]).map_err(|err| Error::Disconnect(err, k.to_vec(), v.to_vec()))<span class="question-mark">?</span>;
+    <span class="prelude-val">Ok</span>(account.into())
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="kw">const</span> <span class="ident">DEPTH</span>: <span class="ident">usize</span>, <span class="ident">Account</span>: <span class="ident">Hashable</span> <span class="op">+</span> <span class="ident">BinProtSerializationType</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="op">+</span> <span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="ident">IntoIterator</span>
-    <span class="kw">for</span> <span class="kw-2">&amp;</span><span class="ident">RocksDbGenesisLedger</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">DEPTH</span>, <span class="ident">Account</span><span class="op">&gt;</span>
+<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, <span class="kw">const </span>DEPTH: usize, Account: Hashable + BinProtSerializationType&lt;<span class="lifetime">&#39;a</span>&gt; + <span class="lifetime">&#39;a</span>&gt; IntoIterator
+    <span class="kw">for </span><span class="kw-2">&amp;</span>RocksDbGenesisLedger&lt;<span class="lifetime">&#39;a</span>, DEPTH, Account&gt;
 {
-    <span class="kw">type</span> <span class="ident">Item</span> <span class="op">=</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Account</span>, <span class="ident">Error</span><span class="op">&gt;</span>;
-    <span class="kw">type</span> <span class="ident">IntoIter</span> <span class="op">=</span> <span class="ident">Box</span><span class="op">&lt;</span><span class="kw">dyn</span> <span class="ident">Iterator</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Account</span>, <span class="ident">Error</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="op">+</span> <span class="lifetime">&#39;a</span><span class="op">&gt;</span>;
+    <span class="kw">type </span>Item = <span class="prelude-ty">Result</span>&lt;Account, Error&gt;;
+    <span class="kw">type </span>IntoIter = Box&lt;<span class="kw">dyn </span>Iterator&lt;Item = <span class="prelude-ty">Result</span>&lt;Account, Error&gt;&gt; + <span class="lifetime">&#39;a</span>&gt;;
 
-    <span class="kw">fn</span> <span class="ident">into_iter</span>(<span class="self">self</span>) -&gt; <span class="ident">Box</span><span class="op">&lt;</span><span class="kw">dyn</span> <span class="ident">Iterator</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Account</span>, <span class="ident">Error</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="op">+</span> <span class="lifetime">&#39;a</span><span class="op">&gt;</span> {
-        <span class="comment">// A RockDB genesis ledger contains a Merkle tree. We only need to</span>
-        <span class="comment">// iterate the leaves of the tree to iterate over all accounts.</span>
-        <span class="comment">// It uses mina merkle_ledger locations as keys in the database</span>
-        <span class="comment">// https://github.com/MinaProtocol/mina/blob/65b59f56b6e98e1d9648280c2153d809abb42ba3/src/lib/merkle_ledger/location.ml#L29</span>
-        <span class="comment">// The first byte indicates the type of a record (e.g. internal node, leaf node) and</span>
-        <span class="comment">// we can filter on this byte to only iterate the leaves</span>
+    <span class="kw">fn </span>into_iter(<span class="self">self</span>) -&gt; Box&lt;<span class="kw">dyn </span>Iterator&lt;Item = <span class="prelude-ty">Result</span>&lt;Account, Error&gt;&gt; + <span class="lifetime">&#39;a</span>&gt; {
+        <span class="comment">// A RockDB genesis ledger contains a Merkle tree. We only need to
+        // iterate the leaves of the tree to iterate over all accounts.
+        // It uses mina merkle_ledger locations as keys in the database
+        // https://github.com/MinaProtocol/mina/blob/65b59f56b6e98e1d9648280c2153d809abb42ba3/src/lib/merkle_ledger/location.ml#L29
+        // The first byte indicates the type of a record (e.g. internal node, leaf node) and
+        // we can filter on this byte to only iterate the leaves
 
-        <span class="kw">let</span> <span class="ident">db_iter</span> <span class="op">=</span> <span class="self">self</span>
-            .<span class="ident">db</span>
-            .<span class="ident">prefix_iterator</span>(<span class="kw-2">&amp;</span>[<span class="ident">ACCOUNT_PREFIX</span>]) <span class="comment">// This will ensure the iterator doesnt start until the prefix byte is matched</span>
-            .<span class="ident">take_while</span>(<span class="op">|</span>(<span class="ident">k</span>, <span class="kw">_</span>)<span class="op">|</span> <span class="ident">k</span>.<span class="ident">first</span>() <span class="op">==</span> <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="ident">ACCOUNT_PREFIX</span>)); <span class="comment">// Ensures the iterator stops when the prefix stops matching</span>
+        </span><span class="kw">let </span>db_iter = <span class="self">self
+            </span>.db
+            .prefix_iterator(<span class="kw-2">&amp;</span>[ACCOUNT_PREFIX]) <span class="comment">// This will ensure the iterator doesnt start until the prefix byte is matched
+            </span>.take_while(|r| {
+                <span class="kw">if let </span><span class="prelude-val">Ok</span>((k, <span class="kw">_</span>)) = r {
+                    k.first() == <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span>ACCOUNT_PREFIX)
+                } <span class="kw">else </span>{
+                    <span class="bool-val">false
+                </span>}
+            }); <span class="comment">// Ensures the iterator stops when the prefix stops matching
 
-        <span class="ident">Box::new</span>(<span class="ident">db_iter</span>.<span class="ident">map</span>(<span class="ident">decode_account_from_kv</span>))
+        </span>Box::new(db_iter.map(decode_account_from_kv))
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="kw">const</span> <span class="ident">DEPTH</span>: <span class="ident">usize</span>, <span class="ident">Account</span>: <span class="ident">Hashable</span> <span class="op">+</span> <span class="ident">BinProtSerializationType</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="op">+</span> <span class="lifetime">&#39;a</span><span class="op">&gt;</span>
-    <span class="ident">GenesisLedger</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">DEPTH</span>, <span class="ident">Account</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">RocksDbGenesisLedger</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">DEPTH</span>, <span class="ident">Account</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="op">&lt;</span><span class="ident">Account</span> <span class="kw">as</span> <span class="ident">Hashable</span><span class="op">&gt;</span><span class="ident">::D</span>: <span class="ident">Default</span>,
+<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, <span class="kw">const </span>DEPTH: usize, Account: Hashable + BinProtSerializationType&lt;<span class="lifetime">&#39;a</span>&gt; + <span class="lifetime">&#39;a</span>&gt;
+    GenesisLedger&lt;<span class="lifetime">&#39;a</span>, DEPTH, Account&gt; <span class="kw">for </span>RocksDbGenesisLedger&lt;<span class="lifetime">&#39;a</span>, DEPTH, Account&gt;
+<span class="kw">where
+    </span>&lt;Account <span class="kw">as </span>Hashable&gt;::D: Default,
 {
-    <span class="kw">type</span> <span class="ident">Error</span> <span class="op">=</span> <span class="ident">Error</span>;
+    <span class="kw">type </span>Error = Error;
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_ledger" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (fe3342816 2022-08-01)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_ledger" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (40336865f 2022-08-15)" ></div></body></html>

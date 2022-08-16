@@ -442,449 +442,449 @@
 <span id="442">442</span>
 <span id="443">443</span>
 <span id="444">444</span>
-</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems</span>
-<span class="comment">// SPDX-License-Identifier: Apache-2.0</span>
+</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems
+// SPDX-License-Identifier: Apache-2.0
 
-<span class="doccomment">//!</span>
-<span class="doccomment">//! Hash and Hasher types reused throughout</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! When converted to human readable forms, hashes in Mina use the Bitcoin Base58Check encoding</span>
-<span class="doccomment">//! see &lt;https://github.com/MinaProtocol/mina/blob/f88edb440e321114e26f7691e599adab30ce16cd/src/lib/base58_check/README.md&gt;</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! Depending on the type of hash a different byte prefix is used in the human readable form</span>
-<span class="doccomment">//!</span>
+</span><span class="doccomment">//!
+//! Hash and Hasher types reused throughout
+//!
+//! When converted to human readable forms, hashes in Mina use the Bitcoin Base58Check encoding
+//! see &lt;https://github.com/MinaProtocol/mina/blob/f88edb440e321114e26f7691e599adab30ce16cd/src/lib/base58_check/README.md&gt;
+//!
+//! Depending on the type of hash a different byte prefix is used in the human readable form
+//!
 
-<span class="kw">use</span> <span class="ident">mina_serialization_types</span>::{<span class="ident">impl_strconv_via_json</span>, <span class="ident">json</span>::<span class="kw-2">*</span>, <span class="ident">v1</span>::<span class="kw-2">*</span>};
-<span class="kw">use</span> <span class="ident">proof_systems</span>::{
-    <span class="ident">mina_hasher</span>::{<span class="ident">Fp</span>, <span class="ident">Hashable</span>, <span class="ident">ROInput</span>},
-    <span class="ident">o1_utils</span>::{<span class="ident">field_helpers::FieldHelpersError</span>, <span class="ident">FieldHelpers</span>},
-    <span class="ident">ChunkedROInput</span>, <span class="ident">ToChunkedROInput</span>,
+</span><span class="kw">use </span>mina_serialization_types::{impl_strconv_via_json, json::<span class="kw-2">*</span>, v1::<span class="kw-2">*</span>};
+<span class="kw">use </span>proof_systems::{
+    mina_hasher::{Fp, Hashable, ROInput},
+    o1_utils::{field_helpers::FieldHelpersError, FieldHelpers},
+    ChunkedROInput, ToChunkedROInput,
 };
-<span class="kw">use</span> <span class="ident">sha2</span>::{<span class="ident">Digest</span>, <span class="ident">Sha256</span>};
-<span class="kw">use</span> <span class="ident">versioned</span>::<span class="kw-2">*</span>;
+<span class="kw">use </span>sha2::{Digest, Sha256};
+<span class="kw">use </span>versioned::<span class="kw-2">*</span>;
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Default</span>, <span class="ident">PartialEq</span>, <span class="ident">derive_more::From</span>, <span class="ident">derive_more::Into</span>)]</span>
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">struct</span> <span class="ident">BaseHash</span>(<span class="kw">pub</span>(<span class="kw">crate</span>) [<span class="ident">u8</span>; <span class="number">32</span>]);
+<span class="attribute">#[derive(Clone, Debug, Default, Eq, PartialEq, derive_more::From, derive_more::Into)]</span>
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">struct </span>BaseHash(<span class="kw">pub</span>(<span class="kw">crate</span>) [u8; <span class="number">32</span>]);
 
-<span class="kw">impl</span> <span class="ident">Hashable</span> <span class="kw">for</span> <span class="ident">BaseHash</span> {
-    <span class="kw">type</span> <span class="ident">D</span> <span class="op">=</span> ();
+<span class="kw">impl </span>Hashable <span class="kw">for </span>BaseHash {
+    <span class="kw">type </span>D = ();
 
-    <span class="kw">fn</span> <span class="ident">to_roinput</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">ROInput</span> {
-        <span class="ident">ROInput::new</span>().<span class="ident">append_field</span>(<span class="self">self</span>.<span class="ident">try_into</span>().<span class="ident">expect</span>(<span class="string">&quot;Failed to convert Hash into Fp&quot;</span>))
+    <span class="kw">fn </span>to_roinput(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; ROInput {
+        ROInput::new().append_field(<span class="self">self</span>.try_into().expect(<span class="string">&quot;Failed to convert Hash into Fp&quot;</span>))
     }
 
-    <span class="kw">fn</span> <span class="ident">domain_string</span>(<span class="kw">_</span>: <span class="ident"><span class="self">Self</span>::D</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> {
-        <span class="prelude-val">None</span>
-    }
+    <span class="kw">fn </span>domain_string(<span class="kw">_</span>: <span class="self">Self</span>::D) -&gt; <span class="prelude-ty">Option</span>&lt;String&gt; {
+        <span class="prelude-val">None
+    </span>}
 }
 
-<span class="kw">impl</span> <span class="ident">ToChunkedROInput</span> <span class="kw">for</span> <span class="ident">BaseHash</span> {
-    <span class="kw">fn</span> <span class="ident">to_chunked_roinput</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">ChunkedROInput</span> {
-        <span class="ident">ChunkedROInput::new</span>().<span class="ident">append_field</span>(
-            <span class="self">self</span>.<span class="ident">try_into</span>()
-                .<span class="ident">expect</span>(<span class="string">&quot;Failed to convert ChainHash into Fp&quot;</span>),
+<span class="kw">impl </span>ToChunkedROInput <span class="kw">for </span>BaseHash {
+    <span class="kw">fn </span>to_chunked_roinput(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; ChunkedROInput {
+        ChunkedROInput::new().append_field(
+            <span class="self">self</span>.try_into()
+                .expect(<span class="string">&quot;Failed to convert ChainHash into Fp&quot;</span>),
         )
     }
 }
 
-<span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="kw-2">&amp;</span>[<span class="ident">u8</span>]<span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">BaseHash</span> {
-    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">b</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>]) -&gt; <span class="self">Self</span> {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">o</span> <span class="op">=</span> <span class="ident">BaseHash::default</span>();
-        <span class="ident">o</span>.<span class="number">0</span>.<span class="ident">copy_from_slice</span>(<span class="ident">b</span>);
-        <span class="ident">o</span>
+<span class="kw">impl </span>From&lt;<span class="kw-2">&amp;</span>[u8]&gt; <span class="kw">for </span>BaseHash {
+    <span class="kw">fn </span>from(b: <span class="kw-2">&amp;</span>[u8]) -&gt; <span class="self">Self </span>{
+        <span class="kw">let </span><span class="kw-2">mut </span>o = BaseHash::default();
+        o.<span class="number">0</span>.copy_from_slice(b);
+        o
     }
 }
 
-<span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">Fp</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">BaseHash</span> {
-    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">i</span>: <span class="kw-2">&amp;</span><span class="ident">Fp</span>) -&gt; <span class="self">Self</span> {
-        <span class="ident">i</span>.<span class="ident">to_bytes</span>().<span class="ident">as_slice</span>().<span class="ident">into</span>()
+<span class="kw">impl </span>From&lt;<span class="kw-2">&amp;</span>Fp&gt; <span class="kw">for </span>BaseHash {
+    <span class="kw">fn </span>from(i: <span class="kw-2">&amp;</span>Fp) -&gt; <span class="self">Self </span>{
+        i.to_bytes().as_slice().into()
     }
 }
 
-<span class="kw">impl</span> <span class="ident">TryFrom</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">BaseHash</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Fp</span> {
-    <span class="kw">type</span> <span class="ident">Error</span> <span class="op">=</span> <span class="ident">FieldHelpersError</span>;
+<span class="kw">impl </span>TryFrom&lt;<span class="kw-2">&amp;</span>BaseHash&gt; <span class="kw">for </span>Fp {
+    <span class="kw">type </span>Error = FieldHelpersError;
 
-    <span class="kw">fn</span> <span class="ident">try_from</span>(<span class="ident">i</span>: <span class="kw-2">&amp;</span><span class="ident">BaseHash</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span>, <span class="ident"><span class="self">Self</span>::Error</span><span class="op">&gt;</span> {
-        <span class="ident">Fp::from_bytes</span>(<span class="ident">i</span>.<span class="number">0</span>.<span class="ident">as_slice</span>())
+    <span class="kw">fn </span>try_from(i: <span class="kw-2">&amp;</span>BaseHash) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>, <span class="self">Self</span>::Error&gt; {
+        Fp::from_bytes(i.<span class="number">0</span>.as_slice())
     }
 }
 
-<span class="macro">impl_from_for_newtype!</span>(<span class="ident">BaseHash</span>, <span class="ident">HashV1</span>);
-<span class="macro">impl_from_for_newtype!</span>(<span class="ident">BaseHash</span>, <span class="ident">Hash2V1</span>);
+<span class="macro">impl_from_for_newtype!</span>(BaseHash, HashV1);
+<span class="macro">impl_from_for_newtype!</span>(BaseHash, Hash2V1);
 
-<span class="attribute">#[<span class="ident">macro_export</span>]</span>
-<span class="macro">macro_rules!</span> <span class="ident">impl_from_for_hash</span> {
-    (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>:<span class="ident">ty</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">tv</span>:<span class="ident">ty</span>) =&gt; {
-        <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">tv</span> {
-            <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">t</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>) -&gt; <span class="self">Self</span> {
-                <span class="ident">t</span>.<span class="number">0</span>.<span class="ident">into</span>()
+<span class="attribute">#[macro_export]</span>
+<span class="macro">macro_rules!</span> impl_from_for_hash {
+    (<span class="macro-nonterminal">$t</span>:ty, <span class="macro-nonterminal">$tv</span>:ty) =&gt; {
+        <span class="kw">impl </span>From&lt;<span class="macro-nonterminal">$t</span>&gt; <span class="kw">for </span><span class="macro-nonterminal">$tv </span>{
+            <span class="kw">fn </span>from(t: <span class="macro-nonterminal">$t</span>) -&gt; <span class="self">Self </span>{
+                t.<span class="number">0</span>.into()
             }
         }
 
-        <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">tv</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span> {
-            <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">h</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">tv</span>) -&gt; <span class="self">Self</span> {
-                <span class="kw">let</span> <span class="ident">base</span>: <span class="ident">BaseHash</span> <span class="op">=</span> <span class="ident">h</span>.<span class="ident">into</span>();
-                <span class="self">Self</span>(<span class="ident">base</span>)
+        <span class="kw">impl </span>From&lt;<span class="macro-nonterminal">$tv</span>&gt; <span class="kw">for </span><span class="macro-nonterminal">$t </span>{
+            <span class="kw">fn </span>from(h: <span class="macro-nonterminal">$tv</span>) -&gt; <span class="self">Self </span>{
+                <span class="kw">let </span>base: BaseHash = h.into();
+                <span class="self">Self</span>(base)
             }
         }
     };
 }
 
-<span class="comment">//////////////////////////////////////////////////////////////////////////</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Default</span>, <span class="ident">PartialEq</span>, <span class="ident">derive_more::From</span>, <span class="ident">derive_more::Into</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">StateHash</span>(<span class="ident">BaseHash</span>);
+<span class="comment">//////////////////////////////////////////////////////////////////////////
+</span><span class="attribute">#[derive(Clone, Debug, Default, Eq, PartialEq, derive_more::From, derive_more::Into)]</span>
+<span class="kw">pub struct </span>StateHash(BaseHash);
 
-<span class="macro">impl_from_for_hash!</span>(<span class="ident">StateHash</span>, <span class="ident">HashV1</span>);
-<span class="macro">impl_from_for_generic_with_proxy!</span>(<span class="ident">StateHash</span>, <span class="ident">HashV1</span>, <span class="ident">StateHashV1Json</span>);
-<span class="macro">impl_strconv_via_json!</span>(<span class="ident">StateHash</span>, <span class="ident">StateHashV1Json</span>);
+<span class="macro">impl_from_for_hash!</span>(StateHash, HashV1);
+<span class="macro">impl_from_for_generic_with_proxy!</span>(StateHash, HashV1, StateHashV1Json);
+<span class="macro">impl_strconv_via_json!</span>(StateHash, StateHashV1Json);
 
-<span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span>[<span class="ident">u8</span>; <span class="number">32</span>]<span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">StateHash</span> {
-    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">v</span>: [<span class="ident">u8</span>; <span class="number">32</span>]) -&gt; <span class="self">Self</span> {
-        <span class="self">Self</span>(<span class="ident">BaseHash</span>(<span class="ident">v</span>))
+<span class="kw">impl </span>From&lt;[u8; <span class="number">32</span>]&gt; <span class="kw">for </span>StateHash {
+    <span class="kw">fn </span>from(v: [u8; <span class="number">32</span>]) -&gt; <span class="self">Self </span>{
+        <span class="self">Self</span>(BaseHash(v))
     }
 }
 
-<span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">StateHash</span><span class="op">&gt;</span> <span class="kw">for</span> [<span class="ident">u8</span>; <span class="number">32</span>] {
-    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">v</span>: <span class="ident">StateHash</span>) -&gt; <span class="self">Self</span> {
-        <span class="ident">v</span>.<span class="number">0</span> .<span class="number">0</span>
+<span class="kw">impl </span>From&lt;StateHash&gt; <span class="kw">for </span>[u8; <span class="number">32</span>] {
+    <span class="kw">fn </span>from(v: StateHash) -&gt; <span class="self">Self </span>{
+        v.<span class="number">0 </span>.<span class="number">0
+    </span>}
+}
+
+<span class="kw">impl </span>From&lt;<span class="kw-2">&amp;</span>Fp&gt; <span class="kw">for </span>StateHash {
+    <span class="kw">fn </span>from(i: <span class="kw-2">&amp;</span>Fp) -&gt; <span class="self">Self </span>{
+        <span class="kw">let </span>base: BaseHash = i.into();
+        base.into()
     }
 }
 
-<span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">Fp</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">StateHash</span> {
-    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">i</span>: <span class="kw-2">&amp;</span><span class="ident">Fp</span>) -&gt; <span class="self">Self</span> {
-        <span class="kw">let</span> <span class="ident">base</span>: <span class="ident">BaseHash</span> <span class="op">=</span> <span class="ident">i</span>.<span class="ident">into</span>();
-        <span class="ident">base</span>.<span class="ident">into</span>()
+<span class="kw">impl </span>TryFrom&lt;<span class="kw-2">&amp;</span>StateHash&gt; <span class="kw">for </span>Fp {
+    <span class="kw">type </span>Error = FieldHelpersError;
+
+    <span class="kw">fn </span>try_from(i: <span class="kw-2">&amp;</span>StateHash) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>, <span class="self">Self</span>::Error&gt; {
+        (<span class="kw-2">&amp;</span>i.<span class="number">0</span>).try_into()
     }
 }
 
-<span class="kw">impl</span> <span class="ident">TryFrom</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">StateHash</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Fp</span> {
-    <span class="kw">type</span> <span class="ident">Error</span> <span class="op">=</span> <span class="ident">FieldHelpersError</span>;
+<span class="kw">impl </span>Hashable <span class="kw">for </span>StateHash {
+    <span class="kw">type </span>D = ();
 
-    <span class="kw">fn</span> <span class="ident">try_from</span>(<span class="ident">i</span>: <span class="kw-2">&amp;</span><span class="ident">StateHash</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span>, <span class="ident"><span class="self">Self</span>::Error</span><span class="op">&gt;</span> {
-        (<span class="kw-2">&amp;</span><span class="ident">i</span>.<span class="number">0</span>).<span class="ident">try_into</span>()
+    <span class="kw">fn </span>to_roinput(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; ROInput {
+        ROInput::new().append_hashable(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0</span>)
+    }
+
+    <span class="kw">fn </span>domain_string(<span class="kw">_</span>: <span class="self">Self</span>::D) -&gt; <span class="prelude-ty">Option</span>&lt;String&gt; {
+        <span class="prelude-val">None
+    </span>}
+}
+
+<span class="kw">impl </span>ToChunkedROInput <span class="kw">for </span>StateHash {
+    <span class="kw">fn </span>to_chunked_roinput(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; ChunkedROInput {
+        <span class="self">self</span>.<span class="number">0</span>.to_chunked_roinput()
     }
 }
 
-<span class="kw">impl</span> <span class="ident">Hashable</span> <span class="kw">for</span> <span class="ident">StateHash</span> {
-    <span class="kw">type</span> <span class="ident">D</span> <span class="op">=</span> ();
+<span class="comment">//////////////////////////////////////////////////////////////////////////
 
-    <span class="kw">fn</span> <span class="ident">to_roinput</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">ROInput</span> {
-        <span class="ident">ROInput::new</span>().<span class="ident">append_hashable</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0</span>)
-    }
+</span><span class="attribute">#[derive(Clone, Debug, Default, Eq, PartialEq, derive_more::From, derive_more::Into)]</span>
+<span class="kw">pub struct </span>LedgerHash(BaseHash);
 
-    <span class="kw">fn</span> <span class="ident">domain_string</span>(<span class="kw">_</span>: <span class="ident"><span class="self">Self</span>::D</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> {
-        <span class="prelude-val">None</span>
-    }
-}
+<span class="macro">impl_from_for_hash!</span>(LedgerHash, HashV1);
+<span class="macro">impl_from_for_generic_with_proxy!</span>(LedgerHash, HashV1, LedgerHashV1Json);
+<span class="macro">impl_strconv_via_json!</span>(LedgerHash, LedgerHashV1Json);
 
-<span class="kw">impl</span> <span class="ident">ToChunkedROInput</span> <span class="kw">for</span> <span class="ident">StateHash</span> {
-    <span class="kw">fn</span> <span class="ident">to_chunked_roinput</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">ChunkedROInput</span> {
-        <span class="self">self</span>.<span class="number">0</span>.<span class="ident">to_chunked_roinput</span>()
+<span class="kw">impl </span>From&lt;<span class="kw-2">&amp;</span>Fp&gt; <span class="kw">for </span>LedgerHash {
+    <span class="kw">fn </span>from(i: <span class="kw-2">&amp;</span>Fp) -&gt; <span class="self">Self </span>{
+        <span class="kw">let </span>base: BaseHash = i.into();
+        base.into()
     }
 }
 
-<span class="comment">//////////////////////////////////////////////////////////////////////////</span>
+<span class="kw">impl </span>TryFrom&lt;<span class="kw-2">&amp;</span>LedgerHash&gt; <span class="kw">for </span>Fp {
+    <span class="kw">type </span>Error = FieldHelpersError;
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Default</span>, <span class="ident">PartialEq</span>, <span class="ident">derive_more::From</span>, <span class="ident">derive_more::Into</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">LedgerHash</span>(<span class="ident">BaseHash</span>);
-
-<span class="macro">impl_from_for_hash!</span>(<span class="ident">LedgerHash</span>, <span class="ident">HashV1</span>);
-<span class="macro">impl_from_for_generic_with_proxy!</span>(<span class="ident">LedgerHash</span>, <span class="ident">HashV1</span>, <span class="ident">LedgerHashV1Json</span>);
-<span class="macro">impl_strconv_via_json!</span>(<span class="ident">LedgerHash</span>, <span class="ident">LedgerHashV1Json</span>);
-
-<span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">Fp</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">LedgerHash</span> {
-    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">i</span>: <span class="kw-2">&amp;</span><span class="ident">Fp</span>) -&gt; <span class="self">Self</span> {
-        <span class="kw">let</span> <span class="ident">base</span>: <span class="ident">BaseHash</span> <span class="op">=</span> <span class="ident">i</span>.<span class="ident">into</span>();
-        <span class="ident">base</span>.<span class="ident">into</span>()
+    <span class="kw">fn </span>try_from(i: <span class="kw-2">&amp;</span>LedgerHash) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>, <span class="self">Self</span>::Error&gt; {
+        (<span class="kw-2">&amp;</span>i.<span class="number">0</span>).try_into()
     }
 }
 
-<span class="kw">impl</span> <span class="ident">TryFrom</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">LedgerHash</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Fp</span> {
-    <span class="kw">type</span> <span class="ident">Error</span> <span class="op">=</span> <span class="ident">FieldHelpersError</span>;
+<span class="kw">impl </span>Hashable <span class="kw">for </span>LedgerHash {
+    <span class="kw">type </span>D = ();
 
-    <span class="kw">fn</span> <span class="ident">try_from</span>(<span class="ident">i</span>: <span class="kw-2">&amp;</span><span class="ident">LedgerHash</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span>, <span class="ident"><span class="self">Self</span>::Error</span><span class="op">&gt;</span> {
-        (<span class="kw-2">&amp;</span><span class="ident">i</span>.<span class="number">0</span>).<span class="ident">try_into</span>()
+    <span class="kw">fn </span>to_roinput(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; ROInput {
+        ROInput::new().append_hashable(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0</span>)
+    }
+
+    <span class="kw">fn </span>domain_string(<span class="kw">_</span>: <span class="self">Self</span>::D) -&gt; <span class="prelude-ty">Option</span>&lt;String&gt; {
+        <span class="prelude-val">None
+    </span>}
+}
+
+<span class="comment">//////////////////////////////////////////////////////////////////////////
+
+</span><span class="attribute">#[derive(Clone, Default, Debug, Eq, PartialEq, derive_more::From, derive_more::Into)]</span>
+<span class="kw">pub struct </span>ChainHash(BaseHash);
+
+<span class="macro">impl_from_for_hash!</span>(ChainHash, HashV1);
+<span class="macro">impl_from_for_generic_with_proxy!</span>(ChainHash, HashV1, ChainHashV1Json);
+<span class="macro">impl_strconv_via_json!</span>(ChainHash, ChainHashV1Json);
+
+<span class="kw">impl </span>Hashable <span class="kw">for </span>ChainHash {
+    <span class="kw">type </span>D = ();
+
+    <span class="kw">fn </span>to_roinput(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; ROInput {
+        ROInput::new().append_hashable(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0</span>)
+    }
+
+    <span class="kw">fn </span>domain_string(<span class="kw">_</span>: <span class="self">Self</span>::D) -&gt; <span class="prelude-ty">Option</span>&lt;String&gt; {
+        <span class="prelude-val">None
+    </span>}
+}
+
+<span class="kw">impl </span>ToChunkedROInput <span class="kw">for </span>ChainHash {
+    <span class="kw">fn </span>to_chunked_roinput(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; ChunkedROInput {
+        <span class="self">self</span>.<span class="number">0</span>.to_chunked_roinput()
     }
 }
 
-<span class="kw">impl</span> <span class="ident">Hashable</span> <span class="kw">for</span> <span class="ident">LedgerHash</span> {
-    <span class="kw">type</span> <span class="ident">D</span> <span class="op">=</span> ();
+<span class="kw">impl </span>TryFrom&lt;<span class="kw-2">&amp;</span>ChainHash&gt; <span class="kw">for </span>Fp {
+    <span class="kw">type </span>Error = FieldHelpersError;
 
-    <span class="kw">fn</span> <span class="ident">to_roinput</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">ROInput</span> {
-        <span class="ident">ROInput::new</span>().<span class="ident">append_hashable</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0</span>)
-    }
-
-    <span class="kw">fn</span> <span class="ident">domain_string</span>(<span class="kw">_</span>: <span class="ident"><span class="self">Self</span>::D</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> {
-        <span class="prelude-val">None</span>
+    <span class="kw">fn </span>try_from(i: <span class="kw-2">&amp;</span>ChainHash) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>, <span class="self">Self</span>::Error&gt; {
+        (<span class="kw-2">&amp;</span>i.<span class="number">0</span>).try_into()
     }
 }
 
-<span class="comment">//////////////////////////////////////////////////////////////////////////</span>
-
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Default</span>, <span class="ident">Debug</span>, <span class="ident">PartialEq</span>, <span class="ident">derive_more::From</span>, <span class="ident">derive_more::Into</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ChainHash</span>(<span class="ident">BaseHash</span>);
-
-<span class="macro">impl_from_for_hash!</span>(<span class="ident">ChainHash</span>, <span class="ident">HashV1</span>);
-<span class="macro">impl_from_for_generic_with_proxy!</span>(<span class="ident">ChainHash</span>, <span class="ident">HashV1</span>, <span class="ident">ChainHashV1Json</span>);
-<span class="macro">impl_strconv_via_json!</span>(<span class="ident">ChainHash</span>, <span class="ident">ChainHashV1Json</span>);
-
-<span class="kw">impl</span> <span class="ident">Hashable</span> <span class="kw">for</span> <span class="ident">ChainHash</span> {
-    <span class="kw">type</span> <span class="ident">D</span> <span class="op">=</span> ();
-
-    <span class="kw">fn</span> <span class="ident">to_roinput</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">ROInput</span> {
-        <span class="ident">ROInput::new</span>().<span class="ident">append_hashable</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0</span>)
-    }
-
-    <span class="kw">fn</span> <span class="ident">domain_string</span>(<span class="kw">_</span>: <span class="ident"><span class="self">Self</span>::D</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> {
-        <span class="prelude-val">None</span>
+<span class="kw">impl </span>From&lt;[u8; <span class="number">32</span>]&gt; <span class="kw">for </span>ChainHash {
+    <span class="kw">fn </span>from(v: [u8; <span class="number">32</span>]) -&gt; <span class="self">Self </span>{
+        <span class="self">Self</span>(BaseHash(v))
     }
 }
 
-<span class="kw">impl</span> <span class="ident">ToChunkedROInput</span> <span class="kw">for</span> <span class="ident">ChainHash</span> {
-    <span class="kw">fn</span> <span class="ident">to_chunked_roinput</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">ChunkedROInput</span> {
-        <span class="self">self</span>.<span class="number">0</span>.<span class="ident">to_chunked_roinput</span>()
+<span class="kw">impl </span>From&lt;ChainHash&gt; <span class="kw">for </span>[u8; <span class="number">32</span>] {
+    <span class="kw">fn </span>from(v: ChainHash) -&gt; <span class="self">Self </span>{
+        v.<span class="number">0 </span>.<span class="number">0
+    </span>}
+}
+
+<span class="comment">//////////////////////////////////////////////////////////////////////////
+
+</span><span class="attribute">#[derive(Clone, Default, Debug, Eq, PartialEq, derive_more::From, derive_more::Into)]</span>
+<span class="kw">pub struct </span>CoinBaseHash(BaseHash);
+
+<span class="macro">impl_from_for_hash!</span>(CoinBaseHash, HashV1);
+<span class="macro">impl_from_for_hash!</span>(CoinBaseHash, Hash2V1);
+<span class="macro">impl_from_for_generic_with_proxy!</span>(CoinBaseHash, HashV1, CoinBaseHashV1Json);
+<span class="macro">impl_strconv_via_json!</span>(CoinBaseHash, CoinBaseHashV1Json);
+
+<span class="kw">impl </span>Hashable <span class="kw">for </span>CoinBaseHash {
+    <span class="kw">type </span>D = ();
+
+    <span class="kw">fn </span>to_roinput(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; ROInput {
+        ROInput::new().append_hashable(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0</span>)
+    }
+
+    <span class="kw">fn </span>domain_string(<span class="kw">_</span>: <span class="self">Self</span>::D) -&gt; <span class="prelude-ty">Option</span>&lt;String&gt; {
+        <span class="prelude-val">None
+    </span>}
+}
+
+<span class="comment">//////////////////////////////////////////////////////////////////////////
+
+</span><span class="attribute">#[derive(Clone, Default, Debug, Eq, PartialEq, derive_more::From, derive_more::Into)]</span>
+<span class="kw">pub struct </span>EpochSeed(BaseHash);
+
+<span class="macro">impl_from_for_hash!</span>(EpochSeed, HashV1);
+<span class="macro">impl_from_for_generic_with_proxy!</span>(EpochSeed, HashV1, EpochSeedHashV1Json);
+<span class="macro">impl_strconv_via_json!</span>(EpochSeed, EpochSeedHashV1Json);
+
+<span class="kw">impl </span>Hashable <span class="kw">for </span>EpochSeed {
+    <span class="kw">type </span>D = ();
+
+    <span class="kw">fn </span>to_roinput(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; ROInput {
+        ROInput::new().append_hashable(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0</span>)
+    }
+
+    <span class="kw">fn </span>domain_string(<span class="kw">_</span>: <span class="self">Self</span>::D) -&gt; <span class="prelude-ty">Option</span>&lt;String&gt; {
+        <span class="prelude-val">None
+    </span>}
+}
+
+<span class="comment">//////////////////////////////////////////////////////////////////////////
+
+</span><span class="attribute">#[derive(Clone, Default, Debug, Eq, PartialEq)]</span>
+<span class="kw">pub struct </span>StagedLedgerHash {
+    <span class="kw">pub </span>non_snark: NonSnarkStagedLedgerHash,
+    <span class="kw">pub </span>pending_coinbase_hash: CoinBaseHash,
+}
+
+<span class="kw">impl </span>Hashable <span class="kw">for </span>StagedLedgerHash {
+    <span class="kw">type </span>D = ();
+
+    <span class="kw">fn </span>to_roinput(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; ROInput {
+        ROInput::new()
+            .append_hashable(<span class="kw-2">&amp;</span><span class="self">self</span>.non_snark)
+            .append_hashable(<span class="kw-2">&amp;</span><span class="self">self</span>.pending_coinbase_hash)
+    }
+
+    <span class="kw">fn </span>domain_string(<span class="kw">_</span>: <span class="self">Self</span>::D) -&gt; <span class="prelude-ty">Option</span>&lt;String&gt; {
+        <span class="prelude-val">None
+    </span>}
+}
+
+<span class="attribute">#[derive(Clone, Default, Debug, Eq, PartialEq)]</span>
+<span class="kw">pub struct </span>NonSnarkStagedLedgerHash {
+    <span class="kw">pub </span>ledger_hash: LedgerHash,
+    <span class="kw">pub </span>aux_hash: AuxHash,
+    <span class="kw">pub </span>pending_coinbase_aux: PendingCoinbaseAuxHash,
+}
+
+<span class="kw">impl </span>NonSnarkStagedLedgerHash {
+    <span class="kw">pub fn </span>digest(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Vec&lt;u8&gt; {
+        <span class="kw">let </span><span class="kw-2">mut </span>hasher = Sha256::new();
+        <span class="kw">let </span>ledger_hash_bytes: Vec&lt;u8&gt; = <span class="self">self</span>.ledger_hash.<span class="number">0 </span>.<span class="number">0</span>.iter().rev().cloned().collect();
+        hasher.update(<span class="kw-2">&amp;</span>ledger_hash_bytes);
+        hasher.update(<span class="kw-2">&amp;</span><span class="self">self</span>.aux_hash.<span class="number">0</span>);
+        hasher.update(<span class="kw-2">&amp;</span><span class="self">self</span>.pending_coinbase_aux.<span class="number">0</span>);
+        hasher.finalize().to_vec()
     }
 }
 
-<span class="kw">impl</span> <span class="ident">TryFrom</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">ChainHash</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Fp</span> {
-    <span class="kw">type</span> <span class="ident">Error</span> <span class="op">=</span> <span class="ident">FieldHelpersError</span>;
+<span class="kw">impl </span>Hashable <span class="kw">for </span>NonSnarkStagedLedgerHash {
+    <span class="kw">type </span>D = ();
 
-    <span class="kw">fn</span> <span class="ident">try_from</span>(<span class="ident">i</span>: <span class="kw-2">&amp;</span><span class="ident">ChainHash</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span>, <span class="ident"><span class="self">Self</span>::Error</span><span class="op">&gt;</span> {
-        (<span class="kw-2">&amp;</span><span class="ident">i</span>.<span class="number">0</span>).<span class="ident">try_into</span>()
+    <span class="kw">fn </span>to_roinput(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; ROInput {
+        ROInput::new().append_bytes(<span class="kw-2">&amp;</span><span class="self">self</span>.digest())
     }
+
+    <span class="kw">fn </span>domain_string(<span class="kw">_</span>: <span class="self">Self</span>::D) -&gt; <span class="prelude-ty">Option</span>&lt;String&gt; {
+        <span class="prelude-val">None
+    </span>}
 }
 
-<span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span>[<span class="ident">u8</span>; <span class="number">32</span>]<span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ChainHash</span> {
-    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">v</span>: [<span class="ident">u8</span>; <span class="number">32</span>]) -&gt; <span class="self">Self</span> {
-        <span class="self">Self</span>(<span class="ident">BaseHash</span>(<span class="ident">v</span>))
-    }
-}
+<span class="attribute">#[derive(Clone, Default, Debug, Eq, PartialEq, derive_more::From, derive_more::Into)]</span>
+<span class="kw">pub struct </span>AuxHash(<span class="kw">pub </span>Vec&lt;u8&gt;);
 
-<span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">ChainHash</span><span class="op">&gt;</span> <span class="kw">for</span> [<span class="ident">u8</span>; <span class="number">32</span>] {
-    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">v</span>: <span class="ident">ChainHash</span>) -&gt; <span class="self">Self</span> {
-        <span class="ident">v</span>.<span class="number">0</span> .<span class="number">0</span>
-    }
-}
+<span class="macro">impl_from_for_newtype!</span>(AuxHash, AuxHashJson);
+<span class="macro">impl_strconv_via_json!</span>(AuxHash, AuxHashJson);
 
-<span class="comment">//////////////////////////////////////////////////////////////////////////</span>
+<span class="comment">//////////////////////////////////////////////////////////////////////////
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Default</span>, <span class="ident">Debug</span>, <span class="ident">PartialEq</span>, <span class="ident">derive_more::From</span>, <span class="ident">derive_more::Into</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">CoinBaseHash</span>(<span class="ident">BaseHash</span>);
+</span><span class="attribute">#[derive(Clone, Default, Debug, Eq, PartialEq, derive_more::From)]</span>
+<span class="kw">pub struct </span>PendingCoinbaseAuxHash(<span class="kw">pub </span>Vec&lt;u8&gt;);
 
-<span class="macro">impl_from_for_hash!</span>(<span class="ident">CoinBaseHash</span>, <span class="ident">HashV1</span>);
-<span class="macro">impl_from_for_hash!</span>(<span class="ident">CoinBaseHash</span>, <span class="ident">Hash2V1</span>);
-<span class="macro">impl_from_for_generic_with_proxy!</span>(<span class="ident">CoinBaseHash</span>, <span class="ident">HashV1</span>, <span class="ident">CoinBaseHashV1Json</span>);
-<span class="macro">impl_strconv_via_json!</span>(<span class="ident">CoinBaseHash</span>, <span class="ident">CoinBaseHashV1Json</span>);
+<span class="macro">impl_from_for_newtype!</span>(PendingCoinbaseAuxHash, PendingCoinbaseAuxHashJson);
+<span class="macro">impl_strconv_via_json!</span>(PendingCoinbaseAuxHash, PendingCoinbaseAuxHashJson);
 
-<span class="kw">impl</span> <span class="ident">Hashable</span> <span class="kw">for</span> <span class="ident">CoinBaseHash</span> {
-    <span class="kw">type</span> <span class="ident">D</span> <span class="op">=</span> ();
+<span class="comment">//////////////////////////////////////////////////////////////////////////
 
-    <span class="kw">fn</span> <span class="ident">to_roinput</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">ROInput</span> {
-        <span class="ident">ROInput::new</span>().<span class="ident">append_hashable</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0</span>)
-    }
+</span><span class="attribute">#[derive(Clone, Default, Debug, Eq, PartialEq)]</span>
+<span class="kw">pub struct </span>VrfOutputHash(BaseHash);
 
-    <span class="kw">fn</span> <span class="ident">domain_string</span>(<span class="kw">_</span>: <span class="ident"><span class="self">Self</span>::D</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> {
-        <span class="prelude-val">None</span>
-    }
-}
+<span class="macro">impl_from_for_hash!</span>(VrfOutputHash, HashV1);
+<span class="macro">impl_from_for_generic_with_proxy!</span>(VrfOutputHash, HashV1, VrfOutputHashV1Json);
+<span class="macro">impl_strconv_via_json!</span>(VrfOutputHash, VrfOutputHashV1Json);
 
-<span class="comment">//////////////////////////////////////////////////////////////////////////</span>
+<span class="comment">//////////////////////////////////////////////////////////////////////////
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Default</span>, <span class="ident">Debug</span>, <span class="ident">PartialEq</span>, <span class="ident">derive_more::From</span>, <span class="ident">derive_more::Into</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">EpochSeed</span>(<span class="ident">BaseHash</span>);
+</span><span class="attribute">#[cfg(test)]</span>
+<span class="kw">pub mod </span>test {
 
-<span class="macro">impl_from_for_hash!</span>(<span class="ident">EpochSeed</span>, <span class="ident">HashV1</span>);
-<span class="macro">impl_from_for_generic_with_proxy!</span>(<span class="ident">EpochSeed</span>, <span class="ident">HashV1</span>, <span class="ident">EpochSeedHashV1Json</span>);
-<span class="macro">impl_strconv_via_json!</span>(<span class="ident">EpochSeed</span>, <span class="ident">EpochSeedHashV1Json</span>);
+    <span class="kw">use </span>std::str::FromStr;
 
-<span class="kw">impl</span> <span class="ident">Hashable</span> <span class="kw">for</span> <span class="ident">EpochSeed</span> {
-    <span class="kw">type</span> <span class="ident">D</span> <span class="op">=</span> ();
+    <span class="kw">use </span>mina_serialization_types::{json::<span class="kw-2">*</span>, JsonSerializationType};
 
-    <span class="kw">fn</span> <span class="ident">to_roinput</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">ROInput</span> {
-        <span class="ident">ROInput::new</span>().<span class="ident">append_hashable</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0</span>)
+    <span class="kw">use super</span>::<span class="kw-2">*</span>;
+
+    <span class="attribute">#[test]</span>
+    <span class="kw">fn </span>ledger_hash_from_base58() {
+        <span class="kw">let </span>s = <span class="string">&quot;jxV4SS44wHUVrGEucCsfxLisZyUC5QddsiokGH3kz5xm2hJWZ25&quot;</span>;
+        <span class="kw">let </span>h = LedgerHash::from_str(s).unwrap();
+        <span class="macro">assert_eq!</span>(<span class="kw-2">&amp;</span>h.to_string(), s);
     }
 
-    <span class="kw">fn</span> <span class="ident">domain_string</span>(<span class="kw">_</span>: <span class="ident"><span class="self">Self</span>::D</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> {
-        <span class="prelude-val">None</span>
-    }
-}
-
-<span class="comment">//////////////////////////////////////////////////////////////////////////</span>
-
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Default</span>, <span class="ident">Debug</span>, <span class="ident">PartialEq</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">StagedLedgerHash</span> {
-    <span class="kw">pub</span> <span class="ident">non_snark</span>: <span class="ident">NonSnarkStagedLedgerHash</span>,
-    <span class="kw">pub</span> <span class="ident">pending_coinbase_hash</span>: <span class="ident">CoinBaseHash</span>,
-}
-
-<span class="kw">impl</span> <span class="ident">Hashable</span> <span class="kw">for</span> <span class="ident">StagedLedgerHash</span> {
-    <span class="kw">type</span> <span class="ident">D</span> <span class="op">=</span> ();
-
-    <span class="kw">fn</span> <span class="ident">to_roinput</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">ROInput</span> {
-        <span class="ident">ROInput::new</span>()
-            .<span class="ident">append_hashable</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">non_snark</span>)
-            .<span class="ident">append_hashable</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">pending_coinbase_hash</span>)
-    }
-
-    <span class="kw">fn</span> <span class="ident">domain_string</span>(<span class="kw">_</span>: <span class="ident"><span class="self">Self</span>::D</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> {
-        <span class="prelude-val">None</span>
-    }
-}
-
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Default</span>, <span class="ident">Debug</span>, <span class="ident">PartialEq</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">NonSnarkStagedLedgerHash</span> {
-    <span class="kw">pub</span> <span class="ident">ledger_hash</span>: <span class="ident">LedgerHash</span>,
-    <span class="kw">pub</span> <span class="ident">aux_hash</span>: <span class="ident">AuxHash</span>,
-    <span class="kw">pub</span> <span class="ident">pending_coinbase_aux</span>: <span class="ident">PendingCoinbaseAuxHash</span>,
-}
-
-<span class="kw">impl</span> <span class="ident">NonSnarkStagedLedgerHash</span> {
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">digest</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">hasher</span> <span class="op">=</span> <span class="ident">Sha256::new</span>();
-        <span class="kw">let</span> <span class="ident">ledger_hash_bytes</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">ledger_hash</span>.<span class="number">0</span> .<span class="number">0</span>.<span class="ident">iter</span>().<span class="ident">rev</span>().<span class="ident">cloned</span>().<span class="ident">collect</span>();
-        <span class="ident">hasher</span>.<span class="ident">update</span>(<span class="kw-2">&amp;</span><span class="ident">ledger_hash_bytes</span>);
-        <span class="ident">hasher</span>.<span class="ident">update</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">aux_hash</span>.<span class="number">0</span>);
-        <span class="ident">hasher</span>.<span class="ident">update</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">pending_coinbase_aux</span>.<span class="number">0</span>);
-        <span class="ident">hasher</span>.<span class="ident">finalize</span>().<span class="ident">to_vec</span>()
-    }
-}
-
-<span class="kw">impl</span> <span class="ident">Hashable</span> <span class="kw">for</span> <span class="ident">NonSnarkStagedLedgerHash</span> {
-    <span class="kw">type</span> <span class="ident">D</span> <span class="op">=</span> ();
-
-    <span class="kw">fn</span> <span class="ident">to_roinput</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">ROInput</span> {
-        <span class="ident">ROInput::new</span>().<span class="ident">append_bytes</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">digest</span>())
-    }
-
-    <span class="kw">fn</span> <span class="ident">domain_string</span>(<span class="kw">_</span>: <span class="ident"><span class="self">Self</span>::D</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> {
-        <span class="prelude-val">None</span>
-    }
-}
-
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Default</span>, <span class="ident">Debug</span>, <span class="ident">PartialEq</span>, <span class="ident">derive_more::From</span>, <span class="ident">derive_more::Into</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">AuxHash</span>(<span class="kw">pub</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>);
-
-<span class="macro">impl_from_for_newtype!</span>(<span class="ident">AuxHash</span>, <span class="ident">AuxHashJson</span>);
-<span class="macro">impl_strconv_via_json!</span>(<span class="ident">AuxHash</span>, <span class="ident">AuxHashJson</span>);
-
-<span class="comment">//////////////////////////////////////////////////////////////////////////</span>
-
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Default</span>, <span class="ident">Debug</span>, <span class="ident">PartialEq</span>, <span class="ident">derive_more::From</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">PendingCoinbaseAuxHash</span>(<span class="kw">pub</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>);
-
-<span class="macro">impl_from_for_newtype!</span>(<span class="ident">PendingCoinbaseAuxHash</span>, <span class="ident">PendingCoinbaseAuxHashJson</span>);
-<span class="macro">impl_strconv_via_json!</span>(<span class="ident">PendingCoinbaseAuxHash</span>, <span class="ident">PendingCoinbaseAuxHashJson</span>);
-
-<span class="comment">//////////////////////////////////////////////////////////////////////////</span>
-
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Default</span>, <span class="ident">Debug</span>, <span class="ident">PartialEq</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">VrfOutputHash</span>(<span class="ident">BaseHash</span>);
-
-<span class="macro">impl_from_for_hash!</span>(<span class="ident">VrfOutputHash</span>, <span class="ident">HashV1</span>);
-<span class="macro">impl_from_for_generic_with_proxy!</span>(<span class="ident">VrfOutputHash</span>, <span class="ident">HashV1</span>, <span class="ident">VrfOutputHashV1Json</span>);
-<span class="macro">impl_strconv_via_json!</span>(<span class="ident">VrfOutputHash</span>, <span class="ident">VrfOutputHashV1Json</span>);
-
-<span class="comment">//////////////////////////////////////////////////////////////////////////</span>
-
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">test</span> {
-
-    <span class="kw">use</span> <span class="ident">std::str::FromStr</span>;
-
-    <span class="kw">use</span> <span class="ident">mina_serialization_types</span>::{<span class="ident">json</span>::<span class="kw-2">*</span>, <span class="ident">JsonSerializationType</span>};
-
-    <span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
-
-    <span class="attribute">#[<span class="ident">test</span>]</span>
-    <span class="kw">fn</span> <span class="ident">ledger_hash_from_base58</span>() {
-        <span class="kw">let</span> <span class="ident">s</span> <span class="op">=</span> <span class="string">&quot;jxV4SS44wHUVrGEucCsfxLisZyUC5QddsiokGH3kz5xm2hJWZ25&quot;</span>;
-        <span class="kw">let</span> <span class="ident">h</span> <span class="op">=</span> <span class="ident">LedgerHash::from_str</span>(<span class="ident">s</span>).<span class="ident">unwrap</span>();
-        <span class="macro">assert_eq!</span>(<span class="kw-2">&amp;</span><span class="ident">h</span>.<span class="ident">to_string</span>(), <span class="ident">s</span>);
-    }
-
-    <span class="attribute">#[<span class="ident">test</span>]</span>
-    <span class="kw">fn</span> <span class="ident">ledger_hash_json_roundtrip</span>() -&gt; <span class="ident">anyhow::Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-        <span class="kw">impl</span> <span class="ident">JsonSerializationType</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">LedgerHash</span> {
-            <span class="kw">type</span> <span class="ident">T</span> <span class="op">=</span> <span class="ident">LedgerHashV1Json</span>;
+    <span class="attribute">#[test]</span>
+    <span class="kw">fn </span>ledger_hash_json_roundtrip() -&gt; anyhow::Result&lt;()&gt; {
+        <span class="kw">impl </span>JsonSerializationType&lt;<span class="lifetime">&#39;_</span>&gt; <span class="kw">for </span>LedgerHash {
+            <span class="kw">type </span>T = LedgerHashV1Json;
         }
 
-        <span class="kw">let</span> <span class="ident">s</span> <span class="op">=</span> <span class="string">&quot;jxV4SS44wHUVrGEucCsfxLisZyUC5QddsiokGH3kz5xm2hJWZ25&quot;</span>;
-        <span class="kw">let</span> <span class="ident">s_json</span> <span class="op">=</span> <span class="macro">format!</span>(<span class="string">&quot;\&quot;{s}\&quot;&quot;</span>);
-        <span class="kw">let</span> <span class="ident">h</span> <span class="op">=</span> <span class="op">&lt;</span><span class="ident">LedgerHash</span> <span class="kw">as</span> <span class="ident">JsonSerializationType</span><span class="op">&gt;</span><span class="ident">::try_from_json</span>(<span class="kw-2">&amp;</span><span class="ident">s_json</span>)<span class="question-mark">?</span>;
-        <span class="macro">assert_eq!</span>(<span class="ident">h</span>.<span class="ident">clone</span>().<span class="ident">try_into_json</span>()<span class="question-mark">?</span>, <span class="ident">s_json</span>);
-        <span class="kw">let</span> <span class="ident">s_json</span> <span class="op">=</span> <span class="ident">h</span>.<span class="ident">try_into_json</span>()<span class="question-mark">?</span>;
-        <span class="kw">let</span> <span class="ident">str_json</span>: <span class="kw-2">&amp;</span><span class="ident">str</span> <span class="op">=</span> <span class="ident">serde_json::from_str</span>(<span class="kw-2">&amp;</span><span class="ident">s_json</span>)<span class="question-mark">?</span>;
-        <span class="macro">assert_eq!</span>(<span class="ident">s</span>, <span class="ident">str_json</span>);
+        <span class="kw">let </span>s = <span class="string">&quot;jxV4SS44wHUVrGEucCsfxLisZyUC5QddsiokGH3kz5xm2hJWZ25&quot;</span>;
+        <span class="kw">let </span>s_json = <span class="macro">format!</span>(<span class="string">&quot;\&quot;{s}\&quot;&quot;</span>);
+        <span class="kw">let </span>h = &lt;LedgerHash <span class="kw">as </span>JsonSerializationType&gt;::try_from_json(<span class="kw-2">&amp;</span>s_json)<span class="question-mark">?</span>;
+        <span class="macro">assert_eq!</span>(h.clone().try_into_json()<span class="question-mark">?</span>, s_json);
+        <span class="kw">let </span>s_json = h.try_into_json()<span class="question-mark">?</span>;
+        <span class="kw">let </span>str_json: <span class="kw-2">&amp;</span>str = serde_json::from_str(<span class="kw-2">&amp;</span>s_json)<span class="question-mark">?</span>;
+        <span class="macro">assert_eq!</span>(s, str_json);
         <span class="prelude-val">Ok</span>(())
     }
 
-    <span class="attribute">#[<span class="ident">test</span>]</span>
-    <span class="kw">fn</span> <span class="ident">coinbase_hash_from_base58</span>() {
-        <span class="kw">let</span> <span class="ident">s</span> <span class="op">=</span> <span class="string">&quot;2n1tLdP2gkifmyVmrmzYXTS4ohPbZPJn6Qq4x55ywrbRWB4543cC&quot;</span>;
-        <span class="kw">let</span> <span class="ident">h</span> <span class="op">=</span> <span class="ident">CoinBaseHash::from_str</span>(<span class="ident">s</span>).<span class="ident">unwrap</span>();
-        <span class="macro">assert_eq!</span>(<span class="kw-2">&amp;</span><span class="ident">h</span>.<span class="ident">to_string</span>(), <span class="ident">s</span>);
+    <span class="attribute">#[test]</span>
+    <span class="kw">fn </span>coinbase_hash_from_base58() {
+        <span class="kw">let </span>s = <span class="string">&quot;2n1tLdP2gkifmyVmrmzYXTS4ohPbZPJn6Qq4x55ywrbRWB4543cC&quot;</span>;
+        <span class="kw">let </span>h = CoinBaseHash::from_str(s).unwrap();
+        <span class="macro">assert_eq!</span>(<span class="kw-2">&amp;</span>h.to_string(), s);
     }
 
-    <span class="attribute">#[<span class="ident">test</span>]</span>
-    <span class="kw">fn</span> <span class="ident">coinbase_hash_json_roundtrip</span>() -&gt; <span class="ident">anyhow::Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">s</span> <span class="op">=</span> <span class="string">&quot;2n1tLdP2gkifmyVmrmzYXTS4ohPbZPJn6Qq4x55ywrbRWB4543cC&quot;</span>;
-        <span class="kw">let</span> <span class="ident">s_json</span> <span class="op">=</span> <span class="macro">format!</span>(<span class="string">&quot;\&quot;{s}\&quot;&quot;</span>);
-        <span class="kw">let</span> <span class="ident">json</span>: <span class="ident">CoinBaseHashV1Json</span> <span class="op">=</span> <span class="ident">serde_json::from_str</span>(<span class="kw-2">&amp;</span><span class="ident">s_json</span>)<span class="question-mark">?</span>;
-        <span class="kw">let</span> <span class="ident">h</span>: <span class="ident">CoinBaseHash</span> <span class="op">=</span> <span class="ident">json</span>.<span class="ident">into</span>();
-        <span class="macro">assert_eq!</span>(<span class="kw-2">&amp;</span><span class="ident">h</span>.<span class="ident">to_string</span>(), <span class="ident">s</span>);
-        <span class="kw">let</span> <span class="ident">json</span>: <span class="ident">CoinBaseHashV1Json</span> <span class="op">=</span> <span class="ident">h</span>.<span class="ident">into</span>();
-        <span class="macro">assert_eq!</span>(<span class="ident">serde_json::to_string</span>(<span class="kw-2">&amp;</span><span class="ident">json</span>)<span class="question-mark">?</span>, <span class="ident">s_json</span>);
+    <span class="attribute">#[test]</span>
+    <span class="kw">fn </span>coinbase_hash_json_roundtrip() -&gt; anyhow::Result&lt;()&gt; {
+        <span class="kw">let </span>s = <span class="string">&quot;2n1tLdP2gkifmyVmrmzYXTS4ohPbZPJn6Qq4x55ywrbRWB4543cC&quot;</span>;
+        <span class="kw">let </span>s_json = <span class="macro">format!</span>(<span class="string">&quot;\&quot;{s}\&quot;&quot;</span>);
+        <span class="kw">let </span>json: CoinBaseHashV1Json = serde_json::from_str(<span class="kw-2">&amp;</span>s_json)<span class="question-mark">?</span>;
+        <span class="kw">let </span>h: CoinBaseHash = json.into();
+        <span class="macro">assert_eq!</span>(<span class="kw-2">&amp;</span>h.to_string(), s);
+        <span class="kw">let </span>json: CoinBaseHashV1Json = h.into();
+        <span class="macro">assert_eq!</span>(serde_json::to_string(<span class="kw-2">&amp;</span>json)<span class="question-mark">?</span>, s_json);
         <span class="prelude-val">Ok</span>(())
     }
 
-    <span class="attribute">#[<span class="ident">test</span>]</span>
-    <span class="kw">fn</span> <span class="ident">epoch_seed_from_base58</span>() {
-        <span class="kw">let</span> <span class="ident">s</span> <span class="op">=</span> <span class="string">&quot;2va9BGv9JrLTtrzZttiEMDYw1Zj6a6EHzXjmP9evHDTG3oEquURA&quot;</span>;
-        <span class="kw">let</span> <span class="ident">h</span> <span class="op">=</span> <span class="ident">EpochSeed::from_str</span>(<span class="ident">s</span>).<span class="ident">unwrap</span>();
-        <span class="macro">assert_eq!</span>(<span class="kw-2">&amp;</span><span class="ident">h</span>.<span class="ident">to_string</span>(), <span class="ident">s</span>);
+    <span class="attribute">#[test]</span>
+    <span class="kw">fn </span>epoch_seed_from_base58() {
+        <span class="kw">let </span>s = <span class="string">&quot;2va9BGv9JrLTtrzZttiEMDYw1Zj6a6EHzXjmP9evHDTG3oEquURA&quot;</span>;
+        <span class="kw">let </span>h = EpochSeed::from_str(s).unwrap();
+        <span class="macro">assert_eq!</span>(<span class="kw-2">&amp;</span>h.to_string(), s);
     }
 
-    <span class="attribute">#[<span class="ident">test</span>]</span>
-    <span class="kw">fn</span> <span class="ident">epoch_seed_hash_json_roundtrip</span>() -&gt; <span class="ident">anyhow::Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">s</span> <span class="op">=</span> <span class="string">&quot;2va9BGv9JrLTtrzZttiEMDYw1Zj6a6EHzXjmP9evHDTG3oEquURA&quot;</span>;
-        <span class="kw">let</span> <span class="ident">s_json</span> <span class="op">=</span> <span class="macro">format!</span>(<span class="string">&quot;\&quot;{s}\&quot;&quot;</span>);
-        <span class="kw">let</span> <span class="ident">json</span>: <span class="ident">EpochSeedHashV1Json</span> <span class="op">=</span> <span class="ident">serde_json::from_str</span>(<span class="kw-2">&amp;</span><span class="ident">s_json</span>)<span class="question-mark">?</span>;
-        <span class="kw">let</span> <span class="ident">h</span>: <span class="ident">EpochSeed</span> <span class="op">=</span> <span class="ident">json</span>.<span class="ident">into</span>();
-        <span class="macro">assert_eq!</span>(<span class="kw-2">&amp;</span><span class="ident">h</span>.<span class="ident">to_string</span>(), <span class="ident">s</span>);
-        <span class="kw">let</span> <span class="ident">json</span>: <span class="ident">EpochSeedHashV1Json</span> <span class="op">=</span> <span class="ident">h</span>.<span class="ident">into</span>();
-        <span class="macro">assert_eq!</span>(<span class="ident">serde_json::to_string</span>(<span class="kw-2">&amp;</span><span class="ident">json</span>)<span class="question-mark">?</span>, <span class="ident">s_json</span>);
+    <span class="attribute">#[test]</span>
+    <span class="kw">fn </span>epoch_seed_hash_json_roundtrip() -&gt; anyhow::Result&lt;()&gt; {
+        <span class="kw">let </span>s = <span class="string">&quot;2va9BGv9JrLTtrzZttiEMDYw1Zj6a6EHzXjmP9evHDTG3oEquURA&quot;</span>;
+        <span class="kw">let </span>s_json = <span class="macro">format!</span>(<span class="string">&quot;\&quot;{s}\&quot;&quot;</span>);
+        <span class="kw">let </span>json: EpochSeedHashV1Json = serde_json::from_str(<span class="kw-2">&amp;</span>s_json)<span class="question-mark">?</span>;
+        <span class="kw">let </span>h: EpochSeed = json.into();
+        <span class="macro">assert_eq!</span>(<span class="kw-2">&amp;</span>h.to_string(), s);
+        <span class="kw">let </span>json: EpochSeedHashV1Json = h.into();
+        <span class="macro">assert_eq!</span>(serde_json::to_string(<span class="kw-2">&amp;</span>json)<span class="question-mark">?</span>, s_json);
         <span class="prelude-val">Ok</span>(())
     }
 
-    <span class="attribute">#[<span class="ident">test</span>]</span>
-    <span class="kw">fn</span> <span class="ident">snarked_ledger_hash_from_base58</span>() {
-        <span class="kw">let</span> <span class="ident">s</span> <span class="op">=</span> <span class="string">&quot;jx7buQVWFLsXTtzRgSxbYcT8EYLS8KCZbLrfDcJxMtyy4thw2Ee&quot;</span>;
-        <span class="kw">let</span> <span class="ident">h</span> <span class="op">=</span> <span class="ident">LedgerHash::from_str</span>(<span class="ident">s</span>).<span class="ident">unwrap</span>();
-        <span class="macro">assert_eq!</span>(<span class="kw-2">&amp;</span><span class="ident">h</span>.<span class="ident">to_string</span>(), <span class="ident">s</span>);
+    <span class="attribute">#[test]</span>
+    <span class="kw">fn </span>snarked_ledger_hash_from_base58() {
+        <span class="kw">let </span>s = <span class="string">&quot;jx7buQVWFLsXTtzRgSxbYcT8EYLS8KCZbLrfDcJxMtyy4thw2Ee&quot;</span>;
+        <span class="kw">let </span>h = LedgerHash::from_str(s).unwrap();
+        <span class="macro">assert_eq!</span>(<span class="kw-2">&amp;</span>h.to_string(), s);
     }
 
-    <span class="attribute">#[<span class="ident">test</span>]</span>
-    <span class="kw">fn</span> <span class="ident">snarked_ledger_hash_json_roundtrip</span>() -&gt; <span class="ident">anyhow::Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">s</span> <span class="op">=</span> <span class="string">&quot;jx7buQVWFLsXTtzRgSxbYcT8EYLS8KCZbLrfDcJxMtyy4thw2Ee&quot;</span>;
-        <span class="kw">let</span> <span class="ident">s_json</span> <span class="op">=</span> <span class="macro">format!</span>(<span class="string">&quot;\&quot;{s}\&quot;&quot;</span>);
-        <span class="kw">let</span> <span class="ident">json</span>: <span class="ident">LedgerHashV1Json</span> <span class="op">=</span> <span class="ident">serde_json::from_str</span>(<span class="kw-2">&amp;</span><span class="ident">s_json</span>)<span class="question-mark">?</span>;
-        <span class="kw">let</span> <span class="ident">h</span>: <span class="ident">LedgerHash</span> <span class="op">=</span> <span class="ident">json</span>.<span class="ident">into</span>();
-        <span class="macro">assert_eq!</span>(<span class="kw-2">&amp;</span><span class="ident">h</span>.<span class="ident">to_string</span>(), <span class="ident">s</span>);
-        <span class="kw">let</span> <span class="ident">json</span>: <span class="ident">LedgerHashV1Json</span> <span class="op">=</span> <span class="ident">h</span>.<span class="ident">into</span>();
-        <span class="macro">assert_eq!</span>(<span class="ident">serde_json::to_string</span>(<span class="kw-2">&amp;</span><span class="ident">json</span>)<span class="question-mark">?</span>, <span class="ident">s_json</span>);
+    <span class="attribute">#[test]</span>
+    <span class="kw">fn </span>snarked_ledger_hash_json_roundtrip() -&gt; anyhow::Result&lt;()&gt; {
+        <span class="kw">let </span>s = <span class="string">&quot;jx7buQVWFLsXTtzRgSxbYcT8EYLS8KCZbLrfDcJxMtyy4thw2Ee&quot;</span>;
+        <span class="kw">let </span>s_json = <span class="macro">format!</span>(<span class="string">&quot;\&quot;{s}\&quot;&quot;</span>);
+        <span class="kw">let </span>json: LedgerHashV1Json = serde_json::from_str(<span class="kw-2">&amp;</span>s_json)<span class="question-mark">?</span>;
+        <span class="kw">let </span>h: LedgerHash = json.into();
+        <span class="macro">assert_eq!</span>(<span class="kw-2">&amp;</span>h.to_string(), s);
+        <span class="kw">let </span>json: LedgerHashV1Json = h.into();
+        <span class="macro">assert_eq!</span>(serde_json::to_string(<span class="kw-2">&amp;</span>json)<span class="question-mark">?</span>, s_json);
         <span class="prelude-val">Ok</span>(())
     }
 
-    <span class="attribute">#[<span class="ident">test</span>]</span>
-    <span class="kw">fn</span> <span class="ident">roundtrip</span>() {
-        <span class="kw">let</span> <span class="ident">bytes</span> <span class="op">=</span> [
+    <span class="attribute">#[test]</span>
+    <span class="kw">fn </span>roundtrip() {
+        <span class="kw">let </span>bytes = [
             <span class="number">0x01</span>, <span class="number">0x01</span>, <span class="number">0x02</span>, <span class="number">0x03</span>, <span class="number">0x04</span>, <span class="number">0x05</span>, <span class="number">0x06</span>, <span class="number">0x07</span>, <span class="number">0x00_u8</span>, <span class="number">0x01</span>, <span class="number">0x02</span>, <span class="number">0x03</span>, <span class="number">0x04</span>, <span class="number">0x05</span>,
             <span class="number">0x06</span>, <span class="number">0x07</span>, <span class="number">0x00_u8</span>, <span class="number">0x01</span>, <span class="number">0x02</span>, <span class="number">0x03</span>, <span class="number">0x04</span>, <span class="number">0x05</span>, <span class="number">0x06</span>, <span class="number">0x07</span>, <span class="number">0x00_u8</span>, <span class="number">0x01</span>, <span class="number">0x02</span>,
             <span class="number">0x03</span>, <span class="number">0x04</span>, <span class="number">0x05</span>, <span class="number">0x06</span>, <span class="number">0x07</span>,
         ];
-        <span class="kw">let</span> <span class="ident">h</span> <span class="op">=</span> <span class="ident">LedgerHash</span>(<span class="ident">BaseHash</span>(<span class="ident">bytes</span>));
-        <span class="macro">assert_eq!</span>(<span class="ident">h</span>, <span class="ident">LedgerHash::from_str</span>(<span class="ident">h</span>.<span class="ident">to_string</span>().<span class="ident">as_str</span>()).<span class="ident">unwrap</span>())
+        <span class="kw">let </span>h = LedgerHash(BaseHash(bytes));
+        <span class="macro">assert_eq!</span>(h, LedgerHash::from_str(h.to_string().as_str()).unwrap())
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="mina_crypto" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (fe3342816 2022-08-01)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="mina_crypto" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (40336865f 2022-08-15)" ></div></body></html>

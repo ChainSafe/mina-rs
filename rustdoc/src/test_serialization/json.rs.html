@@ -440,42 +440,42 @@
 <span id="440">440</span>
 <span id="441">441</span>
 <span id="442">442</span>
-</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems</span>
-<span class="comment">// SPDX-License-Identifier: Apache-2.0</span>
+</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems
+// SPDX-License-Identifier: Apache-2.0
 
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">all</span>(<span class="ident">test</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;browser&quot;</span>))]</span>
-<span class="macro">wasm_bindgen_test::wasm_bindgen_test_configure!</span>(<span class="ident">run_in_browser</span>);
+</span><span class="attribute">#[cfg(all(test, feature = <span class="string">&quot;browser&quot;</span>))]</span>
+<span class="macro">wasm_bindgen_test::wasm_bindgen_test_configure!</span>(run_in_browser);
 
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
-<span class="kw">mod</span> <span class="ident">tests</span> {
-    <span class="kw">use</span> <span class="kw">crate</span>::<span class="kw-2">*</span>;
-    <span class="kw">use</span> <span class="ident">ark_ff::BigInteger256</span>;
-    <span class="kw">use</span> <span class="ident">mina_rs_base</span>::{<span class="ident">types</span>::<span class="kw-2">*</span>, <span class="kw-2">*</span>};
-    <span class="kw">use</span> <span class="ident">mina_serialization_types::json</span>::<span class="kw-2">*</span>;
-    <span class="kw">use</span> <span class="ident">num::BigUint</span>;
-    <span class="kw">use</span> <span class="ident">pretty_assertions::assert_eq</span>;
-    <span class="kw">use</span> <span class="ident">proof_systems::mina_hasher</span>::{<span class="ident">create_legacy</span>, <span class="ident">Hashable</span>, <span class="ident">Hasher</span>};
-    <span class="kw">use</span> <span class="ident">std::str::FromStr</span>;
-    <span class="kw">use</span> <span class="ident">wasm_bindgen_test</span>::<span class="kw-2">*</span>;
+<span class="attribute">#[cfg(test)]</span>
+<span class="kw">mod </span>tests {
+    <span class="kw">use crate</span>::<span class="kw-2">*</span>;
+    <span class="kw">use </span>ark_ff::BigInteger256;
+    <span class="kw">use </span>mina_rs_base::{types::<span class="kw-2">*</span>, <span class="kw-2">*</span>};
+    <span class="kw">use </span>mina_serialization_types::json::<span class="kw-2">*</span>;
+    <span class="kw">use </span>num::BigUint;
+    <span class="kw">use </span>pretty_assertions::assert_eq;
+    <span class="kw">use </span>proof_systems::mina_hasher::{create_legacy, Hashable, Hasher};
+    <span class="kw">use </span>std::str::FromStr;
+    <span class="kw">use </span>wasm_bindgen_test::<span class="kw-2">*</span>;
 
-    <span class="attribute">#[<span class="ident">test</span>]</span>
-    <span class="attribute">#[<span class="ident">wasm_bindgen_test</span>]</span>
-    <span class="kw">fn</span> <span class="ident">json_binprot_parity_tests</span>() {
-        <span class="kw">let</span> <span class="ident">block_fixture_binprot</span> <span class="op">=</span> <span class="ident">test_fixtures::TEST_BLOCKS</span>
-            .<span class="ident">get</span>(<span class="string">&quot;3NKjZ5fjms6BMaH4aq7DopPGyMY7PbG6vhRsX5XnYRxih8i9G7dj.hex&quot;</span>)
-            .<span class="ident">unwrap</span>();
-        <span class="kw">let</span> <span class="ident">block_from_binprot</span> <span class="op">=</span>
-            <span class="op">&lt;</span><span class="ident">ExternalTransition</span> <span class="kw">as</span> <span class="ident">BinProtSerializationType</span><span class="op">&gt;</span><span class="ident">::try_from_binprot</span>(
-                <span class="ident">block_fixture_binprot</span>.<span class="ident">bytes</span>.<span class="ident">as_slice</span>(),
+    <span class="attribute">#[test]</span>
+    <span class="attribute">#[wasm_bindgen_test]</span>
+    <span class="kw">fn </span>json_binprot_parity_tests() {
+        <span class="kw">let </span>block_fixture_binprot = test_fixtures::TEST_BLOCKS
+            .get(<span class="string">&quot;3NKjZ5fjms6BMaH4aq7DopPGyMY7PbG6vhRsX5XnYRxih8i9G7dj.hex&quot;</span>)
+            .unwrap();
+        <span class="kw">let </span>block_from_binprot =
+            &lt;ExternalTransition <span class="kw">as </span>BinProtSerializationType&gt;::try_from_binprot(
+                block_fixture_binprot.bytes.as_slice(),
             )
-            .<span class="ident">unwrap</span>();
-        <span class="kw">let</span> <span class="ident">json_value</span> <span class="op">=</span> <span class="ident">test_fixtures::JSON_TEST_BLOCKS</span>
-            .<span class="ident">get</span>(<span class="string">&quot;mainnet-117896-3NKjZ5fjms6BMaH4aq7DopPGyMY7PbG6vhRsX5XnYRxih8i9G7dj.json&quot;</span>)
-            .<span class="ident">unwrap</span>();
-        <span class="kw">let</span> <span class="ident">block_json</span>: <span class="op">&lt;</span><span class="ident">ExternalTransition</span> <span class="kw">as</span> <span class="ident">JsonSerializationType</span><span class="op">&gt;</span><span class="ident">::T</span> <span class="op">=</span>
-            <span class="ident">serde_json::from_value</span>(<span class="ident">json_value</span>.<span class="ident">clone</span>()).<span class="ident">unwrap</span>();
-        <span class="kw">let</span> <span class="ident">block_from_json</span> <span class="op">=</span> <span class="ident">block_json</span>.<span class="ident">into</span>();
-        <span class="macro">assert_eq!</span>(<span class="ident">block_from_binprot</span>, <span class="ident">block_from_json</span>);
+            .unwrap();
+        <span class="kw">let </span>json_value = test_fixtures::JSON_TEST_BLOCKS
+            .get(<span class="string">&quot;mainnet-117896-3NKjZ5fjms6BMaH4aq7DopPGyMY7PbG6vhRsX5XnYRxih8i9G7dj.json&quot;</span>)
+            .unwrap();
+        <span class="kw">let </span>block_json: &lt;ExternalTransition <span class="kw">as </span>JsonSerializationType&gt;::T =
+            serde_json::from_value(json_value.clone()).unwrap();
+        <span class="kw">let </span>block_from_json = block_json.into();
+        <span class="macro">assert_eq!</span>(block_from_binprot, block_from_json);
     }
 
     <span class="comment">/*
@@ -536,351 +536,351 @@
     staged_ledger_hash_hash:8746300742690142157461847113315645738247638524643087279433100997652654346784
     non_snark_digest:1f3f4109e8e81048dfa42023b6292e8cc0c54721a34097e4333c0c89cefc9c26
     non_snark_hash:26916965920202625828811831006264431911594993787410334374666335644820635123853
-    */</span>
-    <span class="attribute">#[<span class="ident">test</span>]</span>
-    <span class="attribute">#[<span class="ident">wasm_bindgen_test</span>]</span>
-    <span class="kw">fn</span> <span class="ident">protocol_state_hash_parity_test</span>() {
-        <span class="kw">let</span> <span class="ident">json_value</span> <span class="op">=</span> <span class="ident">test_fixtures::JSON_TEST_BLOCKS</span>
-            .<span class="ident">get</span>(<span class="string">&quot;mainnet-113267-3NKtqqstB6h8SVNQCtspFisjUwCTqoQ6cC1KGvb6kx6n2dqKkiZS.json&quot;</span>)
-            .<span class="ident">unwrap</span>();
-        <span class="kw">let</span> <span class="ident">block_json</span>: <span class="op">&lt;</span><span class="ident">ExternalTransition</span> <span class="kw">as</span> <span class="ident">JsonSerializationType</span><span class="op">&gt;</span><span class="ident">::T</span> <span class="op">=</span>
-            <span class="ident">serde_json::from_value</span>(<span class="ident">json_value</span>.<span class="ident">clone</span>()).<span class="ident">unwrap</span>();
-        <span class="kw">let</span> <span class="ident">block</span>: <span class="ident">ExternalTransition</span> <span class="op">=</span> <span class="ident">block_json</span>.<span class="ident">into</span>();
+    */
+    </span><span class="attribute">#[test]</span>
+    <span class="attribute">#[wasm_bindgen_test]</span>
+    <span class="kw">fn </span>protocol_state_hash_parity_test() {
+        <span class="kw">let </span>json_value = test_fixtures::JSON_TEST_BLOCKS
+            .get(<span class="string">&quot;mainnet-113267-3NKtqqstB6h8SVNQCtspFisjUwCTqoQ6cC1KGvb6kx6n2dqKkiZS.json&quot;</span>)
+            .unwrap();
+        <span class="kw">let </span>block_json: &lt;ExternalTransition <span class="kw">as </span>JsonSerializationType&gt;::T =
+            serde_json::from_value(json_value.clone()).unwrap();
+        <span class="kw">let </span>block: ExternalTransition = block_json.into();
 
-        <span class="kw">fn</span> <span class="ident">hash</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">Hashable</span><span class="op">&lt;</span><span class="ident">D</span> <span class="op">=</span> ()<span class="op">&gt;</span><span class="op">&gt;</span>(<span class="ident">t</span>: <span class="kw-2">&amp;</span><span class="ident">T</span>) -&gt; <span class="ident">String</span> {
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">hasher</span> <span class="op">=</span> <span class="ident">create_legacy</span>(());
-            <span class="kw">let</span> <span class="ident">hash</span> <span class="op">=</span> <span class="ident">hasher</span>.<span class="ident">hash</span>(<span class="ident">t</span>);
-            <span class="kw">let</span> <span class="ident">big256</span>: <span class="ident">BigInteger256</span> <span class="op">=</span> <span class="ident">hash</span>.<span class="ident">into</span>();
-            <span class="kw">let</span> <span class="ident">big</span>: <span class="ident">BigUint</span> <span class="op">=</span> <span class="ident">big256</span>.<span class="ident">into</span>();
-            <span class="ident">big</span>.<span class="ident">to_str_radix</span>(<span class="number">10</span>)
+        <span class="kw">fn </span>hash&lt;T: Hashable&lt;D = ()&gt;&gt;(t: <span class="kw-2">&amp;</span>T) -&gt; String {
+            <span class="kw">let </span><span class="kw-2">mut </span>hasher = create_legacy(());
+            <span class="kw">let </span>hash = hasher.hash(t);
+            <span class="kw">let </span>big256: BigInteger256 = hash.into();
+            <span class="kw">let </span>big: BigUint = big256.into();
+            big.to_str_radix(<span class="number">10</span>)
         }
 
         <span class="macro">assert_eq!</span>(
-            <span class="ident">hash</span>(<span class="kw-2">&amp;</span><span class="ident">block</span>.<span class="ident">protocol_state</span>.<span class="ident">body</span>.<span class="ident">constants</span>),
-            <span class="string">&quot;21283551842411620881532468880644102678972422874752466180084533585306358443047&quot;</span>
-        );
+            hash(<span class="kw-2">&amp;</span>block.protocol_state.body.constants),
+            <span class="string">&quot;21283551842411620881532468880644102678972422874752466180084533585306358443047&quot;
+        </span>);
 
         <span class="macro">assert_eq!</span>(
-            <span class="ident">hash</span>(<span class="kw-2">&amp;</span><span class="ident">block</span>.<span class="ident">protocol_state</span>.<span class="ident">body</span>.<span class="ident">consensus_state</span>.<span class="ident">last_vrf_output</span>),
-            <span class="string">&quot;25370206210950520779082257948618326030877049579889865033411963068050002039007&quot;</span>
-        );
+            hash(<span class="kw-2">&amp;</span>block.protocol_state.body.consensus_state.last_vrf_output),
+            <span class="string">&quot;25370206210950520779082257948618326030877049579889865033411963068050002039007&quot;
+        </span>);
 
         <span class="macro">assert_eq!</span>(
-            <span class="ident">hash</span>(<span class="kw-2">&amp;</span><span class="ident">block</span>.<span class="ident">protocol_state</span>.<span class="ident">body</span>.<span class="ident">consensus_state</span>),
-            <span class="string">&quot;4567520866406870569587277062959652446267293244931899281786637782228092413468&quot;</span>
-        );
+            hash(<span class="kw-2">&amp;</span>block.protocol_state.body.consensus_state),
+            <span class="string">&quot;4567520866406870569587277062959652446267293244931899281786637782228092413468&quot;
+        </span>);
 
         <span class="macro">assert_eq!</span>(
-            <span class="ident">hash</span>(<span class="kw-2">&amp;</span><span class="ident">block</span>.<span class="ident">protocol_state</span>.<span class="ident">body</span>.<span class="ident">blockchain_state</span>),
-            <span class="string">&quot;22984217591685958776680303176697091613340796570000046393879843972385768898212&quot;</span>
-        );
+            hash(<span class="kw-2">&amp;</span>block.protocol_state.body.blockchain_state),
+            <span class="string">&quot;22984217591685958776680303176697091613340796570000046393879843972385768898212&quot;
+        </span>);
 
         <span class="macro">assert_eq!</span>(
-            <span class="ident">hash</span>(
-                <span class="kw-2">&amp;</span><span class="ident">block</span>
-                    .<span class="ident">protocol_state</span>
-                    .<span class="ident">body</span>
-                    .<span class="ident">blockchain_state</span>
-                    .<span class="ident">snarked_next_available_token</span>
+            hash(
+                <span class="kw-2">&amp;</span>block
+                    .protocol_state
+                    .body
+                    .blockchain_state
+                    .snarked_next_available_token
             ),
-            <span class="string">&quot;5944847923306304475446774703885080487726156474234720095593426533796586636239&quot;</span>
-        );
+            <span class="string">&quot;5944847923306304475446774703885080487726156474234720095593426533796586636239&quot;
+        </span>);
 
         <span class="macro">assert_eq!</span>(
-            <span class="ident">hash</span>(
-                <span class="kw-2">&amp;</span><span class="ident">block</span>
-                    .<span class="ident">protocol_state</span>
-                    .<span class="ident">body</span>
-                    .<span class="ident">blockchain_state</span>
-                    .<span class="ident">snarked_next_available_token</span>
+            hash(
+                <span class="kw-2">&amp;</span>block
+                    .protocol_state
+                    .body
+                    .blockchain_state
+                    .snarked_next_available_token
             ),
-            <span class="string">&quot;5944847923306304475446774703885080487726156474234720095593426533796586636239&quot;</span>
-        );
+            <span class="string">&quot;5944847923306304475446774703885080487726156474234720095593426533796586636239&quot;
+        </span>);
 
         <span class="macro">assert_eq!</span>(
-            <span class="ident">hash</span>(<span class="kw-2">&amp;</span><span class="ident">block</span>.<span class="ident">protocol_state</span>.<span class="ident">body</span>.<span class="ident">blockchain_state</span>.<span class="ident">timestamp</span>),
-            <span class="string">&quot;48646600159211660110710851180350202765276633001045178862203248356708033087&quot;</span>
-        );
+            hash(<span class="kw-2">&amp;</span>block.protocol_state.body.blockchain_state.timestamp),
+            <span class="string">&quot;48646600159211660110710851180350202765276633001045178862203248356708033087&quot;
+        </span>);
 
         <span class="macro">assert_eq!</span>(
-            <span class="ident">hash</span>(
-                <span class="kw-2">&amp;</span><span class="ident">block</span>
-                    .<span class="ident">protocol_state</span>
-                    .<span class="ident">body</span>
-                    .<span class="ident">blockchain_state</span>
-                    .<span class="ident">staged_ledger_hash</span>
+            hash(
+                <span class="kw-2">&amp;</span>block
+                    .protocol_state
+                    .body
+                    .blockchain_state
+                    .staged_ledger_hash
             ),
-            <span class="string">&quot;8746300742690142157461847113315645738247638524643087279433100997652654346784&quot;</span>
-        );
+            <span class="string">&quot;8746300742690142157461847113315645738247638524643087279433100997652654346784&quot;
+        </span>);
 
         <span class="macro">assert_eq!</span>(
-            <span class="ident">hex::encode</span>(
-                <span class="ident">block</span>
-                    .<span class="ident">protocol_state</span>
-                    .<span class="ident">body</span>
-                    .<span class="ident">blockchain_state</span>
-                    .<span class="ident">staged_ledger_hash</span>
-                    .<span class="ident">non_snark</span>
-                    .<span class="ident">digest</span>()
+            hex::encode(
+                block
+                    .protocol_state
+                    .body
+                    .blockchain_state
+                    .staged_ledger_hash
+                    .non_snark
+                    .digest()
             ),
-            <span class="string">&quot;1f3f4109e8e81048dfa42023b6292e8cc0c54721a34097e4333c0c89cefc9c26&quot;</span>
-        );
+            <span class="string">&quot;1f3f4109e8e81048dfa42023b6292e8cc0c54721a34097e4333c0c89cefc9c26&quot;
+        </span>);
 
         <span class="macro">assert_eq!</span>(
-            <span class="ident">hash</span>(
-                <span class="kw-2">&amp;</span><span class="ident">block</span>
-                    .<span class="ident">protocol_state</span>
-                    .<span class="ident">body</span>
-                    .<span class="ident">blockchain_state</span>
-                    .<span class="ident">staged_ledger_hash</span>
-                    .<span class="ident">non_snark</span>
+            hash(
+                <span class="kw-2">&amp;</span>block
+                    .protocol_state
+                    .body
+                    .blockchain_state
+                    .staged_ledger_hash
+                    .non_snark
             ),
-            <span class="string">&quot;26916965920202625828811831006264431911594993787410334374666335644820635123853&quot;</span>
-        );
+            <span class="string">&quot;26916965920202625828811831006264431911594993787410334374666335644820635123853&quot;
+        </span>);
 
         <span class="macro">assert_eq!</span>(
-            <span class="ident">hash</span>(<span class="kw-2">&amp;</span><span class="ident">block</span>.<span class="ident">protocol_state</span>.<span class="ident">body</span>),
-            <span class="string">&quot;11547288559214200277520549031042137594317244691846831172842173442778999413309&quot;</span>
-        );
+            hash(<span class="kw-2">&amp;</span>block.protocol_state.body),
+            <span class="string">&quot;11547288559214200277520549031042137594317244691846831172842173442778999413309&quot;
+        </span>);
 
         <span class="macro">assert_eq!</span>(
-            <span class="ident">hash</span>(<span class="kw-2">&amp;</span><span class="ident">block</span>.<span class="ident">protocol_state</span>),
-            <span class="string">&quot;18109765379584684499155740919947103416101561945742376017305891046236717214321&quot;</span>
-        );
+            hash(<span class="kw-2">&amp;</span>block.protocol_state),
+            <span class="string">&quot;18109765379584684499155740919947103416101561945742376017305891046236717214321&quot;
+        </span>);
     }
 
-    <span class="attribute">#[<span class="ident">test</span>]</span>
-    <span class="attribute">#[<span class="ident">wasm_bindgen_test</span>]</span>
-    <span class="kw">fn</span> <span class="ident">json_binprot_state_hash_tests</span>() {
-        <span class="kw">for</span> (<span class="ident">file_name</span>, <span class="ident">json</span>) <span class="kw">in</span> <span class="ident">test_fixtures::JSON_TEST_BLOCKS</span>.<span class="ident">iter</span>() {
-            <span class="kw">let</span> <span class="ident">expected_state_hash</span> <span class="op">=</span> <span class="ident">file_name</span>
-                .<span class="ident">split</span>(<span class="string">&#39;.&#39;</span>)
-                .<span class="ident">nth</span>(<span class="number">0</span>)
-                .<span class="ident">unwrap_or_default</span>()
-                .<span class="ident">split</span>(<span class="string">&#39;-&#39;</span>)
-                .<span class="ident">last</span>()
-                .<span class="ident">unwrap_or_default</span>();
-            <span class="kw">let</span> <span class="ident">block_json</span>: <span class="op">&lt;</span><span class="ident">ExternalTransition</span> <span class="kw">as</span> <span class="ident">JsonSerializationType</span><span class="op">&gt;</span><span class="ident">::T</span> <span class="op">=</span>
-                <span class="ident">serde_json::from_value</span>(<span class="ident">json</span>.<span class="ident">clone</span>()).<span class="ident">unwrap</span>();
-            <span class="kw">let</span> <span class="ident">block</span>: <span class="ident">ExternalTransition</span> <span class="op">=</span> <span class="ident">block_json</span>.<span class="ident">into</span>();
-            <span class="kw">let</span> <span class="ident">state_hash</span> <span class="op">=</span> <span class="ident">block</span>.<span class="ident">protocol_state</span>.<span class="ident">state_hash</span>();
-            <span class="macro">assert_eq!</span>(<span class="kw-2">&amp;</span><span class="ident">state_hash</span>.<span class="ident">to_string</span>(), <span class="ident">expected_state_hash</span>);
+    <span class="attribute">#[test]</span>
+    <span class="attribute">#[wasm_bindgen_test]</span>
+    <span class="kw">fn </span>json_binprot_state_hash_tests() {
+        <span class="kw">for </span>(file_name, json) <span class="kw">in </span>test_fixtures::JSON_TEST_BLOCKS.iter() {
+            <span class="kw">let </span>expected_state_hash = file_name
+                .split(<span class="string">&#39;.&#39;</span>)
+                .nth(<span class="number">0</span>)
+                .unwrap_or_default()
+                .split(<span class="string">&#39;-&#39;</span>)
+                .last()
+                .unwrap_or_default();
+            <span class="kw">let </span>block_json: &lt;ExternalTransition <span class="kw">as </span>JsonSerializationType&gt;::T =
+                serde_json::from_value(json.clone()).unwrap();
+            <span class="kw">let </span>block: ExternalTransition = block_json.into();
+            <span class="kw">let </span>state_hash = block.protocol_state.state_hash();
+            <span class="macro">assert_eq!</span>(<span class="kw-2">&amp;</span>state_hash.to_string(), expected_state_hash);
         }
     }
 
-    <span class="attribute">#[<span class="ident">test</span>]</span>
-    <span class="attribute">#[<span class="ident">wasm_bindgen_test</span>]</span>
-    <span class="kw">fn</span> <span class="ident">consensus_state_json_serde_roundtrip</span>() {
+    <span class="attribute">#[test]</span>
+    <span class="attribute">#[wasm_bindgen_test]</span>
+    <span class="kw">fn </span>consensus_state_json_serde_roundtrip() {
         <span class="macro">json_serde_roundtrip!</span>(
-            <span class="ident">ConsensusState</span>,
-            <span class="ident">ConsensusStateJson</span>,
-            <span class="string">&quot;protocol_state/body/consensus_state&quot;</span>
-        );
+            ConsensusState,
+            ConsensusStateJson,
+            <span class="string">&quot;protocol_state/body/consensus_state&quot;
+        </span>);
     }
 
-    <span class="attribute">#[<span class="ident">test</span>]</span>
-    <span class="attribute">#[<span class="ident">wasm_bindgen_test</span>]</span>
-    <span class="kw">fn</span> <span class="ident">constants_json_serde_roundtrip</span>() {
+    <span class="attribute">#[test]</span>
+    <span class="attribute">#[wasm_bindgen_test]</span>
+    <span class="kw">fn </span>constants_json_serde_roundtrip() {
         <span class="macro">json_serde_roundtrip!</span>(
-            <span class="ident">ProtocolConstants</span>,
-            <span class="ident">ProtocolConstantsJson</span>,
-            <span class="string">&quot;protocol_state/body/constants&quot;</span>
-        );
+            ProtocolConstants,
+            ProtocolConstantsJson,
+            <span class="string">&quot;protocol_state/body/constants&quot;
+        </span>);
     }
 
-    <span class="attribute">#[<span class="ident">test</span>]</span>
-    <span class="attribute">#[<span class="ident">wasm_bindgen_test</span>]</span>
-    <span class="kw">fn</span> <span class="ident">blockchain_state_json_serde_roundtrip</span>() {
+    <span class="attribute">#[test]</span>
+    <span class="attribute">#[wasm_bindgen_test]</span>
+    <span class="kw">fn </span>blockchain_state_json_serde_roundtrip() {
         <span class="macro">json_serde_roundtrip!</span>(
-            <span class="ident">BlockchainState</span>,
-            <span class="ident">BlockchainStateJson</span>,
-            <span class="string">&quot;protocol_state/body/blockchain_state&quot;</span>
-        );
+            BlockchainState,
+            BlockchainStateJson,
+            <span class="string">&quot;protocol_state/body/blockchain_state&quot;
+        </span>);
     }
 
-    <span class="attribute">#[<span class="ident">test</span>]</span>
-    <span class="attribute">#[<span class="ident">wasm_bindgen_test</span>]</span>
-    <span class="kw">fn</span> <span class="ident">protocol_state_body_json_serde_roundtrip</span>() {
+    <span class="attribute">#[test]</span>
+    <span class="attribute">#[wasm_bindgen_test]</span>
+    <span class="kw">fn </span>protocol_state_body_json_serde_roundtrip() {
         <span class="macro">json_serde_roundtrip!</span>(
-            <span class="ident">ProtocolStateBody</span>,
-            <span class="ident">ProtocolStateBodyJson</span>,
-            <span class="string">&quot;protocol_state/body&quot;</span>
-        );
+            ProtocolStateBody,
+            ProtocolStateBodyJson,
+            <span class="string">&quot;protocol_state/body&quot;
+        </span>);
     }
 
-    <span class="attribute">#[<span class="ident">test</span>]</span>
-    <span class="attribute">#[<span class="ident">wasm_bindgen_test</span>]</span>
-    <span class="kw">fn</span> <span class="ident">protocol_state_json_serde_roundtrip</span>() {
-        <span class="macro">json_serde_roundtrip!</span>(<span class="ident">ProtocolState</span>, <span class="ident">ProtocolStateJson</span>, <span class="string">&quot;protocol_state&quot;</span>);
+    <span class="attribute">#[test]</span>
+    <span class="attribute">#[wasm_bindgen_test]</span>
+    <span class="kw">fn </span>protocol_state_json_serde_roundtrip() {
+        <span class="macro">json_serde_roundtrip!</span>(ProtocolState, ProtocolStateJson, <span class="string">&quot;protocol_state&quot;</span>);
     }
 
-    <span class="attribute">#[<span class="ident">test</span>]</span>
-    <span class="attribute">#[<span class="ident">wasm_bindgen_test</span>]</span>
-    <span class="kw">fn</span> <span class="ident">protocol_state_proof_json_serde_roundtrip</span>() {
+    <span class="attribute">#[test]</span>
+    <span class="attribute">#[wasm_bindgen_test]</span>
+    <span class="kw">fn </span>protocol_state_proof_json_serde_roundtrip() {
         <span class="macro">json_serde_roundtrip!</span>(
-            <span class="ident">ProtocolStateProof</span>,
-            <span class="ident">ProtocolStateProofBase64Json</span>,
-            <span class="string">&quot;protocol_state_proof&quot;</span>
-        );
+            ProtocolStateProof,
+            ProtocolStateProofBase64Json,
+            <span class="string">&quot;protocol_state_proof&quot;
+        </span>);
     }
 
-    <span class="attribute">#[<span class="ident">test</span>]</span>
-    <span class="attribute">#[<span class="ident">wasm_bindgen_test</span>]</span>
-    <span class="kw">fn</span> <span class="ident">delta_transition_chain_proof_json_serde_roundtrip</span>() {
+    <span class="attribute">#[test]</span>
+    <span class="attribute">#[wasm_bindgen_test]</span>
+    <span class="kw">fn </span>delta_transition_chain_proof_json_serde_roundtrip() {
         <span class="macro">json_serde_roundtrip!</span>(
-            <span class="ident">DeltaTransitionChainProof</span>,
-            <span class="ident">DeltaTransitionChainProofJson</span>,
-            <span class="string">&quot;delta_transition_chain_proof&quot;</span>
-        );
+            DeltaTransitionChainProof,
+            DeltaTransitionChainProofJson,
+            <span class="string">&quot;delta_transition_chain_proof&quot;
+        </span>);
     }
 
-    <span class="attribute">#[<span class="ident">test</span>]</span>
-    <span class="attribute">#[<span class="ident">wasm_bindgen_test</span>]</span>
-    <span class="kw">fn</span> <span class="ident">completed_works_json_serde_roundtrip</span>() {
+    <span class="attribute">#[test]</span>
+    <span class="attribute">#[wasm_bindgen_test]</span>
+    <span class="kw">fn </span>completed_works_json_serde_roundtrip() {
         <span class="macro">json_serde_roundtrip!</span>(
-            <span class="ident">TransactionSnarkWork</span>,
-            <span class="ident">TransactionSnarkWorkJson</span>,
-            <span class="string">&quot;staged_ledger_diff/diff/0/completed_works/0&quot;</span>
-        );
+            TransactionSnarkWork,
+            TransactionSnarkWorkJson,
+            <span class="string">&quot;staged_ledger_diff/diff/0/completed_works/0&quot;
+        </span>);
     }
 
-    <span class="attribute">#[<span class="ident">test</span>]</span>
-    <span class="attribute">#[<span class="ident">wasm_bindgen_test</span>]</span>
-    <span class="kw">fn</span> <span class="ident">completed_works_proofs_statement_json_serde_roundtrip</span>() {
+    <span class="attribute">#[test]</span>
+    <span class="attribute">#[wasm_bindgen_test]</span>
+    <span class="kw">fn </span>completed_works_proofs_statement_json_serde_roundtrip() {
         <span class="macro">json_serde_roundtrip!</span>(
-            <span class="ident">Statement</span>,
-            <span class="ident">StatementJson</span>,
-            <span class="string">&quot;staged_ledger_diff/diff/0/completed_works/0/proofs/1/statement&quot;</span>
-        );
+            Statement,
+            StatementJson,
+            <span class="string">&quot;staged_ledger_diff/diff/0/completed_works/0/proofs/1/statement&quot;
+        </span>);
     }
 
-    <span class="attribute">#[<span class="ident">test</span>]</span>
-    <span class="attribute">#[<span class="ident">wasm_bindgen_test</span>]</span>
-    <span class="kw">fn</span> <span class="ident">completed_works_proofs_proof_json_serde_roundtrip</span>() {
+    <span class="attribute">#[test]</span>
+    <span class="attribute">#[wasm_bindgen_test]</span>
+    <span class="kw">fn </span>completed_works_proofs_proof_json_serde_roundtrip() {
         <span class="macro">json_serde_roundtrip!</span>(
-            <span class="ident">ProtocolStateProof</span>,
-            <span class="ident">ProtocolStateProofJson</span>,
-            <span class="string">&quot;staged_ledger_diff/diff/0/completed_works/0/proofs/1/proof&quot;</span>
-        );
+            ProtocolStateProof,
+            ProtocolStateProofJson,
+            <span class="string">&quot;staged_ledger_diff/diff/0/completed_works/0/proofs/1/proof&quot;
+        </span>);
     }
 
-    <span class="attribute">#[<span class="ident">test</span>]</span>
-    <span class="attribute">#[<span class="ident">wasm_bindgen_test</span>]</span>
-    <span class="kw">fn</span> <span class="ident">completed_works_proofs_proof_statement_json_serde_roundtrip</span>() {
+    <span class="attribute">#[test]</span>
+    <span class="attribute">#[wasm_bindgen_test]</span>
+    <span class="kw">fn </span>completed_works_proofs_proof_statement_json_serde_roundtrip() {
         <span class="macro">json_serde_roundtrip!</span>(
-            <span class="ident">ProofStatement</span>,
-            <span class="ident">ProofStatementJson</span>,
-            <span class="string">&quot;staged_ledger_diff/diff/0/completed_works/0/proofs/1/proof/statement&quot;</span>
-        );
+            ProofStatement,
+            ProofStatementJson,
+            <span class="string">&quot;staged_ledger_diff/diff/0/completed_works/0/proofs/1/proof/statement&quot;
+        </span>);
     }
 
-    <span class="attribute">#[<span class="ident">test</span>]</span>
-    <span class="attribute">#[<span class="ident">wasm_bindgen_test</span>]</span>
-    <span class="kw">fn</span> <span class="ident">commands_json_serde_roundtrip</span>() {
+    <span class="attribute">#[test]</span>
+    <span class="attribute">#[wasm_bindgen_test]</span>
+    <span class="kw">fn </span>commands_json_serde_roundtrip() {
         <span class="macro">json_serde_roundtrip!</span>(
-            <span class="ident">UserCommandWithStatus</span>,
-            <span class="ident">UserCommandWithStatusJson</span>,
-            <span class="string">&quot;staged_ledger_diff/diff/0/commands/0&quot;</span>
-        );
+            UserCommandWithStatus,
+            UserCommandWithStatusJson,
+            <span class="string">&quot;staged_ledger_diff/diff/0/commands/0&quot;
+        </span>);
     }
 
-    <span class="attribute">#[<span class="ident">test</span>]</span>
-    <span class="attribute">#[<span class="ident">wasm_bindgen_test</span>]</span>
-    <span class="kw">fn</span> <span class="ident">user_command_json_serde_roundtrip</span>() {
+    <span class="attribute">#[test]</span>
+    <span class="attribute">#[wasm_bindgen_test]</span>
+    <span class="kw">fn </span>user_command_json_serde_roundtrip() {
         <span class="macro">json_serde_roundtrip!</span>(
-            <span class="ident">UserCommand</span>,
-            <span class="ident">UserCommandJson</span>,
-            <span class="string">&quot;staged_ledger_diff/diff/0/commands/0/data&quot;</span>
-        );
+            UserCommand,
+            UserCommandJson,
+            <span class="string">&quot;staged_ledger_diff/diff/0/commands/0/data&quot;
+        </span>);
     }
 
-    <span class="attribute">#[<span class="ident">test</span>]</span>
-    <span class="attribute">#[<span class="ident">wasm_bindgen_test</span>]</span>
-    <span class="kw">fn</span> <span class="ident">user_command_json_serde_roundtrip_2</span>() {
+    <span class="attribute">#[test]</span>
+    <span class="attribute">#[wasm_bindgen_test]</span>
+    <span class="kw">fn </span>user_command_json_serde_roundtrip_2() {
         <span class="macro">json_serde_roundtrip!</span>(
-            <span class="ident">UserCommand</span>,
-            <span class="ident">UserCommandJson</span>,
-            <span class="string">&quot;staged_ledger_diff/diff/0/commands/2/data&quot;</span>
-        );
+            UserCommand,
+            UserCommandJson,
+            <span class="string">&quot;staged_ledger_diff/diff/0/commands/2/data&quot;
+        </span>);
     }
 
-    <span class="attribute">#[<span class="ident">test</span>]</span>
-    <span class="attribute">#[<span class="ident">wasm_bindgen_test</span>]</span>
-    <span class="kw">fn</span> <span class="ident">transaction_status_json_serde_roundtrip</span>() {
+    <span class="attribute">#[test]</span>
+    <span class="attribute">#[wasm_bindgen_test]</span>
+    <span class="kw">fn </span>transaction_status_json_serde_roundtrip() {
         <span class="macro">json_serde_roundtrip!</span>(
-            <span class="ident">TransactionStatus</span>,
-            <span class="ident">TransactionStatusJson</span>,
-            <span class="string">&quot;staged_ledger_diff/diff/0/commands/0/status&quot;</span>
-        );
+            TransactionStatus,
+            TransactionStatusJson,
+            <span class="string">&quot;staged_ledger_diff/diff/0/commands/0/status&quot;
+        </span>);
     }
 
-    <span class="attribute">#[<span class="ident">test</span>]</span>
-    <span class="attribute">#[<span class="ident">wasm_bindgen_test</span>]</span>
-    <span class="kw">fn</span> <span class="ident">internal_command_balances_json_serde_roundtrip</span>() {
+    <span class="attribute">#[test]</span>
+    <span class="attribute">#[wasm_bindgen_test]</span>
+    <span class="kw">fn </span>internal_command_balances_json_serde_roundtrip() {
         <span class="macro">json_serde_roundtrip!</span>(
-            <span class="ident">InternalCommandBalanceData</span>,
-            <span class="ident">InternalCommandBalanceDataJson</span>,
-            <span class="string">&quot;staged_ledger_diff/diff/0/internal_command_balances/0&quot;</span>
-        );
+            InternalCommandBalanceData,
+            InternalCommandBalanceDataJson,
+            <span class="string">&quot;staged_ledger_diff/diff/0/internal_command_balances/0&quot;
+        </span>);
     }
 
-    <span class="attribute">#[<span class="ident">test</span>]</span>
-    <span class="attribute">#[<span class="ident">wasm_bindgen_test</span>]</span>
-    <span class="kw">fn</span> <span class="ident">coinbase_json_serde_roundtrip</span>() {
-        <span class="macro">json_serde_roundtrip!</span>(<span class="ident">CoinBase</span>, <span class="ident">CoinBaseJson</span>, <span class="string">&quot;staged_ledger_diff/diff/0/coinbase&quot;</span>);
+    <span class="attribute">#[test]</span>
+    <span class="attribute">#[wasm_bindgen_test]</span>
+    <span class="kw">fn </span>coinbase_json_serde_roundtrip() {
+        <span class="macro">json_serde_roundtrip!</span>(CoinBase, CoinBaseJson, <span class="string">&quot;staged_ledger_diff/diff/0/coinbase&quot;</span>);
     }
 
-    <span class="attribute">#[<span class="ident">test</span>]</span>
-    <span class="attribute">#[<span class="ident">wasm_bindgen_test</span>]</span>
-    <span class="kw">fn</span> <span class="ident">staged_ledger_diff_json_serde_roundtrip</span>() {
-        <span class="macro">json_serde_roundtrip!</span>(<span class="ident">StagedLedgerDiff</span>, <span class="ident">StagedLedgerDiffJson</span>, <span class="string">&quot;staged_ledger_diff&quot;</span>);
+    <span class="attribute">#[test]</span>
+    <span class="attribute">#[wasm_bindgen_test]</span>
+    <span class="kw">fn </span>staged_ledger_diff_json_serde_roundtrip() {
+        <span class="macro">json_serde_roundtrip!</span>(StagedLedgerDiff, StagedLedgerDiffJson, <span class="string">&quot;staged_ledger_diff&quot;</span>);
     }
 
-    <span class="attribute">#[<span class="ident">test</span>]</span>
-    <span class="attribute">#[<span class="ident">wasm_bindgen_test</span>]</span>
-    <span class="kw">fn</span> <span class="ident">block_json_serde_roundtrip</span>() {
-        <span class="macro">json_serde_roundtrip!</span>(<span class="ident">ExternalTransition</span>, <span class="ident">ExternalTransitionJson</span>, <span class="string">&quot;&quot;</span>);
+    <span class="attribute">#[test]</span>
+    <span class="attribute">#[wasm_bindgen_test]</span>
+    <span class="kw">fn </span>block_json_serde_roundtrip() {
+        <span class="macro">json_serde_roundtrip!</span>(ExternalTransition, ExternalTransitionJson, <span class="string">&quot;&quot;</span>);
     }
 
-    <span class="attribute">#[<span class="ident">macro_export</span>]</span>
-    <span class="macro">macro_rules!</span> <span class="ident">json_serde_roundtrip</span> {
-        (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">ty</span>: <span class="ident">ty</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">ty_json</span>: <span class="ident">ty</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">path</span>: <span class="ident">literal</span>) =&gt; {
-            (<span class="op">|</span><span class="op">|</span> {
-                <span class="lifetime">&#39;outer</span>: <span class="kw">for</span> (<span class="kw">_</span>, <span class="kw-2">mut</span> <span class="ident">json</span>) <span class="kw">in</span> <span class="ident">test_fixtures::JSON_TEST_BLOCKS</span>.<span class="ident">iter</span>() {
-                    <span class="kw">if</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">path</span>.<span class="ident">len</span>() <span class="op">&gt;</span> <span class="number">0</span> {
-                        <span class="kw">for</span> <span class="ident">p</span> <span class="kw">in</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">path</span>.<span class="ident">split</span>(<span class="string">&#39;/&#39;</span>) {
-                            <span class="ident">json</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">usize::from_str</span>(<span class="ident">p</span>) {
-                                <span class="prelude-val">Ok</span>(<span class="ident">index</span>) =&gt; {
-                                    <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">array</span>) <span class="op">=</span> <span class="ident">json</span>.<span class="ident">as_array</span>() {
-                                        <span class="kw">if</span> <span class="ident">index</span> <span class="op">&gt;</span><span class="op">=</span> <span class="ident">array</span>.<span class="ident">len</span>() {
-                                            <span class="kw">continue</span> <span class="lifetime">&#39;outer</span>;
+    <span class="attribute">#[macro_export]</span>
+    <span class="macro">macro_rules!</span> json_serde_roundtrip {
+        (<span class="macro-nonterminal">$ty</span>: ty, <span class="macro-nonterminal">$ty_json</span>: ty, <span class="macro-nonterminal">$path</span>: literal) =&gt; {
+            (|| {
+                <span class="lifetime">&#39;outer</span>: <span class="kw">for </span>(<span class="kw">_</span>, <span class="kw-2">mut </span>json) <span class="kw">in </span>test_fixtures::JSON_TEST_BLOCKS.iter() {
+                    <span class="kw">if </span><span class="macro-nonterminal">$path</span>.len() &gt; <span class="number">0 </span>{
+                        <span class="kw">for </span>p <span class="kw">in </span><span class="macro-nonterminal">$path</span>.split(<span class="string">&#39;/&#39;</span>) {
+                            json = <span class="kw">match </span>usize::from_str(p) {
+                                <span class="prelude-val">Ok</span>(index) =&gt; {
+                                    <span class="kw">if let </span><span class="prelude-val">Some</span>(array) = json.as_array() {
+                                        <span class="kw">if </span>index &gt;= array.len() {
+                                            <span class="kw">continue </span><span class="lifetime">&#39;outer</span>;
                                         }
-                                        <span class="kw-2">&amp;</span><span class="ident">array</span>[<span class="ident">index</span>]
-                                    } <span class="kw">else</span> {
+                                        <span class="kw-2">&amp;</span>array[index]
+                                    } <span class="kw">else </span>{
                                         <span class="macro">panic!</span>(<span class="string">&quot;Array expect&quot;</span>);
                                     }
                                 }
-                                <span class="kw">_</span> =&gt; <span class="kw-2">&amp;</span><span class="ident">json</span>[<span class="ident">p</span>],
+                                <span class="kw">_ </span>=&gt; <span class="kw-2">&amp;</span>json[p],
                             };
                         }
                     }
-                    <span class="kw">let</span> <span class="ident">cs</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">ty</span> <span class="op">=</span> {
-                        <span class="kw">let</span> <span class="ident">json_string</span> <span class="op">=</span> <span class="ident">serde_json::to_string_pretty</span>(<span class="ident">json</span>)<span class="question-mark">?</span>;
-                        <span class="kw">let</span> <span class="ident">json</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">ty_json</span> <span class="op">=</span> <span class="ident">serde_json::from_str</span>(<span class="ident">json_string</span>.<span class="ident">as_str</span>())
-                            .<span class="ident">map_err</span>(<span class="op">|</span><span class="ident">err</span><span class="op">|</span> <span class="ident">anyhow::Error::msg</span>(<span class="macro">format!</span>(<span class="string">&quot;{json_string}\n\n{err}&quot;</span>)))<span class="question-mark">?</span>;
-                        <span class="ident">json</span>.<span class="ident">into</span>()
+                    <span class="kw">let </span>cs: <span class="macro-nonterminal">$ty </span>= {
+                        <span class="kw">let </span>json_string = serde_json::to_string_pretty(json)<span class="question-mark">?</span>;
+                        <span class="kw">let </span>json: <span class="macro-nonterminal">$ty_json </span>= serde_json::from_str(json_string.as_str())
+                            .map_err(|err| anyhow::Error::msg(<span class="macro">format!</span>(<span class="string">&quot;{json_string}\n\n{err}&quot;</span>)))<span class="question-mark">?</span>;
+                        json.into()
                     };
-                    <span class="kw">let</span> <span class="ident">json_from_cs</span> <span class="op">=</span> {
-                        <span class="kw">let</span> <span class="ident">json</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">ty_json</span> <span class="op">=</span> <span class="ident">cs</span>.<span class="ident">into</span>();
-                        <span class="ident">serde_json::to_value</span>(<span class="kw-2">&amp;</span><span class="ident">json</span>)<span class="question-mark">?</span>
-                    };
-                    <span class="macro">assert_eq!</span>(<span class="ident">json</span>, <span class="kw-2">&amp;</span><span class="ident">json_from_cs</span>);
+                    <span class="kw">let </span>json_from_cs = {
+                        <span class="kw">let </span>json: <span class="macro-nonterminal">$ty_json </span>= cs.into();
+                        serde_json::to_value(<span class="kw-2">&amp;</span>json)<span class="question-mark">?
+                    </span>};
+                    <span class="macro">assert_eq!</span>(json, <span class="kw-2">&amp;</span>json_from_cs);
                 }
-                <span class="prelude-val">Ok</span>::<span class="op">&lt;</span><span class="kw">_</span>, <span class="ident">anyhow::Error</span><span class="op">&gt;</span>(())
+                <span class="prelude-val">Ok</span>::&lt;<span class="kw">_</span>, anyhow::Error&gt;(())
             })()
-            .<span class="ident">unwrap</span>();
+            .unwrap();
         };
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="test_serialization" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (fe3342816 2022-08-01)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="test_serialization" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (40336865f 2022-08-15)" ></div></body></html>

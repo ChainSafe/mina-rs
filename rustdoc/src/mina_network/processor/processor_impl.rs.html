@@ -73,80 +73,80 @@
 <span id="73">73</span>
 <span id="74">74</span>
 <span id="75">75</span>
-</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems</span>
-<span class="comment">// SPDX-License-Identifier: Apache-2.0</span>
+</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems
+// SPDX-License-Identifier: Apache-2.0
 
-<span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
-<span class="kw">use</span> <span class="ident">log::error</span>;
-<span class="kw">use</span> <span class="ident">std::marker</span>::{<span class="ident">Send</span>, <span class="ident">Sync</span>};
-<span class="kw">use</span> <span class="ident">tokio::sync</span>::{<span class="ident">RwLock</span>, <span class="ident">RwLockReadGuard</span>};
+</span><span class="kw">use super</span>::<span class="kw-2">*</span>;
+<span class="kw">use </span>log::error;
+<span class="kw">use </span>std::marker::{Send, Sync};
+<span class="kw">use </span>tokio::sync::{RwLock, RwLockReadGuard};
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">NetworkBlock</span>, <span class="ident">FrontierBlock</span>, <span class="ident">TF</span>, <span class="ident">NCOps</span><span class="op">&gt;</span>
-    <span class="ident">NetworkMessageProcessor</span><span class="op">&lt;</span><span class="ident">NetworkBlock</span>, <span class="ident">FrontierBlock</span>, <span class="ident">TF</span>, <span class="ident">NCOps</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">TF</span>: <span class="ident">TransitionFrontier</span><span class="op">&lt;</span><span class="ident">Block</span> <span class="op">=</span> <span class="ident">FrontierBlock</span><span class="op">&gt;</span>,
-    <span class="ident">NCOps</span>: <span class="ident">NonConsensusNetworkingOps</span><span class="op">&lt;</span><span class="ident">Block</span> <span class="op">=</span> <span class="ident">NetworkBlock</span><span class="op">&gt;</span>,
-    <span class="ident">NetworkBlock</span>: <span class="ident">Send</span> <span class="op">+</span> <span class="ident">Sync</span>,
-    <span class="ident">FrontierBlock</span>: <span class="ident">From</span><span class="op">&lt;</span><span class="ident">NetworkBlock</span><span class="op">&gt;</span>,
+<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, NetworkBlock, FrontierBlock, TF, NCOps&gt;
+    NetworkMessageProcessor&lt;NetworkBlock, FrontierBlock, TF, NCOps&gt;
+<span class="kw">where
+    </span>TF: TransitionFrontier&lt;Block = FrontierBlock&gt;,
+    NCOps: NonConsensusNetworkingOps&lt;Block = NetworkBlock&gt;,
+    NetworkBlock: Send + Sync,
+    FrontierBlock: From&lt;NetworkBlock&gt;,
 {
-    <span class="doccomment">/// Creates a new [NetworkMessageProcessor] with the given [TransitionFrontier] and</span>
-    <span class="doccomment">/// [NonConsensusNetworkingOps], initializing all the message channels for the communication</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="kw-2">mut</span> <span class="ident">transition_frontier</span>: <span class="ident">TF</span>, <span class="kw-2">mut</span> <span class="ident">nonconsensus_ops</span>: <span class="ident">NCOps</span>) -&gt; <span class="self">Self</span> {
-        <span class="comment">// TODO: make buffer size configurable, use rendezvous channel for now</span>
-        <span class="kw">let</span> (<span class="ident">sender</span>, <span class="ident">block_receiver</span>) <span class="op">=</span> <span class="ident">mpsc::channel</span>(<span class="number">1</span>);
-        <span class="ident">nonconsensus_ops</span>.<span class="ident">set_block_responder</span>(<span class="ident">sender</span>);
+    <span class="doccomment">/// Creates a new [NetworkMessageProcessor] with the given [TransitionFrontier] and
+    /// [NonConsensusNetworkingOps], initializing all the message channels for the communication
+    </span><span class="kw">pub fn </span>new(<span class="kw-2">mut </span>transition_frontier: TF, <span class="kw-2">mut </span>nonconsensus_ops: NCOps) -&gt; <span class="self">Self </span>{
+        <span class="comment">// TODO: make buffer size configurable, use rendezvous channel for now
+        </span><span class="kw">let </span>(sender, block_receiver) = mpsc::channel(<span class="number">1</span>);
+        nonconsensus_ops.set_block_responder(sender);
 
-        <span class="comment">// TODO: make buffer size configurable, use rendezvous channel for now</span>
-        <span class="kw">let</span> (<span class="ident">sender</span>, <span class="ident">query_block_request_receiver</span>) <span class="op">=</span> <span class="ident">mpsc::channel</span>::<span class="op">&lt;</span><span class="ident">QueryBlockRequest</span><span class="op">&gt;</span>(<span class="number">1</span>);
-        <span class="ident">transition_frontier</span>.<span class="ident">set_block_requester</span>(<span class="ident">sender</span>);
+        <span class="comment">// TODO: make buffer size configurable, use rendezvous channel for now
+        </span><span class="kw">let </span>(sender, query_block_request_receiver) = mpsc::channel::&lt;QueryBlockRequest&gt;(<span class="number">1</span>);
+        transition_frontier.set_block_requester(sender);
 
-        <span class="self">Self</span> {
-            <span class="ident">transition_frontier</span>: <span class="ident">RwLock::new</span>(<span class="ident">transition_frontier</span>),
-            <span class="ident">nonconsensus_ops</span>: <span class="ident">RwLock::new</span>(<span class="ident">nonconsensus_ops</span>),
-            <span class="ident">block_receiver</span>: <span class="ident">RwLock::new</span>(<span class="ident">block_receiver</span>),
-            <span class="ident">query_block_request_receiver</span>: <span class="ident">RwLock::new</span>(<span class="ident">query_block_request_receiver</span>),
+        <span class="self">Self </span>{
+            transition_frontier: RwLock::new(transition_frontier),
+            nonconsensus_ops: RwLock::new(nonconsensus_ops),
+            block_receiver: RwLock::new(block_receiver),
+            query_block_request_receiver: RwLock::new(query_block_request_receiver),
         }
     }
 
-    <span class="doccomment">/// Gets the [TransitionFrontier] instance</span>
-    <span class="kw">pub</span> <span class="kw">async</span> <span class="kw">fn</span> <span class="ident">transition_frontier</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="self">self</span>) -&gt; <span class="ident">RwLockReadGuard</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">TF</span><span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="ident">transition_frontier</span>.<span class="ident">read</span>().<span class="kw">await</span>
+    <span class="doccomment">/// Gets the [TransitionFrontier] instance
+    </span><span class="kw">pub async fn </span>transition_frontier(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span><span class="self">self</span>) -&gt; RwLockReadGuard&lt;<span class="lifetime">&#39;a</span>, TF&gt; {
+        <span class="self">self</span>.transition_frontier.read().<span class="kw">await
+    </span>}
+
+    <span class="doccomment">/// Gets the [NonConsensusNetworkingOps] instance
+    </span><span class="kw">pub async fn </span>nonconsensus_ops(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span><span class="self">self</span>) -&gt; RwLockReadGuard&lt;<span class="lifetime">&#39;a</span>, NCOps&gt; {
+        <span class="self">self</span>.nonconsensus_ops.read().<span class="kw">await
+    </span>}
+
+    <span class="doccomment">/// Schedules event loops of all types of communications between [TransitionFrontier] and
+    /// [NonConsensusNetworkingOps].
+    </span><span class="kw">pub async fn </span>run(<span class="kw-2">&amp;</span><span class="self">self</span>) {
+        <span class="macro">tokio::join!</span>(<span class="self">self</span>.run_recv_block_loop(), <span class="self">self</span>.run_query_block_loop());
     }
 
-    <span class="doccomment">/// Gets the [NonConsensusNetworkingOps] instance</span>
-    <span class="kw">pub</span> <span class="kw">async</span> <span class="kw">fn</span> <span class="ident">nonconsensus_ops</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="self">self</span>) -&gt; <span class="ident">RwLockReadGuard</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">NCOps</span><span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="ident">nonconsensus_ops</span>.<span class="ident">read</span>().<span class="kw">await</span>
-    }
-
-    <span class="doccomment">/// Schedules event loops of all types of communications between [TransitionFrontier] and</span>
-    <span class="doccomment">/// [NonConsensusNetworkingOps].</span>
-    <span class="kw">pub</span> <span class="kw">async</span> <span class="kw">fn</span> <span class="ident">run</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) {
-        <span class="macro">tokio::join!</span>(<span class="self">self</span>.<span class="ident">run_recv_block_loop</span>(), <span class="self">self</span>.<span class="ident">run_query_block_loop</span>());
-    }
-
-    <span class="doccomment">/// Schedules the event loop of sending blocks that are received from the network</span>
-    <span class="doccomment">/// to the [TransitionFrontier]</span>
-    <span class="kw">async</span> <span class="kw">fn</span> <span class="ident">run_recv_block_loop</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">block_receiver</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">block_receiver</span>.<span class="ident">write</span>().<span class="kw">await</span>;
-        <span class="kw">while</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">block</span>) <span class="op">=</span> <span class="ident">block_receiver</span>.<span class="ident">recv</span>().<span class="kw">await</span> {
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">transition_frontier</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">transition_frontier</span>.<span class="ident">write</span>().<span class="kw">await</span>;
-            <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Err</span>(<span class="ident">err</span>) <span class="op">=</span> <span class="ident">transition_frontier</span>.<span class="ident">add_block</span>(<span class="ident">block</span>.<span class="ident">into</span>()).<span class="kw">await</span> {
+    <span class="doccomment">/// Schedules the event loop of sending blocks that are received from the network
+    /// to the [TransitionFrontier]
+    </span><span class="kw">async fn </span>run_recv_block_loop(<span class="kw-2">&amp;</span><span class="self">self</span>) {
+        <span class="kw">let </span><span class="kw-2">mut </span>block_receiver = <span class="self">self</span>.block_receiver.write().<span class="kw">await</span>;
+        <span class="kw">while let </span><span class="prelude-val">Some</span>(block) = block_receiver.recv().<span class="kw">await </span>{
+            <span class="kw">let </span><span class="kw-2">mut </span>transition_frontier = <span class="self">self</span>.transition_frontier.write().<span class="kw">await</span>;
+            <span class="kw">if let </span><span class="prelude-val">Err</span>(err) = transition_frontier.add_block(block.into()).<span class="kw">await </span>{
                 <span class="macro">error!</span>(<span class="string">&quot;{err}&quot;</span>);
             }
         }
     }
 
-    <span class="doccomment">/// Schedules the event loop of sending query-block requests</span>
-    <span class="doccomment">/// to the [NonConsensusNetworkingOps]</span>
-    <span class="kw">async</span> <span class="kw">fn</span> <span class="ident">run_query_block_loop</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">query_block_request_receiver</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">query_block_request_receiver</span>.<span class="ident">write</span>().<span class="kw">await</span>;
-        <span class="kw">while</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">request</span>) <span class="op">=</span> <span class="ident">query_block_request_receiver</span>.<span class="ident">recv</span>().<span class="kw">await</span> {
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">nonconsensus_ops</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">nonconsensus_ops</span>.<span class="ident">write</span>().<span class="kw">await</span>;
-            <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Err</span>(<span class="ident">err</span>) <span class="op">=</span> <span class="ident">nonconsensus_ops</span>.<span class="ident">query_block</span>(<span class="kw-2">&amp;</span><span class="ident">request</span>).<span class="kw">await</span> {
+    <span class="doccomment">/// Schedules the event loop of sending query-block requests
+    /// to the [NonConsensusNetworkingOps]
+    </span><span class="kw">async fn </span>run_query_block_loop(<span class="kw-2">&amp;</span><span class="self">self</span>) {
+        <span class="kw">let </span><span class="kw-2">mut </span>query_block_request_receiver = <span class="self">self</span>.query_block_request_receiver.write().<span class="kw">await</span>;
+        <span class="kw">while let </span><span class="prelude-val">Some</span>(request) = query_block_request_receiver.recv().<span class="kw">await </span>{
+            <span class="kw">let </span><span class="kw-2">mut </span>nonconsensus_ops = <span class="self">self</span>.nonconsensus_ops.write().<span class="kw">await</span>;
+            <span class="kw">if let </span><span class="prelude-val">Err</span>(err) = nonconsensus_ops.query_block(<span class="kw-2">&amp;</span>request).<span class="kw">await </span>{
                 <span class="macro">error!</span>(<span class="string">&quot;{err}&quot;</span>);
             }
         }
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="mina_network" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (fe3342816 2022-08-01)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="mina_network" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (40336865f 2022-08-15)" ></div></body></html>

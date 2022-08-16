@@ -53,60 +53,60 @@
 <span id="53">53</span>
 <span id="54">54</span>
 <span id="55">55</span>
-</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems</span>
-<span class="comment">// SPDX-License-Identifier: Apache-2.0</span>
+</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems
+// SPDX-License-Identifier: Apache-2.0
 
-<span class="doccomment">//!</span>
-<span class="doccomment">//! Common data types.</span>
-<span class="doccomment">//!</span>
+</span><span class="doccomment">//!
+//! Common data types.
+//!
 
-<span class="kw">use</span> <span class="ident">ark_ff::Zero</span>;
-<span class="kw">use</span> <span class="ident">mina_serialization_types_macros::AutoFrom</span>;
-<span class="kw">use</span> <span class="ident">once_cell::sync::OnceCell</span>;
-<span class="kw">use</span> <span class="ident">proof_systems</span>::{
-    <span class="ident">mina_hasher::Fp</span>, <span class="ident">mina_signer::CompressedPubKey</span>, <span class="ident">ChunkedROInput</span>, <span class="ident">ToChunkedROInput</span>,
+</span><span class="kw">use </span>ark_ff::Zero;
+<span class="kw">use </span>mina_serialization_types_macros::AutoFrom;
+<span class="kw">use </span>once_cell::sync::OnceCell;
+<span class="kw">use </span>proof_systems::{
+    mina_hasher::Fp, mina_signer::CompressedPubKey, ChunkedROInput, ToChunkedROInput,
 };
 
-<span class="doccomment">/// Wrapper of Vec&lt;u8&gt;</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">PartialEq</span>, <span class="ident">AutoFrom</span>)]</span>
-<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">mina_serialization_types::common::ByteVec</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ByteVec</span>(<span class="kw">pub</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>);
+<span class="doccomment">/// Wrapper of Vec&lt;u8&gt;
+</span><span class="attribute">#[derive(Clone, Debug, Eq, PartialEq, AutoFrom)]</span>
+<span class="attribute">#[auto_from(mina_serialization_types::common::ByteVec)]</span>
+<span class="kw">pub struct </span>ByteVec(<span class="kw">pub </span>Vec&lt;u8&gt;);
 
-<span class="doccomment">/// Wrapper of [CompressedPubKey] that implements [ToChunkedROInput]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">CompressedPubKeyHashableWrapper</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>(<span class="kw">pub</span> <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">CompressedPubKey</span>);
+<span class="doccomment">/// Wrapper of [CompressedPubKey] that implements [ToChunkedROInput]
+</span><span class="attribute">#[derive(Debug, Clone)]</span>
+<span class="kw">pub struct </span>CompressedPubKeyHashableWrapper&lt;<span class="lifetime">&#39;a</span>&gt;(<span class="kw">pub </span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>CompressedPubKey);
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="ident">Default</span> <span class="kw">for</span> <span class="ident">CompressedPubKeyHashableWrapper</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> {
-    <span class="kw">fn</span> <span class="ident">default</span>() -&gt; <span class="self">Self</span> {
-        <span class="kw">static</span> <span class="ident">INSTANCE</span>: <span class="ident">OnceCell</span><span class="op">&lt;</span><span class="ident">CompressedPubKey</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">OnceCell::new</span>();
-        <span class="self">Self</span>(<span class="ident">INSTANCE</span>.<span class="ident">get_or_init</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">CompressedPubKey</span> {
-            <span class="ident">x</span>: <span class="ident">Fp::zero</span>(),
-            <span class="ident">is_odd</span>: <span class="bool-val">false</span>,
+<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>&gt; Default <span class="kw">for </span>CompressedPubKeyHashableWrapper&lt;<span class="lifetime">&#39;a</span>&gt; {
+    <span class="kw">fn </span>default() -&gt; <span class="self">Self </span>{
+        <span class="kw">static </span>INSTANCE: OnceCell&lt;CompressedPubKey&gt; = OnceCell::new();
+        <span class="self">Self</span>(INSTANCE.get_or_init(|| CompressedPubKey {
+            x: Fp::zero(),
+            is_odd: <span class="bool-val">false</span>,
         }))
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="ident">ToChunkedROInput</span> <span class="kw">for</span> <span class="ident">CompressedPubKeyHashableWrapper</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> {
-    <span class="kw">fn</span> <span class="ident">to_chunked_roinput</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">ChunkedROInput</span> {
-        <span class="ident">ChunkedROInput::new</span>()
-            .<span class="ident">append_field</span>(<span class="self">self</span>.<span class="number">0</span>.<span class="ident">x</span>)
-            .<span class="ident">append_bool</span>(<span class="self">self</span>.<span class="number">0</span>.<span class="ident">is_odd</span>)
+<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>&gt; ToChunkedROInput <span class="kw">for </span>CompressedPubKeyHashableWrapper&lt;<span class="lifetime">&#39;a</span>&gt; {
+    <span class="kw">fn </span>to_chunked_roinput(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; ChunkedROInput {
+        ChunkedROInput::new()
+            .append_field(<span class="self">self</span>.<span class="number">0</span>.x)
+            .append_bool(<span class="self">self</span>.<span class="number">0</span>.is_odd)
     }
 }
 
-<span class="doccomment">/// Wrapper of [Option&lt;CompressedPubKey&gt;] that implements [ToChunkedROInput]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">CompressedPubKeyOptionHashableWrapper</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>(<span class="kw">pub</span> <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">CompressedPubKey</span><span class="op">&gt;</span>);
+<span class="doccomment">/// Wrapper of [Option&lt;CompressedPubKey&gt;] that implements [ToChunkedROInput]
+</span><span class="attribute">#[derive(Debug, Clone)]</span>
+<span class="kw">pub struct </span>CompressedPubKeyOptionHashableWrapper&lt;<span class="lifetime">&#39;a</span>&gt;(<span class="kw">pub </span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span><span class="prelude-ty">Option</span>&lt;CompressedPubKey&gt;);
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="ident">ToChunkedROInput</span> <span class="kw">for</span> <span class="ident">CompressedPubKeyOptionHashableWrapper</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> {
-    <span class="kw">fn</span> <span class="ident">to_chunked_roinput</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">ChunkedROInput</span> {
-        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">pk</span>) <span class="op">=</span> <span class="self">self</span>.<span class="number">0</span> {
-            <span class="ident">CompressedPubKeyHashableWrapper</span>(<span class="ident">pk</span>)
-        } <span class="kw">else</span> {
-            <span class="ident">CompressedPubKeyHashableWrapper::default</span>()
+<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>&gt; ToChunkedROInput <span class="kw">for </span>CompressedPubKeyOptionHashableWrapper&lt;<span class="lifetime">&#39;a</span>&gt; {
+    <span class="kw">fn </span>to_chunked_roinput(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; ChunkedROInput {
+        <span class="kw">if let </span><span class="prelude-val">Some</span>(pk) = <span class="self">self</span>.<span class="number">0 </span>{
+            CompressedPubKeyHashableWrapper(pk)
+        } <span class="kw">else </span>{
+            CompressedPubKeyHashableWrapper::default()
         }
-        .<span class="ident">to_chunked_roinput</span>()
+        .to_chunked_roinput()
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_rs_base" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (fe3342816 2022-08-01)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_rs_base" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (40336865f 2022-08-15)" ></div></body></html>

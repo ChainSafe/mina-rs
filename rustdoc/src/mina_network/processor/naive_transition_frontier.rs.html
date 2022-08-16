@@ -55,62 +55,62 @@
 <span id="55">55</span>
 <span id="56">56</span>
 <span id="57">57</span>
-</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems</span>
-<span class="comment">// SPDX-License-Identifier: Apache-2.0</span>
+</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems
+// SPDX-License-Identifier: Apache-2.0
 
-<span class="doccomment">//!</span>
-<span class="doccomment">//! A naive implementation of the [TransitionFrontier]</span>
-<span class="doccomment">//!</span>
+</span><span class="doccomment">//!
+//! A naive implementation of the [TransitionFrontier]
+//!
 
-<span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
-<span class="kw">use</span> <span class="ident">mina_consensus::common</span>::<span class="kw-2">*</span>;
-<span class="kw">use</span> <span class="ident">mina_rs_base</span>::{<span class="ident">types</span>::<span class="kw-2">*</span>, <span class="ident">verifiable::Verifiable</span>};
-<span class="kw">use</span> <span class="ident">proof_systems::mina_signer</span>::{<span class="self">self</span>, <span class="ident">NetworkId</span>};
-<span class="kw">use</span> <span class="ident">tokio::sync::mpsc</span>;
+</span><span class="kw">use super</span>::<span class="kw-2">*</span>;
+<span class="kw">use </span>mina_consensus::common::<span class="kw-2">*</span>;
+<span class="kw">use </span>mina_rs_base::{types::<span class="kw-2">*</span>, verifiable::Verifiable};
+<span class="kw">use </span>proof_systems::mina_signer::{<span class="self">self</span>, NetworkId};
+<span class="kw">use </span>tokio::sync::mpsc;
 
-<span class="doccomment">/// Struct that represents a naive implementation of the [TransitionFrontier]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">Default</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">NaiveTransitionFrontier</span> {
-    <span class="ident">block_requester</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">mpsc::Sender</span><span class="op">&lt;</span><span class="ident">QueryBlockRequest</span><span class="op">&gt;</span><span class="op">&gt;</span>,
-    <span class="ident">best_chain</span>: <span class="ident">ProtocolStateChain</span>,
+<span class="doccomment">/// Struct that represents a naive implementation of the [TransitionFrontier]
+</span><span class="attribute">#[derive(Debug, Clone, Default)]</span>
+<span class="kw">pub struct </span>NaiveTransitionFrontier {
+    block_requester: <span class="prelude-ty">Option</span>&lt;mpsc::Sender&lt;QueryBlockRequest&gt;&gt;,
+    best_chain: ProtocolStateChain,
 }
 
-<span class="kw">impl</span> <span class="ident">NaiveTransitionFrontier</span> {
-    <span class="doccomment">/// TODO: Doc</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>() -&gt; <span class="self">Self</span> {
-        <span class="ident">Default::default</span>()
+<span class="kw">impl </span>NaiveTransitionFrontier {
+    <span class="doccomment">/// TODO: Doc
+    </span><span class="kw">pub fn </span>new() -&gt; <span class="self">Self </span>{
+        Default::default()
     }
 
-    <span class="doccomment">/// TODO: Doc</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get_best_chain</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="ident">ProtocolStateChain</span> {
-        <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">best_chain</span>
+    <span class="doccomment">/// TODO: Doc
+    </span><span class="kw">pub fn </span>get_best_chain(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>ProtocolStateChain {
+        <span class="kw-2">&amp;</span><span class="self">self</span>.best_chain
     }
 }
 
-<span class="attribute">#[<span class="ident">async_trait</span>(<span class="question-mark">?</span><span class="ident">Send</span>)]</span>
-<span class="kw">impl</span> <span class="ident">TransitionFrontier</span> <span class="kw">for</span> <span class="ident">NaiveTransitionFrontier</span> {
-    <span class="kw">type</span> <span class="ident">Block</span> <span class="op">=</span> <span class="ident">ExternalTransition</span>;
+<span class="attribute">#[async_trait(<span class="question-mark">?</span>Send)]</span>
+<span class="kw">impl </span>TransitionFrontier <span class="kw">for </span>NaiveTransitionFrontier {
+    <span class="kw">type </span>Block = ExternalTransition;
 
-    <span class="kw">fn</span> <span class="ident">set_block_requester</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">sender</span>: <span class="ident">mpsc::Sender</span><span class="op">&lt;</span><span class="ident">QueryBlockRequest</span><span class="op">&gt;</span>) {
-        <span class="self">self</span>.<span class="ident">block_requester</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">sender</span>);
+    <span class="kw">fn </span>set_block_requester(<span class="kw-2">&amp;mut </span><span class="self">self</span>, sender: mpsc::Sender&lt;QueryBlockRequest&gt;) {
+        <span class="self">self</span>.block_requester = <span class="prelude-val">Some</span>(sender);
     }
 
-    <span class="kw">async</span> <span class="kw">fn</span> <span class="ident">add_block</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">block</span>: <span class="ident"><span class="self">Self</span>::Block</span>) -&gt; <span class="ident">anyhow::Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">ctx</span> <span class="op">=</span> <span class="ident">mina_signer::create_legacy</span>::<span class="op">&lt;</span><span class="ident">SignedCommandPayload</span><span class="op">&gt;</span>(<span class="ident">NetworkId::MAINNET</span>);
-        <span class="kw">if</span> <span class="op">!</span><span class="ident">block</span>.<span class="ident">verify</span>(<span class="kw-2">&amp;mut</span> <span class="ident">ctx</span>) {
-            <span class="prelude-val">Err</span>(<span class="ident">anyhow::Error::msg</span>(<span class="string">&quot;block verification failure&quot;</span>))
-        } <span class="kw">else</span> {
-            <span class="kw">if</span> <span class="self">self</span>.<span class="ident">best_chain</span>.<span class="ident">length</span>() <span class="op">&lt;</span> <span class="number">1</span> {
-                <span class="self">self</span>.<span class="ident">best_chain</span>.<span class="ident">push</span>(<span class="ident">block</span>.<span class="ident">protocol_state</span>)<span class="question-mark">?</span>;
-            } <span class="kw">else</span> {
-                <span class="kw">let</span> <span class="ident">candidate_chains</span> <span class="op">=</span> <span class="macro">vec!</span>[<span class="ident">ProtocolStateChain</span>(<span class="macro">vec!</span>[<span class="ident">block</span>.<span class="ident">protocol_state</span>])];
-                <span class="comment">// TODO: Avoid doing clone here by refining chain selection API(s)</span>
-                <span class="kw">let</span> <span class="ident">best_chain</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">best_chain</span>.<span class="ident">select_secure_chain</span>(<span class="kw-2">&amp;</span><span class="ident">candidate_chains</span>)<span class="question-mark">?</span>;
-                <span class="self">self</span>.<span class="ident">best_chain</span> <span class="op">=</span> <span class="ident">best_chain</span>.<span class="ident">clone</span>();
+    <span class="kw">async fn </span>add_block(<span class="kw-2">&amp;mut </span><span class="self">self</span>, block: <span class="self">Self</span>::Block) -&gt; anyhow::Result&lt;()&gt; {
+        <span class="kw">let </span><span class="kw-2">mut </span>ctx = mina_signer::create_legacy::&lt;SignedCommandPayload&gt;(NetworkId::MAINNET);
+        <span class="kw">if </span>!block.verify(<span class="kw-2">&amp;mut </span>ctx) {
+            <span class="prelude-val">Err</span>(anyhow::Error::msg(<span class="string">&quot;block verification failure&quot;</span>))
+        } <span class="kw">else </span>{
+            <span class="kw">if </span><span class="self">self</span>.best_chain.length() &lt; <span class="number">1 </span>{
+                <span class="self">self</span>.best_chain.push(block.protocol_state)<span class="question-mark">?</span>;
+            } <span class="kw">else </span>{
+                <span class="kw">let </span>candidate_chains = <span class="macro">vec!</span>[ProtocolStateChain(<span class="macro">vec!</span>[block.protocol_state])];
+                <span class="comment">// TODO: Avoid doing clone here by refining chain selection API(s)
+                </span><span class="kw">let </span>best_chain = <span class="self">self</span>.best_chain.select_secure_chain(<span class="kw-2">&amp;</span>candidate_chains)<span class="question-mark">?</span>;
+                <span class="self">self</span>.best_chain = best_chain.clone();
             }
             <span class="prelude-val">Ok</span>(())
         }
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="mina_network" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (fe3342816 2022-08-01)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="mina_network" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (40336865f 2022-08-15)" ></div></body></html>

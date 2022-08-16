@@ -81,88 +81,88 @@
 <span id="81">81</span>
 <span id="82">82</span>
 <span id="83">83</span>
-</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems</span>
-<span class="comment">// SPDX-License-Identifier: Apache-2.0</span>
+</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems
+// SPDX-License-Identifier: Apache-2.0
 
-<span class="doccomment">//! Types related to the Blockchain State</span>
+</span><span class="doccomment">//! Types related to the Blockchain State
 
-<span class="attribute">#![<span class="ident">allow</span>(<span class="ident">missing_docs</span>)]</span> <span class="comment">// Don&#39;t actually know what many of the types fields are for yet</span>
+</span><span class="attribute">#![allow(missing_docs)]</span> <span class="comment">// Don&#39;t actually know what many of the types fields are for yet
 
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::common</span>::<span class="kw-2">*</span>;
-<span class="kw">use</span> <span class="ident">mina_serialization_types_macros::AutoFrom</span>;
-<span class="kw">use</span> <span class="ident">serde</span>::{<span class="ident">Deserialize</span>, <span class="ident">Serialize</span>};
-<span class="kw">use</span> <span class="ident">versioned::Versioned</span>;
+</span><span class="kw">use </span><span class="kw">crate</span>::common::<span class="kw-2">*</span>;
+<span class="kw">use </span>mina_serialization_types_macros::AutoFrom;
+<span class="kw">use </span>serde::{Deserialize, Serialize};
+<span class="kw">use </span>versioned::Versioned;
 
-<span class="doccomment">/// Mina blockchain state struct</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">PartialEq</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">BlockchainState</span> {
-    <span class="doccomment">/// Hash of the proposed next state of the blockchain</span>
-    <span class="kw">pub</span> <span class="ident">staged_ledger_hash</span>: <span class="ident">StagedLedgerHashV1</span>,
-    <span class="doccomment">/// Hash of the most recently proven state of the blockchain</span>
-    <span class="kw">pub</span> <span class="ident">snarked_ledger_hash</span>: <span class="ident">HashV1</span>,
-    <span class="doccomment">/// Hash of the genesis state</span>
-    <span class="kw">pub</span> <span class="ident">genesis_ledger_hash</span>: <span class="ident">HashV1</span>,
-    <span class="doccomment">/// Check whether the change of the next token ID is consistent.</span>
-    <span class="kw">pub</span> <span class="ident">snarked_next_available_token</span>: <span class="ident">TokenIdV1</span>,
-    <span class="doccomment">/// Timestamps for blocks</span>
-    <span class="kw">pub</span> <span class="ident">timestamp</span>: <span class="ident">BlockTimeV1</span>,
+<span class="doccomment">/// Mina blockchain state struct
+</span><span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]</span>
+<span class="kw">pub struct </span>BlockchainState {
+    <span class="doccomment">/// Hash of the proposed next state of the blockchain
+    </span><span class="kw">pub </span>staged_ledger_hash: StagedLedgerHashV1,
+    <span class="doccomment">/// Hash of the most recently proven state of the blockchain
+    </span><span class="kw">pub </span>snarked_ledger_hash: HashV1,
+    <span class="doccomment">/// Hash of the genesis state
+    </span><span class="kw">pub </span>genesis_ledger_hash: HashV1,
+    <span class="doccomment">/// Check whether the change of the next token ID is consistent.
+    </span><span class="kw">pub </span>snarked_next_available_token: TokenIdV1,
+    <span class="doccomment">/// Timestamps for blocks
+    </span><span class="kw">pub </span>timestamp: BlockTimeV1,
 }
 
-<span class="doccomment">/// Mina blockchain state struct (v1)</span>
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">BlockchainStateV1</span> <span class="op">=</span> <span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">BlockchainState</span>, <span class="number">1</span><span class="op">&gt;</span>, <span class="number">1</span><span class="op">&gt;</span>;
+<span class="doccomment">/// Mina blockchain state struct (v1)
+</span><span class="kw">pub type </span>BlockchainStateV1 = Versioned&lt;Versioned&lt;BlockchainState, <span class="number">1</span>&gt;, <span class="number">1</span>&gt;;
 
-<span class="doccomment">/// Mina blockchain state struct (json)</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">PartialEq</span>, <span class="ident">AutoFrom</span>)]</span>
-<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">BlockchainState</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">BlockchainStateJson</span> {
-    <span class="doccomment">/// Hash of the proposed next state of the blockchain</span>
-    <span class="kw">pub</span> <span class="ident">staged_ledger_hash</span>: <span class="ident">StagedLedgerHashJson</span>,
-    <span class="doccomment">/// Hash of the most recently proven state of the blockchain</span>
-    <span class="kw">pub</span> <span class="ident">snarked_ledger_hash</span>: <span class="ident">LedgerHashV1Json</span>,
-    <span class="doccomment">/// Hash of the genesis state</span>
-    <span class="kw">pub</span> <span class="ident">genesis_ledger_hash</span>: <span class="ident">LedgerHashV1Json</span>,
-    <span class="doccomment">/// Check whether the change of the next token ID is consistent.</span>
-    <span class="kw">pub</span> <span class="ident">snarked_next_available_token</span>: <span class="ident">U64Json</span>,
-    <span class="doccomment">/// Timestamps for blocks</span>
-    <span class="kw">pub</span> <span class="ident">timestamp</span>: <span class="ident">U64Json</span>,
+<span class="doccomment">/// Mina blockchain state struct (json)
+</span><span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq, AutoFrom)]</span>
+<span class="attribute">#[auto_from(BlockchainState)]</span>
+<span class="kw">pub struct </span>BlockchainStateJson {
+    <span class="doccomment">/// Hash of the proposed next state of the blockchain
+    </span><span class="kw">pub </span>staged_ledger_hash: StagedLedgerHashJson,
+    <span class="doccomment">/// Hash of the most recently proven state of the blockchain
+    </span><span class="kw">pub </span>snarked_ledger_hash: LedgerHashV1Json,
+    <span class="doccomment">/// Hash of the genesis state
+    </span><span class="kw">pub </span>genesis_ledger_hash: LedgerHashV1Json,
+    <span class="doccomment">/// Check whether the change of the next token ID is consistent.
+    </span><span class="kw">pub </span>snarked_next_available_token: U64Json,
+    <span class="doccomment">/// Timestamps for blocks
+    </span><span class="kw">pub </span>timestamp: U64Json,
 }
 
-<span class="doccomment">/// Staged ledger hash structure</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">PartialEq</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">StagedLedgerHash</span> {
-    <span class="kw">pub</span> <span class="ident">non_snark</span>: <span class="ident">NonSnarkStagedLedgerHashV1</span>,
-    <span class="kw">pub</span> <span class="ident">pending_coinbase_hash</span>: <span class="ident">Hash2V1</span>,
+<span class="doccomment">/// Staged ledger hash structure
+</span><span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]</span>
+<span class="kw">pub struct </span>StagedLedgerHash {
+    <span class="kw">pub </span>non_snark: NonSnarkStagedLedgerHashV1,
+    <span class="kw">pub </span>pending_coinbase_hash: Hash2V1,
 }
 
-<span class="doccomment">/// Staged ledger hash structure (v1)</span>
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">StagedLedgerHashV1</span> <span class="op">=</span> <span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">StagedLedgerHash</span>, <span class="number">1</span><span class="op">&gt;</span>, <span class="number">1</span><span class="op">&gt;</span>;
+<span class="doccomment">/// Staged ledger hash structure (v1)
+</span><span class="kw">pub type </span>StagedLedgerHashV1 = Versioned&lt;Versioned&lt;StagedLedgerHash, <span class="number">1</span>&gt;, <span class="number">1</span>&gt;;
 
-<span class="doccomment">/// Staged ledger hash structure (json)</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">PartialEq</span>, <span class="ident">AutoFrom</span>)]</span>
-<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">StagedLedgerHash</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">StagedLedgerHashJson</span> {
-    <span class="kw">pub</span> <span class="ident">non_snark</span>: <span class="ident">NonSnarkStagedLedgerHashJson</span>,
-    <span class="kw">pub</span> <span class="ident">pending_coinbase_hash</span>: <span class="ident">CoinBaseHashV1Json</span>,
+<span class="doccomment">/// Staged ledger hash structure (json)
+</span><span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq, AutoFrom)]</span>
+<span class="attribute">#[auto_from(StagedLedgerHash)]</span>
+<span class="kw">pub struct </span>StagedLedgerHashJson {
+    <span class="kw">pub </span>non_snark: NonSnarkStagedLedgerHashJson,
+    <span class="kw">pub </span>pending_coinbase_hash: CoinBaseHashV1Json,
 }
 
-<span class="doccomment">/// Non-snarked ledger hash</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">PartialEq</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">NonSnarkStagedLedgerHash</span> {
-    <span class="kw">pub</span> <span class="ident">ledger_hash</span>: <span class="ident">HashV1</span>,
-    <span class="kw">pub</span> <span class="ident">aux_hash</span>: <span class="ident">ByteVecV1</span>,
-    <span class="kw">pub</span> <span class="ident">pending_coinbase_aux</span>: <span class="ident">ByteVecV1</span>,
+<span class="doccomment">/// Non-snarked ledger hash
+</span><span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]</span>
+<span class="kw">pub struct </span>NonSnarkStagedLedgerHash {
+    <span class="kw">pub </span>ledger_hash: HashV1,
+    <span class="kw">pub </span>aux_hash: ByteVecV1,
+    <span class="kw">pub </span>pending_coinbase_aux: ByteVecV1,
 }
 
-<span class="doccomment">/// Non-snarked ledger hash (v1)</span>
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">NonSnarkStagedLedgerHashV1</span> <span class="op">=</span> <span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">NonSnarkStagedLedgerHash</span>, <span class="number">1</span><span class="op">&gt;</span>;
+<span class="doccomment">/// Non-snarked ledger hash (v1)
+</span><span class="kw">pub type </span>NonSnarkStagedLedgerHashV1 = Versioned&lt;NonSnarkStagedLedgerHash, <span class="number">1</span>&gt;;
 
-<span class="doccomment">/// Non-snarked ledger hash (json)</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">PartialEq</span>, <span class="ident">AutoFrom</span>)]</span>
-<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">NonSnarkStagedLedgerHash</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">NonSnarkStagedLedgerHashJson</span> {
-    <span class="kw">pub</span> <span class="ident">ledger_hash</span>: <span class="ident">LedgerHashV1Json</span>,
-    <span class="kw">pub</span> <span class="ident">aux_hash</span>: <span class="ident">AuxHashJson</span>,
-    <span class="kw">pub</span> <span class="ident">pending_coinbase_aux</span>: <span class="ident">PendingCoinbaseAuxHashJson</span>,
+<span class="doccomment">/// Non-snarked ledger hash (json)
+</span><span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq, AutoFrom)]</span>
+<span class="attribute">#[auto_from(NonSnarkStagedLedgerHash)]</span>
+<span class="kw">pub struct </span>NonSnarkStagedLedgerHashJson {
+    <span class="kw">pub </span>ledger_hash: LedgerHashV1Json,
+    <span class="kw">pub </span>aux_hash: AuxHashJson,
+    <span class="kw">pub </span>pending_coinbase_aux: PendingCoinbaseAuxHashJson,
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_serialization_types" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (fe3342816 2022-08-01)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_serialization_types" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (40336865f 2022-08-15)" ></div></body></html>

@@ -49,56 +49,56 @@
 <span id="49">49</span>
 <span id="50">50</span>
 <span id="51">51</span>
-</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems</span>
-<span class="comment">// SPDX-License-Identifier: Apache-2.0</span>
+</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems
+// SPDX-License-Identifier: Apache-2.0
 
-<span class="kw">use</span> <span class="ident">libp2p</span>::{<span class="ident">mplex::MplexConfig</span>, <span class="ident">pnet::PreSharedKey</span>};
-<span class="kw">use</span> <span class="ident">multihash</span>::{<span class="ident">Blake2b256</span>, <span class="ident">Hasher</span>};
+</span><span class="kw">use </span>libp2p::{mplex::MplexConfig, pnet::PreSharedKey};
+<span class="kw">use </span>multihash::{Blake2b256, Hasher};
 
 <span class="macro">lazy_static::lazy_static!</span> {
-    <span class="doccomment">/// Mainnet config for mina p2p network</span>
-    <span class="kw">pub</span> <span class="kw">static</span> <span class="kw-2">ref</span> <span class="ident">MAINNET_CONFIG</span> : <span class="ident">TransportConfig</span><span class="op">&lt;</span><span class="lifetime">&#39;static</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">TransportConfig</span>
+    <span class="doccomment">/// Mainnet config for mina p2p network
+    </span><span class="kw">pub static </span><span class="kw-2">ref </span>MAINNET_CONFIG : TransportConfig&lt;<span class="lifetime">&#39;static</span>&gt; = TransportConfig
     {
-        <span class="ident">rendezvous_string</span>: <span class="string">b&quot;/coda/0.0.1/5f704cc0c82e0ed70e873f0893d7e06f148524e3f0bdae2afb02e7819a0c24d1&quot;</span>,
-        ..<span class="ident">Default::default</span>()
+        rendezvous_string: <span class="string">b&quot;/coda/0.0.1/5f704cc0c82e0ed70e873f0893d7e06f148524e3f0bdae2afb02e7819a0c24d1&quot;</span>,
+        ..Default::default()
     };
 }
 
-<span class="doccomment">/// Configuration type for [super::TransportBuilder]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">TransportConfig</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> {
-    <span class="doccomment">/// Rendezvous string for configuring private network</span>
-    <span class="kw">pub</span> <span class="ident">rendezvous_string</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> [<span class="ident">u8</span>],
-    <span class="doccomment">/// Protocol name for configuring libp2p multiplexer</span>
-    <span class="kw">pub</span> <span class="ident">mplex_protocol_name</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> [<span class="ident">u8</span>],
+<span class="doccomment">/// Configuration type for [super::TransportBuilder]
+</span><span class="attribute">#[derive(Clone, Debug)]</span>
+<span class="kw">pub struct </span>TransportConfig&lt;<span class="lifetime">&#39;a</span>&gt; {
+    <span class="doccomment">/// Rendezvous string for configuring private network
+    </span><span class="kw">pub </span>rendezvous_string: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>[u8],
+    <span class="doccomment">/// Protocol name for configuring libp2p multiplexer
+    </span><span class="kw">pub </span>mplex_protocol_name: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>[u8],
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="ident">TransportConfig</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> {
-    <span class="doccomment">/// Gets [PreSharedKey] from the [TransportConfig] instance</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get_shared_key</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">PreSharedKey</span> {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">hasher</span> <span class="op">=</span> <span class="ident">Blake2b256::default</span>();
-        <span class="ident">hasher</span>.<span class="ident">update</span>(<span class="self">self</span>.<span class="ident">rendezvous_string</span>);
-        <span class="kw">let</span> <span class="ident">hash</span> <span class="op">=</span> <span class="ident">hasher</span>.<span class="ident">finalize</span>();
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">psk_fixed</span>: [<span class="ident">u8</span>; <span class="number">32</span>] <span class="op">=</span> <span class="ident">Default::default</span>();
-        <span class="ident">psk_fixed</span>.<span class="ident">copy_from_slice</span>(<span class="ident">hash</span>.<span class="ident">as_ref</span>());
-        <span class="ident">PreSharedKey::new</span>(<span class="ident">psk_fixed</span>)
+<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>&gt; TransportConfig&lt;<span class="lifetime">&#39;a</span>&gt; {
+    <span class="doccomment">/// Gets [PreSharedKey] from the [TransportConfig] instance
+    </span><span class="kw">pub fn </span>get_shared_key(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; PreSharedKey {
+        <span class="kw">let </span><span class="kw-2">mut </span>hasher = Blake2b256::default();
+        hasher.update(<span class="self">self</span>.rendezvous_string);
+        <span class="kw">let </span>hash = hasher.finalize();
+        <span class="kw">let </span><span class="kw-2">mut </span>psk_fixed: [u8; <span class="number">32</span>] = Default::default();
+        psk_fixed.copy_from_slice(hash.as_ref());
+        PreSharedKey::new(psk_fixed)
     }
 
-    <span class="doccomment">/// Gets [MplexConfig] from the [TransportConfig] instance</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get_mplex_config</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">MplexConfig</span> {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">config</span> <span class="op">=</span> <span class="ident">MplexConfig::new</span>();
-        <span class="ident">config</span>.<span class="ident">set_protocol_name</span>(<span class="self">self</span>.<span class="ident">mplex_protocol_name</span>);
-        <span class="ident">config</span>
+    <span class="doccomment">/// Gets [MplexConfig] from the [TransportConfig] instance
+    </span><span class="kw">pub fn </span>get_mplex_config(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; MplexConfig {
+        <span class="kw">let </span><span class="kw-2">mut </span>config = MplexConfig::new();
+        config.set_protocol_name(<span class="self">self</span>.mplex_protocol_name);
+        config
     }
 }
 
-<span class="kw">impl</span> <span class="ident">Default</span> <span class="kw">for</span> <span class="ident">TransportConfig</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span> {
-    <span class="kw">fn</span> <span class="ident">default</span>() -&gt; <span class="self">Self</span> {
-        <span class="self">Self</span> {
-            <span class="ident">rendezvous_string</span>: <span class="string">b&quot;&quot;</span>,
-            <span class="ident">mplex_protocol_name</span>: <span class="string">b&quot;/coda/mplex/1.0.0&quot;</span>,
+<span class="kw">impl </span>Default <span class="kw">for </span>TransportConfig&lt;<span class="lifetime">&#39;_</span>&gt; {
+    <span class="kw">fn </span>default() -&gt; <span class="self">Self </span>{
+        <span class="self">Self </span>{
+            rendezvous_string: <span class="string">b&quot;&quot;</span>,
+            mplex_protocol_name: <span class="string">b&quot;/coda/mplex/1.0.0&quot;</span>,
         }
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="mina_network" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (fe3342816 2022-08-01)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="mina_network" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (40336865f 2022-08-15)" ></div></body></html>

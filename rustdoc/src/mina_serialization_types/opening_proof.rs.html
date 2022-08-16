@@ -34,41 +34,41 @@
 <span id="34">34</span>
 <span id="35">35</span>
 <span id="36">36</span>
-</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems</span>
-<span class="comment">// SPDX-License-Identifier: Apache-2.0</span>
+</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems
+// SPDX-License-Identifier: Apache-2.0
 
-<span class="doccomment">//! The opening proof used by the protocol state proof</span>
+</span><span class="doccomment">//! The opening proof used by the protocol state proof
 
-<span class="attribute">#![<span class="ident">allow</span>(<span class="ident">missing_docs</span>)]</span> <span class="comment">// Don&#39;t actually know what many of the types fields are for yet</span>
+</span><span class="attribute">#![allow(missing_docs)]</span> <span class="comment">// Don&#39;t actually know what many of the types fields are for yet
 
-<span class="kw">use</span> <span class="kw">crate</span>::{
-    <span class="ident">field_and_curve_elements</span>::{<span class="ident">FieldElement</span>, <span class="ident">FiniteECPoint</span>},
-    <span class="ident">json</span>::<span class="kw-2">*</span>,
-    <span class="ident">v1</span>::<span class="kw-2">*</span>,
+</span><span class="kw">use crate</span>::{
+    field_and_curve_elements::{FieldElement, FiniteECPoint},
+    json::<span class="kw-2">*</span>,
+    v1::<span class="kw-2">*</span>,
 };
-<span class="kw">use</span> <span class="ident">mina_serialization_types_macros::AutoFrom</span>;
-<span class="kw">use</span> <span class="ident">serde</span>::{<span class="ident">Deserialize</span>, <span class="ident">Serialize</span>};
-<span class="kw">use</span> <span class="ident">versioned::Versioned</span>;
+<span class="kw">use </span>mina_serialization_types_macros::AutoFrom;
+<span class="kw">use </span>serde::{Deserialize, Serialize};
+<span class="kw">use </span>versioned::Versioned;
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">PartialEq</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">OpeningProof</span> {
-    <span class="kw">pub</span> <span class="ident">lr</span>: <span class="ident">FiniteECPointPairVecV1</span>,
-    <span class="kw">pub</span> <span class="ident">z_1</span>: <span class="ident">FieldElement</span>,
-    <span class="kw">pub</span> <span class="ident">z_2</span>: <span class="ident">FieldElement</span>,
-    <span class="kw">pub</span> <span class="ident">delta</span>: <span class="ident">FiniteECPoint</span>,
-    <span class="kw">pub</span> <span class="ident">sg</span>: <span class="ident">FiniteECPoint</span>,
+<span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]</span>
+<span class="kw">pub struct </span>OpeningProof {
+    <span class="kw">pub </span>lr: FiniteECPointPairVecV1,
+    <span class="kw">pub </span>z_1: FieldElement,
+    <span class="kw">pub </span>z_2: FieldElement,
+    <span class="kw">pub </span>delta: FiniteECPoint,
+    <span class="kw">pub </span>sg: FiniteECPoint,
 }
 
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">OpeningProofV1</span> <span class="op">=</span> <span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">OpeningProof</span>, <span class="number">1</span><span class="op">&gt;</span>;
+<span class="kw">pub type </span>OpeningProofV1 = Versioned&lt;OpeningProof, <span class="number">1</span>&gt;;
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">PartialEq</span>, <span class="ident">AutoFrom</span>)]</span>
-<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">OpeningProof</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">OpeningProofJson</span> {
-    <span class="kw">pub</span> <span class="ident">lr</span>: <span class="ident">FiniteECPointPairVecJson</span>,
-    <span class="kw">pub</span> <span class="ident">z_1</span>: <span class="ident">FieldElementJson</span>,
-    <span class="kw">pub</span> <span class="ident">z_2</span>: <span class="ident">FieldElementJson</span>,
-    <span class="kw">pub</span> <span class="ident">delta</span>: <span class="ident">FiniteECPointJson</span>,
-    <span class="kw">pub</span> <span class="ident">sg</span>: <span class="ident">FiniteECPointJson</span>,
+<span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq, AutoFrom)]</span>
+<span class="attribute">#[auto_from(OpeningProof)]</span>
+<span class="kw">pub struct </span>OpeningProofJson {
+    <span class="kw">pub </span>lr: FiniteECPointPairVecJson,
+    <span class="kw">pub </span>z_1: FieldElementJson,
+    <span class="kw">pub </span>z_2: FieldElementJson,
+    <span class="kw">pub </span>delta: FiniteECPointJson,
+    <span class="kw">pub </span>sg: FiniteECPointJson,
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_serialization_types" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (fe3342816 2022-08-01)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_serialization_types" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (40336865f 2022-08-15)" ></div></body></html>

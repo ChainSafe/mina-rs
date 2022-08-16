@@ -81,88 +81,88 @@
 <span id="81">81</span>
 <span id="82">82</span>
 <span id="83">83</span>
-</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems</span>
-<span class="comment">// SPDX-License-Identifier: Apache-2.0</span>
+</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems
+// SPDX-License-Identifier: Apache-2.0
 
-<span class="doccomment">//! A Genesis ledger is specialization of a ledger that holds initial account data to be included at genesis</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! A genesis ledger is the only way time locked accounts can be added to the ledger and</span>
-<span class="doccomment">//! is also a way to initially allocate funds to accounts</span>
-<span class="doccomment">//!</span>
+</span><span class="doccomment">//! A Genesis ledger is specialization of a ledger that holds initial account data to be included at genesis
+//!
+//! A genesis ledger is the only way time locked accounts can be added to the ledger and
+//! is also a way to initially allocate funds to accounts
+//!
 
-<span class="kw">use</span> <span class="ident">mina_merkle</span>::<span class="kw-2">*</span>;
-<span class="kw">use</span> <span class="ident">proof_systems::mina_hasher::Hashable</span>;
+</span><span class="kw">use </span>mina_merkle::<span class="kw-2">*</span>;
+<span class="kw">use </span>proof_systems::mina_hasher::Hashable;
 
-<span class="doccomment">/// Type alias for mina merkle ledger hasher</span>
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">MinaLedgerMerkleHasherLegacy</span><span class="op">&lt;</span><span class="ident">Account</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">MinaPoseidonMerkleHasherLegacy</span><span class="op">&lt;</span><span class="ident">Account</span><span class="op">&gt;</span>;
+<span class="doccomment">/// Type alias for mina merkle ledger hasher
+</span><span class="kw">pub type </span>MinaLedgerMerkleHasherLegacy&lt;Account&gt; = MinaPoseidonMerkleHasherLegacy&lt;Account&gt;;
 
-<span class="doccomment">/// Type alias for mina merkle ledger</span>
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">MinaLedgerMerkleTreeLegacy</span><span class="op">&lt;</span><span class="ident">Account</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">MinaMerkleTree</span><span class="op">&lt;</span>
-    <span class="op">&lt;</span><span class="ident">MinaLedgerMerkleHasherLegacy</span><span class="op">&lt;</span><span class="ident">Account</span><span class="op">&gt;</span> <span class="kw">as</span> <span class="ident">MerkleHasher</span><span class="op">&gt;</span><span class="ident">::Item</span>,
-    <span class="op">&lt;</span><span class="ident">MinaLedgerMerkleHasherLegacy</span><span class="op">&lt;</span><span class="ident">Account</span><span class="op">&gt;</span> <span class="kw">as</span> <span class="ident">MerkleHasher</span><span class="op">&gt;</span><span class="ident">::Hash</span>,
-    <span class="ident">MinaLedgerMerkleHasherLegacy</span><span class="op">&lt;</span><span class="ident">Account</span><span class="op">&gt;</span>,
-    <span class="ident">MinaPoseidonMerkleMergerLegacy</span>,
-    <span class="ident">FixedHeightMode</span>,
-<span class="op">&gt;</span>;
+<span class="doccomment">/// Type alias for mina merkle ledger
+</span><span class="kw">pub type </span>MinaLedgerMerkleTreeLegacy&lt;Account&gt; = MinaMerkleTree&lt;
+    &lt;MinaLedgerMerkleHasherLegacy&lt;Account&gt; <span class="kw">as </span>MerkleHasher&gt;::Item,
+    &lt;MinaLedgerMerkleHasherLegacy&lt;Account&gt; <span class="kw">as </span>MerkleHasher&gt;::Hash,
+    MinaLedgerMerkleHasherLegacy&lt;Account&gt;,
+    MinaPoseidonMerkleMergerLegacy,
+    FixedHeightMode,
+&gt;;
 
-<span class="doccomment">/// Type alias for mina merkle ledger hasher</span>
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">MinaLedgerMerkleHasher</span><span class="op">&lt;</span><span class="ident">Account</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">MinaPoseidonMerkleHasher</span><span class="op">&lt;</span><span class="ident">Account</span><span class="op">&gt;</span>;
+<span class="doccomment">/// Type alias for mina merkle ledger hasher
+</span><span class="kw">pub type </span>MinaLedgerMerkleHasher&lt;Account&gt; = MinaPoseidonMerkleHasher&lt;Account&gt;;
 
-<span class="doccomment">/// Type alias for mina merkle ledger</span>
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">MinaLedgerMerkleTree</span><span class="op">&lt;</span><span class="ident">Account</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">MinaMerkleTree</span><span class="op">&lt;</span>
-    <span class="op">&lt;</span><span class="ident">MinaLedgerMerkleHasher</span><span class="op">&lt;</span><span class="ident">Account</span><span class="op">&gt;</span> <span class="kw">as</span> <span class="ident">MerkleHasher</span><span class="op">&gt;</span><span class="ident">::Item</span>,
-    <span class="op">&lt;</span><span class="ident">MinaLedgerMerkleHasher</span><span class="op">&lt;</span><span class="ident">Account</span><span class="op">&gt;</span> <span class="kw">as</span> <span class="ident">MerkleHasher</span><span class="op">&gt;</span><span class="ident">::Hash</span>,
-    <span class="ident">MinaLedgerMerkleHasher</span><span class="op">&lt;</span><span class="ident">Account</span><span class="op">&gt;</span>,
-    <span class="ident">MinaPoseidonMerkleMerger</span>,
-    <span class="ident">FixedHeightMode</span>,
-<span class="op">&gt;</span>;
+<span class="doccomment">/// Type alias for mina merkle ledger
+</span><span class="kw">pub type </span>MinaLedgerMerkleTree&lt;Account&gt; = MinaMerkleTree&lt;
+    &lt;MinaLedgerMerkleHasher&lt;Account&gt; <span class="kw">as </span>MerkleHasher&gt;::Item,
+    &lt;MinaLedgerMerkleHasher&lt;Account&gt; <span class="kw">as </span>MerkleHasher&gt;::Hash,
+    MinaLedgerMerkleHasher&lt;Account&gt;,
+    MinaPoseidonMerkleMerger,
+    FixedHeightMode,
+&gt;;
 
-<span class="doccomment">/// A genesis ledger provides access to its accounts by implementing IntoIterator</span>
-<span class="doccomment">/// This implementation must be provided to meet the trait requirements</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// A Genesis ledger has a compile time pre-defined depth which is set here as a const generic</span>
-<span class="doccomment">/// This ensures compile-time checking that the correct depth ledger is being used in the correc place</span>
-<span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">GenesisLedger</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="kw">const</span> <span class="ident">DEPTH</span>: <span class="ident">usize</span>, <span class="ident">Account</span>: <span class="ident">Hashable</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="op">&lt;</span><span class="ident">Account</span> <span class="kw">as</span> <span class="ident">Hashable</span><span class="op">&gt;</span><span class="ident">::D</span>: <span class="ident">Default</span>,
+<span class="doccomment">/// A genesis ledger provides access to its accounts by implementing IntoIterator
+/// This implementation must be provided to meet the trait requirements
+///
+/// A Genesis ledger has a compile time pre-defined depth which is set here as a const generic
+/// This ensures compile-time checking that the correct depth ledger is being used in the correc place
+</span><span class="kw">pub trait </span>GenesisLedger&lt;<span class="lifetime">&#39;a</span>, <span class="kw">const </span>DEPTH: usize, Account: Hashable&gt;
+<span class="kw">where
+    </span>&lt;Account <span class="kw">as </span>Hashable&gt;::D: Default,
     <span class="self">Self</span>: <span class="lifetime">&#39;a</span>,
-    <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="self">Self</span>: <span class="ident">IntoIterator</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Account</span>, <span class="ident"><span class="self">Self</span>::Error</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+    <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span><span class="self">Self</span>: IntoIterator&lt;Item = <span class="prelude-ty">Result</span>&lt;Account, <span class="self">Self</span>::Error&gt;&gt;,
 {
-    <span class="doccomment">/// Error type that can be produces when trying to access the underlying store</span>
-    <span class="kw">type</span> <span class="ident">Error</span>;
+    <span class="doccomment">/// Error type that can be produces when trying to access the underlying store
+    </span><span class="kw">type </span>Error;
 
-    <span class="doccomment">/// Return the depth of the ledger</span>
-    <span class="kw">fn</span> <span class="ident">depth</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">usize</span> {
-        <span class="ident">DEPTH</span>
+    <span class="doccomment">/// Return the depth of the ledger
+    </span><span class="kw">fn </span>depth(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; usize {
+        DEPTH
     }
 
-    <span class="doccomment">/// Return a iterator over the accounts in this genesis ledger without consuming self</span>
-    <span class="kw">fn</span> <span class="ident">accounts</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="self">self</span>) -&gt; <span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="self">Self</span> <span class="kw">as</span> <span class="ident">IntoIterator</span><span class="op">&gt;</span><span class="ident">::IntoIter</span> {
-        <span class="self">self</span>.<span class="ident">into_iter</span>()
+    <span class="doccomment">/// Return a iterator over the accounts in this genesis ledger without consuming self
+    </span><span class="kw">fn </span>accounts(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span><span class="self">self</span>) -&gt; &lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span><span class="self">Self </span><span class="kw">as </span>IntoIterator&gt;::IntoIter {
+        <span class="self">self</span>.into_iter()
     }
 
-    <span class="doccomment">/// Build legacy mina merkle ledger tree with a fixed height that uses legacy hasher</span>
-    <span class="kw">fn</span> <span class="ident">to_mina_merkle_ledger_legacy</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="self">self</span>) -&gt; <span class="ident">MinaLedgerMerkleTreeLegacy</span><span class="op">&lt;</span><span class="ident">Account</span><span class="op">&gt;</span> {
-        <span class="comment">// ledger_depth is defined at &lt;https://github.com/MinaProtocol/mina/blob/develop/docs/specs/types_and_structures/serialized_key.md#constraint_constants&gt;</span>
-        <span class="kw">const</span> <span class="ident">MINA_LEDGER_HEIGHT</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">20</span>;
+    <span class="doccomment">/// Build legacy mina merkle ledger tree with a fixed height that uses legacy hasher
+    </span><span class="kw">fn </span>to_mina_merkle_ledger_legacy(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span><span class="self">self</span>) -&gt; MinaLedgerMerkleTreeLegacy&lt;Account&gt; {
+        <span class="comment">// ledger_depth is defined at &lt;https://github.com/MinaProtocol/mina/blob/develop/docs/specs/types_and_structures/serialized_key.md#constraint_constants&gt;
+        </span><span class="kw">const </span>MINA_LEDGER_HEIGHT: u32 = <span class="number">20</span>;
 
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">tree</span> <span class="op">=</span> <span class="ident">MinaLedgerMerkleTreeLegacy::new</span>(<span class="ident">MINA_LEDGER_HEIGHT</span>);
-        <span class="ident">tree</span>.<span class="ident">add_batch</span>(<span class="self">self</span>.<span class="ident">accounts</span>().<span class="ident">flatten</span>());
-        <span class="ident">tree</span>
+        <span class="kw">let </span><span class="kw-2">mut </span>tree = MinaLedgerMerkleTreeLegacy::new(MINA_LEDGER_HEIGHT);
+        tree.add_batch(<span class="self">self</span>.accounts().flatten());
+        tree
     }
 
-    <span class="doccomment">/// Build mina merkle ledger tree with a fixed height that uses kimchi hasher</span>
-    <span class="kw">fn</span> <span class="ident">to_mina_merkle_ledger</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="self">self</span>) -&gt; <span class="ident">MinaLedgerMerkleTree</span><span class="op">&lt;</span><span class="ident">Account</span><span class="op">&gt;</span> {
-        <span class="comment">// ledger_depth is defined at &lt;https://github.com/MinaProtocol/mina/blob/develop/docs/specs/types_and_structures/serialized_key.md#constraint_constants&gt;</span>
-        <span class="kw">const</span> <span class="ident">MINA_LEDGER_HEIGHT</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">20</span>;
+    <span class="doccomment">/// Build mina merkle ledger tree with a fixed height that uses kimchi hasher
+    </span><span class="kw">fn </span>to_mina_merkle_ledger(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span><span class="self">self</span>) -&gt; MinaLedgerMerkleTree&lt;Account&gt; {
+        <span class="comment">// ledger_depth is defined at &lt;https://github.com/MinaProtocol/mina/blob/develop/docs/specs/types_and_structures/serialized_key.md#constraint_constants&gt;
+        </span><span class="kw">const </span>MINA_LEDGER_HEIGHT: u32 = <span class="number">20</span>;
 
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">tree</span> <span class="op">=</span> <span class="ident">MinaLedgerMerkleTree::new</span>(<span class="ident">MINA_LEDGER_HEIGHT</span>);
-        <span class="ident">tree</span>.<span class="ident">add_batch</span>(<span class="self">self</span>.<span class="ident">accounts</span>().<span class="ident">flatten</span>());
-        <span class="ident">tree</span>
+        <span class="kw">let </span><span class="kw-2">mut </span>tree = MinaLedgerMerkleTree::new(MINA_LEDGER_HEIGHT);
+        tree.add_batch(<span class="self">self</span>.accounts().flatten());
+        tree
     }
 
-    <span class="comment">// TODO: Add additional methods when they are required</span>
-    <span class="comment">// https://github.com/MinaProtocol/mina/blob/65b59f56b6e98e1d9648280c2153d809abb42ba3/src/lib/genesis_ledger/intf.ml#L84</span>
-}
+    <span class="comment">// TODO: Add additional methods when they are required
+    // https://github.com/MinaProtocol/mina/blob/65b59f56b6e98e1d9648280c2153d809abb42ba3/src/lib/genesis_ledger/intf.ml#L84
+</span>}
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_ledger" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (fe3342816 2022-08-01)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_ledger" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (40336865f 2022-08-15)" ></div></body></html>

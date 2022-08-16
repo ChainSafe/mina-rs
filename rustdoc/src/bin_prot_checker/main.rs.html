@@ -166,173 +166,173 @@
 <span id="166">166</span>
 <span id="167">167</span>
 <span id="168">168</span>
-</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems</span>
-<span class="comment">// SPDX-License-Identifier: Apache-2.0</span>
+</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems
+// SPDX-License-Identifier: Apache-2.0
 
-<span class="kw">use</span> <span class="ident">core::str::FromStr</span>;
-<span class="kw">use</span> <span class="ident">std::fs::File</span>;
-<span class="kw">use</span> <span class="ident">std::io::Seek</span>;
-<span class="kw">use</span> <span class="ident">std::io</span>::{<span class="ident">stdin</span>, <span class="ident">stdout</span>, <span class="ident">Read</span>};
-<span class="kw">use</span> <span class="ident">std::path::PathBuf</span>;
+</span><span class="kw">use </span>core::str::FromStr;
+<span class="kw">use </span>std::fs::File;
+<span class="kw">use </span>std::io::Seek;
+<span class="kw">use </span>std::io::{stdin, stdout, Read};
+<span class="kw">use </span>std::path::PathBuf;
 
-<span class="kw">use</span> <span class="ident">bin_prot</span>::{<span class="ident">error::Error</span>, <span class="ident">from_reader</span>, <span class="ident">integers::integer</span>, <span class="ident">to_writer</span>};
-<span class="kw">use</span> <span class="ident">serde</span>::{<span class="ident">Deserialize</span>, <span class="ident">Serialize</span>};
-<span class="kw">use</span> <span class="ident">structopt::StructOpt</span>;
+<span class="kw">use </span>bin_prot::{error::Error, from_reader, integers::integer, to_writer};
+<span class="kw">use </span>serde::{Deserialize, Serialize};
+<span class="kw">use </span>structopt::StructOpt;
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">StructOpt</span>)]</span>
-<span class="kw">struct</span> <span class="ident">Opt</span> {
-    <span class="attribute">#[<span class="ident">structopt</span>(<span class="ident">subcommand</span>)]</span>
-    <span class="ident">cmd</span>: <span class="ident">Subcommand</span>,
-    <span class="attribute">#[<span class="ident">structopt</span>(<span class="ident">long</span>)]</span>
-    <span class="ident">test</span>: <span class="ident">Test</span>,
-    <span class="doccomment">/// Output file, stdout if not present</span>
-    <span class="attribute">#[<span class="ident">structopt</span>(<span class="ident">long</span>, <span class="ident">parse</span>(<span class="ident">from_os_str</span>))]</span>
-    <span class="ident">path</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">PathBuf</span><span class="op">&gt;</span>,
+<span class="attribute">#[derive(StructOpt)]</span>
+<span class="kw">struct </span>Opt {
+    <span class="attribute">#[structopt(subcommand)]</span>
+    cmd: Subcommand,
+    <span class="attribute">#[structopt(long)]</span>
+    test: Test,
+    <span class="doccomment">/// Output file, stdout if not present
+    </span><span class="attribute">#[structopt(long, parse(from_os_str))]</span>
+    path: <span class="prelude-ty">Option</span>&lt;PathBuf&gt;,
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">StructOpt</span>)]</span>
-<span class="kw">enum</span> <span class="ident">Subcommand</span> {
-    <span class="ident">Deserialize</span>,
-    <span class="ident">Serialize</span>,
+<span class="attribute">#[derive(StructOpt)]</span>
+<span class="kw">enum </span>Subcommand {
+    Deserialize,
+    Serialize,
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">Debug</span>)]</span>
-<span class="kw">enum</span> <span class="ident">E</span> {
-    <span class="ident">A</span>,
-    <span class="ident">B</span>,
-    <span class="ident">C</span>,
+<span class="attribute">#[derive(Serialize, Deserialize, Debug)]</span>
+<span class="kw">enum </span>E {
+    A,
+    B,
+    C,
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">Debug</span>)]</span>
-<span class="kw">struct</span> <span class="ident">S</span> {
-    <span class="ident">a</span>: <span class="ident">i32</span>,
-    <span class="ident">b</span>: <span class="ident">bool</span>,
-    <span class="ident">c</span>: <span class="ident">E</span>,
+<span class="attribute">#[derive(Serialize, Deserialize, Debug)]</span>
+<span class="kw">struct </span>S {
+    a: i32,
+    b: bool,
+    c: E,
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">Debug</span>)]</span>
-<span class="kw">enum</span> <span class="ident">V</span> {
-    <span class="ident">A</span>(<span class="ident">i32</span>),
-    <span class="ident">B</span>(<span class="ident">bool</span>),
-    <span class="ident">C</span>(<span class="ident">E</span>),
+<span class="attribute">#[derive(Serialize, Deserialize, Debug)]</span>
+<span class="kw">enum </span>V {
+    A(i32),
+    B(bool),
+    C(E),
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>)]</span>
-<span class="attribute">#[<span class="ident">serde</span>(<span class="ident">untagged</span>)]</span> <span class="comment">// ensures serializing a test enum just serializes the internal data</span>
-<span class="kw">enum</span> <span class="ident">Test</span> {
-    <span class="ident">Nat0</span>(<span class="ident">Vec</span><span class="op">&lt;</span>()<span class="op">&gt;</span>),
-    <span class="ident">Bool</span>(<span class="ident">bool</span>),
-    <span class="ident">Int</span>(<span class="ident">i32</span>),
-    <span class="ident">Int32</span>(<span class="attribute">#[<span class="ident">serde</span>(<span class="ident">with</span> <span class="op">=</span> <span class="string">&quot;integer&quot;</span>)]</span> <span class="ident">i32</span>),
-    <span class="ident">Int64</span>(<span class="attribute">#[<span class="ident">serde</span>(<span class="ident">with</span> <span class="op">=</span> <span class="string">&quot;integer&quot;</span>)]</span> <span class="ident">i64</span>),
-    <span class="ident">Enum</span>(<span class="ident">E</span>),
-    <span class="ident">Record</span>(<span class="ident">S</span>),
-    <span class="ident">Variant</span>(<span class="ident">V</span>),
+<span class="attribute">#[derive(Serialize)]</span>
+<span class="attribute">#[serde(untagged)]</span> <span class="comment">// ensures serializing a test enum just serializes the internal data
+</span><span class="kw">enum </span>Test {
+    Nat0(Vec&lt;()&gt;),
+    Bool(bool),
+    Int(i32),
+    Int32(<span class="attribute">#[serde(with = <span class="string">&quot;integer&quot;</span>)]</span> i32),
+    Int64(<span class="attribute">#[serde(with = <span class="string">&quot;integer&quot;</span>)]</span> i64),
+    Enum(E),
+    Record(S),
+    Variant(V),
 }
 
-<span class="comment">// from str also provides the default type for each test variant</span>
-<span class="kw">impl</span> <span class="ident">FromStr</span> <span class="kw">for</span> <span class="ident">Test</span> {
-    <span class="kw">type</span> <span class="prelude-val">Err</span> <span class="op">=</span> <span class="ident">String</span>;
-    <span class="kw">fn</span> <span class="ident">from_str</span>(<span class="ident">s</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span>, <span class="ident"><span class="self">Self</span>::Err</span><span class="op">&gt;</span> {
-        <span class="kw">match</span> <span class="ident">s</span> {
-            <span class="string">&quot;nat0&quot;</span> =&gt; {
-                <span class="prelude-val">Ok</span>(<span class="ident">Test::Nat0</span>(<span class="macro">vec!</span>[()]))
+<span class="comment">// from str also provides the default type for each test variant
+</span><span class="kw">impl </span>FromStr <span class="kw">for </span>Test {
+    <span class="kw">type </span><span class="prelude-val">Err </span>= String;
+    <span class="kw">fn </span>from_str(s: <span class="kw-2">&amp;</span>str) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>, <span class="self">Self</span>::Err&gt; {
+        <span class="kw">match </span>s {
+            <span class="string">&quot;nat0&quot; </span>=&gt; {
+                <span class="prelude-val">Ok</span>(Test::Nat0(<span class="macro">vec!</span>[()]))
             }
-            <span class="string">&quot;bool&quot;</span> =&gt; {
-                <span class="prelude-val">Ok</span>(<span class="ident">Test::Bool</span>(<span class="bool-val">true</span>))
+            <span class="string">&quot;bool&quot; </span>=&gt; {
+                <span class="prelude-val">Ok</span>(Test::Bool(<span class="bool-val">true</span>))
             }
-            <span class="string">&quot;int&quot;</span> =&gt; {
-                <span class="prelude-val">Ok</span>(<span class="ident">Test::Int</span>(<span class="number">12345</span>))
+            <span class="string">&quot;int&quot; </span>=&gt; {
+                <span class="prelude-val">Ok</span>(Test::Int(<span class="number">12345</span>))
             }
-            <span class="string">&quot;int32&quot;</span> =&gt; {
-                <span class="prelude-val">Ok</span>(<span class="ident">Test::Int32</span>(<span class="number">12345</span>))
+            <span class="string">&quot;int32&quot; </span>=&gt; {
+                <span class="prelude-val">Ok</span>(Test::Int32(<span class="number">12345</span>))
             }
-            <span class="string">&quot;int64&quot;</span> =&gt; {
-                <span class="prelude-val">Ok</span>(<span class="ident">Test::Int64</span>(<span class="number">12345</span>))
+            <span class="string">&quot;int64&quot; </span>=&gt; {
+                <span class="prelude-val">Ok</span>(Test::Int64(<span class="number">12345</span>))
             }
-            <span class="string">&quot;enum&quot;</span> =&gt; {
-                <span class="prelude-val">Ok</span>(<span class="ident">Test::Enum</span>(<span class="ident">E::A</span>))
+            <span class="string">&quot;enum&quot; </span>=&gt; {
+                <span class="prelude-val">Ok</span>(Test::Enum(E::A))
             }
-            <span class="string">&quot;record&quot;</span> =&gt; {            
-                <span class="kw">let</span> <span class="ident">v</span> <span class="op">=</span> <span class="ident">S</span>{
-                    <span class="ident">a</span>: <span class="number">15</span>,
-                    <span class="ident">b</span>: <span class="bool-val">true</span>,
-                    <span class="ident">c</span>: <span class="ident">E::C</span>
+            <span class="string">&quot;record&quot; </span>=&gt; {            
+                <span class="kw">let </span>v = S{
+                    a: <span class="number">15</span>,
+                    b: <span class="bool-val">true</span>,
+                    c: E::C
                 };
-                <span class="prelude-val">Ok</span>(<span class="ident">Test::Record</span>(<span class="ident">v</span>))
+                <span class="prelude-val">Ok</span>(Test::Record(v))
             }
-            <span class="string">&quot;variant&quot;</span> =&gt; {
-                <span class="kw">let</span> <span class="ident">v</span> <span class="op">=</span> <span class="ident">V::A</span>(<span class="number">15</span>);
-                <span class="prelude-val">Ok</span>(<span class="ident">Test::Variant</span>(<span class="ident">v</span>))
+            <span class="string">&quot;variant&quot; </span>=&gt; {
+                <span class="kw">let </span>v = V::A(<span class="number">15</span>);
+                <span class="prelude-val">Ok</span>(Test::Variant(v))
             }
-            <span class="string">&quot;public-key&quot;</span> =&gt; {
+            <span class="string">&quot;public-key&quot; </span>=&gt; {
                 <span class="macro">unimplemented!</span>()
             }
-            <span class="string">&quot;all&quot;</span> =&gt; {
+            <span class="string">&quot;all&quot; </span>=&gt; {
                 <span class="macro">unimplemented!</span>()
             }
-            <span class="kw">_</span> =&gt; <span class="macro">panic!</span>(<span class="string">&quot;Invalid test, Must be one of nat0, bool, int, int32, int64, enum, record, variant, public-key&quot;</span>)
+            <span class="kw">_ </span>=&gt; <span class="macro">panic!</span>(<span class="string">&quot;Invalid test, Must be one of nat0, bool, int, int32, int64, enum, record, variant, public-key&quot;</span>)
         }
     }
 }
 
-<span class="kw">impl</span> <span class="ident">ToString</span> <span class="kw">for</span> <span class="ident">Test</span> {
-    <span class="kw">fn</span> <span class="ident">to_string</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">String</span> {
-        <span class="kw">match</span> <span class="self">self</span> {
-            <span class="ident">Test::Nat0</span>(<span class="ident">v</span>) =&gt; <span class="ident">v</span>.<span class="ident">len</span>().<span class="ident">to_string</span>(),
-            <span class="ident">Test::Bool</span>(<span class="ident">v</span>) =&gt; <span class="ident">v</span>.<span class="ident">to_string</span>(),
-            <span class="ident">Test::Int</span>(<span class="ident">v</span>) =&gt; <span class="ident">v</span>.<span class="ident">to_string</span>(),
-            <span class="ident">Test::Int32</span>(<span class="ident">v</span>) =&gt; <span class="ident">v</span>.<span class="ident">to_string</span>(),
-            <span class="ident">Test::Int64</span>(<span class="ident">v</span>) =&gt; <span class="ident">v</span>.<span class="ident">to_string</span>(),
-            <span class="ident">Test::Enum</span>(<span class="ident">v</span>) =&gt; <span class="macro">format!</span>(<span class="string">&quot;{:?}&quot;</span>, <span class="ident">v</span>),
-            <span class="ident">Test::Record</span>(<span class="ident">v</span>) =&gt; <span class="macro">format!</span>(<span class="string">&quot;{:?}&quot;</span>, <span class="ident">v</span>),
-            <span class="ident">Test::Variant</span>(<span class="ident">v</span>) =&gt; <span class="macro">format!</span>(<span class="string">&quot;{:?}&quot;</span>, <span class="ident">v</span>),
+<span class="kw">impl </span>ToString <span class="kw">for </span>Test {
+    <span class="kw">fn </span>to_string(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; String {
+        <span class="kw">match </span><span class="self">self </span>{
+            Test::Nat0(v) =&gt; v.len().to_string(),
+            Test::Bool(v) =&gt; v.to_string(),
+            Test::Int(v) =&gt; v.to_string(),
+            Test::Int32(v) =&gt; v.to_string(),
+            Test::Int64(v) =&gt; v.to_string(),
+            Test::Enum(v) =&gt; <span class="macro">format!</span>(<span class="string">&quot;{:?}&quot;</span>, v),
+            Test::Record(v) =&gt; <span class="macro">format!</span>(<span class="string">&quot;{:?}&quot;</span>, v),
+            Test::Variant(v) =&gt; <span class="macro">format!</span>(<span class="string">&quot;{:?}&quot;</span>, v),
         }
     }
 }
 
-<span class="kw">fn</span> <span class="ident">deserialize_test</span><span class="op">&lt;</span><span class="ident">R</span>: <span class="ident">Read</span><span class="op">&gt;</span>(<span class="ident">read</span>: <span class="ident">R</span>, <span class="ident">test</span>: <span class="kw-2">&amp;</span><span class="ident">Test</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Test</span>, <span class="ident">Error</span><span class="op">&gt;</span> {
-    <span class="kw">match</span> <span class="ident">test</span> {
-        <span class="ident">Test::Nat0</span>(<span class="kw">_</span>) =&gt; <span class="prelude-val">Ok</span>(<span class="ident">Test::Nat0</span>(<span class="ident">from_reader</span>(<span class="ident">read</span>)<span class="question-mark">?</span>)),
-        <span class="ident">Test::Bool</span>(<span class="kw">_</span>) =&gt; <span class="prelude-val">Ok</span>(<span class="ident">Test::Bool</span>(<span class="ident">from_reader</span>(<span class="ident">read</span>)<span class="question-mark">?</span>)),
-        <span class="ident">Test::Int</span>(<span class="kw">_</span>) =&gt; <span class="prelude-val">Ok</span>(<span class="ident">Test::Int</span>(<span class="ident">from_reader</span>(<span class="ident">read</span>)<span class="question-mark">?</span>)),
-        <span class="ident">Test::Int32</span>(<span class="kw">_</span>) =&gt; <span class="prelude-val">Ok</span>(<span class="ident">Test::Int32</span>(<span class="ident">from_reader</span>(<span class="ident">read</span>)<span class="question-mark">?</span>)),
-        <span class="ident">Test::Int64</span>(<span class="kw">_</span>) =&gt; <span class="prelude-val">Ok</span>(<span class="ident">Test::Int64</span>(<span class="ident">from_reader</span>(<span class="ident">read</span>)<span class="question-mark">?</span>)),
-        <span class="ident">Test::Enum</span>(<span class="kw">_</span>) =&gt; <span class="prelude-val">Ok</span>(<span class="ident">Test::Enum</span>(<span class="ident">from_reader</span>(<span class="ident">read</span>)<span class="question-mark">?</span>)),
-        <span class="ident">Test::Record</span>(<span class="kw">_</span>) =&gt; <span class="prelude-val">Ok</span>(<span class="ident">Test::Record</span>(<span class="ident">from_reader</span>(<span class="ident">read</span>)<span class="question-mark">?</span>)),
-        <span class="ident">Test::Variant</span>(<span class="kw">_</span>) =&gt; <span class="prelude-val">Ok</span>(<span class="ident">Test::Variant</span>(<span class="ident">from_reader</span>(<span class="ident">read</span>)<span class="question-mark">?</span>)),
+<span class="kw">fn </span>deserialize_test&lt;R: Read&gt;(read: R, test: <span class="kw-2">&amp;</span>Test) -&gt; <span class="prelude-ty">Result</span>&lt;Test, Error&gt; {
+    <span class="kw">match </span>test {
+        Test::Nat0(<span class="kw">_</span>) =&gt; <span class="prelude-val">Ok</span>(Test::Nat0(from_reader(read)<span class="question-mark">?</span>)),
+        Test::Bool(<span class="kw">_</span>) =&gt; <span class="prelude-val">Ok</span>(Test::Bool(from_reader(read)<span class="question-mark">?</span>)),
+        Test::Int(<span class="kw">_</span>) =&gt; <span class="prelude-val">Ok</span>(Test::Int(from_reader(read)<span class="question-mark">?</span>)),
+        Test::Int32(<span class="kw">_</span>) =&gt; <span class="prelude-val">Ok</span>(Test::Int32(from_reader(read)<span class="question-mark">?</span>)),
+        Test::Int64(<span class="kw">_</span>) =&gt; <span class="prelude-val">Ok</span>(Test::Int64(from_reader(read)<span class="question-mark">?</span>)),
+        Test::Enum(<span class="kw">_</span>) =&gt; <span class="prelude-val">Ok</span>(Test::Enum(from_reader(read)<span class="question-mark">?</span>)),
+        Test::Record(<span class="kw">_</span>) =&gt; <span class="prelude-val">Ok</span>(Test::Record(from_reader(read)<span class="question-mark">?</span>)),
+        Test::Variant(<span class="kw">_</span>) =&gt; <span class="prelude-val">Ok</span>(Test::Variant(from_reader(read)<span class="question-mark">?</span>)),
     }
 }
 
-<span class="kw">fn</span> <span class="ident">main</span>() {
-    <span class="kw">let</span> <span class="ident">opt</span> <span class="op">=</span> <span class="ident">Opt::from_args</span>();
-    <span class="kw">match</span> <span class="ident">opt</span>.<span class="ident">cmd</span> {
-        <span class="ident">Subcommand::Serialize</span> =&gt; {
-            <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">path</span>) <span class="op">=</span> <span class="ident">opt</span>.<span class="ident">path</span> {
-                <span class="macro">println!</span>(<span class="string">&quot;Writing to file {:?}&quot;</span>, <span class="ident">path</span>);
-                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">file</span> <span class="op">=</span> <span class="ident">File::create</span>(<span class="ident">path</span>).<span class="ident">unwrap</span>();
-                <span class="ident">to_writer</span>(<span class="kw-2">&amp;mut</span> <span class="ident">file</span>, <span class="kw-2">&amp;</span><span class="ident">opt</span>.<span class="ident">test</span>).<span class="ident">map</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> {
-                    <span class="kw">let</span> <span class="ident">pos</span> <span class="op">=</span> <span class="ident">file</span>.<span class="ident">stream_position</span>().<span class="ident">unwrap</span>();
-                    <span class="macro">println!</span>(<span class="string">&quot;Wrote {} bytes&quot;</span>, <span class="ident">pos</span>);
+<span class="kw">fn </span>main() {
+    <span class="kw">let </span>opt = Opt::from_args();
+    <span class="kw">match </span>opt.cmd {
+        Subcommand::Serialize =&gt; {
+            <span class="kw">if let </span><span class="prelude-val">Some</span>(path) = opt.path {
+                <span class="macro">println!</span>(<span class="string">&quot;Writing to file {:?}&quot;</span>, path);
+                <span class="kw">let </span><span class="kw-2">mut </span>file = File::create(path).unwrap();
+                to_writer(<span class="kw-2">&amp;mut </span>file, <span class="kw-2">&amp;</span>opt.test).map(|<span class="kw">_</span>| {
+                    <span class="kw">let </span>pos = file.stream_position().unwrap();
+                    <span class="macro">println!</span>(<span class="string">&quot;Wrote {} bytes&quot;</span>, pos);
                 })
-            } <span class="kw">else</span> {
-                <span class="ident">to_writer</span>(<span class="kw-2">&amp;mut</span> <span class="ident">stdout</span>(), <span class="kw-2">&amp;</span><span class="ident">opt</span>.<span class="ident">test</span>)
+            } <span class="kw">else </span>{
+                to_writer(<span class="kw-2">&amp;mut </span>stdout(), <span class="kw-2">&amp;</span>opt.test)
             }
-            .<span class="ident">map_err</span>(<span class="op">|</span><span class="ident">e</span><span class="op">|</span> <span class="macro">eprintln!</span>(<span class="string">&quot;Failed with: {}&quot;</span>, <span class="ident">e</span>))
-            .<span class="ident">unwrap</span>();
+            .map_err(|e| <span class="macro">eprintln!</span>(<span class="string">&quot;Failed with: {}&quot;</span>, e))
+            .unwrap();
         }
-        <span class="ident">Subcommand::Deserialize</span> =&gt; {
-            <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">path</span>) <span class="op">=</span> <span class="ident">opt</span>.<span class="ident">path</span> {
-                <span class="kw">let</span> <span class="ident">file</span> <span class="op">=</span> <span class="ident">File::open</span>(<span class="ident">path</span>).<span class="ident">unwrap</span>();
-                <span class="ident">deserialize_test</span>(<span class="ident">file</span>, <span class="kw-2">&amp;</span><span class="ident">opt</span>.<span class="ident">test</span>)
-            } <span class="kw">else</span> {
-                <span class="ident">deserialize_test</span>(<span class="ident">stdin</span>(), <span class="kw-2">&amp;</span><span class="ident">opt</span>.<span class="ident">test</span>)
+        Subcommand::Deserialize =&gt; {
+            <span class="kw">if let </span><span class="prelude-val">Some</span>(path) = opt.path {
+                <span class="kw">let </span>file = File::open(path).unwrap();
+                deserialize_test(file, <span class="kw-2">&amp;</span>opt.test)
+            } <span class="kw">else </span>{
+                deserialize_test(stdin(), <span class="kw-2">&amp;</span>opt.test)
             }
-            .<span class="ident">map</span>(<span class="op">|</span><span class="ident">v</span><span class="op">|</span> <span class="macro">println!</span>(<span class="string">&quot;Deserialized value: {}&quot;</span>, <span class="ident">v</span>.<span class="ident">to_string</span>()))
-            .<span class="ident">map_err</span>(<span class="op">|</span><span class="ident">e</span><span class="op">|</span> <span class="macro">eprintln!</span>(<span class="string">&quot;Failed with: {}&quot;</span>, <span class="ident">e</span>))
-            .<span class="ident">unwrap</span>();
+            .map(|v| <span class="macro">println!</span>(<span class="string">&quot;Deserialized value: {}&quot;</span>, v.to_string()))
+            .map_err(|e| <span class="macro">eprintln!</span>(<span class="string">&quot;Failed with: {}&quot;</span>, e))
+            .unwrap();
         }
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="bin_prot_checker" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (fe3342816 2022-08-01)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="bin_prot_checker" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (40336865f 2022-08-15)" ></div></body></html>

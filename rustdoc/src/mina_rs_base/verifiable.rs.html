@@ -14,21 +14,21 @@
 <span id="14">14</span>
 <span id="15">15</span>
 <span id="16">16</span>
-</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems</span>
-<span class="comment">// SPDX-License-Identifier: Apache-2.0</span>
+</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems
+// SPDX-License-Identifier: Apache-2.0
 
-<span class="doccomment">//! Traits and helpers for data structures that require validation</span>
+</span><span class="doccomment">//! Traits and helpers for data structures that require validation
 
-<span class="doccomment">/// Types that implement Verifiable are able to self-check using intrinsic data (e.g. signatures)</span>
-<span class="doccomment">/// and optionally some context that is required for peforming the verification</span>
-<span class="doccomment">/// e.g. a singleton signature verifier or param required for snark verification</span>
-<span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">Verifiable</span><span class="op">&lt;</span><span class="ident">CTX</span><span class="op">&gt;</span> {
-    <span class="doccomment">/// Accepts self and a context and</span>
-    <span class="doccomment">/// returns if the implementor is valid</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// The context must be a mutable reference to satisfy the requirements of using a</span>
-    <span class="doccomment">/// shared signature checking context which performs self mutation as an optimization</span>
-    <span class="kw">fn</span> <span class="ident">verify</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">ctx</span>: <span class="kw-2">&amp;mut</span> <span class="ident">CTX</span>) -&gt; <span class="ident">bool</span>;
+/// Types that implement Verifiable are able to self-check using intrinsic data (e.g. signatures)
+/// and optionally some context that is required for peforming the verification
+/// e.g. a singleton signature verifier or param required for snark verification
+</span><span class="kw">pub trait </span>Verifiable&lt;CTX&gt; {
+    <span class="doccomment">/// Accepts self and a context and
+    /// returns if the implementor is valid
+    ///
+    /// The context must be a mutable reference to satisfy the requirements of using a
+    /// shared signature checking context which performs self mutation as an optimization
+    </span><span class="kw">fn </span>verify(<span class="kw-2">&amp;</span><span class="self">self</span>, ctx: <span class="kw-2">&amp;mut </span>CTX) -&gt; bool;
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_rs_base" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (fe3342816 2022-08-01)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_rs_base" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (40336865f 2022-08-15)" ></div></body></html>

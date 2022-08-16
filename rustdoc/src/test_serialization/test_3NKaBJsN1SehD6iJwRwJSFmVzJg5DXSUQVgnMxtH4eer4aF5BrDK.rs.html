@@ -335,342 +335,342 @@
 <span id="335">335</span>
 <span id="336">336</span>
 <span id="337">337</span>
-</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems</span>
-<span class="comment">// SPDX-License-Identifier: Apache-2.0</span>
+</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems
+// SPDX-License-Identifier: Apache-2.0
 
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">all</span>(<span class="ident">test</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;browser&quot;</span>))]</span>
-<span class="macro">wasm_bindgen_test::wasm_bindgen_test_configure!</span>(<span class="ident">run_in_browser</span>);
+</span><span class="attribute">#[cfg(all(test, feature = <span class="string">&quot;browser&quot;</span>))]</span>
+<span class="macro">wasm_bindgen_test::wasm_bindgen_test_configure!</span>(run_in_browser);
 
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
-<span class="kw">mod</span> <span class="ident">tests</span> {
-    <span class="kw">use</span> <span class="ident">anyhow::bail</span>;
-    <span class="kw">use</span> <span class="ident">mina_crypto::hash</span>::<span class="kw-2">*</span>;
-    <span class="kw">use</span> <span class="ident">mina_rs_base::types</span>::<span class="kw-2">*</span>;
-    <span class="kw">use</span> <span class="ident">mina_serialization_types::v1::ExternalTransitionV1</span>;
-    <span class="kw">use</span> <span class="ident">pretty_assertions::assert_eq</span>;
-    <span class="kw">use</span> <span class="ident">proof_systems::mina_signer::CompressedPubKey</span>;
-    <span class="kw">use</span> <span class="ident">proof_systems::o1_utils::field_helpers::FieldHelpers</span>;
-    <span class="kw">use</span> <span class="ident">std::str::FromStr</span>;
-    <span class="kw">use</span> <span class="ident">test_fixtures</span>::<span class="kw-2">*</span>;
-    <span class="kw">use</span> <span class="ident">time::macros</span>::<span class="kw-2">*</span>;
-    <span class="kw">use</span> <span class="ident">wasm_bindgen_test</span>::<span class="kw-2">*</span>;
+<span class="attribute">#[cfg(test)]</span>
+<span class="kw">mod </span>tests {
+    <span class="kw">use </span>anyhow::bail;
+    <span class="kw">use </span>mina_crypto::hash::<span class="kw-2">*</span>;
+    <span class="kw">use </span>mina_rs_base::types::<span class="kw-2">*</span>;
+    <span class="kw">use </span>mina_serialization_types::v1::ExternalTransitionV1;
+    <span class="kw">use </span>pretty_assertions::assert_eq;
+    <span class="kw">use </span>proof_systems::mina_signer::CompressedPubKey;
+    <span class="kw">use </span>proof_systems::o1_utils::field_helpers::FieldHelpers;
+    <span class="kw">use </span>std::str::FromStr;
+    <span class="kw">use </span>test_fixtures::<span class="kw-2">*</span>;
+    <span class="kw">use </span>time::macros::<span class="kw-2">*</span>;
+    <span class="kw">use </span>wasm_bindgen_test::<span class="kw-2">*</span>;
 
-    <span class="attribute">#[<span class="ident">wasm_bindgen_test</span>]</span>
-    <span class="kw">fn</span> <span class="ident">test_block_wasm</span>() {
-        <span class="ident">test_block</span>().<span class="ident">unwrap</span>()
+    <span class="attribute">#[wasm_bindgen_test]</span>
+    <span class="kw">fn </span>test_block_wasm() {
+        test_block().unwrap()
     }
 
-    <span class="comment">// https://minaexplorer.com/block/3NKaBJsN1SehD6iJwRwJSFmVzJg5DXSUQVgnMxtH4eer4aF5BrDK</span>
-    <span class="comment">// https://storage.googleapis.com/mina_network_block_data/mainnet-77748-3NKaBJsN1SehD6iJwRwJSFmVzJg5DXSUQVgnMxtH4eer4aF5BrDK.json</span>
-    <span class="attribute">#[<span class="ident">test</span>]</span>
-    <span class="kw">fn</span> <span class="ident">test_block</span>() -&gt; <span class="ident">anyhow::Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">et</span>: <span class="ident">ExternalTransitionV1</span> <span class="op">=</span> <span class="ident">TEST_BLOCKS</span>
-            .<span class="ident">get</span>(<span class="string">&quot;3NKaBJsN1SehD6iJwRwJSFmVzJg5DXSUQVgnMxtH4eer4aF5BrDK.hex&quot;</span>)
-            .<span class="ident">unwrap</span>()
-            .<span class="ident">external_transitionv1</span>()<span class="question-mark">?</span>;
+    <span class="comment">// https://minaexplorer.com/block/3NKaBJsN1SehD6iJwRwJSFmVzJg5DXSUQVgnMxtH4eer4aF5BrDK
+    // https://storage.googleapis.com/mina_network_block_data/mainnet-77748-3NKaBJsN1SehD6iJwRwJSFmVzJg5DXSUQVgnMxtH4eer4aF5BrDK.json
+    </span><span class="attribute">#[test]</span>
+    <span class="kw">fn </span>test_block() -&gt; anyhow::Result&lt;()&gt; {
+        <span class="kw">let </span>et: ExternalTransitionV1 = TEST_BLOCKS
+            .get(<span class="string">&quot;3NKaBJsN1SehD6iJwRwJSFmVzJg5DXSUQVgnMxtH4eer4aF5BrDK.hex&quot;</span>)
+            .unwrap()
+            .external_transitionv1()<span class="question-mark">?</span>;
 
-        <span class="kw">let</span> <span class="ident">protocol_state</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">et</span>.<span class="ident">t</span>.<span class="ident">protocol_state</span>;
+        <span class="kw">let </span>protocol_state = <span class="kw-2">&amp;</span>et.t.protocol_state;
         <span class="macro">assert_eq!</span>(
-            <span class="kw-2">&amp;</span><span class="ident">StateHash::from</span>(<span class="ident">protocol_state</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">previous_state_hash</span>.<span class="ident">clone</span>()).<span class="ident">to_string</span>(),
-            <span class="string">&quot;3NKDdX6eVtAgmmTVxaFLnnPPrsGKgVepG2k5cf8HocgSw6ps8Sww&quot;</span>
-        );
+            <span class="kw-2">&amp;</span>StateHash::from(protocol_state.t.t.previous_state_hash.clone()).to_string(),
+            <span class="string">&quot;3NKDdX6eVtAgmmTVxaFLnnPPrsGKgVepG2k5cf8HocgSw6ps8Sww&quot;
+        </span>);
 
-        <span class="kw">let</span> <span class="ident">body</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">et</span>.<span class="ident">t</span>.<span class="ident">protocol_state</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">body</span>;
+        <span class="kw">let </span>body = <span class="kw-2">&amp;</span>et.t.protocol_state.t.t.body;
         <span class="macro">assert_eq!</span>(
-            <span class="kw-2">&amp;</span><span class="ident">StateHash::from</span>(<span class="ident">body</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">genesis_state_hash</span>.<span class="ident">clone</span>()).<span class="ident">to_string</span>(),
-            <span class="string">&quot;3NKeMoncuHab5ScarV5ViyF16cJPT4taWNSaTLS64Dp67wuXigPZ&quot;</span>
-        );
-        <span class="kw">let</span> <span class="ident">blockchain_state</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">body</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">blockchain_state</span>;
-        <span class="kw">let</span> <span class="ident">non_snark</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">blockchain_state</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">staged_ledger_hash</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">non_snark</span>;
+            <span class="kw-2">&amp;</span>StateHash::from(body.t.t.genesis_state_hash.clone()).to_string(),
+            <span class="string">&quot;3NKeMoncuHab5ScarV5ViyF16cJPT4taWNSaTLS64Dp67wuXigPZ&quot;
+        </span>);
+        <span class="kw">let </span>blockchain_state = <span class="kw-2">&amp;</span>body.t.t.blockchain_state;
+        <span class="kw">let </span>non_snark = <span class="kw-2">&amp;</span>blockchain_state.t.t.staged_ledger_hash.t.t.non_snark;
         <span class="macro">assert_eq!</span>(
-            <span class="kw-2">&amp;</span><span class="ident">LedgerHash::from</span>(<span class="ident">non_snark</span>.<span class="ident">t</span>.<span class="ident">ledger_hash</span>.<span class="ident">clone</span>()).<span class="ident">to_string</span>(),
-            <span class="string">&quot;jwD5Kx1GtLKJGSWufhkvCn8m7EFLm2LmAM7neyzLtTiN8wyn2po&quot;</span>
-        );
+            <span class="kw-2">&amp;</span>LedgerHash::from(non_snark.t.ledger_hash.clone()).to_string(),
+            <span class="string">&quot;jwD5Kx1GtLKJGSWufhkvCn8m7EFLm2LmAM7neyzLtTiN8wyn2po&quot;
+        </span>);
         <span class="macro">assert_eq!</span>(
-            <span class="kw-2">&amp;</span><span class="ident">AuxHash::from</span>(<span class="ident">non_snark</span>.<span class="ident">t</span>.<span class="ident">aux_hash</span>.<span class="ident">t</span>.<span class="number">0</span>.<span class="ident">clone</span>()).<span class="ident">to_string</span>(),
-            <span class="string">&quot;UworXDykADr3Lte856ePMsdawpTVhKLKT9Y3UKha7Tpbt4V1JP&quot;</span>
-        );
+            <span class="kw-2">&amp;</span>AuxHash::from(non_snark.t.aux_hash.t.<span class="number">0</span>.clone()).to_string(),
+            <span class="string">&quot;UworXDykADr3Lte856ePMsdawpTVhKLKT9Y3UKha7Tpbt4V1JP&quot;
+        </span>);
         <span class="macro">assert_eq!</span>(
-            <span class="kw-2">&amp;</span><span class="ident">PendingCoinbaseAuxHash</span>(<span class="ident">non_snark</span>.<span class="ident">t</span>.<span class="ident">pending_coinbase_aux</span>.<span class="ident">t</span>.<span class="number">0</span>.<span class="ident">clone</span>()).<span class="ident">to_string</span>(),
-            <span class="string">&quot;XbwfEKZjgcZiyDhHRZjHUx72TuxpnuzLPwVYpVWkMAAXkSy7go&quot;</span>
-        );
+            <span class="kw-2">&amp;</span>PendingCoinbaseAuxHash(non_snark.t.pending_coinbase_aux.t.<span class="number">0</span>.clone()).to_string(),
+            <span class="string">&quot;XbwfEKZjgcZiyDhHRZjHUx72TuxpnuzLPwVYpVWkMAAXkSy7go&quot;
+        </span>);
         <span class="macro">assert_eq!</span>(
-            <span class="kw-2">&amp;</span><span class="ident">CoinBaseHash::from</span>(
-                <span class="ident">blockchain_state</span>
-                    .<span class="ident">t</span>
-                    .<span class="ident">t</span>
-                    .<span class="ident">staged_ledger_hash</span>
-                    .<span class="ident">t</span>
-                    .<span class="ident">t</span>
-                    .<span class="ident">pending_coinbase_hash</span>
-                    .<span class="ident">t</span>
-                    .<span class="ident">clone</span>()
+            <span class="kw-2">&amp;</span>CoinBaseHash::from(
+                blockchain_state
+                    .t
+                    .t
+                    .staged_ledger_hash
+                    .t
+                    .t
+                    .pending_coinbase_hash
+                    .t
+                    .clone()
             )
-            .<span class="ident">to_string</span>(),
-            <span class="string">&quot;2mzpdUi5ddLicLGUns4iYFiNahL5B5cPkTUot83v2moNtr4mzRYf&quot;</span>
-        );
+            .to_string(),
+            <span class="string">&quot;2mzpdUi5ddLicLGUns4iYFiNahL5B5cPkTUot83v2moNtr4mzRYf&quot;
+        </span>);
         <span class="macro">assert_eq!</span>(
-            <span class="kw-2">&amp;</span><span class="ident">LedgerHash::from</span>(<span class="ident">blockchain_state</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">snarked_ledger_hash</span>.<span class="ident">clone</span>()).<span class="ident">to_string</span>(),
-            <span class="string">&quot;jxkQm8ge9sYPwPyUYUMZ6wr7SQ6Pit5szbRvPmEzYKQQZAnACyC&quot;</span>
-        );
+            <span class="kw-2">&amp;</span>LedgerHash::from(blockchain_state.t.t.snarked_ledger_hash.clone()).to_string(),
+            <span class="string">&quot;jxkQm8ge9sYPwPyUYUMZ6wr7SQ6Pit5szbRvPmEzYKQQZAnACyC&quot;
+        </span>);
         <span class="macro">assert_eq!</span>(
-            <span class="kw-2">&amp;</span><span class="ident">LedgerHash::from</span>(<span class="ident">blockchain_state</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">genesis_ledger_hash</span>.<span class="ident">clone</span>()).<span class="ident">to_string</span>(),
-            <span class="string">&quot;jx7buQVWFLsXTtzRgSxbYcT8EYLS8KCZbLrfDcJxMtyy4thw2Ee&quot;</span>
-        );
-        <span class="macro">assert_eq!</span>(<span class="ident">blockchain_state</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">snarked_next_available_token</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">t</span>, <span class="number">2</span>);
+            <span class="kw-2">&amp;</span>LedgerHash::from(blockchain_state.t.t.genesis_ledger_hash.clone()).to_string(),
+            <span class="string">&quot;jx7buQVWFLsXTtzRgSxbYcT8EYLS8KCZbLrfDcJxMtyy4thw2Ee&quot;
+        </span>);
+        <span class="macro">assert_eq!</span>(blockchain_state.t.t.snarked_next_available_token.t.t.t, <span class="number">2</span>);
         <span class="macro">assert_eq!</span>(
-            <span class="ident">BlockTime::from</span>(<span class="ident">blockchain_state</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">timestamp</span>.<span class="ident">clone</span>()).<span class="ident">epoch_millis</span>(),
-            <span class="number">1636092900000</span>
-        );
+            BlockTime::from(blockchain_state.t.t.timestamp.clone()).epoch_millis(),
+            <span class="number">1636092900000
+        </span>);
         <span class="macro">assert_eq!</span>(
-            <span class="ident">BlockTime::from</span>(<span class="ident">blockchain_state</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">timestamp</span>.<span class="ident">clone</span>()).<span class="ident">datetime</span>(),
-            <span class="macro">datetime!</span>(<span class="number">2021</span><span class="op">-</span><span class="number">11</span><span class="op">-</span><span class="number">05</span> <span class="number">06</span>:<span class="number">15</span>:<span class="number">00</span> <span class="ident">UTC</span>)
+            BlockTime::from(blockchain_state.t.t.timestamp.clone()).datetime(),
+            <span class="macro">datetime!</span>(<span class="number">2021</span>-<span class="number">11</span>-<span class="number">05 06</span>:<span class="number">15</span>:<span class="number">00 </span>UTC)
         );
 
-        <span class="kw">let</span> <span class="ident">consensus_state</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">body</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">consensus_state</span>;
-        <span class="macro">assert_eq!</span>(<span class="ident">consensus_state</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">blockchain_length</span>.<span class="ident">t</span>.<span class="ident">t</span>, <span class="number">77748</span>);
-        <span class="macro">assert_eq!</span>(<span class="ident">consensus_state</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">epoch_count</span>.<span class="ident">t</span>.<span class="ident">t</span>, <span class="number">15</span>);
-        <span class="macro">assert_eq!</span>(<span class="ident">consensus_state</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">min_window_density</span>.<span class="ident">t</span>.<span class="ident">t</span>, <span class="number">33</span>);
+        <span class="kw">let </span>consensus_state = <span class="kw-2">&amp;</span>body.t.t.consensus_state;
+        <span class="macro">assert_eq!</span>(consensus_state.t.t.blockchain_length.t.t, <span class="number">77748</span>);
+        <span class="macro">assert_eq!</span>(consensus_state.t.t.epoch_count.t.t, <span class="number">15</span>);
+        <span class="macro">assert_eq!</span>(consensus_state.t.t.min_window_density.t.t, <span class="number">33</span>);
         <span class="macro">assert_eq!</span>(
-            <span class="ident">ConsensusState::from</span>(<span class="ident">consensus_state</span>.<span class="ident">clone</span>()).<span class="ident">sub_window_densities</span>(),
+            ConsensusState::from(consensus_state.clone()).sub_window_densities(),
             <span class="macro">vec!</span>[<span class="number">6</span>, <span class="number">1</span>, <span class="number">3</span>, <span class="number">5</span>, <span class="number">4</span>, <span class="number">3</span>, <span class="number">5</span>, <span class="number">7</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>,]
         );
 
         <span class="macro">assert_eq!</span>(
-            <span class="ident">VrfOutputTruncated::from</span>(<span class="ident">consensus_state</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">last_vrf_output</span>.<span class="ident">clone</span>()).<span class="ident">to_string</span>(),
-            <span class="string">&quot;WNAmmaRL7XzyhZHiz276MbnBv4YUIJRGf9P_Xu0RBAA=&quot;</span>
-        );
+            VrfOutputTruncated::from(consensus_state.t.t.last_vrf_output.clone()).to_string(),
+            <span class="string">&quot;WNAmmaRL7XzyhZHiz276MbnBv4YUIJRGf9P_Xu0RBAA=&quot;
+        </span>);
 
         <span class="macro">assert_eq!</span>(
-            <span class="ident">Amount::from</span>(<span class="ident">consensus_state</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">total_currency</span>.<span class="ident">t</span>.<span class="ident">t</span>).<span class="ident">to_string</span>(),
-            <span class="string">&quot;867667132.840039233&quot;</span>
-        );
+            Amount::from(consensus_state.t.t.total_currency.t.t).to_string(),
+            <span class="string">&quot;867667132.840039233&quot;
+        </span>);
         <span class="macro">assert_eq!</span>(
-            <span class="ident">consensus_state</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">curr_global_slot</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">slot_number</span>.<span class="ident">t</span>.<span class="ident">t</span>,
-            <span class="number">111965</span>
-        );
+            consensus_state.t.t.curr_global_slot.t.t.slot_number.t.t,
+            <span class="number">111965
+        </span>);
         <span class="macro">assert_eq!</span>(
-            <span class="ident">consensus_state</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">curr_global_slot</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">slots_per_epoch</span>.<span class="ident">t</span>.<span class="ident">t</span>,
-            <span class="number">7140</span>
-        );
-        <span class="macro">assert_eq!</span>(<span class="ident">consensus_state</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">global_slot_since_genesis</span>.<span class="ident">t</span>.<span class="ident">t</span>, <span class="number">111965</span>);
+            consensus_state.t.t.curr_global_slot.t.t.slots_per_epoch.t.t,
+            <span class="number">7140
+        </span>);
+        <span class="macro">assert_eq!</span>(consensus_state.t.t.global_slot_since_genesis.t.t, <span class="number">111965</span>);
 
-        <span class="kw">let</span> <span class="ident">staking_epoch_data</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">consensus_state</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">staking_epoch_data</span>;
+        <span class="kw">let </span>staking_epoch_data = <span class="kw-2">&amp;</span>consensus_state.t.t.staking_epoch_data;
         <span class="macro">assert_eq!</span>(
-            <span class="ident">LedgerHash::from</span>(<span class="ident">staking_epoch_data</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">ledger</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">hash</span>.<span class="ident">clone</span>()).<span class="ident">to_string</span>(),
-            <span class="string">&quot;jxn15ATGoe4WGgYpbssxJH9XW8NXRDy22WvSsBqvMqcnLPgPAwN&quot;</span>
-        );
+            LedgerHash::from(staking_epoch_data.t.t.ledger.t.t.hash.clone()).to_string(),
+            <span class="string">&quot;jxn15ATGoe4WGgYpbssxJH9XW8NXRDy22WvSsBqvMqcnLPgPAwN&quot;
+        </span>);
         <span class="macro">assert_eq!</span>(
-            <span class="ident">Amount::from</span>(<span class="ident">staking_epoch_data</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">ledger</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">total_currency</span>.<span class="ident">t</span>.<span class="ident">t</span>).<span class="ident">to_string</span>(),
-            <span class="string">&quot;861208012.840039233&quot;</span>
-        );
+            Amount::from(staking_epoch_data.t.t.ledger.t.t.total_currency.t.t).to_string(),
+            <span class="string">&quot;861208012.840039233&quot;
+        </span>);
         <span class="macro">assert_eq!</span>(
-            <span class="kw-2">&amp;</span><span class="ident">EpochSeed::from</span>(<span class="ident">staking_epoch_data</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">seed</span>.<span class="ident">clone</span>()).<span class="ident">to_string</span>(),
-            <span class="string">&quot;2vao4i3odTHZVRbEhdkKvLoD1rW2UuiVaayVFosYtkghABg29o7i&quot;</span>
-        );
+            <span class="kw-2">&amp;</span>EpochSeed::from(staking_epoch_data.t.t.seed.clone()).to_string(),
+            <span class="string">&quot;2vao4i3odTHZVRbEhdkKvLoD1rW2UuiVaayVFosYtkghABg29o7i&quot;
+        </span>);
         <span class="macro">assert_eq!</span>(
-            <span class="kw-2">&amp;</span><span class="ident">StateHash::from</span>(<span class="ident">staking_epoch_data</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">start_checkpoint</span>.<span class="ident">clone</span>()).<span class="ident">to_string</span>(),
-            <span class="string">&quot;3NLM6x7j2Z68e8gGspyvc1aU884uU6yWkwz9aW127BFckn9b5uvo&quot;</span>
-        );
+            <span class="kw-2">&amp;</span>StateHash::from(staking_epoch_data.t.t.start_checkpoint.clone()).to_string(),
+            <span class="string">&quot;3NLM6x7j2Z68e8gGspyvc1aU884uU6yWkwz9aW127BFckn9b5uvo&quot;
+        </span>);
         <span class="macro">assert_eq!</span>(
-            <span class="kw-2">&amp;</span><span class="ident">StateHash::from</span>(<span class="ident">staking_epoch_data</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">lock_checkpoint</span>.<span class="ident">clone</span>()).<span class="ident">to_string</span>(),
-            <span class="string">&quot;3NLiFhztdCsuWSociNGMspidiYkyqNKZw6ufH7jqbgQtEgGtBb2P&quot;</span>
-        );
-        <span class="macro">assert_eq!</span>(<span class="ident">staking_epoch_data</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">epoch_length</span>.<span class="ident">t</span>.<span class="ident">t</span>, <span class="number">4697</span>);
+            <span class="kw-2">&amp;</span>StateHash::from(staking_epoch_data.t.t.lock_checkpoint.clone()).to_string(),
+            <span class="string">&quot;3NLiFhztdCsuWSociNGMspidiYkyqNKZw6ufH7jqbgQtEgGtBb2P&quot;
+        </span>);
+        <span class="macro">assert_eq!</span>(staking_epoch_data.t.t.epoch_length.t.t, <span class="number">4697</span>);
 
-        <span class="kw">let</span> <span class="ident">next_epoch_data</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">consensus_state</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">next_epoch_data</span>;
+        <span class="kw">let </span>next_epoch_data = <span class="kw-2">&amp;</span>consensus_state.t.t.next_epoch_data;
         <span class="macro">assert_eq!</span>(
-            <span class="ident">LedgerHash::from</span>(<span class="ident">next_epoch_data</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">ledger</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">hash</span>.<span class="ident">clone</span>()).<span class="ident">to_string</span>(),
-            <span class="string">&quot;jwAXd4GZgxE3YCwqs99g4MpLNiEV2ZfZPstyah4jxo753AVgL6R&quot;</span>
-        );
+            LedgerHash::from(next_epoch_data.t.t.ledger.t.t.hash.clone()).to_string(),
+            <span class="string">&quot;jwAXd4GZgxE3YCwqs99g4MpLNiEV2ZfZPstyah4jxo753AVgL6R&quot;
+        </span>);
         <span class="macro">assert_eq!</span>(
-            <span class="ident">Amount::from</span>(<span class="ident">next_epoch_data</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">ledger</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">total_currency</span>.<span class="ident">t</span>.<span class="ident">t</span>).<span class="ident">to_string</span>(),
-            <span class="string">&quot;864998092.840039233&quot;</span>
-        );
+            Amount::from(next_epoch_data.t.t.ledger.t.t.total_currency.t.t).to_string(),
+            <span class="string">&quot;864998092.840039233&quot;
+        </span>);
         <span class="macro">assert_eq!</span>(
-            <span class="kw-2">&amp;</span><span class="ident">EpochSeed::from</span>(<span class="ident">next_epoch_data</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">seed</span>.<span class="ident">clone</span>()).<span class="ident">to_string</span>(),
-            <span class="string">&quot;2vbUkQGF5swXK7PNaAJDUQirW1fbZiUJDzbBKwfPGdJXZiryburD&quot;</span>
-        );
+            <span class="kw-2">&amp;</span>EpochSeed::from(next_epoch_data.t.t.seed.clone()).to_string(),
+            <span class="string">&quot;2vbUkQGF5swXK7PNaAJDUQirW1fbZiUJDzbBKwfPGdJXZiryburD&quot;
+        </span>);
         <span class="macro">assert_eq!</span>(
-            <span class="kw-2">&amp;</span><span class="ident">StateHash::from</span>(<span class="ident">next_epoch_data</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">start_checkpoint</span>.<span class="ident">clone</span>()).<span class="ident">to_string</span>(),
-            <span class="string">&quot;3NLkdXKqoHfwZ5jT1uxSY3eoFy3C2jpAUFZ1Y6eSMsE66MNJqErx&quot;</span>
-        );
+            <span class="kw-2">&amp;</span>StateHash::from(next_epoch_data.t.t.start_checkpoint.clone()).to_string(),
+            <span class="string">&quot;3NLkdXKqoHfwZ5jT1uxSY3eoFy3C2jpAUFZ1Y6eSMsE66MNJqErx&quot;
+        </span>);
         <span class="macro">assert_eq!</span>(
-            <span class="kw-2">&amp;</span><span class="ident">StateHash::from</span>(<span class="ident">next_epoch_data</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">lock_checkpoint</span>.<span class="ident">clone</span>()).<span class="ident">to_string</span>(),
-            <span class="string">&quot;3NLW5kBi9nXDzzdr2C3p9X6QaKaASMaVHp3otwreKXKJToUNK7yu&quot;</span>
-        );
-        <span class="macro">assert_eq!</span>(<span class="ident">next_epoch_data</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">epoch_length</span>.<span class="ident">t</span>.<span class="ident">t</span>, <span class="number">3285</span>);
-
-        <span class="macro">assert_eq!</span>(
-            <span class="ident">consensus_state</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">has_ancestor_in_same_checkpoint_window</span>,
-            <span class="bool-val">true</span>
-        );
-        <span class="macro">assert_eq!</span>(
-            <span class="ident">CompressedPubKey::from</span>(<span class="ident">consensus_state</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">block_stake_winner</span>.<span class="ident">clone</span>()).<span class="ident">into_address</span>(),
-            <span class="string">&quot;B62qmsYXFNNE565yv7bEMPsPnpRCsMErf7J2v5jMnuKQ1jgwZS8BzXS&quot;</span>
-        );
-        <span class="macro">assert_eq!</span>(
-            <span class="ident">CompressedPubKey::from</span>(<span class="ident">consensus_state</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">block_creator</span>.<span class="ident">clone</span>()).<span class="ident">into_address</span>(),
-            <span class="string">&quot;B62qpge4uMq4Vv5Rvc8Gw9qSquUYd6xoW1pz7HQkMSHm6h1o7pvLPAN&quot;</span>
-        );
-        <span class="macro">assert_eq!</span>(
-            <span class="ident">CompressedPubKey::from</span>(<span class="ident">consensus_state</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">coinbase_receiver</span>.<span class="ident">clone</span>()).<span class="ident">into_address</span>(),
-            <span class="string">&quot;B62qk9WYHu2PBYv4EyEubnVQURcwpiV2ysuYYoMdwi8YTnwZQ7H4bLM&quot;</span>
-        );
-        <span class="macro">assert_eq!</span>(<span class="ident">consensus_state</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">supercharge_coinbase</span>, <span class="bool-val">false</span>);
+            <span class="kw-2">&amp;</span>StateHash::from(next_epoch_data.t.t.lock_checkpoint.clone()).to_string(),
+            <span class="string">&quot;3NLW5kBi9nXDzzdr2C3p9X6QaKaASMaVHp3otwreKXKJToUNK7yu&quot;
+        </span>);
+        <span class="macro">assert_eq!</span>(next_epoch_data.t.t.epoch_length.t.t, <span class="number">3285</span>);
 
         <span class="macro">assert_eq!</span>(
-            <span class="kw-2">&amp;</span><span class="ident">CompressedPubKey::from</span>(<span class="ident">consensus_state</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">block_creator</span>.<span class="ident">clone</span>()).<span class="ident">into_address</span>(),
-            <span class="string">&quot;B62qpge4uMq4Vv5Rvc8Gw9qSquUYd6xoW1pz7HQkMSHm6h1o7pvLPAN&quot;</span>
-        );
+            consensus_state.t.t.has_ancestor_in_same_checkpoint_window,
+            <span class="bool-val">true
+        </span>);
+        <span class="macro">assert_eq!</span>(
+            CompressedPubKey::from(consensus_state.t.t.block_stake_winner.clone()).into_address(),
+            <span class="string">&quot;B62qmsYXFNNE565yv7bEMPsPnpRCsMErf7J2v5jMnuKQ1jgwZS8BzXS&quot;
+        </span>);
+        <span class="macro">assert_eq!</span>(
+            CompressedPubKey::from(consensus_state.t.t.block_creator.clone()).into_address(),
+            <span class="string">&quot;B62qpge4uMq4Vv5Rvc8Gw9qSquUYd6xoW1pz7HQkMSHm6h1o7pvLPAN&quot;
+        </span>);
+        <span class="macro">assert_eq!</span>(
+            CompressedPubKey::from(consensus_state.t.t.coinbase_receiver.clone()).into_address(),
+            <span class="string">&quot;B62qk9WYHu2PBYv4EyEubnVQURcwpiV2ysuYYoMdwi8YTnwZQ7H4bLM&quot;
+        </span>);
+        <span class="macro">assert_eq!</span>(consensus_state.t.t.supercharge_coinbase, <span class="bool-val">false</span>);
 
         <span class="macro">assert_eq!</span>(
-            <span class="ident">Amount::from</span>(<span class="ident">consensus_state</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">total_currency</span>.<span class="ident">t</span>.<span class="ident">t</span>).<span class="ident">to_string</span>(),
-            <span class="string">&quot;867667132.840039233&quot;</span>
-        );
+            <span class="kw-2">&amp;</span>CompressedPubKey::from(consensus_state.t.t.block_creator.clone()).into_address(),
+            <span class="string">&quot;B62qpge4uMq4Vv5Rvc8Gw9qSquUYd6xoW1pz7HQkMSHm6h1o7pvLPAN&quot;
+        </span>);
 
-        <span class="kw">let</span> <span class="ident">constants</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">body</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">constants</span>;
-        <span class="macro">assert_eq!</span>(<span class="ident">constants</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">k</span>.<span class="ident">t</span>.<span class="ident">t</span>, <span class="number">290</span>);
-        <span class="macro">assert_eq!</span>(<span class="ident">constants</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">slots_per_epoch</span>.<span class="ident">t</span>.<span class="ident">t</span>, <span class="number">7140</span>);
-        <span class="macro">assert_eq!</span>(<span class="ident">constants</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">slots_per_sub_window</span>.<span class="ident">t</span>.<span class="ident">t</span>, <span class="number">7</span>);
-        <span class="macro">assert_eq!</span>(<span class="ident">constants</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">delta</span>.<span class="ident">t</span>.<span class="ident">t</span>, <span class="number">0</span>);
         <span class="macro">assert_eq!</span>(
-            <span class="ident">BlockTime::from</span>(<span class="ident">constants</span>.<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">genesis_state_timestamp</span>.<span class="ident">clone</span>()).<span class="ident">epoch_millis</span>(),
-            <span class="number">1615939200000</span>
-        );
+            Amount::from(consensus_state.t.t.total_currency.t.t).to_string(),
+            <span class="string">&quot;867667132.840039233&quot;
+        </span>);
+
+        <span class="kw">let </span>constants = <span class="kw-2">&amp;</span>body.t.t.constants;
+        <span class="macro">assert_eq!</span>(constants.t.t.k.t.t, <span class="number">290</span>);
+        <span class="macro">assert_eq!</span>(constants.t.t.slots_per_epoch.t.t, <span class="number">7140</span>);
+        <span class="macro">assert_eq!</span>(constants.t.t.slots_per_sub_window.t.t, <span class="number">7</span>);
+        <span class="macro">assert_eq!</span>(constants.t.t.delta.t.t, <span class="number">0</span>);
+        <span class="macro">assert_eq!</span>(
+            BlockTime::from(constants.t.t.genesis_state_timestamp.clone()).epoch_millis(),
+            <span class="number">1615939200000
+        </span>);
 
         <span class="comment">/*
         TODO: Verify protocol_state_proof
         AQEBAQEBAQEBAQABAfyCZ8XD4he3QAH80HIgGfAezhgAAQH8k9ybHSm_cswB_JQesWKV8mPiAAEB_CFDKDlOgTyvAfxQGTylbUUpgAABAAEB_IlOihwF_6cPAfy8HOdGfm3muwABACNq3aIW99rvmPThUJOt7sTCDHKGhd14jtt6WT6kuFYzAQCn9Tpe5H8iu4eCAUs2O4jrZQzs6DrhpxGQc6AzAkteOQEAAQH8xQZ4fhDIOj4B_F6Fr8O5CTsMAAEBAQEAAQH8Qm91cFzlxuYB_Cz4ZjYnTwVyAAEBAAEB_OZAKPtMoib5AfzQLLCTKmHongABAQABAfyG02v2I-l6jAH8iEeTiKBbKjkAAQEAAQH84lhBVf2xpzEB_BHUmoZUZqv_AAEBAAEB_OFYodLGFJH-AfzMLIm8ErnpVAABAQABAfxMGNX65P-rNgH8MeXQ9yLbruwAAQEAAQH8-fFQ7ZTD2TwB_EPopZeAO7DyAAEBAAEB_AVFodFdv3riAfxCkBzGujjAjgABAQABAfyFmgu3zzh_iwH8a-3QksBFIDoAAQEAAQH8EyV9kj2hjxgB_Cjq1rVlPnA2AAEBAAEB_DFjvfxSXfMNAfwQ03vM-qWnKgABAQABAfw9u8uYpRjVGwH8auCvoVqVrO4AAQEAAQH8_4zOksnfvWkB_H0-zs3vUPLwAAEBAAEB_Np8pO8v4SKuAfw9_QTgxhgP6QABAQABAfxOPTWunUVTRAH8IJwLvYO0jRoAAQEAAQH8NWq1qzPRU3IB_M1l0lZM_zlnAAEBAAEB_J2IofKS20MhAfyT6M0RL_FNXwABAQABAfzc3NisCDJ9cAH8mHqRgVdvGJ8AAAEAAQEB_Oc4nCuNu3lxAfyS4L6rm1VgHAH8Fi1AkXr5xRwB_H-LBb1N9VI7AAGVHNYP3HXWMiP5EYHwdZSahxjzCaid3EcbBzc1l2mSIFiwoLM6mA3b-sLAjDM00_Mv1kn8JdKSBz7XFUBdx9wFAQEBAQEBAAEB_H_cKwozftw5AfxzlUcCknjPGgABAQABAfyHYkiXOVf-rAH8wIdrKUAWuH4AAQEAAQH8yiZH-pNlO5QB_EkFjtbxE2TbAAEBAAEB_Ob-bwZ88i3EAfyyVmk5Zf4CbAABAQABAfwz3DYG5_0-ygH8FxZPvQICA64AAQEAAQH8cbO-YveQxEEB_E41RZxRqpJlAAEBAAEB_Oo1cWmj6IExAfwkIdFslaKGqAABAQABAfxKgrUH7qwW9QH8uHoxdQDJBAMAAQEAAQH8LW1TBwUeAfgB_BOTZGJKRlWrAAEBAAEB_OJQNmjd_rBbAfwX_tnoJBlnZAABAQABAfzR__6qjUF5QQH82cvkkjXbCtsAAQEAAQH86Fufzsl-WBsB_Niuie-SE0TFAAEBAAEB_ARddbjD5m0TAfyrzYXQSzCS-QABAQABAfyUxo3LqdBbmAH8lwAIZXaO4B8AAQEAAQH8ERPxGwUJEQAB_AYX7pGEDNoxAAEBAAEB_Gn4iXcgSl-uAfzthAXwXkQ10QABAQABAfzPbCxIxDk6WgH8EdD4I5p-FrIAAAEBAQEBAAEB_PRiou0KbJASAfwzYzmUKFHRKgABAQABAfz3c_qAAg-WyQH83ZszarSNKcsAAQEAAQH8HsHUvGwApOUB_Eqiqp5SyuCHAAEBAAEB_P4hxMctvUjRAfxnHuBu_HXT4QABAQABAfymfTactcwx1gH8Icp3IyaujmAAAQEAAQH8cDGngppKGzoB_MylECYCZqXGAAEBAAEB_Cxrkn7squFFAfzvzIGxZqssMwABAQABAfx4bvwgL0G5wwH8HuPWD2rzWHgAAQEAAQH8J-gjjF9EPfYB_LaiHNuAl65mAAEBAAEB_B5av2NUMr-2AfzMwUabw05SRQABAQABAfxILOUvISw1mgH8_lcHUNvTXp0AAQEAAQH8ASWoSqRxiCQB_MC-AL-kH_i7AAEBAAEB_LESBxwvL7WUAfy5GKn8G6fgOAABAQABAfwgtHDI3HuiSwH8DSB2EBWXgvwAAQEAAQH8J51m68nA0wkB_PcjXo2cmFjiAAEBAAEB_GhNOayv4cvqAfy76E0UHLopBQABAQABAfzgUeAo4PO5ugH8VpiUeeuLT1YAAAABAAECSDA5pdNBwJPjnxV4iNvGpdfmkzXqi8Uc11QcnW_7DBp8lKx_rowAATmxVG6S4JppbpZbJU3aZZXPa52AkyJmOLFkcQJiRYmrPagLNz8DTCQsdcQnFXLM-2f8qO2q3iMFgWeOOsZ4WXrHUsaCLimDl5zUjJo9vLv14lmN-lZ08gYBAgEBAQEAAQH8_p0afZ5vlFsB_J5qFOanysI0AAEBAAEB_AdAbP5WNI7FAfxSJQ6tLG4rcwABAQABAfyVnS4O4rVdaQH8xQbAV7LRwqcAAQEAAQH8osKaiVy12owB_O5aOFBJp21xAAEBAAEB_AaY9zrzAK7lAfwYyRPFhYzZVAABAQABAfxgblAzm_WBbQH8dOLDRt4RoM0AAQEAAQH8hyrBb9OhscUB_K2obrL_-efFAAEBAAEB_DjNh4bpMmpoAfxu_IqqVSc9FwABAQABAfyjLEwAcNxsFAH82DQn99QzR00AAQEAAQH8Yr3wmuuScUsB_AZpD-r3hK06AAEBAAEB_KOcxwA41xDdAfyx4TP4C6FIJwABAQABAfyfNjNgByGJAgH8GH8XNjCbmxsAAQEAAQH8jv8noOn7nvMB_CKCmA5iH59oAAEBAAEB_DpP60G3dOMXAfxXNTEcN1JMggABAQABAfxAM3V-VupUlwH8kc83OahzhmIAAQEAAQH80Ck9Sa9pkfIB_AslFCAAktlfAAEBAAEB_Kvb_sxftPaSAfxhccxlfGMskAABAQABAfz85W87LwKKvwH8G6-4q4yIrK0AAAEBAQEAAQH8DMVpym0zoQgB_IuGEn36D_DDAAEBAAEB_IkAs_6a1ot7AfwRKLlqjdLzswABAQABAfzBBzWGcLjPcwH8nOfrwyXsm3IAAQEAAQH8JU-rVyi2WwoB_PKA6zqDmK-xAAEBAAEB_Lkqp1a0cHOtAfz8nvHVI_lPNgABAQABAfwAfC-OYhyHWQH8h8wmonP2x5wAAQEAAQH8r_K2nh2CVCMB_H71ffbRa7nVAAEBAAEB_PaGkKDQ93sUAfxoKiRAzmJeYgABAQABAfwOrVYyYxvGrwH8--EfoRBygAkAAQEAAQH8kUGsyr4eWPkB_KbJtz6Z1R5XAAEBAAEB_L3DZM2jUE6qAfxoxf7BCucU2AABAQABAfxt3l6C36wdsgH8pQfbxReiCP4AAQEAAQH8f6rm6dYPToIB_Cx_uU6YOvb8AAEBAAEB_MoEG3EriDHDAfwpJq62x6w5kQABAQABAfzvUYH9R48P3AH8h5U7xEN6qQAAAQEAAQH8vzKG0R7YOGAB_KsFqqJwvLP5AAEBAAEB_FpHr-Xg0nWUAfz20sOuAqfL0QABAQABAfwEfC359g94vgH8VOL7MpFYPeEAAAEBAQHFn4aQFgBI2GDXcPdOc1EsQZ8KS4vGw9hYCk2yDF5eOgEBbVGq6-0G0nSa8ok7FYnvnJ0ObTJ9hN1K1DzP_I-pzTMBATzZ-9xtoegAWYXcFBvq2o0RwFpAXF_bYcNv_MBJDfcmAQF7f6cCIRNEB9wpHd3XiN9QuLeKiuPquoBTLaJT_ECpCQEFvCv5PCUdi9A-RQnu66Y8oaW6qAxQ3dSPBK4Ox3c3EQN0zzBbePrf-8hTsYmRUAEeHxFi6X_NzApRJWLEZjh3IhDCvj6Bp2c2V1PavlSytfPc9Wwgeyxz-eIngUJt16wTVSH3tu47eimSxtXKqyXtgbSqOzxFEYmJCUHHJi0c9y-nEpaXbUtL7BCGwlaB-EXsQqTXAbIHsfKHhPAsuCEmCwEBlq4Pa9LiSB9sBxPIpfnjs5edIjzY2_Uju71rcd74OyQBAW-qp5OUEo9NggJljqLtU5ceSwaAo6jWY0FYiRkxRWMsAQH_v28Lo818reRiIpPUzqASYqKfNzC9iCO9e0HrHsuaBgEBARbL0NaRWMlSRSNMwZSy2vAqL3hHkv8YHzIzfXSUDpcWAQHSsSQdmUVrzE7AUA9zE8FeBYsyVqQQc3uomyt0uUA_GQEBgfTYznuyfPGxd8FzYqkBK3K5oVIOyDrcoL0gzaHgdikBAa4RUMme42bKeyFk-VyqqLPkCx8zQmB4oWHEEIpHuUglAQUSwDH34aFmRzn7SNFtkNC_16Jwb4a1nkd08VF5TtTpC-uYI6IvmSYJ7dKT1Ssk8uMSxwLSZ6BvEwHKJYvkiFUg2NsVQPCI6y9CMWXCqJ5tOiszxg0NspVeqIirAdI7lSrCEC6dorSiWhCOWBqbIwuTWG0JxbRf0ycocIL_bn8wB3uGYDCFBppUdlyeF8aLTizxdwIEZj6T0fUQKnRXT5g8AQGf1ntCuVPIcWo9lPqo6X2o5jIn7MGXk79PDhFUFt7WKwEBdGzyhvuJq52Q_NxWtbRWlaS3MwV3AHlVl3B3kEES_ygBASvjkoZC7RU35xoFHO64IPg6c0gkM_yhEftfZPQluh0RAbeKnQYvN0EJX-66eBul89XsW31TIGqowlTG01BFjD4vn07NlTCZSMYyww4uN7mRaFmcwhxYTDQrmM2flLHiJygBAQEBAQGfP1pCUlwOROtFqeGJJtcHb_EKynWbDnyrfJl5UiHfEzJ2QnMnfUrdwLZ11u5Fohfv5XafLPiEo6HEi0-IuucfAQEBpfcr70oGQ6bxfJJMoYIdJMjFi7i3v5QTRn2pcB0StCfuMMY6dMQGIhXVlprtegvZpLVf4CtbEsmNlkZgkPvfLQEBATCbkGfPJXmYLZh9f1-rbjFv9MIe6a95LYnY59XPmbEZeBfbIhvlXAXlz6BEHCTFI7YPp6tNpGWyU93dpfsHxQYBAQHqidH0Z7L0IenfN2sRvlVvkN85TzqZR_WCjLEgr_AsD5OhrP5-aJu_uaLSRrNIkn8afmBeIlzofrlcqV_nR1seAQEFAQH8O7Vl94cFJ-ZNBc_33ZVXpzbq1tVqEhdyPCRwWw9VIq7AB-ZtWeg_ECXqEHl5IeCvD8QP242QUQMXCBJTIy4uAQHaaMCPDiSXHgS_LIp0MpyHU6t2mwCFGUGlhGwcbEJvGnOUqL2N020CaLCAPUF15Zinb6IW8nXQYmLiZEJ2lGU9AQGbdpiCw8zAwluQAvZoM9npleYDyFUW1IIw481ZXOJbFz8-HIgq0mr-nLnRYdjUZVBtuYaIYQ04QLGnFrVfjBE6AQGLwg5R7sxYXxdJlI0tDgwL7tgfT5WR5Rt7rj5RogItKtaoodbHKyCfhJh2p2QIJntKav6GliWDxDYZw7wrdEkyAQFe6Xd0k6s8GC0ip6f4lhJNqn1BPF81S-il3wf3xF0qJq7My9qUxZYX9bJc9AGMD0wppdp0LNTai2W1NaxrsH0WAQHkXRP-sMZNWysvjxx2IhYuvsHk8ets0kLvSmbth0vNHuoOlLBdjdJ9bY5t3YBgZKFO2hDwQMGRUsmeJfqbHlsYAQEBETmpTk_ctjxQ90WTO4-XpvMyBBI5PQdONBINVFTWiaAQLMMB971ymI8aUfH8qCQYBYMWje0COObe5RQUCUUsnTtGzmd15bzD4b9crydQDDm9Rh7EZAfi6KaVCEZ-XVnIDIs0dwWPZlnoZ5mnkVNzxGzAWpQmEzOwmPRaVo7Ratkl2rB20vP-C60MOUWdzBxBOJt-_7EpXDmTqHb6dXVJEQqJsjdoO77zNdOfZWLmNkxSyWRzi2WL9zIVtmL4hazBHmj5cFiYs1hSIlL-OOERQw72A3IeF0Byxs6K_x907Us7W4QVhWX1W92Js51NqDwKRtOxQwgBywOVuXYvEJUNPwouMMPjOlQfJsCedQiGDTA64rlShqPmnXBSWqBiDFPQAtg0_OQJntqy7i2sXTay8J0l7FP7ZU3RP3aeLQ6mgUMIXn7dKP9t2_IhUsz8-_wzi-fjc9r93ifnkXWt4VBTxSql_CgRJy0Eiv0hyT7qKbrog1FbZnFZMXU9PdO1LDrSEgecDFJlyfdJ1NcXsxCMNTscc65vagWfloZhPsHujzYQY4E8ifUQ6t4JFgbL5CXvaxmGqhJGUmEL42D-NM5iRD37JgPubfB9FVsRnKaOHZJfA0kYdqwKHUSL05mJ9Yi2PgmajUYltW_QIHKHqzgYqji_AcTNIu3CCRU_bGqjHkARtb2CwXRr0Xgw99qUCy70eVPMGf-j7W0-yFxaH18CXQXgRYKEqIVXfNN638j0SRPNQHCNbWkcwtTk2kBzt3MeGx5zCgfx8YendUuGXlZw6TFrzJFMUyZp6KJnJ70EMeIzHZ7wMy_xFKAyTOyuEYcZZbE8Vo0_vr3N9TJNLhVAfAbyek0NE9pG0BgAJ-ves5oKXidg1dLo9BJZi6e87cEHIQKh666w-0g_ymwFfzZvWTJlT8vYhbYcl6fiQYWWmFYvovHYojyJ713XAiHj-jdwpofGwPMffcgHfNhYsdXI8AIz6vIE7sSKvqzVdBwEETGbKvFc4zaXIOPLRDxNRz3INYXUIxBjYtlogbAhSfLvZ8SqawiZdsrF1INUC1M9xgMcNTHncQOkXt5gDmeYEl4LgNzVlWv_830vJtyhBU7SIRY96i-FBsH8pv4WrmrDuCpNK8jY-Gr4tCX3It3nrRPjMdTXI9WDkaCYFD4wH4tIGiKf0J18AOYHY3j7GU_UQtYVRUsHLwL2RNEFH_kFC23kCMLUuJi4u1SICYuMCR34dwOSwsZ_RSbD40MgPHjfnKyMg-QjhkRlB59uiOb3nPJjHnSWPNEw2zKISUCKRTjqqbrGEn_syQO2ElhFnqQ7iT8FOcGY0PRYFFoHWayaYQYPVGhOMmheixy5dSAyZiWosDzswuuvM8Rgv8eRhd6W25U06Z9ydYyeMDxEd-Cnt453FWVjzxYeDBrb4u2AmWfeaMYL3Hh89YNwTEzkPnprfZAXTeOyalroTehMXHDB93Lve9y6oPfijKK0UWGojtpS6SJTMoWR-xt1vYQaK9RYoqwjDUsbNQjJA8189reG9l9lBppzM9o7Qq8C46goOwxiIY9hvJzrnvxRSy33JNm1ixkm33V27WzIW2sGd3gCeezqj_TwmwMat9BIO-Ptsfe8JhtJREpg066xqxzNVExc0AkhGydU7EqQZqxRuG-lIOqHME1uLttrFFx0EflHp7AizgQhOhDpYOH3Ke9D3tZ95AU7itWJntEx8msnSdFDyj4H_X8ao6CAgi-0yb4VvK32SDD1NkGuWTtjTlBX2VZdHZYm8Lf97MXqObN1gYEas8S0L3ZhJ8u5j567aDL9nUFTVVzYOdAySOQlxyu4KNQl4OkwgdTEzMXJNQcc294zlTA0LrUgEAQolCeXizaF7jZN5CX9BL7agtDcwaofK2pwkaFY5GSECQK-5QY5Cdcnfi9SHo6W_cxz0likUQwfIfVq5LeznnZFy2QFqROSg09s8Pgbw2Aelzme165-aJ-yNhEwNKsIhmJFVS0c3s7pGlpIjAGxCyr2nTZ7VHj7lrmU3CYMiosh-V4icMbKLe-pIDzKB0TRiDVbrdyZ1x_-sGez12L31lQfcudJ5v2ExYjDjbU9paZsmJraFSjihI3acpVGLy6ydI8PFx6svxSYbKNjPBvbDu7GIDdieNht17sr3C1JpIC-4R-7p5K1C7PYcuBTKsf9pxexFEI_WWfAeN1r1eB0hUtq44NhrAYGY2qYw-IjxtqjM5lrZ0XSIaXAQ6uuAby79b90ZDkHVkYx29FLWD3sLXHmewEyhyPES0l8TjpzaQKYkDWR8fDEHoQGq1aJBwKa1Mn8mumMfPsubyF4IyY8AbbH5NYGCwzlXlQgTSMyHBHngavy-QhYqExy1Q4QFLwS8DxzU3MTOzNec3m-8Q2H3XEE9pMnXUroNvB5J6syvXJEYRwg8YkTXyYypW1pEx0ofo-SQrRFSCRlaacHcufnQuidpZ9m2Ram5GzujrI2qxYjOBWDN7XbS3SM5pasX5fFtZjGJ6X8Z-HRK7XE0SZLEIE_Nnuc7jvFBDS5cu9xKfj-d33CHMu9ynoC4uWyOU6J_yoOxUO1WMw1J8sEfUT4MkOPqepUJfXCWIpZ5-YcCUsqFALnjMrDrocLyNNqye3zeiM0llom7GRBUARVOgu_qhSAH0FwZSIatvelXDBuApqMgFvAeggcd9JAWgU2OLVjYrRpgAyoQCzBAqlfK7LsgXmqfrtz3EqiyEkHSywoKzH-95N_3PGIjCLVgI--das5IptlDWz8-ee5L3i93zKWaV3iXdw9B7eAhwum0yw7AL2dAzE9VJgSJcGHU8kFOHj35LCcxzfzpSDSSXvx8Lgs0SpghNUavKyFS7vi7Dg5rdy37t4BqMnw8S-kwc5EHlK9QetaIv01qd52w-8tsCDkBzucUuYEOwUx6Uq2Qfnp74SlgcrFA4sMWX5hHvaTPXZgNUv9hDNtkjR4_dST8MM6CnSbv-8Jor_UVwEujxcC5HnJGFfYExH0Jm1u0jMbhmI3QbDHOQrfTax4tz8FvzYOosD9oTx3a5dzZGis0lg1LmHkSANhH6jVRqhVFtRHLa-FJjMD7gfiGsaAatUvCAIxcwSuMTWIGGoyu_Vz71IWFvJBPy3mP8Ra-0EnSoMwpJfCxhRMo4ChHp496YEIXjsBAQGNLFJlMmvlQ6YgKkOW9pIxPZotU-RsGTBsBHLYdOLoBQEBwMMUpUByzCsqdYI1wF6oEQEUigFzKgHQhpFTYxP0TikBAdVYrhqiidw3x0M84ho_ykA5Ph07lB9x51DEgWJ_1Qo-AQE_6YNIoiucwXuJv31YfNndNc8rlyL_xwZV39ZgwAi6EAEFyIoZCDiAPKraviC9UJdejvMFKbF0VZjnJpR-e_mbcwJSJiqKkHUXurAV9pX3OCHT_d7cKLPMKdk6Y0wTfeZnOjhJZ2lA1nydyKOvXFe4NbG2y-B2YLto9ltTcMBnpHESnmiOlLnJ9SBAGn53tyO8NFCbaYOotdk6kX-w025lZgEmMfMCNQnzQbGxlLEKQfgEctbYL6srOH7_XE1q1maNEgEB2L8vfqhGnOmHtnrUvbuRgI7-yehGTbmHRgh4x_v2FxsBAcR3N0sBitbxFMa4KkSgXqacq9eLEDHqjSYIRalJCyohAQHHTt8lq8MBA_YDZiTSj99YlWtuqIfXExIxjkFuwCMCAgEBAYcIdlceER2FdlvmvQF_1-W7HAWmOkuOgYJ5QWGlVcoTAQFgV1jdtyt2TFI_JxH2iPKiKxb3zcOdNhq-of3uAccsPQEB4Ur6Qh8bgnRGlcLLZO9CEI7z3SnSMIecjGpNhMN3vR8BAVCqxM0Xc-97TiJIMP1aHnyDl9FBWxDArbwMrX6Y1B09AQWNiu9uQVYKOuEGxn8RR5lKzcB4tWGBYfzqdDiGKWtuA6LdAl_GNhcaKFqcOXIlpBfWxoGrulQ1XCm2DGRfjMMCLC0fgP3HHguoR6Arm8BkACEfaZs_ab67TCLAqxJVlA-CNJifmJwzz9yddf6LOv1g6ood1Muof6Er7LxPZuUMK3Pvwy1KfrmIV0-8nsmlm3yZH4jGnL_mpHmtgsLXMFYaAQGa3zfDzMfvLJlT4JOPU035rQAOHxBbVNoyCt1NyWMEKQEBd34Ufr46TGmGtWKhOK5OeO8Abr3374M2D-mUmc_aaTkBAbD8EL0Bt2M-EUCmKUd3EzbN_7BHivzQedBvurXzOXAD
-        */</span>
+        */
 
-        <span class="macro">assert!</span>(
-            <span class="kw-2">&amp;</span><span class="ident">StagedLedgerDiffTuple::from</span>(<span class="ident">et</span>.<span class="ident">t</span>.<span class="ident">staged_ledger_diff</span>.<span class="ident">t</span>.<span class="ident">diff</span>.<span class="ident">clone</span>())
-                .<span class="ident">diff_one</span>()
-                .<span class="ident">is_none</span>()
+        </span><span class="macro">assert!</span>(
+            <span class="kw-2">&amp;</span>StagedLedgerDiffTuple::from(et.t.staged_ledger_diff.t.diff.clone())
+                .diff_one()
+                .is_none()
         );
-        <span class="kw">let</span> <span class="ident">commands</span> <span class="op">=</span> <span class="ident">StagedLedgerDiffTuple::from</span>(<span class="ident">et</span>.<span class="ident">t</span>.<span class="ident">staged_ledger_diff</span>.<span class="ident">t</span>.<span class="ident">diff</span>.<span class="ident">clone</span>())
-            .<span class="ident">diff_two</span>()
-            .<span class="ident">commands</span>
-            .<span class="ident">clone</span>();
-        <span class="macro">assert_eq!</span>(<span class="ident">commands</span>.<span class="ident">len</span>(), <span class="number">3</span>);
+        <span class="kw">let </span>commands = StagedLedgerDiffTuple::from(et.t.staged_ledger_diff.t.diff.clone())
+            .diff_two()
+            .commands
+            .clone();
+        <span class="macro">assert_eq!</span>(commands.len(), <span class="number">3</span>);
 
-        <span class="kw">match</span> <span class="kw-2">&amp;</span><span class="ident">commands</span>[<span class="number">0</span>].<span class="ident">data</span> {
-            <span class="ident">UserCommand::SignedCommand</span>(<span class="ident">command</span>) =&gt; {
+        <span class="kw">match </span><span class="kw-2">&amp;</span>commands[<span class="number">0</span>].data {
+            UserCommand::SignedCommand(command) =&gt; {
                 <span class="macro">assert_eq!</span>(
-                    <span class="kw-2">&amp;</span><span class="ident">command</span>.<span class="ident">signer</span>.<span class="ident">clone</span>().<span class="ident">into_address</span>(),
-                    <span class="string">&quot;B62qoSuxNqwogusxxZbs3gpJUxCCN4GZEv21FX8S2DtNpToLgKnrexM&quot;</span>
-                );
+                    <span class="kw-2">&amp;</span>command.signer.clone().into_address(),
+                    <span class="string">&quot;B62qoSuxNqwogusxxZbs3gpJUxCCN4GZEv21FX8S2DtNpToLgKnrexM&quot;
+                </span>);
 
-                <span class="kw">let</span> <span class="ident">bytes</span> <span class="op">=</span> <span class="ident">bs58::decode</span>(<span class="string">&quot;7mXTB1bcHYLJTmTfMtTboo4FSGStvera3z2wd6qjSxhpz1hZFMZZjcyaWAFEmZhgbq6DqVqGsNodnYKsCbMAq7D8yWo5bRSd&quot;</span>)
-                    .<span class="ident">into_vec</span>()<span class="question-mark">?</span>;
-                <span class="macro">assert_eq!</span>(<span class="ident">command</span>.<span class="ident">signature</span>.<span class="ident">rx</span>.<span class="ident">to_bytes</span>(), <span class="kw-2">&amp;</span><span class="ident">bytes</span>[<span class="number">2</span>..<span class="number">34</span>]);
-                <span class="macro">assert_eq!</span>(<span class="ident">command</span>.<span class="ident">signature</span>.<span class="ident">s</span>.<span class="ident">to_bytes</span>(), <span class="kw-2">&amp;</span><span class="ident">bytes</span>[<span class="number">34</span>..<span class="number">66</span>]);
+                <span class="kw">let </span>bytes = bs58::decode(<span class="string">&quot;7mXTB1bcHYLJTmTfMtTboo4FSGStvera3z2wd6qjSxhpz1hZFMZZjcyaWAFEmZhgbq6DqVqGsNodnYKsCbMAq7D8yWo5bRSd&quot;</span>)
+                    .into_vec()<span class="question-mark">?</span>;
+                <span class="macro">assert_eq!</span>(command.signature.rx.to_bytes(), <span class="kw-2">&amp;</span>bytes[<span class="number">2</span>..<span class="number">34</span>]);
+                <span class="macro">assert_eq!</span>(command.signature.s.to_bytes(), <span class="kw-2">&amp;</span>bytes[<span class="number">34</span>..<span class="number">66</span>]);
 
-                <span class="macro">assert_eq!</span>(<span class="ident">command</span>.<span class="ident">payload</span>.<span class="ident">common</span>.<span class="ident">nonce</span>.<span class="number">0</span>, <span class="number">5694</span>);
+                <span class="macro">assert_eq!</span>(command.payload.common.nonce.<span class="number">0</span>, <span class="number">5694</span>);
                 <span class="macro">assert_eq!</span>(
-                    <span class="ident">command</span>.<span class="ident">payload</span>.<span class="ident">common</span>.<span class="ident">memo</span>.<span class="number">0</span>,
-                    <span class="ident">SignedCommandMemo::from_str</span>(
-                        <span class="string">&quot;E4Yd7qwaRCHR6t7i6ToM98eSUy5eKKadQUPZX7Vpw4CWBvWyd8fzK&quot;</span>
-                    )<span class="question-mark">?</span>
-                    .<span class="number">0</span>
-                );
-                <span class="macro">assert_eq!</span>(<span class="ident">command</span>.<span class="ident">payload</span>.<span class="ident">common</span>.<span class="ident">fee</span>.<span class="ident">to_string</span>(), <span class="string">&quot;0.010000000&quot;</span>);
-                <span class="macro">assert_eq!</span>(<span class="ident">command</span>.<span class="ident">payload</span>.<span class="ident">common</span>.<span class="ident">fee_token</span>.<span class="number">0</span>, <span class="number">1</span>);
-                <span class="macro">assert_eq!</span>(<span class="ident">command</span>.<span class="ident">payload</span>.<span class="ident">common</span>.<span class="ident">valid_until</span>.<span class="number">0</span>, <span class="number">4294967295</span>);
-                <span class="kw">match</span> <span class="kw-2">&amp;</span><span class="ident">command</span>.<span class="ident">payload</span>.<span class="ident">body</span> {
-                    <span class="ident">SignedCommandPayloadBody::PaymentPayload</span>(<span class="ident">body</span>) =&gt; {
-                        <span class="macro">assert_eq!</span>(<span class="ident">body</span>.<span class="ident">amount</span>.<span class="ident">to_string</span>(), <span class="string">&quot;0.027370000&quot;</span>);
+                    command.payload.common.memo.<span class="number">0</span>,
+                    SignedCommandMemo::from_str(
+                        <span class="string">&quot;E4Yd7qwaRCHR6t7i6ToM98eSUy5eKKadQUPZX7Vpw4CWBvWyd8fzK&quot;
+                    </span>)<span class="question-mark">?
+                    </span>.<span class="number">0
+                </span>);
+                <span class="macro">assert_eq!</span>(command.payload.common.fee.to_string(), <span class="string">&quot;0.010000000&quot;</span>);
+                <span class="macro">assert_eq!</span>(command.payload.common.fee_token.<span class="number">0</span>, <span class="number">1</span>);
+                <span class="macro">assert_eq!</span>(command.payload.common.valid_until.<span class="number">0</span>, <span class="number">4294967295</span>);
+                <span class="kw">match </span><span class="kw-2">&amp;</span>command.payload.body {
+                    SignedCommandPayloadBody::PaymentPayload(body) =&gt; {
+                        <span class="macro">assert_eq!</span>(body.amount.to_string(), <span class="string">&quot;0.027370000&quot;</span>);
                         <span class="macro">assert_eq!</span>(
-                            <span class="kw-2">&amp;</span><span class="ident">body</span>.<span class="ident">source_pk</span>.<span class="ident">clone</span>().<span class="ident">into_address</span>(),
-                            <span class="string">&quot;B62qoSuxNqwogusxxZbs3gpJUxCCN4GZEv21FX8S2DtNpToLgKnrexM&quot;</span>
-                        );
+                            <span class="kw-2">&amp;</span>body.source_pk.clone().into_address(),
+                            <span class="string">&quot;B62qoSuxNqwogusxxZbs3gpJUxCCN4GZEv21FX8S2DtNpToLgKnrexM&quot;
+                        </span>);
                         <span class="macro">assert_eq!</span>(
-                            <span class="kw-2">&amp;</span><span class="ident">body</span>.<span class="ident">receiver_pk</span>.<span class="ident">clone</span>().<span class="ident">into_address</span>(),
-                            <span class="string">&quot;B62qn2MtuQ9GyyVnotUHB9Ehp9EZre5m6TYpGx64tBCDHHBZFZRURnL&quot;</span>
-                        );
-                        <span class="macro">assert_eq!</span>(<span class="ident">body</span>.<span class="ident">token_id</span>.<span class="number">0</span>, <span class="number">1</span>);
+                            <span class="kw-2">&amp;</span>body.receiver_pk.clone().into_address(),
+                            <span class="string">&quot;B62qn2MtuQ9GyyVnotUHB9Ehp9EZre5m6TYpGx64tBCDHHBZFZRURnL&quot;
+                        </span>);
+                        <span class="macro">assert_eq!</span>(body.token_id.<span class="number">0</span>, <span class="number">1</span>);
                     }
-                    <span class="kw">_</span> =&gt; {}
+                    <span class="kw">_ </span>=&gt; {}
                 };
             }
         }
 
-        <span class="kw">match</span> <span class="kw-2">&amp;</span><span class="ident">commands</span>[<span class="number">0</span>].<span class="ident">status</span> {
-            <span class="ident">TransactionStatus::Applied</span>(<span class="ident">auxiliary_data</span>, <span class="ident">balance_data</span>) =&gt; {
-                <span class="macro">assert!</span>(<span class="ident">auxiliary_data</span>.<span class="ident">fee_payer_account_creation_fee_paid</span>.<span class="ident">is_none</span>());
-                <span class="macro">assert!</span>(<span class="ident">auxiliary_data</span>.<span class="ident">receiver_account_creation_fee_paid</span>.<span class="ident">is_none</span>());
-                <span class="macro">assert!</span>(<span class="ident">auxiliary_data</span>.<span class="ident">created_token</span>.<span class="ident">is_none</span>());
+        <span class="kw">match </span><span class="kw-2">&amp;</span>commands[<span class="number">0</span>].status {
+            TransactionStatus::Applied(auxiliary_data, balance_data) =&gt; {
+                <span class="macro">assert!</span>(auxiliary_data.fee_payer_account_creation_fee_paid.is_none());
+                <span class="macro">assert!</span>(auxiliary_data.receiver_account_creation_fee_paid.is_none());
+                <span class="macro">assert!</span>(auxiliary_data.created_token.is_none());
 
-                <span class="macro">assert!</span>(<span class="ident">balance_data</span>.<span class="ident">fee_payer_balance</span>.<span class="ident">is_some</span>());
-                <span class="macro">assert_eq!</span>(<span class="ident">balance_data</span>.<span class="ident">fee_payer_balance</span>.<span class="ident">unwrap</span>().<span class="number">0</span>, <span class="number">59778375293571</span>);
-                <span class="macro">assert!</span>(<span class="ident">balance_data</span>.<span class="ident">source_balance</span>.<span class="ident">is_some</span>());
-                <span class="macro">assert_eq!</span>(<span class="ident">balance_data</span>.<span class="ident">source_balance</span>.<span class="ident">unwrap</span>().<span class="number">0</span>, <span class="number">59778375293571</span>);
-                <span class="macro">assert!</span>(<span class="ident">balance_data</span>.<span class="ident">receiver_balance</span>.<span class="ident">is_some</span>());
-                <span class="macro">assert_eq!</span>(<span class="ident">balance_data</span>.<span class="ident">receiver_balance</span>.<span class="ident">unwrap</span>().<span class="number">0</span>, <span class="number">11241317900</span>);
+                <span class="macro">assert!</span>(balance_data.fee_payer_balance.is_some());
+                <span class="macro">assert_eq!</span>(balance_data.fee_payer_balance.unwrap().<span class="number">0</span>, <span class="number">59778375293571</span>);
+                <span class="macro">assert!</span>(balance_data.source_balance.is_some());
+                <span class="macro">assert_eq!</span>(balance_data.source_balance.unwrap().<span class="number">0</span>, <span class="number">59778375293571</span>);
+                <span class="macro">assert!</span>(balance_data.receiver_balance.is_some());
+                <span class="macro">assert_eq!</span>(balance_data.receiver_balance.unwrap().<span class="number">0</span>, <span class="number">11241317900</span>);
             }
-            <span class="kw">_</span> =&gt; {}
+            <span class="kw">_ </span>=&gt; {}
         }
 
-        <span class="kw">let</span> <span class="ident">coinbase</span> <span class="op">=</span> <span class="ident">StagedLedgerDiffTuple::from</span>(<span class="ident">et</span>.<span class="ident">t</span>.<span class="ident">staged_ledger_diff</span>.<span class="ident">t</span>.<span class="ident">diff</span>.<span class="ident">clone</span>())
-            .<span class="ident">diff_two</span>()
-            .<span class="ident">coinbase</span>
-            .<span class="ident">clone</span>();
-        <span class="kw">match</span> <span class="ident">coinbase</span> {
-            <span class="ident">CoinBase::One</span>(<span class="kw">_</span>) =&gt; {}
-            <span class="kw">_</span> =&gt; <span class="macro">bail!</span>(<span class="string">&quot;CoinBase::One expected, but found: {:#?}&quot;</span>, <span class="ident">coinbase</span>),
+        <span class="kw">let </span>coinbase = StagedLedgerDiffTuple::from(et.t.staged_ledger_diff.t.diff.clone())
+            .diff_two()
+            .coinbase
+            .clone();
+        <span class="kw">match </span>coinbase {
+            CoinBase::One(<span class="kw">_</span>) =&gt; {}
+            <span class="kw">_ </span>=&gt; <span class="macro">bail!</span>(<span class="string">&quot;CoinBase::One expected, but found: {:#?}&quot;</span>, coinbase),
         };
 
-        <span class="kw">let</span> <span class="ident">internal_commands</span> <span class="op">=</span> <span class="ident">StagedLedgerDiffTuple::from</span>(<span class="ident">et</span>.<span class="ident">t</span>.<span class="ident">staged_ledger_diff</span>.<span class="ident">t</span>.<span class="ident">diff</span>.<span class="ident">clone</span>())
-            .<span class="ident">diff_two</span>()
-            .<span class="ident">internal_command_balances</span>
-            .<span class="ident">clone</span>();
-        <span class="macro">assert_eq!</span>(<span class="ident">internal_commands</span>.<span class="ident">len</span>(), <span class="number">2</span>);
-        <span class="kw">match</span> <span class="kw-2">&amp;</span><span class="ident">internal_commands</span>[<span class="number">0</span>] {
-            <span class="ident">InternalCommandBalanceData::CoinBase</span>(<span class="ident">cb</span>) =&gt; {
-                <span class="macro">assert!</span>(<span class="ident">cb</span>.<span class="ident">fee_transfer_receiver_balance</span>.<span class="ident">is_none</span>());
-                <span class="macro">assert_eq!</span>(<span class="ident">cb</span>.<span class="ident">coinbase_receiver_balance</span>.<span class="number">0</span>, <span class="number">20203793056339</span>);
+        <span class="kw">let </span>internal_commands = StagedLedgerDiffTuple::from(et.t.staged_ledger_diff.t.diff.clone())
+            .diff_two()
+            .internal_command_balances
+            .clone();
+        <span class="macro">assert_eq!</span>(internal_commands.len(), <span class="number">2</span>);
+        <span class="kw">match </span><span class="kw-2">&amp;</span>internal_commands[<span class="number">0</span>] {
+            InternalCommandBalanceData::CoinBase(cb) =&gt; {
+                <span class="macro">assert!</span>(cb.fee_transfer_receiver_balance.is_none());
+                <span class="macro">assert_eq!</span>(cb.coinbase_receiver_balance.<span class="number">0</span>, <span class="number">20203793056339</span>);
             }
-            <span class="kw">_</span> =&gt; {
-                <span class="macro">bail!</span>(<span class="string">&quot;CoinBase expected, but found: {:#?}&quot;</span>, <span class="ident">internal_commands</span>[<span class="number">0</span>])
+            <span class="kw">_ </span>=&gt; {
+                <span class="macro">bail!</span>(<span class="string">&quot;CoinBase expected, but found: {:#?}&quot;</span>, internal_commands[<span class="number">0</span>])
             }
         };
 
-        <span class="kw">match</span> <span class="kw-2">&amp;</span><span class="ident">internal_commands</span>[<span class="number">1</span>] {
-            <span class="ident">InternalCommandBalanceData::FeeTransfer</span>(<span class="ident">ft</span>) =&gt; {
-                <span class="macro">assert_eq!</span>(<span class="ident">ft</span>.<span class="ident">receiver1_balance</span>.<span class="number">0</span>, <span class="number">20203805056339</span>);
-                <span class="macro">assert!</span>(<span class="ident">ft</span>.<span class="ident">receiver2_balance</span>.<span class="ident">is_none</span>());
+        <span class="kw">match </span><span class="kw-2">&amp;</span>internal_commands[<span class="number">1</span>] {
+            InternalCommandBalanceData::FeeTransfer(ft) =&gt; {
+                <span class="macro">assert_eq!</span>(ft.receiver1_balance.<span class="number">0</span>, <span class="number">20203805056339</span>);
+                <span class="macro">assert!</span>(ft.receiver2_balance.is_none());
             }
-            <span class="kw">_</span> =&gt; {
+            <span class="kw">_ </span>=&gt; {
                 <span class="macro">bail!</span>(
                     <span class="string">&quot;FeeTransfer expected, but found: {:#?}&quot;</span>,
-                    <span class="ident">internal_commands</span>[<span class="number">1</span>]
+                    internal_commands[<span class="number">1</span>]
                 )
             }
         };
 
-        <span class="kw">let</span> <span class="ident">bytes</span> <span class="op">=</span>
-            <span class="ident">bs58::decode</span>(<span class="string">&quot;jwHLk8kaC6B45K3sjuX2sM38649VtfpUAteTfKFQMPcqTeXjGiT&quot;</span>).<span class="ident">into_vec</span>()<span class="question-mark">?</span>;
+        <span class="kw">let </span>bytes =
+            bs58::decode(<span class="string">&quot;jwHLk8kaC6B45K3sjuX2sM38649VtfpUAteTfKFQMPcqTeXjGiT&quot;</span>).into_vec()<span class="question-mark">?</span>;
         <span class="macro">assert_eq!</span>(
-            <span class="ident">et</span>.<span class="ident">t</span>.<span class="ident">delta_transition_chain_proof</span>.<span class="number">0</span>.<span class="ident">t</span>.<span class="ident">as_ref</span>()[..],
-            <span class="ident">bytes</span>[<span class="number">2</span>..<span class="number">34</span>]
+            et.t.delta_transition_chain_proof.<span class="number">0</span>.t.as_ref()[..],
+            bytes[<span class="number">2</span>..<span class="number">34</span>]
         );
-        <span class="comment">// FIXME: Version byte here disagrees with what is being used for genesis block</span>
-        <span class="comment">// Note that version byte is not part of binprot binary, it&#39;s only used for bs58 representation</span>
-        <span class="comment">// assert_eq!(</span>
-        <span class="comment">//     &amp;et.delta_transition_chain_proof.0.into(.clone()).to_string(),</span>
-        <span class="comment">//     &quot;jwHLk8kaC6B45K3sjuX2sM38649VtfpUAteTfKFQMPcqTeXjGiT&quot;</span>
-        <span class="comment">// );</span>
-        <span class="macro">assert_eq!</span>(<span class="ident">et</span>.<span class="ident">t</span>.<span class="ident">current_protocol_version</span>.<span class="ident">t</span>.<span class="ident">major</span>, <span class="number">2</span>);
-        <span class="macro">assert_eq!</span>(<span class="ident">et</span>.<span class="ident">t</span>.<span class="ident">current_protocol_version</span>.<span class="ident">t</span>.<span class="ident">minor</span>, <span class="number">0</span>);
-        <span class="macro">assert_eq!</span>(<span class="ident">et</span>.<span class="ident">t</span>.<span class="ident">current_protocol_version</span>.<span class="ident">t</span>.<span class="ident">patch</span>, <span class="number">0</span>);
+        <span class="comment">// FIXME: Version byte here disagrees with what is being used for genesis block
+        // Note that version byte is not part of binprot binary, it&#39;s only used for bs58 representation
+        // assert_eq!(
+        //     &amp;et.delta_transition_chain_proof.0.into(.clone()).to_string(),
+        //     &quot;jwHLk8kaC6B45K3sjuX2sM38649VtfpUAteTfKFQMPcqTeXjGiT&quot;
+        // );
+        </span><span class="macro">assert_eq!</span>(et.t.current_protocol_version.t.major, <span class="number">2</span>);
+        <span class="macro">assert_eq!</span>(et.t.current_protocol_version.t.minor, <span class="number">0</span>);
+        <span class="macro">assert_eq!</span>(et.t.current_protocol_version.t.patch, <span class="number">0</span>);
         <span class="macro">assert_eq!</span>(
-            <span class="ident">et</span>.<span class="ident">t</span>.<span class="ident">current_protocol_version</span>,
-            <span class="ident">ProtocolVersion::default</span>().<span class="ident">into</span>()
+            et.t.current_protocol_version,
+            ProtocolVersion::default().into()
         );
-        <span class="macro">assert_eq!</span>(<span class="ident">et</span>.<span class="ident">t</span>.<span class="ident">proposed_protocol_version_opt</span>, <span class="prelude-val">None</span>);
+        <span class="macro">assert_eq!</span>(et.t.proposed_protocol_version_opt, <span class="prelude-val">None</span>);
         <span class="prelude-val">Ok</span>(())
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="test_serialization" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (fe3342816 2022-08-01)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="test_serialization" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (40336865f 2022-08-15)" ></div></body></html>

@@ -130,137 +130,137 @@
 <span id="130">130</span>
 <span id="131">131</span>
 <span id="132">132</span>
-</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems</span>
-<span class="comment">// SPDX-License-Identifier: Apache-2.0</span>
+</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems
+// SPDX-License-Identifier: Apache-2.0
 
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::consts</span>::<span class="kw-2">*</span>;
-<span class="kw">use</span> <span class="ident">byteorder</span>::{<span class="ident">LittleEndian</span>, <span class="ident">WriteBytesExt</span>};
+</span><span class="kw">use </span><span class="kw">crate</span>::consts::<span class="kw-2">*</span>;
+<span class="kw">use </span>byteorder::{LittleEndian, WriteBytesExt};
 
-<span class="doccomment">/// Extension traits for io::Read and io::Write to read and</span>
-<span class="doccomment">/// write bin_prot encoded types</span>
-<span class="kw">use</span> <span class="ident">std::io</span>;
+<span class="doccomment">/// Extension traits for io::Read and io::Write to read and
+/// write bin_prot encoded types
+</span><span class="kw">use </span>std::io;
 
-<span class="doccomment">/// extension trait for writers implementing io::Write to allow them to write</span>
-<span class="doccomment">/// the primitive values for bin_prot</span>
-<span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">WriteBinProtExt</span>: <span class="ident">io::Write</span> {
-    <span class="doccomment">/// Write a unit</span>
-    <span class="kw">fn</span> <span class="ident">bin_write_unit</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">io::Error</span><span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="ident">write_u8</span>(<span class="number">0x00</span>)
+<span class="doccomment">/// extension trait for writers implementing io::Write to allow them to write
+/// the primitive values for bin_prot
+</span><span class="kw">pub trait </span>WriteBinProtExt: io::Write {
+    <span class="doccomment">/// Write a unit
+    </span><span class="kw">fn </span>bin_write_unit(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;(), io::Error&gt; {
+        <span class="self">self</span>.write_u8(<span class="number">0x00</span>)
     }
 
-    <span class="doccomment">/// Write a bool</span>
-    <span class="kw">fn</span> <span class="ident">bin_write_bool</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">b</span>: <span class="ident">bool</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">io::Error</span><span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="ident">write_u8</span>(<span class="kw">if</span> <span class="ident">b</span> { <span class="number">0x01</span> } <span class="kw">else</span> { <span class="number">0x00</span> })
+    <span class="doccomment">/// Write a bool
+    </span><span class="kw">fn </span>bin_write_bool(<span class="kw-2">&amp;mut </span><span class="self">self</span>, b: bool) -&gt; <span class="prelude-ty">Result</span>&lt;(), io::Error&gt; {
+        <span class="self">self</span>.write_u8(<span class="kw">if </span>b { <span class="number">0x01 </span>} <span class="kw">else </span>{ <span class="number">0x00 </span>})
     }
 
-    <span class="doccomment">/// Write a single char character</span>
-    <span class="kw">fn</span> <span class="ident">bin_write_char</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">c</span>: <span class="ident">char</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">usize</span>, <span class="ident">io::Error</span><span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="ident">write_u8</span>(<span class="ident">c</span> <span class="kw">as</span> <span class="ident">u8</span>)<span class="question-mark">?</span>;
+    <span class="doccomment">/// Write a single char character
+    </span><span class="kw">fn </span>bin_write_char(<span class="kw-2">&amp;mut </span><span class="self">self</span>, c: char) -&gt; <span class="prelude-ty">Result</span>&lt;usize, io::Error&gt; {
+        <span class="self">self</span>.write_u8(c <span class="kw">as </span>u8)<span class="question-mark">?</span>;
         <span class="prelude-val">Ok</span>(<span class="number">1</span>)
     }
 
-    <span class="doccomment">/// Write a variable length integer</span>
-    <span class="kw">fn</span> <span class="ident">bin_write_integer</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">i64</span><span class="op">&gt;</span><span class="op">&gt;</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">n</span>: <span class="ident">T</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">usize</span>, <span class="ident">io::Error</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">n</span>: <span class="ident">i64</span> <span class="op">=</span> <span class="ident">n</span>.<span class="ident">into</span>();
-        <span class="kw">if</span> <span class="ident">n</span> <span class="op">&gt;</span><span class="op">=</span> <span class="number">0</span> {
-            <span class="comment">// positive or zero case</span>
-            <span class="kw">match</span> <span class="ident">n</span> {
-                <span class="kw">_</span> <span class="kw">if</span> <span class="ident">n</span> <span class="op">&lt;</span> <span class="number">0x00000080</span> =&gt; <span class="self">self</span>.<span class="ident">write_u8</span>(<span class="ident">n</span> <span class="kw">as</span> <span class="ident">u8</span>).<span class="ident">map</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="number">1</span>),
-                <span class="kw">_</span> <span class="kw">if</span> <span class="ident">n</span> <span class="op">&lt;</span> <span class="number">0x00008000</span> =&gt; {
-                    <span class="self">self</span>.<span class="ident">write_u8</span>(<span class="ident">CODE_INT16</span>)<span class="question-mark">?</span>;
-                    <span class="self">self</span>.<span class="ident">write_u16</span>::<span class="op">&lt;</span><span class="ident">LittleEndian</span><span class="op">&gt;</span>(<span class="ident">n</span> <span class="kw">as</span> <span class="ident">u16</span>).<span class="ident">map</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="number">3</span>)
+    <span class="doccomment">/// Write a variable length integer
+    </span><span class="kw">fn </span>bin_write_integer&lt;T: Into&lt;i64&gt;&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, n: T) -&gt; <span class="prelude-ty">Result</span>&lt;usize, io::Error&gt; {
+        <span class="kw">let </span>n: i64 = n.into();
+        <span class="kw">if </span>n &gt;= <span class="number">0 </span>{
+            <span class="comment">// positive or zero case
+            </span><span class="kw">match </span>n {
+                <span class="kw">_ if </span>n &lt; <span class="number">0x00000080 </span>=&gt; <span class="self">self</span>.write_u8(n <span class="kw">as </span>u8).map(|<span class="kw">_</span>| <span class="number">1</span>),
+                <span class="kw">_ if </span>n &lt; <span class="number">0x00008000 </span>=&gt; {
+                    <span class="self">self</span>.write_u8(CODE_INT16)<span class="question-mark">?</span>;
+                    <span class="self">self</span>.write_u16::&lt;LittleEndian&gt;(n <span class="kw">as </span>u16).map(|<span class="kw">_</span>| <span class="number">3</span>)
                 }
-                <span class="kw">_</span> <span class="kw">if</span> <span class="ident">n</span> <span class="op">&lt;</span> <span class="number">0x80000000</span> =&gt; {
-                    <span class="self">self</span>.<span class="ident">write_u8</span>(<span class="ident">CODE_INT32</span>)<span class="question-mark">?</span>;
-                    <span class="self">self</span>.<span class="ident">write_u32</span>::<span class="op">&lt;</span><span class="ident">LittleEndian</span><span class="op">&gt;</span>(<span class="ident">n</span> <span class="kw">as</span> <span class="ident">u32</span>).<span class="ident">map</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="number">5</span>)
+                <span class="kw">_ if </span>n &lt; <span class="number">0x80000000 </span>=&gt; {
+                    <span class="self">self</span>.write_u8(CODE_INT32)<span class="question-mark">?</span>;
+                    <span class="self">self</span>.write_u32::&lt;LittleEndian&gt;(n <span class="kw">as </span>u32).map(|<span class="kw">_</span>| <span class="number">5</span>)
                 }
-                <span class="kw">_</span> =&gt; {
-                    <span class="self">self</span>.<span class="ident">write_u8</span>(<span class="ident">CODE_INT64</span>)<span class="question-mark">?</span>;
-                    <span class="self">self</span>.<span class="ident">write_u64</span>::<span class="op">&lt;</span><span class="ident">LittleEndian</span><span class="op">&gt;</span>(<span class="ident">n</span> <span class="kw">as</span> <span class="ident">u64</span>).<span class="ident">map</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="number">9</span>)
-                }
-            }
-        } <span class="kw">else</span> {
-            <span class="comment">// negative case</span>
-            <span class="kw">match</span> <span class="ident">n</span> {
-                <span class="kw">_</span> <span class="kw">if</span> <span class="ident">n</span> <span class="op">&gt;</span><span class="op">=</span> <span class="op">-</span><span class="number">0x00000080</span> =&gt; {
-                    <span class="self">self</span>.<span class="ident">write_u8</span>(<span class="ident">CODE_NEG_INT8</span>)<span class="question-mark">?</span>;
-                    <span class="self">self</span>.<span class="ident">write_i8</span>(<span class="ident">n</span> <span class="kw">as</span> <span class="ident">i8</span>).<span class="ident">map</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="number">2</span>)
-                }
-                <span class="kw">_</span> <span class="kw">if</span> <span class="ident">n</span> <span class="op">&gt;</span><span class="op">=</span> <span class="op">-</span><span class="number">0x00008000</span> =&gt; {
-                    <span class="self">self</span>.<span class="ident">write_u8</span>(<span class="ident">CODE_INT16</span>)<span class="question-mark">?</span>;
-                    <span class="self">self</span>.<span class="ident">write_i16</span>::<span class="op">&lt;</span><span class="ident">LittleEndian</span><span class="op">&gt;</span>(<span class="ident">n</span> <span class="kw">as</span> <span class="ident">i16</span>).<span class="ident">map</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="number">3</span>)
-                }
-                <span class="kw">_</span> <span class="kw">if</span> <span class="ident">n</span> <span class="op">&gt;</span><span class="op">=</span> <span class="op">-</span><span class="number">0x80000000</span> =&gt; {
-                    <span class="self">self</span>.<span class="ident">write_u8</span>(<span class="ident">CODE_INT32</span>)<span class="question-mark">?</span>;
-                    <span class="self">self</span>.<span class="ident">write_i32</span>::<span class="op">&lt;</span><span class="ident">LittleEndian</span><span class="op">&gt;</span>(<span class="ident">n</span> <span class="kw">as</span> <span class="ident">i32</span>).<span class="ident">map</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="number">5</span>)
-                }
-                <span class="kw">_</span> =&gt; {
-                    <span class="self">self</span>.<span class="ident">write_u8</span>(<span class="ident">CODE_INT64</span>)<span class="question-mark">?</span>;
-                    <span class="self">self</span>.<span class="ident">write_i64</span>::<span class="op">&lt;</span><span class="ident">LittleEndian</span><span class="op">&gt;</span>(<span class="ident">n</span> <span class="kw">as</span> <span class="ident">i64</span>).<span class="ident">map</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="number">9</span>)
+                <span class="kw">_ </span>=&gt; {
+                    <span class="self">self</span>.write_u8(CODE_INT64)<span class="question-mark">?</span>;
+                    <span class="self">self</span>.write_u64::&lt;LittleEndian&gt;(n <span class="kw">as </span>u64).map(|<span class="kw">_</span>| <span class="number">9</span>)
                 }
             }
-        }
-    }
-
-    <span class="doccomment">/// bin_prot also supports a slightly different encoding called Nat0</span>
-    <span class="doccomment">/// This is an unsigned integer type that is used internally by the protocol</span>
-    <span class="doccomment">/// for storing sizes of lists etc.</span>
-    <span class="doccomment">/// &lt;  0x000000080  -&gt;  lower 8 bits of the integer                     (1 byte)</span>
-    <span class="doccomment">/// &lt;  0x000010000  -&gt;  CODE_INT16 followed by lower 16 bits of integer (3 bytes)</span>
-    <span class="doccomment">/// &lt;  0x100000000  -&gt;  CODE_INT32 followed by lower 32 bits of integer (5 bytes)</span>
-    <span class="doccomment">/// &gt;= 0x100000000  -&gt;  CODE_INT64 followed by all 64 bits of integer   (9 bytes)</span>
-    <span class="kw">fn</span> <span class="ident">bin_write_nat0</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">u64</span><span class="op">&gt;</span><span class="op">&gt;</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">n</span>: <span class="ident">T</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">usize</span>, <span class="ident">io::Error</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">n</span>: <span class="ident">u64</span> <span class="op">=</span> <span class="ident">n</span>.<span class="ident">into</span>();
-        <span class="kw">match</span> <span class="ident">n</span> {
-            <span class="kw">_</span> <span class="kw">if</span> <span class="ident">n</span> <span class="op">&lt;</span> <span class="number">0x000000080</span> =&gt; <span class="self">self</span>.<span class="ident">write_u8</span>(<span class="ident">n</span> <span class="kw">as</span> <span class="ident">u8</span>).<span class="ident">map</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="number">1</span>),
-            <span class="kw">_</span> <span class="kw">if</span> <span class="ident">n</span> <span class="op">&lt;</span> <span class="number">0x000010000</span> =&gt; {
-                <span class="self">self</span>.<span class="ident">write_u8</span>(<span class="ident">CODE_INT16</span>)<span class="question-mark">?</span>;
-                <span class="self">self</span>.<span class="ident">write_u16</span>::<span class="op">&lt;</span><span class="ident">LittleEndian</span><span class="op">&gt;</span>(<span class="ident">n</span> <span class="kw">as</span> <span class="ident">u16</span>).<span class="ident">map</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="number">3</span>)
-            }
-            <span class="kw">_</span> <span class="kw">if</span> <span class="ident">n</span> <span class="op">&lt;</span> <span class="number">0x100000000</span> =&gt; {
-                <span class="self">self</span>.<span class="ident">write_u8</span>(<span class="ident">CODE_INT32</span>)<span class="question-mark">?</span>;
-                <span class="self">self</span>.<span class="ident">write_u32</span>::<span class="op">&lt;</span><span class="ident">LittleEndian</span><span class="op">&gt;</span>(<span class="ident">n</span> <span class="kw">as</span> <span class="ident">u32</span>).<span class="ident">map</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="number">5</span>)
-            }
-            <span class="kw">_</span> =&gt; {
-                <span class="self">self</span>.<span class="ident">write_u8</span>(<span class="ident">CODE_INT64</span>)<span class="question-mark">?</span>;
-                <span class="self">self</span>.<span class="ident">write_u64</span>::<span class="op">&lt;</span><span class="ident">LittleEndian</span><span class="op">&gt;</span>(<span class="ident">n</span> <span class="kw">as</span> <span class="ident">u64</span>).<span class="ident">map</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="number">9</span>)
+        } <span class="kw">else </span>{
+            <span class="comment">// negative case
+            </span><span class="kw">match </span>n {
+                <span class="kw">_ if </span>n &gt;= -<span class="number">0x00000080 </span>=&gt; {
+                    <span class="self">self</span>.write_u8(CODE_NEG_INT8)<span class="question-mark">?</span>;
+                    <span class="self">self</span>.write_i8(n <span class="kw">as </span>i8).map(|<span class="kw">_</span>| <span class="number">2</span>)
+                }
+                <span class="kw">_ if </span>n &gt;= -<span class="number">0x00008000 </span>=&gt; {
+                    <span class="self">self</span>.write_u8(CODE_INT16)<span class="question-mark">?</span>;
+                    <span class="self">self</span>.write_i16::&lt;LittleEndian&gt;(n <span class="kw">as </span>i16).map(|<span class="kw">_</span>| <span class="number">3</span>)
+                }
+                <span class="kw">_ if </span>n &gt;= -<span class="number">0x80000000 </span>=&gt; {
+                    <span class="self">self</span>.write_u8(CODE_INT32)<span class="question-mark">?</span>;
+                    <span class="self">self</span>.write_i32::&lt;LittleEndian&gt;(n <span class="kw">as </span>i32).map(|<span class="kw">_</span>| <span class="number">5</span>)
+                }
+                <span class="kw">_ </span>=&gt; {
+                    <span class="self">self</span>.write_u8(CODE_INT64)<span class="question-mark">?</span>;
+                    <span class="self">self</span>.write_i64::&lt;LittleEndian&gt;(n <span class="kw">as </span>i64).map(|<span class="kw">_</span>| <span class="number">9</span>)
+                }
             }
         }
     }
 
-    <span class="doccomment">/// Write a float</span>
-    <span class="kw">fn</span> <span class="ident">bin_write_float32</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;</span><span class="ident">f32</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">usize</span>, <span class="ident">io::Error</span><span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="ident">write</span>(<span class="kw-2">&amp;</span><span class="ident">f</span>.<span class="ident">to_le_bytes</span>()).<span class="ident">map</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="number">4</span>)
+    <span class="doccomment">/// bin_prot also supports a slightly different encoding called Nat0
+    /// This is an unsigned integer type that is used internally by the protocol
+    /// for storing sizes of lists etc.
+    /// &lt;  0x000000080  -&gt;  lower 8 bits of the integer                     (1 byte)
+    /// &lt;  0x000010000  -&gt;  CODE_INT16 followed by lower 16 bits of integer (3 bytes)
+    /// &lt;  0x100000000  -&gt;  CODE_INT32 followed by lower 32 bits of integer (5 bytes)
+    /// &gt;= 0x100000000  -&gt;  CODE_INT64 followed by all 64 bits of integer   (9 bytes)
+    </span><span class="kw">fn </span>bin_write_nat0&lt;T: Into&lt;u64&gt;&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, n: T) -&gt; <span class="prelude-ty">Result</span>&lt;usize, io::Error&gt; {
+        <span class="kw">let </span>n: u64 = n.into();
+        <span class="kw">match </span>n {
+            <span class="kw">_ if </span>n &lt; <span class="number">0x000000080 </span>=&gt; <span class="self">self</span>.write_u8(n <span class="kw">as </span>u8).map(|<span class="kw">_</span>| <span class="number">1</span>),
+            <span class="kw">_ if </span>n &lt; <span class="number">0x000010000 </span>=&gt; {
+                <span class="self">self</span>.write_u8(CODE_INT16)<span class="question-mark">?</span>;
+                <span class="self">self</span>.write_u16::&lt;LittleEndian&gt;(n <span class="kw">as </span>u16).map(|<span class="kw">_</span>| <span class="number">3</span>)
+            }
+            <span class="kw">_ if </span>n &lt; <span class="number">0x100000000 </span>=&gt; {
+                <span class="self">self</span>.write_u8(CODE_INT32)<span class="question-mark">?</span>;
+                <span class="self">self</span>.write_u32::&lt;LittleEndian&gt;(n <span class="kw">as </span>u32).map(|<span class="kw">_</span>| <span class="number">5</span>)
+            }
+            <span class="kw">_ </span>=&gt; {
+                <span class="self">self</span>.write_u8(CODE_INT64)<span class="question-mark">?</span>;
+                <span class="self">self</span>.write_u64::&lt;LittleEndian&gt;(n <span class="kw">as </span>u64).map(|<span class="kw">_</span>| <span class="number">9</span>)
+            }
+        }
     }
 
-    <span class="doccomment">/// Write a 64 bit float</span>
-    <span class="kw">fn</span> <span class="ident">bin_write_float64</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;</span><span class="ident">f64</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">usize</span>, <span class="ident">io::Error</span><span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="ident">write</span>(<span class="kw-2">&amp;</span><span class="ident">f</span>.<span class="ident">to_le_bytes</span>()).<span class="ident">map</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="number">8</span>)
+    <span class="doccomment">/// Write a float
+    </span><span class="kw">fn </span>bin_write_float32(<span class="kw-2">&amp;mut </span><span class="self">self</span>, f: <span class="kw-2">&amp;</span>f32) -&gt; <span class="prelude-ty">Result</span>&lt;usize, io::Error&gt; {
+        <span class="self">self</span>.write(<span class="kw-2">&amp;</span>f.to_le_bytes()).map(|<span class="kw">_</span>| <span class="number">4</span>)
     }
 
-    <span class="doccomment">/// for enums/variants with n variants the variant index</span>
-    <span class="doccomment">/// is written out as follows:</span>
-    <span class="doccomment">/// n &lt;= 256    -&gt;  write out lower 8 bits of n  (1 byte)</span>
-    <span class="doccomment">/// n &lt;= 65536  -&gt;  write out lower 16 bits of n (2 bytes)</span>
-    <span class="doccomment">/// WARNING: This does not implement the requirement above</span>
-    <span class="doccomment">/// It is tricky to determine how many variants an enum has at runtime</span>
-    <span class="doccomment">/// and therfore to know which of the above cases to use</span>
-    <span class="doccomment">/// This assumes all enums have &lt; 256 variants</span>
-    <span class="doccomment">/// This probably catches 99% of cases but is not strictly</span>
-    <span class="doccomment">/// in compliance with the protocol</span>
-    <span class="kw">fn</span> <span class="ident">bin_write_variant_index</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">i</span>: <span class="ident">u8</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">usize</span>, <span class="ident">io::Error</span><span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="ident">write_u8</span>(<span class="ident">i</span>).<span class="ident">map</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="number">1</span>) <span class="comment">// truncating downcast</span>
+    <span class="doccomment">/// Write a 64 bit float
+    </span><span class="kw">fn </span>bin_write_float64(<span class="kw-2">&amp;mut </span><span class="self">self</span>, f: <span class="kw-2">&amp;</span>f64) -&gt; <span class="prelude-ty">Result</span>&lt;usize, io::Error&gt; {
+        <span class="self">self</span>.write(<span class="kw-2">&amp;</span>f.to_le_bytes()).map(|<span class="kw">_</span>| <span class="number">8</span>)
     }
 
-    <span class="doccomment">/// For Polyvar types write the 4 bytes of the tag/hash for a variant</span>
-    <span class="doccomment">/// You can convert between ocaml native integer using (x &gt;&gt; 1)</span>
-    <span class="kw">fn</span> <span class="ident">bin_write_polyvar_tag</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">i</span>: <span class="ident">u32</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">usize</span>, <span class="ident">io::Error</span><span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="ident">write</span>(<span class="kw-2">&amp;</span>(<span class="ident">i</span> <span class="op">&lt;</span><span class="op">&lt;</span> <span class="number">1</span> <span class="op">|</span> <span class="number">1</span>).<span class="ident">to_le_bytes</span>()).<span class="ident">map</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="number">4</span>) <span class="comment">// truncating downcast</span>
-    }
+    <span class="doccomment">/// for enums/variants with n variants the variant index
+    /// is written out as follows:
+    /// n &lt;= 256    -&gt;  write out lower 8 bits of n  (1 byte)
+    /// n &lt;= 65536  -&gt;  write out lower 16 bits of n (2 bytes)
+    /// WARNING: This does not implement the requirement above
+    /// It is tricky to determine how many variants an enum has at runtime
+    /// and therfore to know which of the above cases to use
+    /// This assumes all enums have &lt; 256 variants
+    /// This probably catches 99% of cases but is not strictly
+    /// in compliance with the protocol
+    </span><span class="kw">fn </span>bin_write_variant_index(<span class="kw-2">&amp;mut </span><span class="self">self</span>, i: u8) -&gt; <span class="prelude-ty">Result</span>&lt;usize, io::Error&gt; {
+        <span class="self">self</span>.write_u8(i).map(|<span class="kw">_</span>| <span class="number">1</span>) <span class="comment">// truncating downcast
+    </span>}
+
+    <span class="doccomment">/// For Polyvar types write the 4 bytes of the tag/hash for a variant
+    /// You can convert between ocaml native integer using (x &gt;&gt; 1)
+    </span><span class="kw">fn </span>bin_write_polyvar_tag(<span class="kw-2">&amp;mut </span><span class="self">self</span>, i: u32) -&gt; <span class="prelude-ty">Result</span>&lt;usize, io::Error&gt; {
+        <span class="self">self</span>.write(<span class="kw-2">&amp;</span>(i &lt;&lt; <span class="number">1 </span>| <span class="number">1</span>).to_le_bytes()).map(|<span class="kw">_</span>| <span class="number">4</span>) <span class="comment">// truncating downcast
+    </span>}
 }
 
-<span class="doccomment">/// All types that implement `Write` get methods defined in `WriteBinProtIntegerExt`</span>
-<span class="doccomment">/// for free.</span>
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">W</span>: <span class="ident">io::Write</span> <span class="op">+</span> <span class="question-mark">?</span><span class="ident">Sized</span><span class="op">&gt;</span> <span class="ident">WriteBinProtExt</span> <span class="kw">for</span> <span class="ident">W</span> {}
+<span class="doccomment">/// All types that implement `Write` get methods defined in `WriteBinProtIntegerExt`
+/// for free.
+</span><span class="kw">impl</span>&lt;W: io::Write + <span class="question-mark">?</span>Sized&gt; WriteBinProtExt <span class="kw">for </span>W {}
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="bin_prot" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (fe3342816 2022-08-01)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="bin_prot" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (40336865f 2022-08-15)" ></div></body></html>

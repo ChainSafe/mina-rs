@@ -27,34 +27,34 @@
 <span id="27">27</span>
 <span id="28">28</span>
 <span id="29">29</span>
-</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems</span>
-<span class="comment">// SPDX-License-Identifier: Apache-2.0</span>
+</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems
+// SPDX-License-Identifier: Apache-2.0
 
-<span class="attribute">#![<span class="ident">deny</span>(<span class="ident">warnings</span>)]</span>
-<span class="attribute">#![<span class="ident">deny</span>(<span class="ident">missing_docs</span>)]</span>
-<span class="attribute">#![<span class="ident">doc</span> <span class="op">=</span> <span class="macro">include_str!</span>(<span class="string">&quot;../README.md&quot;</span>)]</span>
+</span><span class="attribute">#![deny(warnings)]</span>
+<span class="attribute">#![deny(missing_docs)]</span>
+<span class="attribute">#![doc = <span class="macro">include_str!</span>(<span class="string">&quot;../README.md&quot;</span>)]</span>
 
-<span class="comment">// mod array;</span>
-<span class="kw">mod</span> <span class="ident">consts</span>;
-<span class="kw">mod</span> <span class="ident">de</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">error</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">integers</span>;
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;loose_deserialization&quot;</span>)]</span>
-<span class="kw">mod</span> <span class="ident">loose_deserializer</span>;
-<span class="kw">mod</span> <span class="ident">polyvar</span>;
-<span class="kw">mod</span> <span class="ident">read_ext</span>;
-<span class="kw">mod</span> <span class="ident">ser</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">value</span>;
-<span class="kw">mod</span> <span class="ident">write_ext</span>;
+<span class="comment">// mod array;
+</span><span class="kw">mod </span>consts;
+<span class="kw">mod </span>de;
+<span class="kw">pub mod </span>error;
+<span class="kw">pub mod </span>integers;
+<span class="attribute">#[cfg(feature = <span class="string">&quot;loose_deserialization&quot;</span>)]</span>
+<span class="kw">mod </span>loose_deserializer;
+<span class="kw">mod </span>polyvar;
+<span class="kw">mod </span>read_ext;
+<span class="kw">mod </span>ser;
+<span class="kw">pub mod </span>value;
+<span class="kw">mod </span>write_ext;
 
-<span class="comment">// pub use array::OcamlArray;</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">de</span>::{<span class="ident">from_reader</span>, <span class="ident">from_reader_strict</span>, <span class="ident">Deserializer</span>};
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">polyvar</span>::{<span class="ident">caml_hash_variant</span>, <span class="ident">VariantHash</span>};
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">read_ext::ReadBinProtExt</span>;
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">ser</span>::{<span class="ident">to_writer</span>, <span class="ident">Serializer</span>};
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;loose_deserialization&quot;</span>)]</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">value::layout</span>::{<span class="ident">BinProtRule</span>, <span class="ident">Layout</span>};
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">value::Value</span>;
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">write_ext::WriteBinProtExt</span>;
+<span class="comment">// pub use array::OcamlArray;
+</span><span class="kw">pub use </span>de::{from_reader, from_reader_strict, Deserializer};
+<span class="kw">pub use </span>polyvar::{caml_hash_variant, VariantHash};
+<span class="kw">pub use </span>read_ext::ReadBinProtExt;
+<span class="kw">pub use </span>ser::{to_writer, Serializer};
+<span class="attribute">#[cfg(feature = <span class="string">&quot;loose_deserialization&quot;</span>)]</span>
+<span class="kw">pub use </span>value::layout::{BinProtRule, Layout};
+<span class="kw">pub use </span>value::Value;
+<span class="kw">pub use </span>write_ext::WriteBinProtExt;
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="bin_prot" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (fe3342816 2022-08-01)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="bin_prot" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (40336865f 2022-08-15)" ></div></body></html>

@@ -133,140 +133,140 @@
 <span id="133">133</span>
 <span id="134">134</span>
 <span id="135">135</span>
-</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems</span>
-<span class="comment">// SPDX-License-Identifier: Apache-2.0</span>
+</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems
+// SPDX-License-Identifier: Apache-2.0
 
-<span class="attribute">#![<span class="ident">deny</span>(<span class="ident">warnings</span>)]</span>
+</span><span class="attribute">#![deny(warnings)]</span>
 
-<span class="kw">use</span> <span class="ident">bin_prot</span>::{<span class="ident">BinProtRule</span>, <span class="ident">Deserializer</span>};
-<span class="kw">use</span> <span class="ident">lazy_static::lazy_static</span>;
-<span class="kw">use</span> <span class="ident">mina_serialization_types::v1::ExternalTransitionV1</span>;
-<span class="kw">use</span> <span class="ident">serde::Deserialize</span>;
-<span class="kw">use</span> <span class="ident">std</span>::{<span class="ident">borrow::Borrow</span>, <span class="ident">collections::HashMap</span>};
+<span class="kw">use </span>bin_prot::{BinProtRule, Deserializer};
+<span class="kw">use </span>lazy_static::lazy_static;
+<span class="kw">use </span>mina_serialization_types::v1::ExternalTransitionV1;
+<span class="kw">use </span>serde::Deserialize;
+<span class="kw">use </span>std::{borrow::Borrow, collections::HashMap};
 
-<span class="comment">// FIXME: Move layouts into this crate?</span>
-<span class="kw">pub</span> <span class="kw">const</span> <span class="ident">BLOCK_LAYOUT</span>: <span class="kw-2">&amp;</span><span class="ident">str</span> <span class="op">=</span> <span class="macro">include_str!</span>(<span class="string">&quot;../../layouts/external_transition.json&quot;</span>);
+<span class="comment">// FIXME: Move layouts into this crate?
+</span><span class="kw">pub const </span>BLOCK_LAYOUT: <span class="kw-2">&amp;</span>str = <span class="macro">include_str!</span>(<span class="string">&quot;../../layouts/external_transition.json&quot;</span>);
 
 <span class="macro">lazy_static!</span> {
-    <span class="kw">pub</span> <span class="kw">static</span> <span class="kw-2">ref</span> <span class="ident">BLOCK_RULE</span>: <span class="ident">BinProtRule</span> <span class="op">=</span> {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">deserializer</span> <span class="op">=</span> <span class="ident">serde_json::Deserializer::from_str</span>(<span class="ident">BLOCK_LAYOUT</span>);
-        <span class="ident">deserializer</span>.<span class="ident">disable_recursion_limit</span>();
-        <span class="kw">let</span> <span class="ident">deserializer</span> <span class="op">=</span> <span class="ident">serde_stacker::Deserializer::new</span>(<span class="kw-2">&amp;mut</span> <span class="ident">deserializer</span>);
-        <span class="ident">bin_prot::Layout::deserialize</span>(<span class="ident">deserializer</span>)
-            .<span class="ident">unwrap</span>()
-            .<span class="ident">bin_prot_rule</span>
+    <span class="kw">pub static </span><span class="kw-2">ref </span>BLOCK_RULE: BinProtRule = {
+        <span class="kw">let </span><span class="kw-2">mut </span>deserializer = serde_json::Deserializer::from_str(BLOCK_LAYOUT);
+        deserializer.disable_recursion_limit();
+        <span class="kw">let </span>deserializer = serde_stacker::Deserializer::new(<span class="kw-2">&amp;mut </span>deserializer);
+        bin_prot::Layout::deserialize(deserializer)
+            .unwrap()
+            .bin_prot_rule
     };
-    <span class="kw">pub</span> <span class="kw">static</span> <span class="kw-2">ref</span> <span class="ident">GENESIS_BLOCK_MAINNET_JSON</span>: <span class="ident">serde_json::Value</span> <span class="op">=</span> <span class="ident">serde_json::from_slice</span>(<span class="macro">include_bytes!</span>(<span class="string">&quot;data/genesis-3NKeMoncuHab5ScarV5ViyF16cJPT4taWNSaTLS64Dp67wuXigPZ.json&quot;</span>)).<span class="ident">unwrap</span>();
-    <span class="kw">pub</span> <span class="kw">static</span> <span class="kw-2">ref</span> <span class="ident">GENESIS_BLOCK_MAINNET</span>: <span class="ident">BlockFixture</span> <span class="op">=</span> <span class="ident">load_test_block_hex</span>(<span class="string">&quot;genesis-3NKeMoncuHab5ScarV5ViyF16cJPT4taWNSaTLS64Dp67wuXigPZ.hex&quot;</span>, <span class="macro">include_str!</span>(<span class="string">&quot;data/genesis-3NKeMoncuHab5ScarV5ViyF16cJPT4taWNSaTLS64Dp67wuXigPZ.hex&quot;</span>));
-    <span class="comment">// FIXME: Update this with real devnet genesis block</span>
-    <span class="kw">pub</span> <span class="kw">static</span> <span class="kw-2">ref</span> <span class="ident">GENESIS_BLOCK_DEVNET</span>: <span class="ident">BlockFixture</span> <span class="op">=</span> <span class="ident">load_test_block_hex</span>(<span class="string">&quot;genesis-3NKeMoncuHab5ScarV5ViyF16cJPT4taWNSaTLS64Dp67wuXigPZ.hex&quot;</span>, <span class="macro">include_str!</span>(<span class="string">&quot;data/genesis-3NKeMoncuHab5ScarV5ViyF16cJPT4taWNSaTLS64Dp67wuXigPZ.hex&quot;</span>));
-    <span class="kw">pub</span> <span class="kw">static</span> <span class="kw-2">ref</span> <span class="ident">TEST_BLOCKS</span>: <span class="ident">HashMap</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">BlockFixture</span><span class="op">&gt;</span> <span class="op">=</span> <span class="macro">load_test_blocks!</span>(
-        <span class="string">&quot;data/block1&quot;</span>
-        <span class="string">&quot;data/3NK3P5bJHhqR7xkZBquGGfq3sERUeXNYNma5YXRMjgCNsTJRZpgL.hex&quot;</span>
-        <span class="string">&quot;data/3NK6nkk9t23KNHTZ92M77ebpv1nzvFwQLow1DHS4eDNa2bRhtsPd.hex&quot;</span>
-        <span class="string">&quot;data/3NKaBJsN1SehD6iJwRwJSFmVzJg5DXSUQVgnMxtH4eer4aF5BrDK.hex&quot;</span>
-        <span class="string">&quot;data/3NKf5nZYFZ4qMe1VyysbsnzgA1pm4i93NBt6ytNC7CdU2QbmdRZC.hex&quot;</span>
-        <span class="string">&quot;data/3NKCdqMnTzqxLhpG218eKZSUxB1GMqdiiBjbWXrQVrVzz8mTNFrK.hex&quot;</span>
-        <span class="string">&quot;data/3NKEWdhLxBuPboanSMXgNxudXqowm9gLNzhyfQMUBM2L52wSjb6z.hex&quot;</span>
-        <span class="string">&quot;data/3NLJmFT3nvnatDEZfqZzJ7k9fJYApoe1SPQVUggS24ViZT7z8aNA.hex&quot;</span>
-        <span class="string">&quot;data/3NLRkk5T3Gaf8ZPXgoXatdrtpN3hUdzWPWXbrqMo4jVsi3jkiGE5.hex&quot;</span>
-        <span class="string">&quot;data/3NLvrNK6rmWnxEkGZo1y4KYjsSTcgVx7gwen2aR2kTWmRDTNoSu8.hex&quot;</span>
-        <span class="string">&quot;data/3NK9fHpzfPWhuxFhQ9Dau1X1JWtstB6kGC4xrurSPU1kctMCsU9U.hex&quot;</span>
-        <span class="string">&quot;data/3NKapQX5Qe8f4BEZGWxVSWKQvKNnkvPXNLq5KDHCV1qoPzV5Y3Wu.hex&quot;</span>
-        <span class="string">&quot;data/3NKjZ5fjms6BMaH4aq7DopPGyMY7PbG6vhRsX5XnYRxih8i9G7dj.hex&quot;</span>
-    );
-    <span class="comment">// Note that GENESIS_BLOCK_MAINNET_JSON has a different json format, so it&#39;s not included here</span>
-    <span class="kw">pub</span> <span class="kw">static</span> <span class="kw-2">ref</span> <span class="ident">JSON_TEST_BLOCKS</span>: <span class="ident">HashMap</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">serde_json::Value</span><span class="op">&gt;</span> <span class="op">=</span> <span class="macro">load_json_test_blocks!</span>(
-        <span class="string">&quot;data/mainnet-117896-3NKrv92FYZFHRNUJxiP7VGeRx3MeDY2iffFjUWXTPoXJorsS63ba.json&quot;</span>
-        <span class="string">&quot;data/mainnet-117896-3NKjZ5fjms6BMaH4aq7DopPGyMY7PbG6vhRsX5XnYRxih8i9G7dj.json&quot;</span>
-        <span class="string">&quot;data/mainnet-116121-3NK6myZRzc3GvS5iydv88on2XTEU2btYrjMVkgtbuoeXASRipSa6.json&quot;</span>
-        <span class="string">&quot;data/mainnet-77749-3NK3P5bJHhqR7xkZBquGGfq3sERUeXNYNma5YXRMjgCNsTJRZpgL.json&quot;</span>
-        <span class="string">&quot;data/mainnet-77748-3NKaBJsN1SehD6iJwRwJSFmVzJg5DXSUQVgnMxtH4eer4aF5BrDK.json&quot;</span>
-        <span class="string">&quot;data/mainnet-113267-3NLenrog9wkiJMoA774T9VraqSUGhCuhbDLj3JKbEzomNdjr78G8.json&quot;</span>
-        <span class="string">&quot;data/mainnet-147571-3NKwrze6FvGQCCF6L7Q2JLvwgnsm56hwSny9kUyjbSUr8oqu1MGp.json&quot;</span>
-        <span class="string">&quot;data/mainnet-149909-3NLCeY7UwgCryuvk3Wevm9ndMDvWAMjwGBfBJS12MqL1QoTQWEWt.json&quot;</span>
-        <span class="string">&quot;data/mainnet-113267-3NKtqqstB6h8SVNQCtspFisjUwCTqoQ6cC1KGvb6kx6n2dqKkiZS.json&quot;</span>
-        <span class="string">&quot;data/mainnet-117896-3NLPBDTckSdjcUFcQiE9raJsyzB84KayMPKi4PmwNybnA6J75GoL.json&quot;</span>
-    );
+    <span class="kw">pub static </span><span class="kw-2">ref </span>GENESIS_BLOCK_MAINNET_JSON: serde_json::Value = serde_json::from_slice(<span class="macro">include_bytes!</span>(<span class="string">&quot;data/genesis-3NKeMoncuHab5ScarV5ViyF16cJPT4taWNSaTLS64Dp67wuXigPZ.json&quot;</span>)).unwrap();
+    <span class="kw">pub static </span><span class="kw-2">ref </span>GENESIS_BLOCK_MAINNET: BlockFixture = load_test_block_hex(<span class="string">&quot;genesis-3NKeMoncuHab5ScarV5ViyF16cJPT4taWNSaTLS64Dp67wuXigPZ.hex&quot;</span>, <span class="macro">include_str!</span>(<span class="string">&quot;data/genesis-3NKeMoncuHab5ScarV5ViyF16cJPT4taWNSaTLS64Dp67wuXigPZ.hex&quot;</span>));
+    <span class="comment">// FIXME: Update this with real devnet genesis block
+    </span><span class="kw">pub static </span><span class="kw-2">ref </span>GENESIS_BLOCK_DEVNET: BlockFixture = load_test_block_hex(<span class="string">&quot;genesis-3NKeMoncuHab5ScarV5ViyF16cJPT4taWNSaTLS64Dp67wuXigPZ.hex&quot;</span>, <span class="macro">include_str!</span>(<span class="string">&quot;data/genesis-3NKeMoncuHab5ScarV5ViyF16cJPT4taWNSaTLS64Dp67wuXigPZ.hex&quot;</span>));
+    <span class="kw">pub static </span><span class="kw-2">ref </span>TEST_BLOCKS: HashMap&lt;String, BlockFixture&gt; = <span class="macro">load_test_blocks!</span>(
+        <span class="string">&quot;data/block1&quot;
+        &quot;data/3NK3P5bJHhqR7xkZBquGGfq3sERUeXNYNma5YXRMjgCNsTJRZpgL.hex&quot;
+        &quot;data/3NK6nkk9t23KNHTZ92M77ebpv1nzvFwQLow1DHS4eDNa2bRhtsPd.hex&quot;
+        &quot;data/3NKaBJsN1SehD6iJwRwJSFmVzJg5DXSUQVgnMxtH4eer4aF5BrDK.hex&quot;
+        &quot;data/3NKf5nZYFZ4qMe1VyysbsnzgA1pm4i93NBt6ytNC7CdU2QbmdRZC.hex&quot;
+        &quot;data/3NKCdqMnTzqxLhpG218eKZSUxB1GMqdiiBjbWXrQVrVzz8mTNFrK.hex&quot;
+        &quot;data/3NKEWdhLxBuPboanSMXgNxudXqowm9gLNzhyfQMUBM2L52wSjb6z.hex&quot;
+        &quot;data/3NLJmFT3nvnatDEZfqZzJ7k9fJYApoe1SPQVUggS24ViZT7z8aNA.hex&quot;
+        &quot;data/3NLRkk5T3Gaf8ZPXgoXatdrtpN3hUdzWPWXbrqMo4jVsi3jkiGE5.hex&quot;
+        &quot;data/3NLvrNK6rmWnxEkGZo1y4KYjsSTcgVx7gwen2aR2kTWmRDTNoSu8.hex&quot;
+        &quot;data/3NK9fHpzfPWhuxFhQ9Dau1X1JWtstB6kGC4xrurSPU1kctMCsU9U.hex&quot;
+        &quot;data/3NKapQX5Qe8f4BEZGWxVSWKQvKNnkvPXNLq5KDHCV1qoPzV5Y3Wu.hex&quot;
+        &quot;data/3NKjZ5fjms6BMaH4aq7DopPGyMY7PbG6vhRsX5XnYRxih8i9G7dj.hex&quot;
+    </span>);
+    <span class="comment">// Note that GENESIS_BLOCK_MAINNET_JSON has a different json format, so it&#39;s not included here
+    </span><span class="kw">pub static </span><span class="kw-2">ref </span>JSON_TEST_BLOCKS: HashMap&lt;String, serde_json::Value&gt; = <span class="macro">load_json_test_blocks!</span>(
+        <span class="string">&quot;data/mainnet-117896-3NKrv92FYZFHRNUJxiP7VGeRx3MeDY2iffFjUWXTPoXJorsS63ba.json&quot;
+        &quot;data/mainnet-117896-3NKjZ5fjms6BMaH4aq7DopPGyMY7PbG6vhRsX5XnYRxih8i9G7dj.json&quot;
+        &quot;data/mainnet-116121-3NK6myZRzc3GvS5iydv88on2XTEU2btYrjMVkgtbuoeXASRipSa6.json&quot;
+        &quot;data/mainnet-77749-3NK3P5bJHhqR7xkZBquGGfq3sERUeXNYNma5YXRMjgCNsTJRZpgL.json&quot;
+        &quot;data/mainnet-77748-3NKaBJsN1SehD6iJwRwJSFmVzJg5DXSUQVgnMxtH4eer4aF5BrDK.json&quot;
+        &quot;data/mainnet-113267-3NLenrog9wkiJMoA774T9VraqSUGhCuhbDLj3JKbEzomNdjr78G8.json&quot;
+        &quot;data/mainnet-147571-3NKwrze6FvGQCCF6L7Q2JLvwgnsm56hwSny9kUyjbSUr8oqu1MGp.json&quot;
+        &quot;data/mainnet-149909-3NLCeY7UwgCryuvk3Wevm9ndMDvWAMjwGBfBJS12MqL1QoTQWEWt.json&quot;
+        &quot;data/mainnet-113267-3NKtqqstB6h8SVNQCtspFisjUwCTqoQ6cC1KGvb6kx6n2dqKkiZS.json&quot;
+        &quot;data/mainnet-117896-3NLPBDTckSdjcUFcQiE9raJsyzB84KayMPKi4PmwNybnA6J75GoL.json&quot;
+    </span>);
 }
 
-<span class="kw">pub</span> <span class="kw">const</span> <span class="ident">VERIFICATION_KEY</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>] <span class="op">=</span> <span class="macro">include_bytes!</span>(
-    <span class="string">&quot;data/vk-wrap-wrap-verification-key-blockchain-snark-d3623dbfa42f563e40cd5f2d032ad91f&quot;</span>
-);
+<span class="kw">pub const </span>VERIFICATION_KEY: <span class="kw-2">&amp;</span>[u8] = <span class="macro">include_bytes!</span>(
+    <span class="string">&quot;data/vk-wrap-wrap-verification-key-blockchain-snark-d3623dbfa42f563e40cd5f2d032ad91f&quot;
+</span>);
 
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">BlockFixture</span> {
-    <span class="kw">pub</span> <span class="ident">bytes</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">value</span>: <span class="ident">bin_prot::Value</span>,
-    <span class="kw">pub</span> <span class="ident">block_name</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span>,
+<span class="kw">pub struct </span>BlockFixture {
+    <span class="kw">pub </span>bytes: Vec&lt;u8&gt;,
+    <span class="kw">pub </span>value: bin_prot::Value,
+    <span class="kw">pub </span>block_name: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str,
 }
 
-<span class="kw">impl</span> <span class="ident">BlockFixture</span> {
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">external_transitionv1</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">anyhow::Result</span><span class="op">&lt;</span><span class="ident">ExternalTransitionV1</span><span class="op">&gt;</span> {
-        <span class="prelude-val">Ok</span>(<span class="ident">bin_prot::from_reader_strict</span>(<span class="self">self</span>.<span class="ident">bytes</span>.<span class="ident">as_slice</span>())<span class="question-mark">?</span>)
+<span class="kw">impl </span>BlockFixture {
+    <span class="kw">pub fn </span>external_transitionv1(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; anyhow::Result&lt;ExternalTransitionV1&gt; {
+        <span class="prelude-val">Ok</span>(bin_prot::from_reader_strict(<span class="self">self</span>.bytes.as_slice())<span class="question-mark">?</span>)
     }
 }
 
-<span class="kw">fn</span> <span class="ident">load_test_block</span>(<span class="ident">block_name</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span>, <span class="ident">bytes</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> [<span class="ident">u8</span>]) -&gt; <span class="ident">BlockFixture</span> {
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">de</span> <span class="op">=</span> <span class="ident">Deserializer::from_reader</span>(<span class="ident">bytes</span>).<span class="ident">with_layout</span>(<span class="kw-2">&amp;</span><span class="ident">BLOCK_RULE</span>);
-    <span class="kw">match</span> <span class="ident">Deserialize::deserialize</span>(<span class="kw-2">&amp;mut</span> <span class="ident">de</span>) {
-        <span class="prelude-val">Ok</span>(<span class="ident">value</span>) =&gt; <span class="ident">BlockFixture</span> {
-            <span class="ident">bytes</span>: <span class="ident">bytes</span>.<span class="ident">into</span>(),
-            <span class="ident">value</span>,
-            <span class="ident">block_name</span>,
+<span class="kw">fn </span>load_test_block(block_name: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str, bytes: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>[u8]) -&gt; BlockFixture {
+    <span class="kw">let </span><span class="kw-2">mut </span>de = Deserializer::from_reader(bytes).with_layout(<span class="kw-2">&amp;</span>BLOCK_RULE);
+    <span class="kw">match </span>Deserialize::deserialize(<span class="kw-2">&amp;mut </span>de) {
+        <span class="prelude-val">Ok</span>(value) =&gt; BlockFixture {
+            bytes: bytes.into(),
+            value,
+            block_name,
         },
-        <span class="prelude-val">Err</span>(<span class="kw">_</span>) =&gt; <span class="ident">load_test_block_hex</span>(
-            <span class="ident">block_name</span>,
-            <span class="ident">String::from_utf8</span>(<span class="ident">bytes</span>.<span class="ident">into</span>())
-                .<span class="ident">expect</span>(<span class="string">&quot;Failed to decode hex encoded block&quot;</span>)
-                .<span class="ident">borrow</span>(),
+        <span class="prelude-val">Err</span>(<span class="kw">_</span>) =&gt; load_test_block_hex(
+            block_name,
+            String::from_utf8(bytes.into())
+                .expect(<span class="string">&quot;Failed to decode hex encoded block&quot;</span>)
+                .borrow(),
         ),
     }
 }
 
-<span class="kw">fn</span> <span class="ident">load_test_block_hex</span>(<span class="ident">block_name</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span>, <span class="ident">hex_str</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) -&gt; <span class="ident">BlockFixture</span> {
-    <span class="kw">let</span> <span class="ident">bytes</span> <span class="op">=</span> <span class="ident">hex::decode</span>(<span class="ident">hex_str</span>).<span class="ident">expect</span>(<span class="string">&quot;Failed to decode hex encoded block&quot;</span>);
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">de</span> <span class="op">=</span> <span class="ident">Deserializer::from_reader</span>(<span class="ident">bytes</span>.<span class="ident">as_slice</span>()).<span class="ident">with_layout</span>(<span class="kw-2">&amp;</span><span class="ident">BLOCK_RULE</span>);
-    <span class="kw">let</span> <span class="ident">value</span> <span class="op">=</span> <span class="ident">Deserialize::deserialize</span>(<span class="kw-2">&amp;mut</span> <span class="ident">de</span>).<span class="ident">expect</span>(<span class="string">&quot;Failed to deserialize test block&quot;</span>);
-    <span class="ident">BlockFixture</span> {
-        <span class="ident">bytes</span>,
-        <span class="ident">value</span>,
-        <span class="ident">block_name</span>,
+<span class="kw">fn </span>load_test_block_hex(block_name: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str, hex_str: <span class="kw-2">&amp;</span>str) -&gt; BlockFixture {
+    <span class="kw">let </span>bytes = hex::decode(hex_str).expect(<span class="string">&quot;Failed to decode hex encoded block&quot;</span>);
+    <span class="kw">let </span><span class="kw-2">mut </span>de = Deserializer::from_reader(bytes.as_slice()).with_layout(<span class="kw-2">&amp;</span>BLOCK_RULE);
+    <span class="kw">let </span>value = Deserialize::deserialize(<span class="kw-2">&amp;mut </span>de).expect(<span class="string">&quot;Failed to deserialize test block&quot;</span>);
+    BlockFixture {
+        bytes,
+        value,
+        block_name,
     }
 }
 
-<span class="attribute">#[<span class="ident">macro_export</span>]</span>
-<span class="macro">macro_rules!</span> <span class="ident">load_test_blocks</span> {
-    ( $( <span class="macro-nonterminal">$</span><span class="macro-nonterminal">lt</span>:<span class="ident">literal</span> $(,)<span class="question-mark">?</span>) <span class="op">*</span> ) =&gt; {
+<span class="attribute">#[macro_export]</span>
+<span class="macro">macro_rules!</span> load_test_blocks {
+    ( $( <span class="macro-nonterminal">$lt</span>:literal $(,)<span class="question-mark">?</span>) * ) =&gt; {
         {
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">temp_map</span> <span class="op">=</span> <span class="ident">HashMap::new</span>();
+            <span class="kw">let </span><span class="kw-2">mut </span>temp_map = HashMap::new();
             $(
-                <span class="kw">let</span> <span class="ident">file_name</span> <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">lt</span>.<span class="ident">split</span>(<span class="string">&#39;/&#39;</span>).<span class="ident">last</span>().<span class="ident">unwrap</span>().<span class="ident">into</span>();
-                <span class="kw">let</span> <span class="ident">bytes</span> <span class="op">=</span> <span class="macro">include_bytes!</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">lt</span>);
-                <span class="kw">let</span> <span class="ident">block</span> <span class="op">=</span> <span class="ident">load_test_block</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">lt</span>, <span class="ident">bytes</span>);
-                <span class="ident">temp_map</span>.<span class="ident">insert</span>(<span class="ident">file_name</span>, <span class="ident">block</span>);
-            )<span class="op">*</span>
-            <span class="ident">temp_map</span>
+                <span class="kw">let </span>file_name = <span class="macro-nonterminal">$lt</span>.split(<span class="string">&#39;/&#39;</span>).last().unwrap().into();
+                <span class="kw">let </span>bytes = <span class="macro">include_bytes!</span>(<span class="macro-nonterminal">$lt</span>);
+                <span class="kw">let </span>block = load_test_block(<span class="macro-nonterminal">$lt</span>, bytes);
+                temp_map.insert(file_name, block);
+            )*
+            temp_map
         }
     };
 }
 
-<span class="attribute">#[<span class="ident">macro_export</span>]</span>
-<span class="macro">macro_rules!</span> <span class="ident">load_json_test_blocks</span> {
-    ( $( <span class="macro-nonterminal">$</span><span class="macro-nonterminal">lt</span>:<span class="ident">literal</span> $(,)<span class="question-mark">?</span>) <span class="op">*</span> ) =&gt; {
+<span class="attribute">#[macro_export]</span>
+<span class="macro">macro_rules!</span> load_json_test_blocks {
+    ( $( <span class="macro-nonterminal">$lt</span>:literal $(,)<span class="question-mark">?</span>) * ) =&gt; {
         {
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">temp_map</span> <span class="op">=</span> <span class="ident">HashMap::new</span>();
+            <span class="kw">let </span><span class="kw-2">mut </span>temp_map = HashMap::new();
             $(
-                <span class="kw">let</span> <span class="ident">file_name</span> <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">lt</span>.<span class="ident">split</span>(<span class="string">&#39;/&#39;</span>).<span class="ident">last</span>().<span class="ident">unwrap</span>().<span class="ident">into</span>();
-                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">block</span>: <span class="ident">serde_json::Value</span> <span class="op">=</span> <span class="ident">serde_json::from_slice</span>(<span class="macro">include_bytes!</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">lt</span>)).<span class="ident">map_err</span>(<span class="op">|</span><span class="ident">err</span><span class="op">|</span><span class="macro">format!</span>(<span class="string">&quot;Errer loading {}: {err}&quot;</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">lt</span>)).<span class="ident">unwrap</span>();
-                <span class="comment">// Remove scheduled_time field as it&#39;s not part of block</span>
-                <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">block_mut</span>) <span class="op">=</span> <span class="ident">block</span>.<span class="ident">as_object_mut</span>() {
-                    <span class="ident">block_mut</span>.<span class="ident">remove</span>(<span class="string">&quot;scheduled_time&quot;</span>);
+                <span class="kw">let </span>file_name = <span class="macro-nonterminal">$lt</span>.split(<span class="string">&#39;/&#39;</span>).last().unwrap().into();
+                <span class="kw">let </span><span class="kw-2">mut </span>block: serde_json::Value = serde_json::from_slice(<span class="macro">include_bytes!</span>(<span class="macro-nonterminal">$lt</span>)).map_err(|err|<span class="macro">format!</span>(<span class="string">&quot;Errer loading {}: {err}&quot;</span>, <span class="macro-nonterminal">$lt</span>)).unwrap();
+                <span class="comment">// Remove scheduled_time field as it&#39;s not part of block
+                </span><span class="kw">if let </span><span class="prelude-val">Some</span>(block_mut) = block.as_object_mut() {
+                    block_mut.remove(<span class="string">&quot;scheduled_time&quot;</span>);
                 }
-                <span class="ident">temp_map</span>.<span class="ident">insert</span>(<span class="ident">file_name</span>, <span class="ident">block</span>);
-            )<span class="op">*</span>
-            <span class="ident">temp_map</span>
+                temp_map.insert(file_name, block);
+            )*
+            temp_map
         }
     };
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="test_fixtures" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (fe3342816 2022-08-01)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="test_fixtures" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (40336865f 2022-08-15)" ></div></body></html>

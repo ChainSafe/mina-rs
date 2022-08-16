@@ -13,20 +13,20 @@
 <span id="13">13</span>
 <span id="14">14</span>
 <span id="15">15</span>
-</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems</span>
-<span class="comment">// SPDX-License-Identifier: Apache-2.0</span>
+</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems
+// SPDX-License-Identifier: Apache-2.0
 
-<span class="doccomment">//! Functionality relating to the ledger or genesis ledgers</span>
+</span><span class="doccomment">//! Functionality relating to the ledger or genesis ledgers
 
-<span class="attribute">#![<span class="ident">deny</span>(<span class="ident">warnings</span>)]</span>
-<span class="attribute">#![<span class="ident">deny</span>(<span class="ident">missing_docs</span>)]</span>
+</span><span class="attribute">#![deny(warnings)]</span>
+<span class="attribute">#![deny(missing_docs)]</span>
 
-<span class="kw">mod</span> <span class="ident">genesis_ledger</span>;
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">genesis_ledger</span>::<span class="kw-2">*</span>;
+<span class="kw">mod </span>genesis_ledger;
+<span class="kw">pub use </span>genesis_ledger::<span class="kw-2">*</span>;
 
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;wasm32&quot;</span>))]</span>
-<span class="kw">mod</span> <span class="ident">rocksdb_genesis_ledger</span>;
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;wasm32&quot;</span>))]</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">rocksdb_genesis_ledger::RocksDbGenesisLedger</span>;
+<span class="attribute">#[cfg(not(target_arch = <span class="string">&quot;wasm32&quot;</span>))]</span>
+<span class="kw">mod </span>rocksdb_genesis_ledger;
+<span class="attribute">#[cfg(not(target_arch = <span class="string">&quot;wasm32&quot;</span>))]</span>
+<span class="kw">pub use </span>rocksdb_genesis_ledger::RocksDbGenesisLedger;
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_ledger" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (fe3342816 2022-08-01)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_ledger" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (40336865f 2022-08-15)" ></div></body></html>

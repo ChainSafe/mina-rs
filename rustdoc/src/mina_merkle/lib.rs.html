@@ -30,37 +30,37 @@
 <span id="30">30</span>
 <span id="31">31</span>
 <span id="32">32</span>
-</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems</span>
-<span class="comment">// SPDX-License-Identifier: Apache-2.0</span>
+</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems
+// SPDX-License-Identifier: Apache-2.0
 
-<span class="attribute">#![<span class="ident">deny</span>(<span class="ident">warnings</span>)]</span>
-<span class="attribute">#![<span class="ident">deny</span>(<span class="ident">missing_docs</span>)]</span>
+</span><span class="attribute">#![deny(warnings)]</span>
+<span class="attribute">#![deny(missing_docs)]</span>
 
-<span class="doccomment">//! mina-merkle crate provides traits and data structure implementations for</span>
-<span class="doccomment">//! in-memory, persistent, maskable and masking mina merkle tree</span>
+<span class="doccomment">//! mina-merkle crate provides traits and data structure implementations for
+//! in-memory, persistent, maskable and masking mina merkle tree
 
-<span class="kw">mod</span> <span class="ident">proof</span>;
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">proof</span>::<span class="kw-2">*</span>;
-<span class="kw">mod</span> <span class="ident">tree</span>;
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">tree</span>::<span class="kw-2">*</span>;
-<span class="kw">mod</span> <span class="ident">tree_impl</span>;
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">tree_impl</span>::<span class="kw-2">*</span>;
-<span class="kw">mod</span> <span class="ident">maskable</span>;
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">maskable</span>::<span class="kw-2">*</span>;
-<span class="kw">mod</span> <span class="ident">masking</span>;
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">masking</span>::<span class="kw-2">*</span>;
-<span class="kw">mod</span> <span class="ident">merger</span>;
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">merger</span>::<span class="kw-2">*</span>;
-<span class="kw">mod</span> <span class="ident">merger_poseidon</span>;
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">merger_poseidon</span>::<span class="kw-2">*</span>;
-<span class="kw">mod</span> <span class="ident">hasher</span>;
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">hasher</span>::<span class="kw-2">*</span>;
-<span class="kw">mod</span> <span class="ident">hasher_poseidon</span>;
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">hasher_poseidon</span>::<span class="kw-2">*</span>;
-<span class="kw">mod</span> <span class="ident">metadata</span>;
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">metadata</span>::<span class="kw-2">*</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">prefixes</span>;
+</span><span class="kw">mod </span>proof;
+<span class="kw">pub use </span>proof::<span class="kw-2">*</span>;
+<span class="kw">mod </span>tree;
+<span class="kw">pub use </span>tree::<span class="kw-2">*</span>;
+<span class="kw">mod </span>tree_impl;
+<span class="kw">pub use </span>tree_impl::<span class="kw-2">*</span>;
+<span class="kw">mod </span>maskable;
+<span class="kw">pub use </span>maskable::<span class="kw-2">*</span>;
+<span class="kw">mod </span>masking;
+<span class="kw">pub use </span>masking::<span class="kw-2">*</span>;
+<span class="kw">mod </span>merger;
+<span class="kw">pub use </span>merger::<span class="kw-2">*</span>;
+<span class="kw">mod </span>merger_poseidon;
+<span class="kw">pub use </span>merger_poseidon::<span class="kw-2">*</span>;
+<span class="kw">mod </span>hasher;
+<span class="kw">pub use </span>hasher::<span class="kw-2">*</span>;
+<span class="kw">mod </span>hasher_poseidon;
+<span class="kw">pub use </span>hasher_poseidon::<span class="kw-2">*</span>;
+<span class="kw">mod </span>metadata;
+<span class="kw">pub use </span>metadata::<span class="kw-2">*</span>;
+<span class="kw">pub mod </span>prefixes;
 
-<span class="kw">use</span> <span class="ident">proof_systems</span>::<span class="kw-2">*</span>;
+<span class="kw">use </span>proof_systems::<span class="kw-2">*</span>;
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_merkle" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (fe3342816 2022-08-01)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_merkle" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (40336865f 2022-08-15)" ></div></body></html>

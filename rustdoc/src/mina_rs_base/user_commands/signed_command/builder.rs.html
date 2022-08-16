@@ -106,113 +106,113 @@
 <span id="106">106</span>
 <span id="107">107</span>
 <span id="108">108</span>
-</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems</span>
-<span class="comment">// SPDX-License-Identifier: Apache-2.0</span>
+</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems
+// SPDX-License-Identifier: Apache-2.0
 
-<span class="doccomment">//! Helpers for building a user command</span>
+</span><span class="doccomment">//! Helpers for building a user command
 
-<span class="kw">use</span> <span class="ident">proof_systems::mina_signer::CompressedPubKey</span>;
+</span><span class="kw">use </span>proof_systems::mina_signer::CompressedPubKey;
 
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::numbers</span>::{<span class="ident">AccountNonce</span>, <span class="ident">Amount</span>, <span class="ident">GlobalSlotNumber</span>, <span class="ident">TokenId</span>};
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::user_commands</span>::{
-    <span class="ident">PaymentPayload</span>, <span class="ident">SignedCommandPayload</span>, <span class="ident">SignedCommandPayloadBody</span>, <span class="ident">SignedCommandPayloadCommon</span>,
+<span class="kw">use </span><span class="kw">crate</span>::numbers::{AccountNonce, Amount, GlobalSlotNumber, TokenId};
+<span class="kw">use </span><span class="kw">crate</span>::user_commands::{
+    PaymentPayload, SignedCommandPayload, SignedCommandPayloadBody, SignedCommandPayloadCommon,
 };
 
-<span class="kw">use</span> <span class="ident"><span class="kw">super</span>::SignedCommandMemo</span>;
+<span class="kw">use </span><span class="kw">super</span>::SignedCommandMemo;
 
-<span class="doccomment">/// A builder for UserCommands to transfer funds</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">SignedTransferCommandBuilder</span> {
-    <span class="ident">to</span>: <span class="ident">CompressedPubKey</span>,
-    <span class="ident">from</span>: <span class="ident">CompressedPubKey</span>,
-    <span class="ident">amount</span>: <span class="ident">Amount</span>,
-    <span class="ident">transfer_token</span>: <span class="ident">TokenId</span>,
-    <span class="ident">fee_token</span>: <span class="ident">TokenId</span>,
-    <span class="ident">fee</span>: <span class="ident">Amount</span>,
-    <span class="ident">nonce</span>: <span class="ident">AccountNonce</span>,
-    <span class="ident">memo</span>: <span class="ident">SignedCommandMemo</span>,
-    <span class="ident">fee_payer_pk</span>: <span class="ident">CompressedPubKey</span>,
-    <span class="ident">valid_until</span>: <span class="ident">GlobalSlotNumber</span>,
+<span class="doccomment">/// A builder for UserCommands to transfer funds
+</span><span class="kw">pub struct </span>SignedTransferCommandBuilder {
+    to: CompressedPubKey,
+    from: CompressedPubKey,
+    amount: Amount,
+    transfer_token: TokenId,
+    fee_token: TokenId,
+    fee: Amount,
+    nonce: AccountNonce,
+    memo: SignedCommandMemo,
+    fee_payer_pk: CompressedPubKey,
+    valid_until: GlobalSlotNumber,
 }
 
-<span class="kw">impl</span> <span class="ident">SignedTransferCommandBuilder</span> {
-    <span class="doccomment">/// All required fields must be defined initially</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">Amount</span><span class="op">&gt;</span>, <span class="ident">TT</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">Amount</span><span class="op">&gt;</span>, <span class="ident">TTT</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">AccountNonce</span><span class="op">&gt;</span><span class="op">&gt;</span>(
-        <span class="ident">from</span>: <span class="ident">CompressedPubKey</span>,
-        <span class="ident">to</span>: <span class="ident">CompressedPubKey</span>,
-        <span class="ident">amount</span>: <span class="ident">T</span>,
-        <span class="ident">fee</span>: <span class="ident">TT</span>,
-        <span class="ident">nonce</span>: <span class="ident">TTT</span>,
-    ) -&gt; <span class="self">Self</span> {
-        <span class="self">Self</span> {
-            <span class="ident">to</span>,
-            <span class="ident">from</span>: <span class="ident">from</span>.<span class="ident">clone</span>(),
-            <span class="ident">amount</span>: <span class="ident">amount</span>.<span class="ident">into</span>(),
-            <span class="ident">transfer_token</span>: <span class="ident">TokenId</span>(<span class="number">1</span>),
-            <span class="ident">fee_token</span>: <span class="ident">TokenId</span>(<span class="number">1</span>),
-            <span class="ident">fee</span>: <span class="ident">fee</span>.<span class="ident">into</span>(),
-            <span class="ident">nonce</span>: <span class="ident">nonce</span>.<span class="ident">into</span>(),
-            <span class="ident">fee_payer_pk</span>: <span class="ident">from</span>,
-            <span class="ident">memo</span>: <span class="ident">SignedCommandMemo::default</span>(),
-            <span class="ident">valid_until</span>: <span class="ident">GlobalSlotNumber::MAX</span>,
+<span class="kw">impl </span>SignedTransferCommandBuilder {
+    <span class="doccomment">/// All required fields must be defined initially
+    </span><span class="kw">pub fn </span>new&lt;T: Into&lt;Amount&gt;, TT: Into&lt;Amount&gt;, TTT: Into&lt;AccountNonce&gt;&gt;(
+        from: CompressedPubKey,
+        to: CompressedPubKey,
+        amount: T,
+        fee: TT,
+        nonce: TTT,
+    ) -&gt; <span class="self">Self </span>{
+        <span class="self">Self </span>{
+            to,
+            from: from.clone(),
+            amount: amount.into(),
+            transfer_token: TokenId(<span class="number">1</span>),
+            fee_token: TokenId(<span class="number">1</span>),
+            fee: fee.into(),
+            nonce: nonce.into(),
+            fee_payer_pk: from,
+            memo: SignedCommandMemo::default(),
+            valid_until: GlobalSlotNumber::MAX,
         }
     }
 
-    <span class="doccomment">/// Set token to transfer</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">transfer_token</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">TokenId</span><span class="op">&gt;</span><span class="op">&gt;</span>(<span class="self">self</span>, <span class="ident">transfer_token</span>: <span class="ident">T</span>) -&gt; <span class="self">Self</span> {
-        <span class="self">Self</span> {
-            <span class="ident">transfer_token</span>: <span class="ident">transfer_token</span>.<span class="ident">into</span>(),
-            ..<span class="self">self</span>
-        }
+    <span class="doccomment">/// Set token to transfer
+    </span><span class="kw">pub fn </span>transfer_token&lt;T: Into&lt;TokenId&gt;&gt;(<span class="self">self</span>, transfer_token: T) -&gt; <span class="self">Self </span>{
+        <span class="self">Self </span>{
+            transfer_token: transfer_token.into(),
+            ..<span class="self">self
+        </span>}
     }
 
-    <span class="doccomment">/// Set the fee token to pay the block producer</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">fee_token</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">TokenId</span><span class="op">&gt;</span><span class="op">&gt;</span>(<span class="self">self</span>, <span class="ident">fee_token</span>: <span class="ident">T</span>) -&gt; <span class="self">Self</span> {
-        <span class="self">Self</span> {
-            <span class="ident">fee_token</span>: <span class="ident">fee_token</span>.<span class="ident">into</span>(),
-            ..<span class="self">self</span>
-        }
+    <span class="doccomment">/// Set the fee token to pay the block producer
+    </span><span class="kw">pub fn </span>fee_token&lt;T: Into&lt;TokenId&gt;&gt;(<span class="self">self</span>, fee_token: T) -&gt; <span class="self">Self </span>{
+        <span class="self">Self </span>{
+            fee_token: fee_token.into(),
+            ..<span class="self">self
+        </span>}
     }
 
-    <span class="doccomment">/// Set the fee payer to something other than the sender</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">fee_payer</span>(<span class="self">self</span>, <span class="ident">fee_payer_pk</span>: <span class="ident">CompressedPubKey</span>) -&gt; <span class="self">Self</span> {
-        <span class="self">Self</span> {
-            <span class="ident">fee_payer_pk</span>,
-            ..<span class="self">self</span>
-        }
+    <span class="doccomment">/// Set the fee payer to something other than the sender
+    </span><span class="kw">pub fn </span>fee_payer(<span class="self">self</span>, fee_payer_pk: CompressedPubKey) -&gt; <span class="self">Self </span>{
+        <span class="self">Self </span>{
+            fee_payer_pk,
+            ..<span class="self">self
+        </span>}
     }
 
-    <span class="doccomment">/// Set a non-empty memo for the command</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">memo</span>(<span class="self">self</span>, <span class="ident">memo</span>: <span class="ident">SignedCommandMemo</span>) -&gt; <span class="self">Self</span> {
-        <span class="self">Self</span> { <span class="ident">memo</span>, ..<span class="self">self</span> }
+    <span class="doccomment">/// Set a non-empty memo for the command
+    </span><span class="kw">pub fn </span>memo(<span class="self">self</span>, memo: SignedCommandMemo) -&gt; <span class="self">Self </span>{
+        <span class="self">Self </span>{ memo, ..<span class="self">self </span>}
     }
 
-    <span class="doccomment">/// Set the global slot which this command is valid until</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">valid_until</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">GlobalSlotNumber</span><span class="op">&gt;</span><span class="op">&gt;</span>(<span class="self">self</span>, <span class="ident">valid_until</span>: <span class="ident">T</span>) -&gt; <span class="self">Self</span> {
-        <span class="self">Self</span> {
-            <span class="ident">valid_until</span>: <span class="ident">valid_until</span>.<span class="ident">into</span>(),
-            ..<span class="self">self</span>
-        }
+    <span class="doccomment">/// Set the global slot which this command is valid until
+    </span><span class="kw">pub fn </span>valid_until&lt;T: Into&lt;GlobalSlotNumber&gt;&gt;(<span class="self">self</span>, valid_until: T) -&gt; <span class="self">Self </span>{
+        <span class="self">Self </span>{
+            valid_until: valid_until.into(),
+            ..<span class="self">self
+        </span>}
     }
 
-    <span class="doccomment">/// Sign the transaction and produce a UserCommand with the signature fields filled</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">build</span>(<span class="self">self</span>) -&gt; <span class="ident">SignedCommandPayload</span> {
-        <span class="ident">SignedCommandPayload</span> {
-            <span class="ident">common</span>: <span class="ident">SignedCommandPayloadCommon</span> {
-                <span class="ident">fee</span>: <span class="self">self</span>.<span class="ident">fee</span>,
-                <span class="ident">fee_token</span>: <span class="self">self</span>.<span class="ident">fee_token</span>,
-                <span class="ident">memo</span>: <span class="self">self</span>.<span class="ident">memo</span>,
-                <span class="ident">fee_payer_pk</span>: <span class="self">self</span>.<span class="ident">fee_payer_pk</span>,
-                <span class="ident">nonce</span>: <span class="self">self</span>.<span class="ident">nonce</span>,
-                <span class="ident">valid_until</span>: <span class="self">self</span>.<span class="ident">valid_until</span>,
+    <span class="doccomment">/// Sign the transaction and produce a UserCommand with the signature fields filled
+    </span><span class="kw">pub fn </span>build(<span class="self">self</span>) -&gt; SignedCommandPayload {
+        SignedCommandPayload {
+            common: SignedCommandPayloadCommon {
+                fee: <span class="self">self</span>.fee,
+                fee_token: <span class="self">self</span>.fee_token,
+                memo: <span class="self">self</span>.memo,
+                fee_payer_pk: <span class="self">self</span>.fee_payer_pk,
+                nonce: <span class="self">self</span>.nonce,
+                valid_until: <span class="self">self</span>.valid_until,
             },
-            <span class="ident">body</span>: <span class="ident">SignedCommandPayloadBody::PaymentPayload</span>(<span class="ident">PaymentPayload</span> {
-                <span class="ident">amount</span>: <span class="self">self</span>.<span class="ident">amount</span>,
-                <span class="ident">receiver_pk</span>: <span class="self">self</span>.<span class="ident">to</span>,
-                <span class="ident">source_pk</span>: <span class="self">self</span>.<span class="ident">from</span>,
-                <span class="ident">token_id</span>: <span class="self">self</span>.<span class="ident">transfer_token</span>,
+            body: SignedCommandPayloadBody::PaymentPayload(PaymentPayload {
+                amount: <span class="self">self</span>.amount,
+                receiver_pk: <span class="self">self</span>.to,
+                source_pk: <span class="self">self</span>.from,
+                token_id: <span class="self">self</span>.transfer_token,
             }),
         }
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../../" data-current-crate="mina_rs_base" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (fe3342816 2022-08-01)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../../" data-current-crate="mina_rs_base" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (40336865f 2022-08-15)" ></div></body></html>

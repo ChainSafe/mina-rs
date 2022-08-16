@@ -59,66 +59,66 @@
 <span id="59">59</span>
 <span id="60">60</span>
 <span id="61">61</span>
-</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems</span>
-<span class="comment">// SPDX-License-Identifier: Apache-2.0</span>
+</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems
+// SPDX-License-Identifier: Apache-2.0
 
-<span class="doccomment">//! types and functions related to Mina verificiation keys</span>
+</span><span class="doccomment">//! types and functions related to Mina verificiation keys
 
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::protocol_state_proof::field_and_curve_elements::FiniteECPoint</span>;
+</span><span class="kw">use </span><span class="kw">crate</span>::protocol_state_proof::field_and_curve_elements::FiniteECPoint;
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Default</span>, <span class="ident">Debug</span>, <span class="ident">PartialEq</span>)]</span>
-<span class="doccomment">/// Public data required to verify a Mina snark</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">VerificationKey</span> {
-    <span class="ident">commitments</span>: <span class="ident">VerificationKeyEvals</span>,
-    <span class="ident">step_domains</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Domains</span><span class="op">&gt;</span>,
-    <span class="doccomment">/// Associated data</span>
-    <span class="kw">pub</span> <span class="ident">data</span>: <span class="ident">Data</span>,
+<span class="attribute">#[derive(Clone, Default, Debug, Eq, PartialEq)]</span>
+<span class="doccomment">/// Public data required to verify a Mina snark
+</span><span class="kw">pub struct </span>VerificationKey {
+    commitments: VerificationKeyEvals,
+    step_domains: Vec&lt;Domains&gt;,
+    <span class="doccomment">/// Associated data
+    </span><span class="kw">pub </span>data: Data,
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Default</span>, <span class="ident">Debug</span>, <span class="ident">PartialEq</span>)]</span>
-<span class="kw">struct</span> <span class="ident">Domains</span> {
-    <span class="ident">h</span>: <span class="ident">Domain</span>,
-    <span class="ident">x</span>: <span class="ident">Domain</span>,
+<span class="attribute">#[derive(Clone, Default, Debug, Eq, PartialEq)]</span>
+<span class="kw">struct </span>Domains {
+    h: Domain,
+    x: Domain,
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">PartialEq</span>)]</span>
-<span class="kw">enum</span> <span class="ident">Domain</span> {
-    <span class="ident">Pow2RootsOfUnity</span>(<span class="ident">usize</span>),
+<span class="attribute">#[derive(Clone, Debug, Eq, PartialEq)]</span>
+<span class="kw">enum </span>Domain {
+    Pow2RootsOfUnity(usize),
 }
 
-<span class="kw">impl</span> <span class="ident">Default</span> <span class="kw">for</span> <span class="ident">Domain</span> {
-    <span class="kw">fn</span> <span class="ident">default</span>() -&gt; <span class="self">Self</span> {
-        <span class="ident"><span class="self">Self</span>::Pow2RootsOfUnity</span>(<span class="number">0</span>)
+<span class="kw">impl </span>Default <span class="kw">for </span>Domain {
+    <span class="kw">fn </span>default() -&gt; <span class="self">Self </span>{
+        <span class="self">Self</span>::Pow2RootsOfUnity(<span class="number">0</span>)
     }
 }
 
-<span class="doccomment">/// Data associated with a verification key</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Default</span>, <span class="ident">Debug</span>, <span class="ident">PartialEq</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Data</span> {
-    <span class="doccomment">/// Number of constaints</span>
-    <span class="kw">pub</span> <span class="ident">constraints</span>: <span class="ident">usize</span>,
+<span class="doccomment">/// Data associated with a verification key
+</span><span class="attribute">#[derive(Clone, Default, Debug, Eq, PartialEq)]</span>
+<span class="kw">pub struct </span>Data {
+    <span class="doccomment">/// Number of constaints
+    </span><span class="kw">pub </span>constraints: usize,
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Default</span>, <span class="ident">Debug</span>, <span class="ident">PartialEq</span>)]</span>
-<span class="kw">struct</span> <span class="ident">VerificationKeyEvals</span> {
-    <span class="ident">sigma_comm_0</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">FiniteECPoint</span><span class="op">&gt;</span>,
-    <span class="ident">sigma_comm_1</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">FiniteECPoint</span><span class="op">&gt;</span>,
-    <span class="ident">sigma_comm_2</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">FiniteECPoint</span><span class="op">&gt;</span>,
-    <span class="ident">ql_comm</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">FiniteECPoint</span><span class="op">&gt;</span>,
-    <span class="ident">qr_comm</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">FiniteECPoint</span><span class="op">&gt;</span>,
-    <span class="ident">qo_comm</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">FiniteECPoint</span><span class="op">&gt;</span>,
-    <span class="ident">qm_comm</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">FiniteECPoint</span><span class="op">&gt;</span>,
-    <span class="ident">qc_comm</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">FiniteECPoint</span><span class="op">&gt;</span>,
-    <span class="ident">rcm_comm_0</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">FiniteECPoint</span><span class="op">&gt;</span>,
-    <span class="ident">rcm_comm_1</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">FiniteECPoint</span><span class="op">&gt;</span>,
-    <span class="ident">rcm_comm_2</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">FiniteECPoint</span><span class="op">&gt;</span>,
-    <span class="ident">psm_comm</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">FiniteECPoint</span><span class="op">&gt;</span>,
-    <span class="ident">add_comm</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">FiniteECPoint</span><span class="op">&gt;</span>,
-    <span class="ident">mul1_comm</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">FiniteECPoint</span><span class="op">&gt;</span>,
-    <span class="ident">mul2_comm</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">FiniteECPoint</span><span class="op">&gt;</span>,
-    <span class="ident">emul1_comm</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">FiniteECPoint</span><span class="op">&gt;</span>,
-    <span class="ident">emul2_comm</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">FiniteECPoint</span><span class="op">&gt;</span>,
-    <span class="ident">emul3_comm</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">FiniteECPoint</span><span class="op">&gt;</span>,
+<span class="attribute">#[derive(Clone, Default, Debug, Eq, PartialEq)]</span>
+<span class="kw">struct </span>VerificationKeyEvals {
+    sigma_comm_0: Vec&lt;FiniteECPoint&gt;,
+    sigma_comm_1: Vec&lt;FiniteECPoint&gt;,
+    sigma_comm_2: Vec&lt;FiniteECPoint&gt;,
+    ql_comm: Vec&lt;FiniteECPoint&gt;,
+    qr_comm: Vec&lt;FiniteECPoint&gt;,
+    qo_comm: Vec&lt;FiniteECPoint&gt;,
+    qm_comm: Vec&lt;FiniteECPoint&gt;,
+    qc_comm: Vec&lt;FiniteECPoint&gt;,
+    rcm_comm_0: Vec&lt;FiniteECPoint&gt;,
+    rcm_comm_1: Vec&lt;FiniteECPoint&gt;,
+    rcm_comm_2: Vec&lt;FiniteECPoint&gt;,
+    psm_comm: Vec&lt;FiniteECPoint&gt;,
+    add_comm: Vec&lt;FiniteECPoint&gt;,
+    mul1_comm: Vec&lt;FiniteECPoint&gt;,
+    mul2_comm: Vec&lt;FiniteECPoint&gt;,
+    emul1_comm: Vec&lt;FiniteECPoint&gt;,
+    emul2_comm: Vec&lt;FiniteECPoint&gt;,
+    emul3_comm: Vec&lt;FiniteECPoint&gt;,
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_rs_base" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (fe3342816 2022-08-01)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_rs_base" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (40336865f 2022-08-15)" ></div></body></html>

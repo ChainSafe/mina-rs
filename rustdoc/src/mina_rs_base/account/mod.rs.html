@@ -154,161 +154,161 @@
 <span id="154">154</span>
 <span id="155">155</span>
 <span id="156">156</span>
-</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems</span>
-<span class="comment">// SPDX-License-Identifier: Apache-2.0</span>
+</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems
+// SPDX-License-Identifier: Apache-2.0
 
-<span class="doccomment">//! Module contains the Account data type</span>
-<span class="doccomment">//! and associated types</span>
+</span><span class="doccomment">//! Module contains the Account data type
+//! and associated types
 
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">permissions</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">timing</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">token_permissions</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">token_symbol</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">zkapp</span>;
+</span><span class="kw">pub mod </span>permissions;
+<span class="kw">pub mod </span>timing;
+<span class="kw">pub mod </span>token_permissions;
+<span class="kw">pub mod </span>token_symbol;
+<span class="kw">pub mod </span>zkapp;
 
-<span class="kw">use</span> <span class="kw">crate</span>::{<span class="ident">types</span>::<span class="kw-2">*</span>, <span class="kw-2">*</span>};
+<span class="kw">use crate</span>::{types::<span class="kw-2">*</span>, <span class="kw-2">*</span>};
 
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="self">self</span>::zkapp</span>::{<span class="ident">ZkAppOptionHashableWrapper</span>, <span class="ident">ZkAppUriOptionHashableWrapper</span>};
-<span class="kw">use</span> <span class="ident">mina_serialization_types_macros::AutoFrom</span>;
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">permissions</span>::{<span class="ident">AuthRequired</span>, <span class="ident">Permissions</span>, <span class="ident">PermissionsLegacy</span>};
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">timing::Timing</span>;
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">token_permissions::TokenPermissions</span>;
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">token_symbol::TokenSymbol</span>;
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">zkapp</span>::{<span class="ident">ZkApp</span>, <span class="ident">ZkAppUri</span>};
+<span class="kw">pub use </span><span class="self">self</span>::zkapp::{ZkAppOptionHashableWrapper, ZkAppUriOptionHashableWrapper};
+<span class="kw">use </span>mina_serialization_types_macros::AutoFrom;
+<span class="kw">pub use </span>permissions::{AuthRequired, Permissions, PermissionsLegacy};
+<span class="kw">pub use </span>timing::Timing;
+<span class="kw">pub use </span>token_permissions::TokenPermissions;
+<span class="kw">pub use </span>token_symbol::TokenSymbol;
+<span class="kw">pub use </span>zkapp::{ZkApp, ZkAppUri};
 
-<span class="kw">use</span> <span class="ident">mina_crypto::hash</span>::{<span class="ident">ChainHash</span>, <span class="ident">StateHash</span>};
-<span class="kw">use</span> <span class="ident">mina_hasher::ROInput</span>;
-<span class="kw">use</span> <span class="ident">mina_serialization_types::account</span>::<span class="kw-2">*</span>;
-<span class="kw">use</span> <span class="ident">proof_systems::mina_signer::CompressedPubKey</span>;
+<span class="kw">use </span>mina_crypto::hash::{ChainHash, StateHash};
+<span class="kw">use </span>mina_hasher::ROInput;
+<span class="kw">use </span>mina_serialization_types::account::<span class="kw-2">*</span>;
+<span class="kw">use </span>proof_systems::mina_signer::CompressedPubKey;
 
-<span class="doccomment">/// An account identified by its public key and token ID. Multiple accounts may</span>
-<span class="doccomment">/// where the same public key if multiple tokens exist</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// Accounts can also be Snapps in which case snapp data is required and proofs must</span>
-<span class="doccomment">/// be provided to perform certain actions</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">AutoFrom</span>)]</span>
-<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">mina_serialization_types::account::Account</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">AccountLegacy</span> {
-    <span class="doccomment">/// Account public key</span>
-    <span class="kw">pub</span> <span class="ident">public_key</span>: <span class="ident">CompressedPubKey</span>,
-    <span class="doccomment">/// Account token ID</span>
-    <span class="kw">pub</span> <span class="ident">token_id</span>: <span class="ident">TokenId</span>,
-    <span class="doccomment">/// Permission associated with the given token</span>
-    <span class="kw">pub</span> <span class="ident">token_permissions</span>: <span class="ident">TokenPermissions</span>,
-    <span class="doccomment">/// Balance of token held by account</span>
-    <span class="kw">pub</span> <span class="ident">balance</span>: <span class="ident">Amount</span>,
-    <span class="doccomment">/// Nonce (incremented with each tx to prevent replay)</span>
-    <span class="kw">pub</span> <span class="ident">nonce</span>: <span class="ident">AccountNonce</span>,
-    <span class="doccomment">/// ?</span>
-    <span class="kw">pub</span> <span class="ident">receipt_chain_hash</span>: <span class="ident">ChainHash</span>,
-    <span class="doccomment">/// Delegate for staking purposes</span>
-    <span class="kw">pub</span> <span class="ident">delegate</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">CompressedPubKey</span><span class="op">&gt;</span>,
-    <span class="doccomment">/// The state hash this account is voting for</span>
-    <span class="kw">pub</span> <span class="ident">voting_for</span>: <span class="ident">StateHash</span>,
-    <span class="doccomment">/// Any timing limitations places on this accounts balance</span>
-    <span class="doccomment">/// Used for vesting</span>
-    <span class="kw">pub</span> <span class="ident">timing</span>: <span class="ident">Timing</span>,
-    <span class="doccomment">/// Level of permission required to do different account actions</span>
-    <span class="kw">pub</span> <span class="ident">permissions</span>: <span class="ident">PermissionsLegacy</span>,
-    <span class="doccomment">/// TODO: This should contain a Snapp account data once we have something to test against</span>
-    <span class="kw">pub</span> <span class="ident">snapp</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span>()<span class="op">&gt;</span>,
+<span class="doccomment">/// An account identified by its public key and token ID. Multiple accounts may
+/// where the same public key if multiple tokens exist
+///
+/// Accounts can also be Snapps in which case snapp data is required and proofs must
+/// be provided to perform certain actions
+</span><span class="attribute">#[derive(Clone, Debug, AutoFrom)]</span>
+<span class="attribute">#[auto_from(mina_serialization_types::account::Account)]</span>
+<span class="kw">pub struct </span>AccountLegacy {
+    <span class="doccomment">/// Account public key
+    </span><span class="kw">pub </span>public_key: CompressedPubKey,
+    <span class="doccomment">/// Account token ID
+    </span><span class="kw">pub </span>token_id: TokenId,
+    <span class="doccomment">/// Permission associated with the given token
+    </span><span class="kw">pub </span>token_permissions: TokenPermissions,
+    <span class="doccomment">/// Balance of token held by account
+    </span><span class="kw">pub </span>balance: Amount,
+    <span class="doccomment">/// Nonce (incremented with each tx to prevent replay)
+    </span><span class="kw">pub </span>nonce: AccountNonce,
+    <span class="doccomment">/// ?
+    </span><span class="kw">pub </span>receipt_chain_hash: ChainHash,
+    <span class="doccomment">/// Delegate for staking purposes
+    </span><span class="kw">pub </span>delegate: <span class="prelude-ty">Option</span>&lt;CompressedPubKey&gt;,
+    <span class="doccomment">/// The state hash this account is voting for
+    </span><span class="kw">pub </span>voting_for: StateHash,
+    <span class="doccomment">/// Any timing limitations places on this accounts balance
+    /// Used for vesting
+    </span><span class="kw">pub </span>timing: Timing,
+    <span class="doccomment">/// Level of permission required to do different account actions
+    </span><span class="kw">pub </span>permissions: PermissionsLegacy,
+    <span class="doccomment">/// TODO: This should contain a Snapp account data once we have something to test against
+    </span><span class="kw">pub </span>snapp: <span class="prelude-ty">Option</span>&lt;()&gt;,
 }
 
-<span class="kw">impl</span> <span class="ident">BinProtSerializationType</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">AccountLegacy</span> {
-    <span class="kw">type</span> <span class="ident">T</span> <span class="op">=</span> <span class="ident">AccountV1</span>;
+<span class="kw">impl </span>BinProtSerializationType&lt;<span class="lifetime">&#39;_</span>&gt; <span class="kw">for </span>AccountLegacy {
+    <span class="kw">type </span>T = AccountV1;
 }
 
-<span class="kw">impl</span> <span class="ident">mina_hasher::Hashable</span> <span class="kw">for</span> <span class="ident">AccountLegacy</span> {
-    <span class="kw">type</span> <span class="ident">D</span> <span class="op">=</span> ();
+<span class="kw">impl </span>mina_hasher::Hashable <span class="kw">for </span>AccountLegacy {
+    <span class="kw">type </span>D = ();
 
-    <span class="comment">// Uncomment these fields once they have implemented Hashable trait</span>
-    <span class="comment">// and add unit tests when it&#39;s complete</span>
-    <span class="kw">fn</span> <span class="ident">to_roinput</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">ROInput</span> {
-        <span class="ident">ROInput::new</span>()
-            <span class="comment">// .append_hashable(self.public_key)</span>
-            .<span class="ident">append_hashable</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">token_id</span>)
-            <span class="comment">// .append_hashable(self.token_permissions)</span>
-            .<span class="ident">append_hashable</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">balance</span>)
-        <span class="comment">// .append_hashable(self.nonce)</span>
-        <span class="comment">// .append_hashable(self.receipt_chain_hash)</span>
-        <span class="comment">// .append_hashable(self.delegate)</span>
-        <span class="comment">// .append_hashable(self.voting_for)</span>
-        <span class="comment">// .append_hashable(self.timing)</span>
-        <span class="comment">// .append_hashable(self.permissions)</span>
-        <span class="comment">// .append_hashable(self.snapp)</span>
-    }
+    <span class="comment">// Uncomment these fields once they have implemented Hashable trait
+    // and add unit tests when it&#39;s complete
+    </span><span class="kw">fn </span>to_roinput(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; ROInput {
+        ROInput::new()
+            <span class="comment">// .append_hashable(self.public_key)
+            </span>.append_hashable(<span class="kw-2">&amp;</span><span class="self">self</span>.token_id)
+            <span class="comment">// .append_hashable(self.token_permissions)
+            </span>.append_hashable(<span class="kw-2">&amp;</span><span class="self">self</span>.balance)
+        <span class="comment">// .append_hashable(self.nonce)
+        // .append_hashable(self.receipt_chain_hash)
+        // .append_hashable(self.delegate)
+        // .append_hashable(self.voting_for)
+        // .append_hashable(self.timing)
+        // .append_hashable(self.permissions)
+        // .append_hashable(self.snapp)
+    </span>}
 
-    <span class="kw">fn</span> <span class="ident">domain_string</span>(<span class="kw">_</span>: <span class="ident"><span class="self">Self</span>::D</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> {
-        <span class="prelude-val">Some</span>(<span class="string">&quot;CodaAccount&quot;</span>.<span class="ident">into</span>())
-    }
-}
-
-<span class="doccomment">/// TODO</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">AutoFrom</span>)]</span>
-<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">mina_serialization_types::account::AccountV0</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Account</span> {
-    <span class="doccomment">/// Account public key</span>
-    <span class="kw">pub</span> <span class="ident">public_key</span>: <span class="ident">CompressedPubKey</span>,
-    <span class="doccomment">/// Account token ID</span>
-    <span class="kw">pub</span> <span class="ident">token_id</span>: <span class="ident">TokenId</span>,
-    <span class="doccomment">/// Balance of token held by account</span>
-    <span class="kw">pub</span> <span class="ident">balance</span>: <span class="ident">Amount</span>,
-    <span class="doccomment">/// Permission associated with the given token</span>
-    <span class="kw">pub</span> <span class="ident">token_permissions</span>: <span class="ident">TokenPermissions</span>,
-    <span class="doccomment">/// Token Symbol</span>
-    <span class="kw">pub</span> <span class="ident">token_symbol</span>: <span class="ident">TokenSymbol</span>,
-    <span class="doccomment">/// Nonce (incremented with each tx to prevent replay)</span>
-    <span class="kw">pub</span> <span class="ident">nonce</span>: <span class="ident">AccountNonce</span>,
-    <span class="doccomment">/// ?</span>
-    <span class="kw">pub</span> <span class="ident">receipt_chain_hash</span>: <span class="ident">ChainHash</span>,
-    <span class="doccomment">/// Delegate for staking purposes</span>
-    <span class="kw">pub</span> <span class="ident">delegate</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">CompressedPubKey</span><span class="op">&gt;</span>,
-    <span class="doccomment">/// The state hash this account is voting for</span>
-    <span class="kw">pub</span> <span class="ident">voting_for</span>: <span class="ident">StateHash</span>,
-    <span class="doccomment">/// Any timing limitations places on this accounts balance</span>
-    <span class="doccomment">/// Used for vesting</span>
-    <span class="kw">pub</span> <span class="ident">timing</span>: <span class="ident">Timing</span>,
-    <span class="doccomment">/// Level of permission required to do different account actions</span>
-    <span class="kw">pub</span> <span class="ident">permissions</span>: <span class="ident">Permissions</span>,
-    <span class="doccomment">/// TODO: This should contain a Snapp account data once we have something to test against</span>
-    <span class="kw">pub</span> <span class="ident">zkapp</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">ZkApp</span><span class="op">&gt;</span>,
-    <span class="doccomment">/// TODO: This should contain a Snapp account data once we have something to test against</span>
-    <span class="kw">pub</span> <span class="ident">zkapp_uri</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">ZkAppUri</span><span class="op">&gt;</span>,
-}
-
-<span class="kw">impl</span> <span class="ident">mina_hasher::Hashable</span> <span class="kw">for</span> <span class="ident">Account</span> {
-    <span class="kw">type</span> <span class="ident">D</span> <span class="op">=</span> ();
-
-    <span class="kw">fn</span> <span class="ident">to_roinput</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">ROInput</span> {
-        <span class="self">self</span>.<span class="ident">roinput</span>()
-    }
-
-    <span class="kw">fn</span> <span class="ident">domain_string</span>(<span class="kw">_</span>: <span class="ident"><span class="self">Self</span>::D</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> {
-        <span class="prelude-val">Some</span>(<span class="string">&quot;CodaAccount&quot;</span>.<span class="ident">into</span>())
+    <span class="kw">fn </span>domain_string(<span class="kw">_</span>: <span class="self">Self</span>::D) -&gt; <span class="prelude-ty">Option</span>&lt;String&gt; {
+        <span class="prelude-val">Some</span>(<span class="string">&quot;CodaAccount&quot;</span>.into())
     }
 }
 
-<span class="kw">impl</span> <span class="ident">ToChunkedROInput</span> <span class="kw">for</span> <span class="ident">Account</span> {
-    <span class="kw">fn</span> <span class="ident">to_chunked_roinput</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">ChunkedROInput</span> {
-        <span class="ident">ChunkedROInput::new</span>()
-            .<span class="ident">append_chunked</span>(<span class="kw-2">&amp;</span><span class="ident">ZkAppUriOptionHashableWrapper</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">zkapp_uri</span>))
-            .<span class="ident">append_chunked</span>(<span class="kw-2">&amp;</span><span class="ident">ZkAppOptionHashableWrapper</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">zkapp</span>))
-            .<span class="ident">append_chunked</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">permissions</span>)
-            .<span class="ident">append_chunked</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">timing</span>)
-            .<span class="ident">append_chunked</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">voting_for</span>)
-            .<span class="ident">append_chunked</span>(<span class="kw-2">&amp;</span><span class="ident">CompressedPubKeyOptionHashableWrapper</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">delegate</span>))
-            .<span class="ident">append_chunked</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">receipt_chain_hash</span>)
-            .<span class="ident">append_chunked</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">nonce</span>)
-            .<span class="ident">append_chunked</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">balance</span>)
-            .<span class="ident">append_chunked</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">token_symbol</span>)
-            .<span class="ident">append_chunked</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">token_permissions</span>)
-            .<span class="ident">append_chunked</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">token_id</span>)
-            .<span class="ident">append_chunked</span>(<span class="kw-2">&amp;</span><span class="ident">CompressedPubKeyHashableWrapper</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">public_key</span>))
+<span class="doccomment">/// TODO
+</span><span class="attribute">#[derive(Clone, Debug, AutoFrom)]</span>
+<span class="attribute">#[auto_from(mina_serialization_types::account::AccountV0)]</span>
+<span class="kw">pub struct </span>Account {
+    <span class="doccomment">/// Account public key
+    </span><span class="kw">pub </span>public_key: CompressedPubKey,
+    <span class="doccomment">/// Account token ID
+    </span><span class="kw">pub </span>token_id: TokenId,
+    <span class="doccomment">/// Balance of token held by account
+    </span><span class="kw">pub </span>balance: Amount,
+    <span class="doccomment">/// Permission associated with the given token
+    </span><span class="kw">pub </span>token_permissions: TokenPermissions,
+    <span class="doccomment">/// Token Symbol
+    </span><span class="kw">pub </span>token_symbol: TokenSymbol,
+    <span class="doccomment">/// Nonce (incremented with each tx to prevent replay)
+    </span><span class="kw">pub </span>nonce: AccountNonce,
+    <span class="doccomment">/// ?
+    </span><span class="kw">pub </span>receipt_chain_hash: ChainHash,
+    <span class="doccomment">/// Delegate for staking purposes
+    </span><span class="kw">pub </span>delegate: <span class="prelude-ty">Option</span>&lt;CompressedPubKey&gt;,
+    <span class="doccomment">/// The state hash this account is voting for
+    </span><span class="kw">pub </span>voting_for: StateHash,
+    <span class="doccomment">/// Any timing limitations places on this accounts balance
+    /// Used for vesting
+    </span><span class="kw">pub </span>timing: Timing,
+    <span class="doccomment">/// Level of permission required to do different account actions
+    </span><span class="kw">pub </span>permissions: Permissions,
+    <span class="doccomment">/// TODO: This should contain a Snapp account data once we have something to test against
+    </span><span class="kw">pub </span>zkapp: <span class="prelude-ty">Option</span>&lt;ZkApp&gt;,
+    <span class="doccomment">/// TODO: This should contain a Snapp account data once we have something to test against
+    </span><span class="kw">pub </span>zkapp_uri: <span class="prelude-ty">Option</span>&lt;ZkAppUri&gt;,
+}
+
+<span class="kw">impl </span>mina_hasher::Hashable <span class="kw">for </span>Account {
+    <span class="kw">type </span>D = ();
+
+    <span class="kw">fn </span>to_roinput(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; ROInput {
+        <span class="self">self</span>.roinput()
+    }
+
+    <span class="kw">fn </span>domain_string(<span class="kw">_</span>: <span class="self">Self</span>::D) -&gt; <span class="prelude-ty">Option</span>&lt;String&gt; {
+        <span class="prelude-val">Some</span>(<span class="string">&quot;CodaAccount&quot;</span>.into())
     }
 }
 
-<span class="kw">impl</span> <span class="ident">BinProtSerializationType</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Account</span> {
-    <span class="kw">type</span> <span class="ident">T</span> <span class="op">=</span> <span class="ident">AccountV0</span>;
+<span class="kw">impl </span>ToChunkedROInput <span class="kw">for </span>Account {
+    <span class="kw">fn </span>to_chunked_roinput(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; ChunkedROInput {
+        ChunkedROInput::new()
+            .append_chunked(<span class="kw-2">&amp;</span>ZkAppUriOptionHashableWrapper(<span class="kw-2">&amp;</span><span class="self">self</span>.zkapp_uri))
+            .append_chunked(<span class="kw-2">&amp;</span>ZkAppOptionHashableWrapper(<span class="kw-2">&amp;</span><span class="self">self</span>.zkapp))
+            .append_chunked(<span class="kw-2">&amp;</span><span class="self">self</span>.permissions)
+            .append_chunked(<span class="kw-2">&amp;</span><span class="self">self</span>.timing)
+            .append_chunked(<span class="kw-2">&amp;</span><span class="self">self</span>.voting_for)
+            .append_chunked(<span class="kw-2">&amp;</span>CompressedPubKeyOptionHashableWrapper(<span class="kw-2">&amp;</span><span class="self">self</span>.delegate))
+            .append_chunked(<span class="kw-2">&amp;</span><span class="self">self</span>.receipt_chain_hash)
+            .append_chunked(<span class="kw-2">&amp;</span><span class="self">self</span>.nonce)
+            .append_chunked(<span class="kw-2">&amp;</span><span class="self">self</span>.balance)
+            .append_chunked(<span class="kw-2">&amp;</span><span class="self">self</span>.token_symbol)
+            .append_chunked(<span class="kw-2">&amp;</span><span class="self">self</span>.token_permissions)
+            .append_chunked(<span class="kw-2">&amp;</span><span class="self">self</span>.token_id)
+            .append_chunked(<span class="kw-2">&amp;</span>CompressedPubKeyHashableWrapper(<span class="kw-2">&amp;</span><span class="self">self</span>.public_key))
+    }
+}
+
+<span class="kw">impl </span>BinProtSerializationType&lt;<span class="lifetime">&#39;_</span>&gt; <span class="kw">for </span>Account {
+    <span class="kw">type </span>T = AccountV0;
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="mina_rs_base" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (fe3342816 2022-08-01)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="mina_rs_base" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (40336865f 2022-08-15)" ></div></body></html>

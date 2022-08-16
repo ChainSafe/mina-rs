@@ -14,21 +14,21 @@
 <span id="14">14</span>
 <span id="15">15</span>
 <span id="16">16</span>
-</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems</span>
-<span class="comment">// SPDX-License-Identifier: Apache-2.0</span>
+</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems
+// SPDX-License-Identifier: Apache-2.0
 
-<span class="doccomment">//! This module defines functions that generate domain prefix from merkle tree node height</span>
+</span><span class="doccomment">//! This module defines functions that generate domain prefix from merkle tree node height
 
-<span class="doccomment">/// Builds a hash prefix for a node at the given height in a Merkle tree (leaf nodes not counted, or counted as -1).</span>
-<span class="doccomment">/// Note that this prefix does not have mina specific paddings.</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">make_prefix_merkle_tree</span>(<span class="ident">height</span>: <span class="ident">u32</span>) -&gt; <span class="ident">String</span> {
-    <span class="macro">format!</span>(<span class="string">&quot;CodaMklTree{:03}&quot;</span>, <span class="ident">height</span>)
+/// Builds a hash prefix for a node at the given height in a Merkle tree (leaf nodes not counted, or counted as -1).
+/// Note that this prefix does not have mina specific paddings.
+</span><span class="kw">pub fn </span>make_prefix_merkle_tree(height: u32) -&gt; String {
+    <span class="macro">format!</span>(<span class="string">&quot;CodaMklTree{:03}&quot;</span>, height)
 }
 
-<span class="doccomment">/// Builds a hash prefix for a node at the given height in a coinbase Merkle tree (leaf nodes not counted, or counted as -1).</span>
-<span class="doccomment">/// Note that this prefix does not have mina specific paddings.</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">make_prefix_coinbase_merkle_tree</span>(<span class="ident">height</span>: <span class="ident">u32</span>) -&gt; <span class="ident">String</span> {
-    <span class="macro">format!</span>(<span class="string">&quot;CodaCbMklTree{:03}&quot;</span>, <span class="ident">height</span>)
+<span class="doccomment">/// Builds a hash prefix for a node at the given height in a coinbase Merkle tree (leaf nodes not counted, or counted as -1).
+/// Note that this prefix does not have mina specific paddings.
+</span><span class="kw">pub fn </span>make_prefix_coinbase_merkle_tree(height: u32) -&gt; String {
+    <span class="macro">format!</span>(<span class="string">&quot;CodaCbMklTree{:03}&quot;</span>, height)
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_merkle" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (fe3342816 2022-08-01)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_merkle" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (40336865f 2022-08-15)" ></div></body></html>

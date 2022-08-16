@@ -258,265 +258,265 @@
 <span id="258">258</span>
 <span id="259">259</span>
 <span id="260">260</span>
-</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems</span>
-<span class="comment">// SPDX-License-Identifier: Apache-2.0</span>
+</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems
+// SPDX-License-Identifier: Apache-2.0
 
-<span class="doccomment">//! Defines a BinProt layout</span>
-<span class="doccomment">//! A layout is a data structure that defines a BinProt type.</span>
-<span class="doccomment">//! This is essentially moving the type information from compile time to runtime.</span>
+</span><span class="doccomment">//! Defines a BinProt layout
+//! A layout is a data structure that defines a BinProt type.
+//! This is essentially moving the type information from compile time to runtime.
 
-<span class="kw">use</span> <span class="ident">core::convert::TryFrom</span>;
+</span><span class="kw">use </span>core::convert::TryFrom;
 
-<span class="kw">use</span> <span class="ident">serde</span>::{<span class="ident">Deserialize</span>, <span class="ident">Serialize</span>};
-<span class="kw">use</span> <span class="ident">serde_json::from_value</span>;
+<span class="kw">use </span>serde::{Deserialize, Serialize};
+<span class="kw">use </span>serde_json::from_value;
 
-<span class="kw">mod</span> <span class="ident">list_tagged_enum</span>;
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">mod</span> <span class="ident">traverse</span>;
+<span class="kw">mod </span>list_tagged_enum;
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">mod </span>traverse;
 
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">use</span> <span class="ident">traverse::BinProtRuleIterator</span>;
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">use </span>traverse::BinProtRuleIterator;
 
-<span class="kw">use</span> <span class="ident">list_tagged_enum::ListTaggedEnum</span>;
+<span class="kw">use </span>list_tagged_enum::ListTaggedEnum;
 
-<span class="doccomment">/// The main top level type for a layout file.</span>
-<span class="doccomment">/// Parse into this from json</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">Debug</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Layout</span> {
-    <span class="ident">layout_loc</span>: <span class="ident">String</span>,
-    <span class="ident">version_opt</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">i32</span><span class="op">&gt;</span>,
-    <span class="ident">type_decl</span>: <span class="ident">String</span>,
-    <span class="ident">bin_io_derived</span>: <span class="ident">bool</span>,
-    <span class="doccomment">/// Rule defining this layout</span>
-    <span class="kw">pub</span> <span class="ident">bin_prot_rule</span>: <span class="ident">BinProtRule</span>,
+<span class="doccomment">/// The main top level type for a layout file.
+/// Parse into this from json
+</span><span class="attribute">#[derive(Serialize, Deserialize, Debug)]</span>
+<span class="kw">pub struct </span>Layout {
+    layout_loc: String,
+    version_opt: <span class="prelude-ty">Option</span>&lt;i32&gt;,
+    type_decl: String,
+    bin_io_derived: bool,
+    <span class="doccomment">/// Rule defining this layout
+    </span><span class="kw">pub </span>bin_prot_rule: BinProtRule,
 }
 
-<span class="doccomment">/// Recursively defined BinProtRule is how the type tree is constructed</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">Debug</span>)]</span>
-<span class="attribute">#[<span class="ident">serde</span>(<span class="ident">try_from</span> <span class="op">=</span> <span class="string">&quot;ListTaggedEnum&quot;</span>)]</span>
-<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">BinProtRule</span> {
-    <span class="doccomment">/// Variable length natural Integer</span>
-    <span class="ident">Nat0</span>,
-    <span class="doccomment">/// Unit type</span>
-    <span class="ident">Unit</span>,
-    <span class="doccomment">/// Boolean</span>
-    <span class="ident">Bool</span>,
-    <span class="doccomment">/// OCaml string type (different to a rust string)</span>
-    <span class="ident">String</span>,
-    <span class="doccomment">/// OCaml char type</span>
-    <span class="ident">Char</span>,
-    <span class="doccomment">/// Variable length integer</span>
-    <span class="ident">Int</span>,
-    <span class="doccomment">/// 32 bit Integer</span>
-    <span class="ident">Int32</span>,
-    <span class="doccomment">/// 64 bit Integer</span>
-    <span class="ident">Int64</span>,
-    <span class="doccomment">/// OS Native integer</span>
-    <span class="ident">NativeInt</span>,
-    <span class="doccomment">/// Floating point number</span>
-    <span class="ident">Float</span>,
-    <span class="doccomment">/// OCaml option</span>
-    <span class="prelude-ty">Option</span>(<span class="ident">Box</span><span class="op">&lt;</span><span class="ident">BinProtRule</span><span class="op">&gt;</span>),
-    <span class="doccomment">/// records/structs</span>
-    <span class="ident">Record</span>(<span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">RecordField</span><span class="op">&gt;</span>),
-    <span class="doccomment">/// tuple</span>
-    <span class="ident">Tuple</span>(<span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">BinProtRule</span><span class="op">&gt;</span>),
-    <span class="doccomment">/// sum types/enums</span>
-    <span class="ident">Sum</span>(<span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Summand</span><span class="op">&gt;</span>),
-    <span class="doccomment">/// τ ≤ Γ(a), τ is an instance of Γ(a) and (Γ(a) a type scheme</span>
-    <span class="ident">Polyvar</span>(<span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Polyvar</span><span class="op">&gt;</span>),
-    <span class="doccomment">/// Variable length list of any BinProt type</span>
-    <span class="ident">List</span>(<span class="ident">Box</span><span class="op">&lt;</span><span class="ident">BinProtRule</span><span class="op">&gt;</span>),
-    <span class="doccomment">/// Hash table of BinProt types</span>
-    <span class="ident">Hashtable</span>(<span class="ident">HashTblEntry</span>),
-    <span class="doccomment">/// fixed length of BinProt types</span>
-    <span class="ident">Vec</span>(<span class="ident">usize</span>, <span class="ident">Box</span><span class="op">&lt;</span><span class="ident">BinProtRule</span><span class="op">&gt;</span>),
-    <span class="doccomment">/// A set of utils for dealing with `bigarrays` of `char`</span>
-    <span class="ident">Bigstring</span>,
-    <span class="doccomment">///  track indirections for debugging</span>
-    <span class="ident">Reference</span>(<span class="ident">RuleRef</span>),
-    <span class="doccomment">/// your type</span>
-    <span class="ident">TypeVar</span>(<span class="ident">String</span>),
-    <span class="doccomment">///  inside a recursive type, list of type parameters</span>
-    <span class="ident">SelfReference</span>(<span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">BinProtRule</span><span class="op">&gt;</span>),
-    <span class="doccomment">///  parameterized type: &#39;a t = ...</span>
-    <span class="ident">TypeAbstraction</span>(<span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>, <span class="ident">Box</span><span class="op">&lt;</span><span class="ident">BinProtRule</span><span class="op">&gt;</span>),
-    <span class="doccomment">///  recursive parameterized type with bindings</span>
-    <span class="ident">TypeClosure</span>(<span class="ident">Vec</span><span class="op">&lt;</span>(<span class="ident">String</span>, <span class="ident">BinProtRule</span>)<span class="op">&gt;</span>, <span class="ident">Box</span><span class="op">&lt;</span><span class="ident">BinProtRule</span><span class="op">&gt;</span>),
-    <span class="doccomment">/// Type that does not use standard derived BinProt encoding</span>
-    <span class="ident">Custom</span>(<span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">BinProtRule</span><span class="op">&gt;</span>),
-    <span class="doccomment">/// does not occur in source files, used in traverse</span>
-    <span class="ident">CustomForPath</span>(<span class="ident">String</span>, <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">BinProtRule</span><span class="op">&gt;</span>),
+<span class="doccomment">/// Recursively defined BinProtRule is how the type tree is constructed
+</span><span class="attribute">#[derive(Clone, Serialize, Deserialize, Debug)]</span>
+<span class="attribute">#[serde(try_from = <span class="string">&quot;ListTaggedEnum&quot;</span>)]</span>
+<span class="kw">pub enum </span>BinProtRule {
+    <span class="doccomment">/// Variable length natural Integer
+    </span>Nat0,
+    <span class="doccomment">/// Unit type
+    </span>Unit,
+    <span class="doccomment">/// Boolean
+    </span>Bool,
+    <span class="doccomment">/// OCaml string type (different to a rust string)
+    </span>String,
+    <span class="doccomment">/// OCaml char type
+    </span>Char,
+    <span class="doccomment">/// Variable length integer
+    </span>Int,
+    <span class="doccomment">/// 32 bit Integer
+    </span>Int32,
+    <span class="doccomment">/// 64 bit Integer
+    </span>Int64,
+    <span class="doccomment">/// OS Native integer
+    </span>NativeInt,
+    <span class="doccomment">/// Floating point number
+    </span>Float,
+    <span class="doccomment">/// OCaml option
+    </span><span class="prelude-ty">Option</span>(Box&lt;BinProtRule&gt;),
+    <span class="doccomment">/// records/structs
+    </span>Record(Vec&lt;RecordField&gt;),
+    <span class="doccomment">/// tuple
+    </span>Tuple(Vec&lt;BinProtRule&gt;),
+    <span class="doccomment">/// sum types/enums
+    </span>Sum(Vec&lt;Summand&gt;),
+    <span class="doccomment">/// τ ≤ Γ(a), τ is an instance of Γ(a) and (Γ(a) a type scheme
+    </span>Polyvar(Vec&lt;Polyvar&gt;),
+    <span class="doccomment">/// Variable length list of any BinProt type
+    </span>List(Box&lt;BinProtRule&gt;),
+    <span class="doccomment">/// Hash table of BinProt types
+    </span>Hashtable(HashTblEntry),
+    <span class="doccomment">/// fixed length of BinProt types
+    </span>Vec(usize, Box&lt;BinProtRule&gt;),
+    <span class="doccomment">/// A set of utils for dealing with `bigarrays` of `char`
+    </span>Bigstring,
+    <span class="doccomment">///  track indirections for debugging
+    </span>Reference(RuleRef),
+    <span class="doccomment">/// your type
+    </span>TypeVar(String),
+    <span class="doccomment">///  inside a recursive type, list of type parameters
+    </span>SelfReference(Vec&lt;BinProtRule&gt;),
+    <span class="doccomment">///  parameterized type: &#39;a t = ...
+    </span>TypeAbstraction(Vec&lt;String&gt;, Box&lt;BinProtRule&gt;),
+    <span class="doccomment">///  recursive parameterized type with bindings
+    </span>TypeClosure(Vec&lt;(String, BinProtRule)&gt;, Box&lt;BinProtRule&gt;),
+    <span class="doccomment">/// Type that does not use standard derived BinProt encoding
+    </span>Custom(Vec&lt;BinProtRule&gt;),
+    <span class="doccomment">/// does not occur in source files, used in traverse
+    </span>CustomForPath(String, Vec&lt;BinProtRule&gt;),
 }
 
-<span class="comment">// required due to the strange enum encoding used by yojson (see list_tagged_enum.rs)</span>
-<span class="kw">impl</span> <span class="ident">TryFrom</span><span class="op">&lt;</span><span class="ident">ListTaggedEnum</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">BinProtRule</span> {
-    <span class="kw">type</span> <span class="ident">Error</span> <span class="op">=</span> <span class="ident">String</span>;
-    <span class="kw">fn</span> <span class="ident">try_from</span>(<span class="ident">v</span>: <span class="ident">ListTaggedEnum</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span>, <span class="ident"><span class="self">Self</span>::Error</span><span class="op">&gt;</span> {
-        <span class="kw">match</span> <span class="ident">v</span> {
-            <span class="ident">ListTaggedEnum::None</span>((<span class="ident">t</span>,)) =&gt; <span class="kw">match</span> <span class="ident">t</span>.<span class="ident">as_str</span>() {
-                <span class="string">&quot;Nat0&quot;</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident">BinProtRule::Nat0</span>),
-                <span class="string">&quot;Unit&quot;</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident">BinProtRule::Unit</span>),
-                <span class="string">&quot;Bool&quot;</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident">BinProtRule::Bool</span>),
-                <span class="string">&quot;String&quot;</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident">BinProtRule::String</span>),
-                <span class="string">&quot;Char&quot;</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident">BinProtRule::Char</span>),
-                <span class="string">&quot;Int&quot;</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident">BinProtRule::Int</span>),
-                <span class="string">&quot;Int32&quot;</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident">BinProtRule::Int32</span>),
-                <span class="string">&quot;Int64&quot;</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident">BinProtRule::Int64</span>),
-                <span class="string">&quot;Native_int&quot;</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident">BinProtRule::NativeInt</span>),
-                <span class="string">&quot;Float&quot;</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident">BinProtRule::Float</span>),
-                <span class="string">&quot;Bigstring&quot;</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident">BinProtRule::Bigstring</span>),
-                <span class="kw">_</span> =&gt; <span class="prelude-val">Err</span>(<span class="macro">format!</span>(<span class="string">&quot;Unexpected enum tag: {}&quot;</span>, <span class="ident">t</span>)),
+<span class="comment">// required due to the strange enum encoding used by yojson (see list_tagged_enum.rs)
+</span><span class="kw">impl </span>TryFrom&lt;ListTaggedEnum&gt; <span class="kw">for </span>BinProtRule {
+    <span class="kw">type </span>Error = String;
+    <span class="kw">fn </span>try_from(v: ListTaggedEnum) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>, <span class="self">Self</span>::Error&gt; {
+        <span class="kw">match </span>v {
+            ListTaggedEnum::None((t,)) =&gt; <span class="kw">match </span>t.as_str() {
+                <span class="string">&quot;Nat0&quot; </span>=&gt; <span class="prelude-val">Ok</span>(BinProtRule::Nat0),
+                <span class="string">&quot;Unit&quot; </span>=&gt; <span class="prelude-val">Ok</span>(BinProtRule::Unit),
+                <span class="string">&quot;Bool&quot; </span>=&gt; <span class="prelude-val">Ok</span>(BinProtRule::Bool),
+                <span class="string">&quot;String&quot; </span>=&gt; <span class="prelude-val">Ok</span>(BinProtRule::String),
+                <span class="string">&quot;Char&quot; </span>=&gt; <span class="prelude-val">Ok</span>(BinProtRule::Char),
+                <span class="string">&quot;Int&quot; </span>=&gt; <span class="prelude-val">Ok</span>(BinProtRule::Int),
+                <span class="string">&quot;Int32&quot; </span>=&gt; <span class="prelude-val">Ok</span>(BinProtRule::Int32),
+                <span class="string">&quot;Int64&quot; </span>=&gt; <span class="prelude-val">Ok</span>(BinProtRule::Int64),
+                <span class="string">&quot;Native_int&quot; </span>=&gt; <span class="prelude-val">Ok</span>(BinProtRule::NativeInt),
+                <span class="string">&quot;Float&quot; </span>=&gt; <span class="prelude-val">Ok</span>(BinProtRule::Float),
+                <span class="string">&quot;Bigstring&quot; </span>=&gt; <span class="prelude-val">Ok</span>(BinProtRule::Bigstring),
+                <span class="kw">_ </span>=&gt; <span class="prelude-val">Err</span>(<span class="macro">format!</span>(<span class="string">&quot;Unexpected enum tag: {}&quot;</span>, t)),
             },
-            <span class="ident">ListTaggedEnum::One</span>((<span class="ident">t</span>, <span class="ident">v</span>)) =&gt; <span class="kw">match</span> <span class="ident">t</span>.<span class="ident">as_str</span>() {
-                <span class="string">&quot;Option&quot;</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident">BinProtRule::Option</span>(
-                    <span class="ident">from_value</span>(<span class="ident">v</span>).<span class="ident">map_err</span>(<span class="op">|</span><span class="ident">e</span><span class="op">|</span> <span class="ident">e</span>.<span class="ident">to_string</span>())<span class="question-mark">?</span>,
+            ListTaggedEnum::One((t, v)) =&gt; <span class="kw">match </span>t.as_str() {
+                <span class="string">&quot;Option&quot; </span>=&gt; <span class="prelude-val">Ok</span>(BinProtRule::Option(
+                    from_value(v).map_err(|e| e.to_string())<span class="question-mark">?</span>,
                 )),
-                <span class="string">&quot;Record&quot;</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident">BinProtRule::Record</span>(
-                    <span class="ident">from_value</span>(<span class="ident">v</span>).<span class="ident">map_err</span>(<span class="op">|</span><span class="ident">e</span><span class="op">|</span> <span class="ident">e</span>.<span class="ident">to_string</span>())<span class="question-mark">?</span>,
+                <span class="string">&quot;Record&quot; </span>=&gt; <span class="prelude-val">Ok</span>(BinProtRule::Record(
+                    from_value(v).map_err(|e| e.to_string())<span class="question-mark">?</span>,
                 )),
-                <span class="string">&quot;Tuple&quot;</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident">BinProtRule::Tuple</span>(
-                    <span class="ident">from_value</span>(<span class="ident">v</span>).<span class="ident">map_err</span>(<span class="op">|</span><span class="ident">e</span><span class="op">|</span> <span class="ident">e</span>.<span class="ident">to_string</span>())<span class="question-mark">?</span>,
+                <span class="string">&quot;Tuple&quot; </span>=&gt; <span class="prelude-val">Ok</span>(BinProtRule::Tuple(
+                    from_value(v).map_err(|e| e.to_string())<span class="question-mark">?</span>,
                 )),
-                <span class="string">&quot;Sum&quot;</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident">BinProtRule::Sum</span>(<span class="ident">from_value</span>(<span class="ident">v</span>).<span class="ident">map_err</span>(<span class="op">|</span><span class="ident">e</span><span class="op">|</span> <span class="ident">e</span>.<span class="ident">to_string</span>())<span class="question-mark">?</span>)),
-                <span class="string">&quot;Polyvar&quot;</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident">BinProtRule::Polyvar</span>(
-                    <span class="ident">from_value</span>(<span class="ident">v</span>).<span class="ident">map_err</span>(<span class="op">|</span><span class="ident">e</span><span class="op">|</span> <span class="ident">e</span>.<span class="ident">to_string</span>())<span class="question-mark">?</span>,
+                <span class="string">&quot;Sum&quot; </span>=&gt; <span class="prelude-val">Ok</span>(BinProtRule::Sum(from_value(v).map_err(|e| e.to_string())<span class="question-mark">?</span>)),
+                <span class="string">&quot;Polyvar&quot; </span>=&gt; <span class="prelude-val">Ok</span>(BinProtRule::Polyvar(
+                    from_value(v).map_err(|e| e.to_string())<span class="question-mark">?</span>,
                 )),
-                <span class="string">&quot;List&quot;</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident">BinProtRule::List</span>(<span class="ident">from_value</span>(<span class="ident">v</span>).<span class="ident">map_err</span>(<span class="op">|</span><span class="ident">e</span><span class="op">|</span> <span class="ident">e</span>.<span class="ident">to_string</span>())<span class="question-mark">?</span>)),
-                <span class="string">&quot;Hashtable&quot;</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident">BinProtRule::Hashtable</span>(
-                    <span class="ident">from_value</span>(<span class="ident">v</span>).<span class="ident">map_err</span>(<span class="op">|</span><span class="ident">e</span><span class="op">|</span> <span class="ident">e</span>.<span class="ident">to_string</span>())<span class="question-mark">?</span>,
+                <span class="string">&quot;List&quot; </span>=&gt; <span class="prelude-val">Ok</span>(BinProtRule::List(from_value(v).map_err(|e| e.to_string())<span class="question-mark">?</span>)),
+                <span class="string">&quot;Hashtable&quot; </span>=&gt; <span class="prelude-val">Ok</span>(BinProtRule::Hashtable(
+                    from_value(v).map_err(|e| e.to_string())<span class="question-mark">?</span>,
                 )),
-                <span class="string">&quot;Reference&quot;</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident">BinProtRule::Reference</span>(
-                    <span class="ident">from_value</span>(<span class="ident">v</span>).<span class="ident">map_err</span>(<span class="op">|</span><span class="ident">e</span><span class="op">|</span> <span class="ident">e</span>.<span class="ident">to_string</span>())<span class="question-mark">?</span>,
+                <span class="string">&quot;Reference&quot; </span>=&gt; <span class="prelude-val">Ok</span>(BinProtRule::Reference(
+                    from_value(v).map_err(|e| e.to_string())<span class="question-mark">?</span>,
                 )),
-                <span class="string">&quot;Type_var&quot;</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident">BinProtRule::TypeVar</span>(
-                    <span class="ident">from_value</span>(<span class="ident">v</span>).<span class="ident">map_err</span>(<span class="op">|</span><span class="ident">e</span><span class="op">|</span> <span class="ident">e</span>.<span class="ident">to_string</span>())<span class="question-mark">?</span>,
+                <span class="string">&quot;Type_var&quot; </span>=&gt; <span class="prelude-val">Ok</span>(BinProtRule::TypeVar(
+                    from_value(v).map_err(|e| e.to_string())<span class="question-mark">?</span>,
                 )),
-                <span class="string">&quot;Self_reference&quot;</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident">BinProtRule::SelfReference</span>(
-                    <span class="ident">from_value</span>(<span class="ident">v</span>).<span class="ident">map_err</span>(<span class="op">|</span><span class="ident">e</span><span class="op">|</span> <span class="ident">e</span>.<span class="ident">to_string</span>())<span class="question-mark">?</span>,
+                <span class="string">&quot;Self_reference&quot; </span>=&gt; <span class="prelude-val">Ok</span>(BinProtRule::SelfReference(
+                    from_value(v).map_err(|e| e.to_string())<span class="question-mark">?</span>,
                 )),
-                <span class="string">&quot;Custom&quot;</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident">BinProtRule::Custom</span>(
-                    <span class="ident">from_value</span>(<span class="ident">v</span>).<span class="ident">map_err</span>(<span class="op">|</span><span class="ident">e</span><span class="op">|</span> <span class="ident">e</span>.<span class="ident">to_string</span>())<span class="question-mark">?</span>,
+                <span class="string">&quot;Custom&quot; </span>=&gt; <span class="prelude-val">Ok</span>(BinProtRule::Custom(
+                    from_value(v).map_err(|e| e.to_string())<span class="question-mark">?</span>,
                 )),
-                <span class="kw">_</span> =&gt; <span class="prelude-val">Err</span>(<span class="macro">format!</span>(<span class="string">&quot;Unexpected enum tag: {}&quot;</span>, <span class="ident">t</span>)),
+                <span class="kw">_ </span>=&gt; <span class="prelude-val">Err</span>(<span class="macro">format!</span>(<span class="string">&quot;Unexpected enum tag: {}&quot;</span>, t)),
             },
-            <span class="ident">ListTaggedEnum::Two</span>((<span class="ident">t</span>, <span class="ident">v1</span>, <span class="ident">v2</span>)) =&gt; <span class="kw">match</span> <span class="ident">t</span>.<span class="ident">as_str</span>() {
-                <span class="string">&quot;Vec&quot;</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident">BinProtRule::Vec</span>(
-                    <span class="ident">from_value</span>(<span class="ident">v1</span>).<span class="ident">map_err</span>(<span class="op">|</span><span class="ident">e</span><span class="op">|</span> <span class="ident">e</span>.<span class="ident">to_string</span>())<span class="question-mark">?</span>,
-                    <span class="ident">from_value</span>(<span class="ident">v2</span>).<span class="ident">map_err</span>(<span class="op">|</span><span class="ident">e</span><span class="op">|</span> <span class="ident">e</span>.<span class="ident">to_string</span>())<span class="question-mark">?</span>,
+            ListTaggedEnum::Two((t, v1, v2)) =&gt; <span class="kw">match </span>t.as_str() {
+                <span class="string">&quot;Vec&quot; </span>=&gt; <span class="prelude-val">Ok</span>(BinProtRule::Vec(
+                    from_value(v1).map_err(|e| e.to_string())<span class="question-mark">?</span>,
+                    from_value(v2).map_err(|e| e.to_string())<span class="question-mark">?</span>,
                 )),
-                <span class="string">&quot;Type_abstraction&quot;</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident">BinProtRule::TypeAbstraction</span>(
-                    <span class="ident">from_value</span>(<span class="ident">v1</span>).<span class="ident">map_err</span>(<span class="op">|</span><span class="ident">e</span><span class="op">|</span> <span class="ident">e</span>.<span class="ident">to_string</span>())<span class="question-mark">?</span>,
-                    <span class="ident">from_value</span>(<span class="ident">v2</span>).<span class="ident">map_err</span>(<span class="op">|</span><span class="ident">e</span><span class="op">|</span> <span class="ident">e</span>.<span class="ident">to_string</span>())<span class="question-mark">?</span>,
+                <span class="string">&quot;Type_abstraction&quot; </span>=&gt; <span class="prelude-val">Ok</span>(BinProtRule::TypeAbstraction(
+                    from_value(v1).map_err(|e| e.to_string())<span class="question-mark">?</span>,
+                    from_value(v2).map_err(|e| e.to_string())<span class="question-mark">?</span>,
                 )),
-                <span class="string">&quot;Type_closure&quot;</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident">BinProtRule::TypeClosure</span>(
-                    <span class="ident">from_value</span>(<span class="ident">v1</span>).<span class="ident">map_err</span>(<span class="op">|</span><span class="ident">e</span><span class="op">|</span> <span class="ident">e</span>.<span class="ident">to_string</span>())<span class="question-mark">?</span>,
-                    <span class="ident">from_value</span>(<span class="ident">v2</span>).<span class="ident">map_err</span>(<span class="op">|</span><span class="ident">e</span><span class="op">|</span> <span class="ident">e</span>.<span class="ident">to_string</span>())<span class="question-mark">?</span>,
+                <span class="string">&quot;Type_closure&quot; </span>=&gt; <span class="prelude-val">Ok</span>(BinProtRule::TypeClosure(
+                    from_value(v1).map_err(|e| e.to_string())<span class="question-mark">?</span>,
+                    from_value(v2).map_err(|e| e.to_string())<span class="question-mark">?</span>,
                 )),
-                <span class="kw">_</span> =&gt; <span class="prelude-val">Err</span>(<span class="macro">format!</span>(<span class="string">&quot;Unexpected enum tag: {}&quot;</span>, <span class="ident">t</span>)),
+                <span class="kw">_ </span>=&gt; <span class="prelude-val">Err</span>(<span class="macro">format!</span>(<span class="string">&quot;Unexpected enum tag: {}&quot;</span>, t)),
             },
         }
     }
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">Debug</span>)]</span>
-<span class="doccomment">/// Field of a BinProt record with a name and a value</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">RecordField</span> {
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="ident">field_name</span>: <span class="ident">String</span>,
-    <span class="ident">field_rule</span>: <span class="ident">BinProtRule</span>,
+<span class="attribute">#[derive(Clone, Serialize, Deserialize, Debug)]</span>
+<span class="doccomment">/// Field of a BinProt record with a name and a value
+</span><span class="kw">pub struct </span>RecordField {
+    <span class="kw">pub</span>(<span class="kw">crate</span>) field_name: String,
+    field_rule: BinProtRule,
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">Debug</span>)]</span>
-<span class="doccomment">/// Variant of a BinProt sum type (enum)</span>
-<span class="doccomment">/// has a name, index and zero-or-more BinProt values</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Summand</span> {
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="ident">ctor_name</span>: <span class="ident">String</span>,
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="ident">index</span>: <span class="ident">i32</span>,
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="ident">ctor_args</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">BinProtRule</span><span class="op">&gt;</span>,
+<span class="attribute">#[derive(Clone, Serialize, Deserialize, Debug)]</span>
+<span class="doccomment">/// Variant of a BinProt sum type (enum)
+/// has a name, index and zero-or-more BinProt values
+</span><span class="kw">pub struct </span>Summand {
+    <span class="kw">pub</span>(<span class="kw">crate</span>) ctor_name: String,
+    <span class="kw">pub</span>(<span class="kw">crate</span>) index: i32,
+    <span class="kw">pub</span>(<span class="kw">crate</span>) ctor_args: Vec&lt;BinProtRule&gt;,
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">Debug</span>)]</span>
-<span class="doccomment">/// Entry in a BinProt hash table</span>
-<span class="doccomment">/// hash types for the key and value</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">HashTblEntry</span> {
-    <span class="ident">key_rule</span>: <span class="ident">Box</span><span class="op">&lt;</span><span class="ident">BinProtRule</span><span class="op">&gt;</span>,
-    <span class="ident">value_rule</span>: <span class="ident">Box</span><span class="op">&lt;</span><span class="ident">BinProtRule</span><span class="op">&gt;</span>,
+<span class="attribute">#[derive(Clone, Serialize, Deserialize, Debug)]</span>
+<span class="doccomment">/// Entry in a BinProt hash table
+/// hash types for the key and value
+</span><span class="kw">pub struct </span>HashTblEntry {
+    key_rule: Box&lt;BinProtRule&gt;,
+    value_rule: Box&lt;BinProtRule&gt;,
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">Debug</span>)]</span>
-<span class="attribute">#[<span class="ident">serde</span>(<span class="ident">try_from</span> <span class="op">=</span> <span class="string">&quot;ListTaggedEnum&quot;</span>)]</span>
-<span class="doccomment">/// τ ≤ Γ(a), τ is an instance of Γ(a) and (Γ(a) a type scheme</span>
-<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">Polyvar</span> {
-    <span class="doccomment">/// An instance of Γ(a)</span>
-    <span class="ident">Tagged</span>(<span class="ident">TaggedPolyvar</span>),
-    <span class="doccomment">/// An instance of Γ(a)</span>
-    <span class="ident">Inherited</span>(<span class="ident">BinProtRule</span>),
+<span class="attribute">#[derive(Clone, Serialize, Deserialize, Debug)]</span>
+<span class="attribute">#[serde(try_from = <span class="string">&quot;ListTaggedEnum&quot;</span>)]</span>
+<span class="doccomment">/// τ ≤ Γ(a), τ is an instance of Γ(a) and (Γ(a) a type scheme
+</span><span class="kw">pub enum </span>Polyvar {
+    <span class="doccomment">/// An instance of Γ(a)
+    </span>Tagged(TaggedPolyvar),
+    <span class="doccomment">/// An instance of Γ(a)
+    </span>Inherited(BinProtRule),
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">Debug</span>)]</span>
-<span class="doccomment">/// τ ≤ Γ(a), τ is an instance of Γ(a) and (Γ(a) a type scheme</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">TaggedPolyvar</span> {
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="ident">polyvar_name</span>: <span class="ident">String</span>,
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="ident">hash</span>: <span class="ident">u32</span>,
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="ident">polyvar_args</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">BinProtRule</span><span class="op">&gt;</span>,
+<span class="attribute">#[derive(Clone, Serialize, Deserialize, Debug)]</span>
+<span class="doccomment">/// τ ≤ Γ(a), τ is an instance of Γ(a) and (Γ(a) a type scheme
+</span><span class="kw">pub struct </span>TaggedPolyvar {
+    <span class="kw">pub</span>(<span class="kw">crate</span>) polyvar_name: String,
+    <span class="kw">pub</span>(<span class="kw">crate</span>) hash: u32,
+    <span class="kw">pub</span>(<span class="kw">crate</span>) polyvar_args: Vec&lt;BinProtRule&gt;,
 }
 
-<span class="kw">impl</span> <span class="ident">TryFrom</span><span class="op">&lt;</span><span class="ident">ListTaggedEnum</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Polyvar</span> {
-    <span class="kw">type</span> <span class="ident">Error</span> <span class="op">=</span> <span class="ident">String</span>;
-    <span class="kw">fn</span> <span class="ident">try_from</span>(<span class="ident">v</span>: <span class="ident">ListTaggedEnum</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span>, <span class="ident"><span class="self">Self</span>::Error</span><span class="op">&gt;</span> {
-        <span class="kw">match</span> <span class="ident">v</span> {
-            <span class="ident">ListTaggedEnum::One</span>((<span class="ident">t</span>, <span class="ident">v</span>)) =&gt; <span class="kw">match</span> <span class="ident">t</span>.<span class="ident">as_str</span>() {
-                <span class="string">&quot;Tagged&quot;</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident">Polyvar::Tagged</span>(<span class="ident">from_value</span>(<span class="ident">v</span>).<span class="ident">map_err</span>(<span class="op">|</span><span class="ident">e</span><span class="op">|</span> <span class="ident">e</span>.<span class="ident">to_string</span>())<span class="question-mark">?</span>)),
-                <span class="string">&quot;Inherited&quot;</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident">Polyvar::Inherited</span>(
-                    <span class="ident">from_value</span>(<span class="ident">v</span>).<span class="ident">map_err</span>(<span class="op">|</span><span class="ident">e</span><span class="op">|</span> <span class="ident">e</span>.<span class="ident">to_string</span>())<span class="question-mark">?</span>,
+<span class="kw">impl </span>TryFrom&lt;ListTaggedEnum&gt; <span class="kw">for </span>Polyvar {
+    <span class="kw">type </span>Error = String;
+    <span class="kw">fn </span>try_from(v: ListTaggedEnum) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>, <span class="self">Self</span>::Error&gt; {
+        <span class="kw">match </span>v {
+            ListTaggedEnum::One((t, v)) =&gt; <span class="kw">match </span>t.as_str() {
+                <span class="string">&quot;Tagged&quot; </span>=&gt; <span class="prelude-val">Ok</span>(Polyvar::Tagged(from_value(v).map_err(|e| e.to_string())<span class="question-mark">?</span>)),
+                <span class="string">&quot;Inherited&quot; </span>=&gt; <span class="prelude-val">Ok</span>(Polyvar::Inherited(
+                    from_value(v).map_err(|e| e.to_string())<span class="question-mark">?</span>,
                 )),
-                <span class="kw">_</span> =&gt; <span class="prelude-val">Err</span>(<span class="macro">format!</span>(<span class="string">&quot;Unexpected enum tag: {}&quot;</span>, <span class="ident">t</span>)),
+                <span class="kw">_ </span>=&gt; <span class="prelude-val">Err</span>(<span class="macro">format!</span>(<span class="string">&quot;Unexpected enum tag: {}&quot;</span>, t)),
             },
-            <span class="kw">_</span> =&gt; <span class="prelude-val">Err</span>(<span class="string">&quot;Unexpected number of items in enum body&quot;</span>.<span class="ident">to_string</span>()),
+            <span class="kw">_ </span>=&gt; <span class="prelude-val">Err</span>(<span class="string">&quot;Unexpected number of items in enum body&quot;</span>.to_string()),
         }
     }
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">Debug</span>)]</span>
-<span class="attribute">#[<span class="ident">serde</span>(<span class="ident">try_from</span> <span class="op">=</span> <span class="string">&quot;ListTaggedEnum&quot;</span>)]</span>
-<span class="doccomment">/// Define rule reference into Resolved and Unresolved Payload</span>
-<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">RuleRef</span> {
-    <span class="doccomment">/// Unresolved Payload</span>
-    <span class="ident">Unresolved</span>(<span class="ident">UnresolvedPayload</span>),
-    <span class="doccomment">/// Resolved Payload</span>
-    <span class="ident">Resolved</span>(<span class="ident">ResolvedPayload</span>),
+<span class="attribute">#[derive(Clone, Serialize, Deserialize, Debug)]</span>
+<span class="attribute">#[serde(try_from = <span class="string">&quot;ListTaggedEnum&quot;</span>)]</span>
+<span class="doccomment">/// Define rule reference into Resolved and Unresolved Payload
+</span><span class="kw">pub enum </span>RuleRef {
+    <span class="doccomment">/// Unresolved Payload
+    </span>Unresolved(UnresolvedPayload),
+    <span class="doccomment">/// Resolved Payload
+    </span>Resolved(ResolvedPayload),
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">Debug</span>)]</span>
-<span class="doccomment">/// Unable to resolve reference of payload</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">UnresolvedPayload</span> {
-    <span class="ident">params</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">BinProtRule</span><span class="op">&gt;</span>,
-    <span class="ident">layout_id</span>: <span class="ident">String</span>, <span class="comment">// what is longident?</span>
+<span class="attribute">#[derive(Clone, Serialize, Deserialize, Debug)]</span>
+<span class="doccomment">/// Unable to resolve reference of payload
+</span><span class="kw">pub struct </span>UnresolvedPayload {
+    params: Vec&lt;BinProtRule&gt;,
+    layout_id: String, <span class="comment">// what is longident?
+</span>}
+
+<span class="attribute">#[derive(Clone, Serialize, Deserialize, Debug)]</span>
+<span class="doccomment">/// Resolved reference of payload
+</span><span class="kw">pub struct </span>ResolvedPayload {
+    source_type_decl: String,
+    <span class="attribute">#[serde(default)]</span>
+    source_module_path: String,
+    <span class="attribute">#[serde(default)]</span>
+    bin_io_derived: bool, <span class="comment">// This is present only in later versions of the type layouts. Probably don&#39;t trust its value
+    </span>ref_rule: Box&lt;BinProtRule&gt;,
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">Debug</span>)]</span>
-<span class="doccomment">/// Resolved reference of payload</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ResolvedPayload</span> {
-    <span class="ident">source_type_decl</span>: <span class="ident">String</span>,
-    <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">default</span>)]</span>
-    <span class="ident">source_module_path</span>: <span class="ident">String</span>,
-    <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">default</span>)]</span>
-    <span class="ident">bin_io_derived</span>: <span class="ident">bool</span>, <span class="comment">// This is present only in later versions of the type layouts. Probably don&#39;t trust its value</span>
-    <span class="ident">ref_rule</span>: <span class="ident">Box</span><span class="op">&lt;</span><span class="ident">BinProtRule</span><span class="op">&gt;</span>,
-}
-
-<span class="kw">impl</span> <span class="ident">TryFrom</span><span class="op">&lt;</span><span class="ident">ListTaggedEnum</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">RuleRef</span> {
-    <span class="kw">type</span> <span class="ident">Error</span> <span class="op">=</span> <span class="ident">String</span>;
-    <span class="kw">fn</span> <span class="ident">try_from</span>(<span class="ident">v</span>: <span class="ident">ListTaggedEnum</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span>, <span class="ident"><span class="self">Self</span>::Error</span><span class="op">&gt;</span> {
-        <span class="kw">match</span> <span class="ident">v</span> {
-            <span class="ident">ListTaggedEnum::One</span>((<span class="ident">t</span>, <span class="ident">v</span>)) =&gt; <span class="kw">match</span> <span class="ident">t</span>.<span class="ident">as_str</span>() {
-                <span class="string">&quot;Unresolved&quot;</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident">RuleRef::Unresolved</span>(
-                    <span class="ident">from_value</span>(<span class="ident">v</span>).<span class="ident">map_err</span>(<span class="op">|</span><span class="ident">e</span><span class="op">|</span> <span class="ident">e</span>.<span class="ident">to_string</span>())<span class="question-mark">?</span>,
+<span class="kw">impl </span>TryFrom&lt;ListTaggedEnum&gt; <span class="kw">for </span>RuleRef {
+    <span class="kw">type </span>Error = String;
+    <span class="kw">fn </span>try_from(v: ListTaggedEnum) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>, <span class="self">Self</span>::Error&gt; {
+        <span class="kw">match </span>v {
+            ListTaggedEnum::One((t, v)) =&gt; <span class="kw">match </span>t.as_str() {
+                <span class="string">&quot;Unresolved&quot; </span>=&gt; <span class="prelude-val">Ok</span>(RuleRef::Unresolved(
+                    from_value(v).map_err(|e| e.to_string())<span class="question-mark">?</span>,
                 )),
-                <span class="string">&quot;Resolved&quot;</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident">RuleRef::Resolved</span>(<span class="ident">from_value</span>(<span class="ident">v</span>).<span class="ident">map_err</span>(<span class="op">|</span><span class="ident">e</span><span class="op">|</span> <span class="ident">e</span>.<span class="ident">to_string</span>())<span class="question-mark">?</span>)),
-                <span class="kw">_</span> =&gt; <span class="prelude-val">Err</span>(<span class="string">&quot;Unexpected tag for this type&quot;</span>.<span class="ident">to_string</span>()),
+                <span class="string">&quot;Resolved&quot; </span>=&gt; <span class="prelude-val">Ok</span>(RuleRef::Resolved(from_value(v).map_err(|e| e.to_string())<span class="question-mark">?</span>)),
+                <span class="kw">_ </span>=&gt; <span class="prelude-val">Err</span>(<span class="string">&quot;Unexpected tag for this type&quot;</span>.to_string()),
             },
-            <span class="kw">_</span> =&gt; <span class="prelude-val">Err</span>(<span class="string">&quot;Unexpected number of items in enum body&quot;</span>.<span class="ident">to_string</span>()),
+            <span class="kw">_ </span>=&gt; <span class="prelude-val">Err</span>(<span class="string">&quot;Unexpected number of items in enum body&quot;</span>.to_string()),
         }
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../../" data-current-crate="bin_prot" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (fe3342816 2022-08-01)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../../" data-current-crate="bin_prot" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (40336865f 2022-08-15)" ></div></body></html>

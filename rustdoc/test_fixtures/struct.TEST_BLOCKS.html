@@ -2,21 +2,21 @@
 <p>This number is a lower bound; the <code>HashMap&lt;K, V&gt;</code> might be able to hold
 more, but is guaranteed to be able to hold at least this many.</p>
 <h5 id="examples"><a href="#examples">Examples</a></h5>
-<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use</span> <span class="ident">std::collections::HashMap</span>;
-<span class="kw">let</span> <span class="ident">map</span>: <span class="ident">HashMap</span><span class="op">&lt;</span><span class="ident">i32</span>, <span class="ident">i32</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">HashMap::with_capacity</span>(<span class="number">100</span>);
-<span class="macro">assert!</span>(<span class="ident">map</span>.<span class="ident">capacity</span>() <span class="op">&gt;</span><span class="op">=</span> <span class="number">100</span>);</code></pre></div>
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>std::collections::HashMap;
+<span class="kw">let </span>map: HashMap&lt;i32, i32&gt; = HashMap::with_capacity(<span class="number">100</span>);
+<span class="macro">assert!</span>(map.capacity() &gt;= <span class="number">100</span>);</code></pre></div>
 </div></details><details class="rustdoc-toggle method-toggle" open><summary><section id="method.keys" class="method has-srclink"><span class="rightside"><span class="since" title="Stable since Rust version 1.0.0">1.0.0</span> · <a class="srclink" href="https://doc.rust-lang.org/nightly/src/std/collections/hash/map.rs.html#359">source</a></span><h4 class="code-header">pub fn <a href="#method.keys" class="fnname">keys</a>(&amp;self) -&gt; <a class="struct" href="https://doc.rust-lang.org/nightly/std/collections/hash/map/struct.Keys.html" title="struct std::collections::hash::map::Keys">Keys</a>&lt;'_, K, V&gt;</h4></section></summary><div class="docblock"><p>An iterator visiting all keys in arbitrary order.
 The iterator element type is <code>&amp;'a K</code>.</p>
 <h5 id="examples-1"><a href="#examples-1">Examples</a></h5>
-<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use</span> <span class="ident">std::collections::HashMap</span>;
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>std::collections::HashMap;
 
-<span class="kw">let</span> <span class="ident">map</span> <span class="op">=</span> <span class="ident">HashMap::from</span>([
+<span class="kw">let </span>map = HashMap::from([
     (<span class="string">&quot;a&quot;</span>, <span class="number">1</span>),
     (<span class="string">&quot;b&quot;</span>, <span class="number">2</span>),
     (<span class="string">&quot;c&quot;</span>, <span class="number">3</span>),
 ]);
 
-<span class="kw">for</span> <span class="ident">key</span> <span class="kw">in</span> <span class="ident">map</span>.<span class="ident">keys</span>() {
+<span class="kw">for </span>key <span class="kw">in </span>map.keys() {
     <span class="macro">println!</span>(<span class="string">&quot;{key}&quot;</span>);
 }</code></pre></div>
 <h5 id="performance"><a href="#performance">Performance</a></h5>
@@ -25,15 +25,15 @@ instead of O(len) because it internally visits empty buckets too.</p>
 </div></details><details class="rustdoc-toggle method-toggle" open><summary><section id="method.values" class="method has-srclink"><span class="rightside"><span class="since" title="Stable since Rust version 1.0.0">1.0.0</span> · <a class="srclink" href="https://doc.rust-lang.org/nightly/src/std/collections/hash/map.rs.html#420">source</a></span><h4 class="code-header">pub fn <a href="#method.values" class="fnname">values</a>(&amp;self) -&gt; <a class="struct" href="https://doc.rust-lang.org/nightly/std/collections/hash/map/struct.Values.html" title="struct std::collections::hash::map::Values">Values</a>&lt;'_, K, V&gt;</h4></section></summary><div class="docblock"><p>An iterator visiting all values in arbitrary order.
 The iterator element type is <code>&amp;'a V</code>.</p>
 <h5 id="examples-2"><a href="#examples-2">Examples</a></h5>
-<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use</span> <span class="ident">std::collections::HashMap</span>;
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>std::collections::HashMap;
 
-<span class="kw">let</span> <span class="ident">map</span> <span class="op">=</span> <span class="ident">HashMap::from</span>([
+<span class="kw">let </span>map = HashMap::from([
     (<span class="string">&quot;a&quot;</span>, <span class="number">1</span>),
     (<span class="string">&quot;b&quot;</span>, <span class="number">2</span>),
     (<span class="string">&quot;c&quot;</span>, <span class="number">3</span>),
 ]);
 
-<span class="kw">for</span> <span class="ident">val</span> <span class="kw">in</span> <span class="ident">map</span>.<span class="ident">values</span>() {
+<span class="kw">for </span>val <span class="kw">in </span>map.values() {
     <span class="macro">println!</span>(<span class="string">&quot;{val}&quot;</span>);
 }</code></pre></div>
 <h5 id="performance-1"><a href="#performance-1">Performance</a></h5>
@@ -42,15 +42,15 @@ instead of O(len) because it internally visits empty buckets too.</p>
 </div></details><details class="rustdoc-toggle method-toggle" open><summary><section id="method.iter" class="method has-srclink"><span class="rightside"><span class="since" title="Stable since Rust version 1.0.0">1.0.0</span> · <a class="srclink" href="https://doc.rust-lang.org/nightly/src/std/collections/hash/map.rs.html#514">source</a></span><h4 class="code-header">pub fn <a href="#method.iter" class="fnname">iter</a>(&amp;self) -&gt; <a class="struct" href="https://doc.rust-lang.org/nightly/std/collections/hash/map/struct.Iter.html" title="struct std::collections::hash::map::Iter">Iter</a>&lt;'_, K, V&gt;</h4></section></summary><div class="docblock"><p>An iterator visiting all key-value pairs in arbitrary order.
 The iterator element type is <code>(&amp;'a K, &amp;'a V)</code>.</p>
 <h5 id="examples-3"><a href="#examples-3">Examples</a></h5>
-<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use</span> <span class="ident">std::collections::HashMap</span>;
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>std::collections::HashMap;
 
-<span class="kw">let</span> <span class="ident">map</span> <span class="op">=</span> <span class="ident">HashMap::from</span>([
+<span class="kw">let </span>map = HashMap::from([
     (<span class="string">&quot;a&quot;</span>, <span class="number">1</span>),
     (<span class="string">&quot;b&quot;</span>, <span class="number">2</span>),
     (<span class="string">&quot;c&quot;</span>, <span class="number">3</span>),
 ]);
 
-<span class="kw">for</span> (<span class="ident">key</span>, <span class="ident">val</span>) <span class="kw">in</span> <span class="ident">map</span>.<span class="ident">iter</span>() {
+<span class="kw">for </span>(key, val) <span class="kw">in </span>map.iter() {
     <span class="macro">println!</span>(<span class="string">&quot;key: {key} val: {val}&quot;</span>);
 }</code></pre></div>
 <h5 id="performance-2"><a href="#performance-2">Performance</a></h5>
@@ -58,61 +58,61 @@ The iterator element type is <code>(&amp;'a K, &amp;'a V)</code>.</p>
 instead of O(len) because it internally visits empty buckets too.</p>
 </div></details><details class="rustdoc-toggle method-toggle" open><summary><section id="method.len" class="method has-srclink"><span class="rightside"><span class="since" title="Stable since Rust version 1.0.0">1.0.0</span> · <a class="srclink" href="https://doc.rust-lang.org/nightly/src/std/collections/hash/map.rs.html#566">source</a></span><h4 class="code-header">pub fn <a href="#method.len" class="fnname">len</a>(&amp;self) -&gt; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.usize.html">usize</a></h4></section></summary><div class="docblock"><p>Returns the number of elements in the map.</p>
 <h5 id="examples-4"><a href="#examples-4">Examples</a></h5>
-<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use</span> <span class="ident">std::collections::HashMap</span>;
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>std::collections::HashMap;
 
-<span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">a</span> <span class="op">=</span> <span class="ident">HashMap::new</span>();
-<span class="macro">assert_eq!</span>(<span class="ident">a</span>.<span class="ident">len</span>(), <span class="number">0</span>);
-<span class="ident">a</span>.<span class="ident">insert</span>(<span class="number">1</span>, <span class="string">&quot;a&quot;</span>);
-<span class="macro">assert_eq!</span>(<span class="ident">a</span>.<span class="ident">len</span>(), <span class="number">1</span>);</code></pre></div>
+<span class="kw">let </span><span class="kw-2">mut </span>a = HashMap::new();
+<span class="macro">assert_eq!</span>(a.len(), <span class="number">0</span>);
+a.insert(<span class="number">1</span>, <span class="string">&quot;a&quot;</span>);
+<span class="macro">assert_eq!</span>(a.len(), <span class="number">1</span>);</code></pre></div>
 </div></details><details class="rustdoc-toggle method-toggle" open><summary><section id="method.is_empty" class="method has-srclink"><span class="rightside"><span class="since" title="Stable since Rust version 1.0.0">1.0.0</span> · <a class="srclink" href="https://doc.rust-lang.org/nightly/src/std/collections/hash/map.rs.html#584">source</a></span><h4 class="code-header">pub fn <a href="#method.is_empty" class="fnname">is_empty</a>(&amp;self) -&gt; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.bool.html">bool</a></h4></section></summary><div class="docblock"><p>Returns <code>true</code> if the map contains no elements.</p>
 <h5 id="examples-5"><a href="#examples-5">Examples</a></h5>
-<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use</span> <span class="ident">std::collections::HashMap</span>;
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>std::collections::HashMap;
 
-<span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">a</span> <span class="op">=</span> <span class="ident">HashMap::new</span>();
-<span class="macro">assert!</span>(<span class="ident">a</span>.<span class="ident">is_empty</span>());
-<span class="ident">a</span>.<span class="ident">insert</span>(<span class="number">1</span>, <span class="string">&quot;a&quot;</span>);
-<span class="macro">assert!</span>(<span class="op">!</span><span class="ident">a</span>.<span class="ident">is_empty</span>());</code></pre></div>
+<span class="kw">let </span><span class="kw-2">mut </span>a = HashMap::new();
+<span class="macro">assert!</span>(a.is_empty());
+a.insert(<span class="number">1</span>, <span class="string">&quot;a&quot;</span>);
+<span class="macro">assert!</span>(!a.is_empty());</code></pre></div>
 </div></details><details class="rustdoc-toggle method-toggle" open><summary><section id="method.hasher" class="method has-srclink"><span class="rightside"><span class="since" title="Stable since Rust version 1.9.0">1.9.0</span> · <a class="srclink" href="https://doc.rust-lang.org/nightly/src/std/collections/hash/map.rs.html#725">source</a></span><h4 class="code-header">pub fn <a href="#method.hasher" class="fnname">hasher</a>(&amp;self) -&gt; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.reference.html">&amp;</a>S</h4></section></summary><div class="docblock"><p>Returns a reference to the map’s <a href="https://doc.rust-lang.org/nightly/core/hash/trait.BuildHasher.html" title="BuildHasher"><code>BuildHasher</code></a>.</p>
 <h5 id="examples-6"><a href="#examples-6">Examples</a></h5>
-<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use</span> <span class="ident">std::collections::HashMap</span>;
-<span class="kw">use</span> <span class="ident">std::collections::hash_map::RandomState</span>;
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>std::collections::HashMap;
+<span class="kw">use </span>std::collections::hash_map::RandomState;
 
-<span class="kw">let</span> <span class="ident">hasher</span> <span class="op">=</span> <span class="ident">RandomState::new</span>();
-<span class="kw">let</span> <span class="ident">map</span>: <span class="ident">HashMap</span><span class="op">&lt;</span><span class="ident">i32</span>, <span class="ident">i32</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">HashMap::with_hasher</span>(<span class="ident">hasher</span>);
-<span class="kw">let</span> <span class="ident">hasher</span>: <span class="kw-2">&amp;</span><span class="ident">RandomState</span> <span class="op">=</span> <span class="ident">map</span>.<span class="ident">hasher</span>();</code></pre></div>
+<span class="kw">let </span>hasher = RandomState::new();
+<span class="kw">let </span>map: HashMap&lt;i32, i32&gt; = HashMap::with_hasher(hasher);
+<span class="kw">let </span>hasher: <span class="kw-2">&amp;</span>RandomState = map.hasher();</code></pre></div>
 </div></details></div><div class="impl-items"><details class="rustdoc-toggle method-toggle" open><summary><section id="method.get" class="method has-srclink"><span class="rightside"><span class="since" title="Stable since Rust version 1.0.0">1.0.0</span> · <a class="srclink" href="https://doc.rust-lang.org/nightly/src/std/collections/hash/map.rs.html#874-877">source</a></span><h4 class="code-header">pub fn <a href="#method.get" class="fnname">get</a>&lt;Q&gt;(&amp;self, k: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.reference.html">&amp;</a>Q) -&gt; <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.reference.html">&amp;</a>V&gt; <span class="where fmt-newline">where<br>&nbsp;&nbsp;&nbsp;&nbsp;K: <a class="trait" href="https://doc.rust-lang.org/nightly/core/borrow/trait.Borrow.html" title="trait core::borrow::Borrow">Borrow</a>&lt;Q&gt;,<br>&nbsp;&nbsp;&nbsp;&nbsp;Q: <a class="trait" href="https://doc.rust-lang.org/nightly/core/hash/trait.Hash.html" title="trait core::hash::Hash">Hash</a> + <a class="trait" href="https://doc.rust-lang.org/nightly/core/cmp/trait.Eq.html" title="trait core::cmp::Eq">Eq</a> + ?<a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Sized.html" title="trait core::marker::Sized">Sized</a>,&nbsp;</span></h4></section></summary><div class="docblock"><p>Returns a reference to the value corresponding to the key.</p>
 <p>The key may be any borrowed form of the map’s key type, but
 <a href="https://doc.rust-lang.org/nightly/core/hash/trait.Hash.html" title="Hash"><code>Hash</code></a> and <a href="https://doc.rust-lang.org/nightly/core/cmp/trait.Eq.html" title="Eq"><code>Eq</code></a> on the borrowed form <em>must</em> match those for
 the key type.</p>
 <h5 id="examples-7"><a href="#examples-7">Examples</a></h5>
-<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use</span> <span class="ident">std::collections::HashMap</span>;
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>std::collections::HashMap;
 
-<span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">map</span> <span class="op">=</span> <span class="ident">HashMap::new</span>();
-<span class="ident">map</span>.<span class="ident">insert</span>(<span class="number">1</span>, <span class="string">&quot;a&quot;</span>);
-<span class="macro">assert_eq!</span>(<span class="ident">map</span>.<span class="ident">get</span>(<span class="kw-2">&amp;</span><span class="number">1</span>), <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="string">&quot;a&quot;</span>));
-<span class="macro">assert_eq!</span>(<span class="ident">map</span>.<span class="ident">get</span>(<span class="kw-2">&amp;</span><span class="number">2</span>), <span class="prelude-val">None</span>);</code></pre></div>
+<span class="kw">let </span><span class="kw-2">mut </span>map = HashMap::new();
+map.insert(<span class="number">1</span>, <span class="string">&quot;a&quot;</span>);
+<span class="macro">assert_eq!</span>(map.get(<span class="kw-2">&amp;</span><span class="number">1</span>), <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="string">&quot;a&quot;</span>));
+<span class="macro">assert_eq!</span>(map.get(<span class="kw-2">&amp;</span><span class="number">2</span>), <span class="prelude-val">None</span>);</code></pre></div>
 </div></details><details class="rustdoc-toggle method-toggle" open><summary><section id="method.get_key_value" class="method has-srclink"><span class="rightside"><span class="since" title="Stable since Rust version 1.40.0">1.40.0</span> · <a class="srclink" href="https://doc.rust-lang.org/nightly/src/std/collections/hash/map.rs.html#900-903">source</a></span><h4 class="code-header">pub fn <a href="#method.get_key_value" class="fnname">get_key_value</a>&lt;Q&gt;(&amp;self, k: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.reference.html">&amp;</a>Q) -&gt; <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;(<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.reference.html">&amp;</a>K, <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.reference.html">&amp;</a>V)&gt; <span class="where fmt-newline">where<br>&nbsp;&nbsp;&nbsp;&nbsp;K: <a class="trait" href="https://doc.rust-lang.org/nightly/core/borrow/trait.Borrow.html" title="trait core::borrow::Borrow">Borrow</a>&lt;Q&gt;,<br>&nbsp;&nbsp;&nbsp;&nbsp;Q: <a class="trait" href="https://doc.rust-lang.org/nightly/core/hash/trait.Hash.html" title="trait core::hash::Hash">Hash</a> + <a class="trait" href="https://doc.rust-lang.org/nightly/core/cmp/trait.Eq.html" title="trait core::cmp::Eq">Eq</a> + ?<a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Sized.html" title="trait core::marker::Sized">Sized</a>,&nbsp;</span></h4></section></summary><div class="docblock"><p>Returns the key-value pair corresponding to the supplied key.</p>
 <p>The supplied key may be any borrowed form of the map’s key type, but
 <a href="https://doc.rust-lang.org/nightly/core/hash/trait.Hash.html" title="Hash"><code>Hash</code></a> and <a href="https://doc.rust-lang.org/nightly/core/cmp/trait.Eq.html" title="Eq"><code>Eq</code></a> on the borrowed form <em>must</em> match those for
 the key type.</p>
 <h5 id="examples-8"><a href="#examples-8">Examples</a></h5>
-<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use</span> <span class="ident">std::collections::HashMap</span>;
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>std::collections::HashMap;
 
-<span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">map</span> <span class="op">=</span> <span class="ident">HashMap::new</span>();
-<span class="ident">map</span>.<span class="ident">insert</span>(<span class="number">1</span>, <span class="string">&quot;a&quot;</span>);
-<span class="macro">assert_eq!</span>(<span class="ident">map</span>.<span class="ident">get_key_value</span>(<span class="kw-2">&amp;</span><span class="number">1</span>), <span class="prelude-val">Some</span>((<span class="kw-2">&amp;</span><span class="number">1</span>, <span class="kw-2">&amp;</span><span class="string">&quot;a&quot;</span>)));
-<span class="macro">assert_eq!</span>(<span class="ident">map</span>.<span class="ident">get_key_value</span>(<span class="kw-2">&amp;</span><span class="number">2</span>), <span class="prelude-val">None</span>);</code></pre></div>
+<span class="kw">let </span><span class="kw-2">mut </span>map = HashMap::new();
+map.insert(<span class="number">1</span>, <span class="string">&quot;a&quot;</span>);
+<span class="macro">assert_eq!</span>(map.get_key_value(<span class="kw-2">&amp;</span><span class="number">1</span>), <span class="prelude-val">Some</span>((<span class="kw-2">&amp;</span><span class="number">1</span>, <span class="kw-2">&amp;</span><span class="string">&quot;a&quot;</span>)));
+<span class="macro">assert_eq!</span>(map.get_key_value(<span class="kw-2">&amp;</span><span class="number">2</span>), <span class="prelude-val">None</span>);</code></pre></div>
 </div></details><details class="rustdoc-toggle method-toggle" open><summary><section id="method.contains_key" class="method has-srclink"><span class="rightside"><span class="since" title="Stable since Rust version 1.0.0">1.0.0</span> · <a class="srclink" href="https://doc.rust-lang.org/nightly/src/std/collections/hash/map.rs.html#1039-1042">source</a></span><h4 class="code-header">pub fn <a href="#method.contains_key" class="fnname">contains_key</a>&lt;Q&gt;(&amp;self, k: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.reference.html">&amp;</a>Q) -&gt; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.bool.html">bool</a> <span class="where fmt-newline">where<br>&nbsp;&nbsp;&nbsp;&nbsp;K: <a class="trait" href="https://doc.rust-lang.org/nightly/core/borrow/trait.Borrow.html" title="trait core::borrow::Borrow">Borrow</a>&lt;Q&gt;,<br>&nbsp;&nbsp;&nbsp;&nbsp;Q: <a class="trait" href="https://doc.rust-lang.org/nightly/core/hash/trait.Hash.html" title="trait core::hash::Hash">Hash</a> + <a class="trait" href="https://doc.rust-lang.org/nightly/core/cmp/trait.Eq.html" title="trait core::cmp::Eq">Eq</a> + ?<a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Sized.html" title="trait core::marker::Sized">Sized</a>,&nbsp;</span></h4></section></summary><div class="docblock"><p>Returns <code>true</code> if the map contains a value for the specified key.</p>
 <p>The key may be any borrowed form of the map’s key type, but
 <a href="https://doc.rust-lang.org/nightly/core/hash/trait.Hash.html" title="Hash"><code>Hash</code></a> and <a href="https://doc.rust-lang.org/nightly/core/cmp/trait.Eq.html" title="Eq"><code>Eq</code></a> on the borrowed form <em>must</em> match those for
 the key type.</p>
 <h5 id="examples-9"><a href="#examples-9">Examples</a></h5>
-<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use</span> <span class="ident">std::collections::HashMap</span>;
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>std::collections::HashMap;
 
-<span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">map</span> <span class="op">=</span> <span class="ident">HashMap::new</span>();
-<span class="ident">map</span>.<span class="ident">insert</span>(<span class="number">1</span>, <span class="string">&quot;a&quot;</span>);
-<span class="macro">assert_eq!</span>(<span class="ident">map</span>.<span class="ident">contains_key</span>(<span class="kw-2">&amp;</span><span class="number">1</span>), <span class="bool-val">true</span>);
-<span class="macro">assert_eq!</span>(<span class="ident">map</span>.<span class="ident">contains_key</span>(<span class="kw-2">&amp;</span><span class="number">2</span>), <span class="bool-val">false</span>);</code></pre></div>
+<span class="kw">let </span><span class="kw-2">mut </span>map = HashMap::new();
+map.insert(<span class="number">1</span>, <span class="string">&quot;a&quot;</span>);
+<span class="macro">assert_eq!</span>(map.contains_key(<span class="kw-2">&amp;</span><span class="number">1</span>), <span class="bool-val">true</span>);
+<span class="macro">assert_eq!</span>(map.contains_key(<span class="kw-2">&amp;</span><span class="number">2</span>), <span class="bool-val">false</span>);</code></pre></div>
 </div></details></div><div class="impl-items"><details class="rustdoc-toggle method-toggle" open><summary><section id="method.raw_entry" class="method has-srclink"><span class="rightside"><a class="srclink" href="https://doc.rust-lang.org/nightly/src/std/collections/hash/map.rs.html#1251">source</a></span><h4 class="code-header">pub fn <a href="#method.raw_entry" class="fnname">raw_entry</a>(&amp;self) -&gt; <a class="struct" href="https://doc.rust-lang.org/nightly/std/collections/hash/map/struct.RawEntryBuilder.html" title="struct std::collections::hash::map::RawEntryBuilder">RawEntryBuilder</a>&lt;'_, K, V, S&gt;</h4></section><span class="item-info"><div class="stab unstable"><span class="emoji">🔬</span> This is a nightly-only experimental API. (<code>hash_raw_entry</code>)</div></span></summary><div class="docblock"><p>Creates a raw immutable entry builder for the HashMap.</p>
 <p>Raw entries provide the lowest level of control for searching and
 manipulating a map. They must be manually initialized with a hash and
@@ -198,4 +198,4 @@ builds. <a>Read more</a></p>
 </div></details><details class="rustdoc-toggle method-toggle" open><summary><section id="method.try_from" class="method trait-impl has-srclink"><span class="rightside"><span class="since" title="const unstable">const: <a href="https://github.com/rust-lang/rust/issues/88674" title="Tracking issue for const_convert">unstable</a></span> · <a class="srclink" href="https://doc.rust-lang.org/nightly/src/core/convert/mod.rs.html#604">source</a></span><a href="#method.try_from" class="anchor"></a><h4 class="code-header">fn <a href="https://doc.rust-lang.org/nightly/core/convert/trait.TryFrom.html#tymethod.try_from" class="fnname">try_from</a>(value: U) -&gt; <a class="enum" href="https://doc.rust-lang.org/nightly/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;T, &lt;T as <a class="trait" href="https://doc.rust-lang.org/nightly/core/convert/trait.TryFrom.html" title="trait core::convert::TryFrom">TryFrom</a>&lt;U&gt;&gt;::<a class="associatedtype" href="https://doc.rust-lang.org/nightly/core/convert/trait.TryFrom.html#associatedtype.Error" title="type core::convert::TryFrom::Error">Error</a>&gt;</h4></section></summary><div class='docblock'><p>Performs the conversion.</p>
 </div></details></div></details><details class="rustdoc-toggle implementors-toggle"><summary><section id="impl-TryInto%3CU%3E-for-TEST_BLOCKS" class="impl has-srclink"><span class="rightside"><a class="srclink" href="https://doc.rust-lang.org/nightly/src/core/convert/mod.rs.html#583">source</a></span><a href="#impl-TryInto%3CU%3E-for-TEST_BLOCKS" class="anchor"></a><h3 class="code-header in-band">impl&lt;T, U&gt; <a class="trait" href="https://doc.rust-lang.org/nightly/core/convert/trait.TryInto.html" title="trait core::convert::TryInto">TryInto</a>&lt;U&gt; for T <span class="where fmt-newline">where<br>&nbsp;&nbsp;&nbsp;&nbsp;U: <a class="trait" href="https://doc.rust-lang.org/nightly/core/convert/trait.TryFrom.html" title="trait core::convert::TryFrom">TryFrom</a>&lt;T&gt;,&nbsp;</span></h3></section></summary><div class="impl-items"><details class="rustdoc-toggle" open><summary><section id="associatedtype.Error-1" class="associatedtype trait-impl has-srclink"><a href="#associatedtype.Error-1" class="anchor"></a><h4 class="code-header">type <a href="https://doc.rust-lang.org/nightly/core/convert/trait.TryInto.html#associatedtype.Error" class="associatedtype">Error</a> = &lt;U as <a class="trait" href="https://doc.rust-lang.org/nightly/core/convert/trait.TryFrom.html" title="trait core::convert::TryFrom">TryFrom</a>&lt;T&gt;&gt;::<a class="associatedtype" href="https://doc.rust-lang.org/nightly/core/convert/trait.TryFrom.html#associatedtype.Error" title="type core::convert::TryFrom::Error">Error</a></h4></section></summary><div class='docblock'><p>The type returned in the event of a conversion error.</p>
 </div></details><details class="rustdoc-toggle method-toggle" open><summary><section id="method.try_into" class="method trait-impl has-srclink"><span class="rightside"><span class="since" title="const unstable">const: <a href="https://github.com/rust-lang/rust/issues/88674" title="Tracking issue for const_convert">unstable</a></span> · <a class="srclink" href="https://doc.rust-lang.org/nightly/src/core/convert/mod.rs.html#589">source</a></span><a href="#method.try_into" class="anchor"></a><h4 class="code-header">fn <a href="https://doc.rust-lang.org/nightly/core/convert/trait.TryInto.html#tymethod.try_into" class="fnname">try_into</a>(self) -&gt; <a class="enum" href="https://doc.rust-lang.org/nightly/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;U, &lt;U as <a class="trait" href="https://doc.rust-lang.org/nightly/core/convert/trait.TryFrom.html" title="trait core::convert::TryFrom">TryFrom</a>&lt;T&gt;&gt;::<a class="associatedtype" href="https://doc.rust-lang.org/nightly/core/convert/trait.TryFrom.html#associatedtype.Error" title="type core::convert::TryFrom::Error">Error</a>&gt;</h4></section></summary><div class='docblock'><p>Performs the conversion.</p>
-</div></details></div></details><details class="rustdoc-toggle implementors-toggle"><summary><section id="impl-VZip%3CV%3E-for-TEST_BLOCKS" class="impl has-srclink"><a href="#impl-VZip%3CV%3E-for-TEST_BLOCKS" class="anchor"></a><h3 class="code-header in-band">impl&lt;V, T&gt; VZip&lt;V&gt; for T <span class="where fmt-newline">where<br>&nbsp;&nbsp;&nbsp;&nbsp;V: MultiLane&lt;T&gt;,&nbsp;</span></h3></section></summary><div class="impl-items"><section id="method.vzip" class="method trait-impl has-srclink"><a href="#method.vzip" class="anchor"></a><h4 class="code-header">fn <a class="fnname">vzip</a>(self) -&gt; V</h4></section></div></details></div></section></div></main><div id="rustdoc-vars" data-root-path="../" data-current-crate="test_fixtures" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (fe3342816 2022-08-01)" ></div></body></html>
+</div></details></div></details><details class="rustdoc-toggle implementors-toggle"><summary><section id="impl-VZip%3CV%3E-for-TEST_BLOCKS" class="impl has-srclink"><a href="#impl-VZip%3CV%3E-for-TEST_BLOCKS" class="anchor"></a><h3 class="code-header in-band">impl&lt;V, T&gt; VZip&lt;V&gt; for T <span class="where fmt-newline">where<br>&nbsp;&nbsp;&nbsp;&nbsp;V: MultiLane&lt;T&gt;,&nbsp;</span></h3></section></summary><div class="impl-items"><section id="method.vzip" class="method trait-impl has-srclink"><a href="#method.vzip" class="anchor"></a><h4 class="code-header">fn <a class="fnname">vzip</a>(self) -&gt; V</h4></section></div></details></div></section></div></main><div id="rustdoc-vars" data-root-path="../" data-current-crate="test_fixtures" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (40336865f 2022-08-15)" ></div></body></html>

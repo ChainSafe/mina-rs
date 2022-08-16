@@ -155,162 +155,162 @@
 <span id="155">155</span>
 <span id="156">156</span>
 <span id="157">157</span>
-</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems</span>
-<span class="comment">// SPDX-License-Identifier: Apache-2.0</span>
+</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems
+// SPDX-License-Identifier: Apache-2.0
 
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::types::Hex64</span>;
-<span class="kw">use</span> <span class="ident">mina_serialization_types_macros::AutoFrom</span>;
+</span><span class="kw">use </span><span class="kw">crate</span>::types::Hex64;
+<span class="kw">use </span>mina_serialization_types_macros::AutoFrom;
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Default</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>, <span class="ident">AutoFrom</span>)]</span>
-<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">mina_serialization_types::bulletproof_challenges::BulletproofChallenge</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">BulletproofChallenge</span> {
-    <span class="kw">pub</span> <span class="ident">prechallenge</span>: <span class="ident">BulletproofPreChallenge</span>,
+<span class="attribute">#[derive(Clone, Default, Eq, PartialEq, Debug, AutoFrom)]</span>
+<span class="attribute">#[auto_from(mina_serialization_types::bulletproof_challenges::BulletproofChallenge)]</span>
+<span class="kw">pub struct </span>BulletproofChallenge {
+    <span class="kw">pub </span>prechallenge: BulletproofPreChallenge,
 }
 
-<span class="kw">impl</span> <span class="ident">BulletproofChallenge</span> {
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">a</span>: <span class="ident">i64</span>, <span class="ident">b</span>: <span class="ident">i64</span>) -&gt; <span class="self">Self</span> {
-        <span class="self">Self</span> {
-            <span class="ident">prechallenge</span>: <span class="ident">BulletproofPreChallenge::scalar</span>(<span class="ident">a</span>, <span class="ident">b</span>),
+<span class="kw">impl </span>BulletproofChallenge {
+    <span class="kw">pub fn </span>new(a: i64, b: i64) -&gt; <span class="self">Self </span>{
+        <span class="self">Self </span>{
+            prechallenge: BulletproofPreChallenge::scalar(a, b),
         }
     }
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Default</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>, <span class="ident">AutoFrom</span>)]</span>
-<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">mina_serialization_types::bulletproof_challenges::BulletproofChallenges</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">BulletproofChallenges</span>(<span class="kw">pub</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">BulletproofChallengeTuple18</span><span class="op">&gt;</span>);
+<span class="attribute">#[derive(Clone, Default, Eq, PartialEq, Debug, AutoFrom)]</span>
+<span class="attribute">#[auto_from(mina_serialization_types::bulletproof_challenges::BulletproofChallenges)]</span>
+<span class="kw">pub struct </span>BulletproofChallenges(<span class="kw">pub </span>Vec&lt;BulletproofChallengeTuple18&gt;);
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Default</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>, <span class="ident">AutoFrom</span>)]</span>
-<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">mina_serialization_types::bulletproof_challenges::ProofStateBulletproofChallenges</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ProofStateBulletproofChallenges</span>(
-    <span class="kw">pub</span> <span class="ident">BulletproofChallengeTuple17</span>,
-    <span class="kw">pub</span> <span class="ident">BulletproofChallengeTuple17</span>,
-    <span class="kw">pub</span> (),
+<span class="attribute">#[derive(Clone, Default, Eq, PartialEq, Debug, AutoFrom)]</span>
+<span class="attribute">#[auto_from(mina_serialization_types::bulletproof_challenges::ProofStateBulletproofChallenges)]</span>
+<span class="kw">pub struct </span>ProofStateBulletproofChallenges(
+    <span class="kw">pub </span>BulletproofChallengeTuple17,
+    <span class="kw">pub </span>BulletproofChallengeTuple17,
+    <span class="kw">pub </span>(),
 );
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Default</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>, <span class="ident">AutoFrom</span>)]</span>
-<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">mina_serialization_types::bulletproof_challenges::BulletproofChallengeTuple17</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">BulletproofChallengeTuple17</span>(
-    <span class="kw">pub</span> <span class="ident">BulletproofChallenge</span>,
-    <span class="kw">pub</span> <span class="ident">BulletproofChallenge</span>,
-    <span class="kw">pub</span> <span class="ident">BulletproofChallenge</span>,
-    <span class="kw">pub</span> <span class="ident">BulletproofChallenge</span>,
-    <span class="kw">pub</span> <span class="ident">BulletproofChallenge</span>,
-    <span class="kw">pub</span> <span class="ident">BulletproofChallenge</span>,
-    <span class="kw">pub</span> <span class="ident">BulletproofChallenge</span>,
-    <span class="kw">pub</span> <span class="ident">BulletproofChallenge</span>,
-    <span class="kw">pub</span> <span class="ident">BulletproofChallenge</span>,
-    <span class="kw">pub</span> <span class="ident">BulletproofChallenge</span>,
-    <span class="kw">pub</span> <span class="ident">BulletproofChallenge</span>,
-    <span class="kw">pub</span> <span class="ident">BulletproofChallenge</span>,
-    <span class="kw">pub</span> <span class="ident">BulletproofChallenge</span>,
-    <span class="kw">pub</span> <span class="ident">BulletproofChallenge</span>,
-    <span class="kw">pub</span> <span class="ident">BulletproofChallenge</span>,
-    <span class="kw">pub</span> <span class="ident">BulletproofChallenge</span>,
-    <span class="kw">pub</span> <span class="ident">BulletproofChallenge</span>,
-    <span class="kw">pub</span> (),
+<span class="attribute">#[derive(Clone, Default, Eq, PartialEq, Debug, AutoFrom)]</span>
+<span class="attribute">#[auto_from(mina_serialization_types::bulletproof_challenges::BulletproofChallengeTuple17)]</span>
+<span class="kw">pub struct </span>BulletproofChallengeTuple17(
+    <span class="kw">pub </span>BulletproofChallenge,
+    <span class="kw">pub </span>BulletproofChallenge,
+    <span class="kw">pub </span>BulletproofChallenge,
+    <span class="kw">pub </span>BulletproofChallenge,
+    <span class="kw">pub </span>BulletproofChallenge,
+    <span class="kw">pub </span>BulletproofChallenge,
+    <span class="kw">pub </span>BulletproofChallenge,
+    <span class="kw">pub </span>BulletproofChallenge,
+    <span class="kw">pub </span>BulletproofChallenge,
+    <span class="kw">pub </span>BulletproofChallenge,
+    <span class="kw">pub </span>BulletproofChallenge,
+    <span class="kw">pub </span>BulletproofChallenge,
+    <span class="kw">pub </span>BulletproofChallenge,
+    <span class="kw">pub </span>BulletproofChallenge,
+    <span class="kw">pub </span>BulletproofChallenge,
+    <span class="kw">pub </span>BulletproofChallenge,
+    <span class="kw">pub </span>BulletproofChallenge,
+    <span class="kw">pub </span>(),
 );
 
-<span class="kw">impl</span> <span class="ident">BulletproofChallengeTuple17</span> {
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">a</span>: [<span class="ident">i64</span>; <span class="number">34</span>]) -&gt; <span class="self">Self</span> {
+<span class="kw">impl </span>BulletproofChallengeTuple17 {
+    <span class="kw">pub fn </span>new(a: [i64; <span class="number">34</span>]) -&gt; <span class="self">Self </span>{
         <span class="self">Self</span>(
-            <span class="ident">BulletproofChallenge::new</span>(<span class="ident">a</span>[<span class="number">0</span>], <span class="ident">a</span>[<span class="number">1</span>]),
-            <span class="ident">BulletproofChallenge::new</span>(<span class="ident">a</span>[<span class="number">2</span>], <span class="ident">a</span>[<span class="number">3</span>]),
-            <span class="ident">BulletproofChallenge::new</span>(<span class="ident">a</span>[<span class="number">4</span>], <span class="ident">a</span>[<span class="number">5</span>]),
-            <span class="ident">BulletproofChallenge::new</span>(<span class="ident">a</span>[<span class="number">6</span>], <span class="ident">a</span>[<span class="number">7</span>]),
-            <span class="ident">BulletproofChallenge::new</span>(<span class="ident">a</span>[<span class="number">8</span>], <span class="ident">a</span>[<span class="number">9</span>]),
-            <span class="ident">BulletproofChallenge::new</span>(<span class="ident">a</span>[<span class="number">10</span>], <span class="ident">a</span>[<span class="number">11</span>]),
-            <span class="ident">BulletproofChallenge::new</span>(<span class="ident">a</span>[<span class="number">12</span>], <span class="ident">a</span>[<span class="number">13</span>]),
-            <span class="ident">BulletproofChallenge::new</span>(<span class="ident">a</span>[<span class="number">14</span>], <span class="ident">a</span>[<span class="number">15</span>]),
-            <span class="ident">BulletproofChallenge::new</span>(<span class="ident">a</span>[<span class="number">16</span>], <span class="ident">a</span>[<span class="number">17</span>]),
-            <span class="ident">BulletproofChallenge::new</span>(<span class="ident">a</span>[<span class="number">18</span>], <span class="ident">a</span>[<span class="number">19</span>]),
-            <span class="ident">BulletproofChallenge::new</span>(<span class="ident">a</span>[<span class="number">20</span>], <span class="ident">a</span>[<span class="number">21</span>]),
-            <span class="ident">BulletproofChallenge::new</span>(<span class="ident">a</span>[<span class="number">22</span>], <span class="ident">a</span>[<span class="number">23</span>]),
-            <span class="ident">BulletproofChallenge::new</span>(<span class="ident">a</span>[<span class="number">24</span>], <span class="ident">a</span>[<span class="number">25</span>]),
-            <span class="ident">BulletproofChallenge::new</span>(<span class="ident">a</span>[<span class="number">26</span>], <span class="ident">a</span>[<span class="number">27</span>]),
-            <span class="ident">BulletproofChallenge::new</span>(<span class="ident">a</span>[<span class="number">28</span>], <span class="ident">a</span>[<span class="number">29</span>]),
-            <span class="ident">BulletproofChallenge::new</span>(<span class="ident">a</span>[<span class="number">30</span>], <span class="ident">a</span>[<span class="number">31</span>]),
-            <span class="ident">BulletproofChallenge::new</span>(<span class="ident">a</span>[<span class="number">32</span>], <span class="ident">a</span>[<span class="number">33</span>]),
+            BulletproofChallenge::new(a[<span class="number">0</span>], a[<span class="number">1</span>]),
+            BulletproofChallenge::new(a[<span class="number">2</span>], a[<span class="number">3</span>]),
+            BulletproofChallenge::new(a[<span class="number">4</span>], a[<span class="number">5</span>]),
+            BulletproofChallenge::new(a[<span class="number">6</span>], a[<span class="number">7</span>]),
+            BulletproofChallenge::new(a[<span class="number">8</span>], a[<span class="number">9</span>]),
+            BulletproofChallenge::new(a[<span class="number">10</span>], a[<span class="number">11</span>]),
+            BulletproofChallenge::new(a[<span class="number">12</span>], a[<span class="number">13</span>]),
+            BulletproofChallenge::new(a[<span class="number">14</span>], a[<span class="number">15</span>]),
+            BulletproofChallenge::new(a[<span class="number">16</span>], a[<span class="number">17</span>]),
+            BulletproofChallenge::new(a[<span class="number">18</span>], a[<span class="number">19</span>]),
+            BulletproofChallenge::new(a[<span class="number">20</span>], a[<span class="number">21</span>]),
+            BulletproofChallenge::new(a[<span class="number">22</span>], a[<span class="number">23</span>]),
+            BulletproofChallenge::new(a[<span class="number">24</span>], a[<span class="number">25</span>]),
+            BulletproofChallenge::new(a[<span class="number">26</span>], a[<span class="number">27</span>]),
+            BulletproofChallenge::new(a[<span class="number">28</span>], a[<span class="number">29</span>]),
+            BulletproofChallenge::new(a[<span class="number">30</span>], a[<span class="number">31</span>]),
+            BulletproofChallenge::new(a[<span class="number">32</span>], a[<span class="number">33</span>]),
             (),
         )
     }
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Default</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>, <span class="ident">AutoFrom</span>)]</span>
-<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">mina_serialization_types::bulletproof_challenges::BulletproofChallengeTuple18</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">BulletproofChallengeTuple18</span>(
-    <span class="kw">pub</span> <span class="ident">BulletproofChallenge</span>,
-    <span class="kw">pub</span> <span class="ident">BulletproofChallenge</span>,
-    <span class="kw">pub</span> <span class="ident">BulletproofChallenge</span>,
-    <span class="kw">pub</span> <span class="ident">BulletproofChallenge</span>,
-    <span class="kw">pub</span> <span class="ident">BulletproofChallenge</span>,
-    <span class="kw">pub</span> <span class="ident">BulletproofChallenge</span>,
-    <span class="kw">pub</span> <span class="ident">BulletproofChallenge</span>,
-    <span class="kw">pub</span> <span class="ident">BulletproofChallenge</span>,
-    <span class="kw">pub</span> <span class="ident">BulletproofChallenge</span>,
-    <span class="kw">pub</span> <span class="ident">BulletproofChallenge</span>,
-    <span class="kw">pub</span> <span class="ident">BulletproofChallenge</span>,
-    <span class="kw">pub</span> <span class="ident">BulletproofChallenge</span>,
-    <span class="kw">pub</span> <span class="ident">BulletproofChallenge</span>,
-    <span class="kw">pub</span> <span class="ident">BulletproofChallenge</span>,
-    <span class="kw">pub</span> <span class="ident">BulletproofChallenge</span>,
-    <span class="kw">pub</span> <span class="ident">BulletproofChallenge</span>,
-    <span class="kw">pub</span> <span class="ident">BulletproofChallenge</span>,
-    <span class="kw">pub</span> <span class="ident">BulletproofChallenge</span>,
-    <span class="kw">pub</span> (),
+<span class="attribute">#[derive(Clone, Default, Eq, PartialEq, Debug, AutoFrom)]</span>
+<span class="attribute">#[auto_from(mina_serialization_types::bulletproof_challenges::BulletproofChallengeTuple18)]</span>
+<span class="kw">pub struct </span>BulletproofChallengeTuple18(
+    <span class="kw">pub </span>BulletproofChallenge,
+    <span class="kw">pub </span>BulletproofChallenge,
+    <span class="kw">pub </span>BulletproofChallenge,
+    <span class="kw">pub </span>BulletproofChallenge,
+    <span class="kw">pub </span>BulletproofChallenge,
+    <span class="kw">pub </span>BulletproofChallenge,
+    <span class="kw">pub </span>BulletproofChallenge,
+    <span class="kw">pub </span>BulletproofChallenge,
+    <span class="kw">pub </span>BulletproofChallenge,
+    <span class="kw">pub </span>BulletproofChallenge,
+    <span class="kw">pub </span>BulletproofChallenge,
+    <span class="kw">pub </span>BulletproofChallenge,
+    <span class="kw">pub </span>BulletproofChallenge,
+    <span class="kw">pub </span>BulletproofChallenge,
+    <span class="kw">pub </span>BulletproofChallenge,
+    <span class="kw">pub </span>BulletproofChallenge,
+    <span class="kw">pub </span>BulletproofChallenge,
+    <span class="kw">pub </span>BulletproofChallenge,
+    <span class="kw">pub </span>(),
 );
 
-<span class="kw">impl</span> <span class="ident">BulletproofChallengeTuple18</span> {
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">a</span>: [<span class="ident">i64</span>; <span class="number">36</span>]) -&gt; <span class="self">Self</span> {
+<span class="kw">impl </span>BulletproofChallengeTuple18 {
+    <span class="kw">pub fn </span>new(a: [i64; <span class="number">36</span>]) -&gt; <span class="self">Self </span>{
         <span class="self">Self</span>(
-            <span class="ident">BulletproofChallenge::new</span>(<span class="ident">a</span>[<span class="number">0</span>], <span class="ident">a</span>[<span class="number">1</span>]),
-            <span class="ident">BulletproofChallenge::new</span>(<span class="ident">a</span>[<span class="number">2</span>], <span class="ident">a</span>[<span class="number">3</span>]),
-            <span class="ident">BulletproofChallenge::new</span>(<span class="ident">a</span>[<span class="number">4</span>], <span class="ident">a</span>[<span class="number">5</span>]),
-            <span class="ident">BulletproofChallenge::new</span>(<span class="ident">a</span>[<span class="number">6</span>], <span class="ident">a</span>[<span class="number">7</span>]),
-            <span class="ident">BulletproofChallenge::new</span>(<span class="ident">a</span>[<span class="number">8</span>], <span class="ident">a</span>[<span class="number">9</span>]),
-            <span class="ident">BulletproofChallenge::new</span>(<span class="ident">a</span>[<span class="number">10</span>], <span class="ident">a</span>[<span class="number">11</span>]),
-            <span class="ident">BulletproofChallenge::new</span>(<span class="ident">a</span>[<span class="number">12</span>], <span class="ident">a</span>[<span class="number">13</span>]),
-            <span class="ident">BulletproofChallenge::new</span>(<span class="ident">a</span>[<span class="number">14</span>], <span class="ident">a</span>[<span class="number">15</span>]),
-            <span class="ident">BulletproofChallenge::new</span>(<span class="ident">a</span>[<span class="number">16</span>], <span class="ident">a</span>[<span class="number">17</span>]),
-            <span class="ident">BulletproofChallenge::new</span>(<span class="ident">a</span>[<span class="number">18</span>], <span class="ident">a</span>[<span class="number">19</span>]),
-            <span class="ident">BulletproofChallenge::new</span>(<span class="ident">a</span>[<span class="number">20</span>], <span class="ident">a</span>[<span class="number">21</span>]),
-            <span class="ident">BulletproofChallenge::new</span>(<span class="ident">a</span>[<span class="number">22</span>], <span class="ident">a</span>[<span class="number">23</span>]),
-            <span class="ident">BulletproofChallenge::new</span>(<span class="ident">a</span>[<span class="number">24</span>], <span class="ident">a</span>[<span class="number">25</span>]),
-            <span class="ident">BulletproofChallenge::new</span>(<span class="ident">a</span>[<span class="number">26</span>], <span class="ident">a</span>[<span class="number">27</span>]),
-            <span class="ident">BulletproofChallenge::new</span>(<span class="ident">a</span>[<span class="number">28</span>], <span class="ident">a</span>[<span class="number">29</span>]),
-            <span class="ident">BulletproofChallenge::new</span>(<span class="ident">a</span>[<span class="number">30</span>], <span class="ident">a</span>[<span class="number">31</span>]),
-            <span class="ident">BulletproofChallenge::new</span>(<span class="ident">a</span>[<span class="number">32</span>], <span class="ident">a</span>[<span class="number">33</span>]),
-            <span class="ident">BulletproofChallenge::new</span>(<span class="ident">a</span>[<span class="number">34</span>], <span class="ident">a</span>[<span class="number">35</span>]),
+            BulletproofChallenge::new(a[<span class="number">0</span>], a[<span class="number">1</span>]),
+            BulletproofChallenge::new(a[<span class="number">2</span>], a[<span class="number">3</span>]),
+            BulletproofChallenge::new(a[<span class="number">4</span>], a[<span class="number">5</span>]),
+            BulletproofChallenge::new(a[<span class="number">6</span>], a[<span class="number">7</span>]),
+            BulletproofChallenge::new(a[<span class="number">8</span>], a[<span class="number">9</span>]),
+            BulletproofChallenge::new(a[<span class="number">10</span>], a[<span class="number">11</span>]),
+            BulletproofChallenge::new(a[<span class="number">12</span>], a[<span class="number">13</span>]),
+            BulletproofChallenge::new(a[<span class="number">14</span>], a[<span class="number">15</span>]),
+            BulletproofChallenge::new(a[<span class="number">16</span>], a[<span class="number">17</span>]),
+            BulletproofChallenge::new(a[<span class="number">18</span>], a[<span class="number">19</span>]),
+            BulletproofChallenge::new(a[<span class="number">20</span>], a[<span class="number">21</span>]),
+            BulletproofChallenge::new(a[<span class="number">22</span>], a[<span class="number">23</span>]),
+            BulletproofChallenge::new(a[<span class="number">24</span>], a[<span class="number">25</span>]),
+            BulletproofChallenge::new(a[<span class="number">26</span>], a[<span class="number">27</span>]),
+            BulletproofChallenge::new(a[<span class="number">28</span>], a[<span class="number">29</span>]),
+            BulletproofChallenge::new(a[<span class="number">30</span>], a[<span class="number">31</span>]),
+            BulletproofChallenge::new(a[<span class="number">32</span>], a[<span class="number">33</span>]),
+            BulletproofChallenge::new(a[<span class="number">34</span>], a[<span class="number">35</span>]),
             (),
         )
     }
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>, <span class="ident">AutoFrom</span>)]</span>
-<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">mina_serialization_types::bulletproof_challenges::BulletproofPreChallenge</span>)]</span>
-<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">BulletproofPreChallenge</span> {
-    <span class="ident">ScalarChallenge</span>(<span class="ident">ScalarChallengeVector2</span>),
+<span class="attribute">#[derive(Clone, Eq, PartialEq, Debug, AutoFrom)]</span>
+<span class="attribute">#[auto_from(mina_serialization_types::bulletproof_challenges::BulletproofPreChallenge)]</span>
+<span class="kw">pub enum </span>BulletproofPreChallenge {
+    ScalarChallenge(ScalarChallengeVector2),
 }
 
-<span class="kw">impl</span> <span class="ident">BulletproofPreChallenge</span> {
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">scalar</span>(<span class="ident">a</span>: <span class="ident">i64</span>, <span class="ident">b</span>: <span class="ident">i64</span>) -&gt; <span class="self">Self</span> {
-        <span class="ident"><span class="self">Self</span>::ScalarChallenge</span>(<span class="ident">ScalarChallengeVector2::new</span>(<span class="ident">a</span>, <span class="ident">b</span>))
+<span class="kw">impl </span>BulletproofPreChallenge {
+    <span class="kw">pub fn </span>scalar(a: i64, b: i64) -&gt; <span class="self">Self </span>{
+        <span class="self">Self</span>::ScalarChallenge(ScalarChallengeVector2::new(a, b))
     }
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Default</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>, <span class="ident">AutoFrom</span>)]</span>
-<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">mina_serialization_types::bulletproof_challenges::ScalarChallengeVector2</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ScalarChallengeVector2</span>(<span class="kw">pub</span> <span class="ident">Hex64</span>, <span class="kw">pub</span> <span class="ident">Hex64</span>, <span class="kw">pub</span> ());
+<span class="attribute">#[derive(Clone, Default, Eq, PartialEq, Debug, AutoFrom)]</span>
+<span class="attribute">#[auto_from(mina_serialization_types::bulletproof_challenges::ScalarChallengeVector2)]</span>
+<span class="kw">pub struct </span>ScalarChallengeVector2(<span class="kw">pub </span>Hex64, <span class="kw">pub </span>Hex64, <span class="kw">pub </span>());
 
-<span class="kw">impl</span> <span class="ident">ScalarChallengeVector2</span> {
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">a</span>: <span class="ident">i64</span>, <span class="ident">b</span>: <span class="ident">i64</span>) -&gt; <span class="self">Self</span> {
-        <span class="self">Self</span>(<span class="ident">a</span>.<span class="ident">into</span>(), <span class="ident">b</span>.<span class="ident">into</span>(), ())
+<span class="kw">impl </span>ScalarChallengeVector2 {
+    <span class="kw">pub fn </span>new(a: i64, b: i64) -&gt; <span class="self">Self </span>{
+        <span class="self">Self</span>(a.into(), b.into(), ())
     }
 }
 
-<span class="kw">impl</span> <span class="ident">Default</span> <span class="kw">for</span> <span class="ident">BulletproofPreChallenge</span> {
-    <span class="kw">fn</span> <span class="ident">default</span>() -&gt; <span class="self">Self</span> {
-        <span class="ident"><span class="self">Self</span>::ScalarChallenge</span>(<span class="ident">ScalarChallengeVector2::default</span>())
+<span class="kw">impl </span>Default <span class="kw">for </span>BulletproofPreChallenge {
+    <span class="kw">fn </span>default() -&gt; <span class="self">Self </span>{
+        <span class="self">Self</span>::ScalarChallenge(ScalarChallengeVector2::default())
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="mina_rs_base" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (fe3342816 2022-08-01)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="mina_rs_base" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (40336865f 2022-08-15)" ></div></body></html>

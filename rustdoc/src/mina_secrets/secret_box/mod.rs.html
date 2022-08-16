@@ -29,36 +29,36 @@
 <span id="29">29</span>
 <span id="30">30</span>
 <span id="31">31</span>
-</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems</span>
-<span class="comment">// SPDX-License-Identifier: Apache-2.0</span>
+</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems
+// SPDX-License-Identifier: Apache-2.0
 
-<span class="doccomment">//!</span>
-<span class="doccomment">//! This module contains utilties for loading keypair from wallet files</span>
-<span class="doccomment">//! that are generated from mina-keypair-gen tool</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! # Example</span>
-<span class="doccomment">//! ```rust</span>
-<span class="doccomment">//! use mina_secrets::secret_box::*;</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! let wallet_json = include_str!(&quot;../../tests/data/test-wallet&quot;);</span>
-<span class="doccomment">//! let sb: SecretBox = wallet_json.try_into().unwrap();</span>
-<span class="doccomment">//! let wallet_json_exported: String = sb.try_into().unwrap();</span>
-<span class="doccomment">//! ```</span>
-<span class="doccomment">//!</span>
+</span><span class="doccomment">//!
+//! This module contains utilties for loading keypair from wallet files
+//! that are generated from mina-keypair-gen tool
+//!
+//! # Example
+//! ```rust
+//! use mina_secrets::secret_box::*;
+//!
+//! let wallet_json = include_str!(&quot;../../tests/data/test-wallet&quot;);
+//! let sb: SecretBox = wallet_json.try_into().unwrap();
+//! let wallet_json_exported: String = sb.try_into().unwrap();
+//! ```
+//!
 
-<span class="kw">mod</span> <span class="ident">constants</span>;
-<span class="kw">mod</span> <span class="ident">types_impls</span>;
-<span class="kw">mod</span> <span class="ident">utils</span>;
+</span><span class="kw">mod </span>constants;
+<span class="kw">mod </span>types_impls;
+<span class="kw">mod </span>utils;
 
-<span class="kw">mod</span> <span class="ident">errors</span>;
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">errors</span>::<span class="kw-2">*</span>;
+<span class="kw">mod </span>errors;
+<span class="kw">pub use </span>errors::<span class="kw-2">*</span>;
 
-<span class="kw">mod</span> <span class="ident">types</span>;
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">types</span>::<span class="kw-2">*</span>;
+<span class="kw">mod </span>types;
+<span class="kw">pub use </span>types::<span class="kw-2">*</span>;
 
-<span class="kw">use</span> <span class="ident">serde</span>::{<span class="ident">Deserialize</span>, <span class="ident">Serialize</span>};
+<span class="kw">use </span>serde::{Deserialize, Serialize};
 
-<span class="comment">// Re-export Keypair</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">proof_systems::mina_signer::Keypair</span>;
+<span class="comment">// Re-export Keypair
+</span><span class="kw">pub use </span>proof_systems::mina_signer::Keypair;
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="mina_secrets" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (fe3342816 2022-08-01)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="mina_secrets" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (40336865f 2022-08-15)" ></div></body></html>

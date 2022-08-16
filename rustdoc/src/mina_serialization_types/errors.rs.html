@@ -20,27 +20,27 @@
 <span id="20">20</span>
 <span id="21">21</span>
 <span id="22">22</span>
-</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems</span>
-<span class="comment">// SPDX-License-Identifier: Apache-2.0</span>
+</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems
+// SPDX-License-Identifier: Apache-2.0
 
-<span class="doccomment">//!</span>
-<span class="doccomment">//! Types that represent errors in mina serialization and deserialization</span>
-<span class="doccomment">//!</span>
+</span><span class="doccomment">//!
+//! Types that represent errors in mina serialization and deserialization
+//!
 
-<span class="doccomment">/// Type that represents errors in mina serialization and deserialization</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">thiserror::Error</span>, <span class="ident">Debug</span>)]</span>
-<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">Error</span> {
-    <span class="doccomment">/// Error decoding base58 string</span>
-    <span class="attribute">#[<span class="ident">error</span>(<span class="string">&quot;Error decoding base58 string: {0}&quot;</span>)]</span>
-    <span class="ident">Base58DecodeError</span>(<span class="attribute">#[<span class="ident">from</span>]</span> <span class="ident">bs58::decode::Error</span>),
+/// Type that represents errors in mina serialization and deserialization
+</span><span class="attribute">#[derive(thiserror::Error, Debug)]</span>
+<span class="kw">pub enum </span>Error {
+    <span class="doccomment">/// Error decoding base58 string
+    </span><span class="attribute">#[error(<span class="string">&quot;Error decoding base58 string: {0}&quot;</span>)]</span>
+    Base58DecodeError(<span class="attribute">#[from]</span> bs58::decode::Error),
 
-    <span class="doccomment">/// Error serde-ing bin-prot bytes</span>
-    <span class="attribute">#[<span class="ident">error</span>(<span class="string">&quot;BinProtError: {0}&quot;</span>)]</span>
-    <span class="ident">BinProtError</span>(<span class="attribute">#[<span class="ident">from</span>]</span> <span class="ident">bin_prot::error::Error</span>),
+    <span class="doccomment">/// Error serde-ing bin-prot bytes
+    </span><span class="attribute">#[error(<span class="string">&quot;BinProtError: {0}&quot;</span>)]</span>
+    BinProtError(<span class="attribute">#[from]</span> bin_prot::error::Error),
 
-    <span class="doccomment">/// Custom error</span>
-    <span class="attribute">#[<span class="ident">error</span>(<span class="string">&quot;Custom error: {0}&quot;</span>)]</span>
-    <span class="ident">Custom</span>(<span class="ident">String</span>),
+    <span class="doccomment">/// Custom error
+    </span><span class="attribute">#[error(<span class="string">&quot;Custom error: {0}&quot;</span>)]</span>
+    Custom(String),
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_serialization_types" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (fe3342816 2022-08-01)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_serialization_types" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (40336865f 2022-08-15)" ></div></body></html>

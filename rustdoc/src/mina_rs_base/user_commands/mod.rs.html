@@ -47,54 +47,54 @@
 <span id="47">47</span>
 <span id="48">48</span>
 <span id="49">49</span>
-</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems</span>
-<span class="comment">// SPDX-License-Identifier: Apache-2.0</span>
+</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems
+// SPDX-License-Identifier: Apache-2.0
 
-<span class="doccomment">//! User commands are how external users can mutate the state of the Mina ledger</span>
-<span class="doccomment">//! This module contains the command data structures and helpers to create and</span>
-<span class="doccomment">//! serialize new commands to broadcast to the network</span>
+</span><span class="doccomment">//! User commands are how external users can mutate the state of the Mina ledger
+//! This module contains the command data structures and helpers to create and
+//! serialize new commands to broadcast to the network
 
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">memo</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">payment</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">signed_command</span>;
+</span><span class="kw">pub mod </span>memo;
+<span class="kw">pub mod </span>payment;
+<span class="kw">pub mod </span>signed_command;
 
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::verifiable::Verifiable</span>;
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">memo::SignedCommandMemo</span>;
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">payment::PaymentPayload</span>;
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">signed_command</span>::{
-    <span class="ident">SignedCommand</span>, <span class="ident">SignedCommandPayload</span>, <span class="ident">SignedCommandPayloadBody</span>, <span class="ident">SignedCommandPayloadCommon</span>,
+<span class="kw">use </span><span class="kw">crate</span>::verifiable::Verifiable;
+<span class="kw">pub use </span>memo::SignedCommandMemo;
+<span class="kw">pub use </span>payment::PaymentPayload;
+<span class="kw">pub use </span>signed_command::{
+    SignedCommand, SignedCommandPayload, SignedCommandPayloadBody, SignedCommandPayloadCommon,
 };
 
-<span class="kw">use</span> <span class="ident">mina_serialization_types::json::UserCommandJson</span>;
-<span class="kw">use</span> <span class="ident">mina_serialization_types_macros::AutoFrom</span>;
-<span class="kw">use</span> <span class="ident">proof_systems::mina_signer::Signer</span>;
-<span class="kw">use</span> <span class="ident">versioned</span>::<span class="kw-2">*</span>;
+<span class="kw">use </span>mina_serialization_types::json::UserCommandJson;
+<span class="kw">use </span>mina_serialization_types_macros::AutoFrom;
+<span class="kw">use </span>proof_systems::mina_signer::Signer;
+<span class="kw">use </span>versioned::<span class="kw-2">*</span>;
 
-<span class="doccomment">/// The top level user command type</span>
-<span class="doccomment">/// This is the output of the command builders</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>, <span class="ident">AutoFrom</span>)]</span>
-<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">mina_serialization_types::staged_ledger_diff::UserCommand</span>)]</span>
-<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">UserCommand</span> {
-    <span class="doccomment">/// A command signed by a private key</span>
-    <span class="ident">SignedCommand</span>(<span class="ident">SignedCommand</span>),
-    <span class="comment">// FIXME: other variants are not covered by current test block</span>
-}
+<span class="doccomment">/// The top level user command type
+/// This is the output of the command builders
+</span><span class="attribute">#[derive(Clone, Eq, PartialEq, Debug, AutoFrom)]</span>
+<span class="attribute">#[auto_from(mina_serialization_types::staged_ledger_diff::UserCommand)]</span>
+<span class="kw">pub enum </span>UserCommand {
+    <span class="doccomment">/// A command signed by a private key
+    </span>SignedCommand(SignedCommand),
+    <span class="comment">// FIXME: other variants are not covered by current test block
+</span>}
 
 <span class="macro">impl_from_with_proxy!</span>(
-    <span class="ident">UserCommand</span>,
-    <span class="ident">mina_serialization_types::staged_ledger_diff::UserCommand</span>,
-    <span class="ident">UserCommandJson</span>
+    UserCommand,
+    mina_serialization_types::staged_ledger_diff::UserCommand,
+    UserCommandJson
 );
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">CTX</span><span class="op">&gt;</span> <span class="ident">Verifiable</span><span class="op">&lt;</span><span class="ident">CTX</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">UserCommand</span>
-<span class="kw">where</span>
-    <span class="ident">CTX</span>: <span class="ident">Signer</span><span class="op">&lt;</span><span class="ident">SignedCommandPayload</span><span class="op">&gt;</span>,
+<span class="kw">impl</span>&lt;CTX&gt; Verifiable&lt;CTX&gt; <span class="kw">for </span>UserCommand
+<span class="kw">where
+    </span>CTX: Signer&lt;SignedCommandPayload&gt;,
 {
-    <span class="kw">fn</span> <span class="ident">verify</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">ctx</span>: <span class="kw-2">&amp;mut</span> <span class="ident">CTX</span>) -&gt; <span class="ident">bool</span> {
-        <span class="kw">match</span> <span class="self">self</span> {
-            <span class="ident">UserCommand::SignedCommand</span>(<span class="ident">sc</span>) =&gt; <span class="ident">sc</span>.<span class="ident">verify</span>(<span class="ident">ctx</span>),
+    <span class="kw">fn </span>verify(<span class="kw-2">&amp;</span><span class="self">self</span>, ctx: <span class="kw-2">&amp;mut </span>CTX) -&gt; bool {
+        <span class="kw">match </span><span class="self">self </span>{
+            UserCommand::SignedCommand(sc) =&gt; sc.verify(ctx),
         }
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="mina_rs_base" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (fe3342816 2022-08-01)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="mina_rs_base" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (40336865f 2022-08-15)" ></div></body></html>

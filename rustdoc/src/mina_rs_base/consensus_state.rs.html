@@ -151,158 +151,158 @@
 <span id="151">151</span>
 <span id="152">152</span>
 <span id="153">153</span>
-</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems</span>
-<span class="comment">// SPDX-License-Identifier: Apache-2.0</span>
+</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems
+// SPDX-License-Identifier: Apache-2.0
 
-<span class="doccomment">//! Types and funcions related to the Mina consensus state</span>
+</span><span class="doccomment">//! Types and funcions related to the Mina consensus state
 
-<span class="kw">use</span> <span class="kw">crate</span>::{
-    <span class="ident">epoch_data::EpochData</span>,
-    <span class="ident">global_slot::GlobalSlot</span>,
-    <span class="ident">numbers</span>::{<span class="ident">Amount</span>, <span class="ident">GlobalSlotNumber</span>, <span class="ident">Length</span>},
+</span><span class="kw">use crate</span>::{
+    epoch_data::EpochData,
+    global_slot::GlobalSlot,
+    numbers::{Amount, GlobalSlotNumber, Length},
 };
-<span class="kw">use</span> <span class="ident">blake2</span>::{
-    <span class="ident">digest</span>::{<span class="ident">Update</span>, <span class="ident">VariableOutput</span>},
-    <span class="ident">Blake2bVar</span>,
+<span class="kw">use </span>blake2::{
+    digest::{Update, VariableOutput},
+    Blake2bVar,
 };
-<span class="kw">use</span> <span class="ident">mina_serialization_types</span>::{<span class="ident">json</span>::<span class="kw-2">*</span>, <span class="ident">v1</span>::<span class="kw-2">*</span>, <span class="kw-2">*</span>};
-<span class="kw">use</span> <span class="ident">mina_serialization_types_macros::AutoFrom</span>;
-<span class="kw">use</span> <span class="ident">proof_systems::mina_hasher</span>::{<span class="ident">Hashable</span>, <span class="ident">ROInput</span>};
-<span class="kw">use</span> <span class="ident">proof_systems::mina_signer::CompressedPubKey</span>;
-<span class="kw">use</span> <span class="ident">smart_default::SmartDefault</span>;
-<span class="kw">use</span> <span class="ident">versioned</span>::<span class="kw-2">*</span>;
+<span class="kw">use </span>mina_serialization_types::{json::<span class="kw-2">*</span>, v1::<span class="kw-2">*</span>, <span class="kw-2">*</span>};
+<span class="kw">use </span>mina_serialization_types_macros::AutoFrom;
+<span class="kw">use </span>proof_systems::mina_hasher::{Hashable, ROInput};
+<span class="kw">use </span>proof_systems::mina_signer::CompressedPubKey;
+<span class="kw">use </span>smart_default::SmartDefault;
+<span class="kw">use </span>versioned::<span class="kw-2">*</span>;
 
-<span class="doccomment">/// Wrapper struct for the output for a VRF</span>
-<span class="attribute">#[<span class="ident">derive</span>(
-    <span class="ident">Clone</span>, <span class="ident">Default</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>, <span class="ident">derive_more::From</span>, <span class="ident">derive_more::Into</span>, <span class="ident">AutoFrom</span>, <span class="ident">PartialOrd</span>,
+<span class="doccomment">/// Wrapper struct for the output for a VRF
+</span><span class="attribute">#[derive(
+    Clone, Default, Eq, PartialEq, Debug, derive_more::From, derive_more::Into, AutoFrom, PartialOrd,
 )]</span>
-<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">mina_serialization_types::consensus_state::VrfOutputTruncated</span>)]</span>
-<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">mina_serialization_types::consensus_state::VrfOutputTruncatedJson</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">VrfOutputTruncated</span>(<span class="kw">pub</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>);
+<span class="attribute">#[auto_from(mina_serialization_types::consensus_state::VrfOutputTruncated)]</span>
+<span class="attribute">#[auto_from(mina_serialization_types::consensus_state::VrfOutputTruncatedJson)]</span>
+<span class="kw">pub struct </span>VrfOutputTruncated(<span class="kw">pub </span>Vec&lt;u8&gt;);
 
-<span class="kw">impl</span> <span class="ident">VrfOutputTruncated</span> {
-    <span class="doccomment">/// Calculates blake2b digest</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">digest</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">hasher</span> <span class="op">=</span> <span class="ident">Blake2bVar::new</span>(<span class="number">32</span>).<span class="ident">expect</span>(<span class="string">&quot;Invalid Blake2bVar output size&quot;</span>);
-        <span class="ident">hasher</span>.<span class="ident">update</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0</span>);
-        <span class="ident">hasher</span>.<span class="ident">finalize_boxed</span>().<span class="ident">to_vec</span>()
+<span class="kw">impl </span>VrfOutputTruncated {
+    <span class="doccomment">/// Calculates blake2b digest
+    </span><span class="kw">pub fn </span>digest(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Vec&lt;u8&gt; {
+        <span class="kw">let </span><span class="kw-2">mut </span>hasher = Blake2bVar::new(<span class="number">32</span>).expect(<span class="string">&quot;Invalid Blake2bVar output size&quot;</span>);
+        hasher.update(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0</span>);
+        hasher.finalize_boxed().to_vec()
     }
 }
 
-<span class="macro">impl_strconv_via_json!</span>(<span class="ident">VrfOutputTruncated</span>, <span class="ident">VrfOutputTruncatedJson</span>);
+<span class="macro">impl_strconv_via_json!</span>(VrfOutputTruncated, VrfOutputTruncatedJson);
 
-<span class="kw">impl</span> <span class="ident">Hashable</span> <span class="kw">for</span> <span class="ident">VrfOutputTruncated</span> {
-    <span class="kw">type</span> <span class="ident">D</span> <span class="op">=</span> ();
+<span class="kw">impl </span>Hashable <span class="kw">for </span>VrfOutputTruncated {
+    <span class="kw">type </span>D = ();
 
-    <span class="kw">fn</span> <span class="ident">to_roinput</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">ROInput</span> {
-        <span class="kw">if</span> <span class="self">self</span>.<span class="number">0</span>.<span class="ident">len</span>() <span class="op">&lt;</span><span class="op">=</span> <span class="number">31</span> {
-            <span class="ident">ROInput::new</span>().<span class="ident">append_bytes</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0</span>)
-        } <span class="kw">else</span> {
-            <span class="kw">let</span> <span class="ident">roi</span> <span class="op">=</span> <span class="ident">ROInput::new</span>().<span class="ident">append_bytes</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0</span>[..<span class="number">31</span>]);
-            <span class="kw">if</span> <span class="self">self</span>.<span class="number">0</span>.<span class="ident">len</span>() <span class="op">&gt;</span> <span class="number">31</span> {
-                <span class="kw">let</span> <span class="ident">last</span> <span class="op">=</span> <span class="self">self</span>.<span class="number">0</span>[<span class="number">31</span>];
-                <span class="ident">roi</span>.<span class="ident">append_bool</span>(<span class="ident">last</span> <span class="op">&amp;</span> <span class="number">0b1</span> <span class="op">&gt;</span> <span class="number">0</span>)
-                    .<span class="ident">append_bool</span>(<span class="ident">last</span> <span class="op">&amp;</span> <span class="number">0b10</span> <span class="op">&gt;</span> <span class="number">0</span>)
-                    .<span class="ident">append_bool</span>(<span class="ident">last</span> <span class="op">&amp;</span> <span class="number">0b100</span> <span class="op">&gt;</span> <span class="number">0</span>)
-                    .<span class="ident">append_bool</span>(<span class="ident">last</span> <span class="op">&amp;</span> <span class="number">0b1000</span> <span class="op">&gt;</span> <span class="number">0</span>)
-                    .<span class="ident">append_bool</span>(<span class="ident">last</span> <span class="op">&amp;</span> <span class="number">0b10000</span> <span class="op">&gt;</span> <span class="number">0</span>)
-            } <span class="kw">else</span> {
-                <span class="ident">roi</span>
+    <span class="kw">fn </span>to_roinput(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; ROInput {
+        <span class="kw">if </span><span class="self">self</span>.<span class="number">0</span>.len() &lt;= <span class="number">31 </span>{
+            ROInput::new().append_bytes(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0</span>)
+        } <span class="kw">else </span>{
+            <span class="kw">let </span>roi = ROInput::new().append_bytes(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0</span>[..<span class="number">31</span>]);
+            <span class="kw">if </span><span class="self">self</span>.<span class="number">0</span>.len() &gt; <span class="number">31 </span>{
+                <span class="kw">let </span>last = <span class="self">self</span>.<span class="number">0</span>[<span class="number">31</span>];
+                roi.append_bool(last &amp; <span class="number">0b1 </span>&gt; <span class="number">0</span>)
+                    .append_bool(last &amp; <span class="number">0b10 </span>&gt; <span class="number">0</span>)
+                    .append_bool(last &amp; <span class="number">0b100 </span>&gt; <span class="number">0</span>)
+                    .append_bool(last &amp; <span class="number">0b1000 </span>&gt; <span class="number">0</span>)
+                    .append_bool(last &amp; <span class="number">0b10000 </span>&gt; <span class="number">0</span>)
+            } <span class="kw">else </span>{
+                roi
             }
         }
     }
 
-    <span class="kw">fn</span> <span class="ident">domain_string</span>(<span class="kw">_</span>: <span class="ident"><span class="self">Self</span>::D</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> {
-        <span class="prelude-val">None</span>
-    }
+    <span class="kw">fn </span>domain_string(<span class="kw">_</span>: <span class="self">Self</span>::D) -&gt; <span class="prelude-ty">Option</span>&lt;String&gt; {
+        <span class="prelude-val">None
+    </span>}
 }
 
-<span class="doccomment">/// This structure encapsulates the succinct state of the consensus protocol.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// The stake distribution information is contained by the staking_epoch_data field.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// Due to its succinct nature, Samasika cannot look back into the past to</span>
-<span class="doccomment">/// obtain ledger snapshots for the stake distribution. Instead, Samasika implements a novel</span>
-<span class="doccomment">/// approach where the future stake distribution snapshot is prepared by the current consensus epoch.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// Samasika prepares the past for the future! This future state is stored in the next_epoch_data field.</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">PartialEq</span>, <span class="ident">SmartDefault</span>, <span class="ident">AutoFrom</span>)]</span>
-<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">mina_serialization_types::consensus_state::ConsensusState</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ConsensusState</span> {
-    <span class="doccomment">/// Height of block</span>
-    <span class="kw">pub</span> <span class="ident">blockchain_length</span>: <span class="ident">Length</span>,
-    <span class="doccomment">/// Epoch number</span>
-    <span class="kw">pub</span> <span class="ident">epoch_count</span>: <span class="ident">Length</span>,
-    <span class="doccomment">/// Minimum window density oberved on the chain</span>
-    <span class="kw">pub</span> <span class="ident">min_window_density</span>: <span class="ident">Length</span>,
-    <span class="doccomment">/// Current sliding window of densities</span>
-    <span class="kw">pub</span> <span class="ident">sub_window_densities</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Length</span><span class="op">&gt;</span>,
-    <span class="doccomment">/// Additional VRS output from leader (for seeding Random Oracle)</span>
-    <span class="kw">pub</span> <span class="ident">last_vrf_output</span>: <span class="ident">VrfOutputTruncated</span>,
-    <span class="doccomment">/// Total supply of currency</span>
-    <span class="kw">pub</span> <span class="ident">total_currency</span>: <span class="ident">Amount</span>,
-    <span class="doccomment">/// Current global slot number relative to the current hard fork</span>
-    <span class="kw">pub</span> <span class="ident">curr_global_slot</span>: <span class="ident">GlobalSlot</span>,
-    <span class="doccomment">/// Absolute global slot number since genesis</span>
-    <span class="kw">pub</span> <span class="ident">global_slot_since_genesis</span>: <span class="ident">GlobalSlotNumber</span>,
-    <span class="doccomment">/// Epoch data for previous epoch</span>
-    <span class="kw">pub</span> <span class="ident">staking_epoch_data</span>: <span class="ident">EpochData</span>,
-    <span class="doccomment">/// Epoch data for current epoch</span>
-    <span class="kw">pub</span> <span class="ident">next_epoch_data</span>: <span class="ident">EpochData</span>,
-    <span class="doccomment">/// If the block has an ancestor in the same checkpoint window</span>
-    <span class="kw">pub</span> <span class="ident">has_ancestor_in_same_checkpoint_window</span>: <span class="ident">bool</span>,
-    <span class="doccomment">/// Compressed public key of winning account</span>
-    <span class="attribute">#[<span class="ident">default</span>(<span class="ident">CompressedPubKey::from_address</span>(<span class="string">&quot;B62qiy32p8kAKnny8ZFwoMhYpBppM1DWVCqAPBYNcXnsAHhnfAAuXgg&quot;</span>).<span class="ident">unwrap</span>())]</span>
-    <span class="kw">pub</span> <span class="ident">block_stake_winner</span>: <span class="ident">CompressedPubKey</span>,
-    <span class="doccomment">/// Compressed public key of the block producer</span>
-    <span class="attribute">#[<span class="ident">default</span>(<span class="ident">CompressedPubKey::from_address</span>(<span class="string">&quot;B62qiy32p8kAKnny8ZFwoMhYpBppM1DWVCqAPBYNcXnsAHhnfAAuXgg&quot;</span>).<span class="ident">unwrap</span>())]</span>
-    <span class="kw">pub</span> <span class="ident">block_creator</span>: <span class="ident">CompressedPubKey</span>,
-    <span class="doccomment">/// Compresed public key of account receiving the block reward</span>
-    <span class="attribute">#[<span class="ident">default</span>(<span class="ident">CompressedPubKey::from_address</span>(<span class="string">&quot;B62qiy32p8kAKnny8ZFwoMhYpBppM1DWVCqAPBYNcXnsAHhnfAAuXgg&quot;</span>).<span class="ident">unwrap</span>())]</span>
-    <span class="kw">pub</span> <span class="ident">coinbase_receiver</span>: <span class="ident">CompressedPubKey</span>,
-    <span class="doccomment">/// true if block_stake_winner has no locked tokens, false otherwise</span>
-    <span class="kw">pub</span> <span class="ident">supercharge_coinbase</span>: <span class="ident">bool</span>,
+<span class="doccomment">/// This structure encapsulates the succinct state of the consensus protocol.
+///
+/// The stake distribution information is contained by the staking_epoch_data field.
+///
+/// Due to its succinct nature, Samasika cannot look back into the past to
+/// obtain ledger snapshots for the stake distribution. Instead, Samasika implements a novel
+/// approach where the future stake distribution snapshot is prepared by the current consensus epoch.
+///
+/// Samasika prepares the past for the future! This future state is stored in the next_epoch_data field.
+</span><span class="attribute">#[derive(Clone, Debug, Eq, PartialEq, SmartDefault, AutoFrom)]</span>
+<span class="attribute">#[auto_from(mina_serialization_types::consensus_state::ConsensusState)]</span>
+<span class="kw">pub struct </span>ConsensusState {
+    <span class="doccomment">/// Height of block
+    </span><span class="kw">pub </span>blockchain_length: Length,
+    <span class="doccomment">/// Epoch number
+    </span><span class="kw">pub </span>epoch_count: Length,
+    <span class="doccomment">/// Minimum window density oberved on the chain
+    </span><span class="kw">pub </span>min_window_density: Length,
+    <span class="doccomment">/// Current sliding window of densities
+    </span><span class="kw">pub </span>sub_window_densities: Vec&lt;Length&gt;,
+    <span class="doccomment">/// Additional VRS output from leader (for seeding Random Oracle)
+    </span><span class="kw">pub </span>last_vrf_output: VrfOutputTruncated,
+    <span class="doccomment">/// Total supply of currency
+    </span><span class="kw">pub </span>total_currency: Amount,
+    <span class="doccomment">/// Current global slot number relative to the current hard fork
+    </span><span class="kw">pub </span>curr_global_slot: GlobalSlot,
+    <span class="doccomment">/// Absolute global slot number since genesis
+    </span><span class="kw">pub </span>global_slot_since_genesis: GlobalSlotNumber,
+    <span class="doccomment">/// Epoch data for previous epoch
+    </span><span class="kw">pub </span>staking_epoch_data: EpochData,
+    <span class="doccomment">/// Epoch data for current epoch
+    </span><span class="kw">pub </span>next_epoch_data: EpochData,
+    <span class="doccomment">/// If the block has an ancestor in the same checkpoint window
+    </span><span class="kw">pub </span>has_ancestor_in_same_checkpoint_window: bool,
+    <span class="doccomment">/// Compressed public key of winning account
+    </span><span class="attribute">#[default(CompressedPubKey::from_address(<span class="string">&quot;B62qiy32p8kAKnny8ZFwoMhYpBppM1DWVCqAPBYNcXnsAHhnfAAuXgg&quot;</span>).unwrap())]</span>
+    <span class="kw">pub </span>block_stake_winner: CompressedPubKey,
+    <span class="doccomment">/// Compressed public key of the block producer
+    </span><span class="attribute">#[default(CompressedPubKey::from_address(<span class="string">&quot;B62qiy32p8kAKnny8ZFwoMhYpBppM1DWVCqAPBYNcXnsAHhnfAAuXgg&quot;</span>).unwrap())]</span>
+    <span class="kw">pub </span>block_creator: CompressedPubKey,
+    <span class="doccomment">/// Compresed public key of account receiving the block reward
+    </span><span class="attribute">#[default(CompressedPubKey::from_address(<span class="string">&quot;B62qiy32p8kAKnny8ZFwoMhYpBppM1DWVCqAPBYNcXnsAHhnfAAuXgg&quot;</span>).unwrap())]</span>
+    <span class="kw">pub </span>coinbase_receiver: CompressedPubKey,
+    <span class="doccomment">/// true if block_stake_winner has no locked tokens, false otherwise
+    </span><span class="kw">pub </span>supercharge_coinbase: bool,
 }
 
-<span class="macro">impl_from_with_proxy!</span>(<span class="ident">ConsensusState</span>, <span class="ident">ConsensusStateV1</span>, <span class="ident">ConsensusStateJson</span>);
+<span class="macro">impl_from_with_proxy!</span>(ConsensusState, ConsensusStateV1, ConsensusStateJson);
 
-<span class="kw">impl</span> <span class="ident">Hashable</span> <span class="kw">for</span> <span class="ident">ConsensusState</span> {
-    <span class="kw">type</span> <span class="ident">D</span> <span class="op">=</span> ();
+<span class="kw">impl </span>Hashable <span class="kw">for </span>ConsensusState {
+    <span class="kw">type </span>D = ();
 
-    <span class="kw">fn</span> <span class="ident">to_roinput</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">ROInput</span> {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">roi</span> <span class="op">=</span> <span class="ident">ROInput::new</span>()
-            .<span class="ident">append_hashable</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">blockchain_length</span>)
-            .<span class="ident">append_hashable</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">epoch_count</span>)
-            .<span class="ident">append_hashable</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">min_window_density</span>);
-        <span class="kw">for</span> <span class="ident">v</span> <span class="kw">in</span> <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">sub_window_densities</span> {
-            <span class="ident">roi</span> <span class="op">=</span> <span class="ident">roi</span>.<span class="ident">append_hashable</span>(<span class="ident">v</span>);
+    <span class="kw">fn </span>to_roinput(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; ROInput {
+        <span class="kw">let </span><span class="kw-2">mut </span>roi = ROInput::new()
+            .append_hashable(<span class="kw-2">&amp;</span><span class="self">self</span>.blockchain_length)
+            .append_hashable(<span class="kw-2">&amp;</span><span class="self">self</span>.epoch_count)
+            .append_hashable(<span class="kw-2">&amp;</span><span class="self">self</span>.min_window_density);
+        <span class="kw">for </span>v <span class="kw">in </span><span class="kw-2">&amp;</span><span class="self">self</span>.sub_window_densities {
+            roi = roi.append_hashable(v);
         }
-        <span class="ident">roi</span>.<span class="ident">append_hashable</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">last_vrf_output</span>)
-            .<span class="ident">append_hashable</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">total_currency</span>)
-            .<span class="ident">append_hashable</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">curr_global_slot</span>)
-            .<span class="ident">append_hashable</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">global_slot_since_genesis</span>)
-            .<span class="ident">append_bool</span>(<span class="self">self</span>.<span class="ident">has_ancestor_in_same_checkpoint_window</span>)
-            .<span class="ident">append_bool</span>(<span class="self">self</span>.<span class="ident">supercharge_coinbase</span>)
-            .<span class="ident">append_hashable</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">staking_epoch_data</span>)
-            .<span class="ident">append_hashable</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">next_epoch_data</span>)
-            .<span class="ident">append_field</span>(<span class="self">self</span>.<span class="ident">block_stake_winner</span>.<span class="ident">x</span>)
-            .<span class="ident">append_bool</span>(<span class="self">self</span>.<span class="ident">block_stake_winner</span>.<span class="ident">is_odd</span>)
-            .<span class="ident">append_field</span>(<span class="self">self</span>.<span class="ident">block_creator</span>.<span class="ident">x</span>)
-            .<span class="ident">append_bool</span>(<span class="self">self</span>.<span class="ident">block_creator</span>.<span class="ident">is_odd</span>)
-            .<span class="ident">append_field</span>(<span class="self">self</span>.<span class="ident">coinbase_receiver</span>.<span class="ident">x</span>)
-            .<span class="ident">append_bool</span>(<span class="self">self</span>.<span class="ident">coinbase_receiver</span>.<span class="ident">is_odd</span>)
+        roi.append_hashable(<span class="kw-2">&amp;</span><span class="self">self</span>.last_vrf_output)
+            .append_hashable(<span class="kw-2">&amp;</span><span class="self">self</span>.total_currency)
+            .append_hashable(<span class="kw-2">&amp;</span><span class="self">self</span>.curr_global_slot)
+            .append_hashable(<span class="kw-2">&amp;</span><span class="self">self</span>.global_slot_since_genesis)
+            .append_bool(<span class="self">self</span>.has_ancestor_in_same_checkpoint_window)
+            .append_bool(<span class="self">self</span>.supercharge_coinbase)
+            .append_hashable(<span class="kw-2">&amp;</span><span class="self">self</span>.staking_epoch_data)
+            .append_hashable(<span class="kw-2">&amp;</span><span class="self">self</span>.next_epoch_data)
+            .append_field(<span class="self">self</span>.block_stake_winner.x)
+            .append_bool(<span class="self">self</span>.block_stake_winner.is_odd)
+            .append_field(<span class="self">self</span>.block_creator.x)
+            .append_bool(<span class="self">self</span>.block_creator.is_odd)
+            .append_field(<span class="self">self</span>.coinbase_receiver.x)
+            .append_bool(<span class="self">self</span>.coinbase_receiver.is_odd)
     }
 
-    <span class="kw">fn</span> <span class="ident">domain_string</span>(<span class="kw">_</span>: <span class="ident"><span class="self">Self</span>::D</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> {
-        <span class="prelude-val">None</span>
-    }
+    <span class="kw">fn </span>domain_string(<span class="kw">_</span>: <span class="self">Self</span>::D) -&gt; <span class="prelude-ty">Option</span>&lt;String&gt; {
+        <span class="prelude-val">None
+    </span>}
 }
 
-<span class="kw">impl</span> <span class="ident">ConsensusState</span> {
-    <span class="doccomment">/// Returns the sub-window densities as a vec of u32</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">sub_window_densities</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="ident">sub_window_densities</span>.<span class="ident">iter</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">i</span><span class="op">|</span> <span class="ident">i</span>.<span class="number">0</span>).<span class="ident">collect</span>()
+<span class="kw">impl </span>ConsensusState {
+    <span class="doccomment">/// Returns the sub-window densities as a vec of u32
+    </span><span class="kw">pub fn </span>sub_window_densities(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Vec&lt;u32&gt; {
+        <span class="self">self</span>.sub_window_densities.iter().map(|i| i.<span class="number">0</span>).collect()
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_rs_base" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (fe3342816 2022-08-01)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_rs_base" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (40336865f 2022-08-15)" ></div></body></html>

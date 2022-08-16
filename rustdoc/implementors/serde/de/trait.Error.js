@@ -1,3 +1,3 @@
-(function() {var implementors = {};
-implementors["bin_prot"] = [{"text":"impl <a class=\"trait\" href=\"https://docs.rs/serde/1.0.141/serde/de/trait.Error.html\" title=\"trait serde::de::Error\">Error</a> for <a class=\"enum\" href=\"bin_prot/error/enum.Error.html\" title=\"enum bin_prot::error::Error\">Error</a>","synthetic":false,"types":["bin_prot::error::Error"]}];
-if (window.register_implementors) {window.register_implementors(implementors);} else {window.pending_implementors = implementors;}})()
+(function() {var implementors = {
+"bin_prot":[["impl <a class=\"trait\" href=\"https://docs.rs/serde/1.0.143/serde/de/trait.Error.html\" title=\"trait serde::de::Error\">Error</a> for <a class=\"enum\" href=\"bin_prot/error/enum.Error.html\" title=\"enum bin_prot::error::Error\">Error</a>"]]
+};if (window.register_implementors) {window.register_implementors(implementors);} else {window.pending_implementors = implementors;}})()

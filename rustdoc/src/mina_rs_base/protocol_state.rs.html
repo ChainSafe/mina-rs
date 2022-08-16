@@ -160,167 +160,167 @@
 <span id="160">160</span>
 <span id="161">161</span>
 <span id="162">162</span>
-</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems</span>
-<span class="comment">// SPDX-License-Identifier: Apache-2.0</span>
+</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems
+// SPDX-License-Identifier: Apache-2.0
 
-<span class="doccomment">//! Types related to the Mina protocol state</span>
+</span><span class="doccomment">//! Types related to the Mina protocol state
 
-<span class="kw">use</span> <span class="kw">crate</span>::{
-    <span class="ident">blockchain_state::BlockchainState</span>,
-    <span class="ident">consensus_state::ConsensusState</span>,
-    <span class="ident">global_slot::GlobalSlot</span>,
-    <span class="ident">numbers</span>::{<span class="ident">BlockTime</span>, <span class="ident">Length</span>},
+</span><span class="kw">use crate</span>::{
+    blockchain_state::BlockchainState,
+    consensus_state::ConsensusState,
+    global_slot::GlobalSlot,
+    numbers::{BlockTime, Length},
 };
-<span class="kw">use</span> <span class="ident">mina_crypto::hash::StateHash</span>;
-<span class="kw">use</span> <span class="ident">mina_serialization_types</span>::{<span class="ident">json</span>::<span class="kw-2">*</span>, <span class="ident">v1</span>::<span class="kw-2">*</span>};
-<span class="kw">use</span> <span class="ident">mina_serialization_types_macros::AutoFrom</span>;
-<span class="kw">use</span> <span class="ident">proof_systems::mina_hasher</span>::{<span class="ident">create_legacy</span>, <span class="ident">Fp</span>, <span class="ident">Hashable</span>, <span class="ident">Hasher</span>, <span class="ident">ROInput</span>};
-<span class="kw">use</span> <span class="ident">versioned</span>::<span class="kw-2">*</span>;
+<span class="kw">use </span>mina_crypto::hash::StateHash;
+<span class="kw">use </span>mina_serialization_types::{json::<span class="kw-2">*</span>, v1::<span class="kw-2">*</span>};
+<span class="kw">use </span>mina_serialization_types_macros::AutoFrom;
+<span class="kw">use </span>proof_systems::mina_hasher::{create_legacy, Fp, Hashable, Hasher, ROInput};
+<span class="kw">use </span>versioned::<span class="kw-2">*</span>;
 
-<span class="doccomment">/// Constants that define the consensus parameters</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Default</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>, <span class="ident">AutoFrom</span>)]</span>
-<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">mina_serialization_types::protocol_constants::ProtocolConstants</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ProtocolConstants</span> {
-    <span class="doccomment">/// Point of finality (number of confirmations)</span>
-    <span class="kw">pub</span> <span class="ident">k</span>: <span class="ident">Length</span>,
-    <span class="doccomment">/// Number of slots per epoch</span>
-    <span class="kw">pub</span> <span class="ident">slots_per_epoch</span>: <span class="ident">Length</span>,
-    <span class="doccomment">/// No of slots in a sub-window = 7</span>
-    <span class="kw">pub</span> <span class="ident">slots_per_sub_window</span>: <span class="ident">Length</span>,
-    <span class="doccomment">/// Maximum permissable delay of packets (in slots after the current)</span>
-    <span class="kw">pub</span> <span class="ident">delta</span>: <span class="ident">Length</span>,
-    <span class="doccomment">/// Timestamp of genesis block in unixtime</span>
-    <span class="kw">pub</span> <span class="ident">genesis_state_timestamp</span>: <span class="ident">BlockTime</span>,
+<span class="doccomment">/// Constants that define the consensus parameters
+</span><span class="attribute">#[derive(Clone, Default, Eq, PartialEq, Debug, AutoFrom)]</span>
+<span class="attribute">#[auto_from(mina_serialization_types::protocol_constants::ProtocolConstants)]</span>
+<span class="kw">pub struct </span>ProtocolConstants {
+    <span class="doccomment">/// Point of finality (number of confirmations)
+    </span><span class="kw">pub </span>k: Length,
+    <span class="doccomment">/// Number of slots per epoch
+    </span><span class="kw">pub </span>slots_per_epoch: Length,
+    <span class="doccomment">/// No of slots in a sub-window = 7
+    </span><span class="kw">pub </span>slots_per_sub_window: Length,
+    <span class="doccomment">/// Maximum permissable delay of packets (in slots after the current)
+    </span><span class="kw">pub </span>delta: Length,
+    <span class="doccomment">/// Timestamp of genesis block in unixtime
+    </span><span class="kw">pub </span>genesis_state_timestamp: BlockTime,
 }
 
 <span class="macro">impl_from_with_proxy!</span>(
-    <span class="ident">ProtocolConstants</span>,
-    <span class="ident">ProtocolConstantsV1</span>,
-    <span class="ident">ProtocolConstantsJson</span>
+    ProtocolConstants,
+    ProtocolConstantsV1,
+    ProtocolConstantsJson
 );
 
-<span class="kw">impl</span> <span class="ident">Hashable</span> <span class="kw">for</span> <span class="ident">ProtocolConstants</span> {
-    <span class="kw">type</span> <span class="ident">D</span> <span class="op">=</span> ();
+<span class="kw">impl </span>Hashable <span class="kw">for </span>ProtocolConstants {
+    <span class="kw">type </span>D = ();
 
-    <span class="kw">fn</span> <span class="ident">to_roinput</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">ROInput</span> {
-        <span class="ident">ROInput::new</span>()
-            .<span class="ident">append_hashable</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">k</span>)
-            .<span class="ident">append_hashable</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">delta</span>)
-            .<span class="ident">append_hashable</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">slots_per_epoch</span>)
-            .<span class="ident">append_hashable</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">slots_per_sub_window</span>)
-            .<span class="ident">append_hashable</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">genesis_state_timestamp</span>)
+    <span class="kw">fn </span>to_roinput(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; ROInput {
+        ROInput::new()
+            .append_hashable(<span class="kw-2">&amp;</span><span class="self">self</span>.k)
+            .append_hashable(<span class="kw-2">&amp;</span><span class="self">self</span>.delta)
+            .append_hashable(<span class="kw-2">&amp;</span><span class="self">self</span>.slots_per_epoch)
+            .append_hashable(<span class="kw-2">&amp;</span><span class="self">self</span>.slots_per_sub_window)
+            .append_hashable(<span class="kw-2">&amp;</span><span class="self">self</span>.genesis_state_timestamp)
     }
 
-    <span class="kw">fn</span> <span class="ident">domain_string</span>(<span class="kw">_</span>: <span class="ident"><span class="self">Self</span>::D</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> {
-        <span class="prelude-val">None</span>
+    <span class="kw">fn </span>domain_string(<span class="kw">_</span>: <span class="self">Self</span>::D) -&gt; <span class="prelude-ty">Option</span>&lt;String&gt; {
+        <span class="prelude-val">None
+    </span>}
+}
+
+<span class="attribute">#[derive(Clone, Default, Debug, Eq, PartialEq, AutoFrom)]</span>
+<span class="attribute">#[auto_from(mina_serialization_types::protocol_state::ProtocolState)]</span>
+<span class="doccomment">/// This structure can be thought of like the block header. It contains the most essential information of a block.
+</span><span class="kw">pub struct </span>ProtocolState {
+    <span class="doccomment">/// Commitment to previous block (hash of previous protocol state hash and body hash)
+    </span><span class="kw">pub </span>previous_state_hash: StateHash,
+    <span class="doccomment">/// The body of the protocol state
+    </span><span class="kw">pub </span>body: ProtocolStateBody,
+}
+
+<span class="macro">impl_from_with_proxy!</span>(ProtocolState, ProtocolStateV1, ProtocolStateJson);
+
+<span class="kw">impl </span>Hashable <span class="kw">for </span>ProtocolState {
+    <span class="kw">type </span>D = ();
+
+    <span class="kw">fn </span>to_roinput(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; ROInput {
+        <span class="kw">let </span><span class="kw-2">mut </span>hasher = create_legacy(());
+        <span class="kw">let </span>body_hash = hasher.hash(<span class="kw-2">&amp;</span><span class="self">self</span>.body);
+        ROInput::new()
+            .append_hashable(<span class="kw-2">&amp;</span><span class="self">self</span>.previous_state_hash)
+            .append_field(body_hash)
+    }
+
+    <span class="kw">fn </span>domain_string(<span class="kw">_</span>: <span class="self">Self</span>::D) -&gt; <span class="prelude-ty">Option</span>&lt;String&gt; {
+        <span class="prelude-val">Some</span>(<span class="string">&quot;CodaProtoState&quot;</span>.into())
     }
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Default</span>, <span class="ident">Debug</span>, <span class="ident">PartialEq</span>, <span class="ident">AutoFrom</span>)]</span>
-<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">mina_serialization_types::protocol_state::ProtocolState</span>)]</span>
-<span class="doccomment">/// This structure can be thought of like the block header. It contains the most essential information of a block.</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ProtocolState</span> {
-    <span class="doccomment">/// Commitment to previous block (hash of previous protocol state hash and body hash)</span>
-    <span class="kw">pub</span> <span class="ident">previous_state_hash</span>: <span class="ident">StateHash</span>,
-    <span class="doccomment">/// The body of the protocol state</span>
-    <span class="kw">pub</span> <span class="ident">body</span>: <span class="ident">ProtocolStateBody</span>,
-}
-
-<span class="macro">impl_from_with_proxy!</span>(<span class="ident">ProtocolState</span>, <span class="ident">ProtocolStateV1</span>, <span class="ident">ProtocolStateJson</span>);
-
-<span class="kw">impl</span> <span class="ident">Hashable</span> <span class="kw">for</span> <span class="ident">ProtocolState</span> {
-    <span class="kw">type</span> <span class="ident">D</span> <span class="op">=</span> ();
-
-    <span class="kw">fn</span> <span class="ident">to_roinput</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">ROInput</span> {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">hasher</span> <span class="op">=</span> <span class="ident">create_legacy</span>(());
-        <span class="kw">let</span> <span class="ident">body_hash</span> <span class="op">=</span> <span class="ident">hasher</span>.<span class="ident">hash</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">body</span>);
-        <span class="ident">ROInput::new</span>()
-            .<span class="ident">append_hashable</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">previous_state_hash</span>)
-            .<span class="ident">append_field</span>(<span class="ident">body_hash</span>)
+<span class="kw">impl </span>ProtocolState {
+    <span class="doccomment">/// Gets the current global slot the current epoch
+    </span><span class="kw">pub fn </span>curr_global_slot(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>GlobalSlot {
+        <span class="kw-2">&amp;</span><span class="self">self</span>.body.consensus_state.curr_global_slot
     }
 
-    <span class="kw">fn</span> <span class="ident">domain_string</span>(<span class="kw">_</span>: <span class="ident"><span class="self">Self</span>::D</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> {
-        <span class="prelude-val">Some</span>(<span class="string">&quot;CodaProtoState&quot;</span>.<span class="ident">into</span>())
+    <span class="doccomment">/// Calculates the state hash field of current protocol state
+    </span><span class="kw">pub fn </span>state_hash_fp(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Fp {
+        <span class="kw">let </span><span class="kw-2">mut </span>hasher = create_legacy(());
+        hasher.hash(<span class="self">self</span>)
+    }
+
+    <span class="doccomment">/// Calculates the state hash of current protocol state
+    </span><span class="kw">pub fn </span>state_hash(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; StateHash {
+        <span class="kw">let </span>f = <span class="self">self</span>.state_hash_fp();
+        (<span class="kw-2">&amp;</span>f).into()
     }
 }
 
-<span class="kw">impl</span> <span class="ident">ProtocolState</span> {
-    <span class="doccomment">/// Gets the current global slot the current epoch</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">curr_global_slot</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="ident">GlobalSlot</span> {
-        <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">body</span>.<span class="ident">consensus_state</span>.<span class="ident">curr_global_slot</span>
-    }
-
-    <span class="doccomment">/// Calculates the state hash field of current protocol state</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">state_hash_fp</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">Fp</span> {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">hasher</span> <span class="op">=</span> <span class="ident">create_legacy</span>(());
-        <span class="ident">hasher</span>.<span class="ident">hash</span>(<span class="self">self</span>)
-    }
-
-    <span class="doccomment">/// Calculates the state hash of current protocol state</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">state_hash</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">StateHash</span> {
-        <span class="kw">let</span> <span class="ident">f</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">state_hash_fp</span>();
-        (<span class="kw-2">&amp;</span><span class="ident">f</span>).<span class="ident">into</span>()
-    }
-}
-
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Default</span>, <span class="ident">Debug</span>, <span class="ident">PartialEq</span>, <span class="ident">AutoFrom</span>)]</span>
-<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">mina_serialization_types::protocol_state_body::ProtocolStateBody</span>)]</span>
-<span class="doccomment">/// Body of the protocol state</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ProtocolStateBody</span> {
-    <span class="doccomment">/// Genesis protocol state hash (used for hardforks)</span>
-    <span class="kw">pub</span> <span class="ident">genesis_state_hash</span>: <span class="ident">StateHash</span>,
-    <span class="doccomment">/// Ledger related state</span>
-    <span class="kw">pub</span> <span class="ident">blockchain_state</span>: <span class="ident">BlockchainState</span>,
-    <span class="doccomment">/// Consensus related state</span>
-    <span class="kw">pub</span> <span class="ident">consensus_state</span>: <span class="ident">ConsensusState</span>,
-    <span class="doccomment">/// Consensus constants</span>
-    <span class="kw">pub</span> <span class="ident">constants</span>: <span class="ident">ProtocolConstants</span>,
+<span class="attribute">#[derive(Clone, Default, Debug, Eq, PartialEq, AutoFrom)]</span>
+<span class="attribute">#[auto_from(mina_serialization_types::protocol_state_body::ProtocolStateBody)]</span>
+<span class="doccomment">/// Body of the protocol state
+</span><span class="kw">pub struct </span>ProtocolStateBody {
+    <span class="doccomment">/// Genesis protocol state hash (used for hardforks)
+    </span><span class="kw">pub </span>genesis_state_hash: StateHash,
+    <span class="doccomment">/// Ledger related state
+    </span><span class="kw">pub </span>blockchain_state: BlockchainState,
+    <span class="doccomment">/// Consensus related state
+    </span><span class="kw">pub </span>consensus_state: ConsensusState,
+    <span class="doccomment">/// Consensus constants
+    </span><span class="kw">pub </span>constants: ProtocolConstants,
 }
 
 <span class="macro">impl_from_with_proxy!</span>(
-    <span class="ident">ProtocolStateBody</span>,
-    <span class="ident">ProtocolStateBodyV1</span>,
-    <span class="ident">ProtocolStateBodyJson</span>
+    ProtocolStateBody,
+    ProtocolStateBodyV1,
+    ProtocolStateBodyJson
 );
 
-<span class="kw">impl</span> <span class="ident">Hashable</span> <span class="kw">for</span> <span class="ident">ProtocolStateBody</span> {
-    <span class="kw">type</span> <span class="ident">D</span> <span class="op">=</span> ();
+<span class="kw">impl </span>Hashable <span class="kw">for </span>ProtocolStateBody {
+    <span class="kw">type </span>D = ();
 
-    <span class="kw">fn</span> <span class="ident">to_roinput</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">ROInput</span> {
-        <span class="ident">ROInput::new</span>()
-            .<span class="ident">append_hashable</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">constants</span>)
-            .<span class="ident">append_hashable</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">genesis_state_hash</span>)
-            .<span class="ident">append_hashable</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">blockchain_state</span>)
-            .<span class="ident">append_hashable</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">consensus_state</span>)
+    <span class="kw">fn </span>to_roinput(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; ROInput {
+        ROInput::new()
+            .append_hashable(<span class="kw-2">&amp;</span><span class="self">self</span>.constants)
+            .append_hashable(<span class="kw-2">&amp;</span><span class="self">self</span>.genesis_state_hash)
+            .append_hashable(<span class="kw-2">&amp;</span><span class="self">self</span>.blockchain_state)
+            .append_hashable(<span class="kw-2">&amp;</span><span class="self">self</span>.consensus_state)
     }
 
-    <span class="kw">fn</span> <span class="ident">domain_string</span>(<span class="kw">_</span>: <span class="ident"><span class="self">Self</span>::D</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> {
-        <span class="prelude-val">Some</span>(<span class="string">&quot;CodaProtoStateBody&quot;</span>.<span class="ident">into</span>())
+    <span class="kw">fn </span>domain_string(<span class="kw">_</span>: <span class="self">Self</span>::D) -&gt; <span class="prelude-ty">Option</span>&lt;String&gt; {
+        <span class="prelude-val">Some</span>(<span class="string">&quot;CodaProtoStateBody&quot;</span>.into())
     }
 }
 
-<span class="doccomment">/// Implementing types have some notion of height and can return it</span>
-<span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">Header</span> {
-    <span class="doccomment">/// Get the height for the implementing type</span>
-    <span class="kw">fn</span> <span class="ident">get_height</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">Length</span>;
-    <span class="doccomment">/// The minimum window density at the current epoch.</span>
-    <span class="kw">fn</span> <span class="ident">min_window_density</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">Length</span>;
-    <span class="doccomment">/// A list of density values of the sub windows.</span>
-    <span class="kw">fn</span> <span class="ident">sub_window_densities</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Length</span><span class="op">&gt;</span>;
+<span class="doccomment">/// Implementing types have some notion of height and can return it
+</span><span class="kw">pub trait </span>Header {
+    <span class="doccomment">/// Get the height for the implementing type
+    </span><span class="kw">fn </span>get_height(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Length;
+    <span class="doccomment">/// The minimum window density at the current epoch.
+    </span><span class="kw">fn </span>min_window_density(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Length;
+    <span class="doccomment">/// A list of density values of the sub windows.
+    </span><span class="kw">fn </span>sub_window_densities(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>Vec&lt;Length&gt;;
 }
 
-<span class="kw">impl</span> <span class="ident">Header</span> <span class="kw">for</span> <span class="ident">ProtocolState</span> {
-    <span class="kw">fn</span> <span class="ident">get_height</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">Length</span> {
-        <span class="self">self</span>.<span class="ident">body</span>.<span class="ident">consensus_state</span>.<span class="ident">blockchain_length</span>
+<span class="kw">impl </span>Header <span class="kw">for </span>ProtocolState {
+    <span class="kw">fn </span>get_height(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Length {
+        <span class="self">self</span>.body.consensus_state.blockchain_length
     }
 
-    <span class="kw">fn</span> <span class="ident">sub_window_densities</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Length</span><span class="op">&gt;</span> {
-        <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">body</span>.<span class="ident">consensus_state</span>.<span class="ident">sub_window_densities</span>
+    <span class="kw">fn </span>sub_window_densities(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>Vec&lt;Length&gt; {
+        <span class="kw-2">&amp;</span><span class="self">self</span>.body.consensus_state.sub_window_densities
     }
 
-    <span class="kw">fn</span> <span class="ident">min_window_density</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">Length</span> {
-        <span class="self">self</span>.<span class="ident">body</span>.<span class="ident">consensus_state</span>.<span class="ident">min_window_density</span>
+    <span class="kw">fn </span>min_window_density(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Length {
+        <span class="self">self</span>.body.consensus_state.min_window_density
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_rs_base" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (fe3342816 2022-08-01)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_rs_base" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (40336865f 2022-08-15)" ></div></body></html>

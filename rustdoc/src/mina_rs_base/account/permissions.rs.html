@@ -103,110 +103,110 @@
 <span id="103">103</span>
 <span id="104">104</span>
 <span id="105">105</span>
-</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems</span>
-<span class="comment">// SPDX-License-Identifier: Apache-2.0</span>
+</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems
+// SPDX-License-Identifier: Apache-2.0
 
-<span class="doccomment">//! Account based permissions</span>
+</span><span class="doccomment">//! Account based permissions
 
-<span class="kw">use</span> <span class="ident">mina_serialization_types_macros::AutoFrom</span>;
-<span class="kw">use</span> <span class="ident">proof_systems</span>::{<span class="ident">bitvec::prelude::BitVec</span>, <span class="ident">ChunkedROInput</span>, <span class="ident">ToChunkedROInput</span>};
+</span><span class="kw">use </span>mina_serialization_types_macros::AutoFrom;
+<span class="kw">use </span>proof_systems::{bitvec::prelude::BitVec, ChunkedROInput, ToChunkedROInput};
 
-<span class="doccomment">/// The level of auth required to perform a particular action with an account</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">AutoFrom</span>)]</span>
-<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">mina_serialization_types::account::AuthRequired</span>)]</span>
-<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">AuthRequired</span> {
-    <span class="doccomment">/// None required</span>
-    <span class="prelude-val">None</span>,
-    <span class="doccomment">/// Either a proof or a signature</span>
-    <span class="ident">Either</span>,
-    <span class="doccomment">/// Proof must be provided</span>
-    <span class="ident">Proof</span>,
-    <span class="doccomment">/// Signature must be provided</span>
-    <span class="ident">Signature</span>,
-    <span class="doccomment">/// Both proof and signature must be provided</span>
-    <span class="ident">Both</span>,
-    <span class="doccomment">/// This action can never occur</span>
-    <span class="ident">Impossible</span>,
+<span class="doccomment">/// The level of auth required to perform a particular action with an account
+</span><span class="attribute">#[derive(Clone, Debug, AutoFrom)]</span>
+<span class="attribute">#[auto_from(mina_serialization_types::account::AuthRequired)]</span>
+<span class="kw">pub enum </span>AuthRequired {
+    <span class="doccomment">/// None required
+    </span><span class="prelude-val">None</span>,
+    <span class="doccomment">/// Either a proof or a signature
+    </span>Either,
+    <span class="doccomment">/// Proof must be provided
+    </span>Proof,
+    <span class="doccomment">/// Signature must be provided
+    </span>Signature,
+    <span class="doccomment">/// Both proof and signature must be provided
+    </span>Both,
+    <span class="doccomment">/// This action can never occur
+    </span>Impossible,
 }
 
-<span class="kw">impl</span> <span class="ident">ToChunkedROInput</span> <span class="kw">for</span> <span class="ident">AuthRequired</span> {
-    <span class="kw">fn</span> <span class="ident">to_chunked_roinput</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">ChunkedROInput</span> {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">roi</span> <span class="op">=</span> <span class="ident">ChunkedROInput::new</span>();
-        <span class="kw">let</span> <span class="ident">constant</span> <span class="op">=</span> <span class="macro">matches!</span>(<span class="self">self</span>, <span class="ident"><span class="self">Self</span>::Impossible</span> <span class="op">|</span> <span class="ident"><span class="self">Self</span>::None</span>);
-        <span class="kw">let</span> <span class="ident">signature_necessary</span> <span class="op">=</span> <span class="macro">matches!</span>(<span class="self">self</span>, <span class="ident"><span class="self">Self</span>::Impossible</span> <span class="op">|</span> <span class="ident"><span class="self">Self</span>::Signature</span>);
-        <span class="kw">let</span> <span class="ident">signature_sufficient</span> <span class="op">=</span> <span class="macro">matches!</span>(<span class="self">self</span>, <span class="ident"><span class="self">Self</span>::Either</span> <span class="op">|</span> <span class="ident"><span class="self">Self</span>::Signature</span> <span class="op">|</span> <span class="ident"><span class="self">Self</span>::None</span>);
-        <span class="kw">for</span> <span class="ident">b</span> <span class="kw">in</span> [<span class="ident">constant</span>, <span class="ident">signature_necessary</span>, <span class="ident">signature_sufficient</span>] {
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">bits</span> <span class="op">=</span> <span class="ident">BitVec::with_capacity</span>(<span class="number">1</span>);
-            <span class="ident">bits</span>.<span class="ident">push</span>(<span class="ident">b</span>);
-            <span class="ident">roi</span> <span class="op">=</span> <span class="ident">roi</span>.<span class="ident">append_packed</span>(<span class="ident">ChunkedROInput::bits_to_fp_unsafe</span>(<span class="ident">bits</span>), <span class="number">1</span>);
+<span class="kw">impl </span>ToChunkedROInput <span class="kw">for </span>AuthRequired {
+    <span class="kw">fn </span>to_chunked_roinput(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; ChunkedROInput {
+        <span class="kw">let </span><span class="kw-2">mut </span>roi = ChunkedROInput::new();
+        <span class="kw">let </span>constant = <span class="macro">matches!</span>(<span class="self">self</span>, <span class="self">Self</span>::Impossible | <span class="self">Self</span>::None);
+        <span class="kw">let </span>signature_necessary = <span class="macro">matches!</span>(<span class="self">self</span>, <span class="self">Self</span>::Impossible | <span class="self">Self</span>::Signature);
+        <span class="kw">let </span>signature_sufficient = <span class="macro">matches!</span>(<span class="self">self</span>, <span class="self">Self</span>::Either | <span class="self">Self</span>::Signature | <span class="self">Self</span>::None);
+        <span class="kw">for </span>b <span class="kw">in </span>[constant, signature_necessary, signature_sufficient] {
+            <span class="kw">let </span><span class="kw-2">mut </span>bits = BitVec::with_capacity(<span class="number">1</span>);
+            bits.push(b);
+            roi = roi.append_packed(ChunkedROInput::bits_to_fp_unsafe(bits), <span class="number">1</span>);
         }
-        <span class="ident">roi</span>
+        roi
     }
 }
 
-<span class="doccomment">/// Permissions associated with the account</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">AutoFrom</span>)]</span>
-<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">mina_serialization_types::account::PermissionsLegacy</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">PermissionsLegacy</span> {
-    <span class="doccomment">/// If the account can stake</span>
-    <span class="kw">pub</span> <span class="ident">stake</span>: <span class="ident">bool</span>,
-    <span class="doccomment">/// Permission required to edit state</span>
-    <span class="kw">pub</span> <span class="ident">edit_state</span>: <span class="ident">AuthRequired</span>,
-    <span class="doccomment">/// Permission required to send a balance</span>
-    <span class="kw">pub</span> <span class="ident">send</span>: <span class="ident">AuthRequired</span>,
-    <span class="doccomment">/// Permission required to receive balance</span>
-    <span class="kw">pub</span> <span class="ident">receive</span>: <span class="ident">AuthRequired</span>,
-    <span class="doccomment">/// Permission required to set the delegate</span>
-    <span class="kw">pub</span> <span class="ident">set_delegate</span>: <span class="ident">AuthRequired</span>,
-    <span class="doccomment">/// Permission required to cange permissions</span>
-    <span class="kw">pub</span> <span class="ident">set_permissions</span>: <span class="ident">AuthRequired</span>,
-    <span class="doccomment">/// Permission require to set verification key</span>
-    <span class="kw">pub</span> <span class="ident">set_verification_key</span>: <span class="ident">AuthRequired</span>,
+<span class="doccomment">/// Permissions associated with the account
+</span><span class="attribute">#[derive(Clone, Debug, AutoFrom)]</span>
+<span class="attribute">#[auto_from(mina_serialization_types::account::PermissionsLegacy)]</span>
+<span class="kw">pub struct </span>PermissionsLegacy {
+    <span class="doccomment">/// If the account can stake
+    </span><span class="kw">pub </span>stake: bool,
+    <span class="doccomment">/// Permission required to edit state
+    </span><span class="kw">pub </span>edit_state: AuthRequired,
+    <span class="doccomment">/// Permission required to send a balance
+    </span><span class="kw">pub </span>send: AuthRequired,
+    <span class="doccomment">/// Permission required to receive balance
+    </span><span class="kw">pub </span>receive: AuthRequired,
+    <span class="doccomment">/// Permission required to set the delegate
+    </span><span class="kw">pub </span>set_delegate: AuthRequired,
+    <span class="doccomment">/// Permission required to cange permissions
+    </span><span class="kw">pub </span>set_permissions: AuthRequired,
+    <span class="doccomment">/// Permission require to set verification key
+    </span><span class="kw">pub </span>set_verification_key: AuthRequired,
 }
 
-<span class="doccomment">/// Permissions associated with the account</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">AutoFrom</span>)]</span>
-<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">mina_serialization_types::account::Permissions</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Permissions</span> {
-    <span class="doccomment">/// Permission required to edit state</span>
-    <span class="kw">pub</span> <span class="ident">edit_state</span>: <span class="ident">AuthRequired</span>,
-    <span class="doccomment">/// Permission required to send a balance</span>
-    <span class="kw">pub</span> <span class="ident">send</span>: <span class="ident">AuthRequired</span>,
-    <span class="doccomment">/// Permission required to receive balance</span>
-    <span class="kw">pub</span> <span class="ident">receive</span>: <span class="ident">AuthRequired</span>,
-    <span class="doccomment">/// Permission required to set the delegate</span>
-    <span class="kw">pub</span> <span class="ident">set_delegate</span>: <span class="ident">AuthRequired</span>,
-    <span class="doccomment">/// Permission required to cange permissions</span>
-    <span class="kw">pub</span> <span class="ident">set_permissions</span>: <span class="ident">AuthRequired</span>,
-    <span class="doccomment">/// Permission require to set verification key</span>
-    <span class="kw">pub</span> <span class="ident">set_verification_key</span>: <span class="ident">AuthRequired</span>,
-    <span class="doccomment">/// Permission require to set zkapp uri</span>
-    <span class="kw">pub</span> <span class="ident">set_zkapp_uri</span>: <span class="ident">AuthRequired</span>,
-    <span class="doccomment">/// Permission require to edit sequence state</span>
-    <span class="kw">pub</span> <span class="ident">edit_sequence_state</span>: <span class="ident">AuthRequired</span>,
-    <span class="doccomment">/// Permission require to set token symbol</span>
-    <span class="kw">pub</span> <span class="ident">set_token_symbol</span>: <span class="ident">AuthRequired</span>,
-    <span class="doccomment">/// Permission require to increment nonce</span>
-    <span class="kw">pub</span> <span class="ident">increment_nonce</span>: <span class="ident">AuthRequired</span>,
-    <span class="doccomment">/// Permission require to set voting for</span>
-    <span class="kw">pub</span> <span class="ident">set_voting_for</span>: <span class="ident">AuthRequired</span>,
+<span class="doccomment">/// Permissions associated with the account
+</span><span class="attribute">#[derive(Clone, Debug, AutoFrom)]</span>
+<span class="attribute">#[auto_from(mina_serialization_types::account::Permissions)]</span>
+<span class="kw">pub struct </span>Permissions {
+    <span class="doccomment">/// Permission required to edit state
+    </span><span class="kw">pub </span>edit_state: AuthRequired,
+    <span class="doccomment">/// Permission required to send a balance
+    </span><span class="kw">pub </span>send: AuthRequired,
+    <span class="doccomment">/// Permission required to receive balance
+    </span><span class="kw">pub </span>receive: AuthRequired,
+    <span class="doccomment">/// Permission required to set the delegate
+    </span><span class="kw">pub </span>set_delegate: AuthRequired,
+    <span class="doccomment">/// Permission required to cange permissions
+    </span><span class="kw">pub </span>set_permissions: AuthRequired,
+    <span class="doccomment">/// Permission require to set verification key
+    </span><span class="kw">pub </span>set_verification_key: AuthRequired,
+    <span class="doccomment">/// Permission require to set zkapp uri
+    </span><span class="kw">pub </span>set_zkapp_uri: AuthRequired,
+    <span class="doccomment">/// Permission require to edit sequence state
+    </span><span class="kw">pub </span>edit_sequence_state: AuthRequired,
+    <span class="doccomment">/// Permission require to set token symbol
+    </span><span class="kw">pub </span>set_token_symbol: AuthRequired,
+    <span class="doccomment">/// Permission require to increment nonce
+    </span><span class="kw">pub </span>increment_nonce: AuthRequired,
+    <span class="doccomment">/// Permission require to set voting for
+    </span><span class="kw">pub </span>set_voting_for: AuthRequired,
 }
 
-<span class="kw">impl</span> <span class="ident">ToChunkedROInput</span> <span class="kw">for</span> <span class="ident">Permissions</span> {
-    <span class="kw">fn</span> <span class="ident">to_chunked_roinput</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">ChunkedROInput</span> {
-        <span class="ident">ChunkedROInput::new</span>()
-            .<span class="ident">append_chunked</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">edit_state</span>)
-            .<span class="ident">append_chunked</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">send</span>)
-            .<span class="ident">append_chunked</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">receive</span>)
-            .<span class="ident">append_chunked</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">set_delegate</span>)
-            .<span class="ident">append_chunked</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">set_permissions</span>)
-            .<span class="ident">append_chunked</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">set_verification_key</span>)
-            .<span class="ident">append_chunked</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">set_zkapp_uri</span>)
-            .<span class="ident">append_chunked</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">edit_sequence_state</span>)
-            .<span class="ident">append_chunked</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">set_token_symbol</span>)
-            .<span class="ident">append_chunked</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">increment_nonce</span>)
-            .<span class="ident">append_chunked</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">set_voting_for</span>)
+<span class="kw">impl </span>ToChunkedROInput <span class="kw">for </span>Permissions {
+    <span class="kw">fn </span>to_chunked_roinput(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; ChunkedROInput {
+        ChunkedROInput::new()
+            .append_chunked(<span class="kw-2">&amp;</span><span class="self">self</span>.edit_state)
+            .append_chunked(<span class="kw-2">&amp;</span><span class="self">self</span>.send)
+            .append_chunked(<span class="kw-2">&amp;</span><span class="self">self</span>.receive)
+            .append_chunked(<span class="kw-2">&amp;</span><span class="self">self</span>.set_delegate)
+            .append_chunked(<span class="kw-2">&amp;</span><span class="self">self</span>.set_permissions)
+            .append_chunked(<span class="kw-2">&amp;</span><span class="self">self</span>.set_verification_key)
+            .append_chunked(<span class="kw-2">&amp;</span><span class="self">self</span>.set_zkapp_uri)
+            .append_chunked(<span class="kw-2">&amp;</span><span class="self">self</span>.edit_sequence_state)
+            .append_chunked(<span class="kw-2">&amp;</span><span class="self">self</span>.set_token_symbol)
+            .append_chunked(<span class="kw-2">&amp;</span><span class="self">self</span>.increment_nonce)
+            .append_chunked(<span class="kw-2">&amp;</span><span class="self">self</span>.set_voting_for)
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="mina_rs_base" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (fe3342816 2022-08-01)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="mina_rs_base" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (40336865f 2022-08-15)" ></div></body></html>

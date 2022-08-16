@@ -51,21 +51,21 @@
 <span id="51">51</span>
 <span id="52">52</span>
 <span id="53">53</span>
-</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems</span>
-<span class="comment">// SPDX-License-Identifier: Apache-2.0</span>
+</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems
+// SPDX-License-Identifier: Apache-2.0
 
-<span class="doccomment">//! OCaml polyvars use a special integer output hash function to index variants</span>
-<span class="doccomment">//! This module reimplements this hash function</span>
+</span><span class="doccomment">//! OCaml polyvars use a special integer output hash function to index variants
+//! This module reimplements this hash function
 
-<span class="doccomment">/// Type alias for hash result</span>
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">VariantHash</span> <span class="op">=</span> <span class="ident">u32</span>;
+/// Type alias for hash result
+</span><span class="kw">pub type </span>VariantHash = u32;
 
-<span class="doccomment">/// Hash the label string (ASCII not UTF-8) into a OCaml style variant hash</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">caml_hash_variant</span>(<span class="ident">label</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) -&gt; <span class="ident">VariantHash</span> {
-    <span class="ident">label</span>
-        .<span class="ident">as_bytes</span>()
-        .<span class="ident">iter</span>()
-        .<span class="ident">fold</span>(<span class="number">0_u32</span>, <span class="op">|</span><span class="ident">accu</span>, <span class="ident">byte</span><span class="op">|</span> <span class="number">223</span> <span class="op">*</span> <span class="ident">accu</span> <span class="op">+</span> (<span class="kw-2">*</span><span class="ident">byte</span> <span class="kw">as</span> <span class="ident">u32</span>))
+<span class="doccomment">/// Hash the label string (ASCII not UTF-8) into a OCaml style variant hash
+</span><span class="kw">pub fn </span>caml_hash_variant(label: <span class="kw-2">&amp;</span>str) -&gt; VariantHash {
+    label
+        .as_bytes()
+        .iter()
+        .fold(<span class="number">0_u32</span>, |accu, byte| <span class="number">223 </span>* accu + (<span class="kw-2">*</span>byte <span class="kw">as </span>u32))
 }
 
 <span class="comment">/* original C code
@@ -82,27 +82,27 @@
          platforms */
       return (int32_t) accu;
     }
-*/</span>
+*/
 
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
-<span class="kw">mod</span> <span class="ident">tests</span> {
-    <span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
+</span><span class="attribute">#[cfg(test)]</span>
+<span class="kw">mod </span>tests {
+    <span class="kw">use super</span>::<span class="kw-2">*</span>;
 
-    <span class="attribute">#[<span class="ident">test</span>]</span>
-    <span class="kw">fn</span> <span class="ident">test_known_labels</span>() {
-        <span class="kw">const</span> <span class="ident">CASES</span>: <span class="kw-2">&amp;</span>[(<span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">u32</span>)] <span class="op">=</span> <span class="kw-2">&amp;</span>[(<span class="string">&quot;One&quot;</span>, <span class="number">3953222_u32</span>), (<span class="string">&quot;Two&quot;</span>, <span class="number">4203884_u32</span>)];
+    <span class="attribute">#[test]</span>
+    <span class="kw">fn </span>test_known_labels() {
+        <span class="kw">const </span>CASES: <span class="kw-2">&amp;</span>[(<span class="kw-2">&amp;</span>str, u32)] = <span class="kw-2">&amp;</span>[(<span class="string">&quot;One&quot;</span>, <span class="number">3953222_u32</span>), (<span class="string">&quot;Two&quot;</span>, <span class="number">4203884_u32</span>)];
 
-        <span class="kw">for</span> (<span class="ident">label</span>, <span class="ident">hash</span>) <span class="kw">in</span> <span class="ident">CASES</span> {
-            <span class="macro">assert_eq!</span>(<span class="ident">caml_hash_variant</span>(<span class="ident">label</span>), <span class="kw-2">*</span><span class="ident">hash</span>)
+        <span class="kw">for </span>(label, hash) <span class="kw">in </span>CASES {
+            <span class="macro">assert_eq!</span>(caml_hash_variant(label), <span class="kw-2">*</span>hash)
         }
     }
 
-    <span class="attribute">#[<span class="ident">test</span>]</span>
-    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;wasm32&quot;</span>)]</span>
-    <span class="attribute">#[<span class="ident">should_panic</span>(<span class="ident">expected</span> <span class="op">=</span> <span class="string">&quot;attempt to multiply with overflow&quot;</span>)]</span>
-    <span class="kw">fn</span> <span class="ident">test_overflow_variant</span>() {
-        <span class="kw">let</span> <span class="kw">_</span> <span class="op">=</span> <span class="ident">caml_hash_variant</span>(<span class="string">&quot;Three&quot;</span>);
+    <span class="attribute">#[test]</span>
+    <span class="attribute">#[cfg(target_arch = <span class="string">&quot;wasm32&quot;</span>)]</span>
+    <span class="attribute">#[should_panic(expected = <span class="string">&quot;attempt to multiply with overflow&quot;</span>)]</span>
+    <span class="kw">fn </span>test_overflow_variant() {
+        <span class="kw">let _ </span>= caml_hash_variant(<span class="string">&quot;Three&quot;</span>);
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="bin_prot" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (fe3342816 2022-08-01)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="bin_prot" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (40336865f 2022-08-15)" ></div></body></html>

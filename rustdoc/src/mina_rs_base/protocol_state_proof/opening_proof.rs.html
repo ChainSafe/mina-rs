@@ -14,21 +14,21 @@
 <span id="14">14</span>
 <span id="15">15</span>
 <span id="16">16</span>
-</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems</span>
-<span class="comment">// SPDX-License-Identifier: Apache-2.0</span>
+</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems
+// SPDX-License-Identifier: Apache-2.0
 
-<span class="kw">use</span> <span class="ident">mina_serialization_types_macros::AutoFrom</span>;
+</span><span class="kw">use </span>mina_serialization_types_macros::AutoFrom;
 
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::types</span>::{<span class="ident">FieldElement</span>, <span class="ident">FiniteECPoint</span>, <span class="ident">FiniteECPointPairVec</span>};
+<span class="kw">use </span><span class="kw">crate</span>::types::{FieldElement, FiniteECPoint, FiniteECPointPairVec};
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Default</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>, <span class="ident">AutoFrom</span>)]</span>
-<span class="attribute">#[<span class="ident">auto_from</span>(<span class="ident">mina_serialization_types::opening_proof::OpeningProof</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">OpeningProof</span> {
-    <span class="kw">pub</span> <span class="ident">lr</span>: <span class="ident">FiniteECPointPairVec</span>,
-    <span class="kw">pub</span> <span class="ident">z_1</span>: <span class="ident">FieldElement</span>,
-    <span class="kw">pub</span> <span class="ident">z_2</span>: <span class="ident">FieldElement</span>,
-    <span class="kw">pub</span> <span class="ident">delta</span>: <span class="ident">FiniteECPoint</span>,
-    <span class="kw">pub</span> <span class="ident">sg</span>: <span class="ident">FiniteECPoint</span>,
+<span class="attribute">#[derive(Clone, Default, Eq, PartialEq, Debug, AutoFrom)]</span>
+<span class="attribute">#[auto_from(mina_serialization_types::opening_proof::OpeningProof)]</span>
+<span class="kw">pub struct </span>OpeningProof {
+    <span class="kw">pub </span>lr: FiniteECPointPairVec,
+    <span class="kw">pub </span>z_1: FieldElement,
+    <span class="kw">pub </span>z_2: FieldElement,
+    <span class="kw">pub </span>delta: FiniteECPoint,
+    <span class="kw">pub </span>sg: FiniteECPoint,
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="mina_rs_base" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (fe3342816 2022-08-01)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="mina_rs_base" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (40336865f 2022-08-15)" ></div></body></html>

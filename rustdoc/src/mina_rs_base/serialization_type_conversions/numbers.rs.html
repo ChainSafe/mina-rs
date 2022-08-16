@@ -48,55 +48,55 @@
 <span id="48">48</span>
 <span id="49">49</span>
 <span id="50">50</span>
-</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems</span>
-<span class="comment">// SPDX-License-Identifier: Apache-2.0</span>
+</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems
+// SPDX-License-Identifier: Apache-2.0
 
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::numbers</span>::<span class="kw-2">*</span>;
-<span class="kw">use</span> <span class="ident">mina_serialization_types::v1</span>::{
-    <span class="ident">AccountNonceV1</span>, <span class="ident">AmountV1</span>, <span class="ident">BlockTimeV1</span>, <span class="ident">CharV1</span>, <span class="ident">DeltaV1</span>, <span class="ident">ExtendedU32</span> <span class="kw">as</span> <span class="ident">ExtendedU32V1</span>,
-    <span class="ident">ExtendedU64_3</span>, <span class="ident">GlobalSlotNumberV1</span>, <span class="ident">Hex64V1</span>, <span class="ident">LengthV1</span>, <span class="ident">TokenIdV1</span>,
+</span><span class="kw">use </span><span class="kw">crate</span>::numbers::<span class="kw-2">*</span>;
+<span class="kw">use </span>mina_serialization_types::v1::{
+    AccountNonceV1, AmountV1, BlockTimeV1, CharV1, DeltaV1, ExtendedU32 <span class="kw">as </span>ExtendedU32V1,
+    ExtendedU64_3, GlobalSlotNumberV1, Hex64V1, LengthV1, TokenIdV1,
 };
-<span class="kw">use</span> <span class="ident">versioned</span>::<span class="kw-2">*</span>;
+<span class="kw">use </span>versioned::<span class="kw-2">*</span>;
 
-<span class="macro">impl_from_for_newtype!</span>(<span class="ident">Amount</span>, <span class="ident">AmountV1</span>);
-<span class="macro">impl_from_for_newtype!</span>(<span class="ident">Amount</span>, <span class="ident">ExtendedU64_3</span>);
+<span class="macro">impl_from_for_newtype!</span>(Amount, AmountV1);
+<span class="macro">impl_from_for_newtype!</span>(Amount, ExtendedU64_3);
 
-<span class="macro">impl_from_for_newtype!</span>(<span class="ident">Length</span>, <span class="ident">LengthV1</span>);
+<span class="macro">impl_from_for_newtype!</span>(Length, LengthV1);
 
-<span class="macro">impl_from_for_newtype!</span>(<span class="ident">Delta</span>, <span class="ident">DeltaV1</span>);
+<span class="macro">impl_from_for_newtype!</span>(Delta, DeltaV1);
 
-<span class="macro">impl_from_for_newtype!</span>(<span class="ident">ExtendedU32</span>, <span class="ident">ExtendedU32V1</span>);
+<span class="macro">impl_from_for_newtype!</span>(ExtendedU32, ExtendedU32V1);
 
-<span class="macro">impl_from_for_newtype!</span>(<span class="ident">TokenId</span>, <span class="ident">TokenIdV1</span>);
+<span class="macro">impl_from_for_newtype!</span>(TokenId, TokenIdV1);
 
-<span class="macro">impl_from_for_newtype!</span>(<span class="ident">AccountNonce</span>, <span class="ident">AccountNonceV1</span>);
-<span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">AccountNonce</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ExtendedU32V1</span> {
-    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">t</span>: <span class="ident">AccountNonce</span>) -&gt; <span class="self">Self</span> {
-        (<span class="ident">t</span>.<span class="number">0</span> <span class="kw">as</span> <span class="ident">i32</span>).<span class="ident">into</span>()
+<span class="macro">impl_from_for_newtype!</span>(AccountNonce, AccountNonceV1);
+<span class="kw">impl </span>From&lt;AccountNonce&gt; <span class="kw">for </span>ExtendedU32V1 {
+    <span class="kw">fn </span>from(t: AccountNonce) -&gt; <span class="self">Self </span>{
+        (t.<span class="number">0 </span><span class="kw">as </span>i32).into()
     }
 }
-<span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">ExtendedU32V1</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">AccountNonce</span> {
-    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">t</span>: <span class="ident">ExtendedU32V1</span>) -&gt; <span class="self">Self</span> {
-        <span class="self">Self</span>(<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">t</span> <span class="kw">as</span> <span class="ident">u32</span>)
-    }
-}
-
-<span class="macro">impl_from_for_newtype!</span>(<span class="ident">BlockTime</span>, <span class="ident">BlockTimeV1</span>);
-
-<span class="macro">impl_from_for_newtype!</span>(<span class="ident">GlobalSlotNumber</span>, <span class="ident">GlobalSlotNumberV1</span>);
-<span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">GlobalSlotNumber</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ExtendedU32V1</span> {
-    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">t</span>: <span class="ident">GlobalSlotNumber</span>) -&gt; <span class="self">Self</span> {
-        (<span class="ident">t</span>.<span class="number">0</span> <span class="kw">as</span> <span class="ident">i32</span>).<span class="ident">into</span>()
-    }
-}
-<span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">ExtendedU32V1</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">GlobalSlotNumber</span> {
-    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">t</span>: <span class="ident">ExtendedU32V1</span>) -&gt; <span class="self">Self</span> {
-        <span class="self">Self</span>(<span class="ident">t</span>.<span class="ident">t</span>.<span class="ident">t</span> <span class="kw">as</span> <span class="ident">u32</span>)
+<span class="kw">impl </span>From&lt;ExtendedU32V1&gt; <span class="kw">for </span>AccountNonce {
+    <span class="kw">fn </span>from(t: ExtendedU32V1) -&gt; <span class="self">Self </span>{
+        <span class="self">Self</span>(t.t.t <span class="kw">as </span>u32)
     }
 }
 
-<span class="macro">impl_from_for_newtype!</span>(<span class="ident">Hex64</span>, <span class="ident">Hex64V1</span>);
+<span class="macro">impl_from_for_newtype!</span>(BlockTime, BlockTimeV1);
 
-<span class="macro">impl_from_for_newtype!</span>(<span class="ident">Char</span>, <span class="ident">CharV1</span>);
+<span class="macro">impl_from_for_newtype!</span>(GlobalSlotNumber, GlobalSlotNumberV1);
+<span class="kw">impl </span>From&lt;GlobalSlotNumber&gt; <span class="kw">for </span>ExtendedU32V1 {
+    <span class="kw">fn </span>from(t: GlobalSlotNumber) -&gt; <span class="self">Self </span>{
+        (t.<span class="number">0 </span><span class="kw">as </span>i32).into()
+    }
+}
+<span class="kw">impl </span>From&lt;ExtendedU32V1&gt; <span class="kw">for </span>GlobalSlotNumber {
+    <span class="kw">fn </span>from(t: ExtendedU32V1) -&gt; <span class="self">Self </span>{
+        <span class="self">Self</span>(t.t.t <span class="kw">as </span>u32)
+    }
+}
+
+<span class="macro">impl_from_for_newtype!</span>(Hex64, Hex64V1);
+
+<span class="macro">impl_from_for_newtype!</span>(Char, CharV1);
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="mina_rs_base" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (fe3342816 2022-08-01)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="mina_rs_base" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (40336865f 2022-08-15)" ></div></body></html>

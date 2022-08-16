@@ -137,144 +137,144 @@
 <span id="137">137</span>
 <span id="138">138</span>
 <span id="139">139</span>
-</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems</span>
-<span class="comment">// SPDX-License-Identifier: Apache-2.0</span>
+</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems
+// SPDX-License-Identifier: Apache-2.0
 
-<span class="doccomment">//!</span>
-<span class="doccomment">//! Versioned wrapper types for serialization</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! In the bin-prot Mina wire protocol, each nested type has an associated version. This is to allow for backward</span>
-<span class="doccomment">//! compatibility if parts of the wire protocol change. This simple wrapper type ensures that this information</span>
-<span class="doccomment">//! is included in the serialized output in an indentical way to the mina reference implementation.</span>
-<span class="doccomment">//!</span>
+</span><span class="doccomment">//!
+//! Versioned wrapper types for serialization
+//!
+//! In the bin-prot Mina wire protocol, each nested type has an associated version. This is to allow for backward
+//! compatibility if parts of the wire protocol change. This simple wrapper type ensures that this information
+//! is included in the serialized output in an indentical way to the mina reference implementation.
+//!
 
-<span class="attribute">#![<span class="ident">deny</span>(<span class="ident">warnings</span>)]</span>
-<span class="attribute">#![<span class="ident">deny</span>(<span class="ident">missing_docs</span>)]</span>
+</span><span class="attribute">#![deny(warnings)]</span>
+<span class="attribute">#![deny(missing_docs)]</span>
 
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">macros</span>;
+<span class="kw">pub mod </span>macros;
 
-<span class="kw">use</span> <span class="ident">serde</span>::{<span class="ident">Deserialize</span>, <span class="ident">Serialize</span>};
+<span class="kw">use </span>serde::{Deserialize, Serialize};
 
-<span class="doccomment">/// A generic version wrapper around another type</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">PartialEq</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">Clone</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="kw">const</span> <span class="ident">V</span>: <span class="ident">u16</span><span class="op">&gt;</span> {
-    <span class="doccomment">/// Version byte to be encoded first when the whole wrapper is serialized</span>
-    <span class="kw">pub</span> <span class="ident">version</span>: <span class="ident">u16</span>,
-    <span class="doccomment">/// The wrapped type</span>
-    <span class="kw">pub</span> <span class="ident">t</span>: <span class="ident">T</span>,
+<span class="doccomment">/// A generic version wrapper around another type
+</span><span class="attribute">#[derive(Debug, Eq, PartialEq, Serialize, Deserialize, Clone)]</span>
+<span class="kw">pub struct </span>Versioned&lt;T, <span class="kw">const </span>V: u16&gt; {
+    <span class="doccomment">/// Version byte to be encoded first when the whole wrapper is serialized
+    </span><span class="kw">pub </span>version: u16,
+    <span class="doccomment">/// The wrapped type
+    </span><span class="kw">pub </span>t: T,
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="kw">const</span> <span class="ident">V</span>: <span class="ident">u16</span><span class="op">&gt;</span> <span class="ident">Default</span> <span class="kw">for</span> <span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">V</span><span class="op">&gt;</span>
-<span class="kw">where</span>
-    <span class="ident">T</span>: <span class="ident">Default</span>,
+<span class="kw">impl</span>&lt;T, <span class="kw">const </span>V: u16&gt; Default <span class="kw">for </span>Versioned&lt;T, V&gt;
+<span class="kw">where
+    </span>T: Default,
 {
-    <span class="kw">fn</span> <span class="ident">default</span>() -&gt; <span class="self">Self</span> {
-        <span class="self">Self</span> {
-            <span class="ident">version</span>: <span class="ident">V</span>, <span class="comment">// version should always be equal to V</span>
-            <span class="ident">t</span>: <span class="ident">Default::default</span>(),
+    <span class="kw">fn </span>default() -&gt; <span class="self">Self </span>{
+        <span class="self">Self </span>{
+            version: V, <span class="comment">// version should always be equal to V
+            </span>t: Default::default(),
         }
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="kw">const</span> <span class="ident">V</span>: <span class="ident">u16</span><span class="op">&gt;</span> <span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">V</span><span class="op">&gt;</span> {
-    <span class="doccomment">/// create a new version type of the given const version</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">t</span>: <span class="ident">T</span>) -&gt; <span class="self">Self</span> {
-        <span class="self">Self</span> { <span class="ident">version</span>: <span class="ident">V</span>, <span class="ident">t</span> }
+<span class="kw">impl</span>&lt;T, <span class="kw">const </span>V: u16&gt; Versioned&lt;T, V&gt; {
+    <span class="doccomment">/// create a new version type of the given const version
+    </span><span class="kw">pub fn </span>new(t: T) -&gt; <span class="self">Self </span>{
+        <span class="self">Self </span>{ version: V, t }
     }
 
-    <span class="doccomment">/// Return the inner type</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">inner</span>(<span class="self">self</span>) -&gt; <span class="ident">T</span> {
-        <span class="self">self</span>.<span class="ident">t</span>
+    <span class="doccomment">/// Return the inner type
+    </span><span class="kw">pub fn </span>inner(<span class="self">self</span>) -&gt; T {
+        <span class="self">self</span>.t
     }
 
-    <span class="doccomment">/// Return the version number</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">version</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">u16</span> {
-        <span class="self">self</span>.<span class="ident">version</span>
-    }
-}
-
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="kw">const</span> <span class="ident">V</span>: <span class="ident">u16</span><span class="op">&gt;</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">V</span><span class="op">&gt;</span> {
-    <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">t</span>: <span class="ident">T</span>) -&gt; <span class="self">Self</span> {
-        <span class="ident">Versioned::new</span>(<span class="ident">t</span>)
+    <span class="doccomment">/// Return the version number
+    </span><span class="kw">pub fn </span>version(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; u16 {
+        <span class="self">self</span>.version
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="kw">const</span> <span class="ident">V</span>: <span class="ident">u16</span><span class="op">&gt;</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">V</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="kw">for</span> (<span class="ident">T</span>,) {
-    <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">t</span>: <span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">V</span><span class="op">&gt;</span>) -&gt; <span class="self">Self</span> {
-        (<span class="ident">t</span>.<span class="ident">t</span>,)
+<span class="kw">impl</span>&lt;T, <span class="kw">const </span>V: u16&gt; From&lt;T&gt; <span class="kw">for </span>Versioned&lt;T, V&gt; {
+    <span class="attribute">#[inline]</span>
+    <span class="kw">fn </span>from(t: T) -&gt; <span class="self">Self </span>{
+        Versioned::new(t)
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="kw">const</span> <span class="ident">V1</span>: <span class="ident">u16</span>, <span class="kw">const</span> <span class="ident">V2</span>: <span class="ident">u16</span><span class="op">&gt;</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">V1</span><span class="op">&gt;</span>, <span class="ident">V2</span><span class="op">&gt;</span> {
-    <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">t</span>: <span class="ident">T</span>) -&gt; <span class="self">Self</span> {
-        <span class="kw">let</span> <span class="ident">t</span>: <span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">V1</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">t</span>.<span class="ident">into</span>();
-        <span class="ident">t</span>.<span class="ident">into</span>()
+<span class="kw">impl</span>&lt;T, <span class="kw">const </span>V: u16&gt; From&lt;Versioned&lt;T, V&gt;&gt; <span class="kw">for </span>(T,) {
+    <span class="attribute">#[inline]</span>
+    <span class="kw">fn </span>from(t: Versioned&lt;T, V&gt;) -&gt; <span class="self">Self </span>{
+        (t.t,)
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="kw">const</span> <span class="ident">V1</span>: <span class="ident">u16</span>, <span class="kw">const</span> <span class="ident">V2</span>: <span class="ident">u16</span><span class="op">&gt;</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">V1</span><span class="op">&gt;</span>, <span class="ident">V2</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="kw">for</span> (<span class="ident">T</span>,) {
-    <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">t</span>: <span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">V1</span><span class="op">&gt;</span>, <span class="ident">V2</span><span class="op">&gt;</span>) -&gt; <span class="self">Self</span> {
-        <span class="kw">let</span> (<span class="ident">t</span>,): (<span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">V1</span><span class="op">&gt;</span>,) <span class="op">=</span> <span class="ident">t</span>.<span class="ident">into</span>();
-        <span class="ident">t</span>.<span class="ident">into</span>()
+<span class="kw">impl</span>&lt;T, <span class="kw">const </span>V1: u16, <span class="kw">const </span>V2: u16&gt; From&lt;T&gt; <span class="kw">for </span>Versioned&lt;Versioned&lt;T, V1&gt;, V2&gt; {
+    <span class="attribute">#[inline]</span>
+    <span class="kw">fn </span>from(t: T) -&gt; <span class="self">Self </span>{
+        <span class="kw">let </span>t: Versioned&lt;T, V1&gt; = t.into();
+        t.into()
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="kw">const</span> <span class="ident">V1</span>: <span class="ident">u16</span>, <span class="kw">const</span> <span class="ident">V2</span>: <span class="ident">u16</span>, <span class="kw">const</span> <span class="ident">V3</span>: <span class="ident">u16</span><span class="op">&gt;</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>
-    <span class="kw">for</span> <span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">V1</span><span class="op">&gt;</span>, <span class="ident">V2</span><span class="op">&gt;</span>, <span class="ident">V3</span><span class="op">&gt;</span>
+<span class="kw">impl</span>&lt;T, <span class="kw">const </span>V1: u16, <span class="kw">const </span>V2: u16&gt; From&lt;Versioned&lt;Versioned&lt;T, V1&gt;, V2&gt;&gt; <span class="kw">for </span>(T,) {
+    <span class="attribute">#[inline]</span>
+    <span class="kw">fn </span>from(t: Versioned&lt;Versioned&lt;T, V1&gt;, V2&gt;) -&gt; <span class="self">Self </span>{
+        <span class="kw">let </span>(t,): (Versioned&lt;T, V1&gt;,) = t.into();
+        t.into()
+    }
+}
+
+<span class="kw">impl</span>&lt;T, <span class="kw">const </span>V1: u16, <span class="kw">const </span>V2: u16, <span class="kw">const </span>V3: u16&gt; From&lt;T&gt;
+    <span class="kw">for </span>Versioned&lt;Versioned&lt;Versioned&lt;T, V1&gt;, V2&gt;, V3&gt;
 {
-    <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">t</span>: <span class="ident">T</span>) -&gt; <span class="self">Self</span> {
-        <span class="kw">let</span> <span class="ident">t</span>: <span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">V1</span><span class="op">&gt;</span>, <span class="ident">V2</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">t</span>.<span class="ident">into</span>();
-        <span class="ident">t</span>.<span class="ident">into</span>()
+    <span class="attribute">#[inline]</span>
+    <span class="kw">fn </span>from(t: T) -&gt; <span class="self">Self </span>{
+        <span class="kw">let </span>t: Versioned&lt;Versioned&lt;T, V1&gt;, V2&gt; = t.into();
+        t.into()
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="kw">const</span> <span class="ident">V1</span>: <span class="ident">u16</span>, <span class="kw">const</span> <span class="ident">V2</span>: <span class="ident">u16</span>, <span class="kw">const</span> <span class="ident">V3</span>: <span class="ident">u16</span><span class="op">&gt;</span>
-    <span class="ident">From</span><span class="op">&lt;</span><span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">V1</span><span class="op">&gt;</span>, <span class="ident">V2</span><span class="op">&gt;</span>, <span class="ident">V3</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="kw">for</span> (<span class="ident">T</span>,)
+<span class="kw">impl</span>&lt;T, <span class="kw">const </span>V1: u16, <span class="kw">const </span>V2: u16, <span class="kw">const </span>V3: u16&gt;
+    From&lt;Versioned&lt;Versioned&lt;Versioned&lt;T, V1&gt;, V2&gt;, V3&gt;&gt; <span class="kw">for </span>(T,)
 {
-    <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">t</span>: <span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">V1</span><span class="op">&gt;</span>, <span class="ident">V2</span><span class="op">&gt;</span>, <span class="ident">V3</span><span class="op">&gt;</span>) -&gt; <span class="self">Self</span> {
-        <span class="kw">let</span> (<span class="ident">t</span>,): (<span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">V1</span><span class="op">&gt;</span>, <span class="ident">V2</span><span class="op">&gt;</span>,) <span class="op">=</span> <span class="ident">t</span>.<span class="ident">into</span>();
-        <span class="ident">t</span>.<span class="ident">into</span>()
+    <span class="attribute">#[inline]</span>
+    <span class="kw">fn </span>from(t: Versioned&lt;Versioned&lt;Versioned&lt;T, V1&gt;, V2&gt;, V3&gt;) -&gt; <span class="self">Self </span>{
+        <span class="kw">let </span>(t,): (Versioned&lt;Versioned&lt;T, V1&gt;, V2&gt;,) = t.into();
+        t.into()
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="kw">const</span> <span class="ident">V1</span>: <span class="ident">u16</span>, <span class="kw">const</span> <span class="ident">V2</span>: <span class="ident">u16</span>, <span class="kw">const</span> <span class="ident">V3</span>: <span class="ident">u16</span>, <span class="kw">const</span> <span class="ident">V4</span>: <span class="ident">u16</span><span class="op">&gt;</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>
-    <span class="kw">for</span> <span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">V1</span><span class="op">&gt;</span>, <span class="ident">V2</span><span class="op">&gt;</span>, <span class="ident">V3</span><span class="op">&gt;</span>, <span class="ident">V4</span><span class="op">&gt;</span>
+<span class="kw">impl</span>&lt;T, <span class="kw">const </span>V1: u16, <span class="kw">const </span>V2: u16, <span class="kw">const </span>V3: u16, <span class="kw">const </span>V4: u16&gt; From&lt;T&gt;
+    <span class="kw">for </span>Versioned&lt;Versioned&lt;Versioned&lt;Versioned&lt;T, V1&gt;, V2&gt;, V3&gt;, V4&gt;
 {
-    <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">t</span>: <span class="ident">T</span>) -&gt; <span class="self">Self</span> {
-        <span class="kw">let</span> <span class="ident">t</span>: <span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">V1</span><span class="op">&gt;</span>, <span class="ident">V2</span><span class="op">&gt;</span>, <span class="ident">V3</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">t</span>.<span class="ident">into</span>();
-        <span class="ident">t</span>.<span class="ident">into</span>()
+    <span class="attribute">#[inline]</span>
+    <span class="kw">fn </span>from(t: T) -&gt; <span class="self">Self </span>{
+        <span class="kw">let </span>t: Versioned&lt;Versioned&lt;Versioned&lt;T, V1&gt;, V2&gt;, V3&gt; = t.into();
+        t.into()
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="kw">const</span> <span class="ident">V1</span>: <span class="ident">u16</span>, <span class="kw">const</span> <span class="ident">V2</span>: <span class="ident">u16</span>, <span class="kw">const</span> <span class="ident">V3</span>: <span class="ident">u16</span>, <span class="kw">const</span> <span class="ident">V4</span>: <span class="ident">u16</span><span class="op">&gt;</span>
-    <span class="ident">From</span><span class="op">&lt;</span><span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">V1</span><span class="op">&gt;</span>, <span class="ident">V2</span><span class="op">&gt;</span>, <span class="ident">V3</span><span class="op">&gt;</span>, <span class="ident">V4</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="kw">for</span> (<span class="ident">T</span>,)
+<span class="kw">impl</span>&lt;T, <span class="kw">const </span>V1: u16, <span class="kw">const </span>V2: u16, <span class="kw">const </span>V3: u16, <span class="kw">const </span>V4: u16&gt;
+    From&lt;Versioned&lt;Versioned&lt;Versioned&lt;Versioned&lt;T, V1&gt;, V2&gt;, V3&gt;, V4&gt;&gt; <span class="kw">for </span>(T,)
 {
-    <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">t</span>: <span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">V1</span><span class="op">&gt;</span>, <span class="ident">V2</span><span class="op">&gt;</span>, <span class="ident">V3</span><span class="op">&gt;</span>, <span class="ident">V4</span><span class="op">&gt;</span>) -&gt; <span class="self">Self</span> {
-        <span class="kw">let</span> (<span class="ident">t</span>,): (<span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">V1</span><span class="op">&gt;</span>, <span class="ident">V2</span><span class="op">&gt;</span>, <span class="ident">V3</span><span class="op">&gt;</span>,) <span class="op">=</span> <span class="ident">t</span>.<span class="ident">into</span>();
-        <span class="ident">t</span>.<span class="ident">into</span>()
+    <span class="attribute">#[inline]</span>
+    <span class="kw">fn </span>from(t: Versioned&lt;Versioned&lt;Versioned&lt;Versioned&lt;T, V1&gt;, V2&gt;, V3&gt;, V4&gt;) -&gt; <span class="self">Self </span>{
+        <span class="kw">let </span>(t,): (Versioned&lt;Versioned&lt;Versioned&lt;T, V1&gt;, V2&gt;, V3&gt;,) = t.into();
+        t.into()
     }
 }
 
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
-<span class="kw">mod</span> <span class="ident">tests</span> {
-    <span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
+<span class="attribute">#[cfg(test)]</span>
+<span class="kw">mod </span>tests {
+    <span class="kw">use super</span>::<span class="kw-2">*</span>;
 
-    <span class="attribute">#[<span class="ident">test</span>]</span>
-    <span class="kw">fn</span> <span class="ident">test_versioned</span>() {
-        <span class="kw">type</span> <span class="ident">I32V1</span> <span class="op">=</span> <span class="ident">Versioned</span><span class="op">&lt;</span><span class="ident">i32</span>, <span class="number">2</span><span class="op">&gt;</span>;
+    <span class="attribute">#[test]</span>
+    <span class="kw">fn </span>test_versioned() {
+        <span class="kw">type </span>I32V1 = Versioned&lt;i32, <span class="number">2</span>&gt;;
 
-        <span class="kw">let</span> <span class="ident">i</span> <span class="op">=</span> <span class="ident">I32V1::default</span>();
-        <span class="macro">assert_eq!</span>(<span class="ident">i</span>.<span class="ident">version</span>(), <span class="number">2</span>);
-        <span class="macro">assert_eq!</span>(<span class="ident">i</span>.<span class="ident">inner</span>(), <span class="ident">i32::default</span>());
+        <span class="kw">let </span>i = I32V1::default();
+        <span class="macro">assert_eq!</span>(i.version(), <span class="number">2</span>);
+        <span class="macro">assert_eq!</span>(i.inner(), i32::default());
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="versioned" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (fe3342816 2022-08-01)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="versioned" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (40336865f 2022-08-15)" ></div></body></html>

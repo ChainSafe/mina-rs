@@ -38,45 +38,45 @@
 <span id="38">38</span>
 <span id="39">39</span>
 <span id="40">40</span>
-</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems</span>
-<span class="comment">// SPDX-License-Identifier: Apache-2.0</span>
+</pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems
+// SPDX-License-Identifier: Apache-2.0
 
-<span class="doccomment">/// Metadata of a give tree node, including index and depth</span>
-<span class="doccomment">/// in the merkle tree it belongs to, which can be used for</span>
-<span class="doccomment">/// calculating hash</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">Default</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">MerkleTreeNodeMetadata</span> {
-    <span class="ident">depth</span>: <span class="ident">u32</span>,
-    <span class="ident">height</span>: <span class="ident">u32</span>,
+</span><span class="doccomment">/// Metadata of a give tree node, including index and depth
+/// in the merkle tree it belongs to, which can be used for
+/// calculating hash
+</span><span class="attribute">#[derive(Debug, Clone, Default)]</span>
+<span class="kw">pub struct </span>MerkleTreeNodeMetadata {
+    depth: u32,
+    height: u32,
 }
 
-<span class="kw">impl</span> <span class="ident">MerkleTreeNodeMetadata</span> {
-    <span class="doccomment">/// Creates a new instance of [MerkleTreeNodeMetadata] with</span>
-    <span class="doccomment">/// the node&#39;s index in the merkle tree, index of root node is 0</span>
-    <span class="doccomment">/// the tree height does not count data/leaf nodes</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">node_index</span>: <span class="ident">usize</span>, <span class="ident">tree_height</span>: <span class="ident">u32</span>) -&gt; <span class="self">Self</span> {
-        <span class="kw">let</span> <span class="ident">depth</span> <span class="op">=</span> <span class="ident">depth</span>::<span class="op">&lt;</span><span class="number">2</span><span class="op">&gt;</span>(<span class="ident">node_index</span>);
-        <span class="kw">let</span> <span class="ident">height</span> <span class="op">=</span> <span class="ident">height</span>::<span class="op">&lt;</span><span class="number">2</span><span class="op">&gt;</span>(<span class="ident">node_index</span>, <span class="ident">tree_height</span>);
-        <span class="self">Self</span> { <span class="ident">depth</span>, <span class="ident">height</span> }
+<span class="kw">impl </span>MerkleTreeNodeMetadata {
+    <span class="doccomment">/// Creates a new instance of [MerkleTreeNodeMetadata] with
+    /// the node&#39;s index in the merkle tree, index of root node is 0
+    /// the tree height does not count data/leaf nodes
+    </span><span class="kw">pub fn </span>new(node_index: usize, tree_height: u32) -&gt; <span class="self">Self </span>{
+        <span class="kw">let </span>depth = depth::&lt;<span class="number">2</span>&gt;(node_index);
+        <span class="kw">let </span>height = height::&lt;<span class="number">2</span>&gt;(node_index, tree_height);
+        <span class="self">Self </span>{ depth, height }
     }
 
-    <span class="doccomment">/// distance to the root node</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">depth</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">u32</span> {
-        <span class="self">self</span>.<span class="ident">depth</span>
+    <span class="doccomment">/// distance to the root node
+    </span><span class="kw">pub fn </span>depth(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; u32 {
+        <span class="self">self</span>.depth
     }
 
-    <span class="doccomment">/// distance to the leaf nodes that store data</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">height</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">u32</span> {
-        <span class="self">self</span>.<span class="ident">height</span>
+    <span class="doccomment">/// distance to the leaf nodes that store data
+    </span><span class="kw">pub fn </span>height(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; u32 {
+        <span class="self">self</span>.height
     }
 }
 
-<span class="kw">fn</span> <span class="ident">depth</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">DEGREE</span>: <span class="ident">usize</span><span class="op">&gt;</span>(<span class="ident">index</span>: <span class="ident">usize</span>) -&gt; <span class="ident">u32</span> {
-    ((<span class="ident">index</span> <span class="op">+</span> <span class="ident">DEGREE</span>) <span class="kw">as</span> <span class="ident">f64</span>).<span class="ident">log</span>(<span class="ident">DEGREE</span> <span class="kw">as</span> <span class="ident">f64</span>).<span class="ident">ceil</span>() <span class="kw">as</span> <span class="ident">u32</span> <span class="op">-</span> <span class="number">1</span>
-}
+<span class="kw">fn </span>depth&lt;<span class="kw">const </span>DEGREE: usize&gt;(index: usize) -&gt; u32 {
+    ((index + DEGREE) <span class="kw">as </span>f64).log(DEGREE <span class="kw">as </span>f64).ceil() <span class="kw">as </span>u32 - <span class="number">1
+</span>}
 
-<span class="kw">fn</span> <span class="ident">height</span><span class="op">&lt;</span><span class="kw">const</span> <span class="ident">DEGREE</span>: <span class="ident">usize</span><span class="op">&gt;</span>(<span class="ident">index</span>: <span class="ident">usize</span>, <span class="ident">height</span>: <span class="ident">u32</span>) -&gt; <span class="ident">u32</span> {
-    <span class="ident">height</span> <span class="op">-</span> <span class="ident">depth</span>::<span class="op">&lt;</span><span class="ident">DEGREE</span><span class="op">&gt;</span>(<span class="ident">index</span>)
+<span class="kw">fn </span>height&lt;<span class="kw">const </span>DEGREE: usize&gt;(index: usize, height: u32) -&gt; u32 {
+    height - depth::&lt;DEGREE&gt;(index)
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_merkle" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (fe3342816 2022-08-01)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_merkle" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (40336865f 2022-08-15)" ></div></body></html>
