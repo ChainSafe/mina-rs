@@ -28,10 +28,12 @@ pub mod tests {
                 "2n27mUhCEctJbiZQdrk3kxYc7DVHvJVDErjXrjNs7jnP3HMLKtuN",
             )?,
         };
-        let roinput = staged_ledger_hash.to_chunked_roinput();
-        assert_eq!(roinput, genesis_staged_ledger_hash_chunked_roinput()?);
         assert_eq!(
-            ROInput::from(roinput),
+            staged_ledger_hash.to_chunked_roinput(),
+            genesis_staged_ledger_hash_chunked_roinput()?
+        );
+        assert_eq!(
+            staged_ledger_hash.roinput(),
             ROInput::new()
                 .append_field(fp_from_radix_10(
                     "18312982411155638834795952767307088331002783393569971720271219236025400527059"
@@ -100,7 +102,7 @@ pub mod tests {
             "36bda176656cc3be96c3d317db7b4ac06fdbc7f4eedcd6efdd20e28143d67421",
         )?;
         assert_eq!(
-            ROInput::from(body_reference.to_chunked_roinput()),
+            body_reference.roinput(),
             ROInput::new()
                 .append_field(fp_from_radix_10(
                     "12296160664399627495704595388410991961901558829692462701693435696947689868193"
@@ -116,7 +118,7 @@ pub mod tests {
             body_reference,
         };
         assert_eq!(
-            ROInput::from(blockchain_state.to_chunked_roinput()),
+            blockchain_state.roinput(),
             ROInput::new()
                 .append_field(fp_from_radix_10(
                     "18312982411155638834795952767307088331002783393569971720271219236025400527059"
@@ -144,6 +146,33 @@ pub mod tests {
                 .append_field(fp_from_radix_10(
                     "59715292382037036695237625812635217064549677739652"
                 )?)
+        );
+
+        // let constants =
+        //     protocol_state |> Mina_state.Protocol_state.constants
+        // in
+        // let roinput = constants |> Protocol_constants_checked.to_input in
+        let constants = ProtocolConstants {
+            k: 290.into(),
+            slots_per_epoch: 7140.into(),
+            slots_per_sub_window: 7.into(),
+            delta: 0.into(),
+            genesis_state_timestamp: 1655755201000.into(),
+        };
+        assert_eq!(
+            constants.to_chunked_roinput(),
+            ChunkedROInput::new()
+                .append_packed(fp_from_radix_10("290")?, 32)
+                .append_packed(fp_from_radix_10("0")?, 32)
+                .append_packed(fp_from_radix_10("7140")?, 32)
+                .append_packed(fp_from_radix_10("7")?, 32)
+                .append_packed(fp_from_radix_10("1655755201000")?, 64)
+        );
+        assert_eq!(
+            constants.roinput(),
+            ROInput::new().append_field(fp_from_radix_10(
+                "423835474825961846844757681839698573328295964924392"
+            )?)
         );
 
         Ok(())

@@ -12,7 +12,10 @@ use crate::{
 use mina_crypto::hash::StateHash;
 use mina_serialization_types::{json::*, v1::*};
 use mina_serialization_types_macros::AutoFrom;
-use proof_systems::mina_hasher::{create_legacy, Fp, Hashable, Hasher, ROInput};
+use proof_systems::{
+    mina_hasher::{create_legacy, Fp, Hashable, Hasher, ROInput},
+    *,
+};
 use versioned::*;
 
 /// Constants that define the consensus parameters
@@ -51,6 +54,17 @@ impl Hashable for ProtocolConstants {
 
     fn domain_string(_: Self::D) -> Option<String> {
         None
+    }
+}
+
+impl ToChunkedROInput for ProtocolConstants {
+    fn to_chunked_roinput(&self) -> ChunkedROInput {
+        ChunkedROInput::new()
+            .append_chunked(&self.k)
+            .append_chunked(&self.delta)
+            .append_chunked(&self.slots_per_epoch)
+            .append_chunked(&self.slots_per_sub_window)
+            .append_chunked(&self.genesis_state_timestamp)
     }
 }
 

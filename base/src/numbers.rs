@@ -52,6 +52,12 @@ impl Hashable for Length {
     }
 }
 
+impl ToChunkedROInput for Length {
+    fn to_chunked_roinput(&self) -> ChunkedROInput {
+        ChunkedROInput::new().append_u32(self.0)
+    }
+}
+
 #[derive(Clone, Eq, PartialEq, PartialOrd, Debug, Copy, Default, From, Into)]
 
 /// Represents a difference between two lengths
