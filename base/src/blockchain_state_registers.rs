@@ -23,6 +23,8 @@ pub struct BlockchainStateRegisters {
 impl ToChunkedROInput for BlockchainStateRegisters {
     fn to_chunked_roinput(&self) -> ChunkedROInput {
         ChunkedROInput::new()
+            .append_chunked(&self.ledger)
+            .append_chunked(&self.local_state)
     }
 }
 

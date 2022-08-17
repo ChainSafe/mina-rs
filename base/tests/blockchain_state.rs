@@ -58,6 +58,15 @@ pub mod tests {
         };
         let roinput = local_state.to_chunked_roinput();
         assert_eq!(roinput, genesis_local_state_chunked_roinput()?);
+
+        let registers = BlockchainStateRegisters {
+            ledger: LedgerHash::from_str("jwxjg179rPZDX3N8x7rGs98NVKnXxQ6kauk4R421ZXEb551SPUu")?,
+            pending_coinbase_stack: (),
+            local_state,
+        };
+        let roinput = registers.to_chunked_roinput();
+        assert_eq!(roinput, genesis_registers_chunked_roinput()?);
+
         Ok(())
     }
 
@@ -85,6 +94,36 @@ pub mod tests {
     // in
     // Random_oracle_input.Chunked.print staged_ledger_hash_roinput
     //   Snark_params.Tick.Field.to_string ;
+    fn genesis_staged_ledger_hash_chunked_roinput() -> Result<ChunkedROInput> {
+        let mut roi = ChunkedROInput::new().append_field(fp_from_radix_10(
+            "18312982411155638834795952767307088331002783393569971720271219236025400527059",
+        )?);
+        for b in [
+            0, 0, 0, 1, 1, 1, 1, 0, 1, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1,
+            1, 1, 1, 0, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 1, 1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0,
+            0, 0, 1, 0, 1, 1, 1, 1, 0, 1, 1, 0, 1, 0, 0, 1, 1, 0, 1, 1, 1, 0, 0, 1, 1, 0, 0, 1, 0,
+            1, 1, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 1, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1,
+            1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 0, 1, 0, 1, 1, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 1, 1, 0, 0,
+            0, 1, 1, 0, 1, 1, 1, 1, 0, 0, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 0, 0, 1, 0,
+            0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1,
+            0, 0, 0, 1, 1, 0, 1, 0, 1, 0, 1, 1, 1, 1, 1, 0, 0, 1, 1, 0, 1, 1, 0, 1, 1, 1, 0, 0, 0,
+            0, 1, 0, 0, 1, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 1, 1, 0, 0, 0, 1,
+        ] {
+            roi = roi.append_bool(b > 0);
+        }
+        Ok(roi)
+    }
+
+    // let registers =
+    //   genesis_block_data |> Mina_block.header
+    //   |> Mina_block.Header.protocol_state
+    //   |> Mina_state.Protocol_state.blockchain_state
+    //   |> Mina_state.Blockchain_state.registers
+    // in
+    // let local_state = registers |> Mina_state.Registers.local_state in
+    // let roinput = local_state |> Mina_state.Local_state.to_input in
+    // Random_oracle_input.Chunked.print roinput
+    //   Pickles.Impls.Step.Field.Constant.to_string ;
     fn genesis_local_state_chunked_roinput() -> Result<ChunkedROInput> {
         Ok(ChunkedROInput::new()
             .append_field(fp_from_radix_10(
@@ -107,28 +146,28 @@ pub mod tests {
     //   |> Mina_state.Protocol_state.blockchain_state
     //   |> Mina_state.Blockchain_state.registers
     // in
-    // let local_state = registers |> Mina_state.Registers.local_state in
-    // let roinput = local_state |> Mina_state.Local_state.to_input in
+    // let roinput = blockchain_state |> Mina_state.Blockchain_state.to_input_debug
     // Random_oracle_input.Chunked.print roinput
     //   Pickles.Impls.Step.Field.Constant.to_string ;
-    fn genesis_staged_ledger_hash_chunked_roinput() -> Result<ChunkedROInput> {
-        let mut roi = ChunkedROInput::new().append_field(fp_from_radix_10(
-            "18312982411155638834795952767307088331002783393569971720271219236025400527059",
-        )?);
-        for b in [
-            0, 0, 0, 1, 1, 1, 1, 0, 1, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1,
-            1, 1, 1, 0, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 1, 1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0,
-            0, 0, 1, 0, 1, 1, 1, 1, 0, 1, 1, 0, 1, 0, 0, 1, 1, 0, 1, 1, 1, 0, 0, 1, 1, 0, 0, 1, 0,
-            1, 1, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 1, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1,
-            1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 0, 1, 0, 1, 1, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 1, 1, 0, 0,
-            0, 1, 1, 0, 1, 1, 1, 1, 0, 0, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 0, 0, 1, 0,
-            0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1,
-            0, 0, 0, 1, 1, 0, 1, 0, 1, 0, 1, 1, 1, 1, 1, 0, 0, 1, 1, 0, 1, 1, 0, 1, 1, 1, 0, 0, 0,
-            0, 1, 0, 0, 1, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 1, 1, 0, 0, 0, 1,
-        ] {
-            roi = roi.append_bool(b > 0);
-        }
-        Ok(roi)
+    //
+    // Get result for certain field by commenting out fields in to_input_debug
+    fn genesis_registers_chunked_roinput() -> Result<ChunkedROInput> {
+        Ok(ChunkedROInput::new()
+            .append_field(fp_from_radix_10(
+                "13537175470369816875647086174838928722486573822187156126910528780791859041649",
+            )?)
+            .append_field(fp_from_radix_10(
+                "1345645986294164927562966675279626510497288257949713170124140298300287598676",
+            )?)
+            .append_field(fp_from_radix_10("0")?)
+            .append_field(fp_from_radix_10("0")?)
+            .append_field(fp_from_radix_10("0")?)
+            .append_field(fp_from_radix_10("1")?)
+            .append_field(fp_from_radix_10("0")?)
+            .append_packed(fp_from_radix_10("0")?, 64)
+            .append_packed(fp_from_radix_10("1")?, 1)
+            .append_packed(fp_from_radix_10("0")?, 32)
+            .append_packed(fp_from_radix_10("1")?, 1))
     }
 
     fn fp_from_radix_10(s: &str) -> Result<Fp> {
