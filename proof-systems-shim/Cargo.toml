@@ -15,3 +15,4 @@ o1-utils = {git = "https://github.com/o1-labs/proof-systems", rev = "c803ba53108
 anyhow = "1"
 ark-ff = "0.3"
 bitvec = "1"
+num = "0.4"

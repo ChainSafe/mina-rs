@@ -40,7 +40,7 @@ pub struct BlockchainStateRegistersLocalState {
     /// TODO
     pub token_id: TokenId,
     /// TODO
-    pub excess: Amount,
+    pub excess: SignedAmount,
     /// TODO
     pub ledger: LedgerHash,
     /// TODO

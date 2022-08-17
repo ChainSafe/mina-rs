@@ -50,15 +50,14 @@ pub mod tests {
                 16,
             )?,
             token_id: TokenId(1),
-            excess: Amount(0),
+            excess: SignedAmount(0, true),
             ledger: LedgerHash::from_str("jw6bz2wud1N6itRUHZ5ypo3267stk4UgzkiuWtAMPRZo9g4Udyd")?,
             success: true,
             party_index: MinaIndex(0),
             failure_status_tbl: Default::default(),
         };
         let roinput = local_state.to_chunked_roinput();
-        println!("roinput:\n{roinput}");
-
+        assert_eq!(roinput, genesis_local_state_chunked_roinput()?);
         Ok(())
     }
 
@@ -86,6 +85,32 @@ pub mod tests {
     // in
     // Random_oracle_input.Chunked.print staged_ledger_hash_roinput
     //   Snark_params.Tick.Field.to_string ;
+    fn genesis_local_state_chunked_roinput() -> Result<ChunkedROInput> {
+        Ok(ChunkedROInput::new()
+            .append_field(fp_from_radix_10(
+                "1345645986294164927562966675279626510497288257949713170124140298300287598676",
+            )?)
+            .append_field(fp_from_radix_10("0")?)
+            .append_field(fp_from_radix_10("0")?)
+            .append_field(fp_from_radix_10("0")?)
+            .append_field(fp_from_radix_10("1")?)
+            .append_field(fp_from_radix_10("0")?)
+            .append_packed(fp_from_radix_10("0")?, 64)
+            .append_packed(fp_from_radix_10("1")?, 1)
+            .append_packed(fp_from_radix_10("0")?, 32)
+            .append_packed(fp_from_radix_10("1")?, 1))
+    }
+
+    // let registers =
+    //   genesis_block_data |> Mina_block.header
+    //   |> Mina_block.Header.protocol_state
+    //   |> Mina_state.Protocol_state.blockchain_state
+    //   |> Mina_state.Blockchain_state.registers
+    // in
+    // let local_state = registers |> Mina_state.Registers.local_state in
+    // let roinput = local_state |> Mina_state.Local_state.to_input in
+    // Random_oracle_input.Chunked.print roinput
+    //   Pickles.Impls.Step.Field.Constant.to_string ;
     fn genesis_staged_ledger_hash_chunked_roinput() -> Result<ChunkedROInput> {
         let mut roi = ChunkedROInput::new().append_field(fp_from_radix_10(
             "18312982411155638834795952767307088331002783393569971720271219236025400527059",

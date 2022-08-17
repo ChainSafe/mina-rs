@@ -154,8 +154,19 @@ impl From<ChunkedROInput> for ROInput {
 
 impl Display for ChunkedROInput {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        fn fp_to_str(fp: Fp) -> String {
+            let big256: BigInteger256 = fp.into();
+            let big: num::BigUint = big256.into();
+            big.to_str_radix(10)
+        }
         writeln!(f, "fields ({}):", self.fields.len())?;
+        for fp in &self.fields {
+            writeln!(f, "\t{}", fp_to_str(*fp))?;
+        }
         writeln!(f, "packed: ({}):", self.packed.len())?;
+        for (fp, l) in &self.packed {
+            writeln!(f, "\t{l}:{}", fp_to_str(*fp))?;
+        }
         Ok(())
     }
 }

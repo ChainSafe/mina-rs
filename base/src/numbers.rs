@@ -69,6 +69,16 @@ pub struct ExtendedU32(pub i32);
 /// This will not be part of the public API once the deserialization refactor is complete
 pub struct ExtendedU64(pub u64);
 
+/// Signed amount, positive -> true, negative -> false
+#[derive(Copy, Clone, Eq, PartialEq, Debug, Default, From, Into)]
+pub struct SignedAmount(pub u64, pub bool);
+
+impl ToChunkedROInput for SignedAmount {
+    fn to_chunked_roinput(&self) -> ChunkedROInput {
+        ChunkedROInput::new().append_u64(self.0).append_bool(self.1)
+    }
+}
+
 /// This structure represents fixed point numbers
 /// typically amounts of Mina currency
 /// # Example
