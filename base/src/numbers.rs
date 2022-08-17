@@ -229,7 +229,7 @@ impl Hashable for BlockTime {
 
 impl ToChunkedROInput for BlockTime {
     fn to_chunked_roinput(&self) -> ChunkedROInput {
-        ChunkedROInput::new().append_u32(self.0 as u32)
+        ChunkedROInput::new().append_u64(self.0)
     }
 }
 

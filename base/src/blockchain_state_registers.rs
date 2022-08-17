@@ -3,8 +3,6 @@
 
 //! Types related to the Blockchain State Registers
 
-use std::borrow::Borrow;
-
 use crate::numbers::*;
 use mina_crypto::hash::*;
 use proof_systems::*;
@@ -56,15 +54,10 @@ pub struct BlockchainStateRegistersLocalState {
 impl ToChunkedROInput for BlockchainStateRegistersLocalState {
     fn to_chunked_roinput(&self) -> ChunkedROInput {
         ChunkedROInput::new()
-            .append_field(self.stack_frame.borrow().try_into().unwrap())
-            .append_field(self.call_stack.borrow().try_into().unwrap())
-            .append_field(self.transaction_commitment.borrow().try_into().unwrap())
-            .append_field(
-                self.full_transaction_commitment
-                    .borrow()
-                    .try_into()
-                    .unwrap(),
-            )
+            .append_chunked(&self.stack_frame)
+            .append_chunked(&self.call_stack)
+            .append_chunked(&self.transaction_commitment)
+            .append_chunked(&self.full_transaction_commitment)
             .append_chunked(&self.token_id)
             .append_chunked(&self.excess)
             .append_chunked(&self.ledger)
