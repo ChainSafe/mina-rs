@@ -9,7 +9,7 @@ pub mod tests {
     use mina_hasher::Fp;
     use mina_rs_base::types::*;
     use num::BigUint;
-    use proof_systems::{mina_hasher::*, *};
+    use proof_systems::{mina_hasher::*, mina_signer::CompressedPubKey, *};
     use std::str::FromStr;
 
     #[test]
@@ -145,6 +145,127 @@ pub mod tests {
                 )?)
                 .append_field(fp_from_radix_10(
                     "59715292382037036695237625812635217064549677739652"
+                )?)
+        );
+
+        // let consensus_state =
+        //     protocol_state |> Mina_state.Protocol_state.consensus_state
+        // in
+        // let roinput =
+        //     consensus_state |> Consensus.Data.Consensus_state.to_input
+        // in
+        let consensus_state = ConsensusState {
+            blockchain_length: 1.into(),
+            epoch_count: 0.into(),
+            min_window_density: 77.into(),
+            sub_window_densities: vec![
+                1.into(),
+                7.into(),
+                7.into(),
+                7.into(),
+                7.into(),
+                7.into(),
+                7.into(),
+                7.into(),
+                7.into(),
+                7.into(),
+                7.into(),
+            ],
+            last_vrf_output: VrfOutputTruncated::from_str(
+                "OruOTtGM3tJL3jM0GHtCzKyugvWT0ZP7VckspHX8_g8",
+            )?,
+            total_currency: 1013238001000001000.into(),
+            curr_global_slot: GlobalSlot {
+                slot_number: 0.into(),
+                slots_per_epoch: 7140.into(),
+            },
+            global_slot_since_genesis: 0.into(),
+            staking_epoch_data: EpochData {
+                ledger: EpochLedger {
+                    hash: LedgerHash::from_str(
+                        "jwxjg179rPZDX3N8x7rGs98NVKnXxQ6kauk4R421ZXEb551SPUu",
+                    )?,
+                    total_currency: 1013238001000001000.into(),
+                },
+                seed: EpochSeed::from_str("2va9BGv9JrLTtrzZttiEMDYw1Zj6a6EHzXjmP9evHDTG3oEquURA")?,
+                start_checkpoint: StateHash::from_str(
+                    "3NK2tkzqqK5spR2sZ7tujjqPksL45M3UUrcA4WhCkeiPtnugyE2x",
+                )?,
+                lock_checkpoint: StateHash::from_str(
+                    "3NK2tkzqqK5spR2sZ7tujjqPksL45M3UUrcA4WhCkeiPtnugyE2x",
+                )?,
+                epoch_length: 1.into(),
+            },
+            next_epoch_data: EpochData {
+                ledger: EpochLedger {
+                    hash: LedgerHash::from_str(
+                        "jwxjg179rPZDX3N8x7rGs98NVKnXxQ6kauk4R421ZXEb551SPUu",
+                    )?,
+                    total_currency: 1013238001000001000.into(),
+                },
+                seed: EpochSeed::from_str("2vc1zQHJx2xN72vaR4YDH31KwFSr5WHSEH2dzcfcq8jxBPcGiJJA")?,
+                start_checkpoint: StateHash::from_str(
+                    "3NK2tkzqqK5spR2sZ7tujjqPksL45M3UUrcA4WhCkeiPtnugyE2x",
+                )?,
+                lock_checkpoint: StateHash::from_str(
+                    "3NLi4a85TqcMwLAoezJjbBoYhS6x7EKyf5ThWhUS7NhDesqyXWbx",
+                )?,
+                epoch_length: 2.into(),
+            },
+            has_ancestor_in_same_checkpoint_window: true,
+            block_stake_winner: CompressedPubKey::from_address(
+                "B62qiy32p8kAKnny8ZFwoMhYpBppM1DWVCqAPBYNcXnsAHhnfAAuXgg",
+            )?,
+            block_creator: CompressedPubKey::from_address(
+                "B62qiy32p8kAKnny8ZFwoMhYpBppM1DWVCqAPBYNcXnsAHhnfAAuXgg",
+            )?,
+            coinbase_receiver: CompressedPubKey::from_address(
+                "B62qiy32p8kAKnny8ZFwoMhYpBppM1DWVCqAPBYNcXnsAHhnfAAuXgg",
+            )?,
+            supercharge_coinbase: true,
+        };
+        assert_eq!(
+            consensus_state.roinput(),
+            ROInput::new()
+                .append_field(fp_from_radix_10("0")?)
+                .append_field(fp_from_radix_10("0")?)
+                .append_field(fp_from_radix_10(
+                    "13537175470369816875647086174838928722486573822187156126910528780791859041649"
+                )?)
+                .append_field(fp_from_radix_10("0")?)
+                .append_field(fp_from_radix_10(
+                    "14681961814697422253233195325942500722138391379385252796689294365564545340151"
+                )?)
+                .append_field(fp_from_radix_10("0")?)
+                .append_field(fp_from_radix_10(
+                    "13537175470369816875647086174838928722486573822187156126910528780791859041649"
+                )?)
+                .append_field(fp_from_radix_10(
+                    "9467349967580152589673091036870103925099662775818255640284311917171078832860"
+                )?)
+                .append_field(fp_from_radix_10(
+                    "22536877747820698688010660184495467853785925552441222123266613953322243475471"
+                )?)
+                .append_field(fp_from_radix_10(
+                    "22536877747820698688010660184495467853785925552441222123266613953322243475471"
+                )?)
+                .append_field(fp_from_radix_10(
+                    "22536877747820698688010660184495467853785925552441222123266613953322243475471"
+                )?)
+                .append_field(fp_from_radix_10(
+                    "6277101735386680790037531676199156265425591762849762377735"
+                )?)
+                .append_field(fp_from_radix_10(
+                    "47179906678498547680151595604921559418585159020371769110072453979228"
+                )?)
+                .append_field(fp_from_radix_10(
+                    "8572332179547628723856916093832990528989133037876787922237980667902"
+                )?)
+                .append_field(fp_from_radix_10(
+                    "1379148100938082216184032579547152646221531430054524878849"
+                )?)
+                .append_field(fp_from_radix_10(
+                    "642215880070851285096273096370689904226955521856"
                 )?)
         );
 

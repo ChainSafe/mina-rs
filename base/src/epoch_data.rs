@@ -6,7 +6,10 @@
 use crate::numbers::{Amount, Length};
 use mina_crypto::hash::*;
 use mina_serialization_types_macros::AutoFrom;
-use proof_systems::mina_hasher::{Hashable, ROInput};
+use proof_systems::{
+    mina_hasher::{Hashable, ROInput},
+    ChunkedROInput, ToChunkedROInput,
+};
 
 #[derive(Clone, Default, Eq, PartialEq, Debug, AutoFrom)]
 #[auto_from(mina_serialization_types::epoch_data::EpochLedger)]
@@ -29,6 +32,12 @@ impl Hashable for EpochLedger {
 
     fn domain_string(_: Self::D) -> Option<String> {
         None
+    }
+}
+
+impl ToChunkedROInput for EpochLedger {
+    fn to_chunked_roinput(&self) -> ChunkedROInput {
+        ChunkedROInput::new()
     }
 }
 

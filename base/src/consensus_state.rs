@@ -14,8 +14,11 @@ use blake2::{
 };
 use mina_serialization_types::{json::*, v1::*, *};
 use mina_serialization_types_macros::AutoFrom;
-use proof_systems::mina_hasher::{Hashable, ROInput};
-use proof_systems::mina_signer::CompressedPubKey;
+use proof_systems::{
+    mina_hasher::{Hashable, ROInput},
+    ToChunkedROInput,
+};
+use proof_systems::{mina_signer::CompressedPubKey, ChunkedROInput};
 use smart_default::SmartDefault;
 use versioned::*;
 
@@ -113,6 +116,13 @@ pub struct ConsensusState {
 
 impl_from_with_proxy!(ConsensusState, ConsensusStateV1, ConsensusStateJson);
 
+impl ConsensusState {
+    /// Returns the sub-window densities as a vec of u32
+    pub fn sub_window_densities(&self) -> Vec<u32> {
+        self.sub_window_densities.iter().map(|i| i.0).collect()
+    }
+}
+
 impl Hashable for ConsensusState {
     type D = ();
 
@@ -145,9 +155,8 @@ impl Hashable for ConsensusState {
     }
 }
 
-impl ConsensusState {
-    /// Returns the sub-window densities as a vec of u32
-    pub fn sub_window_densities(&self) -> Vec<u32> {
-        self.sub_window_densities.iter().map(|i| i.0).collect()
+impl ToChunkedROInput for ConsensusState {
+    fn to_chunked_roinput(&self) -> ChunkedROInput {
+        ChunkedROInput::new()
     }
 }
