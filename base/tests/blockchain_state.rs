@@ -230,6 +230,14 @@ pub mod tests {
                 "5250504782050800269768049800766857209688182666876398046583012356259366563838"
             )?)
         );
+        assert_eq!(
+            consensus_state.curr_global_slot.to_chunked_roinput(),
+            ChunkedROInput::new().append_u32(0).append_u32(7140)
+        );
+        assert_eq!(
+            consensus_state.curr_global_slot.roinput(),
+            ROInput::new().append_field(fp_from_radix_10("7140")?)
+        );
         // FIXME
         assert_ne!(
             consensus_state.roinput(),

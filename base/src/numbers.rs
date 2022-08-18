@@ -184,6 +184,12 @@ impl GlobalSlotNumber {
     pub const MAX: Self = Self(u32::MAX);
 }
 
+impl ToChunkedROInput for GlobalSlotNumber {
+    fn to_chunked_roinput(&self) -> ChunkedROInput {
+        ChunkedROInput::new().append_u32(self.0)
+    }
+}
+
 /// Mina_numbers.Index
 #[derive(Copy, Clone, Eq, PartialEq, Debug, Default, From, Into)]
 pub struct MinaIndex(pub u32);
