@@ -51,7 +51,7 @@ impl ConsensusConstants {
     }
 }
 
-/// A chain of [ProtocolState]
+/// A chain of [ProtocolStateLegacy]
 #[derive(Debug, Default, Eq, PartialEq, Clone)]
 // TODO: replace vec element with ExternalTransition
 pub struct ProtocolStateChain(pub Vec<ProtocolStateLegacy>);
@@ -84,7 +84,7 @@ where
     /// This function returns hash of the top block's protocol state for a given chain.
     /// The input is a chain C and the output is the hash.
     fn state_hash(&self) -> Option<Fp>;
-    /// Gets [ProtocolState] of the genesis block
+    /// Gets [ProtocolStateLegacy] of the genesis block
     fn genesis_block(&self) -> Option<&ProtocolStateLegacy>;
 }
 
