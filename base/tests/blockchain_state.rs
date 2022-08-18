@@ -238,6 +238,29 @@ pub mod tests {
             consensus_state.curr_global_slot.roinput(),
             ROInput::new().append_field(fp_from_radix_10("7140")?)
         );
+        assert_eq!(
+            consensus_state.staking_epoch_data.to_chunked_roinput(),
+            ChunkedROInput::new()
+                .append_field(fp_from_radix_10("0")?)
+                .append_field(fp_from_radix_10("0")?)
+                .append_field(fp_from_radix_10(
+                    "13537175470369816875647086174838928722486573822187156126910528780791859041649"
+                )?)
+                .append_field(fp_from_radix_10("0")?)
+                .append_u32(1)
+                .append_u64(1013238001000001000)
+        );
+        assert_eq!(
+            consensus_state.staking_epoch_data.roinput(),
+            ROInput::new()
+                .append_field(fp_from_radix_10("0")?)
+                .append_field(fp_from_radix_10("0")?)
+                .append_field(fp_from_radix_10(
+                    "13537175470369816875647086174838928722486573822187156126910528780791859041649"
+                )?)
+                .append_field(fp_from_radix_10("0")?)
+                .append_field(fp_from_radix_10("19459982074709552616")?)
+        );
         // FIXME
         assert_ne!(
             consensus_state.roinput(),

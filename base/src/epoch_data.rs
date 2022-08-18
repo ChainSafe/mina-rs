@@ -38,6 +38,8 @@ impl Hashable for EpochLedger {
 impl ToChunkedROInput for EpochLedger {
     fn to_chunked_roinput(&self) -> ChunkedROInput {
         ChunkedROInput::new()
+            .append_chunked(&self.hash)
+            .append_chunked(&self.total_currency)
     }
 }
 
@@ -71,5 +73,16 @@ impl Hashable for EpochData {
 
     fn domain_string(_: Self::D) -> Option<String> {
         None
+    }
+}
+
+impl ToChunkedROInput for EpochData {
+    fn to_chunked_roinput(&self) -> ChunkedROInput {
+        ChunkedROInput::new()
+            .append_chunked(&self.seed)
+            .append_chunked(&self.start_checkpoint)
+            .append_chunked(&self.epoch_length)
+            .append_chunked(&self.ledger)
+            .append_chunked(&self.lock_checkpoint)
     }
 }

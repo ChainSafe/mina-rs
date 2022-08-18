@@ -309,6 +309,12 @@ impl_from_for_hash!(EpochSeed, HashV1);
 impl_from_for_generic_with_proxy!(EpochSeed, HashV1, EpochSeedHashV1Json);
 impl_strconv_via_json!(EpochSeed, EpochSeedHashV1Json);
 
+impl ToChunkedROInput for EpochSeed {
+    fn to_chunked_roinput(&self) -> ChunkedROInput {
+        self.0.to_chunked_roinput()
+    }
+}
+
 impl Hashable for EpochSeed {
     type D = ();
 
