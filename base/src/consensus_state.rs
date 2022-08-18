@@ -4,6 +4,7 @@
 //! Types and funcions related to the Mina consensus state
 
 use crate::{
+    common::CompressedPubKeyHashableWrapper,
     epoch_data::EpochData,
     global_slot::GlobalSlot,
     numbers::{Amount, GlobalSlotNumber, Length},
@@ -177,6 +178,23 @@ impl Hashable for ConsensusState {
 
 impl ToChunkedROInput for ConsensusState {
     fn to_chunked_roinput(&self) -> ChunkedROInput {
-        ChunkedROInput::new()
+        let mut roi = ChunkedROInput::new()
+            .append_chunked(&self.blockchain_length)
+            .append_chunked(&self.epoch_count)
+            .append_chunked(&self.min_window_density);
+        for l in &self.sub_window_densities {
+            roi = roi.append_chunked(l);
+        }
+        roi.append_chunked(&self.last_vrf_output)
+            .append_chunked(&self.total_currency)
+            .append_chunked(&self.curr_global_slot)
+            .append_chunked(&self.global_slot_since_genesis)
+            .append_bool(self.has_ancestor_in_same_checkpoint_window)
+            .append_bool(self.supercharge_coinbase)
+            .append_chunked(&self.staking_epoch_data)
+            .append_chunked(&self.next_epoch_data)
+            .append_chunked(&CompressedPubKeyHashableWrapper(&self.block_stake_winner))
+            .append_chunked(&CompressedPubKeyHashableWrapper(&self.block_creator))
+            .append_chunked(&CompressedPubKeyHashableWrapper(&self.coinbase_receiver))
     }
 }

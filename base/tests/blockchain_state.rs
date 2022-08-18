@@ -261,8 +261,39 @@ pub mod tests {
                 .append_field(fp_from_radix_10("0")?)
                 .append_field(fp_from_radix_10("19459982074709552616")?)
         );
-        // FIXME
-        assert_ne!(
+        assert_eq!(
+            consensus_state.next_epoch_data.to_chunked_roinput(),
+            ChunkedROInput::new()
+                .append_field(fp_from_radix_10(
+                    "14681961814697422253233195325942500722138391379385252796689294365564545340151"
+                )?)
+                .append_field(fp_from_radix_10("0")?)
+                .append_field(fp_from_radix_10(
+                    "13537175470369816875647086174838928722486573822187156126910528780791859041649"
+                )?)
+                .append_field(fp_from_radix_10(
+                    "9467349967580152589673091036870103925099662775818255640284311917171078832860"
+                )?)
+                .append_u32(2)
+                .append_u64(1013238001000001000)
+        );
+        assert_eq!(
+            consensus_state.next_epoch_data.roinput(),
+            ROInput::new()
+                .append_field(fp_from_radix_10(
+                    "14681961814697422253233195325942500722138391379385252796689294365564545340151"
+                )?)
+                .append_field(fp_from_radix_10("0")?)
+                .append_field(fp_from_radix_10(
+                    "13537175470369816875647086174838928722486573822187156126910528780791859041649"
+                )?)
+                .append_field(fp_from_radix_10(
+                    "9467349967580152589673091036870103925099662775818255640284311917171078832860"
+                )?)
+                .append_field(fp_from_radix_10("37906726148419104232")?)
+        );
+
+        assert_eq!(
             consensus_state.roinput(),
             ROInput::new()
                 .append_field(fp_from_radix_10("0")?)
