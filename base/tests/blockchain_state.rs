@@ -373,6 +373,26 @@ pub mod tests {
             consensus_state,
             constants,
         };
+        // let protocol_state_body =
+        //   protocol_state |> Mina_state.Protocol_state.body
+        // in
+        // printf "protocol_state_body hash: %s\n"
+        //   ( protocol_state_body |> Mina_state.Protocol_state.Body.hash
+        //   |> Snark_params.Tick.Field.to_string ) ;
+        let state_body_hash = {
+            let mut hasher = create_kimchi(());
+            hasher.hash(&protocol_state_body)
+        };
+        assert_eq!(
+            state_body_hash,
+            fp_from_radix_10(
+                "20758916662537028166949878948910240845738334644439336511582563910244320172322"
+            )?
+        );
+        assert_eq!(
+            StateBodyHash::from(&state_body_hash).to_string(),
+            "3WtvbM8xNG5b1RBYEnJtT9XiwEEFyzBEZ6p4RMeecdXSf8STcUvc"
+        );
         assert_eq!(
             protocol_state_body.roinput(),
             ROInput::new()
@@ -446,6 +466,21 @@ pub mod tests {
                     "41740486762171608190998085217754024788952913243275266"
                 )?)
                 .append_field(fp_from_radix_10("8105904008000008000")?)
+        );
+
+        let protocol_state = ProtocolState {
+            previous_state_hash: StateHash::from_str(
+                "3NLi4a85TqcMwLAoezJjbBoYhS6x7EKyf5ThWhUS7NhDesqyXWbx",
+            )?,
+            body: protocol_state_body,
+        };
+        let state_hash = {
+            let mut hasher = create_kimchi(());
+            hasher.hash(&protocol_state)
+        };
+        assert_eq!(
+            StateHash::from(&state_hash).to_string(),
+            "3NLheNBfhMDCWEJZMNgHaiPkXYQPGbSYnof2ns5LGxr5MiJSSfif"
         );
 
         Ok(())

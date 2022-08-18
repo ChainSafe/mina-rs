@@ -132,6 +132,21 @@ macro_rules! impl_from_for_hash {
 
 //////////////////////////////////////////////////////////////////////////
 #[derive(Clone, Debug, Default, Eq, PartialEq, derive_more::From, derive_more::Into)]
+pub struct StateBodyHash(BaseHash);
+
+impl_from_for_hash!(StateBodyHash, HashV1);
+impl_from_for_generic_with_proxy!(StateBodyHash, HashV1, StateBodyHashV1Json);
+impl_strconv_via_json!(StateBodyHash, StateBodyHashV1Json);
+
+impl From<&Fp> for StateBodyHash {
+    fn from(i: &Fp) -> Self {
+        let base: BaseHash = i.into();
+        base.into()
+    }
+}
+
+//////////////////////////////////////////////////////////////////////////
+#[derive(Clone, Debug, Default, Eq, PartialEq, derive_more::From, derive_more::Into)]
 pub struct StateHash(BaseHash);
 
 impl_from_for_hash!(StateHash, HashV1);

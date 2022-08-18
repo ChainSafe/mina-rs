@@ -13,7 +13,7 @@ use mina_crypto::hash::StateHash;
 use mina_serialization_types::{json::*, v1::*};
 use mina_serialization_types_macros::AutoFrom;
 use proof_systems::{
-    mina_hasher::{create_legacy, Fp, Hashable, Hasher, ROInput},
+    mina_hasher::{create_kimchi, create_legacy, Fp, Hashable, Hasher, ROInput},
     *,
 };
 use versioned::*;
@@ -207,5 +207,36 @@ impl ToChunkedROInput for ProtocolStateBody {
             .append_chunked(&self.genesis_state_hash)
             .append_chunked(&self.blockchain_state)
             .append_chunked(&self.consensus_state)
+    }
+}
+
+#[derive(Clone, Default, Debug, Eq, PartialEq)]
+/// This structure can be thought of like the block header. It contains the most essential information of a block.
+pub struct ProtocolState {
+    /// Commitment to previous block (hash of previous protocol state hash and body hash)
+    pub previous_state_hash: StateHash,
+    /// The body of the protocol state
+    pub body: ProtocolStateBody,
+}
+
+impl Hashable for ProtocolState {
+    type D = ();
+
+    fn to_roinput(&self) -> ROInput {
+        self.roinput()
+    }
+
+    fn domain_string(_: Self::D) -> Option<String> {
+        Some("CodaProtoState".into())
+    }
+}
+
+impl ToChunkedROInput for ProtocolState {
+    fn to_chunked_roinput(&self) -> ChunkedROInput {
+        let mut hasher = create_kimchi(());
+        let body_hash = hasher.hash(&self.body);
+        ChunkedROInput::new()
+            .append_chunked(&self.previous_state_hash)
+            .append_field(body_hash)
     }
 }
