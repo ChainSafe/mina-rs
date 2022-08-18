@@ -7,8 +7,8 @@ impl Genesis for ExternalTransition {
     /// Initialize genesis block
     /// <https://github.com/MinaProtocol/mina/tree/feature/9665-spec-ouroboros-samasika-checkpointing/docs/specs/consensus#611-genesis-block>
     fn from_genesis_config(config: &GenesisInitConfig) -> ExternalTransition {
-        let protocol_state = ProtocolState {
-            body: ProtocolStateBody {
+        let protocol_state = ProtocolStateLegacy {
+            body: ProtocolStateBodyLegacy {
                 blockchain_state: config.blockchain_state.clone(),
                 constants: config.constants.clone(),
                 consensus_state: ConsensusState {

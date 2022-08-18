@@ -152,7 +152,7 @@ pub mod tests {
         //     protocol_state |> Mina_state.Protocol_state.consensus_state
         // in
         // let roinput =
-        //     consensus_state |> Consensus.Data.Consensus_state.to_input
+        //     consensus_state |> Consensus.Data.Consensus_state.to_input_debug
         // in
         let consensus_state = ConsensusState {
             blockchain_length: 1.into(),
@@ -363,6 +363,89 @@ pub mod tests {
             ROInput::new().append_field(fp_from_radix_10(
                 "423835474825961846844757681839698573328295964924392"
             )?)
+        );
+
+        let protocol_state_body = ProtocolStateBody {
+            genesis_state_hash: StateHash::from_str(
+                "3NLi4a85TqcMwLAoezJjbBoYhS6x7EKyf5ThWhUS7NhDesqyXWbx",
+            )?,
+            blockchain_state,
+            consensus_state,
+            constants,
+        };
+        assert_eq!(
+            protocol_state_body.roinput(),
+            ROInput::new()
+                .append_field(fp_from_radix_10(
+                    "9467349967580152589673091036870103925099662775818255640284311917171078832860"
+                )?)
+                .append_field(fp_from_radix_10(
+                    "18312982411155638834795952767307088331002783393569971720271219236025400527059"
+                )?)
+                .append_field(fp_from_radix_10(
+                    "13537175470369816875647086174838928722486573822187156126910528780791859041649"
+                )?)
+                .append_field(fp_from_radix_10(
+                    "13537175470369816875647086174838928722486573822187156126910528780791859041649"
+                )?)
+                .append_field(fp_from_radix_10(
+                    "1345645986294164927562966675279626510497288257949713170124140298300287598676"
+                )?)
+                .append_field(fp_from_radix_10("0")?)
+                .append_field(fp_from_radix_10("0")?)
+                .append_field(fp_from_radix_10("0")?)
+                .append_field(fp_from_radix_10("1")?)
+                .append_field(fp_from_radix_10("0")?)
+                .append_field(fp_from_radix_10("0")?)
+                .append_field(fp_from_radix_10("0")?)
+                .append_field(fp_from_radix_10(
+                    "13537175470369816875647086174838928722486573822187156126910528780791859041649"
+                )?)
+                .append_field(fp_from_radix_10("0")?)
+                .append_field(fp_from_radix_10(
+                    "14681961814697422253233195325942500722138391379385252796689294365564545340151"
+                )?)
+                .append_field(fp_from_radix_10("0")?)
+                .append_field(fp_from_radix_10(
+                    "13537175470369816875647086174838928722486573822187156126910528780791859041649"
+                )?)
+                .append_field(fp_from_radix_10(
+                    "9467349967580152589673091036870103925099662775818255640284311917171078832860"
+                )?)
+                .append_field(fp_from_radix_10(
+                    "22536877747820698688010660184495467853785925552441222123266613953322243475471"
+                )?)
+                .append_field(fp_from_radix_10(
+                    "22536877747820698688010660184495467853785925552441222123266613953322243475471"
+                )?)
+                .append_field(fp_from_radix_10(
+                    "22536877747820698688010660184495467853785925552441222123266613953322243475471"
+                )?)
+                .append_field(fp_from_radix_10(
+                    "1954596133368421387722139016445180426982017862454208282937095146054530"
+                )?)
+                .append_field(fp_from_radix_10(
+                    "24187223653712748985369614349883567510519372552037957573041"
+                )?)
+                .append_field(fp_from_radix_10(
+                    "784637717014678956011557744582442801400480448550706887870"
+                )?)
+                .append_field(fp_from_radix_10(
+                    "238834422509354367104600567260149474239520236223349248839734070870016"
+                )?)
+                .append_field(fp_from_radix_10(
+                    "483336833626235920455068665074195165254570252067109806800903"
+                )?)
+                .append_field(fp_from_radix_10(
+                    "47179906678498547680151595604921559418592344102652004783299007279883"
+                )?)
+                .append_field(fp_from_radix_10(
+                    "327365860291324522845756249582241551047679543985146121484579122664"
+                )?)
+                .append_field(fp_from_radix_10(
+                    "41740486762171608190998085217754024788952913243275266"
+                )?)
+                .append_field(fp_from_radix_10("8105904008000008000")?)
         );
 
         Ok(())
