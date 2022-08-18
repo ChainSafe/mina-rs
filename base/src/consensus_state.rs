@@ -67,6 +67,26 @@ impl Hashable for VrfOutputTruncated {
     }
 }
 
+impl ToChunkedROInput for VrfOutputTruncated {
+    fn to_chunked_roinput(&self) -> ChunkedROInput {
+        if self.0.len() <= 31 {
+            ChunkedROInput::new().append_bytes(&self.0)
+        } else {
+            let roi = ChunkedROInput::new().append_bytes(&self.0[..31]);
+            if self.0.len() > 31 {
+                let last = self.0[31];
+                roi.append_bool(last & 0b1 > 0)
+                    .append_bool(last & 0b10 > 0)
+                    .append_bool(last & 0b100 > 0)
+                    .append_bool(last & 0b1000 > 0)
+                    .append_bool(last & 0b10000 > 0)
+            } else {
+                roi
+            }
+        }
+    }
+}
+
 /// This structure encapsulates the succinct state of the consensus protocol.
 ///
 /// The stake distribution information is contained by the staking_epoch_data field.
