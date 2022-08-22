@@ -184,10 +184,10 @@
 //! ```
 //!
 
-</span><span class="attribute">#![deny(warnings)]</span>
-<span class="attribute">#![deny(missing_docs)]</span>
+</span><span class="attribute">#![deny(warnings)]
+#![deny(missing_docs)]
 
-<span class="kw">mod </span>auto_from;
+</span><span class="kw">mod </span>auto_from;
 
 <span class="kw">use </span>proc_macro::TokenStream;
 <span class="kw">use </span>quote::quote;
@@ -197,8 +197,8 @@
 /// and types including the attributed target type(s) and their versioned types,
 /// when the target type has identical field names with the annotated one, and each pair of the fields
 /// are convertible between each other
-</span><span class="attribute">#[proc_macro_derive(AutoFrom, attributes(auto_from))]</span>
-<span class="kw">pub fn </span>auto_from_macro(input: TokenStream) -&gt; TokenStream {
+</span><span class="attribute">#[proc_macro_derive(AutoFrom, attributes(auto_from))]
+</span><span class="kw">pub fn </span>auto_from_macro(input: TokenStream) -&gt; TokenStream {
     <span class="kw">let </span>DeriveInput {
         attrs, ident, data, ..
     } = <span class="macro">parse_macro_input!</span>(input);
@@ -245,4 +245,4 @@
     Default::default()
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_serialization_types_macros" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (40336865f 2022-08-15)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_serialization_types_macros" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (c0941dfb5 2022-08-21)" ></div></body></html>

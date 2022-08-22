@@ -142,14 +142,14 @@
 </pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
-</span><span class="attribute">#[cfg(feature = <span class="string">&quot;loose_deserialization&quot;</span>)]</span>
-<span class="kw">use </span><span class="kw">crate</span>::loose_deserializer::EnumData;
+</span><span class="attribute">#[cfg(feature = <span class="string">&quot;loose_deserialization&quot;</span>)]
+</span><span class="kw">use </span><span class="kw">crate</span>::loose_deserializer::EnumData;
 <span class="kw">use </span><span class="kw">crate</span>::value::Value;
 <span class="kw">use </span>serde::de::MapAccess;
 <span class="kw">use </span>serde::de::SeqAccess;
 <span class="kw">use </span>serde::de::Visitor;
-<span class="attribute">#[cfg(feature = <span class="string">&quot;loose_deserialization&quot;</span>)]</span>
-<span class="kw">use </span>serde::de::{EnumAccess, VariantAccess};
+<span class="attribute">#[cfg(feature = <span class="string">&quot;loose_deserialization&quot;</span>)]
+</span><span class="kw">use </span>serde::de::{EnumAccess, VariantAccess};
 <span class="kw">use </span>serde::Deserialize;
 
 <span class="kw">pub struct </span>ValueVisitor;
@@ -161,49 +161,49 @@
         formatter.write_str(<span class="string">&quot;any valid OCaml value&quot;</span>)
     }
 
-    <span class="attribute">#[inline]</span>
-    <span class="kw">fn </span>visit_bool&lt;E&gt;(<span class="self">self</span>, value: bool) -&gt; <span class="prelude-ty">Result</span>&lt;Value, E&gt; {
+    <span class="attribute">#[inline]
+    </span><span class="kw">fn </span>visit_bool&lt;E&gt;(<span class="self">self</span>, value: bool) -&gt; <span class="prelude-ty">Result</span>&lt;Value, E&gt; {
         <span class="prelude-val">Ok</span>(Value::Bool(value))
     }
 
-    <span class="attribute">#[inline]</span>
-    <span class="kw">fn </span>visit_char&lt;E&gt;(<span class="self">self</span>, value: char) -&gt; <span class="prelude-ty">Result</span>&lt;Value, E&gt; {
+    <span class="attribute">#[inline]
+    </span><span class="kw">fn </span>visit_char&lt;E&gt;(<span class="self">self</span>, value: char) -&gt; <span class="prelude-ty">Result</span>&lt;Value, E&gt; {
         <span class="prelude-val">Ok</span>(Value::Char(value <span class="kw">as </span>u8))
     }
 
-    <span class="attribute">#[inline]</span>
-    <span class="kw">fn </span>visit_i64&lt;E&gt;(<span class="self">self</span>, value: i64) -&gt; <span class="prelude-ty">Result</span>&lt;Value, E&gt; {
+    <span class="attribute">#[inline]
+    </span><span class="kw">fn </span>visit_i64&lt;E&gt;(<span class="self">self</span>, value: i64) -&gt; <span class="prelude-ty">Result</span>&lt;Value, E&gt; {
         <span class="prelude-val">Ok</span>(Value::Int(value))
     }
 
-    <span class="attribute">#[inline]</span>
-    <span class="kw">fn </span>visit_f64&lt;E&gt;(<span class="self">self</span>, value: f64) -&gt; <span class="prelude-ty">Result</span>&lt;Value, E&gt; {
+    <span class="attribute">#[inline]
+    </span><span class="kw">fn </span>visit_f64&lt;E&gt;(<span class="self">self</span>, value: f64) -&gt; <span class="prelude-ty">Result</span>&lt;Value, E&gt; {
         <span class="prelude-val">Ok</span>(Value::Float(value))
     }
 
-    <span class="attribute">#[inline]</span>
-    <span class="kw">fn </span>visit_str&lt;E&gt;(<span class="self">self</span>, value: <span class="kw-2">&amp;</span>str) -&gt; <span class="prelude-ty">Result</span>&lt;Value, E&gt;
+    <span class="attribute">#[inline]
+    </span><span class="kw">fn </span>visit_str&lt;E&gt;(<span class="self">self</span>, value: <span class="kw-2">&amp;</span>str) -&gt; <span class="prelude-ty">Result</span>&lt;Value, E&gt;
     <span class="kw">where
         </span>E: serde::de::Error,
     {
         <span class="self">self</span>.visit_string(String::from(value))
     }
 
-    <span class="attribute">#[inline]</span>
-    <span class="kw">fn </span>visit_bytes&lt;E&gt;(<span class="self">self</span>, value: <span class="kw-2">&amp;</span>[u8]) -&gt; <span class="prelude-ty">Result</span>&lt;Value, E&gt; {
+    <span class="attribute">#[inline]
+    </span><span class="kw">fn </span>visit_bytes&lt;E&gt;(<span class="self">self</span>, value: <span class="kw-2">&amp;</span>[u8]) -&gt; <span class="prelude-ty">Result</span>&lt;Value, E&gt; {
         <span class="comment">// Represent bytes as a list of chars
         // Chars are always 1 byte in BinProt so this fits
         </span><span class="kw">let </span>bytes = value.iter().map(|x| Value::Char(<span class="kw-2">*</span>x)).collect();
         <span class="prelude-val">Ok</span>(Value::List(bytes))
     }
 
-    <span class="attribute">#[inline]</span>
-    <span class="kw">fn </span>visit_none&lt;E&gt;(<span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;Value, E&gt; {
+    <span class="attribute">#[inline]
+    </span><span class="kw">fn </span>visit_none&lt;E&gt;(<span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;Value, E&gt; {
         <span class="prelude-val">Ok</span>(Value::Option(<span class="prelude-val">None</span>))
     }
 
-    <span class="attribute">#[inline]</span>
-    <span class="kw">fn </span>visit_some&lt;D&gt;(<span class="self">self</span>, deserializer: D) -&gt; <span class="prelude-ty">Result</span>&lt;Value, D::Error&gt;
+    <span class="attribute">#[inline]
+    </span><span class="kw">fn </span>visit_some&lt;D&gt;(<span class="self">self</span>, deserializer: D) -&gt; <span class="prelude-ty">Result</span>&lt;Value, D::Error&gt;
     <span class="kw">where
         </span>D: serde::Deserializer&lt;<span class="lifetime">&#39;de</span>&gt;,
     {
@@ -212,13 +212,13 @@
         )<span class="question-mark">?</span>))))
     }
 
-    <span class="attribute">#[inline]</span>
-    <span class="kw">fn </span>visit_unit&lt;E&gt;(<span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;Value, E&gt; {
+    <span class="attribute">#[inline]
+    </span><span class="kw">fn </span>visit_unit&lt;E&gt;(<span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;Value, E&gt; {
         <span class="prelude-val">Ok</span>(Value::Unit)
     }
 
-    <span class="attribute">#[inline]</span>
-    <span class="kw">fn </span>visit_seq&lt;V&gt;(<span class="self">self</span>, <span class="kw-2">mut </span>visitor: V) -&gt; <span class="prelude-ty">Result</span>&lt;Value, V::Error&gt;
+    <span class="attribute">#[inline]
+    </span><span class="kw">fn </span>visit_seq&lt;V&gt;(<span class="self">self</span>, <span class="kw-2">mut </span>visitor: V) -&gt; <span class="prelude-ty">Result</span>&lt;Value, V::Error&gt;
     <span class="kw">where
         </span>V: SeqAccess&lt;<span class="lifetime">&#39;de</span>&gt;,
     {
@@ -245,8 +245,8 @@
         <span class="prelude-val">Ok</span>(Value::Record(values))
     }
 
-    <span class="attribute">#[cfg(feature = <span class="string">&quot;loose_deserialization&quot;</span>)]</span>
-    <span class="kw">fn </span>visit_enum&lt;A&gt;(<span class="self">self</span>, data: A) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>::Value, A::Error&gt;
+    <span class="attribute">#[cfg(feature = <span class="string">&quot;loose_deserialization&quot;</span>)]
+    </span><span class="kw">fn </span>visit_enum&lt;A&gt;(<span class="self">self</span>, data: A) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>::Value, A::Error&gt;
     <span class="kw">where
         </span>A: EnumAccess&lt;<span class="lifetime">&#39;de</span>&gt;,
     {
@@ -281,4 +281,4 @@
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="bin_prot" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (40336865f 2022-08-15)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="bin_prot" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (c0941dfb5 2022-08-21)" ></div></body></html>

@@ -53,20 +53,20 @@
 </pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
-</span><span class="attribute">#![deny(warnings)]</span>
+</span><span class="attribute">#![deny(warnings)]
 
-<span class="attribute">#[cfg(all(test, feature = <span class="string">&quot;browser&quot;</span>))]</span>
-<span class="macro">wasm_bindgen_test::wasm_bindgen_test_configure!</span>(run_in_browser);
+#[cfg(all(test, feature = <span class="string">&quot;browser&quot;</span>))]
+</span><span class="macro">wasm_bindgen_test::wasm_bindgen_test_configure!</span>(run_in_browser);
 
 <span class="kw">mod </span>e2e;
 <span class="kw">mod </span>fuzz;
 <span class="kw">mod </span>genesis;
 <span class="kw">mod </span>json;
-<span class="attribute">#[allow(non_snake_case)]</span>
-<span class="kw">mod </span>test_3NKaBJsN1SehD6iJwRwJSFmVzJg5DXSUQVgnMxtH4eer4aF5BrDK;
+<span class="attribute">#[allow(non_snake_case)]
+</span><span class="kw">mod </span>test_3NKaBJsN1SehD6iJwRwJSFmVzJg5DXSUQVgnMxtH4eer4aF5BrDK;
 
-<span class="attribute">#[cfg(test)]</span>
-<span class="kw">mod </span>tests {
+<span class="attribute">#[cfg(test)]
+</span><span class="kw">mod </span>tests {
     <span class="kw">use </span>bin_prot::Value;
     <span class="kw">use </span>std::str::FromStr;
 
@@ -103,4 +103,4 @@
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="test_serialization" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (40336865f 2022-08-15)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="test_serialization" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (c0941dfb5 2022-08-21)" ></div></body></html>

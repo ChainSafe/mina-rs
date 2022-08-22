@@ -279,8 +279,8 @@
 
 <span class="doccomment">/// The main top level type for a layout file.
 /// Parse into this from json
-</span><span class="attribute">#[derive(Serialize, Deserialize, Debug)]</span>
-<span class="kw">pub struct </span>Layout {
+</span><span class="attribute">#[derive(Serialize, Deserialize, Debug)]
+</span><span class="kw">pub struct </span>Layout {
     layout_loc: String,
     version_opt: <span class="prelude-ty">Option</span>&lt;i32&gt;,
     type_decl: String,
@@ -290,9 +290,9 @@
 }
 
 <span class="doccomment">/// Recursively defined BinProtRule is how the type tree is constructed
-</span><span class="attribute">#[derive(Clone, Serialize, Deserialize, Debug)]</span>
-<span class="attribute">#[serde(try_from = <span class="string">&quot;ListTaggedEnum&quot;</span>)]</span>
-<span class="kw">pub enum </span>BinProtRule {
+</span><span class="attribute">#[derive(Clone, Serialize, Deserialize, Debug)]
+#[serde(try_from = <span class="string">&quot;ListTaggedEnum&quot;</span>)]
+</span><span class="kw">pub enum </span>BinProtRule {
     <span class="doccomment">/// Variable length natural Integer
     </span>Nat0,
     <span class="doccomment">/// Unit type
@@ -417,15 +417,15 @@
     }
 }
 
-<span class="attribute">#[derive(Clone, Serialize, Deserialize, Debug)]</span>
-<span class="doccomment">/// Field of a BinProt record with a name and a value
+<span class="attribute">#[derive(Clone, Serialize, Deserialize, Debug)]
+</span><span class="doccomment">/// Field of a BinProt record with a name and a value
 </span><span class="kw">pub struct </span>RecordField {
     <span class="kw">pub</span>(<span class="kw">crate</span>) field_name: String,
     field_rule: BinProtRule,
 }
 
-<span class="attribute">#[derive(Clone, Serialize, Deserialize, Debug)]</span>
-<span class="doccomment">/// Variant of a BinProt sum type (enum)
+<span class="attribute">#[derive(Clone, Serialize, Deserialize, Debug)]
+</span><span class="doccomment">/// Variant of a BinProt sum type (enum)
 /// has a name, index and zero-or-more BinProt values
 </span><span class="kw">pub struct </span>Summand {
     <span class="kw">pub</span>(<span class="kw">crate</span>) ctor_name: String,
@@ -433,17 +433,17 @@
     <span class="kw">pub</span>(<span class="kw">crate</span>) ctor_args: Vec&lt;BinProtRule&gt;,
 }
 
-<span class="attribute">#[derive(Clone, Serialize, Deserialize, Debug)]</span>
-<span class="doccomment">/// Entry in a BinProt hash table
+<span class="attribute">#[derive(Clone, Serialize, Deserialize, Debug)]
+</span><span class="doccomment">/// Entry in a BinProt hash table
 /// hash types for the key and value
 </span><span class="kw">pub struct </span>HashTblEntry {
     key_rule: Box&lt;BinProtRule&gt;,
     value_rule: Box&lt;BinProtRule&gt;,
 }
 
-<span class="attribute">#[derive(Clone, Serialize, Deserialize, Debug)]</span>
-<span class="attribute">#[serde(try_from = <span class="string">&quot;ListTaggedEnum&quot;</span>)]</span>
-<span class="doccomment">/// τ ≤ Γ(a), τ is an instance of Γ(a) and (Γ(a) a type scheme
+<span class="attribute">#[derive(Clone, Serialize, Deserialize, Debug)]
+#[serde(try_from = <span class="string">&quot;ListTaggedEnum&quot;</span>)]
+</span><span class="doccomment">/// τ ≤ Γ(a), τ is an instance of Γ(a) and (Γ(a) a type scheme
 </span><span class="kw">pub enum </span>Polyvar {
     <span class="doccomment">/// An instance of Γ(a)
     </span>Tagged(TaggedPolyvar),
@@ -451,8 +451,8 @@
     </span>Inherited(BinProtRule),
 }
 
-<span class="attribute">#[derive(Clone, Serialize, Deserialize, Debug)]</span>
-<span class="doccomment">/// τ ≤ Γ(a), τ is an instance of Γ(a) and (Γ(a) a type scheme
+<span class="attribute">#[derive(Clone, Serialize, Deserialize, Debug)]
+</span><span class="doccomment">/// τ ≤ Γ(a), τ is an instance of Γ(a) and (Γ(a) a type scheme
 </span><span class="kw">pub struct </span>TaggedPolyvar {
     <span class="kw">pub</span>(<span class="kw">crate</span>) polyvar_name: String,
     <span class="kw">pub</span>(<span class="kw">crate</span>) hash: u32,
@@ -475,9 +475,9 @@
     }
 }
 
-<span class="attribute">#[derive(Clone, Serialize, Deserialize, Debug)]</span>
-<span class="attribute">#[serde(try_from = <span class="string">&quot;ListTaggedEnum&quot;</span>)]</span>
-<span class="doccomment">/// Define rule reference into Resolved and Unresolved Payload
+<span class="attribute">#[derive(Clone, Serialize, Deserialize, Debug)]
+#[serde(try_from = <span class="string">&quot;ListTaggedEnum&quot;</span>)]
+</span><span class="doccomment">/// Define rule reference into Resolved and Unresolved Payload
 </span><span class="kw">pub enum </span>RuleRef {
     <span class="doccomment">/// Unresolved Payload
     </span>Unresolved(UnresolvedPayload),
@@ -485,21 +485,21 @@
     </span>Resolved(ResolvedPayload),
 }
 
-<span class="attribute">#[derive(Clone, Serialize, Deserialize, Debug)]</span>
-<span class="doccomment">/// Unable to resolve reference of payload
+<span class="attribute">#[derive(Clone, Serialize, Deserialize, Debug)]
+</span><span class="doccomment">/// Unable to resolve reference of payload
 </span><span class="kw">pub struct </span>UnresolvedPayload {
     params: Vec&lt;BinProtRule&gt;,
     layout_id: String, <span class="comment">// what is longident?
 </span>}
 
-<span class="attribute">#[derive(Clone, Serialize, Deserialize, Debug)]</span>
-<span class="doccomment">/// Resolved reference of payload
+<span class="attribute">#[derive(Clone, Serialize, Deserialize, Debug)]
+</span><span class="doccomment">/// Resolved reference of payload
 </span><span class="kw">pub struct </span>ResolvedPayload {
     source_type_decl: String,
-    <span class="attribute">#[serde(default)]</span>
-    source_module_path: String,
-    <span class="attribute">#[serde(default)]</span>
-    bin_io_derived: bool, <span class="comment">// This is present only in later versions of the type layouts. Probably don&#39;t trust its value
+    <span class="attribute">#[serde(default)]
+    </span>source_module_path: String,
+    <span class="attribute">#[serde(default)]
+    </span>bin_io_derived: bool, <span class="comment">// This is present only in later versions of the type layouts. Probably don&#39;t trust its value
     </span>ref_rule: Box&lt;BinProtRule&gt;,
 }
 
@@ -519,4 +519,4 @@
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../../" data-current-crate="bin_prot" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (40336865f 2022-08-15)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../../" data-current-crate="bin_prot" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (c0941dfb5 2022-08-21)" ></div></body></html>

@@ -39,7 +39,7 @@
 
 </span><span class="doccomment">//! The opening proof used by the protocol state proof
 
-</span><span class="attribute">#![allow(missing_docs)]</span> <span class="comment">// Don&#39;t actually know what many of the types fields are for yet
+</span><span class="attribute">#![allow(missing_docs)] </span><span class="comment">// Don&#39;t actually know what many of the types fields are for yet
 
 </span><span class="kw">use crate</span>::{
     field_and_curve_elements::{FieldElement, FiniteECPoint},
@@ -50,8 +50,8 @@
 <span class="kw">use </span>serde::{Deserialize, Serialize};
 <span class="kw">use </span>versioned::Versioned;
 
-<span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]</span>
-<span class="kw">pub struct </span>OpeningProof {
+<span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]
+</span><span class="kw">pub struct </span>OpeningProof {
     <span class="kw">pub </span>lr: FiniteECPointPairVecV1,
     <span class="kw">pub </span>z_1: FieldElement,
     <span class="kw">pub </span>z_2: FieldElement,
@@ -61,9 +61,9 @@
 
 <span class="kw">pub type </span>OpeningProofV1 = Versioned&lt;OpeningProof, <span class="number">1</span>&gt;;
 
-<span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq, AutoFrom)]</span>
-<span class="attribute">#[auto_from(OpeningProof)]</span>
-<span class="kw">pub struct </span>OpeningProofJson {
+<span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq, AutoFrom)]
+#[auto_from(OpeningProof)]
+</span><span class="kw">pub struct </span>OpeningProofJson {
     <span class="kw">pub </span>lr: FiniteECPointPairVecJson,
     <span class="kw">pub </span>z_1: FieldElementJson,
     <span class="kw">pub </span>z_2: FieldElementJson,
@@ -71,4 +71,4 @@
     <span class="kw">pub </span>sg: FiniteECPointJson,
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_serialization_types" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (40336865f 2022-08-15)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_serialization_types" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (c0941dfb5 2022-08-21)" ></div></body></html>

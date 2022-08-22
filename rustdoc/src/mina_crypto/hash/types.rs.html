@@ -442,6 +442,97 @@
 <span id="442">442</span>
 <span id="443">443</span>
 <span id="444">444</span>
+<span id="445">445</span>
+<span id="446">446</span>
+<span id="447">447</span>
+<span id="448">448</span>
+<span id="449">449</span>
+<span id="450">450</span>
+<span id="451">451</span>
+<span id="452">452</span>
+<span id="453">453</span>
+<span id="454">454</span>
+<span id="455">455</span>
+<span id="456">456</span>
+<span id="457">457</span>
+<span id="458">458</span>
+<span id="459">459</span>
+<span id="460">460</span>
+<span id="461">461</span>
+<span id="462">462</span>
+<span id="463">463</span>
+<span id="464">464</span>
+<span id="465">465</span>
+<span id="466">466</span>
+<span id="467">467</span>
+<span id="468">468</span>
+<span id="469">469</span>
+<span id="470">470</span>
+<span id="471">471</span>
+<span id="472">472</span>
+<span id="473">473</span>
+<span id="474">474</span>
+<span id="475">475</span>
+<span id="476">476</span>
+<span id="477">477</span>
+<span id="478">478</span>
+<span id="479">479</span>
+<span id="480">480</span>
+<span id="481">481</span>
+<span id="482">482</span>
+<span id="483">483</span>
+<span id="484">484</span>
+<span id="485">485</span>
+<span id="486">486</span>
+<span id="487">487</span>
+<span id="488">488</span>
+<span id="489">489</span>
+<span id="490">490</span>
+<span id="491">491</span>
+<span id="492">492</span>
+<span id="493">493</span>
+<span id="494">494</span>
+<span id="495">495</span>
+<span id="496">496</span>
+<span id="497">497</span>
+<span id="498">498</span>
+<span id="499">499</span>
+<span id="500">500</span>
+<span id="501">501</span>
+<span id="502">502</span>
+<span id="503">503</span>
+<span id="504">504</span>
+<span id="505">505</span>
+<span id="506">506</span>
+<span id="507">507</span>
+<span id="508">508</span>
+<span id="509">509</span>
+<span id="510">510</span>
+<span id="511">511</span>
+<span id="512">512</span>
+<span id="513">513</span>
+<span id="514">514</span>
+<span id="515">515</span>
+<span id="516">516</span>
+<span id="517">517</span>
+<span id="518">518</span>
+<span id="519">519</span>
+<span id="520">520</span>
+<span id="521">521</span>
+<span id="522">522</span>
+<span id="523">523</span>
+<span id="524">524</span>
+<span id="525">525</span>
+<span id="526">526</span>
+<span id="527">527</span>
+<span id="528">528</span>
+<span id="529">529</span>
+<span id="530">530</span>
+<span id="531">531</span>
+<span id="532">532</span>
+<span id="533">533</span>
+<span id="534">534</span>
+<span id="535">535</span>
 </pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
@@ -454,7 +545,9 @@
 //! Depending on the type of hash a different byte prefix is used in the human readable form
 //!
 
-</span><span class="kw">use </span>mina_serialization_types::{impl_strconv_via_json, json::<span class="kw-2">*</span>, v1::<span class="kw-2">*</span>};
+</span><span class="kw">use </span>ark_ff::BigInteger256;
+<span class="kw">use </span>mina_serialization_types::{impl_strconv_via_json, json::<span class="kw-2">*</span>, v1::<span class="kw-2">*</span>};
+<span class="kw">use </span>num::{BigUint, Num};
 <span class="kw">use </span>proof_systems::{
     mina_hasher::{Fp, Hashable, ROInput},
     o1_utils::{field_helpers::FieldHelpersError, FieldHelpers},
@@ -463,8 +556,50 @@
 <span class="kw">use </span>sha2::{Digest, Sha256};
 <span class="kw">use </span>versioned::<span class="kw-2">*</span>;
 
-<span class="attribute">#[derive(Clone, Debug, Default, Eq, PartialEq, derive_more::From, derive_more::Into)]</span>
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">struct </span>BaseHash(<span class="kw">pub</span>(<span class="kw">crate</span>) [u8; <span class="number">32</span>]);
+<span class="attribute">#[derive(Clone, Debug, Default, Eq, PartialEq, derive_more::From, derive_more::Into)]
+</span><span class="kw">pub struct </span>Field([u8; <span class="number">32</span>]);
+
+<span class="kw">impl </span>Field {
+    <span class="kw">pub fn </span>from_str_radix(s: <span class="kw-2">&amp;</span>str, radix: u32) -&gt; anyhow::Result&lt;<span class="self">Self</span>&gt; {
+        <span class="kw">let </span>big = BigUint::from_str_radix(s, radix)<span class="question-mark">?</span>;
+        <span class="kw">let </span>big256: BigInteger256 = big.try_into().map_err(anyhow::Error::msg)<span class="question-mark">?</span>;
+        <span class="prelude-val">Ok</span>(<span class="self">Self</span>::from(<span class="kw-2">&amp;</span>Fp::from(big256)))
+    }
+}
+
+<span class="kw">impl </span>ToChunkedROInput <span class="kw">for </span>Field {
+    <span class="kw">fn </span>to_chunked_roinput(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; ChunkedROInput {
+        ChunkedROInput::new().append_field(
+            <span class="self">self</span>.try_into()
+                .expect(<span class="string">&quot;Failed to convert ChainHash into Fp&quot;</span>),
+        )
+    }
+}
+
+<span class="kw">impl </span>From&lt;<span class="kw-2">&amp;</span>[u8]&gt; <span class="kw">for </span>Field {
+    <span class="kw">fn </span>from(b: <span class="kw-2">&amp;</span>[u8]) -&gt; <span class="self">Self </span>{
+        <span class="kw">let </span><span class="kw-2">mut </span>o = Field::default();
+        o.<span class="number">0</span>.copy_from_slice(b);
+        o
+    }
+}
+
+<span class="kw">impl </span>From&lt;<span class="kw-2">&amp;</span>Fp&gt; <span class="kw">for </span>Field {
+    <span class="kw">fn </span>from(i: <span class="kw-2">&amp;</span>Fp) -&gt; <span class="self">Self </span>{
+        i.to_bytes().as_slice().into()
+    }
+}
+
+<span class="kw">impl </span>TryFrom&lt;<span class="kw-2">&amp;</span>Field&gt; <span class="kw">for </span>Fp {
+    <span class="kw">type </span>Error = FieldHelpersError;
+
+    <span class="kw">fn </span>try_from(i: <span class="kw-2">&amp;</span>Field) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>, <span class="self">Self</span>::Error&gt; {
+        Fp::from_bytes(i.<span class="number">0</span>.as_slice())
+    }
+}
+
+<span class="attribute">#[derive(Clone, Debug, Default, Eq, PartialEq, derive_more::From, derive_more::Into)]
+</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">struct </span>BaseHash(<span class="kw">pub</span>(<span class="kw">crate</span>) [u8; <span class="number">32</span>]);
 
 <span class="kw">impl </span>Hashable <span class="kw">for </span>BaseHash {
     <span class="kw">type </span>D = ();
@@ -512,8 +647,8 @@
 <span class="macro">impl_from_for_newtype!</span>(BaseHash, HashV1);
 <span class="macro">impl_from_for_newtype!</span>(BaseHash, Hash2V1);
 
-<span class="attribute">#[macro_export]</span>
-<span class="macro">macro_rules!</span> impl_from_for_hash {
+<span class="attribute">#[macro_export]
+</span><span class="macro">macro_rules! </span>impl_from_for_hash {
     (<span class="macro-nonterminal">$t</span>:ty, <span class="macro-nonterminal">$tv</span>:ty) =&gt; {
         <span class="kw">impl </span>From&lt;<span class="macro-nonterminal">$t</span>&gt; <span class="kw">for </span><span class="macro-nonterminal">$tv </span>{
             <span class="kw">fn </span>from(t: <span class="macro-nonterminal">$t</span>) -&gt; <span class="self">Self </span>{
@@ -531,8 +666,23 @@
 }
 
 <span class="comment">//////////////////////////////////////////////////////////////////////////
-</span><span class="attribute">#[derive(Clone, Debug, Default, Eq, PartialEq, derive_more::From, derive_more::Into)]</span>
-<span class="kw">pub struct </span>StateHash(BaseHash);
+</span><span class="attribute">#[derive(Clone, Debug, Default, Eq, PartialEq, derive_more::From, derive_more::Into)]
+</span><span class="kw">pub struct </span>StateBodyHash(BaseHash);
+
+<span class="macro">impl_from_for_hash!</span>(StateBodyHash, HashV1);
+<span class="macro">impl_from_for_generic_with_proxy!</span>(StateBodyHash, HashV1, StateBodyHashV1Json);
+<span class="macro">impl_strconv_via_json!</span>(StateBodyHash, StateBodyHashV1Json);
+
+<span class="kw">impl </span>From&lt;<span class="kw-2">&amp;</span>Fp&gt; <span class="kw">for </span>StateBodyHash {
+    <span class="kw">fn </span>from(i: <span class="kw-2">&amp;</span>Fp) -&gt; <span class="self">Self </span>{
+        <span class="kw">let </span>base: BaseHash = i.into();
+        base.into()
+    }
+}
+
+<span class="comment">//////////////////////////////////////////////////////////////////////////
+</span><span class="attribute">#[derive(Clone, Debug, Default, Eq, PartialEq, derive_more::From, derive_more::Into)]
+</span><span class="kw">pub struct </span>StateHash(BaseHash);
 
 <span class="macro">impl_from_for_hash!</span>(StateHash, HashV1);
 <span class="macro">impl_from_for_generic_with_proxy!</span>(StateHash, HashV1, StateHashV1Json);
@@ -585,8 +735,8 @@
 
 <span class="comment">//////////////////////////////////////////////////////////////////////////
 
-</span><span class="attribute">#[derive(Clone, Debug, Default, Eq, PartialEq, derive_more::From, derive_more::Into)]</span>
-<span class="kw">pub struct </span>LedgerHash(BaseHash);
+</span><span class="attribute">#[derive(Clone, Debug, Default, Eq, PartialEq, derive_more::From, derive_more::Into)]
+</span><span class="kw">pub struct </span>LedgerHash(BaseHash);
 
 <span class="macro">impl_from_for_hash!</span>(LedgerHash, HashV1);
 <span class="macro">impl_from_for_generic_with_proxy!</span>(LedgerHash, HashV1, LedgerHashV1Json);
@@ -619,10 +769,16 @@
     </span>}
 }
 
+<span class="kw">impl </span>ToChunkedROInput <span class="kw">for </span>LedgerHash {
+    <span class="kw">fn </span>to_chunked_roinput(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; ChunkedROInput {
+        <span class="self">self</span>.<span class="number">0</span>.to_chunked_roinput()
+    }
+}
+
 <span class="comment">//////////////////////////////////////////////////////////////////////////
 
-</span><span class="attribute">#[derive(Clone, Default, Debug, Eq, PartialEq, derive_more::From, derive_more::Into)]</span>
-<span class="kw">pub struct </span>ChainHash(BaseHash);
+</span><span class="attribute">#[derive(Clone, Default, Debug, Eq, PartialEq, derive_more::From, derive_more::Into)]
+</span><span class="kw">pub struct </span>ChainHash(BaseHash);
 
 <span class="macro">impl_from_for_hash!</span>(ChainHash, HashV1);
 <span class="macro">impl_from_for_generic_with_proxy!</span>(ChainHash, HashV1, ChainHashV1Json);
@@ -668,13 +824,19 @@
 
 <span class="comment">//////////////////////////////////////////////////////////////////////////
 
-</span><span class="attribute">#[derive(Clone, Default, Debug, Eq, PartialEq, derive_more::From, derive_more::Into)]</span>
-<span class="kw">pub struct </span>CoinBaseHash(BaseHash);
+</span><span class="attribute">#[derive(Clone, Default, Debug, Eq, PartialEq, derive_more::From, derive_more::Into)]
+</span><span class="kw">pub struct </span>CoinBaseHash(BaseHash);
 
 <span class="macro">impl_from_for_hash!</span>(CoinBaseHash, HashV1);
 <span class="macro">impl_from_for_hash!</span>(CoinBaseHash, Hash2V1);
 <span class="macro">impl_from_for_generic_with_proxy!</span>(CoinBaseHash, HashV1, CoinBaseHashV1Json);
 <span class="macro">impl_strconv_via_json!</span>(CoinBaseHash, CoinBaseHashV1Json);
+
+<span class="kw">impl </span>ToChunkedROInput <span class="kw">for </span>CoinBaseHash {
+    <span class="kw">fn </span>to_chunked_roinput(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; ChunkedROInput {
+        <span class="self">self</span>.<span class="number">0</span>.to_chunked_roinput()
+    }
+}
 
 <span class="kw">impl </span>Hashable <span class="kw">for </span>CoinBaseHash {
     <span class="kw">type </span>D = ();
@@ -690,12 +852,18 @@
 
 <span class="comment">//////////////////////////////////////////////////////////////////////////
 
-</span><span class="attribute">#[derive(Clone, Default, Debug, Eq, PartialEq, derive_more::From, derive_more::Into)]</span>
-<span class="kw">pub struct </span>EpochSeed(BaseHash);
+</span><span class="attribute">#[derive(Clone, Default, Debug, Eq, PartialEq, derive_more::From, derive_more::Into)]
+</span><span class="kw">pub struct </span>EpochSeed(BaseHash);
 
 <span class="macro">impl_from_for_hash!</span>(EpochSeed, HashV1);
 <span class="macro">impl_from_for_generic_with_proxy!</span>(EpochSeed, HashV1, EpochSeedHashV1Json);
 <span class="macro">impl_strconv_via_json!</span>(EpochSeed, EpochSeedHashV1Json);
+
+<span class="kw">impl </span>ToChunkedROInput <span class="kw">for </span>EpochSeed {
+    <span class="kw">fn </span>to_chunked_roinput(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; ChunkedROInput {
+        <span class="self">self</span>.<span class="number">0</span>.to_chunked_roinput()
+    }
+}
 
 <span class="kw">impl </span>Hashable <span class="kw">for </span>EpochSeed {
     <span class="kw">type </span>D = ();
@@ -711,10 +879,18 @@
 
 <span class="comment">//////////////////////////////////////////////////////////////////////////
 
-</span><span class="attribute">#[derive(Clone, Default, Debug, Eq, PartialEq)]</span>
-<span class="kw">pub struct </span>StagedLedgerHash {
+</span><span class="attribute">#[derive(Clone, Default, Debug, Eq, PartialEq)]
+</span><span class="kw">pub struct </span>StagedLedgerHash {
     <span class="kw">pub </span>non_snark: NonSnarkStagedLedgerHash,
     <span class="kw">pub </span>pending_coinbase_hash: CoinBaseHash,
+}
+
+<span class="kw">impl </span>ToChunkedROInput <span class="kw">for </span>StagedLedgerHash {
+    <span class="kw">fn </span>to_chunked_roinput(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; ChunkedROInput {
+        ChunkedROInput::new()
+            .append_chunked(<span class="kw-2">&amp;</span><span class="self">self</span>.non_snark)
+            .append_chunked(<span class="kw-2">&amp;</span><span class="self">self</span>.pending_coinbase_hash)
+    }
 }
 
 <span class="kw">impl </span>Hashable <span class="kw">for </span>StagedLedgerHash {
@@ -731,8 +907,8 @@
     </span>}
 }
 
-<span class="attribute">#[derive(Clone, Default, Debug, Eq, PartialEq)]</span>
-<span class="kw">pub struct </span>NonSnarkStagedLedgerHash {
+<span class="attribute">#[derive(Clone, Default, Debug, Eq, PartialEq)]
+</span><span class="kw">pub struct </span>NonSnarkStagedLedgerHash {
     <span class="kw">pub </span>ledger_hash: LedgerHash,
     <span class="kw">pub </span>aux_hash: AuxHash,
     <span class="kw">pub </span>pending_coinbase_aux: PendingCoinbaseAuxHash,
@@ -749,6 +925,12 @@
     }
 }
 
+<span class="kw">impl </span>ToChunkedROInput <span class="kw">for </span>NonSnarkStagedLedgerHash {
+    <span class="kw">fn </span>to_chunked_roinput(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; ChunkedROInput {
+        ChunkedROInput::new().append_bytes(<span class="kw-2">&amp;</span><span class="self">self</span>.digest())
+    }
+}
+
 <span class="kw">impl </span>Hashable <span class="kw">for </span>NonSnarkStagedLedgerHash {
     <span class="kw">type </span>D = ();
 
@@ -761,24 +943,24 @@
     </span>}
 }
 
-<span class="attribute">#[derive(Clone, Default, Debug, Eq, PartialEq, derive_more::From, derive_more::Into)]</span>
-<span class="kw">pub struct </span>AuxHash(<span class="kw">pub </span>Vec&lt;u8&gt;);
+<span class="attribute">#[derive(Clone, Default, Debug, Eq, PartialEq, derive_more::From, derive_more::Into)]
+</span><span class="kw">pub struct </span>AuxHash(<span class="kw">pub </span>Vec&lt;u8&gt;);
 
 <span class="macro">impl_from_for_newtype!</span>(AuxHash, AuxHashJson);
 <span class="macro">impl_strconv_via_json!</span>(AuxHash, AuxHashJson);
 
 <span class="comment">//////////////////////////////////////////////////////////////////////////
 
-</span><span class="attribute">#[derive(Clone, Default, Debug, Eq, PartialEq, derive_more::From)]</span>
-<span class="kw">pub struct </span>PendingCoinbaseAuxHash(<span class="kw">pub </span>Vec&lt;u8&gt;);
+</span><span class="attribute">#[derive(Clone, Default, Debug, Eq, PartialEq, derive_more::From)]
+</span><span class="kw">pub struct </span>PendingCoinbaseAuxHash(<span class="kw">pub </span>Vec&lt;u8&gt;);
 
 <span class="macro">impl_from_for_newtype!</span>(PendingCoinbaseAuxHash, PendingCoinbaseAuxHashJson);
 <span class="macro">impl_strconv_via_json!</span>(PendingCoinbaseAuxHash, PendingCoinbaseAuxHashJson);
 
 <span class="comment">//////////////////////////////////////////////////////////////////////////
 
-</span><span class="attribute">#[derive(Clone, Default, Debug, Eq, PartialEq)]</span>
-<span class="kw">pub struct </span>VrfOutputHash(BaseHash);
+</span><span class="attribute">#[derive(Clone, Default, Debug, Eq, PartialEq)]
+</span><span class="kw">pub struct </span>VrfOutputHash(BaseHash);
 
 <span class="macro">impl_from_for_hash!</span>(VrfOutputHash, HashV1);
 <span class="macro">impl_from_for_generic_with_proxy!</span>(VrfOutputHash, HashV1, VrfOutputHashV1Json);
@@ -786,8 +968,8 @@
 
 <span class="comment">//////////////////////////////////////////////////////////////////////////
 
-</span><span class="attribute">#[cfg(test)]</span>
-<span class="kw">pub mod </span>test {
+</span><span class="attribute">#[cfg(test)]
+</span><span class="kw">pub mod </span>test {
 
     <span class="kw">use </span>std::str::FromStr;
 
@@ -795,15 +977,15 @@
 
     <span class="kw">use super</span>::<span class="kw-2">*</span>;
 
-    <span class="attribute">#[test]</span>
-    <span class="kw">fn </span>ledger_hash_from_base58() {
+    <span class="attribute">#[test]
+    </span><span class="kw">fn </span>ledger_hash_from_base58() {
         <span class="kw">let </span>s = <span class="string">&quot;jxV4SS44wHUVrGEucCsfxLisZyUC5QddsiokGH3kz5xm2hJWZ25&quot;</span>;
         <span class="kw">let </span>h = LedgerHash::from_str(s).unwrap();
         <span class="macro">assert_eq!</span>(<span class="kw-2">&amp;</span>h.to_string(), s);
     }
 
-    <span class="attribute">#[test]</span>
-    <span class="kw">fn </span>ledger_hash_json_roundtrip() -&gt; anyhow::Result&lt;()&gt; {
+    <span class="attribute">#[test]
+    </span><span class="kw">fn </span>ledger_hash_json_roundtrip() -&gt; anyhow::Result&lt;()&gt; {
         <span class="kw">impl </span>JsonSerializationType&lt;<span class="lifetime">&#39;_</span>&gt; <span class="kw">for </span>LedgerHash {
             <span class="kw">type </span>T = LedgerHashV1Json;
         }
@@ -818,15 +1000,15 @@
         <span class="prelude-val">Ok</span>(())
     }
 
-    <span class="attribute">#[test]</span>
-    <span class="kw">fn </span>coinbase_hash_from_base58() {
+    <span class="attribute">#[test]
+    </span><span class="kw">fn </span>coinbase_hash_from_base58() {
         <span class="kw">let </span>s = <span class="string">&quot;2n1tLdP2gkifmyVmrmzYXTS4ohPbZPJn6Qq4x55ywrbRWB4543cC&quot;</span>;
         <span class="kw">let </span>h = CoinBaseHash::from_str(s).unwrap();
         <span class="macro">assert_eq!</span>(<span class="kw-2">&amp;</span>h.to_string(), s);
     }
 
-    <span class="attribute">#[test]</span>
-    <span class="kw">fn </span>coinbase_hash_json_roundtrip() -&gt; anyhow::Result&lt;()&gt; {
+    <span class="attribute">#[test]
+    </span><span class="kw">fn </span>coinbase_hash_json_roundtrip() -&gt; anyhow::Result&lt;()&gt; {
         <span class="kw">let </span>s = <span class="string">&quot;2n1tLdP2gkifmyVmrmzYXTS4ohPbZPJn6Qq4x55ywrbRWB4543cC&quot;</span>;
         <span class="kw">let </span>s_json = <span class="macro">format!</span>(<span class="string">&quot;\&quot;{s}\&quot;&quot;</span>);
         <span class="kw">let </span>json: CoinBaseHashV1Json = serde_json::from_str(<span class="kw-2">&amp;</span>s_json)<span class="question-mark">?</span>;
@@ -837,15 +1019,15 @@
         <span class="prelude-val">Ok</span>(())
     }
 
-    <span class="attribute">#[test]</span>
-    <span class="kw">fn </span>epoch_seed_from_base58() {
+    <span class="attribute">#[test]
+    </span><span class="kw">fn </span>epoch_seed_from_base58() {
         <span class="kw">let </span>s = <span class="string">&quot;2va9BGv9JrLTtrzZttiEMDYw1Zj6a6EHzXjmP9evHDTG3oEquURA&quot;</span>;
         <span class="kw">let </span>h = EpochSeed::from_str(s).unwrap();
         <span class="macro">assert_eq!</span>(<span class="kw-2">&amp;</span>h.to_string(), s);
     }
 
-    <span class="attribute">#[test]</span>
-    <span class="kw">fn </span>epoch_seed_hash_json_roundtrip() -&gt; anyhow::Result&lt;()&gt; {
+    <span class="attribute">#[test]
+    </span><span class="kw">fn </span>epoch_seed_hash_json_roundtrip() -&gt; anyhow::Result&lt;()&gt; {
         <span class="kw">let </span>s = <span class="string">&quot;2va9BGv9JrLTtrzZttiEMDYw1Zj6a6EHzXjmP9evHDTG3oEquURA&quot;</span>;
         <span class="kw">let </span>s_json = <span class="macro">format!</span>(<span class="string">&quot;\&quot;{s}\&quot;&quot;</span>);
         <span class="kw">let </span>json: EpochSeedHashV1Json = serde_json::from_str(<span class="kw-2">&amp;</span>s_json)<span class="question-mark">?</span>;
@@ -856,15 +1038,15 @@
         <span class="prelude-val">Ok</span>(())
     }
 
-    <span class="attribute">#[test]</span>
-    <span class="kw">fn </span>snarked_ledger_hash_from_base58() {
+    <span class="attribute">#[test]
+    </span><span class="kw">fn </span>snarked_ledger_hash_from_base58() {
         <span class="kw">let </span>s = <span class="string">&quot;jx7buQVWFLsXTtzRgSxbYcT8EYLS8KCZbLrfDcJxMtyy4thw2Ee&quot;</span>;
         <span class="kw">let </span>h = LedgerHash::from_str(s).unwrap();
         <span class="macro">assert_eq!</span>(<span class="kw-2">&amp;</span>h.to_string(), s);
     }
 
-    <span class="attribute">#[test]</span>
-    <span class="kw">fn </span>snarked_ledger_hash_json_roundtrip() -&gt; anyhow::Result&lt;()&gt; {
+    <span class="attribute">#[test]
+    </span><span class="kw">fn </span>snarked_ledger_hash_json_roundtrip() -&gt; anyhow::Result&lt;()&gt; {
         <span class="kw">let </span>s = <span class="string">&quot;jx7buQVWFLsXTtzRgSxbYcT8EYLS8KCZbLrfDcJxMtyy4thw2Ee&quot;</span>;
         <span class="kw">let </span>s_json = <span class="macro">format!</span>(<span class="string">&quot;\&quot;{s}\&quot;&quot;</span>);
         <span class="kw">let </span>json: LedgerHashV1Json = serde_json::from_str(<span class="kw-2">&amp;</span>s_json)<span class="question-mark">?</span>;
@@ -875,8 +1057,8 @@
         <span class="prelude-val">Ok</span>(())
     }
 
-    <span class="attribute">#[test]</span>
-    <span class="kw">fn </span>roundtrip() {
+    <span class="attribute">#[test]
+    </span><span class="kw">fn </span>roundtrip() {
         <span class="kw">let </span>bytes = [
             <span class="number">0x01</span>, <span class="number">0x01</span>, <span class="number">0x02</span>, <span class="number">0x03</span>, <span class="number">0x04</span>, <span class="number">0x05</span>, <span class="number">0x06</span>, <span class="number">0x07</span>, <span class="number">0x00_u8</span>, <span class="number">0x01</span>, <span class="number">0x02</span>, <span class="number">0x03</span>, <span class="number">0x04</span>, <span class="number">0x05</span>,
             <span class="number">0x06</span>, <span class="number">0x07</span>, <span class="number">0x00_u8</span>, <span class="number">0x01</span>, <span class="number">0x02</span>, <span class="number">0x03</span>, <span class="number">0x04</span>, <span class="number">0x05</span>, <span class="number">0x06</span>, <span class="number">0x07</span>, <span class="number">0x00_u8</span>, <span class="number">0x01</span>, <span class="number">0x02</span>,
@@ -887,4 +1069,4 @@
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="mina_crypto" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (40336865f 2022-08-15)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="mina_crypto" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (c0941dfb5 2022-08-21)" ></div></body></html>

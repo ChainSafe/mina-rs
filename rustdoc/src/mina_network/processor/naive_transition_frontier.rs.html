@@ -52,9 +52,6 @@
 <span id="52">52</span>
 <span id="53">53</span>
 <span id="54">54</span>
-<span id="55">55</span>
-<span id="56">56</span>
-<span id="57">57</span>
 </pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
@@ -69,8 +66,8 @@
 <span class="kw">use </span>tokio::sync::mpsc;
 
 <span class="doccomment">/// Struct that represents a naive implementation of the [TransitionFrontier]
-</span><span class="attribute">#[derive(Debug, Clone, Default)]</span>
-<span class="kw">pub struct </span>NaiveTransitionFrontier {
+</span><span class="attribute">#[derive(Debug, Clone, Default)]
+</span><span class="kw">pub struct </span>NaiveTransitionFrontier {
     block_requester: <span class="prelude-ty">Option</span>&lt;mpsc::Sender&lt;QueryBlockRequest&gt;&gt;,
     best_chain: ProtocolStateChain,
 }
@@ -87,8 +84,8 @@
     }
 }
 
-<span class="attribute">#[async_trait(<span class="question-mark">?</span>Send)]</span>
-<span class="kw">impl </span>TransitionFrontier <span class="kw">for </span>NaiveTransitionFrontier {
+<span class="attribute">#[async_trait(<span class="question-mark">?</span>Send)]
+</span><span class="kw">impl </span>TransitionFrontier <span class="kw">for </span>NaiveTransitionFrontier {
     <span class="kw">type </span>Block = ExternalTransition;
 
     <span class="kw">fn </span>set_block_requester(<span class="kw-2">&amp;mut </span><span class="self">self</span>, sender: mpsc::Sender&lt;QueryBlockRequest&gt;) {
@@ -97,20 +94,17 @@
 
     <span class="kw">async fn </span>add_block(<span class="kw-2">&amp;mut </span><span class="self">self</span>, block: <span class="self">Self</span>::Block) -&gt; anyhow::Result&lt;()&gt; {
         <span class="kw">let </span><span class="kw-2">mut </span>ctx = mina_signer::create_legacy::&lt;SignedCommandPayload&gt;(NetworkId::MAINNET);
-        <span class="kw">if </span>!block.verify(<span class="kw-2">&amp;mut </span>ctx) {
-            <span class="prelude-val">Err</span>(anyhow::Error::msg(<span class="string">&quot;block verification failure&quot;</span>))
+        <span class="macro">anyhow::ensure!</span>(block.verify(<span class="kw-2">&amp;mut </span>ctx), <span class="string">&quot;block verification failure&quot;</span>);
+        <span class="kw">if </span><span class="self">self</span>.best_chain.length() &lt; <span class="number">1 </span>{
+            <span class="self">self</span>.best_chain.push(block.protocol_state)<span class="question-mark">?</span>;
         } <span class="kw">else </span>{
-            <span class="kw">if </span><span class="self">self</span>.best_chain.length() &lt; <span class="number">1 </span>{
-                <span class="self">self</span>.best_chain.push(block.protocol_state)<span class="question-mark">?</span>;
-            } <span class="kw">else </span>{
-                <span class="kw">let </span>candidate_chains = <span class="macro">vec!</span>[ProtocolStateChain(<span class="macro">vec!</span>[block.protocol_state])];
-                <span class="comment">// TODO: Avoid doing clone here by refining chain selection API(s)
-                </span><span class="kw">let </span>best_chain = <span class="self">self</span>.best_chain.select_secure_chain(<span class="kw-2">&amp;</span>candidate_chains)<span class="question-mark">?</span>;
-                <span class="self">self</span>.best_chain = best_chain.clone();
-            }
-            <span class="prelude-val">Ok</span>(())
+            <span class="kw">let </span>candidate_chains = <span class="macro">vec!</span>[ProtocolStateChain(<span class="macro">vec!</span>[block.protocol_state])];
+            <span class="comment">// TODO: Avoid doing clone here by refining chain selection API(s)
+            </span><span class="kw">let </span>best_chain = <span class="self">self</span>.best_chain.select_secure_chain(<span class="kw-2">&amp;</span>candidate_chains)<span class="question-mark">?</span>;
+            <span class="self">self</span>.best_chain = best_chain.clone();
         }
+        <span class="prelude-val">Ok</span>(())
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="mina_network" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (40336865f 2022-08-15)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="mina_network" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (c0941dfb5 2022-08-21)" ></div></body></html>

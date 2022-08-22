@@ -189,17 +189,17 @@
 }
 
 <span class="doccomment">/// Type that represents errors in calculating hashes for a merkle proof
-</span><span class="attribute">#[derive(thiserror::Error, Debug, Eq, PartialEq)]</span>
-<span class="kw">pub enum </span>MerkleProofError {
+</span><span class="attribute">#[derive(thiserror::Error, Debug, Eq, PartialEq)]
+</span><span class="kw">pub enum </span>MerkleProofError {
     <span class="doccomment">/// Index of a data node should be positive
-    </span><span class="attribute">#[error(<span class="string">&quot;Index of a data node should be positive&quot;</span>)]</span>
-    InvalidIndex,
+    </span><span class="attribute">#[error(<span class="string">&quot;Index of a data node should be positive&quot;</span>)]
+    </span>InvalidIndex,
     <span class="doccomment">/// The merkle proof is invalid
-    </span><span class="attribute">#[error(<span class="string">&quot;The merkle proof is invalid&quot;</span>)]</span>
-    InvalidProof,
+    </span><span class="attribute">#[error(<span class="string">&quot;The merkle proof is invalid&quot;</span>)]
+    </span>InvalidProof,
     <span class="doccomment">/// Errors occur in hash merger
-    </span><span class="attribute">#[error(<span class="string">&quot;Errors occur in hash merger&quot;</span>)]</span>
-    MergerFailure,
+    </span><span class="attribute">#[error(<span class="string">&quot;Errors occur in hash merger&quot;</span>)]
+    </span>MergerFailure,
 }
 
 <span class="doccomment">/// Merkle proof implementation of a single leaf node, for details refer to &lt;https://www.webopedia.com/definitions/merkle-proof/&gt;
@@ -319,4 +319,4 @@
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_merkle" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (40336865f 2022-08-15)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_merkle" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (c0941dfb5 2022-08-21)" ></div></body></html>

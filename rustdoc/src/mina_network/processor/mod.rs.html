@@ -105,8 +105,8 @@
 
 <span class="kw">mod </span>processor_impl;
 
-<span class="attribute">#[cfg(target_arch = <span class="string">&quot;wasm32&quot;</span>)]</span>
-<span class="kw">pub mod </span>js;
+<span class="attribute">#[cfg(target_arch = <span class="string">&quot;wasm32&quot;</span>)]
+</span><span class="kw">pub mod </span>js;
 
 <span class="kw">use </span>async_trait::async_trait;
 <span class="kw">use </span>tokio::sync::{mpsc, RwLock};
@@ -124,8 +124,8 @@
 /// with the networking layer
 ///
 /// TODO: Should this below to its own crate?
-</span><span class="attribute">#[async_trait(<span class="question-mark">?</span>Send)]</span>
-<span class="kw">pub trait </span>TransitionFrontier {
+</span><span class="attribute">#[async_trait(<span class="question-mark">?</span>Send)]
+</span><span class="kw">pub trait </span>TransitionFrontier {
     <span class="doccomment">/// Type that represents a block
     </span><span class="kw">type </span>Block;
 
@@ -141,8 +141,8 @@
 
 <span class="doccomment">/// abstraction of networking operations for
 /// non-consensus mina node(s).
-</span><span class="attribute">#[async_trait(<span class="question-mark">?</span>Send)]</span>
-<span class="kw">pub trait </span>NonConsensusNetworkingOps {
+</span><span class="attribute">#[async_trait(<span class="question-mark">?</span>Send)]
+</span><span class="kw">pub trait </span>NonConsensusNetworkingOps {
     <span class="doccomment">/// Type that represents a block
     </span><span class="kw">type </span>Block;
 
@@ -175,4 +175,4 @@
     </span>query_block_request_receiver: RwLock&lt;mpsc::Receiver&lt;QueryBlockRequest&gt;&gt;,
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="mina_network" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (40336865f 2022-08-15)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="mina_network" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (c0941dfb5 2022-08-21)" ></div></body></html>

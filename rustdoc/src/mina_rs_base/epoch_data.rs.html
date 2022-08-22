@@ -64,6 +64,28 @@
 <span id="64">64</span>
 <span id="65">65</span>
 <span id="66">66</span>
+<span id="67">67</span>
+<span id="68">68</span>
+<span id="69">69</span>
+<span id="70">70</span>
+<span id="71">71</span>
+<span id="72">72</span>
+<span id="73">73</span>
+<span id="74">74</span>
+<span id="75">75</span>
+<span id="76">76</span>
+<span id="77">77</span>
+<span id="78">78</span>
+<span id="79">79</span>
+<span id="80">80</span>
+<span id="81">81</span>
+<span id="82">82</span>
+<span id="83">83</span>
+<span id="84">84</span>
+<span id="85">85</span>
+<span id="86">86</span>
+<span id="87">87</span>
+<span id="88">88</span>
 </pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
@@ -72,11 +94,14 @@
 </span><span class="kw">use </span><span class="kw">crate</span>::numbers::{Amount, Length};
 <span class="kw">use </span>mina_crypto::hash::<span class="kw-2">*</span>;
 <span class="kw">use </span>mina_serialization_types_macros::AutoFrom;
-<span class="kw">use </span>proof_systems::mina_hasher::{Hashable, ROInput};
+<span class="kw">use </span>proof_systems::{
+    mina_hasher::{Hashable, ROInput},
+    ChunkedROInput, ToChunkedROInput,
+};
 
-<span class="attribute">#[derive(Clone, Default, Eq, PartialEq, Debug, AutoFrom)]</span>
-<span class="attribute">#[auto_from(mina_serialization_types::epoch_data::EpochLedger)]</span>
-<span class="doccomment">/// Epoch Ledger
+<span class="attribute">#[derive(Clone, Default, Eq, PartialEq, Debug, AutoFrom)]
+#[auto_from(mina_serialization_types::epoch_data::EpochLedger)]
+</span><span class="doccomment">/// Epoch Ledger
 </span><span class="kw">pub struct </span>EpochLedger {
     <span class="doccomment">/// A unique identifier of the EpochLedger
     </span><span class="kw">pub </span>hash: LedgerHash,
@@ -98,9 +123,17 @@
     </span>}
 }
 
-<span class="attribute">#[derive(Clone, Default, Eq, PartialEq, Debug, AutoFrom)]</span>
-<span class="attribute">#[auto_from(mina_serialization_types::epoch_data::EpochData)]</span>
-<span class="doccomment">/// Epoch data
+<span class="kw">impl </span>ToChunkedROInput <span class="kw">for </span>EpochLedger {
+    <span class="kw">fn </span>to_chunked_roinput(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; ChunkedROInput {
+        ChunkedROInput::new()
+            .append_chunked(<span class="kw-2">&amp;</span><span class="self">self</span>.hash)
+            .append_chunked(<span class="kw-2">&amp;</span><span class="self">self</span>.total_currency)
+    }
+}
+
+<span class="attribute">#[derive(Clone, Default, Eq, PartialEq, Debug, AutoFrom)]
+#[auto_from(mina_serialization_types::epoch_data::EpochData)]
+</span><span class="doccomment">/// Epoch data
 </span><span class="kw">pub struct </span>EpochData {
     <span class="doccomment">/// Epoch Ledger, contains ledger related data for the epoch
     </span><span class="kw">pub </span>ledger: EpochLedger,
@@ -130,5 +163,16 @@
         <span class="prelude-val">None
     </span>}
 }
+
+<span class="kw">impl </span>ToChunkedROInput <span class="kw">for </span>EpochData {
+    <span class="kw">fn </span>to_chunked_roinput(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; ChunkedROInput {
+        ChunkedROInput::new()
+            .append_chunked(<span class="kw-2">&amp;</span><span class="self">self</span>.seed)
+            .append_chunked(<span class="kw-2">&amp;</span><span class="self">self</span>.start_checkpoint)
+            .append_chunked(<span class="kw-2">&amp;</span><span class="self">self</span>.epoch_length)
+            .append_chunked(<span class="kw-2">&amp;</span><span class="self">self</span>.ledger)
+            .append_chunked(<span class="kw-2">&amp;</span><span class="self">self</span>.lock_checkpoint)
+    }
+}
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_rs_base" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (40336865f 2022-08-15)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_rs_base" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (c0941dfb5 2022-08-21)" ></div></body></html>

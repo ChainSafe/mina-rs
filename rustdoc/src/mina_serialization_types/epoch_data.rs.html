@@ -84,8 +84,8 @@
 <span class="kw">use </span>versioned::<span class="kw-2">*</span>;
 
 <span class="doccomment">/// Epoch Ledger
-</span><span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]</span>
-<span class="kw">pub struct </span>EpochLedger {
+</span><span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]
+</span><span class="kw">pub struct </span>EpochLedger {
     <span class="doccomment">/// A unique identifier of the EpochLedger
     </span><span class="kw">pub </span>hash: HashV1,
     <span class="doccomment">/// The total currency in circulation after the block was produced. New issuance is via the coinbase reward and new account fees can reduce the total issuance.
@@ -96,9 +96,9 @@
 </span><span class="kw">pub type </span>EpochLedgerV1 = Versioned&lt;Versioned&lt;EpochLedger, <span class="number">1</span>&gt;, <span class="number">1</span>&gt;;
 
 <span class="doccomment">/// Epoch Ledger (json)
-</span><span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq, AutoFrom)]</span>
-<span class="attribute">#[auto_from(EpochLedger)]</span>
-<span class="kw">pub struct </span>EpochLedgerJson {
+</span><span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq, AutoFrom)]
+#[auto_from(EpochLedger)]
+</span><span class="kw">pub struct </span>EpochLedgerJson {
     <span class="doccomment">/// A unique identifier of the EpochLedger
     </span><span class="kw">pub </span>hash: LedgerHashV1Json,
     <span class="doccomment">/// The total currency in circulation after the block was produced. New issuance is via the coinbase reward and new account fees can reduce the total issuance.
@@ -106,8 +106,8 @@
 }
 
 <span class="doccomment">/// Epoch data
-</span><span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]</span>
-<span class="kw">pub struct </span>EpochData {
+</span><span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]
+</span><span class="kw">pub struct </span>EpochData {
     <span class="doccomment">/// Epoch Ledger, contains ledger related data for the epoch
     </span><span class="kw">pub </span>ledger: EpochLedgerV1,
     <span class="doccomment">///  Initialize the random number generator
@@ -124,9 +124,9 @@
 </span><span class="kw">pub type </span>EpochDataV1 = Versioned&lt;Versioned&lt;EpochData, <span class="number">1</span>&gt;, <span class="number">1</span>&gt;;
 
 <span class="doccomment">/// Epoch data (json)
-</span><span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq, AutoFrom)]</span>
-<span class="attribute">#[auto_from(EpochData)]</span>
-<span class="kw">pub struct </span>EpochDataJson {
+</span><span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq, AutoFrom)]
+#[auto_from(EpochData)]
+</span><span class="kw">pub struct </span>EpochDataJson {
     <span class="doccomment">/// Epoch Ledger, contains ledger related data for the epoch
     </span><span class="kw">pub </span>ledger: EpochLedgerJson,
     <span class="doccomment">///  Initialize the random number generator
@@ -139,4 +139,4 @@
     </span><span class="kw">pub </span>epoch_length: U32Json,
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_serialization_types" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (40336865f 2022-08-15)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_serialization_types" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (c0941dfb5 2022-08-21)" ></div></body></html>

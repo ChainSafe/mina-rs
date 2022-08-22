@@ -66,8 +66,8 @@
 
 </span><span class="kw">use </span><span class="kw">crate</span>::protocol_state_proof::field_and_curve_elements::FiniteECPoint;
 
-<span class="attribute">#[derive(Clone, Default, Debug, Eq, PartialEq)]</span>
-<span class="doccomment">/// Public data required to verify a Mina snark
+<span class="attribute">#[derive(Clone, Default, Debug, Eq, PartialEq)]
+</span><span class="doccomment">/// Public data required to verify a Mina snark
 </span><span class="kw">pub struct </span>VerificationKey {
     commitments: VerificationKeyEvals,
     step_domains: Vec&lt;Domains&gt;,
@@ -75,14 +75,14 @@
     </span><span class="kw">pub </span>data: Data,
 }
 
-<span class="attribute">#[derive(Clone, Default, Debug, Eq, PartialEq)]</span>
-<span class="kw">struct </span>Domains {
+<span class="attribute">#[derive(Clone, Default, Debug, Eq, PartialEq)]
+</span><span class="kw">struct </span>Domains {
     h: Domain,
     x: Domain,
 }
 
-<span class="attribute">#[derive(Clone, Debug, Eq, PartialEq)]</span>
-<span class="kw">enum </span>Domain {
+<span class="attribute">#[derive(Clone, Debug, Eq, PartialEq)]
+</span><span class="kw">enum </span>Domain {
     Pow2RootsOfUnity(usize),
 }
 
@@ -93,14 +93,14 @@
 }
 
 <span class="doccomment">/// Data associated with a verification key
-</span><span class="attribute">#[derive(Clone, Default, Debug, Eq, PartialEq)]</span>
-<span class="kw">pub struct </span>Data {
+</span><span class="attribute">#[derive(Clone, Default, Debug, Eq, PartialEq)]
+</span><span class="kw">pub struct </span>Data {
     <span class="doccomment">/// Number of constaints
     </span><span class="kw">pub </span>constraints: usize,
 }
 
-<span class="attribute">#[derive(Clone, Default, Debug, Eq, PartialEq)]</span>
-<span class="kw">struct </span>VerificationKeyEvals {
+<span class="attribute">#[derive(Clone, Default, Debug, Eq, PartialEq)]
+</span><span class="kw">struct </span>VerificationKeyEvals {
     sigma_comm_0: Vec&lt;FiniteECPoint&gt;,
     sigma_comm_1: Vec&lt;FiniteECPoint&gt;,
     sigma_comm_2: Vec&lt;FiniteECPoint&gt;,
@@ -121,4 +121,4 @@
     emul3_comm: Vec&lt;FiniteECPoint&gt;,
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_rs_base" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (40336865f 2022-08-15)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_rs_base" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (c0941dfb5 2022-08-21)" ></div></body></html>

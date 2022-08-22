@@ -236,28 +236,28 @@
     }
 }
 
-<span class="attribute">#[cfg(test)]</span>
-<span class="kw">mod </span>tests {
+<span class="attribute">#[cfg(test)]
+</span><span class="kw">mod </span>tests {
     <span class="kw">use super</span>::<span class="kw-2">*</span>;
     <span class="kw">use </span>std::collections::HashMap;
 
-    <span class="attribute">#[test]</span>
-    <span class="kw">fn </span>index_into_list() {
+    <span class="attribute">#[test]
+    </span><span class="kw">fn </span>index_into_list() {
         <span class="kw">let </span>val = Value::List(<span class="macro">vec!</span>[Value::Int(<span class="number">1</span>), Value::Int(<span class="number">2</span>), Value::Int(<span class="number">3</span>)]);
         <span class="macro">assert_eq!</span>(val[<span class="number">0</span>], Value::Int(<span class="number">1</span>));
         <span class="macro">assert_eq!</span>(val[<span class="number">1</span>], Value::Int(<span class="number">2</span>));
         <span class="macro">assert_eq!</span>(val[<span class="number">2</span>], Value::Int(<span class="number">3</span>));
     }
 
-    <span class="attribute">#[test]</span>
-    <span class="attribute">#[should_panic(expected = <span class="string">&quot;No value for index: 3&quot;</span>)]</span>
-    <span class="kw">fn </span>index_out_of_bounds_panics() {
+    <span class="attribute">#[test]
+    #[should_panic(expected = <span class="string">&quot;No value for index: 3&quot;</span>)]
+    </span><span class="kw">fn </span>index_out_of_bounds_panics() {
         <span class="kw">let </span>val = Value::List(<span class="macro">vec!</span>[Value::Int(<span class="number">1</span>), Value::Int(<span class="number">2</span>), Value::Int(<span class="number">3</span>)]);
         <span class="kw">let _ </span>= val[<span class="number">3</span>];
     }
 
-    <span class="attribute">#[test]</span>
-    <span class="kw">fn </span>index_into_record() {
+    <span class="attribute">#[test]
+    </span><span class="kw">fn </span>index_into_record() {
         <span class="kw">let </span>inner = <span class="macro">vec!</span>[
             (<span class="string">&quot;one&quot;</span>.to_string(), Value::Int(<span class="number">1</span>)),
             (<span class="string">&quot;two&quot;</span>.to_string(), Value::Int(<span class="number">2</span>)),
@@ -267,9 +267,9 @@
         <span class="macro">assert_eq!</span>(val[<span class="string">&quot;two&quot;</span>], Value::Int(<span class="number">2</span>));
     }
 
-    <span class="attribute">#[test]</span>
-    <span class="attribute">#[should_panic(expected = <span class="string">&quot;No value for index: missing&quot;</span>)]</span>
-    <span class="kw">fn </span>no_value_for_key_panics() {
+    <span class="attribute">#[test]
+    #[should_panic(expected = <span class="string">&quot;No value for index: missing&quot;</span>)]
+    </span><span class="kw">fn </span>no_value_for_key_panics() {
         <span class="kw">let </span>inner = <span class="macro">vec!</span>[
             (<span class="string">&quot;one&quot;</span>.to_string(), Value::Int(<span class="number">1</span>)),
             (<span class="string">&quot;two&quot;</span>.to_string(), Value::Int(<span class="number">2</span>)),
@@ -278,8 +278,8 @@
         <span class="kw">let _ </span>= val[<span class="string">&quot;missing&quot;</span>];
     }
 
-    <span class="attribute">#[test]</span>
-    <span class="kw">fn </span>index_into_tuple_variants() {
+    <span class="attribute">#[test]
+    </span><span class="kw">fn </span>index_into_tuple_variants() {
         <span class="kw">let </span>val = Value::Sum {
             name: <span class="string">&quot;variant A&quot;</span>.to_string(),
             index: <span class="number">0</span>,
@@ -294,8 +294,8 @@
         <span class="macro">assert_eq!</span>(val[<span class="number">2</span>], Value::Int(<span class="number">3</span>));
     }
 
-    <span class="attribute">#[test]</span>
-    <span class="kw">fn </span>index_into_record_variants() {
+    <span class="attribute">#[test]
+    </span><span class="kw">fn </span>index_into_record_variants() {
         <span class="kw">let </span>inner = <span class="macro">vec!</span>[
             (<span class="string">&quot;one&quot;</span>.to_string(), Value::Int(<span class="number">1</span>)),
             (<span class="string">&quot;two&quot;</span>.to_string(), Value::Int(<span class="number">2</span>)),
@@ -310,8 +310,8 @@
         <span class="macro">assert_eq!</span>(val[<span class="string">&quot;two&quot;</span>], Value::Int(<span class="number">2</span>));
     }
 
-    <span class="attribute">#[test]</span>
-    <span class="kw">fn </span>nested_indexing() {
+    <span class="attribute">#[test]
+    </span><span class="kw">fn </span>nested_indexing() {
         <span class="kw">let </span>inner = <span class="macro">vec!</span>[(<span class="string">&quot;B&quot;</span>.to_string(), Value::Int(<span class="number">1</span>))];
         <span class="kw">let </span>val = Value::Record(inner);
 
@@ -321,18 +321,18 @@
         <span class="macro">assert_eq!</span>(outer[<span class="string">&quot;A&quot;</span>][<span class="string">&quot;B&quot;</span>], Value::Int(<span class="number">1</span>));
     }
 
-    <span class="attribute">#[test]</span>
-    <span class="kw">fn </span>can_access_option_inner() {
+    <span class="attribute">#[test]
+    </span><span class="kw">fn </span>can_access_option_inner() {
         <span class="kw">let </span>val = Value::Option(<span class="prelude-val">None</span>);
         <span class="macro">assert!</span>(val.inner().is_none());
     }
 
-    <span class="attribute">#[test]</span>
-    <span class="attribute">#[should_panic(expected = <span class="string">&quot;Called inner on a non-option variant Int(1)&quot;</span>)]</span>
-    <span class="kw">fn </span>calling_inner_on_non_option_panics() {
+    <span class="attribute">#[test]
+    #[should_panic(expected = <span class="string">&quot;Called inner on a non-option variant Int(1)&quot;</span>)]
+    </span><span class="kw">fn </span>calling_inner_on_non_option_panics() {
         <span class="kw">let </span>val = Value::Int(<span class="number">1</span>);
         <span class="macro">assert!</span>(val.inner().is_none());
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="bin_prot" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (40336865f 2022-08-15)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="bin_prot" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (c0941dfb5 2022-08-21)" ></div></body></html>

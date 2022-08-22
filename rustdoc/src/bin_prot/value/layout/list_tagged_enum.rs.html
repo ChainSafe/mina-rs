@@ -29,12 +29,12 @@
 ///
 /// To deserialize this to a Rust enum, tag the enum with `#[serde(try_from = &quot;ListTaggedEnum&quot;)]`
 /// and implement TryFrom&lt;ListTaggedEnum&gt; on the type
-</span><span class="attribute">#[derive(Deserialize)]</span>
-<span class="attribute">#[serde(untagged)]</span>
-<span class="kw">pub enum </span>ListTaggedEnum {
+</span><span class="attribute">#[derive(Deserialize)]
+#[serde(untagged)]
+</span><span class="kw">pub enum </span>ListTaggedEnum {
     <span class="prelude-val">None</span>((String,)),
     One((String, Value)),
     Two((String, Value, Value)),
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../../" data-current-crate="bin_prot" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (40336865f 2022-08-15)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../../" data-current-crate="bin_prot" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (c0941dfb5 2022-08-21)" ></div></body></html>

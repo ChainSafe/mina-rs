@@ -44,22 +44,85 @@
 <span id="44">44</span>
 <span id="45">45</span>
 <span id="46">46</span>
+<span id="47">47</span>
+<span id="48">48</span>
+<span id="49">49</span>
+<span id="50">50</span>
+<span id="51">51</span>
+<span id="52">52</span>
+<span id="53">53</span>
+<span id="54">54</span>
+<span id="55">55</span>
+<span id="56">56</span>
+<span id="57">57</span>
+<span id="58">58</span>
+<span id="59">59</span>
+<span id="60">60</span>
+<span id="61">61</span>
+<span id="62">62</span>
+<span id="63">63</span>
+<span id="64">64</span>
+<span id="65">65</span>
+<span id="66">66</span>
+<span id="67">67</span>
+<span id="68">68</span>
+<span id="69">69</span>
+<span id="70">70</span>
+<span id="71">71</span>
+<span id="72">72</span>
+<span id="73">73</span>
+<span id="74">74</span>
+<span id="75">75</span>
+<span id="76">76</span>
+<span id="77">77</span>
+<span id="78">78</span>
+<span id="79">79</span>
+<span id="80">80</span>
+<span id="81">81</span>
+<span id="82">82</span>
+<span id="83">83</span>
+<span id="84">84</span>
+<span id="85">85</span>
+<span id="86">86</span>
+<span id="87">87</span>
+<span id="88">88</span>
+<span id="89">89</span>
+<span id="90">90</span>
+<span id="91">91</span>
+<span id="92">92</span>
+<span id="93">93</span>
+<span id="94">94</span>
+<span id="95">95</span>
+<span id="96">96</span>
+<span id="97">97</span>
+<span id="98">98</span>
+<span id="99">99</span>
+<span id="100">100</span>
+<span id="101">101</span>
+<span id="102">102</span>
+<span id="103">103</span>
 </pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
 </span><span class="doccomment">//! Types related to the Blockchain State
 
-</span><span class="kw">use </span><span class="kw">crate</span>::numbers::{BlockTime, TokenId};
+</span><span class="kw">use crate</span>::{
+    blockchain_state_registers::BlockchainStateRegisters,
+    numbers::{BlockTime, TokenId},
+};
 <span class="kw">use </span>mina_crypto::hash::<span class="kw-2">*</span>;
 <span class="kw">use </span>mina_serialization_types::{json::<span class="kw-2">*</span>, v1::<span class="kw-2">*</span>};
 <span class="kw">use </span>mina_serialization_types_macros::AutoFrom;
-<span class="kw">use </span>proof_systems::mina_hasher::{Hashable, ROInput};
+<span class="kw">use </span>proof_systems::{
+    mina_hasher::{Hashable, ROInput},
+    ChunkedROInput, ToChunkedROInput,
+};
 <span class="kw">use </span>versioned::<span class="kw-2">*</span>;
 
-<span class="attribute">#[derive(Clone, Default, Debug, Eq, PartialEq, AutoFrom)]</span>
-<span class="attribute">#[auto_from(mina_serialization_types::blockchain_state::BlockchainState)]</span>
-<span class="doccomment">/// Mina blockchain state struct
-</span><span class="kw">pub struct </span>BlockchainState {
+<span class="attribute">#[derive(Clone, Default, Debug, Eq, PartialEq, AutoFrom)]
+#[auto_from(mina_serialization_types::blockchain_state::BlockchainState)]
+</span><span class="doccomment">/// Mina blockchain state struct (legacy)
+</span><span class="kw">pub struct </span>BlockchainStateLegacy {
     <span class="doccomment">/// Hash of the proposed next state of the blockchain
     </span><span class="kw">pub </span>staged_ledger_hash: StagedLedgerHash,
     <span class="doccomment">/// Hash of the most recently proven state of the blockchain
@@ -72,9 +135,13 @@
     </span><span class="kw">pub </span>timestamp: BlockTime,
 }
 
-<span class="macro">impl_from_with_proxy!</span>(BlockchainState, BlockchainStateV1, BlockchainStateJson);
+<span class="macro">impl_from_with_proxy!</span>(
+    BlockchainStateLegacy,
+    BlockchainStateV1,
+    BlockchainStateJson
+);
 
-<span class="kw">impl </span>Hashable <span class="kw">for </span>BlockchainState {
+<span class="kw">impl </span>Hashable <span class="kw">for </span>BlockchainStateLegacy {
     <span class="kw">type </span>D = ();
 
     <span class="kw">fn </span>to_roinput(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; ROInput {
@@ -90,5 +157,52 @@
         <span class="prelude-val">None
     </span>}
 }
+
+<span class="attribute">#[derive(Clone, Default, Debug, Eq, PartialEq)]
+</span><span class="comment">// #[auto_from(mina_serialization_types::blockchain_state::BlockchainState)]
+</span><span class="doccomment">/// Mina blockchain state struct
+</span><span class="kw">pub struct </span>BlockchainState {
+    <span class="doccomment">/// Hash of the proposed next state of the blockchain
+    </span><span class="kw">pub </span>staged_ledger_hash: StagedLedgerHash,
+    <span class="doccomment">/// Hash of the genesis state
+    </span><span class="kw">pub </span>genesis_ledger_hash: LedgerHash,
+    <span class="doccomment">/// Registers
+    </span><span class="kw">pub </span>registers: BlockchainStateRegisters,
+    <span class="doccomment">/// Timestamps for blocks
+    </span><span class="kw">pub </span>timestamp: BlockTime,
+    <span class="doccomment">/// Body reference
+    </span><span class="kw">pub </span>body_reference: BodyReference,
+}
+
+<span class="kw">impl </span>ToChunkedROInput <span class="kw">for </span>BlockchainState {
+    <span class="kw">fn </span>to_chunked_roinput(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; ChunkedROInput {
+        ChunkedROInput::new()
+            .append_chunked(<span class="kw-2">&amp;</span><span class="self">self</span>.staged_ledger_hash)
+            .append_chunked(<span class="kw-2">&amp;</span><span class="self">self</span>.genesis_ledger_hash)
+            .append_chunked(<span class="kw-2">&amp;</span><span class="self">self</span>.registers)
+            .append_chunked(<span class="kw-2">&amp;</span><span class="self">self</span>.timestamp)
+            .append_chunked(<span class="kw-2">&amp;</span><span class="self">self</span>.body_reference)
+    }
+}
+
+<span class="attribute">#[derive(Clone, Default, Debug, Eq, PartialEq)]
+</span><span class="comment">// #[auto_from(mina_serialization_types::blockchain_state::BlockchainState)]
+</span><span class="doccomment">/// Mina block body reference, wrapper of blake2 256-bit hash
+</span><span class="kw">pub struct </span>BodyReference(<span class="kw">pub </span>[u8; <span class="number">32</span>]);
+
+<span class="kw">impl </span>BodyReference {
+    <span class="doccomment">/// Construct [BodyReference] from hex str
+    </span><span class="kw">pub fn </span>from_hex(data: <span class="kw">impl </span>AsRef&lt;[u8]&gt;) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>, hex::FromHexError&gt; {
+        <span class="kw">let </span><span class="kw-2">mut </span>r = [<span class="number">0</span>; <span class="number">32</span>];
+        hex::decode_to_slice(data, <span class="kw-2">&amp;mut </span>r <span class="kw">as </span><span class="kw-2">&amp;mut </span>[u8])<span class="question-mark">?</span>;
+        <span class="prelude-val">Ok</span>(<span class="self">Self</span>(r))
+    }
+}
+
+<span class="kw">impl </span>ToChunkedROInput <span class="kw">for </span>BodyReference {
+    <span class="kw">fn </span>to_chunked_roinput(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; ChunkedROInput {
+        ChunkedROInput::new().append_bytes(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0</span>)
+    }
+}
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_rs_base" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (40336865f 2022-08-15)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_rs_base" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (c0941dfb5 2022-08-21)" ></div></body></html>

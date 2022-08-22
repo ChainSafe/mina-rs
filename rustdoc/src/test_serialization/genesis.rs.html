@@ -332,11 +332,11 @@
 </pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
-</span><span class="attribute">#[cfg(all(test, feature = <span class="string">&quot;browser&quot;</span>))]</span>
-<span class="macro">wasm_bindgen_test::wasm_bindgen_test_configure!</span>(run_in_browser);
+</span><span class="attribute">#[cfg(all(test, feature = <span class="string">&quot;browser&quot;</span>))]
+</span><span class="macro">wasm_bindgen_test::wasm_bindgen_test_configure!</span>(run_in_browser);
 
-<span class="attribute">#[cfg(test)]</span>
-<span class="kw">mod </span>tests {
+<span class="attribute">#[cfg(test)]
+</span><span class="kw">mod </span>tests {
     <span class="kw">use </span><span class="kw">super</span>::<span class="kw">super</span>::tests::select_path;
     <span class="kw">use </span>mina_consensus::genesis::<span class="kw-2">*</span>;
     <span class="kw">use </span>mina_crypto::prelude::<span class="kw-2">*</span>;
@@ -347,15 +347,15 @@
     <span class="kw">use </span>test_fixtures::<span class="kw-2">*</span>;
     <span class="kw">use </span>wasm_bindgen_test::<span class="kw-2">*</span>;
 
-    <span class="attribute">#[test]</span>
-    <span class="attribute">#[wasm_bindgen_test]</span>
-    <span class="kw">fn </span>test_genesis_roundtrip_mainnet() {
+    <span class="attribute">#[test]
+    #[wasm_bindgen_test]
+    </span><span class="kw">fn </span>test_genesis_roundtrip_mainnet() {
         test_genesis_roundtrip(<span class="kw-2">&amp;</span>GENESIS_BLOCK_MAINNET)
     }
 
-    <span class="attribute">#[test]</span>
-    <span class="attribute">#[wasm_bindgen_test]</span>
-    <span class="kw">fn </span>test_genesis_roundtrip_devnet() {
+    <span class="attribute">#[test]
+    #[wasm_bindgen_test]
+    </span><span class="kw">fn </span>test_genesis_roundtrip_devnet() {
         test_genesis_roundtrip(<span class="kw-2">&amp;</span>GENESIS_BLOCK_DEVNET)
     }
 
@@ -366,9 +366,9 @@
         <span class="macro">assert_eq!</span>(genesis_fixture.bytes, output)
     }
 
-    <span class="attribute">#[test]</span>
-    <span class="attribute">#[wasm_bindgen_test]</span>
-    <span class="kw">fn </span>test_genesis_protocol_state_proof() {
+    <span class="attribute">#[test]
+    #[wasm_bindgen_test]
+    </span><span class="kw">fn </span>test_genesis_protocol_state_proof() {
         <span class="kw">for </span>et <span class="kw">in </span>[
             ExternalTransitionV1::from(ExternalTransition::from_genesis_config(<span class="kw-2">&amp;</span>MAINNET_CONFIG)),
             GENESIS_BLOCK_MAINNET.external_transitionv1().unwrap(),
@@ -408,15 +408,15 @@
         }
     }
 
-    <span class="attribute">#[test]</span>
-    <span class="attribute">#[wasm_bindgen_test]</span>
-    <span class="kw">fn </span>test_genesis_consensus_mainnet() {
+    <span class="attribute">#[test]
+    #[wasm_bindgen_test]
+    </span><span class="kw">fn </span>test_genesis_consensus_mainnet() {
         test_genesis_consensus(<span class="kw-2">&amp;</span>GENESIS_BLOCK_MAINNET, <span class="kw-2">&amp;</span>MAINNET_CONFIG)
     }
 
-    <span class="attribute">#[test]</span>
-    <span class="attribute">#[wasm_bindgen_test]</span>
-    <span class="kw">fn </span>test_genesis_consensus_devnet() {
+    <span class="attribute">#[test]
+    #[wasm_bindgen_test]
+    </span><span class="kw">fn </span>test_genesis_consensus_devnet() {
         test_genesis_consensus(<span class="kw-2">&amp;</span>GENESIS_BLOCK_DEVNET, <span class="kw-2">&amp;</span>DEVNET_CONFIG)
     }
 
@@ -431,15 +431,15 @@
         <span class="macro">assert_eq!</span>(genesis_fixture.bytes, output)
     }
 
-    <span class="attribute">#[test]</span>
-    <span class="attribute">#[wasm_bindgen_test]</span>
-    <span class="kw">fn </span>test_genesis_path_mainnet() {
+    <span class="attribute">#[test]
+    #[wasm_bindgen_test]
+    </span><span class="kw">fn </span>test_genesis_path_mainnet() {
         test_genesis_path(<span class="kw-2">&amp;</span>MAINNET_CONFIG, <span class="kw-2">&amp;</span>GENESIS_BLOCK_MAINNET)
     }
 
-    <span class="attribute">#[test]</span>
-    <span class="attribute">#[wasm_bindgen_test]</span>
-    <span class="kw">fn </span>test_genesis_path_devnet() {
+    <span class="attribute">#[test]
+    #[wasm_bindgen_test]
+    </span><span class="kw">fn </span>test_genesis_path_devnet() {
         test_genesis_path(<span class="kw-2">&amp;</span>DEVNET_CONFIG, <span class="kw-2">&amp;</span>GENESIS_BLOCK_DEVNET)
     }
 
@@ -661,4 +661,4 @@
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="test_serialization" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (40336865f 2022-08-15)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="test_serialization" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (c0941dfb5 2022-08-21)" ></div></body></html>

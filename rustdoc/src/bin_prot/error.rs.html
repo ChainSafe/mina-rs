@@ -156,30 +156,30 @@
 <span class="doccomment">/// A result whose error type is `Error`.
 </span><span class="kw">pub type </span><span class="prelude-ty">Result</span>&lt;A&gt; = result::Result&lt;A, Error&gt;;
 
-<span class="attribute">#[derive(Debug, Error)]</span>
-<span class="doccomment">/// Error type for BinProt serialization and deserialization
+<span class="attribute">#[derive(Debug, Error)]
+</span><span class="doccomment">/// Error type for BinProt serialization and deserialization
 </span><span class="kw">pub enum </span>Error {
     <span class="doccomment">/// Error in underlying IO
-    </span><span class="attribute">#[error(<span class="string">&quot;io error&quot;</span>)]</span>
-    Io(<span class="attribute">#[from]</span> io::Error),
+    </span><span class="attribute">#[error(<span class="string">&quot;io error&quot;</span>)]
+    </span>Io(<span class="attribute">#[from] </span>io::Error),
 
     <span class="doccomment">/// The end of stream was reached unexpectedly.
-    </span><span class="attribute">#[error(<span class="string">&quot;end of stream&quot;</span>)]</span>
-    EndOfStream,
+    </span><span class="attribute">#[error(<span class="string">&quot;end of stream&quot;</span>)]
+    </span>EndOfStream,
 
     <span class="doccomment">/// Size not given when serializing a sequence
-    </span><span class="attribute">#[error(<span class="string">&quot;Attempting to serialize a sequence but size not provided&quot;</span>)]</span>
-    SeqSizeNotProvided,
+    </span><span class="attribute">#[error(<span class="string">&quot;Attempting to serialize a sequence but size not provided&quot;</span>)]
+    </span>SeqSizeNotProvided,
 
     <span class="doccomment">/// Size not given when serializing a sequence
-    </span><span class="attribute">#[error(<span class="string">&quot;Attempting to serialize a map but size not provided&quot;</span>)]</span>
-    MapSizeNotProvided,
+    </span><span class="attribute">#[error(<span class="string">&quot;Attempting to serialize a map but size not provided&quot;</span>)]
+    </span>MapSizeNotProvided,
 
     <span class="doccomment">/// Invalid byte encountered when deserializing
     </span><span class="attribute">#[error(
         <span class="string">&quot;Invalid byte for deserializing a {dtype}. Expected one of: {allowed:?}, found: {byte}&quot;
-    </span>)]</span>
-    InvalidByte {
+    </span>)]
+    </span>InvalidByte {
         <span class="doccomment">/// The byte that is invalid
         </span>byte: u8,
         <span class="doccomment">/// The data type that the deserializer is attempting to deserialize
@@ -189,79 +189,79 @@
     },
 
     <span class="doccomment">/// Invalid utf-8 char
-    </span><span class="attribute">#[error(<span class="string">&quot;Invalid byte sequence when attempting to deserialize utf-8 char: {bytes:?}&quot;</span>)]</span>
-    InvalidUtf8 {
+    </span><span class="attribute">#[error(<span class="string">&quot;Invalid byte sequence when attempting to deserialize utf-8 char: {bytes:?}&quot;</span>)]
+    </span>InvalidUtf8 {
         <span class="doccomment">/// Invalid byte sequence encountered
         </span>bytes: Vec&lt;u8&gt;,
     },
 
     <span class="doccomment">/// Invalid byte encountered deserializing option
-    </span><span class="attribute">#[error(<span class="string">&quot;Invalid byte when deserializing option. First byte must be 0 or 1, got {got}&quot;</span>)]</span>
-    InvalidOptionByte {
+    </span><span class="attribute">#[error(<span class="string">&quot;Invalid byte when deserializing option. First byte must be 0 or 1, got {got}&quot;</span>)]
+    </span>InvalidOptionByte {
         <span class="doccomment">/// Invalid byte encountered
         </span>got: u8,
     },
 
     <span class="doccomment">/// Invalid integer prefix byte
-    </span><span class="attribute">#[error(<span class="string">&quot;Invalid byte when deserializing an integer. First byte must be a size flag or a value &lt; 0x80&quot;</span>)]</span>
-    InvalidIntegerByte {
+    </span><span class="attribute">#[error(<span class="string">&quot;Invalid byte when deserializing an integer. First byte must be a size flag or a value &lt; 0x80&quot;</span>)]
+    </span>InvalidIntegerByte {
         <span class="doccomment">/// Invalid byte encountered
         </span>byte: u8,
     },
 
     <span class="doccomment">/// Encountered a variant index larger than allowed
-    </span><span class="attribute">#[error(<span class="string">&quot;Invalid variant index detected. Currently only supports enums with &lt; 256 variants&quot;</span>)]</span>
-    VariantIndexTooLarge {
+    </span><span class="attribute">#[error(<span class="string">&quot;Invalid variant index detected. Currently only supports enums with &lt; 256 variants&quot;</span>)]
+    </span>VariantIndexTooLarge {
         <span class="doccomment">/// Invalid index encountered
         </span>index: u32,
     },
 
     <span class="doccomment">/// Destination integer type too small
-    </span><span class="attribute">#[error(<span class="string">&quot;Attempted to deserialize an integer into a desgination type that is too small&quot;</span>)]</span>
-    DestinationIntegerOverflow,
+    </span><span class="attribute">#[error(<span class="string">&quot;Attempted to deserialize an integer into a desgination type that is too small&quot;</span>)]
+    </span>DestinationIntegerOverflow,
 
     <span class="doccomment">/// Functionality will not be implemented. Probably it does not make sense for this format
     </span><span class="attribute">#[error(
         <span class="string">&quot;Functionality will not be implemented. Probably it does not make sense for this format&quot;
-    </span>)]</span>
-    WontImplement,
+    </span>)]
+    </span>WontImplement,
 
     <span class="doccomment">/// The layout ended before the reader is empty
-    </span><span class="attribute">#[error(<span class="string">&quot;Unexpected end of layout&quot;</span>)]</span>
-    UnexpectedEndOfLayout,
+    </span><span class="attribute">#[error(<span class="string">&quot;Unexpected end of layout&quot;</span>)]
+    </span>UnexpectedEndOfLayout,
 
     <span class="doccomment">/// Layout iterator errored, can be due to invalid layout or mismatch between layout and input
-    </span><span class="attribute">#[error(<span class="string">&quot;Layout iterator error&quot;</span>)]</span>
-    LayoutIteratorError,
+    </span><span class="attribute">#[error(<span class="string">&quot;Layout iterator error&quot;</span>)]
+    </span>LayoutIteratorError,
 
     <span class="doccomment">/// Have not provided a layout
-    </span><span class="attribute">#[error(<span class="string">&quot;Attempting to deserialize into a loose type without a layout&quot;</span>)]</span>
-    DeserializingLooseTypeWithoutLayout,
+    </span><span class="attribute">#[error(<span class="string">&quot;Attempting to deserialize into a loose type without a layout&quot;</span>)]
+    </span>DeserializingLooseTypeWithoutLayout,
 
     <span class="doccomment">/// An unknown custom type found in layout that deserializer code does not know
     /// not to handle
-    </span><span class="attribute">#[error(<span class="string">&quot;Unknown custom type {typ}&quot;</span>)]</span>
-    UnknownCustomType {
+    </span><span class="attribute">#[error(<span class="string">&quot;Unknown custom type {typ}&quot;</span>)]
+    </span>UnknownCustomType {
         <span class="doccomment">/// The custom type identifier
         </span>typ: String,
     },
 
     <span class="doccomment">/// There is no logic implemented to deserialize this rule yet
-    </span><span class="attribute">#[error(<span class="string">&quot;Unimplemented rule&quot;</span>)]</span>
-    UnimplementedRule,
+    </span><span class="attribute">#[error(<span class="string">&quot;Unimplemented rule&quot;</span>)]
+    </span>UnimplementedRule,
 
     <span class="doccomment">/// When deserializing a polyvar the tag does not match any known tags for the type
-    </span><span class="attribute">#[error(<span class="string">&quot;Unrecognised Polyvar tag {0}&quot;</span>)]</span>
-    UnknownPolyvarTag(u32),
+    </span><span class="attribute">#[error(<span class="string">&quot;Unrecognised Polyvar tag {0}&quot;</span>)]
+    </span>UnknownPolyvarTag(u32),
 
     <span class="doccomment">/// When deserializing a polyvar the tag does not match any known tags for the type
-    </span><span class="attribute">#[error(<span class="string">&quot;Input stream has {0} unconsumed bytes&quot;</span>)]</span>
-    StreamNotFullyConsumed(usize),
+    </span><span class="attribute">#[error(<span class="string">&quot;Input stream has {0} unconsumed bytes&quot;</span>)]
+    </span>StreamNotFullyConsumed(usize),
 
     <span class="comment">//////////////////////////////////
     </span><span class="doccomment">/// Some user-defined error occurred.
-    </span><span class="attribute">#[error(<span class="string">&quot;{message}&quot;</span>)]</span>
-    Custom {
+    </span><span class="attribute">#[error(<span class="string">&quot;{message}&quot;</span>)]
+    </span>Custom {
         <span class="doccomment">/// The user-defined error message.
         </span>message: String,
     },
@@ -283,4 +283,4 @@
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="bin_prot" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (40336865f 2022-08-15)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="bin_prot" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (c0941dfb5 2022-08-21)" ></div></body></html>

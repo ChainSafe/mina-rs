@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":[["BlockchainStateRegisters","Mina blockchain state registers"],["BlockchainStateRegistersLocalState","Mina blockchain state register local state"]]};

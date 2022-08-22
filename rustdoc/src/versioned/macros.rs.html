@@ -124,8 +124,8 @@
 //!
 
 /// Macro that implements [From] trait for for a struct and its versioned wrapper
-</span><span class="attribute">#[macro_export]</span>
-<span class="macro">macro_rules!</span> impl_from_versioned {
+</span><span class="attribute">#[macro_export]
+</span><span class="macro">macro_rules! </span>impl_from_versioned {
     (<span class="macro-nonterminal">$t</span>:ty) =&gt; {
         <span class="kw">impl</span>&lt;<span class="kw">const </span>V: u16&gt; From&lt;::versioned::Versioned&lt;<span class="macro-nonterminal">$t</span>, V&gt;&gt; <span class="kw">for </span><span class="macro-nonterminal">$t </span>{
             <span class="kw">fn </span>from(t: ::versioned::Versioned&lt;<span class="macro-nonterminal">$t</span>, V&gt;) -&gt; <span class="self">Self </span>{
@@ -146,8 +146,8 @@
 }
 
 <span class="doccomment">/// Macro that implements [From] trait for a newtype struct and its versioned wrapper
-</span><span class="attribute">#[macro_export]</span>
-<span class="macro">macro_rules!</span> impl_from_for_newtype {
+</span><span class="attribute">#[macro_export]
+</span><span class="macro">macro_rules! </span>impl_from_for_newtype {
     (<span class="macro-nonterminal">$t</span>:ty, <span class="macro-nonterminal">$tv</span>:ty) =&gt; {
         <span class="kw">impl </span>From&lt;<span class="macro-nonterminal">$t</span>&gt; <span class="kw">for </span><span class="macro-nonterminal">$tv </span>{
             <span class="kw">fn </span>from(t: <span class="macro-nonterminal">$t</span>) -&gt; <span class="self">Self </span>{
@@ -170,8 +170,8 @@
 /// both orignal and target types.
 /// It also implements BinProtSerializationType and JsonSerializationType
 /// for convenience
-</span><span class="attribute">#[macro_export]</span>
-<span class="macro">macro_rules!</span> impl_from_with_proxy {
+</span><span class="attribute">#[macro_export]
+</span><span class="macro">macro_rules! </span>impl_from_with_proxy {
     (<span class="macro-nonterminal">$t</span>:ty, <span class="macro-nonterminal">$t_versioned</span>:ty, <span class="macro-nonterminal">$t_json</span>:ty) =&gt; {
         <span class="kw">impl </span>From&lt;<span class="macro-nonterminal">$t</span>&gt; <span class="kw">for </span><span class="macro-nonterminal">$t_json </span>{
             <span class="kw">fn </span>from(t: <span class="macro-nonterminal">$t</span>) -&gt; <span class="self">Self </span>{
@@ -193,8 +193,8 @@
 /// between the orignal type and the versioned target type, using the
 /// intermidate type that is convertible from and to both
 /// orignal and target types
-</span><span class="attribute">#[macro_export]</span>
-<span class="macro">macro_rules!</span> impl_from_for_versioned_with_proxy {
+</span><span class="attribute">#[macro_export]
+</span><span class="macro">macro_rules! </span>impl_from_for_versioned_with_proxy {
     (<span class="macro-nonterminal">$t</span>:ty, <span class="macro-nonterminal">$ti</span>:ty, <span class="macro-nonterminal">$t2</span>:ty) =&gt; {
         <span class="kw">impl </span>From&lt;<span class="macro-nonterminal">$t</span>&gt; <span class="kw">for </span><span class="macro-nonterminal">$t2 </span>{
             <span class="kw">fn </span>from(t: <span class="macro-nonterminal">$t</span>) -&gt; <span class="self">Self </span>{
@@ -216,8 +216,8 @@
 /// between the orignal type and the generic target type, using the
 /// intermidate type that is convertible from and to both
 /// orignal and target types
-</span><span class="attribute">#[macro_export]</span>
-<span class="macro">macro_rules!</span> impl_from_for_generic_with_proxy {
+</span><span class="attribute">#[macro_export]
+</span><span class="macro">macro_rules! </span>impl_from_for_generic_with_proxy {
     (<span class="macro-nonterminal">$t</span>:ty, <span class="macro-nonterminal">$ti</span>:ty, <span class="macro-nonterminal">$t2</span>:ty) =&gt; {
         <span class="kw">impl </span>From&lt;<span class="macro-nonterminal">$t</span>&gt; <span class="kw">for </span><span class="macro-nonterminal">$t2 </span>{
             <span class="kw">fn </span>from(t: <span class="macro-nonterminal">$t</span>) -&gt; <span class="self">Self </span>{
@@ -235,4 +235,4 @@
     };
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="versioned" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (40336865f 2022-08-15)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="versioned" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (c0941dfb5 2022-08-21)" ></div></body></html>

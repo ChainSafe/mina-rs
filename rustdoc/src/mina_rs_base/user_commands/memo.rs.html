@@ -83,10 +83,10 @@
 <span class="kw">use </span>thiserror::Error;
 
 <span class="doccomment">/// A memo byte strong for a signed command
-</span><span class="attribute">#[derive(Clone, Default, Eq, PartialEq, Debug, derive_more::From, derive_more::Into, AutoFrom)]</span>
-<span class="attribute">#[auto_from(mina_serialization_types::staged_ledger_diff::SignedCommandMemo)]</span>
-<span class="attribute">#[auto_from(mina_serialization_types::staged_ledger_diff::SignedCommandMemoJson)]</span>
-<span class="kw">pub struct </span>SignedCommandMemo(<span class="kw">pub </span>Vec&lt;u8&gt;);
+</span><span class="attribute">#[derive(Clone, Default, Eq, PartialEq, Debug, derive_more::From, derive_more::Into, AutoFrom)]
+#[auto_from(mina_serialization_types::staged_ledger_diff::SignedCommandMemo)]
+#[auto_from(mina_serialization_types::staged_ledger_diff::SignedCommandMemoJson)]
+</span><span class="kw">pub struct </span>SignedCommandMemo(<span class="kw">pub </span>Vec&lt;u8&gt;);
 
 <span class="macro">impl_strconv_via_json!</span>(SignedCommandMemo, SignedCommandMemoJson);
 
@@ -120,21 +120,21 @@
 }
 
 <span class="doccomment">/// Error type for converting memo types
-</span><span class="attribute">#[derive(Debug, Error)]</span>
-<span class="kw">pub enum </span>SignedCommandMemoError {
+</span><span class="attribute">#[derive(Debug, Error)]
+</span><span class="kw">pub enum </span>SignedCommandMemoError {
     <span class="doccomment">/// Tried to build a memo from a string that is too long to fit
-    </span><span class="attribute">#[error(<span class="string">&quot;Input string is too long&quot;</span>)]</span>
-    StringTooLong,
+    </span><span class="attribute">#[error(<span class="string">&quot;Input string is too long&quot;</span>)]
+    </span>StringTooLong,
 }
 
-<span class="attribute">#[cfg(test)]</span>
-<span class="kw">mod </span>tests {
+<span class="attribute">#[cfg(test)]
+</span><span class="kw">mod </span>tests {
     <span class="kw">use </span>std::str::FromStr;
 
     <span class="kw">use super</span>::<span class="kw-2">*</span>;
 
-    <span class="attribute">#[test]</span>
-    <span class="kw">fn </span>memo_roundtrip() -&gt; anyhow::Result&lt;()&gt; {
+    <span class="attribute">#[test]
+    </span><span class="kw">fn </span>memo_roundtrip() -&gt; anyhow::Result&lt;()&gt; {
         <span class="kw">let </span>bs58_encoded = <span class="string">&quot;E4Yd7qwaRCHR6t7i6ToM98eSUy5eKKadQUPZX7Vpw4CWBvWyd8fzK&quot;</span>;
         <span class="kw">let </span>text_expected = <span class="string">&quot;FPayment&quot;</span>;
         <span class="kw">let </span>memo_from_bs58 = SignedCommandMemo::from_str(bs58_encoded)<span class="question-mark">?</span>;
@@ -147,4 +147,4 @@
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="mina_rs_base" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (40336865f 2022-08-15)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="mina_rs_base" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (c0941dfb5 2022-08-21)" ></div></body></html>

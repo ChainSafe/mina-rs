@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"struct":[["BlockchainState","Mina blockchain state struct"]]};
+window.SIDEBAR_ITEMS = {"struct":[["BlockchainState","Mina blockchain state struct"],["BlockchainStateLegacy","Mina blockchain state struct (legacy)"],["BodyReference","Mina block body reference, wrapper of blake2 256-bit hash"]]};

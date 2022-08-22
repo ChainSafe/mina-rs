@@ -614,8 +614,8 @@
 </span><span class="doccomment">//! Deserialization for BinProt following the standard serde module layout
 
 </span><span class="kw">use </span><span class="kw">crate</span>::error::{Error, <span class="prelude-ty">Result</span>};
-<span class="attribute">#[cfg(feature = <span class="string">&quot;loose_deserialization&quot;</span>)]</span>
-<span class="kw">use </span><span class="kw">crate</span>::value::layout::<span class="kw-2">*</span>;
+<span class="attribute">#[cfg(feature = <span class="string">&quot;loose_deserialization&quot;</span>)]
+</span><span class="kw">use </span><span class="kw">crate</span>::value::layout::<span class="kw-2">*</span>;
 <span class="kw">use </span><span class="kw">crate</span>::ReadBinProtExt;
 <span class="kw">use crate</span>::{caml_hash_variant, VariantHash};
 <span class="kw">use </span>byteorder::{LittleEndian, ReadBytesExt};
@@ -626,8 +626,8 @@
 <span class="doccomment">/// the modes of operation for the deserializer
 </span><span class="kw">pub struct </span>StronglyTyped;
 
-<span class="attribute">#[cfg(feature = <span class="string">&quot;loose_deserialization&quot;</span>)]</span>
-<span class="kw">pub struct </span>LooselyTyped {
+<span class="attribute">#[cfg(feature = <span class="string">&quot;loose_deserialization&quot;</span>)]
+</span><span class="kw">pub struct </span>LooselyTyped {
     <span class="kw">pub</span>(<span class="kw">crate</span>) layout_iter: BinProtRuleIterator,
 }
 
@@ -650,8 +650,8 @@
     }
 }
 
-<span class="attribute">#[cfg(feature = <span class="string">&quot;loose_deserialization&quot;</span>)]</span>
-<span class="kw">impl</span>&lt;R: Read&gt; Deserializer&lt;R, StronglyTyped&gt; {
+<span class="attribute">#[cfg(feature = <span class="string">&quot;loose_deserialization&quot;</span>)]
+</span><span class="kw">impl</span>&lt;R: Read&gt; Deserializer&lt;R, StronglyTyped&gt; {
     <span class="doccomment">/// Converts a strong type deserializer into a loose type deserializer by providing a
     /// BinProt type layout
     </span><span class="kw">pub fn </span>with_layout(<span class="self">self</span>, layout: <span class="kw-2">&amp;</span>BinProtRule) -&gt; Deserializer&lt;R, LooselyTyped&gt; {
@@ -686,8 +686,8 @@
 
 <span class="comment">// In the loosely typed case we want to use deserialize_any for every field
 // This includes the hybrid strong/loose case
-</span><span class="attribute">#[cfg(feature = <span class="string">&quot;loose_deserialization&quot;</span>)]</span>
-<span class="kw">impl</span>&lt;<span class="lifetime">&#39;de</span>, <span class="lifetime">&#39;a</span>, R: Read&gt; de::Deserializer&lt;<span class="lifetime">&#39;de</span>&gt; <span class="kw">for </span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span><span class="kw-2">mut </span>Deserializer&lt;R, LooselyTyped&gt; {
+</span><span class="attribute">#[cfg(feature = <span class="string">&quot;loose_deserialization&quot;</span>)]
+</span><span class="kw">impl</span>&lt;<span class="lifetime">&#39;de</span>, <span class="lifetime">&#39;a</span>, R: Read&gt; de::Deserializer&lt;<span class="lifetime">&#39;de</span>&gt; <span class="kw">for </span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span><span class="kw-2">mut </span>Deserializer&lt;R, LooselyTyped&gt; {
     <span class="kw">type </span>Error = Error;
     <span class="kw">fn </span>deserialize_any&lt;V&gt;(<span class="self">self</span>, visitor: V) -&gt; <span class="prelude-ty">Result</span>&lt;V::Value&gt;
     <span class="kw">where
@@ -696,7 +696,7 @@
         <span class="self">self</span>.deserialize_loose(visitor)
     }
 
-    <span class="macro">serde::forward_to_deserialize_any!</span> {
+    <span class="macro">serde::forward_to_deserialize_any! </span>{
         bool i8 i16 i32 i64 i128 u8 u16 u32 u64 u128 f32 f64 char str string
         bytes byte_buf option unit unit_struct newtype_struct seq tuple
         tuple_struct map <span class="kw">struct enum </span>identifier ignored_any
@@ -993,7 +993,7 @@
     }
 }
 
-<span class="macro">macro_rules!</span> impl_polyvar_enum_access {
+<span class="macro">macro_rules! </span>impl_polyvar_enum_access {
     (<span class="macro-nonterminal">$ty</span>: ty) =&gt; {
         <span class="kw">impl</span>&lt;<span class="lifetime">&#39;de</span>, <span class="lifetime">&#39;a</span>, R: Read&gt; EnumAccess&lt;<span class="lifetime">&#39;de</span>&gt; <span class="kw">for </span>PolyvarEnum&lt;<span class="lifetime">&#39;a</span>, R, <span class="macro-nonterminal">$ty</span>&gt; {
             <span class="kw">type </span>Error = Error;
@@ -1040,7 +1040,7 @@
 
 <span class="comment">// `EnumAccess` is provided to the `Visitor` to give it the ability to determine
 // which variant of the enum is supposed to be deserialized.
-</span><span class="macro">macro_rules!</span> impl_enum_access {
+</span><span class="macro">macro_rules! </span>impl_enum_access {
     (<span class="macro-nonterminal">$ty</span>: ty) =&gt; {
         <span class="kw">impl</span>&lt;<span class="lifetime">&#39;de</span>, <span class="lifetime">&#39;a</span>, R: Read&gt; EnumAccess&lt;<span class="lifetime">&#39;de</span>&gt; <span class="kw">for </span>Enum&lt;<span class="lifetime">&#39;a</span>, R, <span class="macro-nonterminal">$ty</span>&gt; {
             <span class="kw">type </span>Error = Error;
@@ -1060,12 +1060,12 @@
 
 <span class="macro">impl_enum_access!</span>(StronglyTyped);
 
-<span class="attribute">#[cfg(feature = <span class="string">&quot;loose_deserialization&quot;</span>)]</span>
-<span class="macro">impl_enum_access!</span>(LooselyTyped);
+<span class="attribute">#[cfg(feature = <span class="string">&quot;loose_deserialization&quot;</span>)]
+</span><span class="macro">impl_enum_access!</span>(LooselyTyped);
 
 <span class="comment">// `VariantAccess` is provided to the `Visitor` to give it the ability to see
 // the content of the single variant that it decided to deserialize.
-</span><span class="macro">macro_rules!</span> impl_variant_access {
+</span><span class="macro">macro_rules! </span>impl_variant_access {
     (<span class="macro-nonterminal">$ty</span>: ty, <span class="macro-nonterminal">$ident</span>: ident) =&gt; {
         <span class="kw">impl</span>&lt;<span class="lifetime">&#39;de</span>, <span class="lifetime">&#39;a</span>, R: Read&gt; de::VariantAccess&lt;<span class="lifetime">&#39;de</span>&gt; <span class="kw">for </span><span class="macro-nonterminal">$ident</span>&lt;<span class="lifetime">&#39;a</span>, R, <span class="macro-nonterminal">$ty</span>&gt; {
             <span class="kw">type </span>Error = Error;
@@ -1105,10 +1105,10 @@
 <span class="macro">impl_variant_access!</span>(StronglyTyped, Enum);
 <span class="macro">impl_variant_access!</span>(StronglyTyped, PolyvarEnum);
 
-<span class="attribute">#[cfg(feature = <span class="string">&quot;loose_deserialization&quot;</span>)]</span>
-<span class="macro">impl_variant_access!</span>(LooselyTyped, Enum);
-<span class="attribute">#[cfg(feature = <span class="string">&quot;loose_deserialization&quot;</span>)]</span>
-<span class="macro">impl_variant_access!</span>(LooselyTyped, PolyvarEnum);
+<span class="attribute">#[cfg(feature = <span class="string">&quot;loose_deserialization&quot;</span>)]
+</span><span class="macro">impl_variant_access!</span>(LooselyTyped, Enum);
+<span class="attribute">#[cfg(feature = <span class="string">&quot;loose_deserialization&quot;</span>)]
+</span><span class="macro">impl_variant_access!</span>(LooselyTyped, PolyvarEnum);
 
 <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">struct </span>MapAccess&lt;<span class="lifetime">&#39;a</span>, R: Read + <span class="lifetime">&#39;a</span>, Mode&gt; {
     de: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span><span class="kw-2">mut </span>Deserializer&lt;R, Mode&gt;,
@@ -1121,7 +1121,7 @@
     }
 }
 
-<span class="macro">macro_rules!</span> impl_map_access {
+<span class="macro">macro_rules! </span>impl_map_access {
     (<span class="macro-nonterminal">$ty</span>: ty) =&gt; {
         <span class="kw">impl</span>&lt;<span class="lifetime">&#39;de</span>: <span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;a</span>, R: Read&gt; de::MapAccess&lt;<span class="lifetime">&#39;de</span>&gt; <span class="kw">for </span>MapAccess&lt;<span class="lifetime">&#39;a</span>, R, <span class="macro-nonterminal">$ty</span>&gt; {
             <span class="kw">type </span>Error = Error;
@@ -1155,8 +1155,8 @@
 
 <span class="macro">impl_map_access!</span>(StronglyTyped);
 
-<span class="attribute">#[cfg(feature = <span class="string">&quot;loose_deserialization&quot;</span>)]</span>
-<span class="macro">impl_map_access!</span>(LooselyTyped);
+<span class="attribute">#[cfg(feature = <span class="string">&quot;loose_deserialization&quot;</span>)]
+</span><span class="macro">impl_map_access!</span>(LooselyTyped);
 
 <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">struct </span>SeqAccess&lt;<span class="lifetime">&#39;a</span>, R: Read + <span class="lifetime">&#39;a</span>, Mode&gt; {
     de: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span><span class="kw-2">mut </span>Deserializer&lt;R, Mode&gt;,
@@ -1175,8 +1175,8 @@
         }
     }
 
-    <span class="attribute">#[cfg(feature = <span class="string">&quot;loose_deserialization&quot;</span>)]</span>
-    <span class="kw">pub fn </span>new_list(de: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span><span class="kw-2">mut </span>Deserializer&lt;R, Mode&gt;, len: usize) -&gt; <span class="self">Self </span>{
+    <span class="attribute">#[cfg(feature = <span class="string">&quot;loose_deserialization&quot;</span>)]
+    </span><span class="kw">pub fn </span>new_list(de: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span><span class="kw-2">mut </span>Deserializer&lt;R, Mode&gt;, len: usize) -&gt; <span class="self">Self </span>{
         <span class="self">Self </span>{
             de,
             len,
@@ -1186,7 +1186,7 @@
     }
 }
 
-<span class="macro">macro_rules!</span> impl_seq_access {
+<span class="macro">macro_rules! </span>impl_seq_access {
     (<span class="macro-nonterminal">$ty</span>: ty) =&gt; {
         <span class="kw">impl</span>&lt;<span class="lifetime">&#39;de</span>: <span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;a</span>, R: Read&gt; de::SeqAccess&lt;<span class="lifetime">&#39;de</span>&gt; <span class="kw">for </span>SeqAccess&lt;<span class="lifetime">&#39;a</span>, R, <span class="macro-nonterminal">$ty</span>&gt; {
             <span class="kw">type </span>Error = Error;
@@ -1216,7 +1216,7 @@
 
 <span class="macro">impl_seq_access!</span>(StronglyTyped);
 
-<span class="attribute">#[cfg(feature = <span class="string">&quot;loose_deserialization&quot;</span>)]</span>
-<span class="macro">impl_seq_access!</span>(LooselyTyped);
+<span class="attribute">#[cfg(feature = <span class="string">&quot;loose_deserialization&quot;</span>)]
+</span><span class="macro">impl_seq_access!</span>(LooselyTyped);
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="bin_prot" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (40336865f 2022-08-15)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="bin_prot" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (c0941dfb5 2022-08-21)" ></div></body></html>

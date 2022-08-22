@@ -358,9 +358,9 @@
 <span class="kw">const </span>DELEGATION_TX_TAG: [bool; TAG_BITS] = [<span class="bool-val">false</span>, <span class="bool-val">false</span>, <span class="bool-val">true</span>];
 
 <span class="doccomment">/// Top level signed command type
-</span><span class="attribute">#[derive(Clone, Eq, PartialEq, Debug, AutoFrom)]</span>
-<span class="attribute">#[auto_from(mina_serialization_types::staged_ledger_diff::SignedCommand)]</span>
-<span class="kw">pub struct </span>SignedCommand {
+</span><span class="attribute">#[derive(Clone, Eq, PartialEq, Debug, AutoFrom)]
+#[auto_from(mina_serialization_types::staged_ledger_diff::SignedCommand)]
+</span><span class="kw">pub struct </span>SignedCommand {
     <span class="doccomment">/// The payload to sign
     </span><span class="kw">pub </span>payload: SignedCommandPayload,
     <span class="doccomment">/// The signer (public key)
@@ -401,9 +401,9 @@
 }
 
 <span class="doccomment">/// The part of a signed command that needs to be serialized and signed
-</span><span class="attribute">#[derive(Clone, Eq, PartialEq, Debug, AutoFrom)]</span>
-<span class="attribute">#[auto_from(mina_serialization_types::staged_ledger_diff::SignedCommandPayload)]</span>
-<span class="kw">pub struct </span>SignedCommandPayload {
+</span><span class="attribute">#[derive(Clone, Eq, PartialEq, Debug, AutoFrom)]
+#[auto_from(mina_serialization_types::staged_ledger_diff::SignedCommandPayload)]
+</span><span class="kw">pub struct </span>SignedCommandPayload {
     <span class="doccomment">/// Fields common to all command types
     </span><span class="kw">pub </span>common: SignedCommandPayloadCommon,
     <span class="doccomment">/// Fields that depend on the type of command (e.g. payment, snapp, etc)
@@ -486,9 +486,9 @@
 }
 
 <span class="doccomment">/// Common fields required by all signed commands
-</span><span class="attribute">#[derive(Clone, Eq, PartialEq, Debug, AutoFrom)]</span>
-<span class="attribute">#[auto_from(mina_serialization_types::staged_ledger_diff::SignedCommandPayloadCommon)]</span>
-<span class="kw">pub struct </span>SignedCommandPayloadCommon {
+</span><span class="attribute">#[derive(Clone, Eq, PartialEq, Debug, AutoFrom)]
+#[auto_from(mina_serialization_types::staged_ledger_diff::SignedCommandPayloadCommon)]
+</span><span class="kw">pub struct </span>SignedCommandPayloadCommon {
     <span class="doccomment">/// Amount paid in fees to include this command in a block
     </span><span class="kw">pub </span>fee: Amount,
     <span class="doccomment">/// Token to be used to pay the fees
@@ -504,9 +504,9 @@
 }
 
 <span class="doccomment">/// Enum of variable fields in a signed command
-</span><span class="attribute">#[derive(Clone, Eq, PartialEq, Debug, AutoFrom)]</span>
-<span class="attribute">#[auto_from(mina_serialization_types::staged_ledger_diff::SignedCommandPayloadBody)]</span>
-<span class="kw">pub enum </span>SignedCommandPayloadBody {
+</span><span class="attribute">#[derive(Clone, Eq, PartialEq, Debug, AutoFrom)]
+#[auto_from(mina_serialization_types::staged_ledger_diff::SignedCommandPayloadBody)]
+</span><span class="kw">pub enum </span>SignedCommandPayloadBody {
     <span class="doccomment">/// Payment transfer fields
     </span>PaymentPayload(PaymentPayload),
     <span class="doccomment">/// Stake Delegation fields
@@ -515,9 +515,9 @@
 </span>}
 
 <span class="doccomment">/// Enum of variable fields for stake delegation
-</span><span class="attribute">#[derive(Clone, Eq, PartialEq, Debug, AutoFrom)]</span>
-<span class="attribute">#[auto_from(mina_serialization_types::staged_ledger_diff::StakeDelegation)]</span>
-<span class="kw">pub enum </span>StakeDelegation {
+</span><span class="attribute">#[derive(Clone, Eq, PartialEq, Debug, AutoFrom)]
+#[auto_from(mina_serialization_types::staged_ledger_diff::StakeDelegation)]
+</span><span class="kw">pub enum </span>StakeDelegation {
     <span class="doccomment">/// Set Delegate
     </span>SetDelegate {
         <span class="doccomment">/// Delegator
@@ -527,15 +527,15 @@
     },
 }
 
-<span class="attribute">#[cfg(test)]</span>
-<span class="kw">mod </span>tests {
+<span class="attribute">#[cfg(test)]
+</span><span class="kw">mod </span>tests {
     <span class="kw">use super</span>::<span class="kw-2">*</span>;
     <span class="kw">use </span><span class="kw">crate</span>::user_commands::SignedCommand;
     <span class="kw">use </span>proof_systems::mina_signer;
     <span class="kw">use </span>proof_systems::mina_signer::{CompressedPubKey, Keypair, NetworkId, PubKey, Signer};
 
     <span class="comment">// Credit to the proof-systems repo tests from where this macro was taken
-    </span><span class="macro">macro_rules!</span> assert_sign_verify_tx {
+    </span><span class="macro">macro_rules! </span>assert_sign_verify_tx {
         (<span class="macro-nonterminal">$tx_type</span>:expr, <span class="macro-nonterminal">$sec_key</span>:expr, <span class="macro-nonterminal">$source_address</span>:expr, <span class="macro-nonterminal">$receiver_address</span>:expr, <span class="macro-nonterminal">$amount</span>:expr, <span class="macro-nonterminal">$fee</span>:expr,
          <span class="macro-nonterminal">$nonce</span>:expr, <span class="macro-nonterminal">$valid_until</span>:expr, <span class="macro-nonterminal">$memo</span>:expr, <span class="macro-nonterminal">$testnet_target</span>:expr, <span class="macro-nonterminal">$mainnet_target</span>:expr) =&gt; {
             <span class="kw">let </span>kp = Keypair::from_hex(<span class="macro-nonterminal">$sec_key</span>).expect(<span class="string">&quot;failed to create keypair&quot;</span>);
@@ -608,8 +608,8 @@
         };
     }
 
-    <span class="attribute">#[test]</span>
-    <span class="kw">fn </span>sign_payment_test_1() {
+    <span class="attribute">#[test]
+    </span><span class="kw">fn </span>sign_payment_test_1() {
         <span class="macro">assert_sign_verify_tx!</span>(
             <span class="comment">/* Transaction type   */ </span>TransactionType::PaymentTx,
             <span class="comment">/* sender secret key  */ </span><span class="string">&quot;164244176fddb5d769b7de2027469d027ad428fadcc0c02396e6280142efb718&quot;</span>,
@@ -625,8 +625,8 @@
         </span>);
     }
 
-    <span class="attribute">#[test]</span>
-    <span class="kw">fn </span>sign_payment_test_2() {
+    <span class="attribute">#[test]
+    </span><span class="kw">fn </span>sign_payment_test_2() {
         <span class="macro">assert_sign_verify_tx!</span>(
             <span class="comment">/* Transaction type  */ </span>TransactionType::PaymentTx,
             <span class="comment">/* sender secret key */ </span><span class="string">&quot;3414fc16e86e6ac272fda03cf8dcb4d7d47af91b4b726494dab43bf773ce1779&quot;</span>,
@@ -642,8 +642,8 @@
         </span>);
     }
 
-    <span class="attribute">#[test]</span>
-    <span class="kw">fn </span>sign_payment_test_3() {
+    <span class="attribute">#[test]
+    </span><span class="kw">fn </span>sign_payment_test_3() {
         <span class="macro">assert_sign_verify_tx!</span>(
             <span class="comment">/* Transaction type  */ </span>TransactionType::PaymentTx,
             <span class="comment">/* sender secret key */ </span><span class="string">&quot;3414fc16e86e6ac272fda03cf8dcb4d7d47af91b4b726494dab43bf773ce1779&quot;</span>,
@@ -659,8 +659,8 @@
         </span>);
     }
 
-    <span class="attribute">#[test]</span>
-    <span class="kw">fn </span>sign_payment_test_4() {
+    <span class="attribute">#[test]
+    </span><span class="kw">fn </span>sign_payment_test_4() {
         <span class="macro">assert_sign_verify_tx!</span>(
             <span class="comment">/* Transaction type  */ </span>TransactionType::PaymentTx,
             <span class="comment">/* sender secret key */ </span><span class="string">&quot;1dee867358d4000f1dafa5978341fb515f89eeddbe450bd57df091f1e63d4444&quot;</span>,
@@ -677,4 +677,4 @@
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../../" data-current-crate="mina_rs_base" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (40336865f 2022-08-15)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../../" data-current-crate="mina_rs_base" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (c0941dfb5 2022-08-21)" ></div></body></html>

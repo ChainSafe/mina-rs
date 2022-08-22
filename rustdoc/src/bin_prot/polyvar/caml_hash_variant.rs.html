@@ -84,12 +84,12 @@
     }
 */
 
-</span><span class="attribute">#[cfg(test)]</span>
-<span class="kw">mod </span>tests {
+</span><span class="attribute">#[cfg(test)]
+</span><span class="kw">mod </span>tests {
     <span class="kw">use super</span>::<span class="kw-2">*</span>;
 
-    <span class="attribute">#[test]</span>
-    <span class="kw">fn </span>test_known_labels() {
+    <span class="attribute">#[test]
+    </span><span class="kw">fn </span>test_known_labels() {
         <span class="kw">const </span>CASES: <span class="kw-2">&amp;</span>[(<span class="kw-2">&amp;</span>str, u32)] = <span class="kw-2">&amp;</span>[(<span class="string">&quot;One&quot;</span>, <span class="number">3953222_u32</span>), (<span class="string">&quot;Two&quot;</span>, <span class="number">4203884_u32</span>)];
 
         <span class="kw">for </span>(label, hash) <span class="kw">in </span>CASES {
@@ -97,12 +97,12 @@
         }
     }
 
-    <span class="attribute">#[test]</span>
-    <span class="attribute">#[cfg(target_arch = <span class="string">&quot;wasm32&quot;</span>)]</span>
-    <span class="attribute">#[should_panic(expected = <span class="string">&quot;attempt to multiply with overflow&quot;</span>)]</span>
-    <span class="kw">fn </span>test_overflow_variant() {
+    <span class="attribute">#[test]
+    #[cfg(target_arch = <span class="string">&quot;wasm32&quot;</span>)]
+    #[should_panic(expected = <span class="string">&quot;attempt to multiply with overflow&quot;</span>)]
+    </span><span class="kw">fn </span>test_overflow_variant() {
         <span class="kw">let _ </span>= caml_hash_variant(<span class="string">&quot;Three&quot;</span>);
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="bin_prot" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (40336865f 2022-08-15)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="bin_prot" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (c0941dfb5 2022-08-21)" ></div></body></html>

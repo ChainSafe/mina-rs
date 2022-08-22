@@ -294,8 +294,8 @@
 <span class="kw">use </span>versioned::Versioned;
 
 <span class="doccomment">/// An EC point stored in compressed form containing only the x coordinate and one extra bit
-</span><span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]</span>
-<span class="kw">pub struct </span>CompressedCurvePoint {
+</span><span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]
+</span><span class="kw">pub struct </span>CompressedCurvePoint {
     <span class="doccomment">/// The x coordinate of the EC point
     </span><span class="kw">pub </span>x: FieldElement,
     <span class="doccomment">/// If the point is odd (or even)
@@ -303,9 +303,9 @@
 }
 
 <span class="doccomment">/// An EC point stored in compressed form containing only the x coordinate and one extra bit (json)
-</span><span class="attribute">#[derive(Clone, Debug, Eq, PartialEq, AutoFrom)]</span>
-<span class="attribute">#[auto_from(CompressedCurvePoint)]</span>
-<span class="kw">pub struct </span>PublicKeyJson {
+</span><span class="attribute">#[derive(Clone, Debug, Eq, PartialEq, AutoFrom)]
+#[auto_from(CompressedCurvePoint)]
+</span><span class="kw">pub struct </span>PublicKeyJson {
     <span class="doccomment">/// The x coordinate of the EC point
     </span><span class="kw">pub </span>x: FieldElement,
     <span class="doccomment">/// If the point is odd (or even)
@@ -342,20 +342,20 @@
 }
 
 <span class="doccomment">/// Public key (v1)
-</span><span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]</span>
-<span class="kw">pub struct </span>PublicKeyV1(<span class="kw">pub </span>Versioned&lt;Versioned&lt;CompressedCurvePoint, <span class="number">1</span>&gt;, <span class="number">1</span>&gt;);
+</span><span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]
+</span><span class="kw">pub struct </span>PublicKeyV1(<span class="kw">pub </span>Versioned&lt;Versioned&lt;CompressedCurvePoint, <span class="number">1</span>&gt;, <span class="number">1</span>&gt;);
 
 <span class="doccomment">/// Public key (v1) with an extra version byte
-</span><span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]</span>
-<span class="kw">pub struct </span>PublicKey2V1(<span class="kw">pub </span>Versioned&lt;PublicKeyV1, <span class="number">1</span>&gt;); <span class="comment">// with an extra version wrapper
+</span><span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]
+</span><span class="kw">pub struct </span>PublicKey2V1(<span class="kw">pub </span>Versioned&lt;PublicKeyV1, <span class="number">1</span>&gt;); <span class="comment">// with an extra version wrapper
 
 </span><span class="doccomment">/// Signature (v1)
-</span><span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]</span>
-<span class="kw">pub struct </span>SignatureV1(<span class="kw">pub </span>Versioned&lt;Versioned&lt;(FieldElement, InnerCurveScalar), <span class="number">1</span>&gt;, <span class="number">1</span>&gt;);
+</span><span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]
+</span><span class="kw">pub struct </span>SignatureV1(<span class="kw">pub </span>Versioned&lt;Versioned&lt;(FieldElement, InnerCurveScalar), <span class="number">1</span>&gt;, <span class="number">1</span>&gt;);
 
 <span class="doccomment">/// Signature (json)
-</span><span class="attribute">#[derive(Clone, Debug, Eq, PartialEq)]</span>
-<span class="kw">pub struct </span>SignatureJson(<span class="kw">pub </span>Versioned&lt;(FieldElement, InnerCurveScalar), <span class="number">1</span>&gt;);
+</span><span class="attribute">#[derive(Clone, Debug, Eq, PartialEq)]
+</span><span class="kw">pub struct </span>SignatureJson(<span class="kw">pub </span>Versioned&lt;(FieldElement, InnerCurveScalar), <span class="number">1</span>&gt;);
 
 <span class="kw">impl </span>Serialize <span class="kw">for </span>SignatureJson {
     <span class="kw">fn </span>serialize&lt;S&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, serializer: S) -&gt; <span class="prelude-ty">Result</span>&lt;S::Ok, S::Error&gt;
@@ -561,4 +561,4 @@
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_serialization_types" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (40336865f 2022-08-15)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_serialization_types" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (c0941dfb5 2022-08-21)" ></div></body></html>

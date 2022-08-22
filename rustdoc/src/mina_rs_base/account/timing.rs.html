@@ -88,10 +88,10 @@
 <span class="kw">use </span><span class="kw">crate</span>::numbers::{Amount, BlockTime};
 
 <span class="doccomment">/// Payload for the timing variant Timed
-</span><span class="attribute">#[derive(Clone, Debug, Eq, PartialEq, AutoFrom)]</span>
-<span class="attribute">#[auto_from(mina_serialization_types::account::TimedData)]</span>
-<span class="attribute">#[auto_from(mina_serialization_types::account::TimedDataV0)]</span>
-<span class="kw">pub struct </span>TimedData {
+</span><span class="attribute">#[derive(Clone, Debug, Eq, PartialEq, AutoFrom)]
+#[auto_from(mina_serialization_types::account::TimedData)]
+#[auto_from(mina_serialization_types::account::TimedDataV0)]
+</span><span class="kw">pub struct </span>TimedData {
     <span class="doccomment">/// Initial balance for the account
     </span><span class="kw">pub </span>initial_minimum_balance: Amount,
     <span class="doccomment">/// Time when all balance is avaiable
@@ -120,22 +120,22 @@
     <span class="kw">fn </span>to_chunked_roinput(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; ChunkedROInput {
         ChunkedROInput::new()
             .append_chunked(<span class="kw-2">&amp;</span><span class="self">self</span>.initial_minimum_balance)
-            .append_chunked(<span class="kw-2">&amp;</span><span class="self">self</span>.cliff_time)
+            .append_u32(<span class="self">self</span>.cliff_time.<span class="number">0 </span><span class="kw">as </span>u32)
             .append_chunked(<span class="kw-2">&amp;</span><span class="self">self</span>.cliff_amount)
-            .append_chunked(<span class="kw-2">&amp;</span><span class="self">self</span>.vesting_period)
+            .append_u32(<span class="self">self</span>.vesting_period.<span class="number">0 </span><span class="kw">as </span>u32)
             .append_chunked(<span class="kw-2">&amp;</span><span class="self">self</span>.vesting_increment)
     }
 }
 
 <span class="doccomment">/// Timing information for an account with regard to when its balance is accessable
 /// This is to allow vesting from an initial genesis allocation
-</span><span class="attribute">#[derive(Debug, Clone, SmartDefault, AutoFrom)]</span>
-<span class="attribute">#[auto_from(mina_serialization_types::account::Timing)]</span>
-<span class="attribute">#[auto_from(mina_serialization_types::account::TimingV0)]</span>
-<span class="kw">pub enum </span>Timing {
+</span><span class="attribute">#[derive(Debug, Clone, SmartDefault, AutoFrom)]
+#[auto_from(mina_serialization_types::account::Timing)]
+#[auto_from(mina_serialization_types::account::TimingV0)]
+</span><span class="kw">pub enum </span>Timing {
     <span class="doccomment">/// Account does not have any timing limitations
-    </span><span class="attribute">#[default]</span>
-    Untimed,
+    </span><span class="attribute">#[default]
+    </span>Untimed,
     <span class="doccomment">/// Account does have timing limitations as specified
     </span>Timed(TimedData),
 }
@@ -153,4 +153,4 @@
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="mina_rs_base" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (40336865f 2022-08-15)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="mina_rs_base" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (c0941dfb5 2022-08-21)" ></div></body></html>

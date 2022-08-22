@@ -69,8 +69,8 @@
 <span class="kw">use </span>serde::Serialize;
 
 <span class="kw">impl </span>Serialize <span class="kw">for </span>Value {
-    <span class="attribute">#[inline]</span>
-    <span class="kw">fn </span>serialize&lt;S&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, serializer: S) -&gt; std::result::Result&lt;S::Ok, S::Error&gt;
+    <span class="attribute">#[inline]
+    </span><span class="kw">fn </span>serialize&lt;S&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, serializer: S) -&gt; std::result::Result&lt;S::Ok, S::Error&gt;
     <span class="kw">where
         </span>S: ::serde::Serializer,
     {
@@ -119,4 +119,4 @@
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="bin_prot" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (40336865f 2022-08-15)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="bin_prot" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (c0941dfb5 2022-08-21)" ></div></body></html>

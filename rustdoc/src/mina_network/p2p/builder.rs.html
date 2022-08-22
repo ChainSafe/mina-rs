@@ -142,8 +142,8 @@
 </span><span class="kw">pub type </span>BoxedP2PTransport = transport::Boxed&lt;P2PTransport&gt;;
 
 <span class="doccomment">/// Builds libp2p transport for mina with various configurations
-</span><span class="attribute">#[derive(Clone)]</span>
-<span class="kw">pub struct </span>TransportBuilder {
+</span><span class="attribute">#[derive(Clone)]
+</span><span class="kw">pub struct </span>TransportBuilder {
     pnet_config: PnetConfig,
     mplex_config: MplexConfig,
     noise_keys: AuthenticKeypair&lt;X25519Spec&gt;,
@@ -203,8 +203,8 @@
     <span class="doccomment">/// Builds libp2p transport
     </span><span class="kw">pub fn </span>build(<span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;(BoxedP2PTransport, PeerId), std::io::Error&gt; {
         <span class="kw">let </span>transport = {
-            <span class="macro">cfg_if::cfg_if!</span> {
-                <span class="kw">if </span><span class="attribute">#[cfg(target_arch = <span class="string">&quot;wasm32&quot;</span>)]</span> {
+            <span class="macro">cfg_if::cfg_if! </span>{
+                <span class="kw">if </span><span class="attribute">#[cfg(target_arch = <span class="string">&quot;wasm32&quot;</span>)] </span>{
                     <span class="kw">use </span>libp2p::wasm_ext;
 
                     <span class="comment">// Note that DNS has been implictly supported in the extended javascript code,
@@ -247,4 +247,4 @@
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="mina_network" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (40336865f 2022-08-15)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="mina_network" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (c0941dfb5 2022-08-21)" ></div></body></html>

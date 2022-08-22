@@ -65,26 +65,26 @@
         .into_string()
 }
 
-<span class="attribute">#[cfg(test)]</span>
-<span class="kw">mod </span>tests {
+<span class="attribute">#[cfg(test)]
+</span><span class="kw">mod </span>tests {
     <span class="kw">use super</span>::<span class="kw-2">*</span>;
 
     <span class="kw">const </span>B58_ENCODED: <span class="kw-2">&amp;</span>str =
         <span class="string">&quot;C6akiMy3NarEYxkQ2ta4AweAz67Cq1Qn81VxdX5SQKUXebAEcrY97DRb5AdWxQdG9msbXWUqr&quot;</span>;
     <span class="kw">const </span>HEX_ENCODED:<span class="kw-2">&amp;</span>str = <span class="string">&quot;5f742829b76350de2f965cb432967076e3fe8ee8d103cc8e4fd947e8ad09e9123a88c19e482810b034fc47f5a038864351&quot;</span>;
 
-    <span class="attribute">#[test]</span>
-    <span class="kw">fn </span>decode() {
+    <span class="attribute">#[test]
+    </span><span class="kw">fn </span>decode() {
         <span class="kw">let </span>bytes = base58_decode(B58_ENCODED).unwrap();
         <span class="macro">assert_eq!</span>(hex::encode(<span class="kw-2">&amp;</span>bytes), HEX_ENCODED);
     }
 
-    <span class="attribute">#[test]</span>
-    <span class="kw">fn </span>encode() {
+    <span class="attribute">#[test]
+    </span><span class="kw">fn </span>encode() {
         <span class="kw">let </span>bytes = hex::decode(HEX_ENCODED).unwrap();
         <span class="kw">let </span>encoded = base58_encode(<span class="kw-2">&amp;</span>bytes);
         <span class="macro">assert_eq!</span>(encoded, B58_ENCODED);
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="mina_secrets" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (40336865f 2022-08-15)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="mina_secrets" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (c0941dfb5 2022-08-21)" ></div></body></html>

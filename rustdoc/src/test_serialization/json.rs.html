@@ -443,11 +443,11 @@
 </pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
-</span><span class="attribute">#[cfg(all(test, feature = <span class="string">&quot;browser&quot;</span>))]</span>
-<span class="macro">wasm_bindgen_test::wasm_bindgen_test_configure!</span>(run_in_browser);
+</span><span class="attribute">#[cfg(all(test, feature = <span class="string">&quot;browser&quot;</span>))]
+</span><span class="macro">wasm_bindgen_test::wasm_bindgen_test_configure!</span>(run_in_browser);
 
-<span class="attribute">#[cfg(test)]</span>
-<span class="kw">mod </span>tests {
+<span class="attribute">#[cfg(test)]
+</span><span class="kw">mod </span>tests {
     <span class="kw">use crate</span>::<span class="kw-2">*</span>;
     <span class="kw">use </span>ark_ff::BigInteger256;
     <span class="kw">use </span>mina_rs_base::{types::<span class="kw-2">*</span>, <span class="kw-2">*</span>};
@@ -458,9 +458,9 @@
     <span class="kw">use </span>std::str::FromStr;
     <span class="kw">use </span>wasm_bindgen_test::<span class="kw-2">*</span>;
 
-    <span class="attribute">#[test]</span>
-    <span class="attribute">#[wasm_bindgen_test]</span>
-    <span class="kw">fn </span>json_binprot_parity_tests() {
+    <span class="attribute">#[test]
+    #[wasm_bindgen_test]
+    </span><span class="kw">fn </span>json_binprot_parity_tests() {
         <span class="kw">let </span>block_fixture_binprot = test_fixtures::TEST_BLOCKS
             .get(<span class="string">&quot;3NKjZ5fjms6BMaH4aq7DopPGyMY7PbG6vhRsX5XnYRxih8i9G7dj.hex&quot;</span>)
             .unwrap();
@@ -537,9 +537,9 @@
     non_snark_digest:1f3f4109e8e81048dfa42023b6292e8cc0c54721a34097e4333c0c89cefc9c26
     non_snark_hash:26916965920202625828811831006264431911594993787410334374666335644820635123853
     */
-    </span><span class="attribute">#[test]</span>
-    <span class="attribute">#[wasm_bindgen_test]</span>
-    <span class="kw">fn </span>protocol_state_hash_parity_test() {
+    </span><span class="attribute">#[test]
+    #[wasm_bindgen_test]
+    </span><span class="kw">fn </span>protocol_state_hash_parity_test() {
         <span class="kw">let </span>json_value = test_fixtures::JSON_TEST_BLOCKS
             .get(<span class="string">&quot;mainnet-113267-3NKtqqstB6h8SVNQCtspFisjUwCTqoQ6cC1KGvb6kx6n2dqKkiZS.json&quot;</span>)
             .unwrap();
@@ -649,9 +649,9 @@
         </span>);
     }
 
-    <span class="attribute">#[test]</span>
-    <span class="attribute">#[wasm_bindgen_test]</span>
-    <span class="kw">fn </span>json_binprot_state_hash_tests() {
+    <span class="attribute">#[test]
+    #[wasm_bindgen_test]
+    </span><span class="kw">fn </span>json_binprot_state_hash_tests() {
         <span class="kw">for </span>(file_name, json) <span class="kw">in </span>test_fixtures::JSON_TEST_BLOCKS.iter() {
             <span class="kw">let </span>expected_state_hash = file_name
                 .split(<span class="string">&#39;.&#39;</span>)
@@ -668,9 +668,9 @@
         }
     }
 
-    <span class="attribute">#[test]</span>
-    <span class="attribute">#[wasm_bindgen_test]</span>
-    <span class="kw">fn </span>consensus_state_json_serde_roundtrip() {
+    <span class="attribute">#[test]
+    #[wasm_bindgen_test]
+    </span><span class="kw">fn </span>consensus_state_json_serde_roundtrip() {
         <span class="macro">json_serde_roundtrip!</span>(
             ConsensusState,
             ConsensusStateJson,
@@ -678,9 +678,9 @@
         </span>);
     }
 
-    <span class="attribute">#[test]</span>
-    <span class="attribute">#[wasm_bindgen_test]</span>
-    <span class="kw">fn </span>constants_json_serde_roundtrip() {
+    <span class="attribute">#[test]
+    #[wasm_bindgen_test]
+    </span><span class="kw">fn </span>constants_json_serde_roundtrip() {
         <span class="macro">json_serde_roundtrip!</span>(
             ProtocolConstants,
             ProtocolConstantsJson,
@@ -688,35 +688,35 @@
         </span>);
     }
 
-    <span class="attribute">#[test]</span>
-    <span class="attribute">#[wasm_bindgen_test]</span>
-    <span class="kw">fn </span>blockchain_state_json_serde_roundtrip() {
+    <span class="attribute">#[test]
+    #[wasm_bindgen_test]
+    </span><span class="kw">fn </span>blockchain_state_json_serde_roundtrip() {
         <span class="macro">json_serde_roundtrip!</span>(
-            BlockchainState,
+            BlockchainStateLegacy,
             BlockchainStateJson,
             <span class="string">&quot;protocol_state/body/blockchain_state&quot;
         </span>);
     }
 
-    <span class="attribute">#[test]</span>
-    <span class="attribute">#[wasm_bindgen_test]</span>
-    <span class="kw">fn </span>protocol_state_body_json_serde_roundtrip() {
+    <span class="attribute">#[test]
+    #[wasm_bindgen_test]
+    </span><span class="kw">fn </span>protocol_state_body_json_serde_roundtrip() {
         <span class="macro">json_serde_roundtrip!</span>(
-            ProtocolStateBody,
+            ProtocolStateBodyLegacy,
             ProtocolStateBodyJson,
             <span class="string">&quot;protocol_state/body&quot;
         </span>);
     }
 
-    <span class="attribute">#[test]</span>
-    <span class="attribute">#[wasm_bindgen_test]</span>
-    <span class="kw">fn </span>protocol_state_json_serde_roundtrip() {
-        <span class="macro">json_serde_roundtrip!</span>(ProtocolState, ProtocolStateJson, <span class="string">&quot;protocol_state&quot;</span>);
+    <span class="attribute">#[test]
+    #[wasm_bindgen_test]
+    </span><span class="kw">fn </span>protocol_state_json_serde_roundtrip() {
+        <span class="macro">json_serde_roundtrip!</span>(ProtocolStateLegacy, ProtocolStateJson, <span class="string">&quot;protocol_state&quot;</span>);
     }
 
-    <span class="attribute">#[test]</span>
-    <span class="attribute">#[wasm_bindgen_test]</span>
-    <span class="kw">fn </span>protocol_state_proof_json_serde_roundtrip() {
+    <span class="attribute">#[test]
+    #[wasm_bindgen_test]
+    </span><span class="kw">fn </span>protocol_state_proof_json_serde_roundtrip() {
         <span class="macro">json_serde_roundtrip!</span>(
             ProtocolStateProof,
             ProtocolStateProofBase64Json,
@@ -724,9 +724,9 @@
         </span>);
     }
 
-    <span class="attribute">#[test]</span>
-    <span class="attribute">#[wasm_bindgen_test]</span>
-    <span class="kw">fn </span>delta_transition_chain_proof_json_serde_roundtrip() {
+    <span class="attribute">#[test]
+    #[wasm_bindgen_test]
+    </span><span class="kw">fn </span>delta_transition_chain_proof_json_serde_roundtrip() {
         <span class="macro">json_serde_roundtrip!</span>(
             DeltaTransitionChainProof,
             DeltaTransitionChainProofJson,
@@ -734,9 +734,9 @@
         </span>);
     }
 
-    <span class="attribute">#[test]</span>
-    <span class="attribute">#[wasm_bindgen_test]</span>
-    <span class="kw">fn </span>completed_works_json_serde_roundtrip() {
+    <span class="attribute">#[test]
+    #[wasm_bindgen_test]
+    </span><span class="kw">fn </span>completed_works_json_serde_roundtrip() {
         <span class="macro">json_serde_roundtrip!</span>(
             TransactionSnarkWork,
             TransactionSnarkWorkJson,
@@ -744,9 +744,9 @@
         </span>);
     }
 
-    <span class="attribute">#[test]</span>
-    <span class="attribute">#[wasm_bindgen_test]</span>
-    <span class="kw">fn </span>completed_works_proofs_statement_json_serde_roundtrip() {
+    <span class="attribute">#[test]
+    #[wasm_bindgen_test]
+    </span><span class="kw">fn </span>completed_works_proofs_statement_json_serde_roundtrip() {
         <span class="macro">json_serde_roundtrip!</span>(
             Statement,
             StatementJson,
@@ -754,9 +754,9 @@
         </span>);
     }
 
-    <span class="attribute">#[test]</span>
-    <span class="attribute">#[wasm_bindgen_test]</span>
-    <span class="kw">fn </span>completed_works_proofs_proof_json_serde_roundtrip() {
+    <span class="attribute">#[test]
+    #[wasm_bindgen_test]
+    </span><span class="kw">fn </span>completed_works_proofs_proof_json_serde_roundtrip() {
         <span class="macro">json_serde_roundtrip!</span>(
             ProtocolStateProof,
             ProtocolStateProofJson,
@@ -764,9 +764,9 @@
         </span>);
     }
 
-    <span class="attribute">#[test]</span>
-    <span class="attribute">#[wasm_bindgen_test]</span>
-    <span class="kw">fn </span>completed_works_proofs_proof_statement_json_serde_roundtrip() {
+    <span class="attribute">#[test]
+    #[wasm_bindgen_test]
+    </span><span class="kw">fn </span>completed_works_proofs_proof_statement_json_serde_roundtrip() {
         <span class="macro">json_serde_roundtrip!</span>(
             ProofStatement,
             ProofStatementJson,
@@ -774,9 +774,9 @@
         </span>);
     }
 
-    <span class="attribute">#[test]</span>
-    <span class="attribute">#[wasm_bindgen_test]</span>
-    <span class="kw">fn </span>commands_json_serde_roundtrip() {
+    <span class="attribute">#[test]
+    #[wasm_bindgen_test]
+    </span><span class="kw">fn </span>commands_json_serde_roundtrip() {
         <span class="macro">json_serde_roundtrip!</span>(
             UserCommandWithStatus,
             UserCommandWithStatusJson,
@@ -784,9 +784,9 @@
         </span>);
     }
 
-    <span class="attribute">#[test]</span>
-    <span class="attribute">#[wasm_bindgen_test]</span>
-    <span class="kw">fn </span>user_command_json_serde_roundtrip() {
+    <span class="attribute">#[test]
+    #[wasm_bindgen_test]
+    </span><span class="kw">fn </span>user_command_json_serde_roundtrip() {
         <span class="macro">json_serde_roundtrip!</span>(
             UserCommand,
             UserCommandJson,
@@ -794,9 +794,9 @@
         </span>);
     }
 
-    <span class="attribute">#[test]</span>
-    <span class="attribute">#[wasm_bindgen_test]</span>
-    <span class="kw">fn </span>user_command_json_serde_roundtrip_2() {
+    <span class="attribute">#[test]
+    #[wasm_bindgen_test]
+    </span><span class="kw">fn </span>user_command_json_serde_roundtrip_2() {
         <span class="macro">json_serde_roundtrip!</span>(
             UserCommand,
             UserCommandJson,
@@ -804,9 +804,9 @@
         </span>);
     }
 
-    <span class="attribute">#[test]</span>
-    <span class="attribute">#[wasm_bindgen_test]</span>
-    <span class="kw">fn </span>transaction_status_json_serde_roundtrip() {
+    <span class="attribute">#[test]
+    #[wasm_bindgen_test]
+    </span><span class="kw">fn </span>transaction_status_json_serde_roundtrip() {
         <span class="macro">json_serde_roundtrip!</span>(
             TransactionStatus,
             TransactionStatusJson,
@@ -814,9 +814,9 @@
         </span>);
     }
 
-    <span class="attribute">#[test]</span>
-    <span class="attribute">#[wasm_bindgen_test]</span>
-    <span class="kw">fn </span>internal_command_balances_json_serde_roundtrip() {
+    <span class="attribute">#[test]
+    #[wasm_bindgen_test]
+    </span><span class="kw">fn </span>internal_command_balances_json_serde_roundtrip() {
         <span class="macro">json_serde_roundtrip!</span>(
             InternalCommandBalanceData,
             InternalCommandBalanceDataJson,
@@ -824,26 +824,26 @@
         </span>);
     }
 
-    <span class="attribute">#[test]</span>
-    <span class="attribute">#[wasm_bindgen_test]</span>
-    <span class="kw">fn </span>coinbase_json_serde_roundtrip() {
+    <span class="attribute">#[test]
+    #[wasm_bindgen_test]
+    </span><span class="kw">fn </span>coinbase_json_serde_roundtrip() {
         <span class="macro">json_serde_roundtrip!</span>(CoinBase, CoinBaseJson, <span class="string">&quot;staged_ledger_diff/diff/0/coinbase&quot;</span>);
     }
 
-    <span class="attribute">#[test]</span>
-    <span class="attribute">#[wasm_bindgen_test]</span>
-    <span class="kw">fn </span>staged_ledger_diff_json_serde_roundtrip() {
+    <span class="attribute">#[test]
+    #[wasm_bindgen_test]
+    </span><span class="kw">fn </span>staged_ledger_diff_json_serde_roundtrip() {
         <span class="macro">json_serde_roundtrip!</span>(StagedLedgerDiff, StagedLedgerDiffJson, <span class="string">&quot;staged_ledger_diff&quot;</span>);
     }
 
-    <span class="attribute">#[test]</span>
-    <span class="attribute">#[wasm_bindgen_test]</span>
-    <span class="kw">fn </span>block_json_serde_roundtrip() {
+    <span class="attribute">#[test]
+    #[wasm_bindgen_test]
+    </span><span class="kw">fn </span>block_json_serde_roundtrip() {
         <span class="macro">json_serde_roundtrip!</span>(ExternalTransition, ExternalTransitionJson, <span class="string">&quot;&quot;</span>);
     }
 
-    <span class="attribute">#[macro_export]</span>
-    <span class="macro">macro_rules!</span> json_serde_roundtrip {
+    <span class="attribute">#[macro_export]
+    </span><span class="macro">macro_rules! </span>json_serde_roundtrip {
         (<span class="macro-nonterminal">$ty</span>: ty, <span class="macro-nonterminal">$ty_json</span>: ty, <span class="macro-nonterminal">$path</span>: literal) =&gt; {
             (|| {
                 <span class="lifetime">&#39;outer</span>: <span class="kw">for </span>(<span class="kw">_</span>, <span class="kw-2">mut </span>json) <span class="kw">in </span>test_fixtures::JSON_TEST_BLOCKS.iter() {
@@ -883,4 +883,4 @@
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="test_serialization" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (40336865f 2022-08-15)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="test_serialization" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (c0941dfb5 2022-08-21)" ></div></body></html>

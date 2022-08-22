@@ -112,9 +112,9 @@
 <span class="kw">use </span>proof_systems::{bitvec::prelude::BitVec, ChunkedROInput, ToChunkedROInput};
 
 <span class="doccomment">/// The level of auth required to perform a particular action with an account
-</span><span class="attribute">#[derive(Clone, Debug, AutoFrom)]</span>
-<span class="attribute">#[auto_from(mina_serialization_types::account::AuthRequired)]</span>
-<span class="kw">pub enum </span>AuthRequired {
+</span><span class="attribute">#[derive(Clone, Debug, AutoFrom)]
+#[auto_from(mina_serialization_types::account::AuthRequired)]
+</span><span class="kw">pub enum </span>AuthRequired {
     <span class="doccomment">/// None required
     </span><span class="prelude-val">None</span>,
     <span class="doccomment">/// Either a proof or a signature
@@ -145,9 +145,9 @@
 }
 
 <span class="doccomment">/// Permissions associated with the account
-</span><span class="attribute">#[derive(Clone, Debug, AutoFrom)]</span>
-<span class="attribute">#[auto_from(mina_serialization_types::account::PermissionsLegacy)]</span>
-<span class="kw">pub struct </span>PermissionsLegacy {
+</span><span class="attribute">#[derive(Clone, Debug, AutoFrom)]
+#[auto_from(mina_serialization_types::account::PermissionsLegacy)]
+</span><span class="kw">pub struct </span>PermissionsLegacy {
     <span class="doccomment">/// If the account can stake
     </span><span class="kw">pub </span>stake: bool,
     <span class="doccomment">/// Permission required to edit state
@@ -165,9 +165,9 @@
 }
 
 <span class="doccomment">/// Permissions associated with the account
-</span><span class="attribute">#[derive(Clone, Debug, AutoFrom)]</span>
-<span class="attribute">#[auto_from(mina_serialization_types::account::Permissions)]</span>
-<span class="kw">pub struct </span>Permissions {
+</span><span class="attribute">#[derive(Clone, Debug, AutoFrom)]
+#[auto_from(mina_serialization_types::account::Permissions)]
+</span><span class="kw">pub struct </span>Permissions {
     <span class="doccomment">/// Permission required to edit state
     </span><span class="kw">pub </span>edit_state: AuthRequired,
     <span class="doccomment">/// Permission required to send a balance
@@ -209,4 +209,4 @@
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="mina_rs_base" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (40336865f 2022-08-15)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="mina_rs_base" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (c0941dfb5 2022-08-21)" ></div></body></html>

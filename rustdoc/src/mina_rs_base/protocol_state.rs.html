@@ -160,13 +160,93 @@
 <span id="160">160</span>
 <span id="161">161</span>
 <span id="162">162</span>
+<span id="163">163</span>
+<span id="164">164</span>
+<span id="165">165</span>
+<span id="166">166</span>
+<span id="167">167</span>
+<span id="168">168</span>
+<span id="169">169</span>
+<span id="170">170</span>
+<span id="171">171</span>
+<span id="172">172</span>
+<span id="173">173</span>
+<span id="174">174</span>
+<span id="175">175</span>
+<span id="176">176</span>
+<span id="177">177</span>
+<span id="178">178</span>
+<span id="179">179</span>
+<span id="180">180</span>
+<span id="181">181</span>
+<span id="182">182</span>
+<span id="183">183</span>
+<span id="184">184</span>
+<span id="185">185</span>
+<span id="186">186</span>
+<span id="187">187</span>
+<span id="188">188</span>
+<span id="189">189</span>
+<span id="190">190</span>
+<span id="191">191</span>
+<span id="192">192</span>
+<span id="193">193</span>
+<span id="194">194</span>
+<span id="195">195</span>
+<span id="196">196</span>
+<span id="197">197</span>
+<span id="198">198</span>
+<span id="199">199</span>
+<span id="200">200</span>
+<span id="201">201</span>
+<span id="202">202</span>
+<span id="203">203</span>
+<span id="204">204</span>
+<span id="205">205</span>
+<span id="206">206</span>
+<span id="207">207</span>
+<span id="208">208</span>
+<span id="209">209</span>
+<span id="210">210</span>
+<span id="211">211</span>
+<span id="212">212</span>
+<span id="213">213</span>
+<span id="214">214</span>
+<span id="215">215</span>
+<span id="216">216</span>
+<span id="217">217</span>
+<span id="218">218</span>
+<span id="219">219</span>
+<span id="220">220</span>
+<span id="221">221</span>
+<span id="222">222</span>
+<span id="223">223</span>
+<span id="224">224</span>
+<span id="225">225</span>
+<span id="226">226</span>
+<span id="227">227</span>
+<span id="228">228</span>
+<span id="229">229</span>
+<span id="230">230</span>
+<span id="231">231</span>
+<span id="232">232</span>
+<span id="233">233</span>
+<span id="234">234</span>
+<span id="235">235</span>
+<span id="236">236</span>
+<span id="237">237</span>
+<span id="238">238</span>
+<span id="239">239</span>
+<span id="240">240</span>
+<span id="241">241</span>
+<span id="242">242</span>
 </pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
 </span><span class="doccomment">//! Types related to the Mina protocol state
 
 </span><span class="kw">use crate</span>::{
-    blockchain_state::BlockchainState,
+    blockchain_state::<span class="kw-2">*</span>,
     consensus_state::ConsensusState,
     global_slot::GlobalSlot,
     numbers::{BlockTime, Length},
@@ -174,13 +254,16 @@
 <span class="kw">use </span>mina_crypto::hash::StateHash;
 <span class="kw">use </span>mina_serialization_types::{json::<span class="kw-2">*</span>, v1::<span class="kw-2">*</span>};
 <span class="kw">use </span>mina_serialization_types_macros::AutoFrom;
-<span class="kw">use </span>proof_systems::mina_hasher::{create_legacy, Fp, Hashable, Hasher, ROInput};
+<span class="kw">use </span>proof_systems::{
+    mina_hasher::{create_kimchi, create_legacy, Fp, Hashable, Hasher, ROInput},
+    <span class="kw-2">*</span>,
+};
 <span class="kw">use </span>versioned::<span class="kw-2">*</span>;
 
 <span class="doccomment">/// Constants that define the consensus parameters
-</span><span class="attribute">#[derive(Clone, Default, Eq, PartialEq, Debug, AutoFrom)]</span>
-<span class="attribute">#[auto_from(mina_serialization_types::protocol_constants::ProtocolConstants)]</span>
-<span class="kw">pub struct </span>ProtocolConstants {
+</span><span class="attribute">#[derive(Clone, Default, Eq, PartialEq, Debug, AutoFrom)]
+#[auto_from(mina_serialization_types::protocol_constants::ProtocolConstants)]
+</span><span class="kw">pub struct </span>ProtocolConstants {
     <span class="doccomment">/// Point of finality (number of confirmations)
     </span><span class="kw">pub </span>k: Length,
     <span class="doccomment">/// Number of slots per epoch
@@ -216,19 +299,30 @@
     </span>}
 }
 
-<span class="attribute">#[derive(Clone, Default, Debug, Eq, PartialEq, AutoFrom)]</span>
-<span class="attribute">#[auto_from(mina_serialization_types::protocol_state::ProtocolState)]</span>
-<span class="doccomment">/// This structure can be thought of like the block header. It contains the most essential information of a block.
-</span><span class="kw">pub struct </span>ProtocolState {
+<span class="kw">impl </span>ToChunkedROInput <span class="kw">for </span>ProtocolConstants {
+    <span class="kw">fn </span>to_chunked_roinput(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; ChunkedROInput {
+        ChunkedROInput::new()
+            .append_chunked(<span class="kw-2">&amp;</span><span class="self">self</span>.k)
+            .append_chunked(<span class="kw-2">&amp;</span><span class="self">self</span>.delta)
+            .append_chunked(<span class="kw-2">&amp;</span><span class="self">self</span>.slots_per_epoch)
+            .append_chunked(<span class="kw-2">&amp;</span><span class="self">self</span>.slots_per_sub_window)
+            .append_chunked(<span class="kw-2">&amp;</span><span class="self">self</span>.genesis_state_timestamp)
+    }
+}
+
+<span class="attribute">#[derive(Clone, Default, Debug, Eq, PartialEq, AutoFrom)]
+#[auto_from(mina_serialization_types::protocol_state::ProtocolState)]
+</span><span class="doccomment">/// This structure can be thought of like the block header. It contains the most essential information of a block. (legacy)
+</span><span class="kw">pub struct </span>ProtocolStateLegacy {
     <span class="doccomment">/// Commitment to previous block (hash of previous protocol state hash and body hash)
     </span><span class="kw">pub </span>previous_state_hash: StateHash,
     <span class="doccomment">/// The body of the protocol state
-    </span><span class="kw">pub </span>body: ProtocolStateBody,
+    </span><span class="kw">pub </span>body: ProtocolStateBodyLegacy,
 }
 
-<span class="macro">impl_from_with_proxy!</span>(ProtocolState, ProtocolStateV1, ProtocolStateJson);
+<span class="macro">impl_from_with_proxy!</span>(ProtocolStateLegacy, ProtocolStateV1, ProtocolStateJson);
 
-<span class="kw">impl </span>Hashable <span class="kw">for </span>ProtocolState {
+<span class="kw">impl </span>Hashable <span class="kw">for </span>ProtocolStateLegacy {
     <span class="kw">type </span>D = ();
 
     <span class="kw">fn </span>to_roinput(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; ROInput {
@@ -244,7 +338,7 @@
     }
 }
 
-<span class="kw">impl </span>ProtocolState {
+<span class="kw">impl </span>ProtocolStateLegacy {
     <span class="doccomment">/// Gets the current global slot the current epoch
     </span><span class="kw">pub fn </span>curr_global_slot(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>GlobalSlot {
         <span class="kw-2">&amp;</span><span class="self">self</span>.body.consensus_state.curr_global_slot
@@ -263,14 +357,14 @@
     }
 }
 
-<span class="attribute">#[derive(Clone, Default, Debug, Eq, PartialEq, AutoFrom)]</span>
-<span class="attribute">#[auto_from(mina_serialization_types::protocol_state_body::ProtocolStateBody)]</span>
-<span class="doccomment">/// Body of the protocol state
-</span><span class="kw">pub struct </span>ProtocolStateBody {
+<span class="attribute">#[derive(Clone, Default, Debug, Eq, PartialEq, AutoFrom)]
+#[auto_from(mina_serialization_types::protocol_state_body::ProtocolStateBody)]
+</span><span class="doccomment">/// Body of the protocol state (legacy)
+</span><span class="kw">pub struct </span>ProtocolStateBodyLegacy {
     <span class="doccomment">/// Genesis protocol state hash (used for hardforks)
     </span><span class="kw">pub </span>genesis_state_hash: StateHash,
     <span class="doccomment">/// Ledger related state
-    </span><span class="kw">pub </span>blockchain_state: BlockchainState,
+    </span><span class="kw">pub </span>blockchain_state: BlockchainStateLegacy,
     <span class="doccomment">/// Consensus related state
     </span><span class="kw">pub </span>consensus_state: ConsensusState,
     <span class="doccomment">/// Consensus constants
@@ -278,12 +372,12 @@
 }
 
 <span class="macro">impl_from_with_proxy!</span>(
-    ProtocolStateBody,
+    ProtocolStateBodyLegacy,
     ProtocolStateBodyV1,
     ProtocolStateBodyJson
 );
 
-<span class="kw">impl </span>Hashable <span class="kw">for </span>ProtocolStateBody {
+<span class="kw">impl </span>Hashable <span class="kw">for </span>ProtocolStateBodyLegacy {
     <span class="kw">type </span>D = ();
 
     <span class="kw">fn </span>to_roinput(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; ROInput {
@@ -309,7 +403,7 @@
     </span><span class="kw">fn </span>sub_window_densities(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>Vec&lt;Length&gt;;
 }
 
-<span class="kw">impl </span>Header <span class="kw">for </span>ProtocolState {
+<span class="kw">impl </span>Header <span class="kw">for </span>ProtocolStateLegacy {
     <span class="kw">fn </span>get_height(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Length {
         <span class="self">self</span>.body.consensus_state.blockchain_length
     }
@@ -322,5 +416,71 @@
         <span class="self">self</span>.body.consensus_state.min_window_density
     }
 }
+
+<span class="attribute">#[derive(Clone, Default, Debug, Eq, PartialEq)]
+</span><span class="doccomment">/// Body of the protocol state
+</span><span class="kw">pub struct </span>ProtocolStateBody {
+    <span class="doccomment">/// Genesis protocol state hash (used for hardforks)
+    </span><span class="kw">pub </span>genesis_state_hash: StateHash,
+    <span class="doccomment">/// Ledger related state
+    </span><span class="kw">pub </span>blockchain_state: BlockchainState,
+    <span class="doccomment">/// Consensus related state
+    </span><span class="kw">pub </span>consensus_state: ConsensusState,
+    <span class="doccomment">/// Consensus constants
+    </span><span class="kw">pub </span>constants: ProtocolConstants,
+}
+
+<span class="kw">impl </span>Hashable <span class="kw">for </span>ProtocolStateBody {
+    <span class="kw">type </span>D = ();
+
+    <span class="kw">fn </span>to_roinput(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; ROInput {
+        <span class="self">self</span>.roinput()
+    }
+
+    <span class="kw">fn </span>domain_string(<span class="kw">_</span>: <span class="self">Self</span>::D) -&gt; <span class="prelude-ty">Option</span>&lt;String&gt; {
+        <span class="prelude-val">Some</span>(<span class="string">&quot;CodaProtoStateBody&quot;</span>.into())
+    }
+}
+
+<span class="kw">impl </span>ToChunkedROInput <span class="kw">for </span>ProtocolStateBody {
+    <span class="kw">fn </span>to_chunked_roinput(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; ChunkedROInput {
+        ChunkedROInput::new()
+            .append_chunked(<span class="kw-2">&amp;</span><span class="self">self</span>.constants)
+            .append_chunked(<span class="kw-2">&amp;</span><span class="self">self</span>.genesis_state_hash)
+            .append_chunked(<span class="kw-2">&amp;</span><span class="self">self</span>.blockchain_state)
+            .append_chunked(<span class="kw-2">&amp;</span><span class="self">self</span>.consensus_state)
+    }
+}
+
+<span class="attribute">#[derive(Clone, Default, Debug, Eq, PartialEq)]
+</span><span class="doccomment">/// This structure can be thought of like the block header. It contains the most essential information of a block.
+</span><span class="kw">pub struct </span>ProtocolState {
+    <span class="doccomment">/// Commitment to previous block (hash of previous protocol state hash and body hash)
+    </span><span class="kw">pub </span>previous_state_hash: StateHash,
+    <span class="doccomment">/// The body of the protocol state
+    </span><span class="kw">pub </span>body: ProtocolStateBody,
+}
+
+<span class="kw">impl </span>Hashable <span class="kw">for </span>ProtocolState {
+    <span class="kw">type </span>D = ();
+
+    <span class="kw">fn </span>to_roinput(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; ROInput {
+        <span class="self">self</span>.roinput()
+    }
+
+    <span class="kw">fn </span>domain_string(<span class="kw">_</span>: <span class="self">Self</span>::D) -&gt; <span class="prelude-ty">Option</span>&lt;String&gt; {
+        <span class="prelude-val">Some</span>(<span class="string">&quot;CodaProtoState&quot;</span>.into())
+    }
+}
+
+<span class="kw">impl </span>ToChunkedROInput <span class="kw">for </span>ProtocolState {
+    <span class="kw">fn </span>to_chunked_roinput(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; ChunkedROInput {
+        <span class="kw">let </span><span class="kw-2">mut </span>hasher = create_kimchi(());
+        <span class="kw">let </span>body_hash = hasher.hash(<span class="kw-2">&amp;</span><span class="self">self</span>.body);
+        ChunkedROInput::new()
+            .append_chunked(<span class="kw-2">&amp;</span><span class="self">self</span>.previous_state_hash)
+            .append_field(body_hash)
+    }
+}
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_rs_base" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (40336865f 2022-08-15)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_rs_base" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (c0941dfb5 2022-08-21)" ></div></body></html>

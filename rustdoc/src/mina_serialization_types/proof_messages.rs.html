@@ -60,15 +60,15 @@
 
 </span><span class="doccomment">//! Proof messages used by the protocol state proof
 
-</span><span class="attribute">#![allow(missing_docs)]</span> <span class="comment">// Don&#39;t actually know what many of the types fields are for yet
+</span><span class="attribute">#![allow(missing_docs)] </span><span class="comment">// Don&#39;t actually know what many of the types fields are for yet
 
 </span><span class="kw">use crate</span>::{field_and_curve_elements::FiniteECPoint, json::<span class="kw-2">*</span>, v1::<span class="kw-2">*</span>};
 <span class="kw">use </span>mina_serialization_types_macros::AutoFrom;
 <span class="kw">use </span>serde::{Deserialize, Serialize};
 <span class="kw">use </span>versioned::Versioned;
 
-<span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]</span>
-<span class="kw">pub struct </span>ProofMessages {
+<span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]
+</span><span class="kw">pub struct </span>ProofMessages {
     <span class="kw">pub </span>l_comm: ProofMessageWithoutDegreeBoundListV1,
     <span class="kw">pub </span>r_comm: ProofMessageWithoutDegreeBoundListV1,
     <span class="kw">pub </span>o_comm: ProofMessageWithoutDegreeBoundListV1,
@@ -78,9 +78,9 @@
 
 <span class="kw">pub type </span>ProofMessagesV1 = Versioned&lt;ProofMessages, <span class="number">1</span>&gt;;
 
-<span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq, AutoFrom)]</span>
-<span class="attribute">#[auto_from(ProofMessages)]</span>
-<span class="kw">pub struct </span>ProofMessagesJson {
+<span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq, AutoFrom)]
+#[auto_from(ProofMessages)]
+</span><span class="kw">pub struct </span>ProofMessagesJson {
     <span class="kw">pub </span>l_comm: ProofMessageWithoutDegreeBoundListJson,
     <span class="kw">pub </span>r_comm: ProofMessageWithoutDegreeBoundListJson,
     <span class="kw">pub </span>o_comm: ProofMessageWithoutDegreeBoundListJson,
@@ -88,29 +88,29 @@
     <span class="kw">pub </span>t_comm: ProofMessageWithDegreeBoundJson,
 }
 
-<span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]</span>
-<span class="kw">pub struct </span>ProofMessageWithoutDegreeBoundList(<span class="kw">pub </span>Vec&lt;FiniteECPoint&gt;);
+<span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]
+</span><span class="kw">pub struct </span>ProofMessageWithoutDegreeBoundList(<span class="kw">pub </span>Vec&lt;FiniteECPoint&gt;);
 
 <span class="kw">pub type </span>ProofMessageWithoutDegreeBoundListV1 =
     Versioned&lt;Versioned&lt;ProofMessageWithoutDegreeBoundList, <span class="number">1</span>&gt;, <span class="number">1</span>&gt;;
 
-<span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq, AutoFrom)]</span>
-<span class="attribute">#[auto_from(ProofMessageWithoutDegreeBoundList)]</span>
-<span class="kw">pub struct </span>ProofMessageWithoutDegreeBoundListJson(<span class="kw">pub </span>Vec&lt;FiniteECPointJson&gt;);
+<span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq, AutoFrom)]
+#[auto_from(ProofMessageWithoutDegreeBoundList)]
+</span><span class="kw">pub struct </span>ProofMessageWithoutDegreeBoundListJson(<span class="kw">pub </span>Vec&lt;FiniteECPointJson&gt;);
 
-<span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]</span>
-<span class="kw">pub struct </span>ProofMessageWithDegreeBound {
+<span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]
+</span><span class="kw">pub struct </span>ProofMessageWithDegreeBound {
     <span class="kw">pub </span>unshifted: ECPointVecV1,
     <span class="kw">pub </span>shifted: ECPointV1,
 }
 
 <span class="kw">pub type </span>ProofMessageWithDegreeBoundV1 = Versioned&lt;ProofMessageWithDegreeBound, <span class="number">1</span>&gt;;
 
-<span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq, AutoFrom)]</span>
-<span class="attribute">#[auto_from(ProofMessageWithDegreeBound)]</span>
-<span class="kw">pub struct </span>ProofMessageWithDegreeBoundJson {
+<span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq, AutoFrom)]
+#[auto_from(ProofMessageWithDegreeBound)]
+</span><span class="kw">pub struct </span>ProofMessageWithDegreeBoundJson {
     <span class="kw">pub </span>unshifted: ECPointVecJson,
     <span class="kw">pub </span>shifted: ECPointJson,
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_serialization_types" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (40336865f 2022-08-15)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_serialization_types" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (c0941dfb5 2022-08-21)" ></div></body></html>

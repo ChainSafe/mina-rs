@@ -136,9 +136,9 @@
 </pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
-</span><span class="attribute">#![deny(warnings)]</span>
+</span><span class="attribute">#![deny(warnings)]
 
-<span class="kw">use </span>bin_prot::{BinProtRule, Deserializer};
+</span><span class="kw">use </span>bin_prot::{BinProtRule, Deserializer};
 <span class="kw">use </span>lazy_static::lazy_static;
 <span class="kw">use </span>mina_serialization_types::v1::ExternalTransitionV1;
 <span class="kw">use </span>serde::Deserialize;
@@ -147,7 +147,7 @@
 <span class="comment">// FIXME: Move layouts into this crate?
 </span><span class="kw">pub const </span>BLOCK_LAYOUT: <span class="kw-2">&amp;</span>str = <span class="macro">include_str!</span>(<span class="string">&quot;../../layouts/external_transition.json&quot;</span>);
 
-<span class="macro">lazy_static!</span> {
+<span class="macro">lazy_static! </span>{
     <span class="kw">pub static </span><span class="kw-2">ref </span>BLOCK_RULE: BinProtRule = {
         <span class="kw">let </span><span class="kw-2">mut </span>deserializer = serde_json::Deserializer::from_str(BLOCK_LAYOUT);
         deserializer.disable_recursion_limit();
@@ -234,8 +234,8 @@
     }
 }
 
-<span class="attribute">#[macro_export]</span>
-<span class="macro">macro_rules!</span> load_test_blocks {
+<span class="attribute">#[macro_export]
+</span><span class="macro">macro_rules! </span>load_test_blocks {
     ( $( <span class="macro-nonterminal">$lt</span>:literal $(,)<span class="question-mark">?</span>) * ) =&gt; {
         {
             <span class="kw">let </span><span class="kw-2">mut </span>temp_map = HashMap::new();
@@ -250,8 +250,8 @@
     };
 }
 
-<span class="attribute">#[macro_export]</span>
-<span class="macro">macro_rules!</span> load_json_test_blocks {
+<span class="attribute">#[macro_export]
+</span><span class="macro">macro_rules! </span>load_json_test_blocks {
     ( $( <span class="macro-nonterminal">$lt</span>:literal $(,)<span class="question-mark">?</span>) * ) =&gt; {
         {
             <span class="kw">let </span><span class="kw-2">mut </span>temp_map = HashMap::new();
@@ -269,4 +269,4 @@
     };
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="test_fixtures" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (40336865f 2022-08-15)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="test_fixtures" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (c0941dfb5 2022-08-21)" ></div></body></html>

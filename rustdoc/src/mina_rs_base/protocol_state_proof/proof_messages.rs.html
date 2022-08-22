@@ -32,9 +32,9 @@
 
 <span class="kw">use </span><span class="kw">crate</span>::types::{ECPoint, ECPointVec, FiniteECPoint};
 
-<span class="attribute">#[derive(Clone, Default, Eq, PartialEq, Debug, AutoFrom)]</span>
-<span class="attribute">#[auto_from(mina_serialization_types::proof_messages::ProofMessages)]</span>
-<span class="kw">pub struct </span>ProofMessages {
+<span class="attribute">#[derive(Clone, Default, Eq, PartialEq, Debug, AutoFrom)]
+#[auto_from(mina_serialization_types::proof_messages::ProofMessages)]
+</span><span class="kw">pub struct </span>ProofMessages {
     <span class="kw">pub </span>l_comm: ProofMessageWithoutDegreeBoundList,
     <span class="kw">pub </span>r_comm: ProofMessageWithoutDegreeBoundList,
     <span class="kw">pub </span>o_comm: ProofMessageWithoutDegreeBoundList,
@@ -42,15 +42,15 @@
     <span class="kw">pub </span>t_comm: ProofMessageWithDegreeBound,
 }
 
-<span class="attribute">#[derive(Clone, Default, Eq, PartialEq, Debug, AutoFrom)]</span>
-<span class="attribute">#[auto_from(mina_serialization_types::proof_messages::ProofMessageWithoutDegreeBoundList)]</span>
-<span class="kw">pub struct </span>ProofMessageWithoutDegreeBoundList(<span class="kw">pub </span>Vec&lt;FiniteECPoint&gt;);
+<span class="attribute">#[derive(Clone, Default, Eq, PartialEq, Debug, AutoFrom)]
+#[auto_from(mina_serialization_types::proof_messages::ProofMessageWithoutDegreeBoundList)]
+</span><span class="kw">pub struct </span>ProofMessageWithoutDegreeBoundList(<span class="kw">pub </span>Vec&lt;FiniteECPoint&gt;);
 
-<span class="attribute">#[derive(Clone, Default, Eq, PartialEq, Debug, AutoFrom)]</span>
-<span class="attribute">#[auto_from(mina_serialization_types::proof_messages::ProofMessageWithDegreeBound)]</span>
-<span class="kw">pub struct </span>ProofMessageWithDegreeBound {
+<span class="attribute">#[derive(Clone, Default, Eq, PartialEq, Debug, AutoFrom)]
+#[auto_from(mina_serialization_types::proof_messages::ProofMessageWithDegreeBound)]
+</span><span class="kw">pub struct </span>ProofMessageWithDegreeBound {
     <span class="kw">pub </span>unshifted: ECPointVec,
     <span class="kw">pub </span>shifted: ECPoint,
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="mina_rs_base" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (40336865f 2022-08-15)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="mina_rs_base" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (c0941dfb5 2022-08-21)" ></div></body></html>

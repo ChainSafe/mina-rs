@@ -401,8 +401,8 @@
     </span><span class="kw">fn </span>fixed_height(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;u32&gt;;
 }
 
-<span class="attribute">#[derive(Default, Debug, Clone)]</span>
-<span class="doccomment">/// Type state mode for a tree with a fixed height
+<span class="attribute">#[derive(Default, Debug, Clone)]
+</span><span class="doccomment">/// Type state mode for a tree with a fixed height
 </span><span class="kw">pub struct </span>FixedHeightMode(u32);
 
 <span class="kw">impl </span>HeightMode <span class="kw">for </span>FixedHeightMode {
@@ -411,8 +411,8 @@
     }
 }
 
-<span class="attribute">#[derive(Default, Debug, Clone)]</span>
-<span class="doccomment">/// Type state mode for a tree with a variable height that increases as data is added
+<span class="attribute">#[derive(Default, Debug, Clone)]
+</span><span class="doccomment">/// Type state mode for a tree with a variable height that increases as data is added
 </span><span class="kw">pub struct </span>VariableHeightMode;
 
 <span class="kw">impl </span>HeightMode <span class="kw">for </span>VariableHeightMode {
@@ -758,12 +758,12 @@
     (index - <span class="number">1</span>) / <span class="number">2
 </span>}
 
-<span class="attribute">#[cfg(test)]</span>
-<span class="kw">mod </span>tests {
+<span class="attribute">#[cfg(test)]
+</span><span class="kw">mod </span>tests {
     <span class="kw">use super</span>::<span class="kw-2">*</span>;
 
-    <span class="attribute">#[test]</span>
-    <span class="kw">fn </span>calculate_height_tests() {
+    <span class="attribute">#[test]
+    </span><span class="kw">fn </span>calculate_height_tests() {
         <span class="macro">assert_eq!</span>(<span class="number">0</span>, calculate_height(<span class="number">0</span>));
         <span class="macro">assert_eq!</span>(<span class="number">0</span>, calculate_height(<span class="number">1</span>));
         <span class="macro">assert_eq!</span>(<span class="number">1</span>, calculate_height(<span class="number">2</span>));
@@ -777,4 +777,4 @@
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_merkle" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (40336865f 2022-08-15)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_merkle" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (c0941dfb5 2022-08-21)" ></div></body></html>

@@ -186,37 +186,37 @@
 
 </span><span class="doccomment">//! Types that capture serialized bullet proof challenges and proofs
 
-</span><span class="attribute">#![allow(missing_docs)]</span> <span class="comment">// Don&#39;t actually know what many of the types fields are for yet
+</span><span class="attribute">#![allow(missing_docs)] </span><span class="comment">// Don&#39;t actually know what many of the types fields are for yet
 
 </span><span class="kw">use crate</span>::{common::<span class="kw-2">*</span>, <span class="kw-2">*</span>};
 <span class="kw">use </span>mina_serialization_types_macros::AutoFrom;
 <span class="kw">use </span>serde::{Deserialize, Serialize};
 <span class="kw">use </span>versioned::<span class="kw-2">*</span>;
 
-<span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]</span>
-<span class="kw">pub struct </span>BulletproofChallenge {
+<span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]
+</span><span class="kw">pub struct </span>BulletproofChallenge {
     <span class="kw">pub </span>prechallenge: BulletproofPreChallengeV1,
 }
 
 <span class="kw">pub type </span>BulletproofChallengeV1 = Versioned&lt;BulletproofChallenge, <span class="number">1</span>&gt;;
 
-<span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq, AutoFrom)]</span>
-<span class="attribute">#[auto_from(BulletproofChallenge)]</span>
-<span class="kw">pub struct </span>BulletproofChallengeJson {
+<span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq, AutoFrom)]
+#[auto_from(BulletproofChallenge)]
+</span><span class="kw">pub struct </span>BulletproofChallengeJson {
     <span class="kw">pub </span>prechallenge: BulletproofPreChallengeJson,
 }
 
-<span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]</span>
-<span class="kw">pub struct </span>BulletproofChallenges(<span class="kw">pub </span>Vec&lt;BulletproofChallengeTuple18V1&gt;);
+<span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]
+</span><span class="kw">pub struct </span>BulletproofChallenges(<span class="kw">pub </span>Vec&lt;BulletproofChallengeTuple18V1&gt;);
 
 <span class="kw">pub type </span>BulletproofChallengesV1 = Versioned&lt;BulletproofChallenges, <span class="number">1</span>&gt;;
 
-<span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq, AutoFrom)]</span>
-<span class="attribute">#[auto_from(BulletproofChallenges)]</span>
-<span class="kw">pub struct </span>BulletproofChallengesJson(<span class="kw">pub </span>Vec&lt;BulletproofChallengeTuple18Json&gt;);
+<span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq, AutoFrom)]
+#[auto_from(BulletproofChallenges)]
+</span><span class="kw">pub struct </span>BulletproofChallengesJson(<span class="kw">pub </span>Vec&lt;BulletproofChallengeTuple18Json&gt;);
 
-<span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]</span>
-<span class="kw">pub struct </span>ProofStateBulletproofChallenges(
+<span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]
+</span><span class="kw">pub struct </span>ProofStateBulletproofChallenges(
     <span class="kw">pub </span>BulletproofChallengeTuple17V1,
     <span class="kw">pub </span>BulletproofChallengeTuple17V1,
     <span class="kw">pub </span>(),
@@ -224,17 +224,17 @@
 
 <span class="kw">pub type </span>ProofStateBulletproofChallengesV1 = Versioned&lt;ProofStateBulletproofChallenges, <span class="number">1</span>&gt;;
 
-<span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq, AutoFrom)]</span>
-<span class="attribute">#[auto_from(ProofStateBulletproofChallenges)]</span>
-<span class="kw">pub struct </span>ProofStateBulletproofChallengesJson(
+<span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq, AutoFrom)]
+#[auto_from(ProofStateBulletproofChallenges)]
+</span><span class="kw">pub struct </span>ProofStateBulletproofChallengesJson(
     <span class="kw">pub </span>BulletproofChallengeTuple17Json,
     <span class="kw">pub </span>BulletproofChallengeTuple17Json,
-    <span class="attribute">#[serde(skip)]</span> <span class="kw">pub </span>(),
+    <span class="attribute">#[serde(skip)] </span><span class="kw">pub </span>(),
 );
 
 <span class="comment">// TODO - see if this can be rewritten with const generics over an array
-</span><span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]</span>
-<span class="kw">pub struct </span>BulletproofChallengeTuple17(
+</span><span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]
+</span><span class="kw">pub struct </span>BulletproofChallengeTuple17(
     <span class="kw">pub </span>BulletproofChallengeV1,
     <span class="kw">pub </span>BulletproofChallengeV1,
     <span class="kw">pub </span>BulletproofChallengeV1,
@@ -258,9 +258,9 @@
 <span class="kw">pub type </span>BulletproofChallengeTuple17V1 =
     Versioned&lt;Versioned&lt;Versioned&lt;BulletproofChallengeTuple17, <span class="number">1</span>&gt;, <span class="number">1</span>&gt;, <span class="number">1</span>&gt;;
 
-<span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq, AutoFrom)]</span>
-<span class="attribute">#[auto_from(BulletproofChallengeTuple17)]</span>
-<span class="kw">pub struct </span>BulletproofChallengeTuple17Json(
+<span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq, AutoFrom)]
+#[auto_from(BulletproofChallengeTuple17)]
+</span><span class="kw">pub struct </span>BulletproofChallengeTuple17Json(
     <span class="kw">pub </span>BulletproofChallengeJson,
     <span class="kw">pub </span>BulletproofChallengeJson,
     <span class="kw">pub </span>BulletproofChallengeJson,
@@ -278,12 +278,12 @@
     <span class="kw">pub </span>BulletproofChallengeJson,
     <span class="kw">pub </span>BulletproofChallengeJson,
     <span class="kw">pub </span>BulletproofChallengeJson,
-    <span class="attribute">#[serde(skip)]</span> <span class="kw">pub </span>(),
+    <span class="attribute">#[serde(skip)] </span><span class="kw">pub </span>(),
 );
 
 <span class="comment">// TODO - see if this can be rewritten with const generics over an array
-</span><span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]</span>
-<span class="kw">pub struct </span>BulletproofChallengeTuple18(
+</span><span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]
+</span><span class="kw">pub struct </span>BulletproofChallengeTuple18(
     <span class="kw">pub </span>BulletproofChallengeV1,
     <span class="kw">pub </span>BulletproofChallengeV1,
     <span class="kw">pub </span>BulletproofChallengeV1,
@@ -307,9 +307,9 @@
 
 <span class="kw">pub type </span>BulletproofChallengeTuple18V1 = Versioned&lt;Versioned&lt;BulletproofChallengeTuple18, <span class="number">1</span>&gt;, <span class="number">1</span>&gt;;
 
-<span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq, AutoFrom)]</span>
-<span class="attribute">#[auto_from(BulletproofChallengeTuple18)]</span>
-<span class="kw">pub struct </span>BulletproofChallengeTuple18Json(
+<span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq, AutoFrom)]
+#[auto_from(BulletproofChallengeTuple18)]
+</span><span class="kw">pub struct </span>BulletproofChallengeTuple18Json(
     <span class="kw">pub </span>BulletproofChallengeJson,
     <span class="kw">pub </span>BulletproofChallengeJson,
     <span class="kw">pub </span>BulletproofChallengeJson,
@@ -328,26 +328,26 @@
     <span class="kw">pub </span>BulletproofChallengeJson,
     <span class="kw">pub </span>BulletproofChallengeJson,
     <span class="kw">pub </span>BulletproofChallengeJson,
-    <span class="attribute">#[serde(skip)]</span> <span class="kw">pub </span>(),
+    <span class="attribute">#[serde(skip)] </span><span class="kw">pub </span>(),
 );
 
-<span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]</span>
-<span class="kw">pub enum </span>BulletproofPreChallenge {
+<span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]
+</span><span class="kw">pub enum </span>BulletproofPreChallenge {
     ScalarChallenge(ScalarChallengeVector2V1),
 }
 
 <span class="kw">pub type </span>BulletproofPreChallengeV1 = Versioned&lt;BulletproofPreChallenge, <span class="number">1</span>&gt;;
 
-<span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]</span>
-<span class="kw">enum </span>BulletproofPreChallengeJsonProxy {
-    <span class="attribute">#[serde(rename = <span class="string">&quot;Scalar_challenge&quot;</span>)]</span>
-    ScalarChallenge(ScalarChallengeVector2Json),
+<span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]
+</span><span class="kw">enum </span>BulletproofPreChallengeJsonProxy {
+    <span class="attribute">#[serde(rename = <span class="string">&quot;Scalar_challenge&quot;</span>)]
+    </span>ScalarChallenge(ScalarChallengeVector2Json),
 }
 
-<span class="attribute">#[derive(Clone, Debug, Eq, PartialEq, AutoFrom)]</span>
-<span class="attribute">#[auto_from(BulletproofPreChallenge)]</span>
-<span class="attribute">#[auto_from(BulletproofPreChallengeJsonProxy)]</span>
-<span class="kw">pub enum </span>BulletproofPreChallengeJson {
+<span class="attribute">#[derive(Clone, Debug, Eq, PartialEq, AutoFrom)]
+#[auto_from(BulletproofPreChallenge)]
+#[auto_from(BulletproofPreChallengeJsonProxy)]
+</span><span class="kw">pub enum </span>BulletproofPreChallengeJson {
     ScalarChallenge(ScalarChallengeVector2Json),
 }
 <span class="macro">impl_mina_enum_json_serde_with_option!</span>(
@@ -356,13 +356,13 @@
     <span class="bool-val">false
 </span>);
 
-<span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]</span>
-<span class="kw">pub struct </span>ScalarChallengeVector2(<span class="kw">pub </span>Hex64V1, <span class="kw">pub </span>Hex64V1, <span class="kw">pub </span>());
+<span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]
+</span><span class="kw">pub struct </span>ScalarChallengeVector2(<span class="kw">pub </span>Hex64V1, <span class="kw">pub </span>Hex64V1, <span class="kw">pub </span>());
 
 <span class="kw">pub type </span>ScalarChallengeVector2V1 = Versioned&lt;ScalarChallengeVector2, <span class="number">1</span>&gt;;
 
-<span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq, AutoFrom)]</span>
-<span class="attribute">#[auto_from(ScalarChallengeVector2)]</span>
-<span class="kw">pub struct </span>ScalarChallengeVector2Json(<span class="kw">pub </span>I64, <span class="kw">pub </span>I64, <span class="attribute">#[serde(skip)]</span> <span class="kw">pub </span>());
+<span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq, AutoFrom)]
+#[auto_from(ScalarChallengeVector2)]
+</span><span class="kw">pub struct </span>ScalarChallengeVector2Json(<span class="kw">pub </span>I64, <span class="kw">pub </span>I64, <span class="attribute">#[serde(skip)] </span><span class="kw">pub </span>());
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_serialization_types" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (40336865f 2022-08-15)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_serialization_types" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (c0941dfb5 2022-08-21)" ></div></body></html>

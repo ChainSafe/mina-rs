@@ -209,9 +209,9 @@
 //! In this case it is between the current state and the proposed next state.
 
 </span><span class="comment">// TODO: Get clarification on all the fields of this type before documenting
-</span><span class="attribute">#![allow(missing_docs)]</span>
+</span><span class="attribute">#![allow(missing_docs)]
 
-<span class="kw">use </span><span class="kw">crate</span>::numbers::Amount;
+</span><span class="kw">use </span><span class="kw">crate</span>::numbers::Amount;
 <span class="kw">use </span><span class="kw">crate</span>::snark_work::TransactionSnarkWork;
 <span class="kw">use </span><span class="kw">crate</span>::types::TokenId;
 <span class="kw">use </span><span class="kw">crate</span>::user_commands::{SignedCommandPayload, UserCommand};
@@ -222,9 +222,9 @@
 <span class="kw">use </span>smart_default::SmartDefault;
 <span class="kw">use </span>versioned::<span class="kw-2">*</span>;
 
-<span class="attribute">#[derive(Clone, Eq, PartialEq, Debug, Default, AutoFrom)]</span>
-<span class="attribute">#[auto_from(mina_serialization_types::staged_ledger_diff::StagedLedgerDiff)]</span>
-<span class="doccomment">/// Top level wrapper type for a StagedLedgerDiff
+<span class="attribute">#[derive(Clone, Eq, PartialEq, Debug, Default, AutoFrom)]
+#[auto_from(mina_serialization_types::staged_ledger_diff::StagedLedgerDiff)]
+</span><span class="doccomment">/// Top level wrapper type for a StagedLedgerDiff
 </span><span class="kw">pub struct </span>StagedLedgerDiff {
     <span class="kw">pub </span>diff: StagedLedgerDiffTuple,
 }
@@ -246,9 +246,9 @@
     }
 }
 
-<span class="attribute">#[derive(Clone, Eq, PartialEq, Debug, Default, AutoFrom)]</span>
-<span class="attribute">#[auto_from(mina_serialization_types::staged_ledger_diff::StagedLedgerDiffTuple)]</span>
-<span class="kw">pub struct </span>StagedLedgerDiffTuple(
+<span class="attribute">#[derive(Clone, Eq, PartialEq, Debug, Default, AutoFrom)]
+#[auto_from(mina_serialization_types::staged_ledger_diff::StagedLedgerDiffTuple)]
+</span><span class="kw">pub struct </span>StagedLedgerDiffTuple(
     <span class="kw">pub</span>(<span class="kw">crate</span>) StagedLedgerPreDiff,
     <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="prelude-ty">Option</span>&lt;StagedLedgerPreDiff&gt;,
 );
@@ -263,9 +263,9 @@
     </span>}
 }
 
-<span class="attribute">#[derive(Clone, Eq, PartialEq, Debug, Default, AutoFrom)]</span>
-<span class="attribute">#[auto_from(mina_serialization_types::staged_ledger_diff::StagedLedgerPreDiff)]</span>
-<span class="kw">pub struct </span>StagedLedgerPreDiff {
+<span class="attribute">#[derive(Clone, Eq, PartialEq, Debug, Default, AutoFrom)]
+#[auto_from(mina_serialization_types::staged_ledger_diff::StagedLedgerPreDiff)]
+</span><span class="kw">pub struct </span>StagedLedgerPreDiff {
     <span class="kw">pub </span>completed_works: Vec&lt;TransactionSnarkWork&gt;,
     <span class="kw">pub </span>commands: Vec&lt;UserCommandWithStatus&gt;,
     <span class="kw">pub </span>coinbase: CoinBase,
@@ -285,9 +285,9 @@
     }
 }
 
-<span class="attribute">#[derive(Clone, Eq, PartialEq, Debug, AutoFrom)]</span>
-<span class="attribute">#[auto_from(mina_serialization_types::staged_ledger_diff::UserCommandWithStatus)]</span>
-<span class="kw">pub struct </span>UserCommandWithStatus {
+<span class="attribute">#[derive(Clone, Eq, PartialEq, Debug, AutoFrom)]
+#[auto_from(mina_serialization_types::staged_ledger_diff::UserCommandWithStatus)]
+</span><span class="kw">pub struct </span>UserCommandWithStatus {
     <span class="kw">pub </span>data: UserCommand,
     <span class="kw">pub </span>status: TransactionStatus,
 }
@@ -298,9 +298,9 @@
     UserCommandWithStatusJson
 );
 
-<span class="attribute">#[derive(Clone, Eq, PartialEq, Debug, AutoFrom)]</span>
-<span class="attribute">#[auto_from(mina_serialization_types::staged_ledger_diff::TransactionStatus)]</span>
-<span class="kw">pub enum </span>TransactionStatus {
+<span class="attribute">#[derive(Clone, Eq, PartialEq, Debug, AutoFrom)]
+#[auto_from(mina_serialization_types::staged_ledger_diff::TransactionStatus)]
+</span><span class="kw">pub enum </span>TransactionStatus {
     Applied(TransactionStatusAuxiliaryData, TransactionStatusBalanceData),
     Failed(
         Vec&lt;TransactionStatusFailedType&gt;,
@@ -314,25 +314,25 @@
     TransactionStatusJson
 );
 
-<span class="attribute">#[derive(Clone, Eq, PartialEq, Debug, AutoFrom)]</span>
-<span class="attribute">#[auto_from(mina_serialization_types::staged_ledger_diff::TransactionStatusAuxiliaryData)]</span>
-<span class="kw">pub struct </span>TransactionStatusAuxiliaryData {
+<span class="attribute">#[derive(Clone, Eq, PartialEq, Debug, AutoFrom)]
+#[auto_from(mina_serialization_types::staged_ledger_diff::TransactionStatusAuxiliaryData)]
+</span><span class="kw">pub struct </span>TransactionStatusAuxiliaryData {
     <span class="kw">pub </span>fee_payer_account_creation_fee_paid: <span class="prelude-ty">Option</span>&lt;Amount&gt;,
     <span class="kw">pub </span>receiver_account_creation_fee_paid: <span class="prelude-ty">Option</span>&lt;Amount&gt;,
     <span class="kw">pub </span>created_token: <span class="prelude-ty">Option</span>&lt;TokenId&gt;,
 }
 
-<span class="attribute">#[derive(Clone, Eq, PartialEq, Debug, AutoFrom)]</span>
-<span class="attribute">#[auto_from(mina_serialization_types::staged_ledger_diff::TransactionStatusBalanceData)]</span>
-<span class="kw">pub struct </span>TransactionStatusBalanceData {
+<span class="attribute">#[derive(Clone, Eq, PartialEq, Debug, AutoFrom)]
+#[auto_from(mina_serialization_types::staged_ledger_diff::TransactionStatusBalanceData)]
+</span><span class="kw">pub struct </span>TransactionStatusBalanceData {
     <span class="kw">pub </span>fee_payer_balance: <span class="prelude-ty">Option</span>&lt;Amount&gt;,
     <span class="kw">pub </span>source_balance: <span class="prelude-ty">Option</span>&lt;Amount&gt;,
     <span class="kw">pub </span>receiver_balance: <span class="prelude-ty">Option</span>&lt;Amount&gt;,
 }
 
-<span class="attribute">#[derive(Clone, Eq, PartialEq, Debug, AutoFrom)]</span>
-<span class="attribute">#[auto_from(mina_serialization_types::staged_ledger_diff::TransactionStatusFailedType)]</span>
-<span class="kw">pub enum </span>TransactionStatusFailedType {
+<span class="attribute">#[derive(Clone, Eq, PartialEq, Debug, AutoFrom)]
+#[auto_from(mina_serialization_types::staged_ledger_diff::TransactionStatusFailedType)]
+</span><span class="kw">pub enum </span>TransactionStatusFailedType {
     Predicate,
     SourceNotPresent,
     ReceiverNotPresent,
@@ -356,11 +356,11 @@
     TransactionStatusFailedTypeJson
 );
 
-<span class="attribute">#[derive(Clone, Eq, PartialEq, Debug, SmartDefault, AutoFrom)]</span>
-<span class="attribute">#[auto_from(mina_serialization_types::staged_ledger_diff::CoinBase)]</span>
-<span class="kw">pub enum </span>CoinBase {
-    <span class="attribute">#[default]</span>
-    Zero,
+<span class="attribute">#[derive(Clone, Eq, PartialEq, Debug, SmartDefault, AutoFrom)]
+#[auto_from(mina_serialization_types::staged_ledger_diff::CoinBase)]
+</span><span class="kw">pub enum </span>CoinBase {
+    <span class="attribute">#[default]
+    </span>Zero,
     One(<span class="prelude-ty">Option</span>&lt;CoinBaseFeeTransfer&gt;),
     Two(<span class="prelude-ty">Option</span>&lt;CoinBaseFeeTransfer&gt;, <span class="prelude-ty">Option</span>&lt;CoinBaseFeeTransfer&gt;),
 }
@@ -371,16 +371,16 @@
     CoinBaseJson
 );
 
-<span class="attribute">#[derive(Clone, Eq, PartialEq, Debug, AutoFrom)]</span>
-<span class="attribute">#[auto_from(mina_serialization_types::staged_ledger_diff::CoinBaseFeeTransfer)]</span>
-<span class="kw">pub struct </span>CoinBaseFeeTransfer {
+<span class="attribute">#[derive(Clone, Eq, PartialEq, Debug, AutoFrom)]
+#[auto_from(mina_serialization_types::staged_ledger_diff::CoinBaseFeeTransfer)]
+</span><span class="kw">pub struct </span>CoinBaseFeeTransfer {
     <span class="kw">pub </span>receiver_pk: CompressedPubKey,
     <span class="kw">pub </span>fee: Amount,
 }
 
-<span class="attribute">#[derive(Clone, Eq, PartialEq, Debug, AutoFrom)]</span>
-<span class="attribute">#[auto_from(mina_serialization_types::staged_ledger_diff::InternalCommandBalanceData)]</span>
-<span class="kw">pub enum </span>InternalCommandBalanceData {
+<span class="attribute">#[derive(Clone, Eq, PartialEq, Debug, AutoFrom)]
+#[auto_from(mina_serialization_types::staged_ledger_diff::InternalCommandBalanceData)]
+</span><span class="kw">pub enum </span>InternalCommandBalanceData {
     CoinBase(CoinBaseBalanceData),
     FeeTransfer(FeeTransferBalanceData),
 }
@@ -391,20 +391,20 @@
     InternalCommandBalanceDataJson
 );
 
-<span class="attribute">#[derive(Clone, Eq, PartialEq, Debug, AutoFrom)]</span>
-<span class="attribute">#[auto_from(mina_serialization_types::staged_ledger_diff::CoinBaseBalanceData)]</span>
-<span class="kw">pub struct </span>CoinBaseBalanceData {
+<span class="attribute">#[derive(Clone, Eq, PartialEq, Debug, AutoFrom)]
+#[auto_from(mina_serialization_types::staged_ledger_diff::CoinBaseBalanceData)]
+</span><span class="kw">pub struct </span>CoinBaseBalanceData {
     <span class="kw">pub </span>coinbase_receiver_balance: Amount,
     <span class="comment">// FIXME: No test coverage yet
     </span><span class="kw">pub </span>fee_transfer_receiver_balance: <span class="prelude-ty">Option</span>&lt;Amount&gt;,
 }
 
-<span class="attribute">#[derive(Clone, Eq, PartialEq, Debug, AutoFrom)]</span>
-<span class="attribute">#[auto_from(mina_serialization_types::staged_ledger_diff::FeeTransferBalanceData)]</span>
-<span class="kw">pub struct </span>FeeTransferBalanceData {
+<span class="attribute">#[derive(Clone, Eq, PartialEq, Debug, AutoFrom)]
+#[auto_from(mina_serialization_types::staged_ledger_diff::FeeTransferBalanceData)]
+</span><span class="kw">pub struct </span>FeeTransferBalanceData {
     <span class="kw">pub </span>receiver1_balance: Amount,
     <span class="comment">// FIXME: No test coverage yet
     </span><span class="kw">pub </span>receiver2_balance: <span class="prelude-ty">Option</span>&lt;Amount&gt;,
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_rs_base" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (40336865f 2022-08-15)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_rs_base" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (c0941dfb5 2022-08-21)" ></div></body></html>

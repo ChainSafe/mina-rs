@@ -69,12 +69,12 @@
 <span class="kw">use </span>versioned::<span class="kw-2">*</span>;
 
 <span class="doccomment">/// This structure represents a mina block
-</span><span class="attribute">#[derive(Clone, Debug, Eq, PartialEq, AutoFrom)]</span>
-<span class="attribute">#[auto_from(mina_serialization_types::external_transition::ExternalTransition)]</span>
-<span class="doccomment">/// This structure represents a mina block received from an external block producer
+</span><span class="attribute">#[derive(Clone, Debug, Eq, PartialEq, AutoFrom)]
+#[auto_from(mina_serialization_types::external_transition::ExternalTransition)]
+</span><span class="doccomment">/// This structure represents a mina block received from an external block producer
 </span><span class="kw">pub struct </span>ExternalTransition {
     <span class="doccomment">/// The blockchain state, including consensus and the ledger
-    </span><span class="kw">pub </span>protocol_state: ProtocolState,
+    </span><span class="kw">pub </span>protocol_state: ProtocolStateLegacy,
     <span class="doccomment">/// Proof that the protocol state and entire history of the chain is valid
     </span><span class="kw">pub </span>protocol_state_proof: ProtocolStateProof,
     <span class="doccomment">/// Diff of the proposed next state of the blockchain
@@ -115,4 +115,4 @@
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_rs_base" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (40336865f 2022-08-15)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_rs_base" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (c0941dfb5 2022-08-21)" ></div></body></html>

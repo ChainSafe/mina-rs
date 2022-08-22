@@ -62,8 +62,8 @@
 };
 
 <span class="doccomment">/// Constants that define the consensus parameters
-</span><span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]</span>
-<span class="kw">pub struct </span>ProtocolConstants {
+</span><span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]
+</span><span class="kw">pub struct </span>ProtocolConstants {
     <span class="doccomment">/// Point of finality (number of confirmations)
     </span><span class="kw">pub </span>k: LengthV1,
     <span class="doccomment">/// Number of slots per epoch
@@ -80,9 +80,9 @@
 </span><span class="kw">pub type </span>ProtocolConstantsV1 = Versioned&lt;Versioned&lt;ProtocolConstants, <span class="number">1</span>&gt;, <span class="number">1</span>&gt;;
 
 <span class="doccomment">/// Constants that define the consensus parameters (json)
-</span><span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq, AutoFrom)]</span>
-<span class="attribute">#[auto_from(ProtocolConstants)]</span>
-<span class="kw">pub struct </span>ProtocolConstantsJson {
+</span><span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq, AutoFrom)]
+#[auto_from(ProtocolConstants)]
+</span><span class="kw">pub struct </span>ProtocolConstantsJson {
     <span class="doccomment">/// Point of finality (number of confirmations)
     </span><span class="kw">pub </span>k: U32Json,
     <span class="doccomment">/// Number of slots per epoch
@@ -95,4 +95,4 @@
     </span><span class="kw">pub </span>genesis_state_timestamp: U64Json,
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_serialization_types" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (40336865f 2022-08-15)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_serialization_types" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (c0941dfb5 2022-08-21)" ></div></body></html>

@@ -179,52 +179,52 @@
 <span class="kw">use </span>serde::{Deserialize, Serialize};
 <span class="kw">use </span>structopt::StructOpt;
 
-<span class="attribute">#[derive(StructOpt)]</span>
-<span class="kw">struct </span>Opt {
-    <span class="attribute">#[structopt(subcommand)]</span>
-    cmd: Subcommand,
-    <span class="attribute">#[structopt(long)]</span>
-    test: Test,
+<span class="attribute">#[derive(StructOpt)]
+</span><span class="kw">struct </span>Opt {
+    <span class="attribute">#[structopt(subcommand)]
+    </span>cmd: Subcommand,
+    <span class="attribute">#[structopt(long)]
+    </span>test: Test,
     <span class="doccomment">/// Output file, stdout if not present
-    </span><span class="attribute">#[structopt(long, parse(from_os_str))]</span>
-    path: <span class="prelude-ty">Option</span>&lt;PathBuf&gt;,
+    </span><span class="attribute">#[structopt(long, parse(from_os_str))]
+    </span>path: <span class="prelude-ty">Option</span>&lt;PathBuf&gt;,
 }
 
-<span class="attribute">#[derive(StructOpt)]</span>
-<span class="kw">enum </span>Subcommand {
+<span class="attribute">#[derive(StructOpt)]
+</span><span class="kw">enum </span>Subcommand {
     Deserialize,
     Serialize,
 }
 
-<span class="attribute">#[derive(Serialize, Deserialize, Debug)]</span>
-<span class="kw">enum </span>E {
+<span class="attribute">#[derive(Serialize, Deserialize, Debug)]
+</span><span class="kw">enum </span>E {
     A,
     B,
     C,
 }
 
-<span class="attribute">#[derive(Serialize, Deserialize, Debug)]</span>
-<span class="kw">struct </span>S {
+<span class="attribute">#[derive(Serialize, Deserialize, Debug)]
+</span><span class="kw">struct </span>S {
     a: i32,
     b: bool,
     c: E,
 }
 
-<span class="attribute">#[derive(Serialize, Deserialize, Debug)]</span>
-<span class="kw">enum </span>V {
+<span class="attribute">#[derive(Serialize, Deserialize, Debug)]
+</span><span class="kw">enum </span>V {
     A(i32),
     B(bool),
     C(E),
 }
 
-<span class="attribute">#[derive(Serialize)]</span>
-<span class="attribute">#[serde(untagged)]</span> <span class="comment">// ensures serializing a test enum just serializes the internal data
+<span class="attribute">#[derive(Serialize)]
+#[serde(untagged)] </span><span class="comment">// ensures serializing a test enum just serializes the internal data
 </span><span class="kw">enum </span>Test {
     Nat0(Vec&lt;()&gt;),
     Bool(bool),
     Int(i32),
-    Int32(<span class="attribute">#[serde(with = <span class="string">&quot;integer&quot;</span>)]</span> i32),
-    Int64(<span class="attribute">#[serde(with = <span class="string">&quot;integer&quot;</span>)]</span> i64),
+    Int32(<span class="attribute">#[serde(with = <span class="string">&quot;integer&quot;</span>)] </span>i32),
+    Int64(<span class="attribute">#[serde(with = <span class="string">&quot;integer&quot;</span>)] </span>i64),
     Enum(E),
     Record(S),
     Variant(V),
@@ -335,4 +335,4 @@
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="bin_prot_checker" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (40336865f 2022-08-15)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="bin_prot_checker" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (c0941dfb5 2022-08-21)" ></div></body></html>

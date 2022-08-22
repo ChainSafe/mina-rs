@@ -55,7 +55,7 @@
 </span><span class="kw">use </span>libp2p::{mplex::MplexConfig, pnet::PreSharedKey};
 <span class="kw">use </span>multihash::{Blake2b256, Hasher};
 
-<span class="macro">lazy_static::lazy_static!</span> {
+<span class="macro">lazy_static::lazy_static! </span>{
     <span class="doccomment">/// Mainnet config for mina p2p network
     </span><span class="kw">pub static </span><span class="kw-2">ref </span>MAINNET_CONFIG : TransportConfig&lt;<span class="lifetime">&#39;static</span>&gt; = TransportConfig
     {
@@ -65,8 +65,8 @@
 }
 
 <span class="doccomment">/// Configuration type for [super::TransportBuilder]
-</span><span class="attribute">#[derive(Clone, Debug)]</span>
-<span class="kw">pub struct </span>TransportConfig&lt;<span class="lifetime">&#39;a</span>&gt; {
+</span><span class="attribute">#[derive(Clone, Debug)]
+</span><span class="kw">pub struct </span>TransportConfig&lt;<span class="lifetime">&#39;a</span>&gt; {
     <span class="doccomment">/// Rendezvous string for configuring private network
     </span><span class="kw">pub </span>rendezvous_string: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>[u8],
     <span class="doccomment">/// Protocol name for configuring libp2p multiplexer
@@ -101,4 +101,4 @@
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="mina_network" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (40336865f 2022-08-15)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="mina_network" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (c0941dfb5 2022-08-21)" ></div></body></html>

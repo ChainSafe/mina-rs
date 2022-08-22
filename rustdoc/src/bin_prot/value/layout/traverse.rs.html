@@ -265,14 +265,14 @@
     }
 }
 
-<span class="attribute">#[cfg(test)]</span>
-<span class="kw">mod </span>tests {
+<span class="attribute">#[cfg(test)]
+</span><span class="kw">mod </span>tests {
     <span class="kw">use super</span>::<span class="kw-2">*</span>;
     <span class="kw">use </span><span class="kw">crate</span>::value::layout::Layout;
     <span class="kw">const </span>TEST_LAYOUT: <span class="kw-2">&amp;</span>str = <span class="macro">include_str!</span>(<span class="string">&quot;./test_layouts/mina_state_hash_tuple.json&quot;</span>);
 
-    <span class="attribute">#[test]</span>
-    <span class="kw">fn </span>test_layout() {
+    <span class="attribute">#[test]
+    </span><span class="kw">fn </span>test_layout() {
         <span class="kw">let </span>layout: Layout = serde_json::from_str(TEST_LAYOUT).unwrap();
         <span class="kw">let </span><span class="kw-2">mut </span>iter = layout.bin_prot_rule.into_iter();
         <span class="kw">while let </span><span class="prelude-val">Some</span>(v) = iter.next() {
@@ -282,8 +282,8 @@
 
     <span class="kw">const </span>TEST_LAYOUT_SUM: <span class="kw-2">&amp;</span>str = <span class="macro">include_str!</span>(<span class="string">&quot;./test_layouts/sum_type_layout.json&quot;</span>);
 
-    <span class="attribute">#[test]</span>
-    <span class="kw">fn </span>test_layout_sum() {
+    <span class="attribute">#[test]
+    </span><span class="kw">fn </span>test_layout_sum() {
         <span class="kw">let </span>layout: Layout = serde_json::from_str(TEST_LAYOUT_SUM).unwrap();
         <span class="kw">let </span><span class="kw-2">mut </span>iter = layout.bin_prot_rule.into_iter();
         <span class="comment">// Test by taking the 0th branch at each branch node. Test is considered as pass
@@ -305,4 +305,4 @@
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../../" data-current-crate="bin_prot" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (40336865f 2022-08-15)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../../" data-current-crate="bin_prot" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (c0941dfb5 2022-08-21)" ></div></body></html>

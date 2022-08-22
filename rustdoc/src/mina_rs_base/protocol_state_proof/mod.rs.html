@@ -153,9 +153,9 @@
 
 </span><span class="comment">// Much of this crate will be replaced by arkworks and 01-proof-systems types
 // so full documentation will not be included
-</span><span class="attribute">#![allow(missing_docs)]</span>
+</span><span class="attribute">#![allow(missing_docs)]
 
-<span class="kw">use </span><span class="kw">crate</span>::numbers::{BigInt256, Char, Hex64};
+</span><span class="kw">use </span><span class="kw">crate</span>::numbers::{BigInt256, Char, Hex64};
 <span class="kw">use </span>mina_serialization_types::{json::<span class="kw-2">*</span>, v1::<span class="kw-2">*</span>};
 <span class="kw">use </span>mina_serialization_types_macros::<span class="kw-2">*</span>;
 <span class="kw">use </span>versioned::<span class="kw-2">*</span>;
@@ -182,9 +182,9 @@
     FiniteECPointPairVec, FiniteECPointVec,
 };
 
-<span class="attribute">#[derive(Clone, Default, Eq, PartialEq, Debug, AutoFrom)]</span>
-<span class="attribute">#[auto_from(mina_serialization_types::protocol_state_proof::ProtocolStateProof)]</span>
-<span class="doccomment">/// SNARK proof of the protocol state at some point in time
+<span class="attribute">#[derive(Clone, Default, Eq, PartialEq, Debug, AutoFrom)]
+#[auto_from(mina_serialization_types::protocol_state_proof::ProtocolStateProof)]
+</span><span class="doccomment">/// SNARK proof of the protocol state at some point in time
 </span><span class="kw">pub struct </span>ProtocolStateProof {
     <span class="kw">pub </span>statement: ProofStatement,
     <span class="kw">pub </span>prev_evals: PrevEvals,
@@ -202,25 +202,25 @@
     ProtocolStateProofJson
 );
 
-<span class="attribute">#[derive(Clone, Default, Eq, PartialEq, Debug, AutoFrom)]</span>
-<span class="attribute">#[auto_from(mina_serialization_types::protocol_state_proof::ProofStatement)]</span>
-<span class="kw">pub struct </span>ProofStatement {
+<span class="attribute">#[derive(Clone, Default, Eq, PartialEq, Debug, AutoFrom)]
+#[auto_from(mina_serialization_types::protocol_state_proof::ProofStatement)]
+</span><span class="kw">pub struct </span>ProofStatement {
     <span class="kw">pub </span>proof_state: ProofState,
     <span class="kw">pub </span>pass_through: PairingBased,
 }
 <span class="macro">impl_from_with_proxy!</span>(ProofStatement, ProofStatementV1, ProofStatementJson);
 
-<span class="attribute">#[derive(Clone, Default, Eq, PartialEq, Debug, AutoFrom)]</span>
-<span class="attribute">#[auto_from(mina_serialization_types::protocol_state_proof::ProofState)]</span>
-<span class="kw">pub struct </span>ProofState {
+<span class="attribute">#[derive(Clone, Default, Eq, PartialEq, Debug, AutoFrom)]
+#[auto_from(mina_serialization_types::protocol_state_proof::ProofState)]
+</span><span class="kw">pub struct </span>ProofState {
     <span class="kw">pub </span>deferred_values: ProofStateDeferredValues,
     <span class="kw">pub </span>sponge_digest_before_evaluations: SpongeDigestBeforeEvaluations,
     <span class="kw">pub </span>me_only: ProofStatePairingBased,
 }
 
-<span class="attribute">#[derive(Clone, Default, Eq, PartialEq, Debug, AutoFrom)]</span>
-<span class="attribute">#[auto_from(mina_serialization_types::protocol_state_proof::ProofStateDeferredValues)]</span>
-<span class="kw">pub struct </span>ProofStateDeferredValues {
+<span class="attribute">#[derive(Clone, Default, Eq, PartialEq, Debug, AutoFrom)]
+#[auto_from(mina_serialization_types::protocol_state_proof::ProofStateDeferredValues)]
+</span><span class="kw">pub struct </span>ProofStateDeferredValues {
     <span class="kw">pub </span>plonk: Plonk,
     <span class="kw">pub </span>combined_inner_product: ShiftedValue,
     <span class="kw">pub </span>b: ShiftedValue,
@@ -229,18 +229,18 @@
     <span class="kw">pub </span>which_branch: Char,
 }
 
-<span class="attribute">#[derive(Clone, Default, Eq, PartialEq, Debug, AutoFrom)]</span>
-<span class="attribute">#[auto_from(mina_serialization_types::protocol_state_proof::Plonk)]</span>
-<span class="kw">pub struct </span>Plonk {
+<span class="attribute">#[derive(Clone, Default, Eq, PartialEq, Debug, AutoFrom)]
+#[auto_from(mina_serialization_types::protocol_state_proof::Plonk)]
+</span><span class="kw">pub struct </span>Plonk {
     <span class="kw">pub </span>alpha: BulletproofPreChallenge,
     <span class="kw">pub </span>beta: ScalarChallengeVector2,
     <span class="kw">pub </span>gamma: ScalarChallengeVector2,
     <span class="kw">pub </span>zeta: BulletproofPreChallenge,
 }
 
-<span class="attribute">#[derive(Clone, Eq, PartialEq, Debug, AutoFrom)]</span>
-<span class="attribute">#[auto_from(mina_serialization_types::protocol_state_proof::ShiftedValue)]</span>
-<span class="kw">pub enum </span>ShiftedValue {
+<span class="attribute">#[derive(Clone, Eq, PartialEq, Debug, AutoFrom)]
+#[auto_from(mina_serialization_types::protocol_state_proof::ShiftedValue)]
+</span><span class="kw">pub enum </span>ShiftedValue {
     ShiftedValue(BigInt256),
 }
 
@@ -250,49 +250,49 @@
     }
 }
 
-<span class="attribute">#[derive(Clone, Default, Eq, PartialEq, Debug, AutoFrom)]</span>
-<span class="attribute">#[auto_from(mina_serialization_types::protocol_state_proof::SpongeDigestBeforeEvaluations)]</span>
-<span class="kw">pub struct </span>SpongeDigestBeforeEvaluations(<span class="kw">pub </span>Hex64, <span class="kw">pub </span>Hex64, <span class="kw">pub </span>Hex64, <span class="kw">pub </span>Hex64, <span class="kw">pub </span>());
+<span class="attribute">#[derive(Clone, Default, Eq, PartialEq, Debug, AutoFrom)]
+#[auto_from(mina_serialization_types::protocol_state_proof::SpongeDigestBeforeEvaluations)]
+</span><span class="kw">pub struct </span>SpongeDigestBeforeEvaluations(<span class="kw">pub </span>Hex64, <span class="kw">pub </span>Hex64, <span class="kw">pub </span>Hex64, <span class="kw">pub </span>Hex64, <span class="kw">pub </span>());
 
-<span class="attribute">#[derive(Clone, Default, Eq, PartialEq, Debug, AutoFrom)]</span>
-<span class="attribute">#[auto_from(mina_serialization_types::protocol_state_proof::ProofStatePairingBased)]</span>
-<span class="kw">pub struct </span>ProofStatePairingBased {
+<span class="attribute">#[derive(Clone, Default, Eq, PartialEq, Debug, AutoFrom)]
+#[auto_from(mina_serialization_types::protocol_state_proof::ProofStatePairingBased)]
+</span><span class="kw">pub struct </span>ProofStatePairingBased {
     <span class="kw">pub </span>sg: FiniteECPoint,
     <span class="kw">pub </span>old_bulletproof_challenges: ProofStateBulletproofChallenges,
 }
 
-<span class="attribute">#[derive(Clone, Default, Eq, PartialEq, Debug, AutoFrom)]</span>
-<span class="attribute">#[auto_from(mina_serialization_types::protocol_state_proof::PairingBased)]</span>
-<span class="kw">pub struct </span>PairingBased {
+<span class="attribute">#[derive(Clone, Default, Eq, PartialEq, Debug, AutoFrom)]
+#[auto_from(mina_serialization_types::protocol_state_proof::PairingBased)]
+</span><span class="kw">pub struct </span>PairingBased {
     <span class="kw">pub </span>app_state: (),
     <span class="kw">pub </span>sg: FiniteECPointVec,
     <span class="kw">pub </span>old_bulletproof_challenges: BulletproofChallenges,
 }
 
-<span class="attribute">#[derive(Clone, Default, Eq, PartialEq, Debug, AutoFrom)]</span>
-<span class="attribute">#[auto_from(mina_serialization_types::protocol_state_proof::PrevEvals)]</span>
-<span class="kw">pub struct </span>PrevEvals(<span class="kw">pub </span>ProofEvaluations, <span class="kw">pub </span>ProofEvaluations);
+<span class="attribute">#[derive(Clone, Default, Eq, PartialEq, Debug, AutoFrom)]
+#[auto_from(mina_serialization_types::protocol_state_proof::PrevEvals)]
+</span><span class="kw">pub struct </span>PrevEvals(<span class="kw">pub </span>ProofEvaluations, <span class="kw">pub </span>ProofEvaluations);
 
-<span class="attribute">#[derive(Clone, Default, Eq, PartialEq, Debug, AutoFrom)]</span>
-<span class="attribute">#[auto_from(mina_serialization_types::protocol_state_proof::PrevXHat)]</span>
-<span class="kw">pub struct </span>PrevXHat(<span class="kw">pub </span>FiniteECPoint);
+<span class="attribute">#[derive(Clone, Default, Eq, PartialEq, Debug, AutoFrom)]
+#[auto_from(mina_serialization_types::protocol_state_proof::PrevXHat)]
+</span><span class="kw">pub struct </span>PrevXHat(<span class="kw">pub </span>FiniteECPoint);
 
-<span class="attribute">#[derive(Clone, Default, Eq, PartialEq, Debug, AutoFrom)]</span>
-<span class="attribute">#[auto_from(mina_serialization_types::protocol_state_proof::Proof)]</span>
-<span class="kw">pub struct </span>Proof {
+<span class="attribute">#[derive(Clone, Default, Eq, PartialEq, Debug, AutoFrom)]
+#[auto_from(mina_serialization_types::protocol_state_proof::Proof)]
+</span><span class="kw">pub struct </span>Proof {
     <span class="kw">pub </span>messages: ProofMessages,
     <span class="kw">pub </span>openings: ProofOpenings,
 }
 
-<span class="attribute">#[derive(Clone, Default, Eq, PartialEq, Debug, AutoFrom)]</span>
-<span class="attribute">#[auto_from(mina_serialization_types::protocol_state_proof::ProofOpeningsEvals)]</span>
-<span class="kw">pub struct </span>ProofOpeningsEvals(<span class="kw">pub </span>ProofEvaluations, <span class="kw">pub </span>ProofEvaluations);
+<span class="attribute">#[derive(Clone, Default, Eq, PartialEq, Debug, AutoFrom)]
+#[auto_from(mina_serialization_types::protocol_state_proof::ProofOpeningsEvals)]
+</span><span class="kw">pub struct </span>ProofOpeningsEvals(<span class="kw">pub </span>ProofEvaluations, <span class="kw">pub </span>ProofEvaluations);
 
-<span class="attribute">#[derive(Clone, Default, Eq, PartialEq, Debug, AutoFrom)]</span>
-<span class="attribute">#[auto_from(mina_serialization_types::protocol_state_proof::ProofOpenings)]</span>
-<span class="kw">pub struct </span>ProofOpenings {
+<span class="attribute">#[derive(Clone, Default, Eq, PartialEq, Debug, AutoFrom)]
+#[auto_from(mina_serialization_types::protocol_state_proof::ProofOpenings)]
+</span><span class="kw">pub struct </span>ProofOpenings {
     <span class="kw">pub </span>proof: OpeningProof,
     <span class="kw">pub </span>evals: ProofOpeningsEvals,
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="mina_rs_base" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (40336865f 2022-08-15)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="mina_rs_base" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (c0941dfb5 2022-08-21)" ></div></body></html>

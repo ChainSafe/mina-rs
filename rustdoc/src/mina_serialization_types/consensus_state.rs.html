@@ -147,16 +147,16 @@
 <span class="kw">use </span>versioned::<span class="kw-2">*</span>;
 
 <span class="doccomment">/// Wrapper struct for the output for a VRF
-</span><span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]</span>
-<span class="kw">pub struct </span>VrfOutputTruncated(<span class="kw">pub </span>Vec&lt;u8&gt;);
+</span><span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]
+</span><span class="kw">pub struct </span>VrfOutputTruncated(<span class="kw">pub </span>Vec&lt;u8&gt;);
 
 <span class="doccomment">/// Wrapper struct for the output for a VRF, with version
 </span><span class="kw">pub type </span>VrfOutputTruncatedV1 = Versioned&lt;VrfOutputTruncated, <span class="number">1</span>&gt;;
 
 <span class="doccomment">/// Wrapper struct for the output for a VRF (json)
-</span><span class="attribute">#[derive(Clone, Debug, Eq, PartialEq, AutoFrom)]</span>
-<span class="attribute">#[auto_from(VrfOutputTruncated)]</span>
-<span class="kw">pub struct </span>VrfOutputTruncatedJson(<span class="kw">pub </span>Vec&lt;u8&gt;);
+</span><span class="attribute">#[derive(Clone, Debug, Eq, PartialEq, AutoFrom)]
+#[auto_from(VrfOutputTruncated)]
+</span><span class="kw">pub struct </span>VrfOutputTruncatedJson(<span class="kw">pub </span>Vec&lt;u8&gt;);
 
 <span class="kw">impl </span>Serialize <span class="kw">for </span>VrfOutputTruncatedJson {
     <span class="kw">fn </span>serialize&lt;S&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, serializer: S) -&gt; <span class="prelude-ty">Result</span>&lt;S::Ok, S::Error&gt;
@@ -190,8 +190,8 @@
 /// approach where the future stake distribution snapshot is prepared by the current consensus epoch.
 ///
 /// Samasika prepares the past for the future! This future state is stored in the next_epoch_data field.
-</span><span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]</span>
-<span class="kw">pub struct </span>ConsensusState {
+</span><span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]
+</span><span class="kw">pub struct </span>ConsensusState {
     <span class="doccomment">/// Height of block
     </span><span class="kw">pub </span>blockchain_length: LengthV1,
     <span class="doccomment">/// Epoch number
@@ -228,9 +228,9 @@
 </span><span class="kw">pub type </span>ConsensusStateV1 = Versioned&lt;Versioned&lt;ConsensusState, <span class="number">1</span>&gt;, <span class="number">1</span>&gt;;
 
 <span class="doccomment">/// json protocol version of the consensus state
-</span><span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq, AutoFrom)]</span>
-<span class="attribute">#[auto_from(ConsensusState)]</span>
-<span class="kw">pub struct </span>ConsensusStateJson {
+</span><span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq, AutoFrom)]
+#[auto_from(ConsensusState)]
+</span><span class="kw">pub struct </span>ConsensusStateJson {
     <span class="doccomment">/// Height of block
     </span><span class="kw">pub </span>blockchain_length: U32Json,
     <span class="doccomment">/// Epoch number
@@ -263,4 +263,4 @@
     </span><span class="kw">pub </span>supercharge_coinbase: bool,
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_serialization_types" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (40336865f 2022-08-15)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_serialization_types" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (c0941dfb5 2022-08-21)" ></div></body></html>

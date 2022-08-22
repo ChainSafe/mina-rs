@@ -45,40 +45,40 @@
 </span><span class="kw">use </span>proof_systems::mina_signer::keypair::KeypairError;
 
 <span class="doccomment">/// Error type of handling wallet files generated from mina-keypair-gen tool
-</span><span class="attribute">#[derive(Debug, thiserror::Error)]</span>
-<span class="attribute">#[non_exhaustive]</span>
-<span class="kw">pub enum </span>Error {
+</span><span class="attribute">#[derive(Debug, thiserror::Error)]
+#[non_exhaustive]
+</span><span class="kw">pub enum </span>Error {
     <span class="doccomment">/// Invalid secret box primitive
-    </span><span class="attribute">#[error(<span class="string">&quot;Invalid secret box primitive&quot;</span>)]</span>
-    InvalidSecretBoxPrimitiveError,
+    </span><span class="attribute">#[error(<span class="string">&quot;Invalid secret box primitive&quot;</span>)]
+    </span>InvalidSecretBoxPrimitiveError,
 
     <span class="doccomment">/// Invalid password hash primitive
-    </span><span class="attribute">#[error(<span class="string">&quot;Invalid password hash primitive&quot;</span>)]</span>
-    InvalidPasswordHashPrimitiveError,
+    </span><span class="attribute">#[error(<span class="string">&quot;Invalid password hash primitive&quot;</span>)]
+    </span>InvalidPasswordHashPrimitiveError,
 
     <span class="doccomment">/// Fail to serialize / deserialize json
-    </span><span class="attribute">#[error(<span class="string">&quot;Fail to serialize / deserialize json: {0}&quot;</span>)]</span>
-    JsonSerdeError(<span class="attribute">#[from]</span> serde_json::Error),
+    </span><span class="attribute">#[error(<span class="string">&quot;Fail to serialize / deserialize json: {0}&quot;</span>)]
+    </span>JsonSerdeError(<span class="attribute">#[from] </span>serde_json::Error),
 
     <span class="doccomment">/// Fail to decode base58 string
-    </span><span class="attribute">#[error(<span class="string">&quot;Fail to decode base58 string: {0}&quot;</span>)]</span>
-    Base58DecodeError(<span class="attribute">#[from]</span> bs58::decode::Error),
+    </span><span class="attribute">#[error(<span class="string">&quot;Fail to decode base58 string: {0}&quot;</span>)]
+    </span>Base58DecodeError(<span class="attribute">#[from] </span>bs58::decode::Error),
 
     <span class="doccomment">/// Argon2Error
-    </span><span class="attribute">#[error(<span class="string">&quot;Argon2Error: {0}&quot;</span>)]</span>
-    Argon2Error(String),
+    </span><span class="attribute">#[error(<span class="string">&quot;Argon2Error: {0}&quot;</span>)]
+    </span>Argon2Error(String),
 
     <span class="doccomment">/// PasswordHashError
-    </span><span class="attribute">#[error(<span class="string">&quot;PasswordHashError: {0}&quot;</span>)]</span>
-    PasswordHashError(String),
+    </span><span class="attribute">#[error(<span class="string">&quot;PasswordHashError: {0}&quot;</span>)]
+    </span>PasswordHashError(String),
 
     <span class="doccomment">/// AeadError
-    </span><span class="attribute">#[error(<span class="string">&quot;AeadError: {0}&quot;</span>)]</span>
-    AeadError(String),
+    </span><span class="attribute">#[error(<span class="string">&quot;AeadError: {0}&quot;</span>)]
+    </span>AeadError(String),
 
     <span class="doccomment">/// KeypairError
-    </span><span class="attribute">#[error(<span class="string">&quot;KeypairError: {0}&quot;</span>)]</span>
-    KeypairError(KeypairError),
+    </span><span class="attribute">#[error(<span class="string">&quot;KeypairError: {0}&quot;</span>)]
+    </span>KeypairError(KeypairError),
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="mina_secrets" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (40336865f 2022-08-15)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="mina_secrets" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (c0941dfb5 2022-08-21)" ></div></body></html>

@@ -47,12 +47,6 @@
 <span id="47">47</span>
 <span id="48">48</span>
 <span id="49">49</span>
-<span id="50">50</span>
-<span id="51">51</span>
-<span id="52">52</span>
-<span id="53">53</span>
-<span id="54">54</span>
-<span id="55">55</span>
 </pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
@@ -60,29 +54,23 @@
 //! Common data types.
 //!
 
-</span><span class="kw">use </span>ark_ff::Zero;
-<span class="kw">use </span>mina_serialization_types_macros::AutoFrom;
+</span><span class="kw">use </span>mina_serialization_types_macros::AutoFrom;
 <span class="kw">use </span>once_cell::sync::OnceCell;
-<span class="kw">use </span>proof_systems::{
-    mina_hasher::Fp, mina_signer::CompressedPubKey, ChunkedROInput, ToChunkedROInput,
-};
+<span class="kw">use </span>proof_systems::{mina_signer::CompressedPubKey, ChunkedROInput, ToChunkedROInput};
 
 <span class="doccomment">/// Wrapper of Vec&lt;u8&gt;
-</span><span class="attribute">#[derive(Clone, Debug, Eq, PartialEq, AutoFrom)]</span>
-<span class="attribute">#[auto_from(mina_serialization_types::common::ByteVec)]</span>
-<span class="kw">pub struct </span>ByteVec(<span class="kw">pub </span>Vec&lt;u8&gt;);
+</span><span class="attribute">#[derive(Clone, Debug, Eq, PartialEq, AutoFrom)]
+#[auto_from(mina_serialization_types::common::ByteVec)]
+</span><span class="kw">pub struct </span>ByteVec(<span class="kw">pub </span>Vec&lt;u8&gt;);
 
 <span class="doccomment">/// Wrapper of [CompressedPubKey] that implements [ToChunkedROInput]
-</span><span class="attribute">#[derive(Debug, Clone)]</span>
-<span class="kw">pub struct </span>CompressedPubKeyHashableWrapper&lt;<span class="lifetime">&#39;a</span>&gt;(<span class="kw">pub </span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>CompressedPubKey);
+</span><span class="attribute">#[derive(Debug, Clone)]
+</span><span class="kw">pub struct </span>CompressedPubKeyHashableWrapper&lt;<span class="lifetime">&#39;a</span>&gt;(<span class="kw">pub </span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>CompressedPubKey);
 
 <span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>&gt; Default <span class="kw">for </span>CompressedPubKeyHashableWrapper&lt;<span class="lifetime">&#39;a</span>&gt; {
     <span class="kw">fn </span>default() -&gt; <span class="self">Self </span>{
         <span class="kw">static </span>INSTANCE: OnceCell&lt;CompressedPubKey&gt; = OnceCell::new();
-        <span class="self">Self</span>(INSTANCE.get_or_init(|| CompressedPubKey {
-            x: Fp::zero(),
-            is_odd: <span class="bool-val">false</span>,
-        }))
+        <span class="self">Self</span>(INSTANCE.get_or_init(CompressedPubKey::empty))
     }
 }
 
@@ -95,8 +83,8 @@
 }
 
 <span class="doccomment">/// Wrapper of [Option&lt;CompressedPubKey&gt;] that implements [ToChunkedROInput]
-</span><span class="attribute">#[derive(Debug, Clone)]</span>
-<span class="kw">pub struct </span>CompressedPubKeyOptionHashableWrapper&lt;<span class="lifetime">&#39;a</span>&gt;(<span class="kw">pub </span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span><span class="prelude-ty">Option</span>&lt;CompressedPubKey&gt;);
+</span><span class="attribute">#[derive(Debug, Clone)]
+</span><span class="kw">pub struct </span>CompressedPubKeyOptionHashableWrapper&lt;<span class="lifetime">&#39;a</span>&gt;(<span class="kw">pub </span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span><span class="prelude-ty">Option</span>&lt;CompressedPubKey&gt;);
 
 <span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>&gt; ToChunkedROInput <span class="kw">for </span>CompressedPubKeyOptionHashableWrapper&lt;<span class="lifetime">&#39;a</span>&gt; {
     <span class="kw">fn </span>to_chunked_roinput(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; ChunkedROInput {
@@ -109,4 +97,4 @@
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_rs_base" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (40336865f 2022-08-15)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_rs_base" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (c0941dfb5 2022-08-21)" ></div></body></html>

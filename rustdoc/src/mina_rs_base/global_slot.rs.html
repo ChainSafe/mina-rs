@@ -30,6 +30,17 @@
 <span id="30">30</span>
 <span id="31">31</span>
 <span id="32">32</span>
+<span id="33">33</span>
+<span id="34">34</span>
+<span id="35">35</span>
+<span id="36">36</span>
+<span id="37">37</span>
+<span id="38">38</span>
+<span id="39">39</span>
+<span id="40">40</span>
+<span id="41">41</span>
+<span id="42">42</span>
+<span id="43">43</span>
 </pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
@@ -37,11 +48,14 @@
 
 </span><span class="kw">use </span><span class="kw">crate</span>::numbers::{<span class="self">self</span>, Length};
 <span class="kw">use </span>mina_serialization_types_macros::AutoFrom;
-<span class="kw">use </span>proof_systems::mina_hasher::{Hashable, ROInput};
+<span class="kw">use </span>proof_systems::{
+    mina_hasher::{Hashable, ROInput},
+    ChunkedROInput, ToChunkedROInput,
+};
 
-<span class="attribute">#[derive(Clone, Default, Eq, PartialEq, Debug, AutoFrom)]</span>
-<span class="attribute">#[auto_from(mina_serialization_types::global_slot::GlobalSlot)]</span>
-<span class="doccomment">/// A global slot
+<span class="attribute">#[derive(Clone, Default, Eq, PartialEq, Debug, AutoFrom)]
+#[auto_from(mina_serialization_types::global_slot::GlobalSlot)]
+</span><span class="doccomment">/// A global slot
 </span><span class="kw">pub struct </span>GlobalSlot {
     <span class="doccomment">/// The global slot number of a chain or block
     </span><span class="kw">pub </span>slot_number: numbers::GlobalSlotNumber,
@@ -62,5 +76,13 @@
         <span class="prelude-val">None
     </span>}
 }
+
+<span class="kw">impl </span>ToChunkedROInput <span class="kw">for </span>GlobalSlot {
+    <span class="kw">fn </span>to_chunked_roinput(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; ChunkedROInput {
+        ChunkedROInput::new()
+            .append_chunked(<span class="kw-2">&amp;</span><span class="self">self</span>.slot_number)
+            .append_chunked(<span class="kw-2">&amp;</span><span class="self">self</span>.slots_per_epoch)
+    }
+}
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_rs_base" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (40336865f 2022-08-15)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_rs_base" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (c0941dfb5 2022-08-21)" ></div></body></html>

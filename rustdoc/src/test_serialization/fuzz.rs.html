@@ -76,11 +76,11 @@
 </pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
-</span><span class="attribute">#[cfg(all(test, feature = <span class="string">&quot;browser&quot;</span>))]</span>
-<span class="macro">wasm_bindgen_test::wasm_bindgen_test_configure!</span>(run_in_browser);
+</span><span class="attribute">#[cfg(all(test, feature = <span class="string">&quot;browser&quot;</span>))]
+</span><span class="macro">wasm_bindgen_test::wasm_bindgen_test_configure!</span>(run_in_browser);
 
-<span class="attribute">#[cfg(test)]</span>
-<span class="kw">mod </span>tests {
+<span class="attribute">#[cfg(test)]
+</span><span class="kw">mod </span>tests {
     <span class="kw">use </span><span class="kw">crate</span>::fuzz_test;
     <span class="kw">use </span>bin_prot::Deserializer;
     <span class="kw">use </span>mina_serialization_types::v1::<span class="kw-2">*</span>;
@@ -88,9 +88,9 @@
     <span class="kw">use </span>serde::Deserialize;
     <span class="kw">use </span>wasm_bindgen_test::<span class="kw-2">*</span>;
 
-    <span class="attribute">#[test]</span>
-    <span class="attribute">#[wasm_bindgen_test]</span>
-    <span class="kw">fn </span>test_corrupted_deserialization() {
+    <span class="attribute">#[test]
+    #[wasm_bindgen_test]
+    </span><span class="kw">fn </span>test_corrupted_deserialization() {
         <span class="macro">fuzz_test!</span>(
             ExternalTransitionV1
 
@@ -118,9 +118,9 @@
         );
     }
 
-    <span class="attribute">#[test]</span>
-    <span class="attribute">#[wasm_bindgen_test]</span>
-    <span class="kw">fn </span>ensure_non_exhaustive_deserialization() {
+    <span class="attribute">#[test]
+    #[wasm_bindgen_test]
+    </span><span class="kw">fn </span>ensure_non_exhaustive_deserialization() {
         <span class="kw">let </span><span class="kw-2">mut </span>rng = StdRng::from_seed([<span class="number">0</span>; <span class="number">32</span>]);
         <span class="kw">let </span><span class="kw-2">mut </span>bytes = <span class="macro">vec!</span>[<span class="number">0</span>; rng.gen_range((<span class="number">1024 </span>* <span class="number">1024</span>)..(<span class="number">50 </span>* <span class="number">1024 </span>* <span class="number">1024</span>))];
 
@@ -129,8 +129,8 @@
         <span class="kw">let </span>_et: ProtocolVersionV1 = Deserialize::deserialize(<span class="kw-2">&amp;mut </span>de).unwrap();
     }
 
-    <span class="attribute">#[macro_export]</span>
-    <span class="macro">macro_rules!</span> fuzz_test {
+    <span class="attribute">#[macro_export]
+    </span><span class="macro">macro_rules! </span>fuzz_test {
         ($(<span class="macro-nonterminal">$ty</span>: ty) <span class="kw-2">*</span>) =&gt; {
             $(
                 <span class="kw">let </span><span class="kw-2">mut </span>rng = StdRng::from_seed([<span class="number">0</span>; <span class="number">32</span>]);
@@ -149,4 +149,4 @@
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="test_serialization" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (40336865f 2022-08-15)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="test_serialization" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (c0941dfb5 2022-08-21)" ></div></body></html>

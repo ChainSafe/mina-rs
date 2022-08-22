@@ -72,9 +72,9 @@
 
 <span class="doccomment">/// The top level user command type
 /// This is the output of the command builders
-</span><span class="attribute">#[derive(Clone, Eq, PartialEq, Debug, AutoFrom)]</span>
-<span class="attribute">#[auto_from(mina_serialization_types::staged_ledger_diff::UserCommand)]</span>
-<span class="kw">pub enum </span>UserCommand {
+</span><span class="attribute">#[derive(Clone, Eq, PartialEq, Debug, AutoFrom)]
+#[auto_from(mina_serialization_types::staged_ledger_diff::UserCommand)]
+</span><span class="kw">pub enum </span>UserCommand {
     <span class="doccomment">/// A command signed by a private key
     </span>SignedCommand(SignedCommand),
     <span class="comment">// FIXME: other variants are not covered by current test block
@@ -97,4 +97,4 @@
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="mina_rs_base" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (40336865f 2022-08-15)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="mina_rs_base" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (c0941dfb5 2022-08-21)" ></div></body></html>

@@ -30,17 +30,17 @@
 </pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
-</span><span class="attribute">#![deny(warnings)]</span>
-<span class="attribute">#![deny(missing_docs)]</span>
-<span class="attribute">#![doc = <span class="macro">include_str!</span>(<span class="string">&quot;../README.md&quot;</span>)]</span>
+</span><span class="attribute">#![deny(warnings)]
+#![deny(missing_docs)]
+#![doc = <span class="macro">include_str!</span>(<span class="string">&quot;../README.md&quot;</span>)]
 
-<span class="comment">// mod array;
+</span><span class="comment">// mod array;
 </span><span class="kw">mod </span>consts;
 <span class="kw">mod </span>de;
 <span class="kw">pub mod </span>error;
 <span class="kw">pub mod </span>integers;
-<span class="attribute">#[cfg(feature = <span class="string">&quot;loose_deserialization&quot;</span>)]</span>
-<span class="kw">mod </span>loose_deserializer;
+<span class="attribute">#[cfg(feature = <span class="string">&quot;loose_deserialization&quot;</span>)]
+</span><span class="kw">mod </span>loose_deserializer;
 <span class="kw">mod </span>polyvar;
 <span class="kw">mod </span>read_ext;
 <span class="kw">mod </span>ser;
@@ -52,9 +52,9 @@
 <span class="kw">pub use </span>polyvar::{caml_hash_variant, VariantHash};
 <span class="kw">pub use </span>read_ext::ReadBinProtExt;
 <span class="kw">pub use </span>ser::{to_writer, Serializer};
-<span class="attribute">#[cfg(feature = <span class="string">&quot;loose_deserialization&quot;</span>)]</span>
-<span class="kw">pub use </span>value::layout::{BinProtRule, Layout};
+<span class="attribute">#[cfg(feature = <span class="string">&quot;loose_deserialization&quot;</span>)]
+</span><span class="kw">pub use </span>value::layout::{BinProtRule, Layout};
 <span class="kw">pub use </span>value::Value;
 <span class="kw">pub use </span>write_ext::WriteBinProtExt;
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="bin_prot" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (40336865f 2022-08-15)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="bin_prot" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (c0941dfb5 2022-08-21)" ></div></body></html>

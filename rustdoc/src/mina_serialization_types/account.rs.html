@@ -234,8 +234,8 @@
 <span class="kw">use </span>versioned::Versioned;
 
 <span class="doccomment">/// An account as is serialized into the Mina ledger database stores
-</span><span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]</span>
-<span class="kw">pub struct </span>Account {
+</span><span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]
+</span><span class="kw">pub struct </span>Account {
     <span class="doccomment">/// Account public key
     </span><span class="kw">pub </span>public_key: PublicKey2V1,
     <span class="doccomment">/// Account token ID
@@ -265,8 +265,8 @@
 </span><span class="kw">pub type </span>AccountV1 = Versioned&lt;Versioned&lt;Versioned&lt;Account, <span class="number">1</span>&gt;, <span class="number">1</span>&gt;, <span class="number">1</span>&gt;;
 
 <span class="doccomment">/// An account as is serialized into the Mina ledger database stores (unversioned)
-</span><span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]</span>
-<span class="kw">pub struct </span>AccountV0 {
+</span><span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]
+</span><span class="kw">pub struct </span>AccountV0 {
     <span class="doccomment">/// Account public key
     </span><span class="kw">pub </span>public_key: CompressedCurvePoint,
     <span class="doccomment">/// Account token ID
@@ -297,8 +297,8 @@
 }
 
 <span class="doccomment">/// FIXME: Need to learn exactly what this is..
-</span><span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]</span>
-<span class="kw">pub enum </span>TokenPermissions {
+</span><span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]
+</span><span class="kw">pub enum </span>TokenPermissions {
     <span class="doccomment">/// Account does not own a token
     </span>NotOwned {
         <span class="doccomment">/// ?
@@ -315,8 +315,8 @@
 </span><span class="kw">pub type </span>TokenPermissionsV1 = Versioned&lt;Versioned&lt;TokenPermissions, <span class="number">1</span>&gt;, <span class="number">1</span>&gt;;
 
 <span class="doccomment">/// Permissions associated with the account
-</span><span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]</span>
-<span class="kw">pub struct </span>PermissionsLegacy {
+</span><span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]
+</span><span class="kw">pub struct </span>PermissionsLegacy {
     <span class="doccomment">/// If the account can stake
     </span><span class="kw">pub </span>stake: bool,
     <span class="doccomment">/// Permission required to edit state
@@ -334,8 +334,8 @@
 }
 
 <span class="doccomment">/// Permissions associated with the account
-</span><span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]</span>
-<span class="kw">pub struct </span>Permissions {
+</span><span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]
+</span><span class="kw">pub struct </span>Permissions {
     <span class="doccomment">/// Permission required to edit state
     </span><span class="kw">pub </span>edit_state: AuthRequired,
     <span class="doccomment">/// Permission required to send a balance
@@ -364,8 +364,8 @@
 </span><span class="kw">pub type </span>PermissionsV1 = Versioned&lt;Versioned&lt;PermissionsLegacy, <span class="number">1</span>&gt;, <span class="number">1</span>&gt;;
 
 <span class="doccomment">/// The level of auth required to perform a particular action with an account
-</span><span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]</span>
-<span class="kw">pub enum </span>AuthRequired {
+</span><span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]
+</span><span class="kw">pub enum </span>AuthRequired {
     <span class="doccomment">/// None required
     </span><span class="prelude-val">None</span>,
     <span class="doccomment">/// Either a proof or a signature
@@ -386,8 +386,8 @@
 
 <span class="doccomment">/// Timing information for an account with regard to when its balance is accessable
 /// This is to allow vesting from an initial genesis allocation
-</span><span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]</span>
-<span class="kw">pub enum </span>Timing {
+</span><span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]
+</span><span class="kw">pub enum </span>Timing {
     <span class="doccomment">/// Account does not have any timing limitations
     </span>Untimed,
     <span class="doccomment">/// Account does have timing limitations as specified
@@ -395,8 +395,8 @@
 }
 
 <span class="doccomment">/// TODO
-</span><span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]</span>
-<span class="kw">pub enum </span>TimingV0 {
+</span><span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]
+</span><span class="kw">pub enum </span>TimingV0 {
     <span class="doccomment">/// Account does not have any timing limitations
     </span>Untimed,
     <span class="doccomment">/// Account does have timing limitations as specified
@@ -405,8 +405,8 @@
 
 <span class="doccomment">/// Payload for the timing variant Timed
 /// Needs its own version byte
-</span><span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]</span>
-<span class="kw">pub struct </span>TimedData {
+</span><span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]
+</span><span class="kw">pub struct </span>TimedData {
     <span class="doccomment">/// Initial balance for the account
     </span><span class="kw">pub </span>initial_minimum_balance: AmountV1,
     <span class="doccomment">/// Time when all balance is avaiable
@@ -420,8 +420,8 @@
 }
 
 <span class="doccomment">/// TODO
-</span><span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]</span>
-<span class="kw">pub struct </span>TimedDataV0 {
+</span><span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]
+</span><span class="kw">pub struct </span>TimedDataV0 {
     <span class="doccomment">/// Initial balance for the account
     </span><span class="kw">pub </span>initial_minimum_balance: u64,
     <span class="doccomment">/// Time when all balance is avaiable
@@ -441,4 +441,4 @@
 <span class="doccomment">/// Timing information for an account with regard to when its balance is accessable (v1)
 </span><span class="kw">pub type </span>TimingV1 = Versioned&lt;Versioned&lt;Timing, <span class="number">1</span>&gt;, <span class="number">1</span>&gt;;
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_serialization_types" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (40336865f 2022-08-15)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_serialization_types" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (c0941dfb5 2022-08-21)" ></div></body></html>

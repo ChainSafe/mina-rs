@@ -552,7 +552,7 @@
 <span class="kw">const </span>ERR_FAIL_TO_DECODE_B64: <span class="kw-2">&amp;</span>str = <span class="string">&quot;Failed to decode hash from base64&quot;</span>;
 <span class="kw">const </span>ERR_FAIL_TO_DECODE_HEX: <span class="kw-2">&amp;</span>str = <span class="string">&quot;Failed to decode hash from hex&quot;</span>;
 
-<span class="macro">lazy_static::lazy_static!</span> {
+<span class="macro">lazy_static::lazy_static! </span>{
     <span class="doccomment">/// Config instance for initializing genesis block in mainnet
     </span><span class="kw">pub static </span><span class="kw-2">ref </span>MAINNET_CONFIG: GenesisInitConfig = GenesisInitConfig::mainnet();
     <span class="doccomment">/// Config instance for initializing genesis block in devnet
@@ -574,7 +574,7 @@
     <span class="kw">pub</span>(<span class="kw">crate</span>) coinbase_receiver: CompressedPubKey,
     <span class="kw">pub</span>(<span class="kw">crate</span>) genesis_state_hash: StateHash,
     <span class="kw">pub</span>(<span class="kw">crate</span>) previous_state_hash: StateHash,
-    <span class="kw">pub</span>(<span class="kw">crate</span>) blockchain_state: BlockchainState,
+    <span class="kw">pub</span>(<span class="kw">crate</span>) blockchain_state: BlockchainStateLegacy,
     <span class="kw">pub</span>(<span class="kw">crate</span>) protocol_state_proof: ProtocolStateProof,
     <span class="kw">pub</span>(<span class="kw">crate</span>) delta_transition_chain_proof: DeltaTransitionChainProof,
 }
@@ -627,7 +627,7 @@
             data
         };
 
-        <span class="kw">let </span>blockchain_state = BlockchainState {
+        <span class="kw">let </span>blockchain_state = BlockchainStateLegacy {
             timestamp: BlockTime::from_unix_epoch(<span class="number">1615939200</span>),
             snarked_next_available_token: TokenId(<span class="number">2</span>),
             snarked_ledger_hash: LedgerHash::from_str(
@@ -1071,4 +1071,4 @@
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="mina_consensus" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (40336865f 2022-08-15)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="mina_consensus" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (c0941dfb5 2022-08-21)" ></div></body></html>

@@ -32,9 +32,9 @@
 <span class="kw">use </span>proof_systems::mina_signer::CompressedPubKey;
 
 <span class="doccomment">/// The data specific to payload commands
-</span><span class="attribute">#[derive(Clone, Eq, PartialEq, Debug, AutoFrom)]</span>
-<span class="attribute">#[auto_from(mina_serialization_types::staged_ledger_diff::PaymentPayload)]</span>
-<span class="kw">pub struct </span>PaymentPayload {
+</span><span class="attribute">#[derive(Clone, Eq, PartialEq, Debug, AutoFrom)]
+#[auto_from(mina_serialization_types::staged_ledger_diff::PaymentPayload)]
+</span><span class="kw">pub struct </span>PaymentPayload {
     <span class="doccomment">/// Account to transfer from
     </span><span class="kw">pub </span>source_pk: CompressedPubKey,
     <span class="doccomment">/// Account to transfer to
@@ -45,4 +45,4 @@
     </span><span class="kw">pub </span>amount: Amount,
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="mina_rs_base" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (40336865f 2022-08-15)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="mina_rs_base" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (c0941dfb5 2022-08-21)" ></div></body></html>

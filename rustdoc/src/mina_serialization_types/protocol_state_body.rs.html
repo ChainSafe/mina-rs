@@ -48,8 +48,8 @@
 <span class="kw">use </span>versioned::<span class="kw-2">*</span>;
 
 <span class="doccomment">/// Body of the protocol state
-</span><span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]</span>
-<span class="kw">pub struct </span>ProtocolStateBody {
+</span><span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]
+</span><span class="kw">pub struct </span>ProtocolStateBody {
     <span class="doccomment">/// Genesis protocol state hash (used for hardforks)
     </span><span class="kw">pub </span>genesis_state_hash: HashV1,
     <span class="doccomment">/// Ledger related state
@@ -64,9 +64,9 @@
 </span><span class="kw">pub type </span>ProtocolStateBodyV1 = Versioned&lt;Versioned&lt;ProtocolStateBody, <span class="number">1</span>&gt;, <span class="number">1</span>&gt;;
 
 <span class="doccomment">/// Body of the protocol state (json)
-</span><span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq, AutoFrom)]</span>
-<span class="attribute">#[auto_from(ProtocolStateBody)]</span>
-<span class="kw">pub struct </span>ProtocolStateBodyJson {
+</span><span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq, AutoFrom)]
+#[auto_from(ProtocolStateBody)]
+</span><span class="kw">pub struct </span>ProtocolStateBodyJson {
     <span class="doccomment">/// Genesis protocol state hash (used for hardforks)
     </span><span class="kw">pub </span>genesis_state_hash: StateHashV1Json,
     <span class="doccomment">/// Ledger related state
@@ -77,4 +77,4 @@
     </span><span class="kw">pub </span>constants: ProtocolConstantsJson,
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_serialization_types" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (40336865f 2022-08-15)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_serialization_types" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (c0941dfb5 2022-08-21)" ></div></body></html>

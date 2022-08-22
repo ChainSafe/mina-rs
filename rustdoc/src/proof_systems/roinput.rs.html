@@ -141,12 +141,43 @@
 <span id="141">141</span>
 <span id="142">142</span>
 <span id="143">143</span>
+<span id="144">144</span>
+<span id="145">145</span>
+<span id="146">146</span>
+<span id="147">147</span>
+<span id="148">148</span>
+<span id="149">149</span>
+<span id="150">150</span>
+<span id="151">151</span>
+<span id="152">152</span>
+<span id="153">153</span>
+<span id="154">154</span>
+<span id="155">155</span>
+<span id="156">156</span>
+<span id="157">157</span>
+<span id="158">158</span>
+<span id="159">159</span>
+<span id="160">160</span>
+<span id="161">161</span>
+<span id="162">162</span>
+<span id="163">163</span>
+<span id="164">164</span>
+<span id="165">165</span>
+<span id="166">166</span>
+<span id="167">167</span>
+<span id="168">168</span>
+<span id="169">169</span>
+<span id="170">170</span>
+<span id="171">171</span>
+<span id="172">172</span>
 </pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
 </span><span class="doccomment">//! Module contains the implementation of chunked Random Oracle input
 
-</span><span class="kw">use </span>ark_ff::{fields::PrimeField, BigInteger, BigInteger256, Zero};
+</span><span class="kw">use </span>std::fmt::Display;
+
+<span class="kw">use </span>ark_ff::{fields::PrimeField, BigInteger, BigInteger256, Zero};
 <span class="kw">use </span>bitvec::prelude::<span class="kw-2">*</span>;
 <span class="kw">use </span>mina_hasher::{Fp, ROInput};
 <span class="kw">use </span>o1_utils::FieldHelpers;
@@ -161,8 +192,8 @@
 }
 
 <span class="doccomment">/// Chunked Random Oracle input
-</span><span class="attribute">#[derive(Default, Debug, Clone, Eq, PartialEq)]</span>
-<span class="kw">pub struct </span>ChunkedROInput {
+</span><span class="attribute">#[derive(Default, Debug, Clone, Eq, PartialEq)]
+</span><span class="kw">pub struct </span>ChunkedROInput {
     <span class="kw">pub </span>fields: Vec&lt;Fp&gt;,
     <span class="kw">pub </span>packed: Vec&lt;(Fp, u32)&gt;,
 }
@@ -194,6 +225,14 @@
     <span class="doccomment">/// Append a base field element
     </span><span class="kw">pub fn </span>append_packed(<span class="kw-2">mut </span><span class="self">self</span>, f: Fp, max_bits: u32) -&gt; <span class="self">Self </span>{
         <span class="self">self</span>.packed.push((f, max_bits));
+        <span class="self">self
+    </span>}
+
+    <span class="doccomment">/// Append bytes
+    </span><span class="kw">pub fn </span>append_bytes(<span class="kw-2">mut </span><span class="self">self</span>, bytes: <span class="kw-2">&amp;</span>[u8]) -&gt; <span class="self">Self </span>{
+        <span class="kw">for </span>b <span class="kw">in </span>bytes.as_bits::&lt;Lsb0&gt;().to_bitvec() {
+            <span class="self">self </span>= <span class="self">self</span>.append_bool(b);
+        }
         <span class="self">self
     </span>}
 
@@ -261,12 +300,12 @@
     /// supported in proof-systems, use [anyhow::Result] for convinience
     </span><span class="kw">pub fn </span>bits_to_fp(<span class="kw-2">mut </span>bits: BitVec&lt;u8&gt;) -&gt; anyhow::Result&lt;Fp&gt; {
         <span class="kw">let </span>size_in_bits = Fp::size_in_bits();
-        <span class="kw">if </span>bits.len() &gt; size_in_bits {
-            <span class="macro">anyhow::bail!</span>(<span class="string">&quot;Input should not be greater than {size_in_bits} bits&quot;</span>)
-        } <span class="kw">else </span>{
-            bits.resize(size_in_bits, <span class="bool-val">false</span>);
-            <span class="prelude-val">Ok</span>(Fp::from_bytes(<span class="kw-2">&amp;</span>bits.into_vec())<span class="question-mark">?</span>)
-        }
+        <span class="macro">anyhow::ensure!</span>(
+            bits.len() &lt;= size_in_bits,
+            <span class="string">&quot;Input should not be greater than {size_in_bits} bits&quot;</span>,
+        );
+        bits.resize(size_in_bits, <span class="bool-val">false</span>);
+        <span class="prelude-val">Ok</span>(Fp::from_bytes(<span class="kw-2">&amp;</span>bits.into_vec())<span class="question-mark">?</span>)
     }
 
     <span class="doccomment">/// Convert [BitVec] to [Fp], panics when any error occurs
@@ -284,5 +323,24 @@
         roi
     }
 }
+
+<span class="kw">impl </span>Display <span class="kw">for </span>ChunkedROInput {
+    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>std::fmt::Formatter&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; std::fmt::Result {
+        <span class="kw">fn </span>fp_to_str(fp: Fp) -&gt; String {
+            <span class="kw">let </span>big256: BigInteger256 = fp.into();
+            <span class="kw">let </span>big: num::BigUint = big256.into();
+            big.to_str_radix(<span class="number">10</span>)
+        }
+        <span class="macro">writeln!</span>(f, <span class="string">&quot;fields ({}):&quot;</span>, <span class="self">self</span>.fields.len())<span class="question-mark">?</span>;
+        <span class="kw">for </span>fp <span class="kw">in </span><span class="kw-2">&amp;</span><span class="self">self</span>.fields {
+            <span class="macro">writeln!</span>(f, <span class="string">&quot;\t{}&quot;</span>, fp_to_str(<span class="kw-2">*</span>fp))<span class="question-mark">?</span>;
+        }
+        <span class="macro">writeln!</span>(f, <span class="string">&quot;packed: ({}):&quot;</span>, <span class="self">self</span>.packed.len())<span class="question-mark">?</span>;
+        <span class="kw">for </span>(fp, l) <span class="kw">in </span><span class="kw-2">&amp;</span><span class="self">self</span>.packed {
+            <span class="macro">writeln!</span>(f, <span class="string">&quot;\t{l}:{}&quot;</span>, fp_to_str(<span class="kw-2">*</span>fp))<span class="question-mark">?</span>;
+        }
+        <span class="prelude-val">Ok</span>(())
+    }
+}
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="proof_systems" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (40336865f 2022-08-15)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="proof_systems" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (c0941dfb5 2022-08-21)" ></div></body></html>

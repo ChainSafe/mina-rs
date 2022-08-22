@@ -151,12 +151,60 @@
 <span id="151">151</span>
 <span id="152">152</span>
 <span id="153">153</span>
+<span id="154">154</span>
+<span id="155">155</span>
+<span id="156">156</span>
+<span id="157">157</span>
+<span id="158">158</span>
+<span id="159">159</span>
+<span id="160">160</span>
+<span id="161">161</span>
+<span id="162">162</span>
+<span id="163">163</span>
+<span id="164">164</span>
+<span id="165">165</span>
+<span id="166">166</span>
+<span id="167">167</span>
+<span id="168">168</span>
+<span id="169">169</span>
+<span id="170">170</span>
+<span id="171">171</span>
+<span id="172">172</span>
+<span id="173">173</span>
+<span id="174">174</span>
+<span id="175">175</span>
+<span id="176">176</span>
+<span id="177">177</span>
+<span id="178">178</span>
+<span id="179">179</span>
+<span id="180">180</span>
+<span id="181">181</span>
+<span id="182">182</span>
+<span id="183">183</span>
+<span id="184">184</span>
+<span id="185">185</span>
+<span id="186">186</span>
+<span id="187">187</span>
+<span id="188">188</span>
+<span id="189">189</span>
+<span id="190">190</span>
+<span id="191">191</span>
+<span id="192">192</span>
+<span id="193">193</span>
+<span id="194">194</span>
+<span id="195">195</span>
+<span id="196">196</span>
+<span id="197">197</span>
+<span id="198">198</span>
+<span id="199">199</span>
+<span id="200">200</span>
 </pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
 </span><span class="doccomment">//! Types and funcions related to the Mina consensus state
 
 </span><span class="kw">use crate</span>::{
+    common::CompressedPubKeyHashableWrapper,
     epoch_data::EpochData,
     global_slot::GlobalSlot,
     numbers::{Amount, GlobalSlotNumber, Length},
@@ -167,18 +215,21 @@
 };
 <span class="kw">use </span>mina_serialization_types::{json::<span class="kw-2">*</span>, v1::<span class="kw-2">*</span>, <span class="kw-2">*</span>};
 <span class="kw">use </span>mina_serialization_types_macros::AutoFrom;
-<span class="kw">use </span>proof_systems::mina_hasher::{Hashable, ROInput};
-<span class="kw">use </span>proof_systems::mina_signer::CompressedPubKey;
+<span class="kw">use </span>proof_systems::{
+    mina_hasher::{Hashable, ROInput},
+    ToChunkedROInput,
+};
+<span class="kw">use </span>proof_systems::{mina_signer::CompressedPubKey, ChunkedROInput};
 <span class="kw">use </span>smart_default::SmartDefault;
 <span class="kw">use </span>versioned::<span class="kw-2">*</span>;
 
 <span class="doccomment">/// Wrapper struct for the output for a VRF
 </span><span class="attribute">#[derive(
     Clone, Default, Eq, PartialEq, Debug, derive_more::From, derive_more::Into, AutoFrom, PartialOrd,
-)]</span>
-<span class="attribute">#[auto_from(mina_serialization_types::consensus_state::VrfOutputTruncated)]</span>
-<span class="attribute">#[auto_from(mina_serialization_types::consensus_state::VrfOutputTruncatedJson)]</span>
-<span class="kw">pub struct </span>VrfOutputTruncated(<span class="kw">pub </span>Vec&lt;u8&gt;);
+)]
+#[auto_from(mina_serialization_types::consensus_state::VrfOutputTruncated)]
+#[auto_from(mina_serialization_types::consensus_state::VrfOutputTruncatedJson)]
+</span><span class="kw">pub struct </span>VrfOutputTruncated(<span class="kw">pub </span>Vec&lt;u8&gt;);
 
 <span class="kw">impl </span>VrfOutputTruncated {
     <span class="doccomment">/// Calculates blake2b digest
@@ -217,6 +268,26 @@
     </span>}
 }
 
+<span class="kw">impl </span>ToChunkedROInput <span class="kw">for </span>VrfOutputTruncated {
+    <span class="kw">fn </span>to_chunked_roinput(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; ChunkedROInput {
+        <span class="kw">if </span><span class="self">self</span>.<span class="number">0</span>.len() &lt;= <span class="number">31 </span>{
+            ChunkedROInput::new().append_bytes(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0</span>)
+        } <span class="kw">else </span>{
+            <span class="kw">let </span>roi = ChunkedROInput::new().append_bytes(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0</span>[..<span class="number">31</span>]);
+            <span class="kw">if </span><span class="self">self</span>.<span class="number">0</span>.len() &gt; <span class="number">31 </span>{
+                <span class="kw">let </span>last = <span class="self">self</span>.<span class="number">0</span>[<span class="number">31</span>];
+                roi.append_bool(last &amp; <span class="number">0b1 </span>&gt; <span class="number">0</span>)
+                    .append_bool(last &amp; <span class="number">0b10 </span>&gt; <span class="number">0</span>)
+                    .append_bool(last &amp; <span class="number">0b100 </span>&gt; <span class="number">0</span>)
+                    .append_bool(last &amp; <span class="number">0b1000 </span>&gt; <span class="number">0</span>)
+                    .append_bool(last &amp; <span class="number">0b10000 </span>&gt; <span class="number">0</span>)
+            } <span class="kw">else </span>{
+                roi
+            }
+        }
+    }
+}
+
 <span class="doccomment">/// This structure encapsulates the succinct state of the consensus protocol.
 ///
 /// The stake distribution information is contained by the staking_epoch_data field.
@@ -226,9 +297,9 @@
 /// approach where the future stake distribution snapshot is prepared by the current consensus epoch.
 ///
 /// Samasika prepares the past for the future! This future state is stored in the next_epoch_data field.
-</span><span class="attribute">#[derive(Clone, Debug, Eq, PartialEq, SmartDefault, AutoFrom)]</span>
-<span class="attribute">#[auto_from(mina_serialization_types::consensus_state::ConsensusState)]</span>
-<span class="kw">pub struct </span>ConsensusState {
+</span><span class="attribute">#[derive(Clone, Debug, Eq, PartialEq, SmartDefault, AutoFrom)]
+#[auto_from(mina_serialization_types::consensus_state::ConsensusState)]
+</span><span class="kw">pub struct </span>ConsensusState {
     <span class="doccomment">/// Height of block
     </span><span class="kw">pub </span>blockchain_length: Length,
     <span class="doccomment">/// Epoch number
@@ -252,19 +323,26 @@
     <span class="doccomment">/// If the block has an ancestor in the same checkpoint window
     </span><span class="kw">pub </span>has_ancestor_in_same_checkpoint_window: bool,
     <span class="doccomment">/// Compressed public key of winning account
-    </span><span class="attribute">#[default(CompressedPubKey::from_address(<span class="string">&quot;B62qiy32p8kAKnny8ZFwoMhYpBppM1DWVCqAPBYNcXnsAHhnfAAuXgg&quot;</span>).unwrap())]</span>
-    <span class="kw">pub </span>block_stake_winner: CompressedPubKey,
+    </span><span class="attribute">#[default(CompressedPubKey::from_address(<span class="string">&quot;B62qiy32p8kAKnny8ZFwoMhYpBppM1DWVCqAPBYNcXnsAHhnfAAuXgg&quot;</span>).unwrap())]
+    </span><span class="kw">pub </span>block_stake_winner: CompressedPubKey,
     <span class="doccomment">/// Compressed public key of the block producer
-    </span><span class="attribute">#[default(CompressedPubKey::from_address(<span class="string">&quot;B62qiy32p8kAKnny8ZFwoMhYpBppM1DWVCqAPBYNcXnsAHhnfAAuXgg&quot;</span>).unwrap())]</span>
-    <span class="kw">pub </span>block_creator: CompressedPubKey,
+    </span><span class="attribute">#[default(CompressedPubKey::from_address(<span class="string">&quot;B62qiy32p8kAKnny8ZFwoMhYpBppM1DWVCqAPBYNcXnsAHhnfAAuXgg&quot;</span>).unwrap())]
+    </span><span class="kw">pub </span>block_creator: CompressedPubKey,
     <span class="doccomment">/// Compresed public key of account receiving the block reward
-    </span><span class="attribute">#[default(CompressedPubKey::from_address(<span class="string">&quot;B62qiy32p8kAKnny8ZFwoMhYpBppM1DWVCqAPBYNcXnsAHhnfAAuXgg&quot;</span>).unwrap())]</span>
-    <span class="kw">pub </span>coinbase_receiver: CompressedPubKey,
+    </span><span class="attribute">#[default(CompressedPubKey::from_address(<span class="string">&quot;B62qiy32p8kAKnny8ZFwoMhYpBppM1DWVCqAPBYNcXnsAHhnfAAuXgg&quot;</span>).unwrap())]
+    </span><span class="kw">pub </span>coinbase_receiver: CompressedPubKey,
     <span class="doccomment">/// true if block_stake_winner has no locked tokens, false otherwise
     </span><span class="kw">pub </span>supercharge_coinbase: bool,
 }
 
 <span class="macro">impl_from_with_proxy!</span>(ConsensusState, ConsensusStateV1, ConsensusStateJson);
+
+<span class="kw">impl </span>ConsensusState {
+    <span class="doccomment">/// Returns the sub-window densities as a vec of u32
+    </span><span class="kw">pub fn </span>sub_window_densities(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Vec&lt;u32&gt; {
+        <span class="self">self</span>.sub_window_densities.iter().map(|i| i.<span class="number">0</span>).collect()
+    }
+}
 
 <span class="kw">impl </span>Hashable <span class="kw">for </span>ConsensusState {
     <span class="kw">type </span>D = ();
@@ -298,11 +376,27 @@
     </span>}
 }
 
-<span class="kw">impl </span>ConsensusState {
-    <span class="doccomment">/// Returns the sub-window densities as a vec of u32
-    </span><span class="kw">pub fn </span>sub_window_densities(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Vec&lt;u32&gt; {
-        <span class="self">self</span>.sub_window_densities.iter().map(|i| i.<span class="number">0</span>).collect()
+<span class="kw">impl </span>ToChunkedROInput <span class="kw">for </span>ConsensusState {
+    <span class="kw">fn </span>to_chunked_roinput(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; ChunkedROInput {
+        <span class="kw">let </span><span class="kw-2">mut </span>roi = ChunkedROInput::new()
+            .append_chunked(<span class="kw-2">&amp;</span><span class="self">self</span>.blockchain_length)
+            .append_chunked(<span class="kw-2">&amp;</span><span class="self">self</span>.epoch_count)
+            .append_chunked(<span class="kw-2">&amp;</span><span class="self">self</span>.min_window_density);
+        <span class="kw">for </span>l <span class="kw">in </span><span class="kw-2">&amp;</span><span class="self">self</span>.sub_window_densities {
+            roi = roi.append_chunked(l);
+        }
+        roi.append_chunked(<span class="kw-2">&amp;</span><span class="self">self</span>.last_vrf_output)
+            .append_chunked(<span class="kw-2">&amp;</span><span class="self">self</span>.total_currency)
+            .append_chunked(<span class="kw-2">&amp;</span><span class="self">self</span>.curr_global_slot)
+            .append_chunked(<span class="kw-2">&amp;</span><span class="self">self</span>.global_slot_since_genesis)
+            .append_bool(<span class="self">self</span>.has_ancestor_in_same_checkpoint_window)
+            .append_bool(<span class="self">self</span>.supercharge_coinbase)
+            .append_chunked(<span class="kw-2">&amp;</span><span class="self">self</span>.staking_epoch_data)
+            .append_chunked(<span class="kw-2">&amp;</span><span class="self">self</span>.next_epoch_data)
+            .append_chunked(<span class="kw-2">&amp;</span>CompressedPubKeyHashableWrapper(<span class="kw-2">&amp;</span><span class="self">self</span>.block_stake_winner))
+            .append_chunked(<span class="kw-2">&amp;</span>CompressedPubKeyHashableWrapper(<span class="kw-2">&amp;</span><span class="self">self</span>.block_creator))
+            .append_chunked(<span class="kw-2">&amp;</span>CompressedPubKeyHashableWrapper(<span class="kw-2">&amp;</span><span class="self">self</span>.coinbase_receiver))
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_rs_base" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (40336865f 2022-08-15)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_rs_base" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (c0941dfb5 2022-08-21)" ></div></body></html>

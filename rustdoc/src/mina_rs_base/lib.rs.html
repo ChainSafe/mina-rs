@@ -55,6 +55,8 @@
 <span id="55">55</span>
 <span id="56">56</span>
 <span id="57">57</span>
+<span id="58">58</span>
+<span id="59">59</span>
 </pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
@@ -64,11 +66,12 @@
 //! All types are versioned where required.
 //!
 
-</span><span class="attribute">#![deny(warnings)]</span>
-<span class="attribute">#![deny(missing_docs)]</span>
+</span><span class="attribute">#![deny(warnings)]
+#![deny(missing_docs)]
 
-<span class="kw">pub mod </span>account;
+</span><span class="kw">pub mod </span>account;
 <span class="kw">pub mod </span>blockchain_state;
+<span class="kw">pub mod </span>blockchain_state_registers;
 <span class="kw">pub mod </span>common;
 <span class="kw">pub mod </span>consensus_state;
 <span class="kw">mod </span>constants;
@@ -97,6 +100,7 @@
 </span><span class="kw">pub mod </span>types {
     <span class="kw">pub use </span><span class="kw">super</span>::account::<span class="kw-2">*</span>;
     <span class="kw">pub use </span><span class="kw">super</span>::blockchain_state::<span class="kw-2">*</span>;
+    <span class="kw">pub use </span><span class="kw">super</span>::blockchain_state_registers::<span class="kw-2">*</span>;
     <span class="kw">pub use </span><span class="kw">super</span>::common::<span class="kw-2">*</span>;
     <span class="kw">pub use </span><span class="kw">super</span>::consensus_state::<span class="kw-2">*</span>;
     <span class="kw">pub use </span><span class="kw">super</span>::delta_transition_chain_proof::<span class="kw-2">*</span>;
@@ -113,4 +117,4 @@
     <span class="kw">pub use </span><span class="kw">super</span>::verification_key::<span class="kw-2">*</span>;
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_rs_base" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (40336865f 2022-08-15)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_rs_base" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (c0941dfb5 2022-08-21)" ></div></body></html>

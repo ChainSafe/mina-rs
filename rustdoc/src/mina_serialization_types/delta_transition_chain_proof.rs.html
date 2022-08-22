@@ -25,12 +25,12 @@
 <span class="kw">use </span>serde::{Deserialize, Serialize};
 
 <span class="doccomment">/// Proof that the block was produced within the allotted slot time
-</span><span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]</span>
-<span class="kw">pub struct </span>DeltaTransitionChainProof(<span class="kw">pub </span>HashV1, <span class="kw">pub </span>Vec&lt;HashV1&gt;);
+</span><span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq)]
+</span><span class="kw">pub struct </span>DeltaTransitionChainProof(<span class="kw">pub </span>HashV1, <span class="kw">pub </span>Vec&lt;HashV1&gt;);
 
 <span class="doccomment">/// Proof that the block was produced within the allotted slot time (json)
-</span><span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq, AutoFrom)]</span>
-<span class="attribute">#[auto_from(DeltaTransitionChainProof)]</span>
-<span class="kw">pub struct </span>DeltaTransitionChainProofJson(<span class="kw">pub </span>LedgerHashV1Json, <span class="kw">pub </span>Vec&lt;LedgerHashV1Json&gt;);
+</span><span class="attribute">#[derive(Clone, Debug, Serialize, Deserialize, Eq, PartialEq, AutoFrom)]
+#[auto_from(DeltaTransitionChainProof)]
+</span><span class="kw">pub struct </span>DeltaTransitionChainProofJson(<span class="kw">pub </span>LedgerHashV1Json, <span class="kw">pub </span>Vec&lt;LedgerHashV1Json&gt;);
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_serialization_types" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (40336865f 2022-08-15)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_serialization_types" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (c0941dfb5 2022-08-21)" ></div></body></html>
