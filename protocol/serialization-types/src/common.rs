@@ -431,6 +431,9 @@ pub type EpochSeedHashV1Json = HashV1Json<{ version_bytes::EPOCH_SEED }>;
 /// base58 string representation of a state hash
 pub type StateHashV1Json = HashV1Json<{ version_bytes::STATE_HASH }>;
 
+/// base58 string representation of a state hash
+pub type StateBodyHashV1Json = HashV1Json<{ version_bytes::STATE_BODY_HASH }>;
+
 /// base58 string representation of a coinbase stack data hash
 pub type CoinBaseStackDataV1Json = HashV1Json<{ version_bytes::COINBASE_STACK_DATA }>;
 

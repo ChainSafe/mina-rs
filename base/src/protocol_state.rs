@@ -4,7 +4,7 @@
 //! Types related to the Mina protocol state
 
 use crate::{
-    blockchain_state::BlockchainState,
+    blockchain_state::*,
     consensus_state::ConsensusState,
     global_slot::GlobalSlot,
     numbers::{BlockTime, Length},
@@ -12,7 +12,10 @@ use crate::{
 use mina_crypto::hash::StateHash;
 use mina_serialization_types::{json::*, v1::*};
 use mina_serialization_types_macros::AutoFrom;
-use proof_systems::mina_hasher::{create_legacy, Fp, Hashable, Hasher, ROInput};
+use proof_systems::{
+    mina_hasher::{create_kimchi, create_legacy, Fp, Hashable, Hasher, ROInput},
+    *,
+};
 use versioned::*;
 
 /// Constants that define the consensus parameters
@@ -54,19 +57,30 @@ impl Hashable for ProtocolConstants {
     }
 }
 
+impl ToChunkedROInput for ProtocolConstants {
+    fn to_chunked_roinput(&self) -> ChunkedROInput {
+        ChunkedROInput::new()
+            .append_chunked(&self.k)
+            .append_chunked(&self.delta)
+            .append_chunked(&self.slots_per_epoch)
+            .append_chunked(&self.slots_per_sub_window)
+            .append_chunked(&self.genesis_state_timestamp)
+    }
+}
+
 #[derive(Clone, Default, Debug, Eq, PartialEq, AutoFrom)]
 #[auto_from(mina_serialization_types::protocol_state::ProtocolState)]
-/// This structure can be thought of like the block header. It contains the most essential information of a block.
-pub struct ProtocolState {
+/// This structure can be thought of like the block header. It contains the most essential information of a block. (legacy)
+pub struct ProtocolStateLegacy {
     /// Commitment to previous block (hash of previous protocol state hash and body hash)
     pub previous_state_hash: StateHash,
     /// The body of the protocol state
-    pub body: ProtocolStateBody,
+    pub body: ProtocolStateBodyLegacy,
 }
 
-impl_from_with_proxy!(ProtocolState, ProtocolStateV1, ProtocolStateJson);
+impl_from_with_proxy!(ProtocolStateLegacy, ProtocolStateV1, ProtocolStateJson);
 
-impl Hashable for ProtocolState {
+impl Hashable for ProtocolStateLegacy {
     type D = ();
 
     fn to_roinput(&self) -> ROInput {
@@ -82,7 +96,7 @@ impl Hashable for ProtocolState {
     }
 }
 
-impl ProtocolState {
+impl ProtocolStateLegacy {
     /// Gets the current global slot the current epoch
     pub fn curr_global_slot(&self) -> &GlobalSlot {
         &self.body.consensus_state.curr_global_slot
@@ -103,12 +117,12 @@ impl ProtocolState {
 
 #[derive(Clone, Default, Debug, Eq, PartialEq, AutoFrom)]
 #[auto_from(mina_serialization_types::protocol_state_body::ProtocolStateBody)]
-/// Body of the protocol state
-pub struct ProtocolStateBody {
+/// Body of the protocol state (legacy)
+pub struct ProtocolStateBodyLegacy {
     /// Genesis protocol state hash (used for hardforks)
     pub genesis_state_hash: StateHash,
     /// Ledger related state
-    pub blockchain_state: BlockchainState,
+    pub blockchain_state: BlockchainStateLegacy,
     /// Consensus related state
     pub consensus_state: ConsensusState,
     /// Consensus constants
@@ -116,12 +130,12 @@ pub struct ProtocolStateBody {
 }
 
 impl_from_with_proxy!(
-    ProtocolStateBody,
+    ProtocolStateBodyLegacy,
     ProtocolStateBodyV1,
     ProtocolStateBodyJson
 );
 
-impl Hashable for ProtocolStateBody {
+impl Hashable for ProtocolStateBodyLegacy {
     type D = ();
 
     fn to_roinput(&self) -> ROInput {
@@ -147,7 +161,7 @@ pub trait Header {
     fn sub_window_densities(&self) -> &Vec<Length>;
 }
 
-impl Header for ProtocolState {
+impl Header for ProtocolStateLegacy {
     fn get_height(&self) -> Length {
         self.body.consensus_state.blockchain_length
     }
@@ -158,5 +172,71 @@ impl Header for ProtocolState {
 
     fn min_window_density(&self) -> Length {
         self.body.consensus_state.min_window_density
+    }
+}
+
+#[derive(Clone, Default, Debug, Eq, PartialEq)]
+/// Body of the protocol state
+pub struct ProtocolStateBody {
+    /// Genesis protocol state hash (used for hardforks)
+    pub genesis_state_hash: StateHash,
+    /// Ledger related state
+    pub blockchain_state: BlockchainState,
+    /// Consensus related state
+    pub consensus_state: ConsensusState,
+    /// Consensus constants
+    pub constants: ProtocolConstants,
+}
+
+impl Hashable for ProtocolStateBody {
+    type D = ();
+
+    fn to_roinput(&self) -> ROInput {
+        self.roinput()
+    }
+
+    fn domain_string(_: Self::D) -> Option<String> {
+        Some("CodaProtoStateBody".into())
+    }
+}
+
+impl ToChunkedROInput for ProtocolStateBody {
+    fn to_chunked_roinput(&self) -> ChunkedROInput {
+        ChunkedROInput::new()
+            .append_chunked(&self.constants)
+            .append_chunked(&self.genesis_state_hash)
+            .append_chunked(&self.blockchain_state)
+            .append_chunked(&self.consensus_state)
+    }
+}
+
+#[derive(Clone, Default, Debug, Eq, PartialEq)]
+/// This structure can be thought of like the block header. It contains the most essential information of a block.
+pub struct ProtocolState {
+    /// Commitment to previous block (hash of previous protocol state hash and body hash)
+    pub previous_state_hash: StateHash,
+    /// The body of the protocol state
+    pub body: ProtocolStateBody,
+}
+
+impl Hashable for ProtocolState {
+    type D = ();
+
+    fn to_roinput(&self) -> ROInput {
+        self.roinput()
+    }
+
+    fn domain_string(_: Self::D) -> Option<String> {
+        Some("CodaProtoState".into())
+    }
+}
+
+impl ToChunkedROInput for ProtocolState {
+    fn to_chunked_roinput(&self) -> ChunkedROInput {
+        let mut hasher = create_kimchi(());
+        let body_hash = hasher.hash(&self.body);
+        ChunkedROInput::new()
+            .append_chunked(&self.previous_state_hash)
+            .append_field(body_hash)
     }
 }

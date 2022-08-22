@@ -250,7 +250,7 @@ mod tests {
     #[wasm_bindgen_test]
     fn blockchain_state_json_serde_roundtrip() {
         json_serde_roundtrip!(
-            BlockchainState,
+            BlockchainStateLegacy,
             BlockchainStateJson,
             "protocol_state/body/blockchain_state"
         );
@@ -260,7 +260,7 @@ mod tests {
     #[wasm_bindgen_test]
     fn protocol_state_body_json_serde_roundtrip() {
         json_serde_roundtrip!(
-            ProtocolStateBody,
+            ProtocolStateBodyLegacy,
             ProtocolStateBodyJson,
             "protocol_state/body"
         );
@@ -269,7 +269,7 @@ mod tests {
     #[test]
     #[wasm_bindgen_test]
     fn protocol_state_json_serde_roundtrip() {
-        json_serde_roundtrip!(ProtocolState, ProtocolStateJson, "protocol_state");
+        json_serde_roundtrip!(ProtocolStateLegacy, ProtocolStateJson, "protocol_state");
     }
 
     #[test]

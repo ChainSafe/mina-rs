@@ -26,4 +26,3 @@ proof-systems = {path = "../proof-systems-shim"}
 anyhow = "1"
 ark-ff = "0.3"
 num = "0.4"
-pretty_assertions = "1"

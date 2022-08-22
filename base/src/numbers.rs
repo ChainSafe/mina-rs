@@ -52,6 +52,12 @@ impl Hashable for Length {
     }
 }
 
+impl ToChunkedROInput for Length {
+    fn to_chunked_roinput(&self) -> ChunkedROInput {
+        ChunkedROInput::new().append_u32(self.0)
+    }
+}
+
 #[derive(Clone, Eq, PartialEq, PartialOrd, Debug, Copy, Default, From, Into)]
 
 /// Represents a difference between two lengths
@@ -68,6 +74,16 @@ pub struct ExtendedU32(pub i32);
 #[derive(Clone, Eq, PartialEq, PartialOrd, Debug, Copy, Default, From, Into)]
 /// This will not be part of the public API once the deserialization refactor is complete
 pub struct ExtendedU64(pub u64);
+
+/// Signed amount, positive -> true, negative -> false
+#[derive(Copy, Clone, Eq, PartialEq, Debug, Default, From, Into)]
+pub struct SignedAmount(pub u64, pub bool);
+
+impl ToChunkedROInput for SignedAmount {
+    fn to_chunked_roinput(&self) -> ChunkedROInput {
+        ChunkedROInput::new().append_u64(self.0).append_bool(self.1)
+    }
+}
 
 /// This structure represents fixed point numbers
 /// typically amounts of Mina currency
@@ -168,6 +184,22 @@ impl GlobalSlotNumber {
     pub const MAX: Self = Self(u32::MAX);
 }
 
+impl ToChunkedROInput for GlobalSlotNumber {
+    fn to_chunked_roinput(&self) -> ChunkedROInput {
+        ChunkedROInput::new().append_u32(self.0)
+    }
+}
+
+/// Mina_numbers.Index
+#[derive(Copy, Clone, Eq, PartialEq, Debug, Default, From, Into)]
+pub struct MinaIndex(pub u32);
+
+impl ToChunkedROInput for MinaIndex {
+    fn to_chunked_roinput(&self) -> ChunkedROInput {
+        ChunkedROInput::new().append_u32(self.0)
+    }
+}
+
 #[derive(Clone, Eq, PartialEq, Debug, Default, From, Into)]
 /// 4 bytes wrapped by a version
 /// Will not form part of the public API when deserialization refactor is complete
@@ -209,7 +241,7 @@ impl Hashable for BlockTime {
 
 impl ToChunkedROInput for BlockTime {
     fn to_chunked_roinput(&self) -> ChunkedROInput {
-        ChunkedROInput::new().append_u32(self.0 as u32)
+        ChunkedROInput::new().append_u64(self.0)
     }
 }
 

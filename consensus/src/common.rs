@@ -8,7 +8,7 @@
 use crate::error::ConsensusError;
 use mina_rs_base::consensus_state::ConsensusState;
 use mina_rs_base::global_slot::GlobalSlot;
-use mina_rs_base::protocol_state::{Header, ProtocolState};
+use mina_rs_base::protocol_state::{Header, ProtocolStateLegacy};
 use mina_rs_base::types::{BlockTime, Length};
 use proof_systems::mina_hasher::Fp;
 
@@ -51,10 +51,10 @@ impl ConsensusConstants {
     }
 }
 
-/// A chain of [ProtocolState]
+/// A chain of [ProtocolStateLegacy]
 #[derive(Debug, Default, Eq, PartialEq, Clone)]
 // TODO: replace vec element with ExternalTransition
-pub struct ProtocolStateChain(pub Vec<ProtocolState>);
+pub struct ProtocolStateChain(pub Vec<ProtocolStateLegacy>);
 
 /// Trait that represents a chain of block data structure
 pub trait Chain<T>
@@ -84,12 +84,12 @@ where
     /// This function returns hash of the top block's protocol state for a given chain.
     /// The input is a chain C and the output is the hash.
     fn state_hash(&self) -> Option<Fp>;
-    /// Gets [ProtocolState] of the genesis block
-    fn genesis_block(&self) -> Option<&ProtocolState>;
+    /// Gets [ProtocolStateLegacy] of the genesis block
+    fn genesis_block(&self) -> Option<&ProtocolStateLegacy>;
 }
 
-impl Chain<ProtocolState> for ProtocolStateChain {
-    fn push(&mut self, new: ProtocolState) -> Result<(), ConsensusError> {
+impl Chain<ProtocolStateLegacy> for ProtocolStateChain {
+    fn push(&mut self, new: ProtocolStateLegacy) -> Result<(), ConsensusError> {
         match self.0.len() {
             0 => (),
             n => {
@@ -103,11 +103,11 @@ impl Chain<ProtocolState> for ProtocolStateChain {
         Ok(())
     }
 
-    fn top(&self) -> Option<&ProtocolState> {
+    fn top(&self) -> Option<&ProtocolStateLegacy> {
         self.0.last()
     }
 
-    fn genesis_block(&self) -> Option<&ProtocolState> {
+    fn genesis_block(&self) -> Option<&ProtocolStateLegacy> {
         self.0.first()
     }
 

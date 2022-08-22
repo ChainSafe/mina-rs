@@ -8,7 +8,7 @@ mod tests {
         consensus_state::ConsensusState,
         global_slot::GlobalSlot,
         numbers::Length,
-        types::{GlobalSlotNumber, ProtocolState},
+        types::{GlobalSlotNumber, ProtocolStateLegacy},
     };
     use wasm_bindgen_test::*;
 
@@ -37,7 +37,7 @@ mod tests {
             slots_per_epoch: Length(7140),
         };
 
-        let mut prot_state = ProtocolState::default();
+        let mut prot_state = ProtocolStateLegacy::default();
         prot_state.body.consensus_state = chain_a;
         let mut chain_a = ProtocolStateChain::default();
         chain_a.push(prot_state).unwrap();
@@ -64,7 +64,7 @@ mod tests {
             slots_per_epoch: Length(7140),
         };
 
-        let mut prot_state = ProtocolState::default();
+        let mut prot_state = ProtocolStateLegacy::default();
         prot_state.body.consensus_state = chain_c.clone();
         let mut chain_c = ProtocolStateChain::default();
         chain_c.push(prot_state).unwrap();
@@ -103,7 +103,7 @@ mod tests {
 
         genesis.curr_global_slot = genesis_global_slot;
 
-        let mut genesis_state = ProtocolState::default();
+        let mut genesis_state = ProtocolStateLegacy::default();
         genesis_state.body.consensus_state = genesis.clone();
         let mut genesis = ProtocolStateChain::default();
         genesis.push(genesis_state).unwrap();
@@ -130,7 +130,7 @@ mod tests {
             slots_per_epoch: Length(7140),
         };
 
-        let mut chain_1000_state = ProtocolState::default();
+        let mut chain_1000_state = ProtocolStateLegacy::default();
         chain_1000_state.body.consensus_state = chain_1000.clone();
         let mut chain_1000 = ProtocolStateChain::default();
         chain_1000.push(chain_1000_state).unwrap();

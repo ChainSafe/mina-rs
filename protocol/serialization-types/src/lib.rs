@@ -118,7 +118,7 @@ pub mod json {
     pub use common::{
         AuxHashJson, ByteVecJson, ChainHashV1Json, CharJson, CoinBaseHashV1Json,
         EpochSeedHashV1Json, HashV1Json, LedgerHashV1Json, PendingCoinbaseAuxHashJson,
-        StateHashV1Json, VrfOutputHashV1Json,
+        StateBodyHashV1Json, StateHashV1Json, VrfOutputHashV1Json,
     };
     pub use consensus_state::{ConsensusStateJson, VrfOutputTruncatedJson};
     pub use delta_transition_chain_proof::DeltaTransitionChainProofJson;

@@ -23,6 +23,9 @@ pub const EPOCH_SEED: u8 = 0x0d;
 /// base58 version check byte for state hash
 pub const STATE_HASH: u8 = 0x10;
 
+/// base58 version check byte for state body hash
+pub const STATE_BODY_HASH: u8 = 0x11;
+
 /// base58 version check byte for vrf output hash
 pub const VRF_TRUNCATED_OUTPUT: u8 = 0x15;
 

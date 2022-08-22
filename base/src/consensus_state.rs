@@ -4,6 +4,7 @@
 //! Types and funcions related to the Mina consensus state
 
 use crate::{
+    common::CompressedPubKeyHashableWrapper,
     epoch_data::EpochData,
     global_slot::GlobalSlot,
     numbers::{Amount, GlobalSlotNumber, Length},
@@ -14,8 +15,11 @@ use blake2::{
 };
 use mina_serialization_types::{json::*, v1::*, *};
 use mina_serialization_types_macros::AutoFrom;
-use proof_systems::mina_hasher::{Hashable, ROInput};
-use proof_systems::mina_signer::CompressedPubKey;
+use proof_systems::{
+    mina_hasher::{Hashable, ROInput},
+    ToChunkedROInput,
+};
+use proof_systems::{mina_signer::CompressedPubKey, ChunkedROInput};
 use smart_default::SmartDefault;
 use versioned::*;
 
@@ -61,6 +65,26 @@ impl Hashable for VrfOutputTruncated {
 
     fn domain_string(_: Self::D) -> Option<String> {
         None
+    }
+}
+
+impl ToChunkedROInput for VrfOutputTruncated {
+    fn to_chunked_roinput(&self) -> ChunkedROInput {
+        if self.0.len() <= 31 {
+            ChunkedROInput::new().append_bytes(&self.0)
+        } else {
+            let roi = ChunkedROInput::new().append_bytes(&self.0[..31]);
+            if self.0.len() > 31 {
+                let last = self.0[31];
+                roi.append_bool(last & 0b1 > 0)
+                    .append_bool(last & 0b10 > 0)
+                    .append_bool(last & 0b100 > 0)
+                    .append_bool(last & 0b1000 > 0)
+                    .append_bool(last & 0b10000 > 0)
+            } else {
+                roi
+            }
+        }
     }
 }
 
@@ -113,6 +137,13 @@ pub struct ConsensusState {
 
 impl_from_with_proxy!(ConsensusState, ConsensusStateV1, ConsensusStateJson);
 
+impl ConsensusState {
+    /// Returns the sub-window densities as a vec of u32
+    pub fn sub_window_densities(&self) -> Vec<u32> {
+        self.sub_window_densities.iter().map(|i| i.0).collect()
+    }
+}
+
 impl Hashable for ConsensusState {
     type D = ();
 
@@ -145,9 +176,25 @@ impl Hashable for ConsensusState {
     }
 }
 
-impl ConsensusState {
-    /// Returns the sub-window densities as a vec of u32
-    pub fn sub_window_densities(&self) -> Vec<u32> {
-        self.sub_window_densities.iter().map(|i| i.0).collect()
+impl ToChunkedROInput for ConsensusState {
+    fn to_chunked_roinput(&self) -> ChunkedROInput {
+        let mut roi = ChunkedROInput::new()
+            .append_chunked(&self.blockchain_length)
+            .append_chunked(&self.epoch_count)
+            .append_chunked(&self.min_window_density);
+        for l in &self.sub_window_densities {
+            roi = roi.append_chunked(l);
+        }
+        roi.append_chunked(&self.last_vrf_output)
+            .append_chunked(&self.total_currency)
+            .append_chunked(&self.curr_global_slot)
+            .append_chunked(&self.global_slot_since_genesis)
+            .append_bool(self.has_ancestor_in_same_checkpoint_window)
+            .append_bool(self.supercharge_coinbase)
+            .append_chunked(&self.staking_epoch_data)
+            .append_chunked(&self.next_epoch_data)
+            .append_chunked(&CompressedPubKeyHashableWrapper(&self.block_stake_winner))
+            .append_chunked(&CompressedPubKeyHashableWrapper(&self.block_creator))
+            .append_chunked(&CompressedPubKeyHashableWrapper(&self.coinbase_receiver))
     }
 }

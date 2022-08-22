@@ -3,6 +3,8 @@
 
 //! Module contains the implementation of chunked Random Oracle input
 
+use std::fmt::Display;
+
 use ark_ff::{fields::PrimeField, BigInteger, BigInteger256, Zero};
 use bitvec::prelude::*;
 use mina_hasher::{Fp, ROInput};
@@ -51,6 +53,14 @@ impl ChunkedROInput {
     /// Append a base field element
     pub fn append_packed(mut self, f: Fp, max_bits: u32) -> Self {
         self.packed.push((f, max_bits));
+        self
+    }
+
+    /// Append bytes
+    pub fn append_bytes(mut self, bytes: &[u8]) -> Self {
+        for b in bytes.as_bits::<Lsb0>().to_bitvec() {
+            self = self.append_bool(b);
+        }
         self
     }
 
@@ -118,12 +128,12 @@ impl ChunkedROInput {
     /// supported in proof-systems, use [anyhow::Result] for convinience
     pub fn bits_to_fp(mut bits: BitVec<u8>) -> anyhow::Result<Fp> {
         let size_in_bits = Fp::size_in_bits();
-        if bits.len() > size_in_bits {
-            anyhow::bail!("Input should not be greater than {size_in_bits} bits")
-        } else {
-            bits.resize(size_in_bits, false);
-            Ok(Fp::from_bytes(&bits.into_vec())?)
-        }
+        anyhow::ensure!(
+            bits.len() <= size_in_bits,
+            "Input should not be greater than {size_in_bits} bits",
+        );
+        bits.resize(size_in_bits, false);
+        Ok(Fp::from_bytes(&bits.into_vec())?)
     }
 
     /// Convert [BitVec] to [Fp], panics when any error occurs
@@ -139,5 +149,24 @@ impl From<ChunkedROInput> for ROInput {
             roi = roi.append_field(f);
         }
         roi
+    }
+}
+
+impl Display for ChunkedROInput {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        fn fp_to_str(fp: Fp) -> String {
+            let big256: BigInteger256 = fp.into();
+            let big: num::BigUint = big256.into();
+            big.to_str_radix(10)
+        }
+        writeln!(f, "fields ({}):", self.fields.len())?;
+        for fp in &self.fields {
+            writeln!(f, "\t{}", fp_to_str(*fp))?;
+        }
+        writeln!(f, "packed: ({}):", self.packed.len())?;
+        for (fp, l) in &self.packed {
+            writeln!(f, "\t{l}:{}", fp_to_str(*fp))?;
+        }
+        Ok(())
     }
 }

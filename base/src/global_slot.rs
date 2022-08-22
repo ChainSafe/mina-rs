@@ -5,7 +5,10 @@
 
 use crate::numbers::{self, Length};
 use mina_serialization_types_macros::AutoFrom;
-use proof_systems::mina_hasher::{Hashable, ROInput};
+use proof_systems::{
+    mina_hasher::{Hashable, ROInput},
+    ChunkedROInput, ToChunkedROInput,
+};
 
 #[derive(Clone, Default, Eq, PartialEq, Debug, AutoFrom)]
 #[auto_from(mina_serialization_types::global_slot::GlobalSlot)]
@@ -28,5 +31,13 @@ impl Hashable for GlobalSlot {
 
     fn domain_string(_: Self::D) -> Option<String> {
         None
+    }
+}
+
+impl ToChunkedROInput for GlobalSlot {
+    fn to_chunked_roinput(&self) -> ChunkedROInput {
+        ChunkedROInput::new()
+            .append_chunked(&self.slot_number)
+            .append_chunked(&self.slots_per_epoch)
     }
 }
