@@ -17,7 +17,7 @@ pub mod tests {
         let staged_ledger_hash = StagedLedgerHash {
             non_snark: NonSnarkStagedLedgerHash {
                 ledger_hash: LedgerHash::from_str(
-                    "jwxjg179rPZDX3N8x7rGs98NVKnXxQ6kauk4R421ZXEb551SPUu",
+                    "jwNYQU34Jb9FD6ZbKnWRALZqVDKbMrjZBKWFYZwAw8ZPMgv9Ld4",
                 )?,
                 aux_hash: AuxHash::from_str("UDRUFHSvxUAtV8sh7gzMVPqpbd46roG1wzWR6dYvB6RunPihom")?,
                 pending_coinbase_aux: PendingCoinbaseAuxHash::from_str(
@@ -32,26 +32,9 @@ pub mod tests {
             staged_ledger_hash.to_chunked_roinput(),
             genesis_staged_ledger_hash_chunked_roinput()?
         );
-        assert_eq!(
-            staged_ledger_hash.roinput(),
-            ROInput::new()
-                .append_field(fp_from_radix_10(
-                    "18312982411155638834795952767307088331002783393569971720271219236025400527059"
-                )?)
-                .append_field(fp_from_radix_10(
-                    "3471521899433704832424762365110517199016372719455082716757770428876187682412"
-                )?)
-                .append_field(fp_from_radix_10("1")?)
-        );
 
         let genesis_ledger_hash =
-            LedgerHash::from_str("jwxjg179rPZDX3N8x7rGs98NVKnXxQ6kauk4R421ZXEb551SPUu")?;
-        assert_eq!(
-            genesis_ledger_hash.to_chunked_roinput(),
-            ChunkedROInput::new().append_field(fp_from_radix_10(
-                "13537175470369816875647086174838928722486573822187156126910528780791859041649"
-            )?)
-        );
+            LedgerHash::from_str("jwNYQU34Jb9FD6ZbKnWRALZqVDKbMrjZBKWFYZwAw8ZPMgv9Ld4")?;
         println!(
             "genesis_ledger_hash: {}",
             genesis_ledger_hash.to_chunked_roinput()
@@ -85,12 +68,14 @@ pub mod tests {
         assert_eq!(roinput, genesis_local_state_chunked_roinput()?);
 
         let registers = BlockchainStateRegisters {
-            ledger: LedgerHash::from_str("jwxjg179rPZDX3N8x7rGs98NVKnXxQ6kauk4R421ZXEb551SPUu")?,
+            ledger: LedgerHash::from_str("jwNYQU34Jb9FD6ZbKnWRALZqVDKbMrjZBKWFYZwAw8ZPMgv9Ld4")?,
             pending_coinbase_stack: (),
             local_state,
         };
-        let roinput = registers.to_chunked_roinput();
-        assert_eq!(roinput, genesis_registers_chunked_roinput()?);
+        assert_eq!(
+            registers.to_chunked_roinput(),
+            genesis_registers_chunked_roinput()?
+        );
 
         let timestamp = BlockTime(1655755201000);
         assert_eq!(
@@ -117,36 +102,6 @@ pub mod tests {
             timestamp,
             body_reference,
         };
-        assert_eq!(
-            blockchain_state.roinput(),
-            ROInput::new()
-                .append_field(fp_from_radix_10(
-                    "18312982411155638834795952767307088331002783393569971720271219236025400527059"
-                )?)
-                .append_field(fp_from_radix_10(
-                    "13537175470369816875647086174838928722486573822187156126910528780791859041649"
-                )?)
-                .append_field(fp_from_radix_10(
-                    "13537175470369816875647086174838928722486573822187156126910528780791859041649"
-                )?)
-                .append_field(fp_from_radix_10(
-                    "1345645986294164927562966675279626510497288257949713170124140298300287598676"
-                )?)
-                .append_field(fp_from_radix_10("0")?)
-                .append_field(fp_from_radix_10("0")?)
-                .append_field(fp_from_radix_10("0")?)
-                .append_field(fp_from_radix_10("1")?)
-                .append_field(fp_from_radix_10("0")?)
-                .append_field(fp_from_radix_10(
-                    "3471521899433704832424762365110517199016372719455082716757770428876187682412"
-                )?)
-                .append_field(fp_from_radix_10(
-                    "7237005577332262214169345992296663979832263477748145952816219112632247324463"
-                )?)
-                .append_field(fp_from_radix_10(
-                    "59715292382037036695237625812635217064549677739652"
-                )?)
-        );
 
         // let consensus_state =
         //     protocol_state |> Mina_state.Protocol_state.consensus_state
@@ -172,7 +127,7 @@ pub mod tests {
                 7.into(),
             ],
             last_vrf_output: VrfOutputTruncated::from_str(
-                "OruOTtGM3tJL3jM0GHtCzKyugvWT0ZP7VckspHX8_g8",
+                "OruOTtGM3tJL3jM0GHtCzKyugvWT0ZP7VckspHX8_g8=",
             )?,
             total_currency: 1013238001000001000.into(),
             curr_global_slot: GlobalSlot {
@@ -183,7 +138,7 @@ pub mod tests {
             staking_epoch_data: EpochData {
                 ledger: EpochLedger {
                     hash: LedgerHash::from_str(
-                        "jwxjg179rPZDX3N8x7rGs98NVKnXxQ6kauk4R421ZXEb551SPUu",
+                        "jwNYQU34Jb9FD6ZbKnWRALZqVDKbMrjZBKWFYZwAw8ZPMgv9Ld4",
                     )?,
                     total_currency: 1013238001000001000.into(),
                 },
@@ -199,7 +154,7 @@ pub mod tests {
             next_epoch_data: EpochData {
                 ledger: EpochLedger {
                     hash: LedgerHash::from_str(
-                        "jwxjg179rPZDX3N8x7rGs98NVKnXxQ6kauk4R421ZXEb551SPUu",
+                        "jwNYQU34Jb9FD6ZbKnWRALZqVDKbMrjZBKWFYZwAw8ZPMgv9Ld4",
                     )?,
                     total_currency: 1013238001000001000.into(),
                 },
@@ -208,7 +163,7 @@ pub mod tests {
                     "3NK2tkzqqK5spR2sZ7tujjqPksL45M3UUrcA4WhCkeiPtnugyE2x",
                 )?,
                 lock_checkpoint: StateHash::from_str(
-                    "3NLi4a85TqcMwLAoezJjbBoYhS6x7EKyf5ThWhUS7NhDesqyXWbx",
+                    "3NLUmnTBMCeExeWErijZ2GeLnjLtBgsDjN3qM8M8gcJDtk8k89xf",
                 )?,
                 epoch_length: 2.into(),
             },
@@ -244,22 +199,11 @@ pub mod tests {
                 .append_field(fp_from_radix_10("0")?)
                 .append_field(fp_from_radix_10("0")?)
                 .append_field(fp_from_radix_10(
-                    "13537175470369816875647086174838928722486573822187156126910528780791859041649"
+                    "20038089104619582172254839672519820202817728273163650761198500757943363448868"
                 )?)
                 .append_field(fp_from_radix_10("0")?)
                 .append_u32(1)
                 .append_u64(1013238001000001000)
-        );
-        assert_eq!(
-            consensus_state.staking_epoch_data.roinput(),
-            ROInput::new()
-                .append_field(fp_from_radix_10("0")?)
-                .append_field(fp_from_radix_10("0")?)
-                .append_field(fp_from_radix_10(
-                    "13537175470369816875647086174838928722486573822187156126910528780791859041649"
-                )?)
-                .append_field(fp_from_radix_10("0")?)
-                .append_field(fp_from_radix_10("19459982074709552616")?)
         );
         assert_eq!(
             consensus_state.next_epoch_data.to_chunked_roinput(),
@@ -269,73 +213,13 @@ pub mod tests {
                 )?)
                 .append_field(fp_from_radix_10("0")?)
                 .append_field(fp_from_radix_10(
-                    "13537175470369816875647086174838928722486573822187156126910528780791859041649"
+                    "20038089104619582172254839672519820202817728273163650761198500757943363448868"
                 )?)
                 .append_field(fp_from_radix_10(
-                    "9467349967580152589673091036870103925099662775818255640284311917171078832860"
+                    "20469705092297587215111758345826930216920373655705023788336254043669748741566"
                 )?)
                 .append_u32(2)
                 .append_u64(1013238001000001000)
-        );
-        assert_eq!(
-            consensus_state.next_epoch_data.roinput(),
-            ROInput::new()
-                .append_field(fp_from_radix_10(
-                    "14681961814697422253233195325942500722138391379385252796689294365564545340151"
-                )?)
-                .append_field(fp_from_radix_10("0")?)
-                .append_field(fp_from_radix_10(
-                    "13537175470369816875647086174838928722486573822187156126910528780791859041649"
-                )?)
-                .append_field(fp_from_radix_10(
-                    "9467349967580152589673091036870103925099662775818255640284311917171078832860"
-                )?)
-                .append_field(fp_from_radix_10("37906726148419104232")?)
-        );
-
-        assert_eq!(
-            consensus_state.roinput(),
-            ROInput::new()
-                .append_field(fp_from_radix_10("0")?)
-                .append_field(fp_from_radix_10("0")?)
-                .append_field(fp_from_radix_10(
-                    "13537175470369816875647086174838928722486573822187156126910528780791859041649"
-                )?)
-                .append_field(fp_from_radix_10("0")?)
-                .append_field(fp_from_radix_10(
-                    "14681961814697422253233195325942500722138391379385252796689294365564545340151"
-                )?)
-                .append_field(fp_from_radix_10("0")?)
-                .append_field(fp_from_radix_10(
-                    "13537175470369816875647086174838928722486573822187156126910528780791859041649"
-                )?)
-                .append_field(fp_from_radix_10(
-                    "9467349967580152589673091036870103925099662775818255640284311917171078832860"
-                )?)
-                .append_field(fp_from_radix_10(
-                    "22536877747820698688010660184495467853785925552441222123266613953322243475471"
-                )?)
-                .append_field(fp_from_radix_10(
-                    "22536877747820698688010660184495467853785925552441222123266613953322243475471"
-                )?)
-                .append_field(fp_from_radix_10(
-                    "22536877747820698688010660184495467853785925552441222123266613953322243475471"
-                )?)
-                .append_field(fp_from_radix_10(
-                    "6277101735386680790037531676199156265425591762849762377735"
-                )?)
-                .append_field(fp_from_radix_10(
-                    "47179906678498547680151595604921559418585159020371769110072453979228"
-                )?)
-                .append_field(fp_from_radix_10(
-                    "8572332179547628723856916093832990528989133037876787922237980667902"
-                )?)
-                .append_field(fp_from_radix_10(
-                    "1379148100938082216184032579547152646221531430054524878849"
-                )?)
-                .append_field(fp_from_radix_10(
-                    "642215880070851285096273096370689904226955521856"
-                )?)
         );
 
         // let constants =
@@ -367,7 +251,7 @@ pub mod tests {
 
         let protocol_state_body = ProtocolStateBody {
             genesis_state_hash: StateHash::from_str(
-                "3NLi4a85TqcMwLAoezJjbBoYhS6x7EKyf5ThWhUS7NhDesqyXWbx",
+                "3NLUmnTBMCeExeWErijZ2GeLnjLtBgsDjN3qM8M8gcJDtk8k89xf",
             )?,
             blockchain_state,
             consensus_state,
@@ -384,93 +268,13 @@ pub mod tests {
             hasher.hash(&protocol_state_body)
         };
         assert_eq!(
-            state_body_hash,
-            fp_from_radix_10(
-                "20758916662537028166949878948910240845738334644439336511582563910244320172322"
-            )?
-        );
-        assert_eq!(
             StateBodyHash::from(&state_body_hash).to_string(),
-            "3WtvbM8xNG5b1RBYEnJtT9XiwEEFyzBEZ6p4RMeecdXSf8STcUvc"
-        );
-        assert_eq!(
-            protocol_state_body.roinput(),
-            ROInput::new()
-                .append_field(fp_from_radix_10(
-                    "9467349967580152589673091036870103925099662775818255640284311917171078832860"
-                )?)
-                .append_field(fp_from_radix_10(
-                    "18312982411155638834795952767307088331002783393569971720271219236025400527059"
-                )?)
-                .append_field(fp_from_radix_10(
-                    "13537175470369816875647086174838928722486573822187156126910528780791859041649"
-                )?)
-                .append_field(fp_from_radix_10(
-                    "13537175470369816875647086174838928722486573822187156126910528780791859041649"
-                )?)
-                .append_field(fp_from_radix_10(
-                    "1345645986294164927562966675279626510497288257949713170124140298300287598676"
-                )?)
-                .append_field(fp_from_radix_10("0")?)
-                .append_field(fp_from_radix_10("0")?)
-                .append_field(fp_from_radix_10("0")?)
-                .append_field(fp_from_radix_10("1")?)
-                .append_field(fp_from_radix_10("0")?)
-                .append_field(fp_from_radix_10("0")?)
-                .append_field(fp_from_radix_10("0")?)
-                .append_field(fp_from_radix_10(
-                    "13537175470369816875647086174838928722486573822187156126910528780791859041649"
-                )?)
-                .append_field(fp_from_radix_10("0")?)
-                .append_field(fp_from_radix_10(
-                    "14681961814697422253233195325942500722138391379385252796689294365564545340151"
-                )?)
-                .append_field(fp_from_radix_10("0")?)
-                .append_field(fp_from_radix_10(
-                    "13537175470369816875647086174838928722486573822187156126910528780791859041649"
-                )?)
-                .append_field(fp_from_radix_10(
-                    "9467349967580152589673091036870103925099662775818255640284311917171078832860"
-                )?)
-                .append_field(fp_from_radix_10(
-                    "22536877747820698688010660184495467853785925552441222123266613953322243475471"
-                )?)
-                .append_field(fp_from_radix_10(
-                    "22536877747820698688010660184495467853785925552441222123266613953322243475471"
-                )?)
-                .append_field(fp_from_radix_10(
-                    "22536877747820698688010660184495467853785925552441222123266613953322243475471"
-                )?)
-                .append_field(fp_from_radix_10(
-                    "1954596133368421387722139016445180426982017862454208282937095146054530"
-                )?)
-                .append_field(fp_from_radix_10(
-                    "24187223653712748985369614349883567510519372552037957573041"
-                )?)
-                .append_field(fp_from_radix_10(
-                    "784637717014678956011557744582442801400480448550706887870"
-                )?)
-                .append_field(fp_from_radix_10(
-                    "238834422509354367104600567260149474239520236223349248839734070870016"
-                )?)
-                .append_field(fp_from_radix_10(
-                    "483336833626235920455068665074195165254570252067109806800903"
-                )?)
-                .append_field(fp_from_radix_10(
-                    "47179906678498547680151595604921559418592344102652004783299007279883"
-                )?)
-                .append_field(fp_from_radix_10(
-                    "327365860291324522845756249582241551047679543985146121484579122664"
-                )?)
-                .append_field(fp_from_radix_10(
-                    "41740486762171608190998085217754024788952913243275266"
-                )?)
-                .append_field(fp_from_radix_10("8105904008000008000")?)
+            "3WuwJxtzDb98vH8KLh7XtMAsoaskAo9bUCTiSM3EbWCjjhmtVwxe"
         );
 
         let protocol_state = ProtocolState {
             previous_state_hash: StateHash::from_str(
-                "3NLi4a85TqcMwLAoezJjbBoYhS6x7EKyf5ThWhUS7NhDesqyXWbx",
+                "3NLUmnTBMCeExeWErijZ2GeLnjLtBgsDjN3qM8M8gcJDtk8k89xf",
             )?,
             body: protocol_state_body,
         };
@@ -480,7 +284,7 @@ pub mod tests {
         };
         assert_eq!(
             StateHash::from(&state_hash).to_string(),
-            "3NLheNBfhMDCWEJZMNgHaiPkXYQPGbSYnof2ns5LGxr5MiJSSfif"
+            "3NKrvXDzp7gskxqWUmwDJTFeSGA6ohYMjd38uKwDgkg8RH89QcgH"
         );
 
         Ok(())
@@ -499,6 +303,11 @@ pub mod tests {
     // let genesis_block_hash =
     //   genesis_block_with_hash |> With_hash.hash
     // in
+    // printf "genesis_block_data:%s\n"
+    //     (genesis_block_data |> Mina_block.to_yojson |> Yojson.Safe.to_string) ;
+    // printf "genesis_block_hash:%s\n"
+    // ( genesis_block_hash |> State_hash.State_hashes.to_yojson
+    // |> Yojson.Safe.to_string ) ;
     // let staged_ledger_hash =
     //   genesis_block_data |> Mina_block.header
     //   |> Mina_block.Header.protocol_state
@@ -519,15 +328,15 @@ pub mod tests {
             "18312982411155638834795952767307088331002783393569971720271219236025400527059",
         )?);
         for b in [
-            0, 0, 0, 1, 1, 1, 1, 0, 1, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1,
-            1, 1, 1, 0, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 1, 1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0,
-            0, 0, 1, 0, 1, 1, 1, 1, 0, 1, 1, 0, 1, 0, 0, 1, 1, 0, 1, 1, 1, 0, 0, 1, 1, 0, 0, 1, 0,
-            1, 1, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 1, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1,
-            1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 0, 1, 0, 1, 1, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 1, 1, 0, 0,
-            0, 1, 1, 0, 1, 1, 1, 1, 0, 0, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 0, 0, 1, 0,
-            0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1,
-            0, 0, 0, 1, 1, 0, 1, 0, 1, 0, 1, 1, 1, 1, 1, 0, 0, 1, 1, 0, 1, 1, 0, 1, 1, 1, 0, 0, 0,
-            0, 1, 0, 0, 1, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 1, 1, 0, 0, 0, 1,
+            1, 1, 1, 0, 1, 1, 0, 0, 1, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 0, 1, 0, 0, 0, 1,
+            1, 0, 0, 1, 1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 1, 1, 0, 1,
+            0, 1, 1, 0, 1, 1, 0, 0, 1, 0, 1, 0, 1, 1, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 1, 0, 1, 1,
+            0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 0, 1, 1, 1, 1, 0, 1, 1, 1, 0, 0,
+            0, 0, 0, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 0, 1, 1, 0, 1, 0, 0, 1, 0, 0, 1,
+            0, 1, 0, 1, 0, 0, 1, 1, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 1, 0, 1, 1, 0, 1,
+            1, 1, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 0, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 1, 1,
+            0, 0, 1, 0, 0, 1, 0, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 0, 1, 0, 1, 0, 0, 1, 1, 0, 0,
+            1, 0, 1, 1, 0, 0, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 1, 0, 0, 1, 1, 0,
         ] {
             roi = roi.append_bool(b > 0);
         }
@@ -574,7 +383,7 @@ pub mod tests {
     fn genesis_registers_chunked_roinput() -> Result<ChunkedROInput> {
         Ok(ChunkedROInput::new()
             .append_field(fp_from_radix_10(
-                "13537175470369816875647086174838928722486573822187156126910528780791859041649",
+                "20038089104619582172254839672519820202817728273163650761198500757943363448868",
             )?)
             .append_field(fp_from_radix_10(
                 "1345645986294164927562966675279626510497288257949713170124140298300287598676",
