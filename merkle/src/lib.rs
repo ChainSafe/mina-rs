@@ -27,6 +27,8 @@ mod hasher_poseidon;
 pub use hasher_poseidon::*;
 mod metadata;
 pub use metadata::*;
+mod path;
+pub use path::*;
 pub mod prefixes;
 
 use proof_systems::*;

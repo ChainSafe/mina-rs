@@ -8,7 +8,6 @@ pub mod tests {
     use mina_crypto::hash::*;
     use mina_hasher::Fp;
     use mina_rs_base::types::*;
-    use num::BigUint;
     use proof_systems::{mina_hasher::*, mina_signer::CompressedPubKey, *};
     use std::str::FromStr;
 
@@ -399,8 +398,8 @@ pub mod tests {
             .append_packed(fp_from_radix_10("1")?, 1))
     }
 
-    fn fp_from_radix_10(s: &str) -> Result<Fp> {
-        let big = BigUint::from_str(s)?;
+    fn fp_from_radix_10(s: &str) -> anyhow::Result<Fp> {
+        let big = num::BigUint::from_str(s)?;
         let big256: BigInteger256 = big.try_into().unwrap();
         Ok(big256.into())
     }

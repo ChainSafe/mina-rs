@@ -28,7 +28,7 @@
   two_write_queues=false
   bytes_per_sync=0
   writable_file_max_buffer_size=1048576
-  wal_dir=/tmp/coda_cache_dir/711272b5-56a3-3647-9786-389ace991d93
+  wal_dir=/tmp/coda_cache_dir/607f73eb-2fa0-3de7-720c-97723da733e1
   log_file_time_to_roll=0
   keep_log_file_num=1000
   WAL_ttl_seconds=0
