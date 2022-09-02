@@ -24,6 +24,7 @@ use utils::*;
 mod consts;
 mod event_emitter;
 mod frontier;
+mod payment;
 
 async fn connect_async(request: &ConnectRequest) -> anyhow::Result<CommonResponse> {
     let (transport, peer_id) = {
