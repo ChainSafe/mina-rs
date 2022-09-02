@@ -35,6 +35,7 @@ export default {
       pages: [
         ["Index", "index.html"],
         ["GraphQL", "graphql.html"],
+        ["Send Payment", "sendPayment.html"],
         ["Libp2p", "libp2p.html"],
         ["About", "about.html"],
       ],
