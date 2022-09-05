@@ -22,6 +22,12 @@
 <span id="22">22</span>
 <span id="23">23</span>
 <span id="24">24</span>
+<span id="25">25</span>
+<span id="26">26</span>
+<span id="27">27</span>
+<span id="28">28</span>
+<span id="29">29</span>
+<span id="30">30</span>
 </pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
@@ -46,5 +52,11 @@
     <span class="doccomment">/// Constructs a genesis block from config
     </span><span class="kw">fn </span>from_genesis_config(config: <span class="kw-2">&amp;</span>GenesisInitConfig) -&gt; ExternalTransition;
 }
+
+<span class="doccomment">/// Trait for genesis protocol state
+</span><span class="kw">pub trait </span>GenesisProtocolState&lt;T&gt; {
+    <span class="doccomment">/// genesis protocol state on berkeley net
+    </span><span class="kw">fn </span>berkeley() -&gt; <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>T;
+}
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="mina_consensus" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (2e35f954a 2022-09-01)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="mina_consensus" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (289279de1 2022-09-04)" ></div></body></html>
