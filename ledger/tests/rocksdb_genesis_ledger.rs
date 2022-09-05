@@ -18,7 +18,7 @@ mod tests {
     use rocksdb::*;
 
     const DB_PATH_LEGACY: &str =  "test-data/genesis_ledger_6a887ea130e53b06380a9ab27b327468d28d4ce47515a0cc59759d4a3912f0ef/";
-    const DB_PATH_BERKELEY: &str =  "test-data/genesis_ledger_4632a9b3c063ed3664a93932a52e560fcdf124b2259fe150d6b98d12485cd15d/";
+    const DB_PATH_BERKELEY: &str =  "test-data/genesis_ledger_a99a1ff63d4ba4a07cc6bedbff3e23bd6c1f482f9ecef33abdf7fb817564cc89/";
 
     #[test]
     fn test_iterate_database() -> anyhow::Result<()> {
@@ -162,7 +162,7 @@ mod tests {
     ///     ("acc_n hash", acc_n |> Account.crypto_hash |> State_hash.to_yojson)];
     /// ```
     ///
-    /// To print inner value of random oracle input, add this to `random_oracle_iinput.ml`
+    /// To print inner value of random oracle input, add this to `random_oracle_input.ml`
     /// ```ocaml
     /// let print (a : _ t) field_to_str =
     /// printf "field_elements:\n";
@@ -260,7 +260,7 @@ mod tests {
         );
         ensure!(
             hash(&ZkAppOptionHashableWrapper(&account.zkapp))
-                == "22371316807638652529772065903909764704228252716310880671193348070876705445596"
+                == "3667580756715622626100496682641457357784480428323029060381521770840620393486"
         );
         ensure!(
             hash2(&account.permissions)

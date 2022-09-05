@@ -11,7 +11,7 @@ mod tests {
     use std::collections::HashMap;
 
     const DB_PATH_LEGACY: &str = "../ledger/test-data/genesis_ledger_6a887ea130e53b06380a9ab27b327468d28d4ce47515a0cc59759d4a3912f0ef/";
-    const DB_PATH_BERKELEY: &str = "../ledger/test-data/genesis_ledger_4632a9b3c063ed3664a93932a52e560fcdf124b2259fe150d6b98d12485cd15d/";
+    const DB_PATH_BERKELEY: &str = "../ledger/test-data/genesis_ledger_a99a1ff63d4ba4a07cc6bedbff3e23bd6c1f482f9ecef33abdf7fb817564cc89/";
 
     #[derive(Debug, Clone)]
     struct TestLeafNode(Fp);
@@ -273,9 +273,12 @@ mod tests {
                 merkle_ledger.add(node);
             }
         }
-        assert!(expected_root_hash.is_some());
         assert_eq!(fixed_height, root_height as u32);
-        assert_eq!(merkle_ledger.root(), expected_root_hash);
+        assert!(expected_root_hash.is_some());
+        println!("expected_root_hash: {}", expected_root_hash.unwrap());
+        let merkle_root = merkle_ledger.root();
+        println!("root_hash: {}", merkle_root.unwrap());
+        assert_eq!(merkle_root, expected_root_hash);
 
         // Test merkle proofs
         let root_hash = &expected_root_hash.unwrap();

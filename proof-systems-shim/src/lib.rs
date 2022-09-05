@@ -22,6 +22,8 @@ pub use o1_utils;
 /// Temporary implementation for chunked random oracle input
 mod roinput;
 pub use roinput::*;
+mod fp;
+pub use fp::*;
 
 /// Reexport [bitvec]
 pub use bitvec;

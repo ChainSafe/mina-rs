@@ -1492,11 +1492,13 @@ dependencies = [
  "anyhow",
  "ark-ff",
  "bitvec",
+ "derive_more",
  "mina-curves",
  "mina-hasher",
  "mina-signer",
  "num",
  "o1-utils",
+ "serde",
 ]
 
 [[package]]
