@@ -22,3 +22,9 @@ pub trait Genesis {
     /// Constructs a genesis block from config
     fn from_genesis_config(config: &GenesisInitConfig) -> ExternalTransition;
 }
+
+/// Trait for genesis protocol state
+pub trait GenesisProtocolState<T> {
+    /// genesis protocol state on berkeley net
+    fn berkeley() -> &'static T;
+}

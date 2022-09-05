@@ -164,7 +164,6 @@ jobs:
           override: true
       # clippy includes cargo check
       - run: cargo clippy --release --all-features --target wasm32-unknown-unknown -- --deny warnings
-      - run: cargo clippy --release --all-features --target wasm32-unknown-unknown --manifest-path apps/Cargo.toml -- --deny warnings
       - run: cargo clippy --release --all-features --target wasm32-unknown-unknown --manifest-path apps/wasm/Cargo.toml -- --deny warnings
       - name: Install wasm-pack
         run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
