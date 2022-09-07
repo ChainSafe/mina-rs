@@ -19,6 +19,7 @@ mod constants;
 pub mod delta_transition_chain_proof;
 pub mod epoch_data;
 pub mod external_transition;
+pub mod from_graphql_json;
 pub mod global_slot;
 pub mod numbers;
 pub mod protocol_state;
@@ -30,6 +31,10 @@ pub mod staged_ledger_diff;
 pub mod user_commands;
 pub mod verifiable;
 pub mod verification_key;
+
+/// Import common traits;
+use from_graphql_json::FromGraphQLJson;
+use std::str::FromStr;
 
 /// Import all crates from proof_systems
 use proof_systems::*;

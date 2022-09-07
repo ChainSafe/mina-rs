@@ -57,7 +57,7 @@ impl Genesis for ExternalTransition {
 impl GenesisProtocolState<ProtocolState> for ProtocolState {
     fn berkeley() -> &'static ProtocolState {
         fn gen() -> anyhow::Result<ProtocolState> {
-            Ok( ProtocolState {
+            Ok(ProtocolState {
                 previous_state_hash: StateHash::from_str(
                     "3NLUmnTBMCeExeWErijZ2GeLnjLtBgsDjN3qM8M8gcJDtk8k89xf",
                 )?,
@@ -90,30 +90,7 @@ impl GenesisProtocolState<ProtocolState> for ProtocolState {
                                 "jwNYQU34Jb9FD6ZbKnWRALZqVDKbMrjZBKWFYZwAw8ZPMgv9Ld4",
                             )?,
                             pending_coinbase_stack: (),
-                            local_state:BlockchainStateRegistersLocalState {
-                                stack_frame: Field::from_str_radix(
-                                    "02F99BCFB0AA7F48C1888DA5A67196A2410FB084CD2DB1AF5216C5122AEBC054",
-                                    16,
-                                )?,
-                                call_stack: Field::from_str_radix(
-                                    "0000000000000000000000000000000000000000000000000000000000000000",
-                                    16,
-                                )?,
-                                transaction_commitment: Field::from_str_radix(
-                                    "0000000000000000000000000000000000000000000000000000000000000000",
-                                    16,
-                                )?,
-                                full_transaction_commitment: Field::from_str_radix(
-                                    "0000000000000000000000000000000000000000000000000000000000000000",
-                                    16,
-                                )?,
-                                token_id: TokenId(1),
-                                excess: SignedAmount(0, true),
-                                ledger: LedgerHash::from_str("jw6bz2wud1N6itRUHZ5ypo3267stk4UgzkiuWtAMPRZo9g4Udyd")?,
-                                success: true,
-                                party_index: MinaIndex(0),
-                                failure_status_tbl: Default::default(),
-                            },
+                            local_state: Default::default(),
                         },
                         timestamp: BlockTime(1655755201000),
                         body_reference: BodyReference::from_hex(
@@ -194,13 +171,7 @@ impl GenesisProtocolState<ProtocolState> for ProtocolState {
                         )?,
                         supercharge_coinbase: true,
                     },
-                    constants: ProtocolConstants {
-                        k: 290.into(),
-                        slots_per_epoch: 7140.into(),
-                        slots_per_sub_window: 7.into(),
-                        delta: 0.into(),
-                        genesis_state_timestamp: 1655755201000.into(),
-                    },
+                    constants: Default::default(),
                 },
             })
         }

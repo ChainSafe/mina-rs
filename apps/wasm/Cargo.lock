@@ -2230,6 +2230,7 @@ dependencies = [
 name = "mina-rs-base"
 version = "0.1.0"
 dependencies = [
+ "anyhow",
  "ark-ec",
  "ark-ff",
  "base64",
