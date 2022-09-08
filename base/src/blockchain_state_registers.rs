@@ -28,7 +28,7 @@ impl ToChunkedROInput for BlockchainStateRegisters {
 }
 
 /// Mina blockchain state register local state
-/// It will be retired after [https://github.com/MinaProtocol/mina/pull/11728] is merged
+/// It will be retired after <https://github.com/MinaProtocol/mina/pull/11728> is merged
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct BlockchainStateRegistersLocalState {
     /// TODO
