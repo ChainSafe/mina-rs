@@ -3,6 +3,8 @@
 
 //! Types related to the Blockchain State
 
+use std::convert::TryInto;
+
 use crate::{
     blockchain_state_registers::BlockchainStateRegisters,
     numbers::{BlockTime, TokenId},
@@ -77,17 +79,9 @@ impl FromGraphQLJson for BlockchainState {
         Ok(Self {
             staged_ledger_hash: StagedLedgerHash {
                 non_snark: NonSnarkStagedLedgerHash {
-                    ledger_hash: LedgerHash::from_str(
-                        json["stagedLedgerHash"].as_str().unwrap_or_default(),
-                    )?,
-                    aux_hash: AuxHash::from_str(
-                        json["stagedLedgerAuxHash"].as_str().unwrap_or_default(),
-                    )?,
-                    pending_coinbase_aux: PendingCoinbaseAuxHash::from_str(
-                        json["stagedLedgerPendingCoinbaseAux"]
-                            .as_str()
-                            .unwrap_or_default(),
-                    )?,
+                    ledger_hash: (&json["stagedLedgerHash"]).try_into()?,
+                    aux_hash: (&json["stagedLedgerAuxHash"]).try_into()?,
+                    pending_coinbase_aux: (&json["stagedLedgerPendingCoinbaseAux"]).try_into()?,
                 },
                 // FIXME: missing from graphql API
                 pending_coinbase_hash: CoinBaseHash::from_str(
@@ -99,9 +93,7 @@ impl FromGraphQLJson for BlockchainState {
                 "jwNYQU34Jb9FD6ZbKnWRALZqVDKbMrjZBKWFYZwAw8ZPMgv9Ld4",
             )?,
             registers: BlockchainStateRegisters {
-                ledger: LedgerHash::from_str(
-                    json["snarkedLedgerHash"].as_str().unwrap_or_default(),
-                )?,
+                ledger: (&json["snarkedLedgerHash"]).try_into()?,
                 pending_coinbase_stack: (),
                 local_state: Default::default(),
             },

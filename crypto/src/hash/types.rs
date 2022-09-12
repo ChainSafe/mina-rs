@@ -130,6 +130,25 @@ macro_rules! impl_from_for_hash {
     };
 }
 
+#[macro_export]
+macro_rules! impl_from_json_value_for_hash {
+    ($t:ty) => {
+        impl TryFrom<&serde_json::Value> for $t {
+            type Error = anyhow::Error;
+
+            fn try_from(v: &serde_json::Value) -> Result<Self, Self::Error> {
+                use std::str::FromStr;
+
+                if let Some(s) = v.as_str() {
+                    Ok(Self::from_str(s)?)
+                } else {
+                    anyhow::bail!("input json should be string")
+                }
+            }
+        }
+    };
+}
+
 //////////////////////////////////////////////////////////////////////////
 #[derive(Clone, Debug, Default, Eq, PartialEq, derive_more::From, derive_more::Into)]
 pub struct StateBodyHash(BaseHash);
@@ -206,6 +225,7 @@ pub struct LedgerHash(BaseHash);
 impl_from_for_hash!(LedgerHash, HashV1);
 impl_from_for_generic_with_proxy!(LedgerHash, HashV1, LedgerHashV1Json);
 impl_strconv_via_json!(LedgerHash, LedgerHashV1Json);
+impl_from_json_value_for_hash!(LedgerHash);
 
 impl From<&Fp> for LedgerHash {
     fn from(i: &Fp) -> Self {
@@ -413,6 +433,7 @@ pub struct AuxHash(pub Vec<u8>);
 
 impl_from_for_newtype!(AuxHash, AuxHashJson);
 impl_strconv_via_json!(AuxHash, AuxHashJson);
+impl_from_json_value_for_hash!(AuxHash);
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -421,6 +442,7 @@ pub struct PendingCoinbaseAuxHash(pub Vec<u8>);
 
 impl_from_for_newtype!(PendingCoinbaseAuxHash, PendingCoinbaseAuxHashJson);
 impl_strconv_via_json!(PendingCoinbaseAuxHash, PendingCoinbaseAuxHashJson);
+impl_from_json_value_for_hash!(PendingCoinbaseAuxHash);
 
 //////////////////////////////////////////////////////////////////////////
 

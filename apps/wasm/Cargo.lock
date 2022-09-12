@@ -985,11 +985,10 @@ checksum = "00b0228411908ca8685dba7fc2cdd70ec9990a6e753e89b6ac91a84c40fbaf4b"
 
 [[package]]
 name = "form_urlencoded"
-version = "1.0.1"
+version = "1.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5fc25a87fa4fd2094bffb06925852034d90a17f0d1e05197d4956d3555752191"
+checksum = "a9c384f161156f5260c24a097c56119f9be8c798586aecc13afbcbe7b7e26bf8"
 dependencies = [
- "matches",
  "percent-encoding",
 ]
 
@@ -1372,6 +1371,16 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "418a0a6fab821475f634efe3ccc45c013f742efe03d853e8d3355d5cb850ecf8"
 dependencies = [
  "matches",
+ "unicode-bidi",
+ "unicode-normalization",
+]
+
+[[package]]
+name = "idna"
+version = "0.3.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e14ddfc70884202db2244c223200c204c2bda1bc6e0998d11b5e024d657209e6"
+dependencies = [
  "unicode-bidi",
  "unicode-normalization",
 ]
@@ -2183,7 +2192,7 @@ dependencies = [
 [[package]]
 name = "mina-curves"
 version = "0.1.0"
-source = "git+https://github.com/o1-labs/proof-systems?rev=0e3cf5e916c5f397f92a037cc3c370717b63c485#0e3cf5e916c5f397f92a037cc3c370717b63c485"
+source = "git+https://github.com/o1-labs/proof-systems?rev=8d004d1c8de86ed6f6b02ca23d09aef8da1f6692#8d004d1c8de86ed6f6b02ca23d09aef8da1f6692"
 dependencies = [
  "ark-ec",
  "ark-ff",
@@ -2192,7 +2201,7 @@ dependencies = [
 [[package]]
 name = "mina-hasher"
 version = "0.1.0"
-source = "git+https://github.com/o1-labs/proof-systems?rev=0e3cf5e916c5f397f92a037cc3c370717b63c485#0e3cf5e916c5f397f92a037cc3c370717b63c485"
+source = "git+https://github.com/o1-labs/proof-systems?rev=8d004d1c8de86ed6f6b02ca23d09aef8da1f6692#8d004d1c8de86ed6f6b02ca23d09aef8da1f6692"
 dependencies = [
  "ark-ff",
  "bitvec",
@@ -2309,7 +2318,7 @@ dependencies = [
 [[package]]
 name = "mina-signer"
 version = "0.1.0"
-source = "git+https://github.com/o1-labs/proof-systems?rev=0e3cf5e916c5f397f92a037cc3c370717b63c485#0e3cf5e916c5f397f92a037cc3c370717b63c485"
+source = "git+https://github.com/o1-labs/proof-systems?rev=8d004d1c8de86ed6f6b02ca23d09aef8da1f6692#8d004d1c8de86ed6f6b02ca23d09aef8da1f6692"
 dependencies = [
  "ark-ec",
  "ark-ff",
@@ -2614,7 +2623,7 @@ dependencies = [
 [[package]]
 name = "o1-utils"
 version = "0.1.0"
-source = "git+https://github.com/o1-labs/proof-systems?rev=0e3cf5e916c5f397f92a037cc3c370717b63c485#0e3cf5e916c5f397f92a037cc3c370717b63c485"
+source = "git+https://github.com/o1-labs/proof-systems?rev=8d004d1c8de86ed6f6b02ca23d09aef8da1f6692#8d004d1c8de86ed6f6b02ca23d09aef8da1f6692"
 dependencies = [
  "ark-ec",
  "ark-ff",
@@ -2690,7 +2699,7 @@ dependencies = [
 [[package]]
 name = "oracle"
 version = "0.1.0"
-source = "git+https://github.com/o1-labs/proof-systems?rev=0e3cf5e916c5f397f92a037cc3c370717b63c485#0e3cf5e916c5f397f92a037cc3c370717b63c485"
+source = "git+https://github.com/o1-labs/proof-systems?rev=8d004d1c8de86ed6f6b02ca23d09aef8da1f6692#8d004d1c8de86ed6f6b02ca23d09aef8da1f6692"
 dependencies = [
  "ark-ec",
  "ark-ff",
@@ -2781,9 +2790,9 @@ checksum = "b1de2e551fb905ac83f73f7aedf2f0cb4a0da7e35efa24a202a936269f1f18e1"
 
 [[package]]
 name = "percent-encoding"
-version = "2.1.0"
+version = "2.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d4fd5641d01c8f18a23da7b6fe29298ff4b55afcccdf78973b24cf3175fee32e"
+checksum = "478c572c3d73181ff3c2539045f6eb99e5491218eae919370993b890cdbdd98e"
 
 [[package]]
 name = "pest"
@@ -3882,9 +3891,9 @@ dependencies = [
 
 [[package]]
 name = "tokio-util"
-version = "0.7.3"
+version = "0.7.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "cc463cd8deddc3770d20f9852143d50bf6094e640b485cb2e189a2099085ff45"
+checksum = "0bb2e075f03b3d66d8d8785356224ba688d2906a371015e225beeb65ca92c740"
 dependencies = [
  "bytes",
  "futures-core",
@@ -3942,7 +3951,7 @@ dependencies = [
  "futures-channel",
  "futures-io",
  "futures-util",
- "idna",
+ "idna 0.2.3",
  "ipnet",
  "lazy_static",
  "log",
@@ -4067,12 +4076,12 @@ checksum = "a156c684c91ea7d62626509bce3cb4e1d9ed5c4d978f7b4352658f96a4c26b4a"
 
 [[package]]
 name = "url"
-version = "2.3.0"
+version = "2.3.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "22fe195a4f217c25b25cb5058ced57059824a678474874038dc88d211bf508d3"
+checksum = "0d68c799ae75762b8c3fe375feb6600ef5602c883c5d21eb51c09f22b83c4643"
 dependencies = [
  "form_urlencoded",
- "idna",
+ "idna 0.3.0",
  "percent-encoding",
 ]
 

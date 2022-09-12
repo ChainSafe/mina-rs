@@ -6,7 +6,6 @@ mod tests {
     use mina_consensus::{common::*, error::ConsensusError};
     use mina_rs_base::types::ExternalTransition;
     use mina_rs_base::{types::*, JsonSerializationType};
-    use std::str::FromStr;
     use wasm_bindgen_test::*;
 
     // Test Block Addition to ProtocolStateChain
