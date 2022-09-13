@@ -7,10 +7,10 @@ edition = "2021"
 license = "Apache-2.0"
 
 [dependencies]
-mina-curves = {git = "https://github.com/o1-labs/proof-systems", rev = "8d004d1c8de86ed6f6b02ca23d09aef8da1f6692"}
-mina-hasher = {git = "https://github.com/o1-labs/proof-systems", rev = "8d004d1c8de86ed6f6b02ca23d09aef8da1f6692"}
-mina-signer = {git = "https://github.com/o1-labs/proof-systems", rev = "8d004d1c8de86ed6f6b02ca23d09aef8da1f6692"}
-o1-utils = {git = "https://github.com/o1-labs/proof-systems", rev = "8d004d1c8de86ed6f6b02ca23d09aef8da1f6692"}
+mina-curves = {git = "https://github.com/o1-labs/proof-systems", rev = "6ee675e2645955cbe6b2bbf08d488d1091a56487"}
+mina-hasher = {git = "https://github.com/o1-labs/proof-systems", rev = "6ee675e2645955cbe6b2bbf08d488d1091a56487"}
+mina-signer = {git = "https://github.com/o1-labs/proof-systems", rev = "6ee675e2645955cbe6b2bbf08d488d1091a56487"}
+o1-utils = {git = "https://github.com/o1-labs/proof-systems", rev = "6ee675e2645955cbe6b2bbf08d488d1091a56487"}
 
 anyhow = "1"
 ark-ff = "0.3"

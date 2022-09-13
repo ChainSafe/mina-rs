@@ -42,11 +42,13 @@ impl VrfOutputTruncated {
     }
 
     /// From base64 str
+    /// TODO: Switch to [From] and [std::fmt::Display] traits
     pub fn from_base64_str(s: &str) -> anyhow::Result<Self> {
         Ok(Self::from_str(s)?)
     }
 
     /// To base64 string
+    /// TODO: Switch to [From] and [std::fmt::Display] traits
     pub fn to_base64_string(&self) -> anyhow::Result<String> {
         let h: VrfOutputTruncatedBase64Json = self.clone().into();
         let json_string = serde_json::to_string(&h)?;
@@ -54,6 +56,7 @@ impl VrfOutputTruncated {
     }
 
     /// From base58 str
+    /// TODO: Switch to [From] and [std::fmt::Display] traits
     pub fn from_base58_str(s: &str) -> anyhow::Result<Self> {
         let json_string = serde_json::to_string(s)?;
         let json: VrfOutputTruncatedBase58Json = serde_json::from_str(&json_string)?;
@@ -61,6 +64,7 @@ impl VrfOutputTruncated {
     }
 
     /// To base58 string
+    /// TODO: Switch to [From] and [std::fmt::Display] traits
     pub fn to_base58_string(&self) -> anyhow::Result<String> {
         let h: VrfOutputTruncatedBase58Json = self.clone().into();
         let json_string = serde_json::to_string(&h)?;

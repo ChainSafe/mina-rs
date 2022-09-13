@@ -59,7 +59,6 @@ impl Hashable for BlockchainStateLegacy {
 }
 
 #[derive(Clone, Default, Debug, Eq, PartialEq)]
-// #[auto_from(mina_serialization_types::blockchain_state::BlockchainState)]
 /// Mina blockchain state struct
 pub struct BlockchainState {
     /// Hash of the proposed next state of the blockchain
@@ -117,7 +116,6 @@ impl ToChunkedROInput for BlockchainState {
 }
 
 #[derive(Clone, Default, Debug, Eq, PartialEq)]
-// #[auto_from(mina_serialization_types::blockchain_state::BlockchainState)]
 /// Mina block body reference, wrapper of blake2 256-bit hash
 pub struct BodyReference(pub [u8; 32]);
 
