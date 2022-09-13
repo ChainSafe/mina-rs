@@ -55,9 +55,8 @@ pub enum SignedCommandMemoError {
 
 #[cfg(test)]
 mod tests {
-    use std::str::FromStr;
-
     use super::*;
+    use crate::*;
 
     #[test]
     fn memo_roundtrip() -> anyhow::Result<()> {

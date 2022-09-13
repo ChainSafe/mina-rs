@@ -6,7 +6,6 @@ mod tests {
     use mina_consensus::{common::*, error::ConsensusError};
     use mina_rs_base::types::ExternalTransition;
     use mina_rs_base::{types::*, JsonSerializationType};
-    use std::str::FromStr;
     use wasm_bindgen_test::*;
 
     // Test Block Addition to ProtocolStateChain
@@ -197,7 +196,8 @@ mod tests {
         assert_eq!(select_result, &candidate_chain);
         assert_eq!(
             result_state.body.consensus_state.last_vrf_output,
-            VrfOutputTruncated::from_str("kKr83LYd7DyFupRAPh5Dh9eWM1teSEs5VjU4XId2DgA=").unwrap() // last vrf output of candidate chain
+            VrfOutputTruncated::from_base64_str("kKr83LYd7DyFupRAPh5Dh9eWM1teSEs5VjU4XId2DgA=")
+                .unwrap() // last vrf output of candidate chain
         );
     }
 
@@ -229,7 +229,8 @@ mod tests {
         let result_state = select_result.0.get(0).unwrap();
         assert_eq!(
             result_state.body.consensus_state.last_vrf_output,
-            VrfOutputTruncated::from_str("kKr83LYd7DyFupRAPh5Dh9eWM1teSEs5VjU4XId2DgA=").unwrap() // last vrf output of candidate chain
+            VrfOutputTruncated::from_base64_str("kKr83LYd7DyFupRAPh5Dh9eWM1teSEs5VjU4XId2DgA=")
+                .unwrap() // last vrf output of candidate chain
         );
     }
 

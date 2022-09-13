@@ -120,7 +120,9 @@ pub mod json {
         EpochSeedHashV1Json, HashV1Json, LedgerHashV1Json, PendingCoinbaseAuxHashJson,
         StateBodyHashV1Json, StateHashV1Json, VrfOutputHashV1Json,
     };
-    pub use consensus_state::{ConsensusStateJson, VrfOutputTruncatedJson};
+    pub use consensus_state::{
+        ConsensusStateJson, VrfOutputTruncatedBase58Json, VrfOutputTruncatedBase64Json,
+    };
     pub use delta_transition_chain_proof::DeltaTransitionChainProofJson;
     pub use external_transition::ExternalTransitionJson;
     pub use field_and_curve_elements::{

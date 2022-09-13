@@ -8,6 +8,7 @@ use crate::{
     epoch_data::EpochData,
     global_slot::GlobalSlot,
     numbers::{Amount, GlobalSlotNumber, Length},
+    *,
 };
 use blake2::{
     digest::{Update, VariableOutput},
@@ -28,7 +29,8 @@ use versioned::*;
     Clone, Default, Eq, PartialEq, Debug, derive_more::From, derive_more::Into, AutoFrom, PartialOrd,
 )]
 #[auto_from(mina_serialization_types::consensus_state::VrfOutputTruncated)]
-#[auto_from(mina_serialization_types::consensus_state::VrfOutputTruncatedJson)]
+#[auto_from(mina_serialization_types::consensus_state::VrfOutputTruncatedBase58Json)]
+#[auto_from(mina_serialization_types::consensus_state::VrfOutputTruncatedBase64Json)]
 pub struct VrfOutputTruncated(pub Vec<u8>);
 
 impl VrfOutputTruncated {
@@ -38,9 +40,39 @@ impl VrfOutputTruncated {
         hasher.update(&self.0);
         hasher.finalize_boxed().to_vec()
     }
+
+    /// From base64 str
+    /// TODO: Switch to [From] and [std::fmt::Display] traits
+    pub fn from_base64_str(s: &str) -> anyhow::Result<Self> {
+        Ok(Self::from_str(s)?)
+    }
+
+    /// To base64 string
+    /// TODO: Switch to [From] and [std::fmt::Display] traits
+    pub fn to_base64_string(&self) -> anyhow::Result<String> {
+        let h: VrfOutputTruncatedBase64Json = self.clone().into();
+        let json_string = serde_json::to_string(&h)?;
+        Ok(serde_json::from_str(&json_string)?)
+    }
+
+    /// From base58 str
+    /// TODO: Switch to [From] and [std::fmt::Display] traits
+    pub fn from_base58_str(s: &str) -> anyhow::Result<Self> {
+        let json_string = serde_json::to_string(s)?;
+        let json: VrfOutputTruncatedBase58Json = serde_json::from_str(&json_string)?;
+        Ok(json.into())
+    }
+
+    /// To base58 string
+    /// TODO: Switch to [From] and [std::fmt::Display] traits
+    pub fn to_base58_string(&self) -> anyhow::Result<String> {
+        let h: VrfOutputTruncatedBase58Json = self.clone().into();
+        let json_string = serde_json::to_string(&h)?;
+        Ok(serde_json::from_str(&json_string)?)
+    }
 }
 
-impl_strconv_via_json!(VrfOutputTruncated, VrfOutputTruncatedJson);
+impl_strconv_via_json!(VrfOutputTruncated, VrfOutputTruncatedBase64Json);
 
 impl Hashable for VrfOutputTruncated {
     type D = ();
@@ -144,6 +176,79 @@ impl ConsensusState {
     }
 }
 
+impl FromGraphQLJson for ConsensusState {
+    fn from_graphql_json(json: &serde_json::Value) -> anyhow::Result<Self> {
+        Ok(Self {
+            blockchain_length: json["blockHeight"]
+                .as_str()
+                .unwrap_or_default()
+                .parse::<u32>()?
+                .into(),
+            epoch_count: json["epochCount"]
+                .as_str()
+                .unwrap_or_default()
+                .parse::<u32>()?
+                .into(),
+            min_window_density: json["minWindowDensity"]
+                .as_str()
+                .unwrap_or_default()
+                .parse::<u32>()?
+                .into(),
+            // FIXME: Hard coded?
+            sub_window_densities: vec![
+                1.into(),
+                7.into(),
+                7.into(),
+                7.into(),
+                7.into(),
+                7.into(),
+                7.into(),
+                7.into(),
+                7.into(),
+                7.into(),
+                7.into(),
+            ],
+            last_vrf_output: VrfOutputTruncated::from_base58_str(
+                json["lastVrfOutput"].as_str().unwrap_or_default(),
+            )?,
+            total_currency: json["totalCurrency"]
+                .as_str()
+                .unwrap_or_default()
+                .parse::<u64>()?
+                .into(),
+            curr_global_slot: GlobalSlot {
+                slot_number: json["slot"]
+                    .as_str()
+                    .unwrap_or_default()
+                    .parse::<u32>()?
+                    .into(),
+                // FIXME: Hard coded?
+                slots_per_epoch: 7140.into(),
+            },
+            global_slot_since_genesis: json["slotSinceGenesis"]
+                .as_str()
+                .unwrap_or_default()
+                .parse::<u32>()?
+                .into(),
+            staking_epoch_data: EpochData::from_graphql_json(&json["stakingEpochData"])?,
+            next_epoch_data: EpochData::from_graphql_json(&json["nextEpochData"])?,
+            has_ancestor_in_same_checkpoint_window: json["hasAncestorInSameCheckpointWindow"]
+                .as_bool()
+                .unwrap_or_default(),
+            block_stake_winner: CompressedPubKey::from_address(
+                json["blockStakeWinner"].as_str().unwrap_or_default(),
+            )?,
+            block_creator: CompressedPubKey::from_address(
+                json["blockCreator"].as_str().unwrap_or_default(),
+            )?,
+            coinbase_receiver: CompressedPubKey::from_address(
+                json["coinbaseReceiever"].as_str().unwrap_or_default(),
+            )?,
+            supercharge_coinbase: json["superchargedCoinbase"].as_bool().unwrap_or_default(),
+        })
+    }
+}
+
 impl Hashable for ConsensusState {
     type D = ();
 
@@ -196,5 +301,67 @@ impl ToChunkedROInput for ConsensusState {
             .append_chunked(&CompressedPubKeyHashableWrapper(&self.block_stake_winner))
             .append_chunked(&CompressedPubKeyHashableWrapper(&self.block_creator))
             .append_chunked(&CompressedPubKeyHashableWrapper(&self.coinbase_receiver))
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn consensus_state_from_graphql_json() -> anyhow::Result<()> {
+        const JSON_STR: &str = r###"
+        {
+            "blockCreator": "B62qiy32p8kAKnny8ZFwoMhYpBppM1DWVCqAPBYNcXnsAHhnfAAuXgg",
+            "blockHeight": "1",
+            "blockStakeWinner": "B62qiy32p8kAKnny8ZFwoMhYpBppM1DWVCqAPBYNcXnsAHhnfAAuXgg",
+            "blockchainLength": "1",
+            "coinbaseReceiever": "B62qiy32p8kAKnny8ZFwoMhYpBppM1DWVCqAPBYNcXnsAHhnfAAuXgg",
+            "epoch": "0",
+            "epochCount": "0",
+            "hasAncestorInSameCheckpointWindow": true,
+            "lastVrfOutput": "48FthHHNE1y3YmoS4UvKaM6UyGd9nCJXTPVFQUGak7YtonTDUuEd",
+            "minWindowDensity": "77",
+            "slot": "0",
+            "slotSinceGenesis": "0",
+            "superchargedCoinbase": true,
+            "totalCurrency": "1013238001000001000",
+            "nextEpochData": {
+              "epochLength": "2",
+              "lockCheckpoint": "3NLUmnTBMCeExeWErijZ2GeLnjLtBgsDjN3qM8M8gcJDtk8k89xf",
+              "seed": "2vc1zQHJx2xN72vaR4YDH31KwFSr5WHSEH2dzcfcq8jxBPcGiJJA",
+              "startCheckpoint": "3NK2tkzqqK5spR2sZ7tujjqPksL45M3UUrcA4WhCkeiPtnugyE2x",
+              "ledger": {
+                "hash": "jwNYQU34Jb9FD6ZbKnWRALZqVDKbMrjZBKWFYZwAw8ZPMgv9Ld4",
+                "totalCurrency": "1013238001000001000"
+              }
+            },
+            "stakingEpochData": {
+              "epochLength": "1",
+              "lockCheckpoint": "3NK2tkzqqK5spR2sZ7tujjqPksL45M3UUrcA4WhCkeiPtnugyE2x",
+              "seed": "2va9BGv9JrLTtrzZttiEMDYw1Zj6a6EHzXjmP9evHDTG3oEquURA",
+              "startCheckpoint": "3NK2tkzqqK5spR2sZ7tujjqPksL45M3UUrcA4WhCkeiPtnugyE2x",
+              "ledger": {
+                "hash": "jwNYQU34Jb9FD6ZbKnWRALZqVDKbMrjZBKWFYZwAw8ZPMgv9Ld4",
+                "totalCurrency": "1013238001000001000"
+              }
+            }
+          }
+        "###;
+        let json = serde_json::from_str(JSON_STR)?;
+        _ = ConsensusState::from_graphql_json(&json)?;
+        Ok(())
+    }
+
+    #[test]
+    fn vrf_output_truncated_serde_roundtrip() -> anyhow::Result<()> {
+        let b64 = "OruOTtGM3tJL3jM0GHtCzKyugvWT0ZP7VckspHX8_g8=";
+        let b58 = "48FthHHNE1y3YmoS4UvKaM6UyGd9nCJXTPVFQUGak7YtonTDUuEd";
+        let from_b64 = VrfOutputTruncated::from_base64_str(b64)?;
+        let from_b58 = VrfOutputTruncated::from_base58_str(b58)?;
+        assert_eq!(from_b64, from_b58);
+        assert_eq!(from_b58.to_base64_string()?.as_str(), b64);
+        assert_eq!(from_b64.to_base58_string()?.as_str(), b58);
+        Ok(())
     }
 }

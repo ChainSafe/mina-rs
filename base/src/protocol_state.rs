@@ -6,8 +6,10 @@
 use crate::{
     blockchain_state::*,
     consensus_state::ConsensusState,
+    from_graphql_json::FromGraphQLJson,
     global_slot::GlobalSlot,
     numbers::{BlockTime, Length},
+    *,
 };
 use mina_crypto::hash::StateHash;
 use mina_serialization_types::{json::*, v1::*};
@@ -19,7 +21,7 @@ use proof_systems::{
 use versioned::*;
 
 /// Constants that define the consensus parameters
-#[derive(Clone, Default, Eq, PartialEq, Debug, AutoFrom)]
+#[derive(Clone, Eq, PartialEq, Debug, AutoFrom)]
 #[auto_from(mina_serialization_types::protocol_constants::ProtocolConstants)]
 pub struct ProtocolConstants {
     /// Point of finality (number of confirmations)
@@ -39,6 +41,18 @@ impl_from_with_proxy!(
     ProtocolConstantsV1,
     ProtocolConstantsJson
 );
+
+impl Default for ProtocolConstants {
+    fn default() -> Self {
+        Self {
+            k: 290.into(),
+            slots_per_epoch: 7140.into(),
+            slots_per_sub_window: 7.into(),
+            delta: 0.into(),
+            genesis_state_timestamp: 1655755201000.into(),
+        }
+    }
+}
 
 impl Hashable for ProtocolConstants {
     type D = ();
@@ -188,6 +202,21 @@ pub struct ProtocolStateBody {
     pub constants: ProtocolConstants,
 }
 
+impl FromGraphQLJson for ProtocolStateBody {
+    fn from_graphql_json(json: &serde_json::Value) -> anyhow::Result<Self> {
+        Ok(Self {
+            // FIXME: Hard coded?
+            genesis_state_hash: StateHash::from_str(
+                "3NLUmnTBMCeExeWErijZ2GeLnjLtBgsDjN3qM8M8gcJDtk8k89xf",
+            )?,
+            blockchain_state: BlockchainState::from_graphql_json(&json["blockchainState"])?,
+            consensus_state: ConsensusState::from_graphql_json(&json["consensusState"])?,
+            // FIXME: Hard coded?
+            constants: Default::default(),
+        })
+    }
+}
+
 impl Hashable for ProtocolStateBody {
     type D = ();
 
@@ -219,6 +248,17 @@ pub struct ProtocolState {
     pub body: ProtocolStateBody,
 }
 
+impl FromGraphQLJson for ProtocolState {
+    fn from_graphql_json(json: &serde_json::Value) -> anyhow::Result<Self> {
+        Ok(Self {
+            previous_state_hash: StateHash::from_str(
+                json["previousStateHash"].as_str().unwrap_or_default(),
+            )?,
+            body: ProtocolStateBody::from_graphql_json(json)?,
+        })
+    }
+}
+
 impl Hashable for ProtocolState {
     type D = ();
 
@@ -238,5 +278,89 @@ impl ToChunkedROInput for ProtocolState {
         ChunkedROInput::new()
             .append_chunked(&self.previous_state_hash)
             .append_field(body_hash)
+    }
+}
+
+impl ProtocolState {
+    /// Calculates the state hash field of current protocol state
+    pub fn state_hash_fp(&self) -> Fp {
+        let mut hasher = create_kimchi(());
+        hasher.hash(self)
+    }
+
+    /// Calculates the state hash of current protocol state
+    pub fn state_hash(&self) -> StateHash {
+        let f = self.state_hash_fp();
+        (&f).into()
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn protocol_state_from_graphql_json() -> anyhow::Result<()> {
+        const JSON_STR: &str = r###"
+        {
+            "previousStateHash": "3NLUmnTBMCeExeWErijZ2GeLnjLtBgsDjN3qM8M8gcJDtk8k89xf",
+            "consensusState": {
+              "blockCreator": "B62qiy32p8kAKnny8ZFwoMhYpBppM1DWVCqAPBYNcXnsAHhnfAAuXgg",
+              "blockHeight": "1",
+              "blockStakeWinner": "B62qiy32p8kAKnny8ZFwoMhYpBppM1DWVCqAPBYNcXnsAHhnfAAuXgg",
+              "blockchainLength": "1",
+              "coinbaseReceiever": "B62qiy32p8kAKnny8ZFwoMhYpBppM1DWVCqAPBYNcXnsAHhnfAAuXgg",
+              "epoch": "0",
+              "epochCount": "0",
+              "hasAncestorInSameCheckpointWindow": true,
+              "lastVrfOutput": "48FthHHNE1y3YmoS4UvKaM6UyGd9nCJXTPVFQUGak7YtonTDUuEd",
+              "minWindowDensity": "77",
+              "slot": "0",
+              "slotSinceGenesis": "0",
+              "superchargedCoinbase": true,
+              "totalCurrency": "1013238001000001000",
+              "nextEpochData": {
+                "epochLength": "2",
+                "lockCheckpoint": "3NLUmnTBMCeExeWErijZ2GeLnjLtBgsDjN3qM8M8gcJDtk8k89xf",
+                "seed": "2vc1zQHJx2xN72vaR4YDH31KwFSr5WHSEH2dzcfcq8jxBPcGiJJA",
+                "startCheckpoint": "3NK2tkzqqK5spR2sZ7tujjqPksL45M3UUrcA4WhCkeiPtnugyE2x",
+                "ledger": {
+                  "hash": "jwNYQU34Jb9FD6ZbKnWRALZqVDKbMrjZBKWFYZwAw8ZPMgv9Ld4",
+                  "totalCurrency": "1013238001000001000"
+                }
+              },
+              "stakingEpochData": {
+                "epochLength": "1",
+                "lockCheckpoint": "3NK2tkzqqK5spR2sZ7tujjqPksL45M3UUrcA4WhCkeiPtnugyE2x",
+                "seed": "2va9BGv9JrLTtrzZttiEMDYw1Zj6a6EHzXjmP9evHDTG3oEquURA",
+                "startCheckpoint": "3NK2tkzqqK5spR2sZ7tujjqPksL45M3UUrcA4WhCkeiPtnugyE2x",
+                "ledger": {
+                  "hash": "jwNYQU34Jb9FD6ZbKnWRALZqVDKbMrjZBKWFYZwAw8ZPMgv9Ld4",
+                  "totalCurrency": "1013238001000001000"
+                }
+              }
+            },
+            "blockchainState": {
+              "bodyReference": "36bda176656cc3be96c3d317db7b4ac06fdbc7f4eedcd6efdd20e28143d67421",
+              "date": "1655755201000",
+              "snarkedLedgerHash": "jwNYQU34Jb9FD6ZbKnWRALZqVDKbMrjZBKWFYZwAw8ZPMgv9Ld4",
+              "stagedLedgerAuxHash": "UDRUFHSvxUAtV8sh7gzMVPqpbd46roG1wzWR6dYvB6RunPihom",
+              "stagedLedgerHash": "jwNYQU34Jb9FD6ZbKnWRALZqVDKbMrjZBKWFYZwAw8ZPMgv9Ld4",
+              "stagedLedgerPendingCoinbaseHash": "2n27mUhCEctJbiZQdrk3kxYc7DVHvJVDErjXrjNs7jnP3HMLKtuN",
+              "stagedLedgerPendingCoinbaseAux": "WAAeUjUnP9Q2JiabhJzJozcjiEmkZe8ob4cfFKSuq6pQSNmHh7",
+              "stagedLedgerProofEmitted": false,
+              "utcDate": "1655755201000"
+            }
+          }
+        "###;
+        let json = serde_json::from_str(JSON_STR)?;
+        _ = ProtocolStateBody::from_graphql_json(&json)?;
+        let ps = ProtocolState::from_graphql_json(&json)?;
+        // Ensure the state hash we calculate is correct
+        assert_eq!(
+            ps.state_hash().to_string().as_str(),
+            "3NKrvXDzp7gskxqWUmwDJTFeSGA6ohYMjd38uKwDgkg8RH89QcgH"
+        );
+        Ok(())
     }
 }

@@ -3,9 +3,12 @@
 
 //! Types related to the Blockchain State
 
+use std::convert::TryInto;
+
 use crate::{
     blockchain_state_registers::BlockchainStateRegisters,
     numbers::{BlockTime, TokenId},
+    *,
 };
 use mina_crypto::hash::*;
 use mina_serialization_types::{json::*, v1::*};
@@ -56,7 +59,6 @@ impl Hashable for BlockchainStateLegacy {
 }
 
 #[derive(Clone, Default, Debug, Eq, PartialEq)]
-// #[auto_from(mina_serialization_types::blockchain_state::BlockchainState)]
 /// Mina blockchain state struct
 pub struct BlockchainState {
     /// Hash of the proposed next state of the blockchain
@@ -71,6 +73,37 @@ pub struct BlockchainState {
     pub body_reference: BodyReference,
 }
 
+impl FromGraphQLJson for BlockchainState {
+    fn from_graphql_json(json: &serde_json::Value) -> anyhow::Result<Self> {
+        Ok(Self {
+            staged_ledger_hash: StagedLedgerHash {
+                non_snark: NonSnarkStagedLedgerHash {
+                    ledger_hash: (&json["stagedLedgerHash"]).try_into()?,
+                    aux_hash: (&json["stagedLedgerAuxHash"]).try_into()?,
+                    pending_coinbase_aux: (&json["stagedLedgerPendingCoinbaseAux"]).try_into()?,
+                },
+                // FIXME: missing from graphql API
+                pending_coinbase_hash: CoinBaseHash::from_str(
+                    "2n27mUhCEctJbiZQdrk3kxYc7DVHvJVDErjXrjNs7jnP3HMLKtuN",
+                )?,
+            },
+            // FIXME: missing from graphql API
+            genesis_ledger_hash: LedgerHash::from_str(
+                "jwNYQU34Jb9FD6ZbKnWRALZqVDKbMrjZBKWFYZwAw8ZPMgv9Ld4",
+            )?,
+            registers: BlockchainStateRegisters {
+                ledger: (&json["snarkedLedgerHash"]).try_into()?,
+                pending_coinbase_stack: (),
+                local_state: Default::default(),
+            },
+            timestamp: BlockTime(json["utcDate"].as_str().unwrap_or_default().parse()?),
+            body_reference: BodyReference::from_hex(
+                json["bodyReference"].as_str().unwrap_or_default(),
+            )?,
+        })
+    }
+}
+
 impl ToChunkedROInput for BlockchainState {
     fn to_chunked_roinput(&self) -> ChunkedROInput {
         ChunkedROInput::new()
@@ -83,7 +116,6 @@ impl ToChunkedROInput for BlockchainState {
 }
 
 #[derive(Clone, Default, Debug, Eq, PartialEq)]
-// #[auto_from(mina_serialization_types::blockchain_state::BlockchainState)]
 /// Mina block body reference, wrapper of blake2 256-bit hash
 pub struct BodyReference(pub [u8; 32]);
 
@@ -99,5 +131,30 @@ impl BodyReference {
 impl ToChunkedROInput for BodyReference {
     fn to_chunked_roinput(&self) -> ChunkedROInput {
         ChunkedROInput::new().append_bytes(&self.0)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn blockchain_state_from_graphql_json() -> anyhow::Result<()> {
+        const JSON_STR: &str = r###"
+        {
+            "bodyReference": "36bda176656cc3be96c3d317db7b4ac06fdbc7f4eedcd6efdd20e28143d67421",
+            "date": "1655755201000",
+            "snarkedLedgerHash": "jwNYQU34Jb9FD6ZbKnWRALZqVDKbMrjZBKWFYZwAw8ZPMgv9Ld4",
+            "stagedLedgerAuxHash": "UDRUFHSvxUAtV8sh7gzMVPqpbd46roG1wzWR6dYvB6RunPihom",
+            "stagedLedgerHash": "jwNYQU34Jb9FD6ZbKnWRALZqVDKbMrjZBKWFYZwAw8ZPMgv9Ld4",
+            "stagedLedgerPendingCoinbaseHash": "2n27mUhCEctJbiZQdrk3kxYc7DVHvJVDErjXrjNs7jnP3HMLKtuN",
+            "stagedLedgerPendingCoinbaseAux": "WAAeUjUnP9Q2JiabhJzJozcjiEmkZe8ob4cfFKSuq6pQSNmHh7",
+            "stagedLedgerProofEmitted": false,
+            "utcDate": "1655755201000"
+        }
+        "###;
+        let json = serde_json::from_str(JSON_STR)?;
+        _ = BlockchainState::from_graphql_json(&json)?;
+        Ok(())
     }
 }

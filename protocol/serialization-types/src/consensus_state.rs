@@ -9,6 +9,7 @@ use crate::{
     global_slot::GlobalSlotJson,
     signatures::PublicKeyJson,
     v1::*,
+    version_bytes,
 };
 use mina_serialization_types_macros::AutoFrom;
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
@@ -21,12 +22,12 @@ pub struct VrfOutputTruncated(pub Vec<u8>);
 /// Wrapper struct for the output for a VRF, with version
 pub type VrfOutputTruncatedV1 = Versioned<VrfOutputTruncated, 1>;
 
-/// Wrapper struct for the output for a VRF (json)
+/// Wrapper struct for the output for a VRF (base64 encoded json)
 #[derive(Clone, Debug, Eq, PartialEq, AutoFrom)]
 #[auto_from(VrfOutputTruncated)]
-pub struct VrfOutputTruncatedJson(pub Vec<u8>);
+pub struct VrfOutputTruncatedBase64Json(pub Vec<u8>);
 
-impl Serialize for VrfOutputTruncatedJson {
+impl Serialize for VrfOutputTruncatedBase64Json {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: Serializer,
@@ -36,7 +37,7 @@ impl Serialize for VrfOutputTruncatedJson {
     }
 }
 
-impl<'de> Deserialize<'de> for VrfOutputTruncatedJson {
+impl<'de> Deserialize<'de> for VrfOutputTruncatedBase64Json {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
         D: Deserializer<'de>,
@@ -46,6 +47,40 @@ impl<'de> Deserialize<'de> for VrfOutputTruncatedJson {
             base64::decode_config(s, base64::URL_SAFE)
                 .map_err(<D::Error as serde::de::Error>::custom)?,
         ))
+    }
+}
+
+/// Wrapper struct for the output for a VRF (base64 encoded json)
+#[derive(Clone, Debug, Eq, PartialEq, AutoFrom)]
+#[auto_from(VrfOutputTruncated)]
+pub struct VrfOutputTruncatedBase58Json(pub Vec<u8>);
+
+impl Serialize for VrfOutputTruncatedBase58Json {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        let mut input = Vec::with_capacity(self.0.len() + 1);
+        input.push(self.0.len() as u8);
+        input.extend_from_slice(self.0.as_slice());
+        let s = bs58::encode(input.as_slice())
+            .with_check_version(version_bytes::VRF_TRUNCATED_OUTPUT)
+            .into_string();
+        serializer.serialize_str(&s)
+    }
+}
+
+impl<'de> Deserialize<'de> for VrfOutputTruncatedBase58Json {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        let s = String::deserialize(deserializer)?;
+        let decoded = bs58::decode(s)
+            .with_check(Some(version_bytes::VRF_TRUNCATED_OUTPUT))
+            .into_vec()
+            .map_err(<D::Error as serde::de::Error>::custom)?;
+        Ok(Self(decoded.into_iter().skip(2).collect()))
     }
 }
 
@@ -108,7 +143,7 @@ pub struct ConsensusStateJson {
     /// Current sliding window of densities
     pub sub_window_densities: Vec<U32Json>,
     /// Additional VRS output from leader (for seeding Random Oracle)
-    pub last_vrf_output: VrfOutputTruncatedJson,
+    pub last_vrf_output: VrfOutputTruncatedBase64Json,
     /// Total supply of currency
     pub total_currency: U64Json,
     /// Current global slot number relative to the current hard fork

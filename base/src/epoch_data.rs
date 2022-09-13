@@ -3,7 +3,10 @@
 
 //! Types and functions related to the EpochData structure
 
-use crate::numbers::{Amount, Length};
+use crate::{
+    numbers::{Amount, Length},
+    *,
+};
 use mina_crypto::hash::*;
 use mina_serialization_types_macros::AutoFrom;
 use proof_systems::{
@@ -19,6 +22,19 @@ pub struct EpochLedger {
     pub hash: LedgerHash,
     /// The total currency in circulation after the block was produced. New issuance is via the coinbase reward and new account fees can reduce the total issuance.
     pub total_currency: Amount,
+}
+
+impl FromGraphQLJson for EpochLedger {
+    fn from_graphql_json(json: &serde_json::Value) -> anyhow::Result<Self> {
+        Ok(Self {
+            hash: LedgerHash::from_str(json["hash"].as_str().unwrap_or_default())?,
+            total_currency: json["totalCurrency"]
+                .as_str()
+                .unwrap_or_default()
+                .parse::<u64>()?
+                .into(),
+        })
+    }
 }
 
 impl Hashable for EpochLedger {
@@ -59,6 +75,26 @@ pub struct EpochData {
     pub epoch_length: Length,
 }
 
+impl FromGraphQLJson for EpochData {
+    fn from_graphql_json(json: &serde_json::Value) -> anyhow::Result<Self> {
+        Ok(Self {
+            ledger: EpochLedger::from_graphql_json(&json["ledger"])?,
+            seed: EpochSeed::from_str(json["seed"].as_str().unwrap_or_default())?,
+            start_checkpoint: StateHash::from_str(
+                json["startCheckpoint"].as_str().unwrap_or_default(),
+            )?,
+            lock_checkpoint: StateHash::from_str(
+                json["lockCheckpoint"].as_str().unwrap_or_default(),
+            )?,
+            epoch_length: json["epochLength"]
+                .as_str()
+                .unwrap_or_default()
+                .parse::<u32>()?
+                .into(),
+        })
+    }
+}
+
 impl Hashable for EpochData {
     type D = ();
 
@@ -84,5 +120,29 @@ impl ToChunkedROInput for EpochData {
             .append_chunked(&self.epoch_length)
             .append_chunked(&self.ledger)
             .append_chunked(&self.lock_checkpoint)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn epoch_data_from_graphql_json() -> anyhow::Result<()> {
+        const JSON_STR: &str = r###"
+        {
+            "epochLength": "2",
+            "lockCheckpoint": "3NLUmnTBMCeExeWErijZ2GeLnjLtBgsDjN3qM8M8gcJDtk8k89xf",
+            "seed": "2vc1zQHJx2xN72vaR4YDH31KwFSr5WHSEH2dzcfcq8jxBPcGiJJA",
+            "startCheckpoint": "3NK2tkzqqK5spR2sZ7tujjqPksL45M3UUrcA4WhCkeiPtnugyE2x",
+            "ledger": {
+              "hash": "jwNYQU34Jb9FD6ZbKnWRALZqVDKbMrjZBKWFYZwAw8ZPMgv9Ld4",
+              "totalCurrency": "1013238001000001000"
+            }
+          }
+        "###;
+        let json = serde_json::from_str(JSON_STR)?;
+        _ = EpochData::from_graphql_json(&json)?;
+        Ok(())
     }
 }
