@@ -25,7 +25,7 @@ mod tests {
     fn genesis_consensus_state() -> ProtocolStateChain {
         let genesis = ExternalTransition::from_genesis_config(&MAINNET_CONFIG);
         let a = genesis.protocol_state;
-        ProtocolStateChain(vec![a])
+        ProtocolStateChain(vec![a.into()])
     }
 
     #[test]

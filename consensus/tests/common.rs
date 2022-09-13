@@ -19,19 +19,19 @@ mod tests {
         // Case 1: Add Block with ValidHeight
         // Init new block `b0`, add to test_chain
         // Increases blockchain length by 1
-        let mut b0: ProtocolStateLegacy = Default::default();
+        let mut b0: ProtocolState = Default::default();
         b0.body.consensus_state.blockchain_length = Length(1);
         test_chain.push(b0).unwrap();
         assert_eq!(test_chain.length(), 1);
         // Init new block `b1`, add to test_chain
         // Increases blockchain length by 1
-        let mut b1: ProtocolStateLegacy = Default::default();
+        let mut b1: ProtocolState = Default::default();
         b1.body.consensus_state.blockchain_length = Length(2);
         test_chain.push(b1).unwrap();
         assert_eq!(test_chain.length(), 2);
         // Init new block `b2`, add to test_chain
         // Increases blockchain length by 1
-        let mut b2: ProtocolStateLegacy = Default::default();
+        let mut b2: ProtocolState = Default::default();
         b2.body.consensus_state.blockchain_length = Length(3);
         test_chain.push(b2).unwrap();
         assert_eq!(test_chain.length(), 3);
@@ -39,7 +39,7 @@ mod tests {
         // Case 2: Should fail to add Block with InvalidHeight
         // Init new block `b3`, with InvalidHeight
         // No change in blockchain length
-        let mut b3: ProtocolStateLegacy = Default::default();
+        let mut b3: ProtocolState = Default::default();
         b3.body.consensus_state.blockchain_length = Length(1);
         assert_eq!(
             test_chain.push(b3).unwrap_err(),
@@ -59,14 +59,14 @@ mod tests {
 
         // Case 2: NonEmpty chain
         // Add new block `b0`, top -> b0
-        let mut b0: ProtocolStateLegacy = Default::default();
+        let mut b0: ProtocolState = Default::default();
         b0.body.consensus_state.blockchain_length = Length(1);
         test_chain.push(b0.clone()).unwrap();
         assert_eq!(test_chain.length(), 1);
         assert_eq!(test_chain.top(), Some(&b0)); // b0 is the latest added block
 
         // Add new block `b1`, top -> b1
-        let mut b1: ProtocolStateLegacy = Default::default();
+        let mut b1: ProtocolState = Default::default();
         b1.body.consensus_state.blockchain_length = Length(2);
         test_chain.push(b1.clone()).unwrap();
         assert_eq!(test_chain.length(), 2);
@@ -80,7 +80,7 @@ mod tests {
         let mut test_chain: ProtocolStateChain = ProtocolStateChain(vec![]);
         // Case 1: GlobalSlot slot_number lesser than slots_per_epoch
         // Add new block `b0` with mocked data
-        let mut b0: ProtocolStateLegacy = Default::default();
+        let mut b0: ProtocolState = Default::default();
         b0.body.consensus_state.blockchain_length = Length(0);
         b0.body.consensus_state.curr_global_slot = GlobalSlot {
             slot_number: GlobalSlotNumber(0),
@@ -91,7 +91,7 @@ mod tests {
         assert_eq!(epoch_slot, Some(0)); // slot_number(GlobalSlotNumber(0)) % slots_per_epoch(Length(1000))
 
         // Add new block `b1` with mocked data
-        let mut b1: ProtocolStateLegacy = Default::default();
+        let mut b1: ProtocolState = Default::default();
         b1.body.consensus_state.blockchain_length = Length(1);
         b1.body.consensus_state.curr_global_slot = GlobalSlot {
             slot_number: GlobalSlotNumber(1),
@@ -103,7 +103,7 @@ mod tests {
 
         // Case 2: GlobalSlot slot_number greater than slots_per_epoch
         // Add new block `b2` with mocked data
-        let mut b2: ProtocolStateLegacy = Default::default();
+        let mut b2: ProtocolState = Default::default();
         b2.body.consensus_state.blockchain_length = Length(2);
         b2.body.consensus_state.curr_global_slot = GlobalSlot {
             slot_number: GlobalSlotNumber(1002),
@@ -125,7 +125,9 @@ mod tests {
             "mainnet-117896-3NLPBDTckSdjcUFcQiE9raJsyzB84KayMPKi4PmwNybnA6J75GoL.json",
         );
         let mut current_chain = ProtocolStateChain::default();
-        current_chain.push(block_from_json.protocol_state).unwrap();
+        current_chain
+            .push(block_from_json.protocol_state.into())
+            .unwrap();
 
         // Init candidate chain from JSON
         let block_from_json: ExternalTransition = read_block_json(
@@ -133,7 +135,7 @@ mod tests {
         );
         let mut candidate_chain = ProtocolStateChain::default();
         candidate_chain
-            .push(block_from_json.protocol_state)
+            .push(block_from_json.protocol_state.into())
             .unwrap();
 
         let select_result = current_chain.select_longer_chain(&candidate_chain).unwrap(); // Candidate chain has greater state hash
@@ -151,7 +153,9 @@ mod tests {
             "mainnet-77748-3NKaBJsN1SehD6iJwRwJSFmVzJg5DXSUQVgnMxtH4eer4aF5BrDK.json",
         );
         let mut current_chain = ProtocolStateChain::default();
-        current_chain.push(block_from_json.protocol_state).unwrap();
+        current_chain
+            .push(block_from_json.protocol_state.into())
+            .unwrap();
 
         // Init candidate chain from JSON
         let block_from_json: ExternalTransition = read_block_json(
@@ -159,7 +163,7 @@ mod tests {
         );
         let mut candidate_chain = ProtocolStateChain::default();
         candidate_chain
-            .push(block_from_json.protocol_state)
+            .push(block_from_json.protocol_state.into())
             .unwrap();
 
         let select_result = current_chain.select_longer_chain(&candidate_chain).unwrap(); // Candidate chain is longer 117896 > 77748
@@ -178,7 +182,9 @@ mod tests {
             "mainnet-113267-3NKtqqstB6h8SVNQCtspFisjUwCTqoQ6cC1KGvb6kx6n2dqKkiZS.json",
         );
         let mut current_chain = ProtocolStateChain::default();
-        current_chain.push(block_from_json.protocol_state).unwrap();
+        current_chain
+            .push(block_from_json.protocol_state.into())
+            .unwrap();
 
         // Init candidate chain from JSON
         // candidate chain vrf hash hex: "e907e63d043c78b3dfa724b2ddc1152114fc91b983b40581b1036a8d19eb136d"
@@ -187,7 +193,7 @@ mod tests {
         );
         let mut candidate_chain = ProtocolStateChain::default();
         candidate_chain
-            .push(block_from_json.protocol_state)
+            .push(block_from_json.protocol_state.into())
             .unwrap();
 
         // Candidate chain has greater last vrf hash
@@ -212,7 +218,9 @@ mod tests {
             "mainnet-113267-3NLenrog9wkiJMoA774T9VraqSUGhCuhbDLj3JKbEzomNdjr78G8.json",
         );
         let mut current_chain = ProtocolStateChain::default();
-        current_chain.push(block_from_json.protocol_state).unwrap();
+        current_chain
+            .push(block_from_json.protocol_state.into())
+            .unwrap();
 
         // Init candidate chain from JSON
         let block_from_json: ExternalTransition = read_block_json(
@@ -220,7 +228,7 @@ mod tests {
         );
         let mut candidate_chain = ProtocolStateChain::default();
         candidate_chain
-            .push(block_from_json.protocol_state)
+            .push(block_from_json.protocol_state.into())
             .unwrap();
 
         // Current chain has greater last vrf hash
@@ -241,14 +249,14 @@ mod tests {
     fn test_select_secure_chain_short_range_fork() {
         // Init current chain with mocked data
         let mut current_chain = ProtocolStateChain::default();
-        let mut prot_state = ProtocolStateLegacy::default();
+        let mut prot_state = ProtocolState::default();
         prot_state.body.consensus_state.epoch_count = 5.into();
         prot_state.body.consensus_state.blockchain_length = 11.into();
         current_chain.push(prot_state).unwrap();
 
         // Init new chain with mocked data to satisfy short range fork rule wrt current chain
         let mut new_chain = ProtocolStateChain::default();
-        let mut prot_state = ProtocolStateLegacy::default();
+        let mut prot_state = ProtocolState::default();
         prot_state.body.consensus_state.epoch_count = 5.into();
         prot_state.body.consensus_state.blockchain_length = 10.into();
         new_chain.push(prot_state).unwrap();
@@ -282,7 +290,9 @@ mod tests {
         );
 
         let mut current_chain = ProtocolStateChain::default();
-        current_chain.push(block_from_json.protocol_state).unwrap();
+        current_chain
+            .push(block_from_json.protocol_state.into())
+            .unwrap();
 
         // Init new candidate chain with mocked data to satisfy long range fork rule wrt to current chain
         // new candidate chain has greater relative min window density
@@ -292,7 +302,7 @@ mod tests {
         );
         let mut candidate_chain = ProtocolStateChain::default();
         candidate_chain
-            .push(block_from_json.protocol_state)
+            .push(block_from_json.protocol_state.into())
             .unwrap();
 
         // Add new chain to collection of candidate chains
@@ -339,7 +349,7 @@ mod tests {
             slots_per_epoch: Length(7140),
         };
         consensus_state.blockchain_length = Length(1);
-        let mut prot_state = ProtocolStateLegacy::default();
+        let mut prot_state = ProtocolState::default();
         prot_state.body.consensus_state = consensus_state;
         current_chain.push(prot_state).unwrap();
 
@@ -367,7 +377,7 @@ mod tests {
             slots_per_epoch: Length(7140),
         };
         consensus_state.blockchain_length = Length(77748);
-        let mut prot_state = ProtocolStateLegacy::default();
+        let mut prot_state = ProtocolState::default();
         prot_state.body.consensus_state = consensus_state;
         new_chain.push(prot_state).unwrap();
 
@@ -409,14 +419,18 @@ mod tests {
             "mainnet-113267-3NLenrog9wkiJMoA774T9VraqSUGhCuhbDLj3JKbEzomNdjr78G8.json",
         );
         let mut current_chain = ProtocolStateChain::default();
-        current_chain.push(block_from_json.protocol_state).unwrap();
+        current_chain
+            .push(block_from_json.protocol_state.into())
+            .unwrap();
 
         // Init candidate chain from JSON
         let block_from_json: ExternalTransition = read_block_json(
             "mainnet-77748-3NKaBJsN1SehD6iJwRwJSFmVzJg5DXSUQVgnMxtH4eer4aF5BrDK.json",
         );
         let mut new_chain = ProtocolStateChain::default();
-        new_chain.push(block_from_json.protocol_state).unwrap();
+        new_chain
+            .push(block_from_json.protocol_state.into())
+            .unwrap();
 
         // Add new chain to collection of candidate chains
         let mut candidate_chains = vec![];
@@ -444,7 +458,9 @@ mod tests {
             "mainnet-113267-3NLenrog9wkiJMoA774T9VraqSUGhCuhbDLj3JKbEzomNdjr78G8.json",
         );
         let mut current_chain = ProtocolStateChain::default();
-        current_chain.push(block_from_json.protocol_state).unwrap();
+        current_chain
+            .push(block_from_json.protocol_state.into())
+            .unwrap();
 
         // Init candidate chain from JSON
         let mut block_from_json: ExternalTransition = read_block_json(
@@ -459,7 +475,7 @@ mod tests {
             .extend_from_slice(&[Length(6), Length(6), Length(6)]);
         let mut adversary_chain = ProtocolStateChain::default();
         adversary_chain
-            .push(block_from_json.protocol_state)
+            .push(block_from_json.protocol_state.into())
             .unwrap();
 
         // Add adversary chain to collection of candidate chains
@@ -488,7 +504,9 @@ mod tests {
             "mainnet-113267-3NLenrog9wkiJMoA774T9VraqSUGhCuhbDLj3JKbEzomNdjr78G8.json",
         );
         let mut current_chain = ProtocolStateChain::default();
-        current_chain.push(block_from_json.protocol_state).unwrap();
+        current_chain
+            .push(block_from_json.protocol_state.into())
+            .unwrap();
 
         // Init candidate chain from JSON
         let mut block_from_json: ExternalTransition = read_block_json(
@@ -503,7 +521,7 @@ mod tests {
             .sub_window_densities[5] = Length(999);
         let mut adversary_chain = ProtocolStateChain::default();
         adversary_chain
-            .push(block_from_json.protocol_state)
+            .push(block_from_json.protocol_state.into())
             .unwrap();
 
         // Add adversary chain to collection of candidate chains
@@ -527,7 +545,9 @@ mod tests {
             "mainnet-113267-3NLenrog9wkiJMoA774T9VraqSUGhCuhbDLj3JKbEzomNdjr78G8.json",
         );
         let mut current_chain = ProtocolStateChain::default();
-        current_chain.push(block_from_json.protocol_state).unwrap();
+        current_chain
+            .push(block_from_json.protocol_state.into())
+            .unwrap();
 
         // Init candidate chain from JSON
         let mut block_from_json: ExternalTransition = read_block_json(
@@ -541,7 +561,7 @@ mod tests {
             .sub_window_densities = vec![Length(6), Length(1), Length(3)];
         let mut adversary_chain = ProtocolStateChain::default();
         adversary_chain
-            .push(block_from_json.protocol_state)
+            .push(block_from_json.protocol_state.into())
             .unwrap();
 
         // Add adversary chain to collection of candidate chains

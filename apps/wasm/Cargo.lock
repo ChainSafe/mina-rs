@@ -2275,6 +2275,7 @@ dependencies = [
  "libp2p",
  "log",
  "mina-consensus",
+ "mina-crypto",
  "mina-network",
  "mina-serialization-types",
  "protobuf",

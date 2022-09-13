@@ -4,8 +4,8 @@
 use crate::{logger::JsExportableLogger, *};
 use js_sys::Uint8Array;
 use mina_consensus::common::Chain;
+use mina_crypto::hash::*;
 use mina_network::processor::js::graphql_api_v1;
-use mina_serialization_types::json::*;
 use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen]
@@ -36,8 +36,8 @@ pub async fn get_best_chain_state_json() -> Option<String> {
     let frontier = frontier::PROCESSOR.transition_frontier().await;
     let chain = frontier.get_best_chain();
     chain.top().map(|protocol_state| {
-        let json: ProtocolStateJson = protocol_state.clone().into();
-        serde_json::to_string(&json).unwrap_or_default()
+        let state_hash = protocol_state.state_hash_fp();
+        StateHash::from(&state_hash).to_string()
     })
 }
 

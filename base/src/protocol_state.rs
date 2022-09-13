@@ -239,6 +239,17 @@ impl ToChunkedROInput for ProtocolStateBody {
     }
 }
 
+impl From<ProtocolStateBodyLegacy> for ProtocolStateBody {
+    fn from(t: ProtocolStateBodyLegacy) -> ProtocolStateBody {
+        ProtocolStateBody {
+            genesis_state_hash: t.genesis_state_hash,
+            blockchain_state: t.blockchain_state.into(),
+            consensus_state: t.consensus_state,
+            constants: t.constants,
+        }
+    }
+}
+
 #[derive(Clone, Default, Debug, Eq, PartialEq)]
 /// This structure can be thought of like the block header. It contains the most essential information of a block.
 pub struct ProtocolState {
@@ -271,17 +282,12 @@ impl Hashable for ProtocolState {
     }
 }
 
-impl ToChunkedROInput for ProtocolState {
-    fn to_chunked_roinput(&self) -> ChunkedROInput {
-        let mut hasher = create_kimchi(());
-        let body_hash = hasher.hash(&self.body);
-        ChunkedROInput::new()
-            .append_chunked(&self.previous_state_hash)
-            .append_field(body_hash)
-    }
-}
-
 impl ProtocolState {
+    /// Gets the current global slot the current epoch
+    pub fn curr_global_slot(&self) -> &GlobalSlot {
+        &self.body.consensus_state.curr_global_slot
+    }
+
     /// Calculates the state hash field of current protocol state
     pub fn state_hash_fp(&self) -> Fp {
         let mut hasher = create_kimchi(());
@@ -292,6 +298,16 @@ impl ProtocolState {
     pub fn state_hash(&self) -> StateHash {
         let f = self.state_hash_fp();
         (&f).into()
+    }
+}
+
+impl ToChunkedROInput for ProtocolState {
+    fn to_chunked_roinput(&self) -> ChunkedROInput {
+        let mut hasher = create_kimchi(());
+        let body_hash = hasher.hash(&self.body);
+        ChunkedROInput::new()
+            .append_chunked(&self.previous_state_hash)
+            .append_field(body_hash)
     }
 }
 
@@ -362,5 +378,28 @@ mod tests {
             "3NKrvXDzp7gskxqWUmwDJTFeSGA6ohYMjd38uKwDgkg8RH89QcgH"
         );
         Ok(())
+    }
+}
+
+impl Header for ProtocolState {
+    fn get_height(&self) -> Length {
+        self.body.consensus_state.blockchain_length
+    }
+
+    fn sub_window_densities(&self) -> &Vec<Length> {
+        &self.body.consensus_state.sub_window_densities
+    }
+
+    fn min_window_density(&self) -> Length {
+        self.body.consensus_state.min_window_density
+    }
+}
+
+impl From<ProtocolStateLegacy> for ProtocolState {
+    fn from(t: ProtocolStateLegacy) -> ProtocolState {
+        ProtocolState {
+            previous_state_hash: t.previous_state_hash,
+            body: t.body.into(),
+        }
     }
 }

@@ -42,9 +42,9 @@ impl TransitionFrontier for NaiveTransitionFrontier {
         let mut ctx = mina_signer::create_legacy::<SignedCommandPayload>(NetworkId::MAINNET);
         anyhow::ensure!(block.verify(&mut ctx), "block verification failure");
         if self.best_chain.length() < 1 {
-            self.best_chain.push(block.protocol_state)?;
+            self.best_chain.push(block.protocol_state.into())?;
         } else {
-            let candidate_chains = vec![ProtocolStateChain(vec![block.protocol_state])];
+            let candidate_chains = vec![ProtocolStateChain(vec![block.protocol_state.into()])];
             // TODO: Avoid doing clone here by refining chain selection API(s)
             let best_chain = self.best_chain.select_secure_chain(&candidate_chains)?;
             self.best_chain = best_chain.clone();
