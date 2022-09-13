@@ -158,6 +158,8 @@
 <span id="158">158</span>
 <span id="159">159</span>
 <span id="160">160</span>
+<span id="161">161</span>
+<span id="162">162</span>
 </pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
@@ -280,7 +282,9 @@
         EpochSeedHashV1Json, HashV1Json, LedgerHashV1Json, PendingCoinbaseAuxHashJson,
         StateBodyHashV1Json, StateHashV1Json, VrfOutputHashV1Json,
     };
-    <span class="kw">pub use </span>consensus_state::{ConsensusStateJson, VrfOutputTruncatedJson};
+    <span class="kw">pub use </span>consensus_state::{
+        ConsensusStateJson, VrfOutputTruncatedBase58Json, VrfOutputTruncatedBase64Json,
+    };
     <span class="kw">pub use </span>delta_transition_chain_proof::DeltaTransitionChainProofJson;
     <span class="kw">pub use </span>external_transition::ExternalTransitionJson;
     <span class="kw">pub use </span>field_and_curve_elements::{
@@ -319,4 +323,4 @@
     };
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_serialization_types" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (289279de1 2022-09-04)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_serialization_types" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (fa6ee9375 2022-09-12)" ></div></body></html>

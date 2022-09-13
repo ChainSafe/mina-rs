@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"trait":[["FromGraphQLJson","Trait that deserializes a struct from graphql json"]]};

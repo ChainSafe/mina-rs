@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"struct":[["BlockchainStateRegisters","Mina blockchain state registers"],["BlockchainStateRegistersLocalState","Mina blockchain state register local state"]]};
+window.SIDEBAR_ITEMS = {"struct":[["BlockchainStateRegisters","Mina blockchain state registers"],["BlockchainStateRegistersLocalState","Mina blockchain state register local state It will be retired after https://github.com/MinaProtocol/mina/pull/11728 is merged"]]};

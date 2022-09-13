@@ -57,6 +57,11 @@
 <span id="57">57</span>
 <span id="58">58</span>
 <span id="59">59</span>
+<span id="60">60</span>
+<span id="61">61</span>
+<span id="62">62</span>
+<span id="63">63</span>
+<span id="64">64</span>
 </pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
@@ -78,6 +83,7 @@
 <span class="kw">pub mod </span>delta_transition_chain_proof;
 <span class="kw">pub mod </span>epoch_data;
 <span class="kw">pub mod </span>external_transition;
+<span class="kw">pub mod </span>from_graphql_json;
 <span class="kw">pub mod </span>global_slot;
 <span class="kw">pub mod </span>numbers;
 <span class="kw">pub mod </span>protocol_state;
@@ -89,6 +95,10 @@
 <span class="kw">pub mod </span>user_commands;
 <span class="kw">pub mod </span>verifiable;
 <span class="kw">pub mod </span>verification_key;
+
+<span class="doccomment">/// Import common traits;
+</span><span class="kw">use </span>from_graphql_json::FromGraphQLJson;
+<span class="kw">use </span>std::str::FromStr;
 
 <span class="doccomment">/// Import all crates from proof_systems
 </span><span class="kw">use </span>proof_systems::<span class="kw-2">*</span>;
@@ -117,4 +127,4 @@
     <span class="kw">pub use </span><span class="kw">super</span>::verification_key::<span class="kw-2">*</span>;
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_rs_base" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (289279de1 2022-09-04)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_rs_base" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (fa6ee9375 2022-09-12)" ></div></body></html>

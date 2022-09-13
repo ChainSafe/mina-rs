@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"macro":[["impl_from_for_hash",""]],"mod":[["hash",""],["hex",""],["prelude",""]]};
+window.SIDEBAR_ITEMS = {"macro":[["impl_from_for_hash",""],["impl_from_json_value_for_hash",""]],"mod":[["hash",""],["hex",""],["prelude",""]]};

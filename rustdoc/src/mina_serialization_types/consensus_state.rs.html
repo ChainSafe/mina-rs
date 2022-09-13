@@ -130,6 +130,41 @@
 <span id="130">130</span>
 <span id="131">131</span>
 <span id="132">132</span>
+<span id="133">133</span>
+<span id="134">134</span>
+<span id="135">135</span>
+<span id="136">136</span>
+<span id="137">137</span>
+<span id="138">138</span>
+<span id="139">139</span>
+<span id="140">140</span>
+<span id="141">141</span>
+<span id="142">142</span>
+<span id="143">143</span>
+<span id="144">144</span>
+<span id="145">145</span>
+<span id="146">146</span>
+<span id="147">147</span>
+<span id="148">148</span>
+<span id="149">149</span>
+<span id="150">150</span>
+<span id="151">151</span>
+<span id="152">152</span>
+<span id="153">153</span>
+<span id="154">154</span>
+<span id="155">155</span>
+<span id="156">156</span>
+<span id="157">157</span>
+<span id="158">158</span>
+<span id="159">159</span>
+<span id="160">160</span>
+<span id="161">161</span>
+<span id="162">162</span>
+<span id="163">163</span>
+<span id="164">164</span>
+<span id="165">165</span>
+<span id="166">166</span>
+<span id="167">167</span>
 </pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
@@ -141,6 +176,7 @@
     global_slot::GlobalSlotJson,
     signatures::PublicKeyJson,
     v1::<span class="kw-2">*</span>,
+    version_bytes,
 };
 <span class="kw">use </span>mina_serialization_types_macros::AutoFrom;
 <span class="kw">use </span>serde::{Deserialize, Deserializer, Serialize, Serializer};
@@ -153,12 +189,12 @@
 <span class="doccomment">/// Wrapper struct for the output for a VRF, with version
 </span><span class="kw">pub type </span>VrfOutputTruncatedV1 = Versioned&lt;VrfOutputTruncated, <span class="number">1</span>&gt;;
 
-<span class="doccomment">/// Wrapper struct for the output for a VRF (json)
+<span class="doccomment">/// Wrapper struct for the output for a VRF (base64 encoded json)
 </span><span class="attribute">#[derive(Clone, Debug, Eq, PartialEq, AutoFrom)]
 #[auto_from(VrfOutputTruncated)]
-</span><span class="kw">pub struct </span>VrfOutputTruncatedJson(<span class="kw">pub </span>Vec&lt;u8&gt;);
+</span><span class="kw">pub struct </span>VrfOutputTruncatedBase64Json(<span class="kw">pub </span>Vec&lt;u8&gt;);
 
-<span class="kw">impl </span>Serialize <span class="kw">for </span>VrfOutputTruncatedJson {
+<span class="kw">impl </span>Serialize <span class="kw">for </span>VrfOutputTruncatedBase64Json {
     <span class="kw">fn </span>serialize&lt;S&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, serializer: S) -&gt; <span class="prelude-ty">Result</span>&lt;S::Ok, S::Error&gt;
     <span class="kw">where
         </span>S: Serializer,
@@ -168,7 +204,7 @@
     }
 }
 
-<span class="kw">impl</span>&lt;<span class="lifetime">&#39;de</span>&gt; Deserialize&lt;<span class="lifetime">&#39;de</span>&gt; <span class="kw">for </span>VrfOutputTruncatedJson {
+<span class="kw">impl</span>&lt;<span class="lifetime">&#39;de</span>&gt; Deserialize&lt;<span class="lifetime">&#39;de</span>&gt; <span class="kw">for </span>VrfOutputTruncatedBase64Json {
     <span class="kw">fn </span>deserialize&lt;D&gt;(deserializer: D) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>, D::Error&gt;
     <span class="kw">where
         </span>D: Deserializer&lt;<span class="lifetime">&#39;de</span>&gt;,
@@ -178,6 +214,40 @@
             base64::decode_config(s, base64::URL_SAFE)
                 .map_err(&lt;D::Error <span class="kw">as </span>serde::de::Error&gt;::custom)<span class="question-mark">?</span>,
         ))
+    }
+}
+
+<span class="doccomment">/// Wrapper struct for the output for a VRF (base64 encoded json)
+</span><span class="attribute">#[derive(Clone, Debug, Eq, PartialEq, AutoFrom)]
+#[auto_from(VrfOutputTruncated)]
+</span><span class="kw">pub struct </span>VrfOutputTruncatedBase58Json(<span class="kw">pub </span>Vec&lt;u8&gt;);
+
+<span class="kw">impl </span>Serialize <span class="kw">for </span>VrfOutputTruncatedBase58Json {
+    <span class="kw">fn </span>serialize&lt;S&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, serializer: S) -&gt; <span class="prelude-ty">Result</span>&lt;S::Ok, S::Error&gt;
+    <span class="kw">where
+        </span>S: Serializer,
+    {
+        <span class="kw">let </span><span class="kw-2">mut </span>input = Vec::with_capacity(<span class="self">self</span>.<span class="number">0</span>.len() + <span class="number">1</span>);
+        input.push(<span class="self">self</span>.<span class="number">0</span>.len() <span class="kw">as </span>u8);
+        input.extend_from_slice(<span class="self">self</span>.<span class="number">0</span>.as_slice());
+        <span class="kw">let </span>s = bs58::encode(input.as_slice())
+            .with_check_version(version_bytes::VRF_TRUNCATED_OUTPUT)
+            .into_string();
+        serializer.serialize_str(<span class="kw-2">&amp;</span>s)
+    }
+}
+
+<span class="kw">impl</span>&lt;<span class="lifetime">&#39;de</span>&gt; Deserialize&lt;<span class="lifetime">&#39;de</span>&gt; <span class="kw">for </span>VrfOutputTruncatedBase58Json {
+    <span class="kw">fn </span>deserialize&lt;D&gt;(deserializer: D) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>, D::Error&gt;
+    <span class="kw">where
+        </span>D: Deserializer&lt;<span class="lifetime">&#39;de</span>&gt;,
+    {
+        <span class="kw">let </span>s = String::deserialize(deserializer)<span class="question-mark">?</span>;
+        <span class="kw">let </span>decoded = bs58::decode(s)
+            .with_check(<span class="prelude-val">Some</span>(version_bytes::VRF_TRUNCATED_OUTPUT))
+            .into_vec()
+            .map_err(&lt;D::Error <span class="kw">as </span>serde::de::Error&gt;::custom)<span class="question-mark">?</span>;
+        <span class="prelude-val">Ok</span>(<span class="self">Self</span>(decoded.into_iter().skip(<span class="number">2</span>).collect()))
     }
 }
 
@@ -240,7 +310,7 @@
     <span class="doccomment">/// Current sliding window of densities
     </span><span class="kw">pub </span>sub_window_densities: Vec&lt;U32Json&gt;,
     <span class="doccomment">/// Additional VRS output from leader (for seeding Random Oracle)
-    </span><span class="kw">pub </span>last_vrf_output: VrfOutputTruncatedJson,
+    </span><span class="kw">pub </span>last_vrf_output: VrfOutputTruncatedBase64Json,
     <span class="doccomment">/// Total supply of currency
     </span><span class="kw">pub </span>total_currency: U64Json,
     <span class="doccomment">/// Current global slot number relative to the current hard fork
@@ -263,4 +333,4 @@
     </span><span class="kw">pub </span>supercharge_coinbase: bool,
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_serialization_types" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (289279de1 2022-09-04)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_serialization_types" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (fa6ee9375 2022-09-12)" ></div></body></html>
