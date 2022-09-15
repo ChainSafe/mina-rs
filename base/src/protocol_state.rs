@@ -166,7 +166,7 @@ impl Hashable for ProtocolStateBodyLegacy {
 }
 
 /// Implementing types have some notion of height and can return it
-pub trait Header {
+pub trait ProtocolStateHeader {
     /// Get the height for the implementing type
     fn get_height(&self) -> Length;
     /// The minimum window density at the current epoch.
@@ -181,7 +181,7 @@ pub trait Header {
     fn state_hash_fp(&self) -> Fp;
 }
 
-impl Header for ProtocolStateLegacy {
+impl ProtocolStateHeader for ProtocolStateLegacy {
     fn get_height(&self) -> Length {
         self.body.consensus_state.blockchain_length
     }

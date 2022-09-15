@@ -8,8 +8,8 @@
 use crate::error::ConsensusError;
 use mina_rs_base::consensus_state::ConsensusState;
 use mina_rs_base::global_slot::GlobalSlot;
-use mina_rs_base::protocol_state::Header;
-use mina_rs_base::types::{BlockTime, Length, ProtocolStateLegacy};
+use mina_rs_base::protocol_state::ProtocolStateHeader;
+use mina_rs_base::types::{BlockTime, Length};
 use proof_systems::mina_hasher::Fp;
 
 // TODO: derive from protocol constants
@@ -56,11 +56,11 @@ impl ConsensusConstants {
 // TODO: replace vec element with ExternalTransition
 pub struct ProtocolStateChain<T>(pub Vec<T>)
 where
-    T: Header;
+    T: ProtocolStateHeader;
 
 impl<T> ProtocolStateChain<T>
 where
-    T: Header,
+    T: ProtocolStateHeader,
 {
     /// Pushes an item into the chain
     pub fn push(&mut self, new: T) -> Result<(), ConsensusError> {
@@ -155,7 +155,10 @@ pub trait ChainSelection {
     fn config(&self) -> ConsensusConstants;
 }
 
-impl ChainSelection for ProtocolStateChain<ProtocolStateLegacy> {
+impl<T> ChainSelection for ProtocolStateChain<T>
+where
+    T: ProtocolStateHeader,
+{
     fn select_secure_chain(&mut self, candidates: Vec<Self>) -> Result<(), ConsensusError> {
         for candidate in candidates {
             if self.is_short_range(&candidate)? {
