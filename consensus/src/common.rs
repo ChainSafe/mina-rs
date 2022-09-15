@@ -133,48 +133,34 @@ where
     }
 }
 
-/// A trait that defines operations for consensus calculation
-pub trait Consensus {
-    /// Chain type
-    type Chain;
+/// A trait that defines operations for chain selection
+pub trait ChainSelection {
     /// Top level API to select between chains during a fork.
-    fn select_secure_chain<'a>(
-        &'a self,
-        candidates: &'a [Self::Chain],
-    ) -> Result<&'a ProtocolStateChain<ProtocolStateLegacy>, ConsensusError>;
+    fn select_secure_chain(&mut self, candidates: Vec<Self>) -> Result<(), ConsensusError>
+    where
+        Self: Sized;
 
     /// Selects the longer chain when there's a short range fork.
-    fn select_longer_chain<'a>(
-        &'a self,
-        candidate: &'a ProtocolStateChain<ProtocolStateLegacy>,
-    ) -> Result<&'a ProtocolStateChain<ProtocolStateLegacy>, ConsensusError>;
+    fn select_longer_chain(&mut self, candidate: Self) -> Result<(), ConsensusError>
+    where
+        Self: Sized;
 
     /// Checks whether the fork is short range wrt to candidate chain
-    fn is_short_range(
-        &self,
-        candidate: &ProtocolStateChain<ProtocolStateLegacy>,
-    ) -> Result<bool, ConsensusError>;
+    fn is_short_range(&self, candidate: &Self) -> Result<bool, ConsensusError>;
 
     /// Calculates the relate minimum window density wrt to candidate chain.
-    fn relative_min_window_density(
-        &self,
-        candidate: &ProtocolStateChain<ProtocolStateLegacy>,
-    ) -> Result<u32, ConsensusError>;
+    fn relative_min_window_density(&self, candidate: &Self) -> Result<u32, ConsensusError>;
 
     /// Constants used for consensus
     fn config(&self) -> ConsensusConstants;
 }
 
-impl Consensus for ProtocolStateChain<ProtocolStateLegacy> {
-    type Chain = ProtocolStateChain<ProtocolStateLegacy>;
-    fn select_secure_chain<'a>(
-        &'a self,
-        candidates: &'a [Self::Chain],
-    ) -> Result<&'a ProtocolStateChain<ProtocolStateLegacy>, ConsensusError> {
-        let tip = candidates.iter().fold(Ok(self), |tip, candidate| {
-            if self.is_short_range(candidate)? {
+impl ChainSelection for ProtocolStateChain<ProtocolStateLegacy> {
+    fn select_secure_chain(&mut self, candidates: Vec<Self>) -> Result<(), ConsensusError> {
+        for candidate in candidates {
+            if self.is_short_range(&candidate)? {
                 // short-range fork, select longer chain
-                self.select_longer_chain(candidate)
+                self.select_longer_chain(candidate)?;
             } else {
                 // check against sub window density sizes > 11
                 let candidate_state = candidate
@@ -187,32 +173,28 @@ impl Consensus for ProtocolStateChain<ProtocolStateLegacy> {
                     .iter()
                     .any(|s| *s > self.config().slots_per_sub_window.0)
                 {
-                    return Ok(self);
+                    continue;
                 };
 
                 // sub window densities must not be greater than sub_windows_per_window
                 let sub_windows_per_window = self.config().sub_windows_per_window.0 as usize;
                 if candidate_state.sub_window_densities.len() != sub_windows_per_window {
-                    return Ok(self);
+                    continue;
                 }
 
-                let tip_density = self.relative_min_window_density(candidate)?;
+                let tip_density = self.relative_min_window_density(&candidate)?;
                 let candidate_density = candidate.relative_min_window_density(self)?;
                 match candidate_density.cmp(&tip_density) {
-                    std::cmp::Ordering::Greater => Ok(candidate),
-                    std::cmp::Ordering::Equal => self.select_longer_chain(candidate),
-                    _ => tip, // no change
+                    std::cmp::Ordering::Greater => *self = candidate,
+                    std::cmp::Ordering::Equal => self.select_longer_chain(candidate)?,
+                    _ => (), // no change
                 }
             }
-        });
-
-        tip
+        }
+        Ok(())
     }
 
-    fn select_longer_chain<'a>(
-        &'a self,
-        candidate: &'a ProtocolStateChain<ProtocolStateLegacy>,
-    ) -> Result<&'a ProtocolStateChain<ProtocolStateLegacy>, ConsensusError> {
+    fn select_longer_chain(&mut self, candidate: Self) -> Result<(), ConsensusError> {
         let top_state = self
             .consensus_state()
             .ok_or(ConsensusError::ConsensusStateNotFound)?;
@@ -220,30 +202,32 @@ impl Consensus for ProtocolStateChain<ProtocolStateLegacy> {
             .consensus_state()
             .ok_or(ConsensusError::ConsensusStateNotFound)?;
         if top_state.blockchain_length < candidate_state.blockchain_length {
-            return Ok(candidate);
+            *self = candidate;
+            return Ok(());
         } else if top_state.blockchain_length == candidate_state.blockchain_length {
             // tiebreak logic
             match candidate
                 .last_vrf_hash_digest()?
                 .cmp(&self.last_vrf_hash_digest()?)
             {
-                std::cmp::Ordering::Greater => return Ok(candidate),
+                std::cmp::Ordering::Greater => {
+                    *self = candidate;
+                    return Ok(());
+                }
                 std::cmp::Ordering::Equal => {
                     if candidate.state_hash() > self.state_hash() {
-                        return Ok(candidate);
+                        *self = candidate;
+                        return Ok(());
                     }
                 }
                 _ => {}
             }
         }
 
-        Ok(self)
+        Ok(())
     }
 
-    fn is_short_range(
-        &self,
-        candidate: &ProtocolStateChain<ProtocolStateLegacy>,
-    ) -> Result<bool, ConsensusError> {
+    fn is_short_range(&self, candidate: &Self) -> Result<bool, ConsensusError> {
         let a = self
             .consensus_state()
             .ok_or(ConsensusError::ConsensusStateNotFound)?;
@@ -282,10 +266,7 @@ impl Consensus for ProtocolStateChain<ProtocolStateLegacy> {
     /// and the chain with the higher relative minimum window density is chosen as the canonical chain.
     /// The need for relative density is explained here:
     /// <https://github.com/MinaProtocol/mina/blob/02dfc3ff0160ba3c1bbc732baa07502fe4312b04/docs/specs/consensus/README.md#5412-relative-minimum-window-density>
-    fn relative_min_window_density(
-        &self,
-        chain_b: &ProtocolStateChain<ProtocolStateLegacy>,
-    ) -> Result<u32, ConsensusError> {
+    fn relative_min_window_density(&self, chain_b: &Self) -> Result<u32, ConsensusError> {
         let tip_state = self
             .consensus_state()
             .ok_or(ConsensusError::ConsensusStateNotFound)?;

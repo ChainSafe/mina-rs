@@ -45,9 +45,7 @@ impl TransitionFrontier for NaiveTransitionFrontier {
             self.best_chain.push(block.protocol_state)?;
         } else {
             let candidate_chains = vec![ProtocolStateChain(vec![block.protocol_state])];
-            // TODO: Avoid doing clone here by refining chain selection API(s)
-            let best_chain = self.best_chain.select_secure_chain(&candidate_chains)?;
-            self.best_chain = best_chain.clone();
+            self.best_chain.select_secure_chain(candidate_chains)?;
         }
         Ok(())
     }
