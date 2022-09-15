@@ -173,6 +173,12 @@ pub trait Header {
     fn min_window_density(&self) -> Length;
     /// A list of density values of the sub windows.
     fn sub_window_densities(&self) -> &Vec<Length>;
+    /// Consensus state
+    fn consensus_state(&self) -> &ConsensusState;
+    /// Constants
+    fn constants(&self) -> &ProtocolConstants;
+    /// State hash fp
+    fn state_hash_fp(&self) -> Fp;
 }
 
 impl Header for ProtocolStateLegacy {
@@ -186,6 +192,18 @@ impl Header for ProtocolStateLegacy {
 
     fn min_window_density(&self) -> Length {
         self.body.consensus_state.min_window_density
+    }
+
+    fn consensus_state(&self) -> &ConsensusState {
+        &self.body.consensus_state
+    }
+
+    fn constants(&self) -> &ProtocolConstants {
+        &self.body.constants
+    }
+
+    fn state_hash_fp(&self) -> Fp {
+        self.state_hash_fp()
     }
 }
 

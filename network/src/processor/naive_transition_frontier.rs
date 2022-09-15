@@ -15,7 +15,7 @@ use tokio::sync::mpsc;
 #[derive(Debug, Clone, Default)]
 pub struct NaiveTransitionFrontier {
     block_requester: Option<mpsc::Sender<QueryBlockRequest>>,
-    best_chain: ProtocolStateChain,
+    best_chain: ProtocolStateChain<ProtocolStateLegacy>,
 }
 
 impl NaiveTransitionFrontier {
@@ -25,7 +25,7 @@ impl NaiveTransitionFrontier {
     }
 
     /// TODO: Doc
-    pub fn get_best_chain(&self) -> &ProtocolStateChain {
+    pub fn get_best_chain(&self) -> &ProtocolStateChain<ProtocolStateLegacy> {
         &self.best_chain
     }
 }

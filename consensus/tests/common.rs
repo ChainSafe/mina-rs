@@ -13,7 +13,7 @@ mod tests {
     #[wasm_bindgen_test]
     fn test_protocol_state_chain_push() {
         // Init empty chain
-        let mut test_chain: ProtocolStateChain = ProtocolStateChain(vec![]);
+        let mut test_chain: ProtocolStateChain<ProtocolStateLegacy> = ProtocolStateChain(vec![]);
         assert_eq!(test_chain.length(), 0);
 
         // Case 1: Add Block with ValidHeight
@@ -52,7 +52,7 @@ mod tests {
     #[test]
     #[wasm_bindgen_test]
     fn test_protocol_state_chain_top() {
-        let mut test_chain: ProtocolStateChain = ProtocolStateChain(vec![]);
+        let mut test_chain: ProtocolStateChain<ProtocolStateLegacy> = ProtocolStateChain(vec![]);
         // Case 1: Empty chain, top -> None
         assert_eq!(test_chain.length(), 0);
         assert_eq!(test_chain.top(), None);
@@ -77,7 +77,7 @@ mod tests {
     #[test]
     #[wasm_bindgen_test]
     fn test_protocol_state_chain_epoch_slot() {
-        let mut test_chain: ProtocolStateChain = ProtocolStateChain(vec![]);
+        let mut test_chain: ProtocolStateChain<ProtocolStateLegacy> = ProtocolStateChain(vec![]);
         // Case 1: GlobalSlot slot_number lesser than slots_per_epoch
         // Add new block `b0` with mocked data
         let mut b0: ProtocolStateLegacy = Default::default();

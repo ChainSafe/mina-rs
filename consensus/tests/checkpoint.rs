@@ -22,7 +22,7 @@ mod tests {
     use wasm_bindgen_test::*;
 
     /// helper to initialize consensus state to defaults for tests
-    fn genesis_consensus_state() -> ProtocolStateChain {
+    fn genesis_consensus_state() -> ProtocolStateChain<ProtocolStateLegacy> {
         let genesis = ExternalTransition::from_genesis_config(&MAINNET_CONFIG);
         let a = genesis.protocol_state;
         ProtocolStateChain(vec![a])
