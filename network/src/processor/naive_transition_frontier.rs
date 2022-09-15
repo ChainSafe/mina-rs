@@ -13,25 +13,31 @@ use tokio::sync::mpsc;
 
 /// Struct that represents a naive implementation of the [TransitionFrontier]
 #[derive(Debug, Clone, Default)]
-pub struct NaiveTransitionFrontier {
+pub struct NaiveTransitionFrontier<ProtocolState>
+where
+    ProtocolState: ProtocolStateHeader,
+{
     block_requester: Option<mpsc::Sender<QueryBlockRequest>>,
-    best_chain: ProtocolStateChain<ProtocolStateLegacy>,
+    best_chain: ProtocolStateChain<ProtocolState>,
 }
 
-impl NaiveTransitionFrontier {
+impl<ProtocolState> NaiveTransitionFrontier<ProtocolState>
+where
+    ProtocolState: ProtocolStateHeader + Default,
+{
     /// TODO: Doc
     pub fn new() -> Self {
         Default::default()
     }
 
     /// TODO: Doc
-    pub fn get_best_chain(&self) -> &ProtocolStateChain<ProtocolStateLegacy> {
+    pub fn get_best_chain(&self) -> &ProtocolStateChain<ProtocolState> {
         &self.best_chain
     }
 }
 
 #[async_trait(?Send)]
-impl TransitionFrontier for NaiveTransitionFrontier {
+impl TransitionFrontier for NaiveTransitionFrontier<ProtocolStateLegacy> {
     type Block = ExternalTransition;
 
     fn set_block_requester(&mut self, sender: mpsc::Sender<QueryBlockRequest>) {

@@ -2276,6 +2276,7 @@ dependencies = [
  "log",
  "mina-consensus",
  "mina-network",
+ "mina-rs-base",
  "mina-serialization-types",
  "protobuf",
  "protobuf-codegen",

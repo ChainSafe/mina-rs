@@ -3,7 +3,6 @@
 
 use crate::{logger::JsExportableLogger, *};
 use js_sys::Uint8Array;
-use mina_consensus::common::Chain;
 use mina_network::processor::js::graphql_api_v1;
 use mina_serialization_types::json::*;
 use wasm_bindgen::prelude::*;
