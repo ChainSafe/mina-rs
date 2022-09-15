@@ -7,7 +7,7 @@ use mina_rs_base::types::*;
 
 type NaiveTransitionFrontierMainnet = NaiveTransitionFrontier<ProtocolStateLegacy>;
 
-type ProcessorType = NetworkMessageProcessor<
+type ProcessorTypeMainnet = NetworkMessageProcessor<
     <NonConsensusGraphQLV1Backend as NonConsensusNetworkingOps>::Block,
     <NaiveTransitionFrontierMainnet as TransitionFrontier>::Block,
     NaiveTransitionFrontierMainnet,
@@ -15,11 +15,11 @@ type ProcessorType = NetworkMessageProcessor<
 >;
 
 lazy_static! {
-    pub static ref PROCESSOR: ProcessorType = new_processor();
+    pub static ref PROCESSOR_MAINNET: ProcessorTypeMainnet = new_processor_mainnet();
 }
 
-fn new_processor() -> ProcessorType {
+fn new_processor_mainnet() -> ProcessorTypeMainnet {
     let backend = NonConsensusGraphQLV1Backend::new();
     let frontier = NaiveTransitionFrontier::new();
-    ProcessorType::new(frontier, backend)
+    ProcessorTypeMainnet::new(frontier, backend)
 }

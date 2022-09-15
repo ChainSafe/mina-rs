@@ -206,7 +206,6 @@ where
             .ok_or(ConsensusError::ConsensusStateNotFound)?;
         if top_state.blockchain_length < candidate_state.blockchain_length {
             *self = candidate;
-            return Ok(());
         } else if top_state.blockchain_length == candidate_state.blockchain_length {
             // tiebreak logic
             match candidate
@@ -215,12 +214,10 @@ where
             {
                 std::cmp::Ordering::Greater => {
                     *self = candidate;
-                    return Ok(());
                 }
                 std::cmp::Ordering::Equal => {
                     if candidate.state_hash() > self.state_hash() {
                         *self = candidate;
-                        return Ok(());
                     }
                 }
                 _ => {}
