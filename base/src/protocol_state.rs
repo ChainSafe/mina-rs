@@ -266,6 +266,32 @@ pub struct ProtocolState {
     pub body: ProtocolStateBody,
 }
 
+impl ProtocolStateHeader for ProtocolState {
+    fn get_height(&self) -> Length {
+        self.body.consensus_state.blockchain_length
+    }
+
+    fn sub_window_densities(&self) -> &Vec<Length> {
+        &self.body.consensus_state.sub_window_densities
+    }
+
+    fn min_window_density(&self) -> Length {
+        self.body.consensus_state.min_window_density
+    }
+
+    fn consensus_state(&self) -> &ConsensusState {
+        &self.body.consensus_state
+    }
+
+    fn constants(&self) -> &ProtocolConstants {
+        &self.body.constants
+    }
+
+    fn state_hash_fp(&self) -> Fp {
+        self.state_hash_fp()
+    }
+}
+
 impl FromGraphQLJson for ProtocolState {
     fn from_graphql_json(json: &serde_json::Value) -> anyhow::Result<Self> {
         Ok(Self {

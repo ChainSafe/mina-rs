@@ -261,6 +261,7 @@ where
     }
 
     fn config(&self) -> ConsensusConstants {
+        // FIXME: this is OK for now as ConsensusConstants is identical between mainnet and qanet
         ConsensusConstants::mainnet()
     }
 
