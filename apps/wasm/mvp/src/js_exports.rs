@@ -3,7 +3,6 @@
 
 use crate::{logger::JsExportableLogger, *};
 use js_sys::Uint8Array;
-use mina_consensus::common::Chain;
 use mina_network::processor::js::graphql_api_v1;
 use mina_serialization_types::json::*;
 use wasm_bindgen::prelude::*;
@@ -26,14 +25,14 @@ pub async fn fetch_block_previous_state_hash(
 
 #[wasm_bindgen]
 pub async fn get_best_chain_state_hash() -> Option<String> {
-    let frontier = frontier::PROCESSOR.transition_frontier().await;
+    let frontier = frontier::PROCESSOR_MAINNET.transition_frontier().await;
     let chain = frontier.get_best_chain();
     chain.state_hash().map(|state_hash| state_hash.to_string())
 }
 
 #[wasm_bindgen]
 pub async fn get_best_chain_state_json() -> Option<String> {
-    let frontier = frontier::PROCESSOR.transition_frontier().await;
+    let frontier = frontier::PROCESSOR_MAINNET.transition_frontier().await;
     let chain = frontier.get_best_chain();
     chain.top().map(|protocol_state| {
         let json: ProtocolStateJson = protocol_state.clone().into();
@@ -43,13 +42,13 @@ pub async fn get_best_chain_state_json() -> Option<String> {
 
 #[wasm_bindgen]
 pub async fn poll_latest_blocks_once() -> Result<(), JsError> {
-    let backend = frontier::PROCESSOR.nonconsensus_ops().await;
+    let backend = frontier::PROCESSOR_MAINNET.nonconsensus_ops().await;
     backend.poll_latest_once().await.map_err(err_to_js_error)
 }
 
 #[wasm_bindgen]
 pub async fn run_processor() {
-    frontier::PROCESSOR.run().await;
+    frontier::PROCESSOR_MAINNET.run().await;
 }
 
 #[wasm_bindgen]

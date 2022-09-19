@@ -13,25 +13,31 @@ use tokio::sync::mpsc;
 
 /// Struct that represents a naive implementation of the [TransitionFrontier]
 #[derive(Debug, Clone, Default)]
-pub struct NaiveTransitionFrontier {
+pub struct NaiveTransitionFrontier<ProtocolState>
+where
+    ProtocolState: ProtocolStateHeader,
+{
     block_requester: Option<mpsc::Sender<QueryBlockRequest>>,
-    best_chain: ProtocolStateChain,
+    best_chain: ProtocolStateChain<ProtocolState>,
 }
 
-impl NaiveTransitionFrontier {
+impl<ProtocolState> NaiveTransitionFrontier<ProtocolState>
+where
+    ProtocolState: ProtocolStateHeader + Default,
+{
     /// TODO: Doc
     pub fn new() -> Self {
         Default::default()
     }
 
     /// TODO: Doc
-    pub fn get_best_chain(&self) -> &ProtocolStateChain {
+    pub fn get_best_chain(&self) -> &ProtocolStateChain<ProtocolState> {
         &self.best_chain
     }
 }
 
 #[async_trait(?Send)]
-impl TransitionFrontier for NaiveTransitionFrontier {
+impl TransitionFrontier for NaiveTransitionFrontier<ProtocolStateLegacy> {
     type Block = ExternalTransition;
 
     fn set_block_requester(&mut self, sender: mpsc::Sender<QueryBlockRequest>) {
@@ -45,9 +51,7 @@ impl TransitionFrontier for NaiveTransitionFrontier {
             self.best_chain.push(block.protocol_state)?;
         } else {
             let candidate_chains = vec![ProtocolStateChain(vec![block.protocol_state])];
-            // TODO: Avoid doing clone here by refining chain selection API(s)
-            let best_chain = self.best_chain.select_secure_chain(&candidate_chains)?;
-            self.best_chain = best_chain.clone();
+            self.best_chain.select_secure_chain(candidate_chains)?;
         }
         Ok(())
     }

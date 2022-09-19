@@ -13,7 +13,7 @@ mod tests {
     #[wasm_bindgen_test]
     fn test_protocol_state_chain_push() {
         // Init empty chain
-        let mut test_chain: ProtocolStateChain = ProtocolStateChain(vec![]);
+        let mut test_chain: ProtocolStateChain<ProtocolStateLegacy> = ProtocolStateChain(vec![]);
         assert_eq!(test_chain.length(), 0);
 
         // Case 1: Add Block with ValidHeight
@@ -52,7 +52,7 @@ mod tests {
     #[test]
     #[wasm_bindgen_test]
     fn test_protocol_state_chain_top() {
-        let mut test_chain: ProtocolStateChain = ProtocolStateChain(vec![]);
+        let mut test_chain: ProtocolStateChain<ProtocolStateLegacy> = ProtocolStateChain(vec![]);
         // Case 1: Empty chain, top -> None
         assert_eq!(test_chain.length(), 0);
         assert_eq!(test_chain.top(), None);
@@ -77,7 +77,7 @@ mod tests {
     #[test]
     #[wasm_bindgen_test]
     fn test_protocol_state_chain_epoch_slot() {
-        let mut test_chain: ProtocolStateChain = ProtocolStateChain(vec![]);
+        let mut test_chain: ProtocolStateChain<ProtocolStateLegacy> = ProtocolStateChain(vec![]);
         // Case 1: GlobalSlot slot_number lesser than slots_per_epoch
         // Add new block `b0` with mocked data
         let mut b0: ProtocolStateLegacy = Default::default();
@@ -136,8 +136,11 @@ mod tests {
             .push(block_from_json.protocol_state)
             .unwrap();
 
-        let select_result = current_chain.select_longer_chain(&candidate_chain).unwrap(); // Candidate chain has greater state hash
-        assert_eq!(select_result, &candidate_chain);
+        let mut selected_chain = current_chain.clone();
+        selected_chain
+            .select_longer_chain(candidate_chain.clone())
+            .unwrap(); // Candidate chain has greater state hash
+        assert_eq!(selected_chain, candidate_chain);
     }
 
     // Test longer chain selection method
@@ -162,8 +165,11 @@ mod tests {
             .push(block_from_json.protocol_state)
             .unwrap();
 
-        let select_result = current_chain.select_longer_chain(&candidate_chain).unwrap(); // Candidate chain is longer 117896 > 77748
-        assert_eq!(select_result, &candidate_chain);
+        let mut selected_chain = current_chain.clone();
+        selected_chain
+            .select_longer_chain(candidate_chain.clone())
+            .unwrap(); // Candidate chain is longer 117896 > 77748
+        assert_eq!(selected_chain, candidate_chain);
     }
 
     #[test]
@@ -191,9 +197,12 @@ mod tests {
             .unwrap();
 
         // Candidate chain has greater last vrf hash
-        let select_result = current_chain.select_longer_chain(&candidate_chain).unwrap();
-        let result_state = select_result.0.get(0).unwrap();
-        assert_eq!(select_result, &candidate_chain);
+        let mut selected_chain = current_chain.clone();
+        selected_chain
+            .select_longer_chain(candidate_chain.clone())
+            .unwrap();
+        assert_eq!(selected_chain, candidate_chain);
+        let result_state = selected_chain.0.get(0).unwrap();
         assert_eq!(
             result_state.body.consensus_state.last_vrf_output,
             VrfOutputTruncated::from_base64_str("kKr83LYd7DyFupRAPh5Dh9eWM1teSEs5VjU4XId2DgA=")
@@ -222,11 +231,13 @@ mod tests {
         candidate_chain
             .push(block_from_json.protocol_state)
             .unwrap();
-
+        let mut selected_result = current_chain.clone();
         // Current chain has greater last vrf hash
-        let select_result = current_chain.select_longer_chain(&candidate_chain).unwrap(); // Current chain has greater last vrf output
-        assert_eq!(select_result, &current_chain);
-        let result_state = select_result.0.get(0).unwrap();
+        selected_result
+            .select_longer_chain(candidate_chain.clone())
+            .unwrap(); // Current chain has greater last vrf output
+        assert_eq!(selected_result, current_chain);
+        let result_state = selected_result.0.get(0).unwrap();
         assert_eq!(
             result_state.body.consensus_state.last_vrf_output,
             VrfOutputTruncated::from_base64_str("kKr83LYd7DyFupRAPh5Dh9eWM1teSEs5VjU4XId2DgA=")
@@ -256,12 +267,13 @@ mod tests {
         // Add new chain to collection of candidate chains
         let mut candidate_chains = vec![];
         candidate_chains.push(new_chain);
+        let mut selected_result = current_chain.clone();
         // Current chain and candidate chain satisfy short range fork condition and current chain is longer than candidate chain
-        let select_result = current_chain
-            .select_secure_chain(&candidate_chains)
+        selected_result
+            .select_secure_chain(candidate_chains.clone())
             .unwrap();
-        assert_eq!(select_result, &current_chain);
-        let result_state = select_result.0.get(0).unwrap();
+        assert_eq!(selected_result, current_chain);
+        let result_state = selected_result.0.get(0).unwrap();
         assert_eq!(
             result_state.body.consensus_state.blockchain_length,
             Length(11)
@@ -299,12 +311,13 @@ mod tests {
         let mut candidate_chains = vec![];
         candidate_chains.push(candidate_chain);
 
+        let mut selected_result = current_chain.clone();
         // Current chain and candidate chain satisfy long range fork rule and candidate chain has greater relative min window density
-        let select_result = current_chain
-            .select_secure_chain(&candidate_chains)
+        selected_result
+            .select_secure_chain(candidate_chains.clone())
             .unwrap();
-        assert_eq!(select_result, &candidate_chains[0]);
-        let result_state = select_result.0.get(0).unwrap();
+        assert_eq!(selected_result, candidate_chains[0]);
+        let result_state = selected_result.0.get(0).unwrap();
         assert_eq!(
             result_state.body.consensus_state.blockchain_length,
             Length(113267)
@@ -374,28 +387,25 @@ mod tests {
         // Add new chain to collection of candidate chains
         let mut candidate_chains = vec![];
         candidate_chains.push(new_chain);
+        let mut selected_result = current_chain.clone();
         // Current chain and candidate chain are long range fork, with same relative min window density
         // and candidate chain is longer wrt to current chain
-        let select_result = current_chain
-            .select_secure_chain(&candidate_chains)
+        selected_result
+            .select_secure_chain(candidate_chains.clone())
             .unwrap();
-        let result_state = select_result.0.get(0).unwrap();
-        assert_eq!(select_result, &candidate_chains[0]);
+        let result_state = selected_result.0.get(0).unwrap();
+        assert_eq!(selected_result, candidate_chains[0]);
         assert_eq!(
             result_state.body.consensus_state.blockchain_length,
             Length(77748)
         );
+        let mut selected_longer_chain = current_chain.clone();
         // Verify select secure chain and select longer chain methods return same result
         // for chains which satisfies long range fork rule and have same relative min window density
-        assert_eq!(
-            result_state,
-            current_chain
-                .select_longer_chain(&candidate_chains[0])
-                .unwrap()
-                .0
-                .get(0)
-                .unwrap()
-        );
+        selected_longer_chain
+            .select_longer_chain(candidate_chains[0].clone())
+            .unwrap();
+        assert_eq!(result_state, selected_longer_chain.0.get(0).unwrap());
     }
 
     #[test]
@@ -421,12 +431,13 @@ mod tests {
         // Add new chain to collection of candidate chains
         let mut candidate_chains = vec![];
         candidate_chains.push(new_chain);
+        let mut selected_result = current_chain.clone();
         // Current chain and candidate chain are long range fork and candidate chain has lesser relative min window density)
-        let select_result = current_chain
-            .select_secure_chain(&candidate_chains)
+        selected_result
+            .select_secure_chain(candidate_chains.clone())
             .unwrap();
-        assert_eq!(select_result, &current_chain);
-        let result_state = select_result.0.get(0).unwrap();
+        assert_eq!(selected_result, current_chain);
+        let result_state = selected_result.0.get(0).unwrap();
         assert_eq!(
             result_state.body.consensus_state.blockchain_length,
             Length(113267)
@@ -465,12 +476,13 @@ mod tests {
         // Add adversary chain to collection of candidate chains
         let mut candidate_chains = vec![];
         candidate_chains.push(adversary_chain);
+        let mut selected_result = current_chain.clone();
         // select secure chain method checks for extra sub window density in candidate chain and discard it to select valid chain
-        let select_result = current_chain
-            .select_secure_chain(&candidate_chains)
+        selected_result
+            .select_secure_chain(candidate_chains.clone())
             .unwrap();
-        assert_eq!(select_result, &current_chain);
-        let result_state = select_result.0.get(0).unwrap();
+        assert_eq!(selected_result, current_chain);
+        let result_state = selected_result.0.get(0).unwrap();
         assert_eq!(
             result_state.body.consensus_state.blockchain_length,
             Length(113267)
@@ -509,11 +521,12 @@ mod tests {
         // Add adversary chain to collection of candidate chains
         let mut candidate_chains = vec![];
         candidate_chains.push(adversary_chain);
+        let mut selected_result = current_chain.clone();
         // select secure chain method checks for extremely high sub window density and discard it to select valid chain
-        let select_result = current_chain
-            .select_secure_chain(&candidate_chains)
+        selected_result
+            .select_secure_chain(candidate_chains.clone())
             .unwrap();
-        assert_eq!(select_result, &current_chain);
+        assert_eq!(selected_result, current_chain);
     }
 
     #[test]
@@ -547,11 +560,12 @@ mod tests {
         // Add adversary chain to collection of candidate chains
         let mut candidate_chains = vec![];
         candidate_chains.push(adversary_chain);
-        let select_result = current_chain
-            .select_secure_chain(&candidate_chains)
+        let mut selected_result = current_chain.clone();
+        selected_result
+            .select_secure_chain(candidate_chains.clone())
             .unwrap();
         // select secure chain picks up the chain with valid sub window density
-        assert_eq!(select_result, &current_chain);
+        assert_eq!(selected_result, current_chain);
     }
 
     // block path: mainnet-$BlockHeight-$StateHash.json eg: "mainnet-113267-3NLenrog9wkiJMoA774T9VraqSUGhCuhbDLj3JKbEzomNdjr78G8.json"

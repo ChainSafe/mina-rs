@@ -166,16 +166,22 @@ impl Hashable for ProtocolStateBodyLegacy {
 }
 
 /// Implementing types have some notion of height and can return it
-pub trait Header {
+pub trait ProtocolStateHeader {
     /// Get the height for the implementing type
     fn get_height(&self) -> Length;
     /// The minimum window density at the current epoch.
     fn min_window_density(&self) -> Length;
     /// A list of density values of the sub windows.
     fn sub_window_densities(&self) -> &Vec<Length>;
+    /// Consensus state
+    fn consensus_state(&self) -> &ConsensusState;
+    /// Constants
+    fn constants(&self) -> &ProtocolConstants;
+    /// State hash fp
+    fn state_hash_fp(&self) -> Fp;
 }
 
-impl Header for ProtocolStateLegacy {
+impl ProtocolStateHeader for ProtocolStateLegacy {
     fn get_height(&self) -> Length {
         self.body.consensus_state.blockchain_length
     }
@@ -186,6 +192,18 @@ impl Header for ProtocolStateLegacy {
 
     fn min_window_density(&self) -> Length {
         self.body.consensus_state.min_window_density
+    }
+
+    fn consensus_state(&self) -> &ConsensusState {
+        &self.body.consensus_state
+    }
+
+    fn constants(&self) -> &ProtocolConstants {
+        &self.body.constants
+    }
+
+    fn state_hash_fp(&self) -> Fp {
+        self.state_hash_fp()
     }
 }
 
@@ -246,6 +264,32 @@ pub struct ProtocolState {
     pub previous_state_hash: StateHash,
     /// The body of the protocol state
     pub body: ProtocolStateBody,
+}
+
+impl ProtocolStateHeader for ProtocolState {
+    fn get_height(&self) -> Length {
+        self.body.consensus_state.blockchain_length
+    }
+
+    fn sub_window_densities(&self) -> &Vec<Length> {
+        &self.body.consensus_state.sub_window_densities
+    }
+
+    fn min_window_density(&self) -> Length {
+        self.body.consensus_state.min_window_density
+    }
+
+    fn consensus_state(&self) -> &ConsensusState {
+        &self.body.consensus_state
+    }
+
+    fn constants(&self) -> &ProtocolConstants {
+        &self.body.constants
+    }
+
+    fn state_hash_fp(&self) -> Fp {
+        self.state_hash_fp()
+    }
 }
 
 impl FromGraphQLJson for ProtocolState {

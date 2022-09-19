@@ -3,20 +3,23 @@
 
 use lazy_static::lazy_static;
 use mina_network::processor::{js::graphql_api_v1::*, *};
+use mina_rs_base::types::*;
 
-type ProcessorType = NetworkMessageProcessor<
+type NaiveTransitionFrontierMainnet = NaiveTransitionFrontier<ProtocolStateLegacy>;
+
+type ProcessorTypeMainnet = NetworkMessageProcessor<
     <NonConsensusGraphQLV1Backend as NonConsensusNetworkingOps>::Block,
-    <NaiveTransitionFrontier as TransitionFrontier>::Block,
-    NaiveTransitionFrontier,
+    <NaiveTransitionFrontierMainnet as TransitionFrontier>::Block,
+    NaiveTransitionFrontierMainnet,
     NonConsensusGraphQLV1Backend,
 >;
 
 lazy_static! {
-    pub static ref PROCESSOR: ProcessorType = new_processor();
+    pub static ref PROCESSOR_MAINNET: ProcessorTypeMainnet = new_processor_mainnet();
 }
 
-fn new_processor() -> ProcessorType {
+fn new_processor_mainnet() -> ProcessorTypeMainnet {
     let backend = NonConsensusGraphQLV1Backend::new();
     let frontier = NaiveTransitionFrontier::new();
-    ProcessorType::new(frontier, backend)
+    ProcessorTypeMainnet::new(frontier, backend)
 }

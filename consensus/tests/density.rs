@@ -3,7 +3,7 @@
 
 #[cfg(test)]
 mod tests {
-    use mina_consensus::common::{Chain, Consensus, ProtocolStateChain};
+    use mina_consensus::common::{ChainSelection, ProtocolStateChain};
     use mina_rs_base::{
         consensus_state::ConsensusState,
         global_slot::GlobalSlot,

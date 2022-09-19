@@ -8,7 +8,7 @@
 use crate::error::ConsensusError;
 use mina_rs_base::consensus_state::ConsensusState;
 use mina_rs_base::global_slot::GlobalSlot;
-use mina_rs_base::protocol_state::{Header, ProtocolStateLegacy};
+use mina_rs_base::protocol_state::ProtocolStateHeader;
 use mina_rs_base::types::{BlockTime, Length};
 use proof_systems::mina_hasher::Fp;
 
@@ -51,45 +51,19 @@ impl ConsensusConstants {
     }
 }
 
-/// A chain of [ProtocolStateLegacy]
+/// A chain of ProtocolState
 #[derive(Debug, Default, Eq, PartialEq, Clone)]
 // TODO: replace vec element with ExternalTransition
-pub struct ProtocolStateChain(pub Vec<ProtocolStateLegacy>);
-
-/// Trait that represents a chain of block data structure
-pub trait Chain<T>
+pub struct ProtocolStateChain<T>(pub Vec<T>)
 where
-    T: Header,
+    T: ProtocolStateHeader;
+
+impl<T> ProtocolStateChain<T>
+where
+    T: ProtocolStateHeader,
 {
     /// Pushes an item into the chain
-    fn push(&mut self, new: T) -> Result<(), ConsensusError>;
-    /// This function returns the last block of a given chain.
-    /// The input is a chain C and the output is last block of C
-    /// (i.e. the block with greatest height).
-    fn top(&self) -> Option<&T>;
-    /// he function returns the consensus state of a block or chain.
-    /// The input is a block or chain X and the output is the consensus state.
-    fn consensus_state(&self) -> Option<&ConsensusState>;
-    /// The function returns the global slot number of a chain or block.
-    /// The input X is either a chain or block and the output is the global slot number.
-    fn global_slot(&self) -> Option<&GlobalSlot>;
-    /// The function computes the epoch slot number of a block.
-    /// The output is the epoch slot number in [0, slots_per_epoch].
-    fn epoch_slot(&self) -> Option<u32>;
-    /// The function the length of a chain. The output is the length of the chain in blocks.
-    fn length(&self) -> usize;
-    /// This function returns the hex digest of the hash of the last VRF output
-    ///  of a given chain. The input is a chain C and the output is the hash digest.
-    fn last_vrf_hash_digest(&self) -> Result<String, ConsensusError>;
-    /// This function returns hash of the top block's protocol state for a given chain.
-    /// The input is a chain C and the output is the hash.
-    fn state_hash(&self) -> Option<Fp>;
-    /// Gets [ProtocolStateLegacy] of the genesis block
-    fn genesis_block(&self) -> Option<&ProtocolStateLegacy>;
-}
-
-impl Chain<ProtocolStateLegacy> for ProtocolStateChain {
-    fn push(&mut self, new: ProtocolStateLegacy) -> Result<(), ConsensusError> {
+    pub fn push(&mut self, new: T) -> Result<(), ConsensusError> {
         match self.0.len() {
             0 => (),
             n => {
@@ -103,88 +77,93 @@ impl Chain<ProtocolStateLegacy> for ProtocolStateChain {
         Ok(())
     }
 
-    fn top(&self) -> Option<&ProtocolStateLegacy> {
+    /// This function returns the last block of a given chain.
+    /// The input is a chain C and the output is last block of C
+    /// (i.e. the block with greatest height).
+    pub fn top(&self) -> Option<&T> {
         self.0.last()
     }
 
-    fn genesis_block(&self) -> Option<&ProtocolStateLegacy> {
+    /// he function returns the consensus state of a block or chain.
+    /// The input is a block or chain X and the output is the consensus state.
+    pub fn consensus_state(&self) -> Option<&ConsensusState> {
+        self.top().map(|s| s.consensus_state())
+    }
+
+    /// Gets ProtocolState of the genesis block
+    pub fn genesis_block(&self) -> Option<&T> {
         self.0.first()
     }
 
-    fn consensus_state(&self) -> Option<&ConsensusState> {
-        self.top().map(|s| &s.body.consensus_state)
+    /// The function returns the global slot number of a chain or block.
+    /// The input X is either a chain or block and the output is the global slot number.
+    pub fn global_slot(&self) -> Option<&GlobalSlot> {
+        self.top().map(|s| &s.consensus_state().curr_global_slot)
     }
 
-    fn global_slot(&self) -> Option<&GlobalSlot> {
-        self.top().map(|s| &s.body.consensus_state.curr_global_slot)
-    }
-
-    fn epoch_slot(&self) -> Option<u32> {
+    /// The function computes the epoch slot number of a block.
+    /// The output is the epoch slot number in [0, slots_per_epoch].
+    pub fn epoch_slot(&self) -> Option<u32> {
         self.global_slot()
             .map(|s| (s.slot_number.0 % s.slots_per_epoch.0))
     }
 
-    fn length(&self) -> usize {
+    /// The function the length of a chain. The output is the length of the chain in blocks.
+    pub fn length(&self) -> usize {
         self.consensus_state()
             .map(|s| s.blockchain_length.0 as usize)
             .unwrap_or(0)
     }
 
-    fn last_vrf_hash_digest(&self) -> Result<String, ConsensusError> {
+    /// This function returns the hex digest of the hash of the last VRF output
+    ///  of a given chain. The input is a chain C and the output is the hash digest.
+    pub fn last_vrf_hash_digest(&self) -> Result<String, ConsensusError> {
         let hash = self
-            .top()
+            .consensus_state()
             .ok_or(ConsensusError::TopBlockNotFound)?
-            .body
-            .consensus_state
             .last_vrf_output
             .digest();
         Ok(hex::encode(hash))
     }
 
-    fn state_hash(&self) -> Option<Fp> {
+    /// This function returns hash of the top block's protocol state for a given chain.
+    /// The input is a chain C and the output is the hash.
+    pub fn state_hash(&self) -> Option<Fp> {
         self.top().map(|s| s.state_hash_fp())
     }
 }
 
-/// A trait that defines operations for consensus calculation
-pub trait Consensus {
-    /// Chain type
-    type Chain;
+/// A trait that defines operations for chain selection
+pub trait ChainSelection {
     /// Top level API to select between chains during a fork.
-    fn select_secure_chain<'a>(
-        &'a self,
-        candidates: &'a [Self::Chain],
-    ) -> Result<&'a ProtocolStateChain, ConsensusError>;
+    fn select_secure_chain(&mut self, candidates: Vec<Self>) -> Result<(), ConsensusError>
+    where
+        Self: Sized;
 
     /// Selects the longer chain when there's a short range fork.
-    fn select_longer_chain<'a>(
-        &'a self,
-        candidate: &'a ProtocolStateChain,
-    ) -> Result<&'a ProtocolStateChain, ConsensusError>;
+    fn select_longer_chain(&mut self, candidate: Self) -> Result<(), ConsensusError>
+    where
+        Self: Sized;
 
     /// Checks whether the fork is short range wrt to candidate chain
-    fn is_short_range(&self, candidate: &ProtocolStateChain) -> Result<bool, ConsensusError>;
+    fn is_short_range(&self, candidate: &Self) -> Result<bool, ConsensusError>;
 
     /// Calculates the relate minimum window density wrt to candidate chain.
-    fn relative_min_window_density(
-        &self,
-        candidate: &ProtocolStateChain,
-    ) -> Result<u32, ConsensusError>;
+    fn relative_min_window_density(&self, candidate: &Self) -> Result<u32, ConsensusError>;
 
     /// Constants used for consensus
     fn config(&self) -> ConsensusConstants;
 }
 
-impl Consensus for ProtocolStateChain {
-    type Chain = ProtocolStateChain;
-    fn select_secure_chain<'a>(
-        &'a self,
-        candidates: &'a [Self::Chain],
-    ) -> Result<&'a ProtocolStateChain, ConsensusError> {
-        let tip = candidates.iter().fold(Ok(self), |tip, candidate| {
-            if self.is_short_range(candidate)? {
+impl<T> ChainSelection for ProtocolStateChain<T>
+where
+    T: ProtocolStateHeader,
+{
+    fn select_secure_chain(&mut self, candidates: Vec<Self>) -> Result<(), ConsensusError> {
+        for candidate in candidates {
+            if self.is_short_range(&candidate)? {
                 // short-range fork, select longer chain
-                self.select_longer_chain(candidate)
+                self.select_longer_chain(candidate)?;
             } else {
                 // check against sub window density sizes > 11
                 let candidate_state = candidate
@@ -197,32 +176,28 @@ impl Consensus for ProtocolStateChain {
                     .iter()
                     .any(|s| *s > self.config().slots_per_sub_window.0)
                 {
-                    return Ok(self);
+                    continue;
                 };
 
                 // sub window densities must not be greater than sub_windows_per_window
                 let sub_windows_per_window = self.config().sub_windows_per_window.0 as usize;
                 if candidate_state.sub_window_densities.len() != sub_windows_per_window {
-                    return Ok(self);
+                    continue;
                 }
 
-                let tip_density = self.relative_min_window_density(candidate)?;
+                let tip_density = self.relative_min_window_density(&candidate)?;
                 let candidate_density = candidate.relative_min_window_density(self)?;
                 match candidate_density.cmp(&tip_density) {
-                    std::cmp::Ordering::Greater => Ok(candidate),
-                    std::cmp::Ordering::Equal => self.select_longer_chain(candidate),
-                    _ => tip, // no change
+                    std::cmp::Ordering::Greater => *self = candidate,
+                    std::cmp::Ordering::Equal => self.select_longer_chain(candidate)?,
+                    _ => (), // no change
                 }
             }
-        });
-
-        tip
+        }
+        Ok(())
     }
 
-    fn select_longer_chain<'a>(
-        &'a self,
-        candidate: &'a ProtocolStateChain,
-    ) -> Result<&'a ProtocolStateChain, ConsensusError> {
+    fn select_longer_chain(&mut self, candidate: Self) -> Result<(), ConsensusError> {
         let top_state = self
             .consensus_state()
             .ok_or(ConsensusError::ConsensusStateNotFound)?;
@@ -230,31 +205,33 @@ impl Consensus for ProtocolStateChain {
             .consensus_state()
             .ok_or(ConsensusError::ConsensusStateNotFound)?;
         if top_state.blockchain_length < candidate_state.blockchain_length {
-            return Ok(candidate);
+            *self = candidate;
         } else if top_state.blockchain_length == candidate_state.blockchain_length {
             // tiebreak logic
             match candidate
                 .last_vrf_hash_digest()?
                 .cmp(&self.last_vrf_hash_digest()?)
             {
-                std::cmp::Ordering::Greater => return Ok(candidate),
+                std::cmp::Ordering::Greater => {
+                    *self = candidate;
+                }
                 std::cmp::Ordering::Equal => {
                     if candidate.state_hash() > self.state_hash() {
-                        return Ok(candidate);
+                        *self = candidate;
                     }
                 }
                 _ => {}
             }
         }
 
-        Ok(self)
+        Ok(())
     }
 
-    fn is_short_range(&self, candidate: &ProtocolStateChain) -> Result<bool, ConsensusError> {
-        let a = &self
+    fn is_short_range(&self, candidate: &Self) -> Result<bool, ConsensusError> {
+        let a = self
             .consensus_state()
             .ok_or(ConsensusError::ConsensusStateNotFound)?;
-        let b = &candidate
+        let b = candidate
             .consensus_state()
             .ok_or(ConsensusError::ConsensusStateNotFound)?;
         let a_prev_lock_checkpoint = &a.staking_epoch_data.lock_checkpoint;
@@ -281,6 +258,7 @@ impl Consensus for ProtocolStateChain {
     }
 
     fn config(&self) -> ConsensusConstants {
+        // FIXME: this is OK for now as ConsensusConstants is identical between mainnet and qanet
         ConsensusConstants::mainnet()
     }
 
@@ -289,10 +267,7 @@ impl Consensus for ProtocolStateChain {
     /// and the chain with the higher relative minimum window density is chosen as the canonical chain.
     /// The need for relative density is explained here:
     /// <https://github.com/MinaProtocol/mina/blob/02dfc3ff0160ba3c1bbc732baa07502fe4312b04/docs/specs/consensus/README.md#5412-relative-minimum-window-density>
-    fn relative_min_window_density(
-        &self,
-        chain_b: &ProtocolStateChain,
-    ) -> Result<u32, ConsensusError> {
+    fn relative_min_window_density(&self, chain_b: &Self) -> Result<u32, ConsensusError> {
         let tip_state = self
             .consensus_state()
             .ok_or(ConsensusError::ConsensusStateNotFound)?;
