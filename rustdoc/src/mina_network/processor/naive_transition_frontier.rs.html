@@ -52,6 +52,10 @@
 <span id="52">52</span>
 <span id="53">53</span>
 <span id="54">54</span>
+<span id="55">55</span>
+<span id="56">56</span>
+<span id="57">57</span>
+<span id="58">58</span>
 </pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
@@ -67,25 +71,31 @@
 
 <span class="doccomment">/// Struct that represents a naive implementation of the [TransitionFrontier]
 </span><span class="attribute">#[derive(Debug, Clone, Default)]
-</span><span class="kw">pub struct </span>NaiveTransitionFrontier {
+</span><span class="kw">pub struct </span>NaiveTransitionFrontier&lt;ProtocolState&gt;
+<span class="kw">where
+    </span>ProtocolState: ProtocolStateHeader,
+{
     block_requester: <span class="prelude-ty">Option</span>&lt;mpsc::Sender&lt;QueryBlockRequest&gt;&gt;,
-    best_chain: ProtocolStateChain,
+    best_chain: ProtocolStateChain&lt;ProtocolState&gt;,
 }
 
-<span class="kw">impl </span>NaiveTransitionFrontier {
+<span class="kw">impl</span>&lt;ProtocolState&gt; NaiveTransitionFrontier&lt;ProtocolState&gt;
+<span class="kw">where
+    </span>ProtocolState: ProtocolStateHeader + Default,
+{
     <span class="doccomment">/// TODO: Doc
     </span><span class="kw">pub fn </span>new() -&gt; <span class="self">Self </span>{
         Default::default()
     }
 
     <span class="doccomment">/// TODO: Doc
-    </span><span class="kw">pub fn </span>get_best_chain(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>ProtocolStateChain {
+    </span><span class="kw">pub fn </span>get_best_chain(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>ProtocolStateChain&lt;ProtocolState&gt; {
         <span class="kw-2">&amp;</span><span class="self">self</span>.best_chain
     }
 }
 
 <span class="attribute">#[async_trait(<span class="question-mark">?</span>Send)]
-</span><span class="kw">impl </span>TransitionFrontier <span class="kw">for </span>NaiveTransitionFrontier {
+</span><span class="kw">impl </span>TransitionFrontier <span class="kw">for </span>NaiveTransitionFrontier&lt;ProtocolStateLegacy&gt; {
     <span class="kw">type </span>Block = ExternalTransition;
 
     <span class="kw">fn </span>set_block_requester(<span class="kw-2">&amp;mut </span><span class="self">self</span>, sender: mpsc::Sender&lt;QueryBlockRequest&gt;) {
@@ -99,12 +109,10 @@
             <span class="self">self</span>.best_chain.push(block.protocol_state)<span class="question-mark">?</span>;
         } <span class="kw">else </span>{
             <span class="kw">let </span>candidate_chains = <span class="macro">vec!</span>[ProtocolStateChain(<span class="macro">vec!</span>[block.protocol_state])];
-            <span class="comment">// TODO: Avoid doing clone here by refining chain selection API(s)
-            </span><span class="kw">let </span>best_chain = <span class="self">self</span>.best_chain.select_secure_chain(<span class="kw-2">&amp;</span>candidate_chains)<span class="question-mark">?</span>;
-            <span class="self">self</span>.best_chain = best_chain.clone();
+            <span class="self">self</span>.best_chain.select_secure_chain(candidate_chains)<span class="question-mark">?</span>;
         }
         <span class="prelude-val">Ok</span>(())
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="mina_network" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (fa6ee9375 2022-09-12)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="mina_network" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0-nightly (a37499ae6 2022-09-18)" ></div></body></html>

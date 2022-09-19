@@ -329,31 +329,6 @@
 <span id="329">329</span>
 <span id="330">330</span>
 <span id="331">331</span>
-<span id="332">332</span>
-<span id="333">333</span>
-<span id="334">334</span>
-<span id="335">335</span>
-<span id="336">336</span>
-<span id="337">337</span>
-<span id="338">338</span>
-<span id="339">339</span>
-<span id="340">340</span>
-<span id="341">341</span>
-<span id="342">342</span>
-<span id="343">343</span>
-<span id="344">344</span>
-<span id="345">345</span>
-<span id="346">346</span>
-<span id="347">347</span>
-<span id="348">348</span>
-<span id="349">349</span>
-<span id="350">350</span>
-<span id="351">351</span>
-<span id="352">352</span>
-<span id="353">353</span>
-<span id="354">354</span>
-<span id="355">355</span>
-<span id="356">356</span>
 </pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
@@ -364,7 +339,7 @@
 </span><span class="kw">use </span><span class="kw">crate</span>::error::ConsensusError;
 <span class="kw">use </span>mina_rs_base::consensus_state::ConsensusState;
 <span class="kw">use </span>mina_rs_base::global_slot::GlobalSlot;
-<span class="kw">use </span>mina_rs_base::protocol_state::{Header, ProtocolStateLegacy};
+<span class="kw">use </span>mina_rs_base::protocol_state::ProtocolStateHeader;
 <span class="kw">use </span>mina_rs_base::types::{BlockTime, Length};
 <span class="kw">use </span>proof_systems::mina_hasher::Fp;
 
@@ -407,45 +382,19 @@
     }
 }
 
-<span class="doccomment">/// A chain of [ProtocolStateLegacy]
+<span class="doccomment">/// A chain of ProtocolState
 </span><span class="attribute">#[derive(Debug, Default, Eq, PartialEq, Clone)]
 </span><span class="comment">// TODO: replace vec element with ExternalTransition
-</span><span class="kw">pub struct </span>ProtocolStateChain(<span class="kw">pub </span>Vec&lt;ProtocolStateLegacy&gt;);
-
-<span class="doccomment">/// Trait that represents a chain of block data structure
-</span><span class="kw">pub trait </span>Chain&lt;T&gt;
+</span><span class="kw">pub struct </span>ProtocolStateChain&lt;T&gt;(<span class="kw">pub </span>Vec&lt;T&gt;)
 <span class="kw">where
-    </span>T: Header,
+    </span>T: ProtocolStateHeader;
+
+<span class="kw">impl</span>&lt;T&gt; ProtocolStateChain&lt;T&gt;
+<span class="kw">where
+    </span>T: ProtocolStateHeader,
 {
     <span class="doccomment">/// Pushes an item into the chain
-    </span><span class="kw">fn </span>push(<span class="kw-2">&amp;mut </span><span class="self">self</span>, new: T) -&gt; <span class="prelude-ty">Result</span>&lt;(), ConsensusError&gt;;
-    <span class="doccomment">/// This function returns the last block of a given chain.
-    /// The input is a chain C and the output is last block of C
-    /// (i.e. the block with greatest height).
-    </span><span class="kw">fn </span>top(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>T&gt;;
-    <span class="doccomment">/// he function returns the consensus state of a block or chain.
-    /// The input is a block or chain X and the output is the consensus state.
-    </span><span class="kw">fn </span>consensus_state(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>ConsensusState&gt;;
-    <span class="doccomment">/// The function returns the global slot number of a chain or block.
-    /// The input X is either a chain or block and the output is the global slot number.
-    </span><span class="kw">fn </span>global_slot(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>GlobalSlot&gt;;
-    <span class="doccomment">/// The function computes the epoch slot number of a block.
-    /// The output is the epoch slot number in [0, slots_per_epoch].
-    </span><span class="kw">fn </span>epoch_slot(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;u32&gt;;
-    <span class="doccomment">/// The function the length of a chain. The output is the length of the chain in blocks.
-    </span><span class="kw">fn </span>length(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; usize;
-    <span class="doccomment">/// This function returns the hex digest of the hash of the last VRF output
-    ///  of a given chain. The input is a chain C and the output is the hash digest.
-    </span><span class="kw">fn </span>last_vrf_hash_digest(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;String, ConsensusError&gt;;
-    <span class="doccomment">/// This function returns hash of the top block&#39;s protocol state for a given chain.
-    /// The input is a chain C and the output is the hash.
-    </span><span class="kw">fn </span>state_hash(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;Fp&gt;;
-    <span class="doccomment">/// Gets [ProtocolStateLegacy] of the genesis block
-    </span><span class="kw">fn </span>genesis_block(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>ProtocolStateLegacy&gt;;
-}
-
-<span class="kw">impl </span>Chain&lt;ProtocolStateLegacy&gt; <span class="kw">for </span>ProtocolStateChain {
-    <span class="kw">fn </span>push(<span class="kw-2">&amp;mut </span><span class="self">self</span>, new: ProtocolStateLegacy) -&gt; <span class="prelude-ty">Result</span>&lt;(), ConsensusError&gt; {
+    </span><span class="kw">pub fn </span>push(<span class="kw-2">&amp;mut </span><span class="self">self</span>, new: T) -&gt; <span class="prelude-ty">Result</span>&lt;(), ConsensusError&gt; {
         <span class="kw">match </span><span class="self">self</span>.<span class="number">0</span>.len() {
             <span class="number">0 </span>=&gt; (),
             n =&gt; {
@@ -459,88 +408,93 @@
         <span class="prelude-val">Ok</span>(())
     }
 
-    <span class="kw">fn </span>top(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>ProtocolStateLegacy&gt; {
+    <span class="doccomment">/// This function returns the last block of a given chain.
+    /// The input is a chain C and the output is last block of C
+    /// (i.e. the block with greatest height).
+    </span><span class="kw">pub fn </span>top(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>T&gt; {
         <span class="self">self</span>.<span class="number">0</span>.last()
     }
 
-    <span class="kw">fn </span>genesis_block(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>ProtocolStateLegacy&gt; {
+    <span class="doccomment">/// he function returns the consensus state of a block or chain.
+    /// The input is a block or chain X and the output is the consensus state.
+    </span><span class="kw">pub fn </span>consensus_state(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>ConsensusState&gt; {
+        <span class="self">self</span>.top().map(|s| s.consensus_state())
+    }
+
+    <span class="doccomment">/// Gets ProtocolState of the genesis block
+    </span><span class="kw">pub fn </span>genesis_block(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>T&gt; {
         <span class="self">self</span>.<span class="number">0</span>.first()
     }
 
-    <span class="kw">fn </span>consensus_state(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>ConsensusState&gt; {
-        <span class="self">self</span>.top().map(|s| <span class="kw-2">&amp;</span>s.body.consensus_state)
+    <span class="doccomment">/// The function returns the global slot number of a chain or block.
+    /// The input X is either a chain or block and the output is the global slot number.
+    </span><span class="kw">pub fn </span>global_slot(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>GlobalSlot&gt; {
+        <span class="self">self</span>.top().map(|s| <span class="kw-2">&amp;</span>s.consensus_state().curr_global_slot)
     }
 
-    <span class="kw">fn </span>global_slot(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>GlobalSlot&gt; {
-        <span class="self">self</span>.top().map(|s| <span class="kw-2">&amp;</span>s.body.consensus_state.curr_global_slot)
-    }
-
-    <span class="kw">fn </span>epoch_slot(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;u32&gt; {
+    <span class="doccomment">/// The function computes the epoch slot number of a block.
+    /// The output is the epoch slot number in [0, slots_per_epoch].
+    </span><span class="kw">pub fn </span>epoch_slot(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;u32&gt; {
         <span class="self">self</span>.global_slot()
             .map(|s| (s.slot_number.<span class="number">0 </span>% s.slots_per_epoch.<span class="number">0</span>))
     }
 
-    <span class="kw">fn </span>length(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; usize {
+    <span class="doccomment">/// The function the length of a chain. The output is the length of the chain in blocks.
+    </span><span class="kw">pub fn </span>length(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; usize {
         <span class="self">self</span>.consensus_state()
             .map(|s| s.blockchain_length.<span class="number">0 </span><span class="kw">as </span>usize)
             .unwrap_or(<span class="number">0</span>)
     }
 
-    <span class="kw">fn </span>last_vrf_hash_digest(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;String, ConsensusError&gt; {
+    <span class="doccomment">/// This function returns the hex digest of the hash of the last VRF output
+    ///  of a given chain. The input is a chain C and the output is the hash digest.
+    </span><span class="kw">pub fn </span>last_vrf_hash_digest(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;String, ConsensusError&gt; {
         <span class="kw">let </span>hash = <span class="self">self
-            </span>.top()
+            </span>.consensus_state()
             .ok_or(ConsensusError::TopBlockNotFound)<span class="question-mark">?
-            </span>.body
-            .consensus_state
-            .last_vrf_output
+            </span>.last_vrf_output
             .digest();
         <span class="prelude-val">Ok</span>(hex::encode(hash))
     }
 
-    <span class="kw">fn </span>state_hash(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;Fp&gt; {
+    <span class="doccomment">/// This function returns hash of the top block&#39;s protocol state for a given chain.
+    /// The input is a chain C and the output is the hash.
+    </span><span class="kw">pub fn </span>state_hash(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;Fp&gt; {
         <span class="self">self</span>.top().map(|s| s.state_hash_fp())
     }
 }
 
-<span class="doccomment">/// A trait that defines operations for consensus calculation
-</span><span class="kw">pub trait </span>Consensus {
-    <span class="doccomment">/// Chain type
-    </span><span class="kw">type </span>Chain;
+<span class="doccomment">/// A trait that defines operations for chain selection
+</span><span class="kw">pub trait </span>ChainSelection {
     <span class="doccomment">/// Top level API to select between chains during a fork.
-    </span><span class="kw">fn </span>select_secure_chain&lt;<span class="lifetime">&#39;a</span>&gt;(
-        <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span><span class="self">self</span>,
-        candidates: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>[<span class="self">Self</span>::Chain],
-    ) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>ProtocolStateChain, ConsensusError&gt;;
+    </span><span class="kw">fn </span>select_secure_chain(<span class="kw-2">&amp;mut </span><span class="self">self</span>, candidates: Vec&lt;<span class="self">Self</span>&gt;) -&gt; <span class="prelude-ty">Result</span>&lt;(), ConsensusError&gt;
+    <span class="kw">where
+        </span><span class="self">Self</span>: Sized;
 
     <span class="doccomment">/// Selects the longer chain when there&#39;s a short range fork.
-    </span><span class="kw">fn </span>select_longer_chain&lt;<span class="lifetime">&#39;a</span>&gt;(
-        <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span><span class="self">self</span>,
-        candidate: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>ProtocolStateChain,
-    ) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>ProtocolStateChain, ConsensusError&gt;;
+    </span><span class="kw">fn </span>select_longer_chain(<span class="kw-2">&amp;mut </span><span class="self">self</span>, candidate: <span class="self">Self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;(), ConsensusError&gt;
+    <span class="kw">where
+        </span><span class="self">Self</span>: Sized;
 
     <span class="doccomment">/// Checks whether the fork is short range wrt to candidate chain
-    </span><span class="kw">fn </span>is_short_range(<span class="kw-2">&amp;</span><span class="self">self</span>, candidate: <span class="kw-2">&amp;</span>ProtocolStateChain) -&gt; <span class="prelude-ty">Result</span>&lt;bool, ConsensusError&gt;;
+    </span><span class="kw">fn </span>is_short_range(<span class="kw-2">&amp;</span><span class="self">self</span>, candidate: <span class="kw-2">&amp;</span><span class="self">Self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;bool, ConsensusError&gt;;
 
     <span class="doccomment">/// Calculates the relate minimum window density wrt to candidate chain.
-    </span><span class="kw">fn </span>relative_min_window_density(
-        <span class="kw-2">&amp;</span><span class="self">self</span>,
-        candidate: <span class="kw-2">&amp;</span>ProtocolStateChain,
-    ) -&gt; <span class="prelude-ty">Result</span>&lt;u32, ConsensusError&gt;;
+    </span><span class="kw">fn </span>relative_min_window_density(<span class="kw-2">&amp;</span><span class="self">self</span>, candidate: <span class="kw-2">&amp;</span><span class="self">Self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;u32, ConsensusError&gt;;
 
     <span class="doccomment">/// Constants used for consensus
     </span><span class="kw">fn </span>config(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; ConsensusConstants;
 }
 
-<span class="kw">impl </span>Consensus <span class="kw">for </span>ProtocolStateChain {
-    <span class="kw">type </span>Chain = ProtocolStateChain;
-    <span class="kw">fn </span>select_secure_chain&lt;<span class="lifetime">&#39;a</span>&gt;(
-        <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span><span class="self">self</span>,
-        candidates: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>[<span class="self">Self</span>::Chain],
-    ) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>ProtocolStateChain, ConsensusError&gt; {
-        <span class="kw">let </span>tip = candidates.iter().fold(<span class="prelude-val">Ok</span>(<span class="self">self</span>), |tip, candidate| {
-            <span class="kw">if </span><span class="self">self</span>.is_short_range(candidate)<span class="question-mark">? </span>{
+<span class="kw">impl</span>&lt;T&gt; ChainSelection <span class="kw">for </span>ProtocolStateChain&lt;T&gt;
+<span class="kw">where
+    </span>T: ProtocolStateHeader,
+{
+    <span class="kw">fn </span>select_secure_chain(<span class="kw-2">&amp;mut </span><span class="self">self</span>, candidates: Vec&lt;<span class="self">Self</span>&gt;) -&gt; <span class="prelude-ty">Result</span>&lt;(), ConsensusError&gt; {
+        <span class="kw">for </span>candidate <span class="kw">in </span>candidates {
+            <span class="kw">if </span><span class="self">self</span>.is_short_range(<span class="kw-2">&amp;</span>candidate)<span class="question-mark">? </span>{
                 <span class="comment">// short-range fork, select longer chain
-                </span><span class="self">self</span>.select_longer_chain(candidate)
+                </span><span class="self">self</span>.select_longer_chain(candidate)<span class="question-mark">?</span>;
             } <span class="kw">else </span>{
                 <span class="comment">// check against sub window density sizes &gt; 11
                 </span><span class="kw">let </span>candidate_state = candidate
@@ -553,32 +507,28 @@
                     .iter()
                     .any(|s| <span class="kw-2">*</span>s &gt; <span class="self">self</span>.config().slots_per_sub_window.<span class="number">0</span>)
                 {
-                    <span class="kw">return </span><span class="prelude-val">Ok</span>(<span class="self">self</span>);
+                    <span class="kw">continue</span>;
                 };
 
                 <span class="comment">// sub window densities must not be greater than sub_windows_per_window
                 </span><span class="kw">let </span>sub_windows_per_window = <span class="self">self</span>.config().sub_windows_per_window.<span class="number">0 </span><span class="kw">as </span>usize;
                 <span class="kw">if </span>candidate_state.sub_window_densities.len() != sub_windows_per_window {
-                    <span class="kw">return </span><span class="prelude-val">Ok</span>(<span class="self">self</span>);
+                    <span class="kw">continue</span>;
                 }
 
-                <span class="kw">let </span>tip_density = <span class="self">self</span>.relative_min_window_density(candidate)<span class="question-mark">?</span>;
+                <span class="kw">let </span>tip_density = <span class="self">self</span>.relative_min_window_density(<span class="kw-2">&amp;</span>candidate)<span class="question-mark">?</span>;
                 <span class="kw">let </span>candidate_density = candidate.relative_min_window_density(<span class="self">self</span>)<span class="question-mark">?</span>;
                 <span class="kw">match </span>candidate_density.cmp(<span class="kw-2">&amp;</span>tip_density) {
-                    std::cmp::Ordering::Greater =&gt; <span class="prelude-val">Ok</span>(candidate),
-                    std::cmp::Ordering::Equal =&gt; <span class="self">self</span>.select_longer_chain(candidate),
-                    <span class="kw">_ </span>=&gt; tip, <span class="comment">// no change
+                    std::cmp::Ordering::Greater =&gt; <span class="kw-2">*</span><span class="self">self </span>= candidate,
+                    std::cmp::Ordering::Equal =&gt; <span class="self">self</span>.select_longer_chain(candidate)<span class="question-mark">?</span>,
+                    <span class="kw">_ </span>=&gt; (), <span class="comment">// no change
                 </span>}
             }
-        });
-
-        tip
+        }
+        <span class="prelude-val">Ok</span>(())
     }
 
-    <span class="kw">fn </span>select_longer_chain&lt;<span class="lifetime">&#39;a</span>&gt;(
-        <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span><span class="self">self</span>,
-        candidate: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>ProtocolStateChain,
-    ) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>ProtocolStateChain, ConsensusError&gt; {
+    <span class="kw">fn </span>select_longer_chain(<span class="kw-2">&amp;mut </span><span class="self">self</span>, candidate: <span class="self">Self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;(), ConsensusError&gt; {
         <span class="kw">let </span>top_state = <span class="self">self
             </span>.consensus_state()
             .ok_or(ConsensusError::ConsensusStateNotFound)<span class="question-mark">?</span>;
@@ -586,31 +536,33 @@
             .consensus_state()
             .ok_or(ConsensusError::ConsensusStateNotFound)<span class="question-mark">?</span>;
         <span class="kw">if </span>top_state.blockchain_length &lt; candidate_state.blockchain_length {
-            <span class="kw">return </span><span class="prelude-val">Ok</span>(candidate);
+            <span class="kw-2">*</span><span class="self">self </span>= candidate;
         } <span class="kw">else if </span>top_state.blockchain_length == candidate_state.blockchain_length {
             <span class="comment">// tiebreak logic
             </span><span class="kw">match </span>candidate
                 .last_vrf_hash_digest()<span class="question-mark">?
                 </span>.cmp(<span class="kw-2">&amp;</span><span class="self">self</span>.last_vrf_hash_digest()<span class="question-mark">?</span>)
             {
-                std::cmp::Ordering::Greater =&gt; <span class="kw">return </span><span class="prelude-val">Ok</span>(candidate),
+                std::cmp::Ordering::Greater =&gt; {
+                    <span class="kw-2">*</span><span class="self">self </span>= candidate;
+                }
                 std::cmp::Ordering::Equal =&gt; {
                     <span class="kw">if </span>candidate.state_hash() &gt; <span class="self">self</span>.state_hash() {
-                        <span class="kw">return </span><span class="prelude-val">Ok</span>(candidate);
+                        <span class="kw-2">*</span><span class="self">self </span>= candidate;
                     }
                 }
                 <span class="kw">_ </span>=&gt; {}
             }
         }
 
-        <span class="prelude-val">Ok</span>(<span class="self">self</span>)
+        <span class="prelude-val">Ok</span>(())
     }
 
-    <span class="kw">fn </span>is_short_range(<span class="kw-2">&amp;</span><span class="self">self</span>, candidate: <span class="kw-2">&amp;</span>ProtocolStateChain) -&gt; <span class="prelude-ty">Result</span>&lt;bool, ConsensusError&gt; {
-        <span class="kw">let </span>a = <span class="kw-2">&amp;</span><span class="self">self
+    <span class="kw">fn </span>is_short_range(<span class="kw-2">&amp;</span><span class="self">self</span>, candidate: <span class="kw-2">&amp;</span><span class="self">Self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;bool, ConsensusError&gt; {
+        <span class="kw">let </span>a = <span class="self">self
             </span>.consensus_state()
             .ok_or(ConsensusError::ConsensusStateNotFound)<span class="question-mark">?</span>;
-        <span class="kw">let </span>b = <span class="kw-2">&amp;</span>candidate
+        <span class="kw">let </span>b = candidate
             .consensus_state()
             .ok_or(ConsensusError::ConsensusStateNotFound)<span class="question-mark">?</span>;
         <span class="kw">let </span>a_prev_lock_checkpoint = <span class="kw-2">&amp;</span>a.staking_epoch_data.lock_checkpoint;
@@ -637,7 +589,8 @@
     }
 
     <span class="kw">fn </span>config(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; ConsensusConstants {
-        ConsensusConstants::mainnet()
+        <span class="comment">// FIXME: this is OK for now as ConsensusConstants is identical between mainnet and qanet
+        </span>ConsensusConstants::mainnet()
     }
 
     <span class="doccomment">/// Computes the relative minimum window density of the given chains.
@@ -645,10 +598,7 @@
     /// and the chain with the higher relative minimum window density is chosen as the canonical chain.
     /// The need for relative density is explained here:
     /// &lt;https://github.com/MinaProtocol/mina/blob/02dfc3ff0160ba3c1bbc732baa07502fe4312b04/docs/specs/consensus/README.md#5412-relative-minimum-window-density&gt;
-    </span><span class="kw">fn </span>relative_min_window_density(
-        <span class="kw-2">&amp;</span><span class="self">self</span>,
-        chain_b: <span class="kw-2">&amp;</span>ProtocolStateChain,
-    ) -&gt; <span class="prelude-ty">Result</span>&lt;u32, ConsensusError&gt; {
+    </span><span class="kw">fn </span>relative_min_window_density(<span class="kw-2">&amp;</span><span class="self">self</span>, chain_b: <span class="kw-2">&amp;</span><span class="self">Self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;u32, ConsensusError&gt; {
         <span class="kw">let </span>tip_state = <span class="self">self
             </span>.consensus_state()
             .ok_or(ConsensusError::ConsensusStateNotFound)<span class="question-mark">?</span>;
@@ -711,4 +661,4 @@
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_consensus" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (fa6ee9375 2022-09-12)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_consensus" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0-nightly (a37499ae6 2022-09-18)" ></div></body></html>

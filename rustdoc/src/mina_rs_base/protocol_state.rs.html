@@ -364,6 +364,50 @@
 <span id="364">364</span>
 <span id="365">365</span>
 <span id="366">366</span>
+<span id="367">367</span>
+<span id="368">368</span>
+<span id="369">369</span>
+<span id="370">370</span>
+<span id="371">371</span>
+<span id="372">372</span>
+<span id="373">373</span>
+<span id="374">374</span>
+<span id="375">375</span>
+<span id="376">376</span>
+<span id="377">377</span>
+<span id="378">378</span>
+<span id="379">379</span>
+<span id="380">380</span>
+<span id="381">381</span>
+<span id="382">382</span>
+<span id="383">383</span>
+<span id="384">384</span>
+<span id="385">385</span>
+<span id="386">386</span>
+<span id="387">387</span>
+<span id="388">388</span>
+<span id="389">389</span>
+<span id="390">390</span>
+<span id="391">391</span>
+<span id="392">392</span>
+<span id="393">393</span>
+<span id="394">394</span>
+<span id="395">395</span>
+<span id="396">396</span>
+<span id="397">397</span>
+<span id="398">398</span>
+<span id="399">399</span>
+<span id="400">400</span>
+<span id="401">401</span>
+<span id="402">402</span>
+<span id="403">403</span>
+<span id="404">404</span>
+<span id="405">405</span>
+<span id="406">406</span>
+<span id="407">407</span>
+<span id="408">408</span>
+<span id="409">409</span>
+<span id="410">410</span>
 </pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
@@ -532,16 +576,22 @@
 }
 
 <span class="doccomment">/// Implementing types have some notion of height and can return it
-</span><span class="kw">pub trait </span>Header {
+</span><span class="kw">pub trait </span>ProtocolStateHeader {
     <span class="doccomment">/// Get the height for the implementing type
     </span><span class="kw">fn </span>get_height(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Length;
     <span class="doccomment">/// The minimum window density at the current epoch.
     </span><span class="kw">fn </span>min_window_density(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Length;
     <span class="doccomment">/// A list of density values of the sub windows.
     </span><span class="kw">fn </span>sub_window_densities(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>Vec&lt;Length&gt;;
+    <span class="doccomment">/// Consensus state
+    </span><span class="kw">fn </span>consensus_state(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>ConsensusState;
+    <span class="doccomment">/// Constants
+    </span><span class="kw">fn </span>constants(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>ProtocolConstants;
+    <span class="doccomment">/// State hash fp
+    </span><span class="kw">fn </span>state_hash_fp(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Fp;
 }
 
-<span class="kw">impl </span>Header <span class="kw">for </span>ProtocolStateLegacy {
+<span class="kw">impl </span>ProtocolStateHeader <span class="kw">for </span>ProtocolStateLegacy {
     <span class="kw">fn </span>get_height(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Length {
         <span class="self">self</span>.body.consensus_state.blockchain_length
     }
@@ -552,6 +602,18 @@
 
     <span class="kw">fn </span>min_window_density(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Length {
         <span class="self">self</span>.body.consensus_state.min_window_density
+    }
+
+    <span class="kw">fn </span>consensus_state(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>ConsensusState {
+        <span class="kw-2">&amp;</span><span class="self">self</span>.body.consensus_state
+    }
+
+    <span class="kw">fn </span>constants(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>ProtocolConstants {
+        <span class="kw-2">&amp;</span><span class="self">self</span>.body.constants
+    }
+
+    <span class="kw">fn </span>state_hash_fp(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Fp {
+        <span class="self">self</span>.state_hash_fp()
     }
 }
 
@@ -612,6 +674,32 @@
     </span><span class="kw">pub </span>previous_state_hash: StateHash,
     <span class="doccomment">/// The body of the protocol state
     </span><span class="kw">pub </span>body: ProtocolStateBody,
+}
+
+<span class="kw">impl </span>ProtocolStateHeader <span class="kw">for </span>ProtocolState {
+    <span class="kw">fn </span>get_height(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Length {
+        <span class="self">self</span>.body.consensus_state.blockchain_length
+    }
+
+    <span class="kw">fn </span>sub_window_densities(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>Vec&lt;Length&gt; {
+        <span class="kw-2">&amp;</span><span class="self">self</span>.body.consensus_state.sub_window_densities
+    }
+
+    <span class="kw">fn </span>min_window_density(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Length {
+        <span class="self">self</span>.body.consensus_state.min_window_density
+    }
+
+    <span class="kw">fn </span>consensus_state(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>ConsensusState {
+        <span class="kw-2">&amp;</span><span class="self">self</span>.body.consensus_state
+    }
+
+    <span class="kw">fn </span>constants(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>ProtocolConstants {
+        <span class="kw-2">&amp;</span><span class="self">self</span>.body.constants
+    }
+
+    <span class="kw">fn </span>state_hash_fp(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Fp {
+        <span class="self">self</span>.state_hash_fp()
+    }
 }
 
 <span class="kw">impl </span>FromGraphQLJson <span class="kw">for </span>ProtocolState {
@@ -731,4 +819,4 @@
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_rs_base" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0-nightly (fa6ee9375 2022-09-12)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_rs_base" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0-nightly (a37499ae6 2022-09-18)" ></div></body></html>
