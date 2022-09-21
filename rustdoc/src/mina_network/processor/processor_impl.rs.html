@@ -73,13 +73,23 @@
 <span id="73">73</span>
 <span id="74">74</span>
 <span id="75">75</span>
+<span id="76">76</span>
+<span id="77">77</span>
+<span id="78">78</span>
+<span id="79">79</span>
+<span id="80">80</span>
+<span id="81">81</span>
+<span id="82">82</span>
+<span id="83">83</span>
+<span id="84">84</span>
+<span id="85">85</span>
 </pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
 </span><span class="kw">use super</span>::<span class="kw-2">*</span>;
 <span class="kw">use </span>log::error;
 <span class="kw">use </span>std::marker::{Send, Sync};
-<span class="kw">use </span>tokio::sync::{RwLock, RwLockReadGuard};
+<span class="kw">use </span>tokio::sync::{RwLock, RwLockReadGuard, RwLockWriteGuard};
 
 <span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, NetworkBlock, FrontierBlock, TF, NCOps&gt;
     NetworkMessageProcessor&lt;NetworkBlock, FrontierBlock, TF, NCOps&gt;
@@ -118,6 +128,11 @@
         <span class="self">self</span>.nonconsensus_ops.read().<span class="kw">await
     </span>}
 
+    <span class="doccomment">/// Gets the mutable [NonConsensusNetworkingOps] instance
+    </span><span class="kw">pub async fn </span>nonconsensus_ops_mut(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span><span class="self">self</span>) -&gt; RwLockWriteGuard&lt;<span class="lifetime">&#39;a</span>, NCOps&gt; {
+        <span class="self">self</span>.nonconsensus_ops.write().<span class="kw">await
+    </span>}
+
     <span class="doccomment">/// Schedules event loops of all types of communications between [TransitionFrontier] and
     /// [NonConsensusNetworkingOps].
     </span><span class="kw">pub async fn </span>run(<span class="kw-2">&amp;</span><span class="self">self</span>) {
@@ -130,8 +145,13 @@
         <span class="kw">let </span><span class="kw-2">mut </span>block_receiver = <span class="self">self</span>.block_receiver.write().<span class="kw">await</span>;
         <span class="kw">while let </span><span class="prelude-val">Some</span>(block) = block_receiver.recv().<span class="kw">await </span>{
             <span class="kw">let </span><span class="kw-2">mut </span>transition_frontier = <span class="self">self</span>.transition_frontier.write().<span class="kw">await</span>;
-            <span class="kw">if let </span><span class="prelude-val">Err</span>(err) = transition_frontier.add_block(block.into()).<span class="kw">await </span>{
-                <span class="macro">error!</span>(<span class="string">&quot;{err}&quot;</span>);
+            <span class="kw">match </span>block.try_into() {
+                <span class="prelude-val">Ok</span>(block) =&gt; {
+                    <span class="kw">if let </span><span class="prelude-val">Err</span>(err) = transition_frontier.add_block(block).<span class="kw">await </span>{
+                        <span class="macro">error!</span>(<span class="string">&quot;{err}&quot;</span>);
+                    }
+                }
+                <span class="prelude-val">Err</span>(err) =&gt; <span class="macro">error!</span>(<span class="string">&quot;{err}&quot;</span>),
             }
         }
     }
@@ -149,4 +169,4 @@
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="mina_network" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0-nightly (a37499ae6 2022-09-18)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="mina_network" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0-nightly (432abd86f 2022-09-20)" ></div></body></html>
