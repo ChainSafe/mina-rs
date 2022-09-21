@@ -5,4 +5,5 @@
 //! js bindings and wasm implementation of graphql API(s)
 //!
 
+pub mod graphql_api_berkeley;
 pub mod graphql_api_v1;
