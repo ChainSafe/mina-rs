@@ -62,6 +62,7 @@ impl BinProtSerializationType<'_> for AccountLegacy {
     type T = AccountV1;
 }
 
+// This implementation is not complete because we have switched to berkeley net
 impl mina_hasher::Hashable for AccountLegacy {
     type D = ();
 
@@ -148,6 +149,58 @@ impl ToChunkedROInput for Account {
             .append_chunked(&self.token_permissions)
             .append_chunked(&self.token_id)
             .append_chunked(&CompressedPubKeyHashableWrapper(&self.public_key))
+    }
+}
+
+// TODO: No test coverage yet because there're new hash algo changes again
+// that we are not able to follow anymore.
+// Genesis ledger test data needs to be updated and tests have to be fixed first
+impl FromGraphQLJson for Account {
+    fn from_graphql_json(json: &serde_json::Value) -> anyhow::Result<Self>
+    where
+        Self: Sized,
+    {
+        let is_disabled = json["isDisabled"].as_bool().unwrap_or_default();
+        let is_token_owner = json["isTokenOwner"].as_bool().unwrap_or_default();
+        Ok(Self {
+            public_key: CompressedPubKey::from_address(
+                json["publicKey"].as_str().unwrap_or_default(),
+            )?,
+            // FIXME: wSHV2S4qX9jFsLjQo8r1BsMLH2ZRKsZx6EJd1sbozGPieEC4Jf
+            token_id: TokenId(json["token"].as_str().unwrap_or_default().parse()?),
+            balance: Amount(
+                json["balance"]["total"]
+                    .as_str()
+                    .unwrap_or_default()
+                    .parse()?,
+            ),
+            token_permissions: if is_token_owner {
+                TokenPermissions::TokenOwned {
+                    disable_new_accounts: is_disabled,
+                }
+            } else {
+                TokenPermissions::NotOwned {
+                    account_disabled: is_disabled,
+                }
+            },
+            // FIXME: figure out what this is
+            token_symbol: Default::default(),
+            nonce: AccountNonce(json["nonce"].as_str().unwrap_or_default().parse()?),
+            receipt_chain_hash: ChainHash::from_str(
+                json["receiptChainHash"].as_str().unwrap_or_default(),
+            )?,
+            delegate: match json["delegate"].as_str() {
+                Some(s) => Some(CompressedPubKey::from_address(s)?),
+                _ => None,
+            },
+            voting_for: StateHash::from_str(json["votingFor"].as_str().unwrap_or_default())?,
+            timing: Timing::from_graphql_json(&json["timing"])?,
+            permissions: Permissions::from_graphql_json(&json["permissions"])?,
+            // FIXME: struct to be defined
+            zkapp: None,
+            // FIXME: struct to be defined
+            zkapp_uri: None,
+        })
     }
 }
 

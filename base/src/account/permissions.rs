@@ -3,11 +3,14 @@
 
 //! Account based permissions
 
+use crate::from_graphql_json::FromGraphQLJson;
 use mina_serialization_types_macros::AutoFrom;
 use proof_systems::{bitvec::prelude::BitVec, ChunkedROInput, ToChunkedROInput};
+use std::str::FromStr;
+use strum::EnumString;
 
 /// The level of auth required to perform a particular action with an account
-#[derive(Clone, Debug, AutoFrom)]
+#[derive(Clone, Debug, EnumString, AutoFrom)]
 #[auto_from(mina_serialization_types::account::AuthRequired)]
 pub enum AuthRequired {
     /// None required
@@ -101,5 +104,67 @@ impl ToChunkedROInput for Permissions {
             .append_chunked(&self.set_token_symbol)
             .append_chunked(&self.increment_nonce)
             .append_chunked(&self.set_voting_for)
+    }
+}
+
+impl FromGraphQLJson for Permissions {
+    fn from_graphql_json(json: &serde_json::Value) -> anyhow::Result<Self>
+    where
+        Self: Sized,
+    {
+        Ok(Self {
+            edit_state: AuthRequired::from_str(json["editState"].as_str().unwrap_or_default())?,
+            send: AuthRequired::from_str(json["send"].as_str().unwrap_or_default())?,
+            receive: AuthRequired::from_str(json["receive"].as_str().unwrap_or_default())?,
+            set_delegate: AuthRequired::from_str(json["setDelegate"].as_str().unwrap_or_default())?,
+            set_permissions: AuthRequired::from_str(
+                json["setPermissions"].as_str().unwrap_or_default(),
+            )?,
+            set_verification_key: AuthRequired::from_str(
+                json["setVerificationKey"].as_str().unwrap_or_default(),
+            )?,
+            set_zkapp_uri: AuthRequired::from_str(
+                json["setZkappUri"].as_str().unwrap_or_default(),
+            )?,
+            edit_sequence_state: AuthRequired::from_str(
+                json["editSequenceState"].as_str().unwrap_or_default(),
+            )?,
+            set_token_symbol: AuthRequired::from_str(
+                json["setTokenSymbol"].as_str().unwrap_or_default(),
+            )?,
+            increment_nonce: AuthRequired::from_str(
+                json["editState"].as_str().unwrap_or_default(),
+            )?,
+            set_voting_for: AuthRequired::from_str(
+                json["setVotingFor"].as_str().unwrap_or_default(),
+            )?,
+        })
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn permissions_from_graphql_json() -> anyhow::Result<()> {
+        const JSON_STR: &str = r###"
+        {
+            "editSequenceState": "Signature",
+            "editState": "Signature",
+            "incrementNonce": "Signature",
+            "receive": "None",
+            "send": "Signature",
+            "setDelegate": "Signature",
+            "setPermissions": "Signature",
+            "setTokenSymbol": "Signature",
+            "setVerificationKey": "Signature",
+            "setVotingFor": "Signature",
+            "setZkappUri": "Signature"
+          }
+        "###;
+        let json = serde_json::from_str(JSON_STR)?;
+        _ = Permissions::from_graphql_json(&json)?;
+        Ok(())
     }
 }

@@ -316,6 +316,7 @@ impl_from_for_hash!(CoinBaseHash, HashV1);
 impl_from_for_hash!(CoinBaseHash, Hash2V1);
 impl_from_for_generic_with_proxy!(CoinBaseHash, HashV1, CoinBaseHashV1Json);
 impl_strconv_via_json!(CoinBaseHash, CoinBaseHashV1Json);
+impl_from_json_value_for_hash!(CoinBaseHash);
 
 impl ToChunkedROInput for CoinBaseHash {
     fn to_chunked_roinput(&self) -> ChunkedROInput {
