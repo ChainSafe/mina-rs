@@ -4,7 +4,7 @@
 use super::*;
 use log::error;
 use std::marker::{Send, Sync};
-use tokio::sync::{RwLock, RwLockReadGuard};
+use tokio::sync::{RwLock, RwLockReadGuard, RwLockWriteGuard};
 
 impl<'a, NetworkBlock, FrontierBlock, TF, NCOps>
     NetworkMessageProcessor<NetworkBlock, FrontierBlock, TF, NCOps>
@@ -43,6 +43,11 @@ where
         self.nonconsensus_ops.read().await
     }
 
+    /// Gets the mutable [NonConsensusNetworkingOps] instance
+    pub async fn nonconsensus_ops_mut(&'a self) -> RwLockWriteGuard<'a, NCOps> {
+        self.nonconsensus_ops.write().await
+    }
+
     /// Schedules event loops of all types of communications between [TransitionFrontier] and
     /// [NonConsensusNetworkingOps].
     pub async fn run(&self) {
@@ -55,8 +60,13 @@ where
         let mut block_receiver = self.block_receiver.write().await;
         while let Some(block) = block_receiver.recv().await {
             let mut transition_frontier = self.transition_frontier.write().await;
-            if let Err(err) = transition_frontier.add_block(block.into()).await {
-                error!("{err}");
+            match block.try_into() {
+                Ok(block) => {
+                    if let Err(err) = transition_frontier.add_block(block).await {
+                        error!("{err}");
+                    }
+                }
+                Err(err) => error!("{err}"),
             }
         }
     }
