@@ -2212,6 +2212,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "mina-merkle"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "ark-ff",
+ "once_cell",
+ "proof-systems",
+ "serde",
+ "thiserror",
+]
+
+[[package]]
 name = "mina-network"
 version = "0.1.0"
 dependencies = [
@@ -2225,6 +2237,7 @@ dependencies = [
  "libp2p",
  "log",
  "mina-consensus",
+ "mina-merkle",
  "mina-rs-base",
  "mina-serialization-types",
  "multihash",

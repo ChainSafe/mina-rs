@@ -5,7 +5,8 @@ use lazy_static::lazy_static;
 use mina_network::processor::{js::graphql_api_v1::*, *};
 use mina_rs_base::types::*;
 
-type NaiveTransitionFrontierMainnet = NaiveTransitionFrontier<ProtocolStateLegacy>;
+type NaiveTransitionFrontierMainnet =
+    NaiveTransitionFrontier<ProtocolStateLegacy, MerkleProofMainnet>;
 
 type ProcessorTypeMainnet = NetworkMessageProcessor<
     <NonConsensusGraphQLV1Backend as NonConsensusNetworkingOps>::Block,
