@@ -150,6 +150,14 @@ impl TryFrom<&serde_json::Value> for ProtocolStateWithSparseMerkleLedger {
     }
 }
 
+impl TryFrom<serde_json::Value> for ProtocolStateWithSparseMerkleLedger {
+    type Error = anyhow::Error;
+
+    fn try_from(json: serde_json::Value) -> Result<Self, Self::Error> {
+        Self::try_from(&json)
+    }
+}
+
 #[async_trait(?Send)]
 impl TransitionFrontier for NaiveTransitionFrontier<ProtocolState, MerkleProofBerkeleyNet> {
     type Block = ProtocolStateWithSparseMerkleLedger;

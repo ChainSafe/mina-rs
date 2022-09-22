@@ -60,23 +60,39 @@ impl NonConsensusGraphQLBerkeleyBackend {
     pub fn set_tracking_accounts(&mut self, account: impl Iterator<Item = String>) {
         self.tracking_accounts = HashSet::from_iter(account)
     }
+
+    /// Poll latest blocks once
+    pub async fn poll_latest_once(&self) -> anyhow::Result<()> {
+        if let Some(block_responder) = &self.block_responder {
+            let tracking_accounts: Vec<String> = self.tracking_accounts.iter().cloned().collect();
+            for endpoint in &self.api_list {
+                let block_json =
+                    fetch_best_chain_json(endpoint.as_str(), tracking_accounts.clone()).await?;
+                block_responder.send(block_json).await?;
+            }
+        }
+        Ok(())
+    }
 }
 
 #[async_trait(?Send)]
 impl NonConsensusNetworkingOps for NonConsensusGraphQLBerkeleyBackend {
-    type Block = serde_json::Value; //ProtocolState;
+    type Block = serde_json::Value;
 
     fn set_block_responder(&mut self, sender: mpsc::Sender<Self::Block>) {
         self.block_responder = Some(sender);
     }
 
     async fn query_block(&mut self, _request: &QueryBlockRequest) -> anyhow::Result<()> {
-        // if let Some(block_responder) = &self.block_responder {
-        //     let block_json = fetch_block(request.height, request.state_hash.as_str()).await?;
-        //     block_responder.send(block_json).await?;
-        // }
-        // Ok(())
-        todo!()
+        if let Some(block_responder) = &self.block_responder {
+            let tracking_accounts: Vec<String> = self.tracking_accounts.iter().cloned().collect();
+            for endpoint in &self.api_list {
+                let block_json =
+                    fetch_best_chain_json(endpoint.as_str(), tracking_accounts.clone()).await?;
+                block_responder.send(block_json).await?;
+            }
+        }
+        Ok(())
     }
 }
 
@@ -107,6 +123,53 @@ mod tests {
         .unwrap();
         assert!(json["bestChain"][0]["protocolState"].as_object().is_some());
         ProtocolStateWithSparseMerkleLedger::try_from(&json).unwrap();
+    }
+
+    /// This test assumes a local mina node is running
+    #[cfg(not(feature = "browser"))]
+    #[wasm_bindgen_test::wasm_bindgen_test]
+    async fn e2e_test_transition_frontier_berkeley() {
+        use super::*;
+        use mina_rs_base::types::*;
+
+        // NOTE: Disabled for CI
+        if is_ci() {
+            return;
+        }
+
+        type NaiveTransitionFrontierBerkeleyNet =
+            NaiveTransitionFrontier<ProtocolState, MerkleProofBerkeleyNet>;
+
+        type ProcessorTypeBerkeleyNet = NetworkMessageProcessor<
+            <NonConsensusGraphQLBerkeleyBackend as NonConsensusNetworkingOps>::Block,
+            <NaiveTransitionFrontierBerkeleyNet as TransitionFrontier>::Block,
+            NaiveTransitionFrontierBerkeleyNet,
+            NonConsensusGraphQLBerkeleyBackend,
+        >;
+
+        let processor = {
+            let backend = NonConsensusGraphQLBerkeleyBackend::new();
+            let frontier = NaiveTransitionFrontier::new();
+            ProcessorTypeBerkeleyNet::new(frontier, backend)
+        };
+        {
+            let mut backend = processor.nonconsensus_ops_mut().await;
+            backend
+                .api_list
+                .insert("http://localhost:3085/graphql".into());
+            backend
+                .tracking_accounts
+                .insert("B62qiy32p8kAKnny8ZFwoMhYpBppM1DWVCqAPBYNcXnsAHhnfAAuXgg".into());
+            backend
+                .tracking_accounts
+                .insert("B62qknCv9QdyAvt4Te58oo3nrZTacpEcjpJg1MV61r94h5rDPDUyPP8".into());
+        }
+        {
+            let backend = processor.nonconsensus_ops().await;
+            assert!(backend.poll_latest_once().await.is_ok());
+        }
+        // `processor.run()` needs to be executed to start the event loop
+        // to actually update the transition frontier
     }
 
     fn is_ci() -> bool {
