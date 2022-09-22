@@ -1,0 +1,35 @@
+[package]
+name = "mina-berkeley"
+authors = ["ChainSafe Systems <info@chainsafe.io>"]
+version = "0.1.0"
+
+edition = "2021"
+license = "Apache-2.0"
+
+publish = false
+
+[features]
+default = []
+
+[dependencies]
+mina-network = {path = "../../../network"}
+mina-rs-base = {path = "../../../base"}
+mina-crypto = {path = "../../../crypto"}
+mina-merkle = {path = "../../../merkle"}
+proof-systems = {path = "../../../proof-systems-shim"}
+
+js-sys = "0.3"
+lazy_static = "1"
+log = "0.4"
+reqwest = {version = "0.11.0", features = ["json"]}
+serde = {version = "1", features = ["derive"]}
+serde_json = {version = "1"}
+wasm-bindgen = "0.2"
+wasm-bindgen-futures = "0.4"
+serde-wasm-bindgen = "0.4"
+
+[lib]
+crate-type = ["cdylib", "lib"]
+
+[profile.release]
+opt-level = 's'
