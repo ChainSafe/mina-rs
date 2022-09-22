@@ -26,7 +26,7 @@ async function fetch_best_chain_json_inner(endpoint, trackingAccounts) {
 			accountQuery = `
             ${accountQuery}
             
-            ${account}: account(publicKey: ${account}) {
+            ${account}: account(publicKey: "${account}") {
                 merklePath {
                   left
                   right
@@ -113,7 +113,7 @@ async function fetch_best_chain_json_inner(endpoint, trackingAccounts) {
 	const json = await response.json();
 	// Patch genesisLedgerHash field in blockChainState
 	const data = json.data;
-	data.bestChain.protocolState.blockchainState.genesisLedgerHash =
+	data.bestChain[0].protocolState.blockchainState.genesisLedgerHash =
 		data.genesisBlock.protocolState.blockchainState.snarkedLedgerHash;
 	return data;
 }

@@ -7,6 +7,35 @@
 
 use crate::processor::*;
 use hashbrown::HashSet;
+use js_sys::*;
+use std::iter::Iterator;
+use wasm_bindgen::prelude::*;
+
+#[wasm_bindgen(module = "/js/graphql_berkeley_utils.js")]
+extern "C" {
+    /// Fetch best chain json string
+    #[wasm_bindgen(catch)]
+    pub async fn fetch_best_chain_json_str(
+        endpoint: &str,
+        tracking_accounts: Vec<JsString>,
+    ) -> Result<JsValue, JsValue>;
+}
+
+/// Fetch best chain json
+pub async fn fetch_best_chain_json(
+    endpoint: &str,
+    tracking_accounts: Vec<String>,
+) -> anyhow::Result<serde_json::Value> {
+    let json = fetch_best_chain_json_str(
+        endpoint,
+        tracking_accounts.into_iter().map(|i| i.into()).collect(),
+    )
+    .await
+    .map_err(|err| anyhow::Error::msg(err.as_string().unwrap_or_default()))?;
+    Ok(serde_json::from_str(
+        json.as_string().unwrap_or_default().as_str(),
+    )?)
+}
 
 /// TODO: Doc
 #[derive(Debug, Clone, Default)]
@@ -48,5 +77,42 @@ impl NonConsensusNetworkingOps for NonConsensusGraphQLBerkeleyBackend {
         // }
         // Ok(())
         todo!()
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    #[cfg(feature = "browser")]
+    wasm_bindgen_test::wasm_bindgen_test_configure!(run_in_browser);
+
+    /// This test assumes a local mina node is running
+    #[cfg(not(feature = "browser"))]
+    #[wasm_bindgen_test::wasm_bindgen_test]
+    async fn test_fetch_best_chain_json() {
+        use super::*;
+
+        // NOTE: Disabled for CI
+        if is_ci() {
+            return;
+        }
+
+        let json = fetch_best_chain_json(
+            "http://localhost:3085/graphql",
+            vec![
+                "B62qiy32p8kAKnny8ZFwoMhYpBppM1DWVCqAPBYNcXnsAHhnfAAuXgg".into(),
+                "B62qknCv9QdyAvt4Te58oo3nrZTacpEcjpJg1MV61r94h5rDPDUyPP8".into(),
+            ],
+        )
+        .await
+        .unwrap();
+        assert!(json["bestChain"][0]["protocolState"].as_object().is_some());
+        ProtocolStateWithSparseMerkleLedger::try_from(&json).unwrap();
+    }
+
+    fn is_ci() -> bool {
+        match std::env::var("CI") {
+            Ok(ci) => !ci.is_empty(),
+            _ => false,
+        }
     }
 }

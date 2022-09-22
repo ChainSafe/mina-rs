@@ -38,6 +38,14 @@ impl<'de> Deserialize<'de> for FpJson {
     }
 }
 
+pub fn fp_from_radix_10(s: &str) -> anyhow::Result<Fp> {
+    use std::str::FromStr;
+
+    let big = num::BigUint::from_str(s)?;
+    let big256: BigInteger256 = big.try_into().unwrap();
+    Ok(big256.into())
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
