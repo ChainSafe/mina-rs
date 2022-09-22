@@ -90,8 +90,10 @@ impl MerklePath {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use ark_ff::BigInteger256;
-    use proof_systems::mina_hasher::{Hashable, ROInput};
+    use proof_systems::{
+        fp_from_radix_10,
+        mina_hasher::{Hashable, ROInput},
+    };
 
     #[derive(Debug, Clone)]
     struct TestLeafNode(Fp);
@@ -335,13 +337,5 @@ mod tests {
             "20038089104619582172254839672519820202817728273163650761198500757943363448868"
         )?));
         Ok(())
-    }
-
-    fn fp_from_radix_10(s: &str) -> anyhow::Result<Fp> {
-        use std::str::FromStr;
-
-        let big = num::BigUint::from_str(s)?;
-        let big256: BigInteger256 = big.try_into().unwrap();
-        Ok(big256.into())
     }
 }

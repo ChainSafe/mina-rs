@@ -4,13 +4,10 @@
 #[cfg(test)]
 pub mod tests {
     use anyhow::*;
-    use ark_ff::BigInteger256;
     use mina_consensus::genesis::*;
     use mina_crypto::hash::*;
-    use mina_hasher::Fp;
     use mina_rs_base::types::*;
     use proof_systems::{mina_hasher::*, *};
-    use std::str::FromStr;
 
     #[test]
     fn test_berkeley_genesis_protocol_state_hash() -> Result<()> {
@@ -276,11 +273,5 @@ pub mod tests {
             .append_packed(fp_from_radix_10("1")?, 1)
             .append_packed(fp_from_radix_10("0")?, 32)
             .append_packed(fp_from_radix_10("1")?, 1))
-    }
-
-    fn fp_from_radix_10(s: &str) -> anyhow::Result<Fp> {
-        let big = num::BigUint::from_str(s)?;
-        let big256: BigInteger256 = big.try_into().unwrap();
-        Ok(big256.into())
     }
 }
