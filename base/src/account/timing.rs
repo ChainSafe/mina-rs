@@ -8,7 +8,10 @@ use mina_serialization_types_macros::AutoFrom;
 use proof_systems::{mina_hasher::Fp, ChunkedROInput, ToChunkedROInput};
 use smart_default::SmartDefault;
 
-use crate::numbers::{Amount, BlockTime};
+use crate::{
+    from_graphql_json::FromGraphQLJson,
+    numbers::{Amount, BlockTime},
+};
 
 /// Payload for the timing variant Timed
 #[derive(Clone, Debug, Eq, PartialEq, AutoFrom)]
@@ -50,6 +53,31 @@ impl ToChunkedROInput for TimedData {
     }
 }
 
+impl FromGraphQLJson for TimedData {
+    fn from_graphql_json(json: &serde_json::Value) -> anyhow::Result<Self>
+    where
+        Self: Sized,
+    {
+        Ok(Self {
+            initial_minimum_balance: Amount(
+                json["initialMinimumBalance"]
+                    .as_str()
+                    .unwrap_or_default()
+                    .parse()?,
+            ),
+            cliff_time: BlockTime(json["cliffTime"].as_str().unwrap_or_default().parse()?),
+            cliff_amount: Amount(json["cliffAmount"].as_str().unwrap_or_default().parse()?),
+            vesting_period: BlockTime(json["vestingPeriod"].as_str().unwrap_or_default().parse()?),
+            vesting_increment: Amount(
+                json["vestingIncrement"]
+                    .as_str()
+                    .unwrap_or_default()
+                    .parse()?,
+            ),
+        })
+    }
+}
+
 /// Timing information for an account with regard to when its balance is accessable
 /// This is to allow vesting from an initial genesis allocation
 #[derive(Debug, Clone, SmartDefault, AutoFrom)]
@@ -61,6 +89,18 @@ pub enum Timing {
     Untimed,
     /// Account does have timing limitations as specified
     Timed(TimedData),
+}
+
+impl FromGraphQLJson for Timing {
+    fn from_graphql_json(json: &serde_json::Value) -> anyhow::Result<Self>
+    where
+        Self: Sized,
+    {
+        Ok(match TimedData::from_graphql_json(json) {
+            Ok(data) => Self::Timed(data),
+            _ => Self::Untimed,
+        })
+    }
 }
 
 impl ToChunkedROInput for Timing {

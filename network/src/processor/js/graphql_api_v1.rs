@@ -64,12 +64,12 @@ pub struct NonConsensusGraphQLV1Backend {
 }
 
 impl NonConsensusGraphQLV1Backend {
-    /// TODO: Doc
+    /// Creates a new instance
     pub fn new() -> Self {
         Default::default()
     }
 
-    /// TODO: Doc
+    /// Poll latest blocks once
     pub async fn poll_latest_once(&self) -> anyhow::Result<()> {
         if let Some(block_responder) = &self.block_responder {
             let blocks = query_latest_blocks(10).await?;

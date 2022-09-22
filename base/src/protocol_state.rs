@@ -393,7 +393,8 @@ mod tests {
               "stagedLedgerPendingCoinbaseHash": "2n27mUhCEctJbiZQdrk3kxYc7DVHvJVDErjXrjNs7jnP3HMLKtuN",
               "stagedLedgerPendingCoinbaseAux": "WAAeUjUnP9Q2JiabhJzJozcjiEmkZe8ob4cfFKSuq6pQSNmHh7",
               "stagedLedgerProofEmitted": false,
-              "utcDate": "1655755201000"
+              "utcDate": "1655755201000",
+              "genesisLedgerHash": "jwNYQU34Jb9FD6ZbKnWRALZqVDKbMrjZBKWFYZwAw8ZPMgv9Ld4"
             }
           }
         "###;

@@ -8,7 +8,7 @@ use derive_more::{From, Into};
 use proof_systems::{mina_hasher::Fp, ChunkedROInput, ToChunkedROInput};
 
 /// FIXME: Need to learn exactly what this is..
-#[derive(Clone, Debug, From, Into)]
+#[derive(Clone, Debug, Default, From, Into)]
 pub struct TokenSymbol([u8; 32]);
 
 impl TokenSymbol {

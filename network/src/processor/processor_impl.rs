@@ -12,7 +12,8 @@ where
     TF: TransitionFrontier<Block = FrontierBlock>,
     NCOps: NonConsensusNetworkingOps<Block = NetworkBlock>,
     NetworkBlock: Send + Sync,
-    FrontierBlock: From<NetworkBlock>,
+    FrontierBlock: TryFrom<NetworkBlock>,
+    <FrontierBlock as TryFrom<NetworkBlock>>::Error: std::fmt::Display,
 {
     /// Creates a new [NetworkMessageProcessor] with the given [TransitionFrontier] and
     /// [NonConsensusNetworkingOps], initializing all the message channels for the communication
