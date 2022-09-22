@@ -555,6 +555,7 @@
 <span id="555">555</span>
 <span id="556">556</span>
 <span id="557">557</span>
+<span id="558">558</span>
 </pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
@@ -873,6 +874,7 @@
 <span class="macro">impl_from_for_hash!</span>(CoinBaseHash, Hash2V1);
 <span class="macro">impl_from_for_generic_with_proxy!</span>(CoinBaseHash, HashV1, CoinBaseHashV1Json);
 <span class="macro">impl_strconv_via_json!</span>(CoinBaseHash, CoinBaseHashV1Json);
+<span class="macro">impl_from_json_value_for_hash!</span>(CoinBaseHash);
 
 <span class="kw">impl </span>ToChunkedROInput <span class="kw">for </span>CoinBaseHash {
     <span class="kw">fn </span>to_chunked_roinput(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; ChunkedROInput {
@@ -1113,4 +1115,4 @@
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="mina_crypto" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0-nightly (432abd86f 2022-09-20)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="mina_crypto" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0-nightly (9062b780b 2022-09-21)" ></div></body></html>

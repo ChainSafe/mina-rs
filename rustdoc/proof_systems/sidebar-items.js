@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"struct":[["ChunkedROInput","Chunked Random Oracle input"],["FpJson",""]],"trait":[["ToChunkedROInput","Trait that converts a struct to [ChunkedROInput]"]]};
+window.SIDEBAR_ITEMS = {"fn":[["fp_from_radix_10",""]],"struct":[["ChunkedROInput","Chunked Random Oracle input"],["FpJson",""]],"trait":[["ToChunkedROInput","Trait that converts a struct to [ChunkedROInput]"]]};

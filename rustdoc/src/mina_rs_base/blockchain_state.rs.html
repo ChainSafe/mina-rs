@@ -154,10 +154,6 @@
 <span id="154">154</span>
 <span id="155">155</span>
 <span id="156">156</span>
-<span id="157">157</span>
-<span id="158">158</span>
-<span id="159">159</span>
-<span id="160">160</span>
 </pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
@@ -242,15 +238,10 @@
                     aux_hash: (<span class="kw-2">&amp;</span>json[<span class="string">&quot;stagedLedgerAuxHash&quot;</span>]).try_into()<span class="question-mark">?</span>,
                     pending_coinbase_aux: (<span class="kw-2">&amp;</span>json[<span class="string">&quot;stagedLedgerPendingCoinbaseAux&quot;</span>]).try_into()<span class="question-mark">?</span>,
                 },
-                <span class="comment">// FIXME: missing from graphql API
-                </span>pending_coinbase_hash: CoinBaseHash::from_str(
-                    <span class="string">&quot;2n27mUhCEctJbiZQdrk3kxYc7DVHvJVDErjXrjNs7jnP3HMLKtuN&quot;</span>,
-                )<span class="question-mark">?</span>,
+                pending_coinbase_hash: (<span class="kw-2">&amp;</span>json[<span class="string">&quot;stagedLedgerPendingCoinbaseHash&quot;</span>]).try_into()<span class="question-mark">?</span>,
             },
             <span class="comment">// FIXME: missing from graphql API
-            </span>genesis_ledger_hash: LedgerHash::from_str(
-                <span class="string">&quot;jwNYQU34Jb9FD6ZbKnWRALZqVDKbMrjZBKWFYZwAw8ZPMgv9Ld4&quot;</span>,
-            )<span class="question-mark">?</span>,
+            </span>genesis_ledger_hash: (<span class="kw-2">&amp;</span>json[<span class="string">&quot;genesisLedgerHash&quot;</span>]).try_into()<span class="question-mark">?</span>,
             registers: BlockchainStateRegisters {
                 ledger: (<span class="kw-2">&amp;</span>json[<span class="string">&quot;snarkedLedgerHash&quot;</span>]).try_into()<span class="question-mark">?</span>,
                 pending_coinbase_stack: (),
@@ -310,7 +301,8 @@
             &quot;stagedLedgerPendingCoinbaseHash&quot;: &quot;2n27mUhCEctJbiZQdrk3kxYc7DVHvJVDErjXrjNs7jnP3HMLKtuN&quot;,
             &quot;stagedLedgerPendingCoinbaseAux&quot;: &quot;WAAeUjUnP9Q2JiabhJzJozcjiEmkZe8ob4cfFKSuq6pQSNmHh7&quot;,
             &quot;stagedLedgerProofEmitted&quot;: false,
-            &quot;utcDate&quot;: &quot;1655755201000&quot;
+            &quot;utcDate&quot;: &quot;1655755201000&quot;,
+            &quot;genesisLedgerHash&quot;: &quot;jwNYQU34Jb9FD6ZbKnWRALZqVDKbMrjZBKWFYZwAw8ZPMgv9Ld4&quot;
         }
         &quot;###</span>;
         <span class="kw">let </span>json = serde_json::from_str(JSON_STR)<span class="question-mark">?</span>;
@@ -319,4 +311,4 @@
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_rs_base" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0-nightly (432abd86f 2022-09-20)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_rs_base" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0-nightly (9062b780b 2022-09-21)" ></div></body></html>

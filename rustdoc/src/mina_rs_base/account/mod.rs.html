@@ -154,6 +154,59 @@
 <span id="154">154</span>
 <span id="155">155</span>
 <span id="156">156</span>
+<span id="157">157</span>
+<span id="158">158</span>
+<span id="159">159</span>
+<span id="160">160</span>
+<span id="161">161</span>
+<span id="162">162</span>
+<span id="163">163</span>
+<span id="164">164</span>
+<span id="165">165</span>
+<span id="166">166</span>
+<span id="167">167</span>
+<span id="168">168</span>
+<span id="169">169</span>
+<span id="170">170</span>
+<span id="171">171</span>
+<span id="172">172</span>
+<span id="173">173</span>
+<span id="174">174</span>
+<span id="175">175</span>
+<span id="176">176</span>
+<span id="177">177</span>
+<span id="178">178</span>
+<span id="179">179</span>
+<span id="180">180</span>
+<span id="181">181</span>
+<span id="182">182</span>
+<span id="183">183</span>
+<span id="184">184</span>
+<span id="185">185</span>
+<span id="186">186</span>
+<span id="187">187</span>
+<span id="188">188</span>
+<span id="189">189</span>
+<span id="190">190</span>
+<span id="191">191</span>
+<span id="192">192</span>
+<span id="193">193</span>
+<span id="194">194</span>
+<span id="195">195</span>
+<span id="196">196</span>
+<span id="197">197</span>
+<span id="198">198</span>
+<span id="199">199</span>
+<span id="200">200</span>
+<span id="201">201</span>
+<span id="202">202</span>
+<span id="203">203</span>
+<span id="204">204</span>
+<span id="205">205</span>
+<span id="206">206</span>
+<span id="207">207</span>
+<span id="208">208</span>
+<span id="209">209</span>
 </pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
@@ -218,7 +271,8 @@
     <span class="kw">type </span>T = AccountV1;
 }
 
-<span class="kw">impl </span>mina_hasher::Hashable <span class="kw">for </span>AccountLegacy {
+<span class="comment">// This implementation is not complete because we have switched to berkeley net
+</span><span class="kw">impl </span>mina_hasher::Hashable <span class="kw">for </span>AccountLegacy {
     <span class="kw">type </span>D = ();
 
     <span class="comment">// Uncomment these fields once they have implemented Hashable trait
@@ -307,8 +361,60 @@
     }
 }
 
+<span class="comment">// TODO: No test coverage yet because there&#39;re new hash algo changes again
+// that we are not able to follow anymore.
+// Genesis ledger test data needs to be updated and tests have to be fixed first
+</span><span class="kw">impl </span>FromGraphQLJson <span class="kw">for </span>Account {
+    <span class="kw">fn </span>from_graphql_json(json: <span class="kw-2">&amp;</span>serde_json::Value) -&gt; anyhow::Result&lt;<span class="self">Self</span>&gt;
+    <span class="kw">where
+        </span><span class="self">Self</span>: Sized,
+    {
+        <span class="kw">let </span>is_disabled = json[<span class="string">&quot;isDisabled&quot;</span>].as_bool().unwrap_or_default();
+        <span class="kw">let </span>is_token_owner = json[<span class="string">&quot;isTokenOwner&quot;</span>].as_bool().unwrap_or_default();
+        <span class="prelude-val">Ok</span>(<span class="self">Self </span>{
+            public_key: CompressedPubKey::from_address(
+                json[<span class="string">&quot;publicKey&quot;</span>].as_str().unwrap_or_default(),
+            )<span class="question-mark">?</span>,
+            <span class="comment">// FIXME: wSHV2S4qX9jFsLjQo8r1BsMLH2ZRKsZx6EJd1sbozGPieEC4Jf
+            </span>token_id: TokenId(json[<span class="string">&quot;token&quot;</span>].as_str().unwrap_or_default().parse()<span class="question-mark">?</span>),
+            balance: Amount(
+                json[<span class="string">&quot;balance&quot;</span>][<span class="string">&quot;total&quot;</span>]
+                    .as_str()
+                    .unwrap_or_default()
+                    .parse()<span class="question-mark">?</span>,
+            ),
+            token_permissions: <span class="kw">if </span>is_token_owner {
+                TokenPermissions::TokenOwned {
+                    disable_new_accounts: is_disabled,
+                }
+            } <span class="kw">else </span>{
+                TokenPermissions::NotOwned {
+                    account_disabled: is_disabled,
+                }
+            },
+            <span class="comment">// FIXME: figure out what this is
+            </span>token_symbol: Default::default(),
+            nonce: AccountNonce(json[<span class="string">&quot;nonce&quot;</span>].as_str().unwrap_or_default().parse()<span class="question-mark">?</span>),
+            receipt_chain_hash: ChainHash::from_str(
+                json[<span class="string">&quot;receiptChainHash&quot;</span>].as_str().unwrap_or_default(),
+            )<span class="question-mark">?</span>,
+            delegate: <span class="kw">match </span>json[<span class="string">&quot;delegate&quot;</span>].as_str() {
+                <span class="prelude-val">Some</span>(s) =&gt; <span class="prelude-val">Some</span>(CompressedPubKey::from_address(s)<span class="question-mark">?</span>),
+                <span class="kw">_ </span>=&gt; <span class="prelude-val">None</span>,
+            },
+            voting_for: StateHash::from_str(json[<span class="string">&quot;votingFor&quot;</span>].as_str().unwrap_or_default())<span class="question-mark">?</span>,
+            timing: Timing::from_graphql_json(<span class="kw-2">&amp;</span>json[<span class="string">&quot;timing&quot;</span>])<span class="question-mark">?</span>,
+            permissions: Permissions::from_graphql_json(<span class="kw-2">&amp;</span>json[<span class="string">&quot;permissions&quot;</span>])<span class="question-mark">?</span>,
+            <span class="comment">// FIXME: struct to be defined
+            </span>zkapp: <span class="prelude-val">None</span>,
+            <span class="comment">// FIXME: struct to be defined
+            </span>zkapp_uri: <span class="prelude-val">None</span>,
+        })
+    }
+}
+
 <span class="kw">impl </span>BinProtSerializationType&lt;<span class="lifetime">&#39;_</span>&gt; <span class="kw">for </span>Account {
     <span class="kw">type </span>T = AccountV0;
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="mina_rs_base" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0-nightly (432abd86f 2022-09-20)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="mina_rs_base" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0-nightly (9062b780b 2022-09-21)" ></div></body></html>

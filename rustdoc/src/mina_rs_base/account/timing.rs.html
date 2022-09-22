@@ -75,6 +75,46 @@
 <span id="75">75</span>
 <span id="76">76</span>
 <span id="77">77</span>
+<span id="78">78</span>
+<span id="79">79</span>
+<span id="80">80</span>
+<span id="81">81</span>
+<span id="82">82</span>
+<span id="83">83</span>
+<span id="84">84</span>
+<span id="85">85</span>
+<span id="86">86</span>
+<span id="87">87</span>
+<span id="88">88</span>
+<span id="89">89</span>
+<span id="90">90</span>
+<span id="91">91</span>
+<span id="92">92</span>
+<span id="93">93</span>
+<span id="94">94</span>
+<span id="95">95</span>
+<span id="96">96</span>
+<span id="97">97</span>
+<span id="98">98</span>
+<span id="99">99</span>
+<span id="100">100</span>
+<span id="101">101</span>
+<span id="102">102</span>
+<span id="103">103</span>
+<span id="104">104</span>
+<span id="105">105</span>
+<span id="106">106</span>
+<span id="107">107</span>
+<span id="108">108</span>
+<span id="109">109</span>
+<span id="110">110</span>
+<span id="111">111</span>
+<span id="112">112</span>
+<span id="113">113</span>
+<span id="114">114</span>
+<span id="115">115</span>
+<span id="116">116</span>
+<span id="117">117</span>
 </pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
@@ -85,7 +125,10 @@
 <span class="kw">use </span>proof_systems::{mina_hasher::Fp, ChunkedROInput, ToChunkedROInput};
 <span class="kw">use </span>smart_default::SmartDefault;
 
-<span class="kw">use </span><span class="kw">crate</span>::numbers::{Amount, BlockTime};
+<span class="kw">use crate</span>::{
+    from_graphql_json::FromGraphQLJson,
+    numbers::{Amount, BlockTime},
+};
 
 <span class="doccomment">/// Payload for the timing variant Timed
 </span><span class="attribute">#[derive(Clone, Debug, Eq, PartialEq, AutoFrom)]
@@ -127,6 +170,31 @@
     }
 }
 
+<span class="kw">impl </span>FromGraphQLJson <span class="kw">for </span>TimedData {
+    <span class="kw">fn </span>from_graphql_json(json: <span class="kw-2">&amp;</span>serde_json::Value) -&gt; anyhow::Result&lt;<span class="self">Self</span>&gt;
+    <span class="kw">where
+        </span><span class="self">Self</span>: Sized,
+    {
+        <span class="prelude-val">Ok</span>(<span class="self">Self </span>{
+            initial_minimum_balance: Amount(
+                json[<span class="string">&quot;initialMinimumBalance&quot;</span>]
+                    .as_str()
+                    .unwrap_or_default()
+                    .parse()<span class="question-mark">?</span>,
+            ),
+            cliff_time: BlockTime(json[<span class="string">&quot;cliffTime&quot;</span>].as_str().unwrap_or_default().parse()<span class="question-mark">?</span>),
+            cliff_amount: Amount(json[<span class="string">&quot;cliffAmount&quot;</span>].as_str().unwrap_or_default().parse()<span class="question-mark">?</span>),
+            vesting_period: BlockTime(json[<span class="string">&quot;vestingPeriod&quot;</span>].as_str().unwrap_or_default().parse()<span class="question-mark">?</span>),
+            vesting_increment: Amount(
+                json[<span class="string">&quot;vestingIncrement&quot;</span>]
+                    .as_str()
+                    .unwrap_or_default()
+                    .parse()<span class="question-mark">?</span>,
+            ),
+        })
+    }
+}
+
 <span class="doccomment">/// Timing information for an account with regard to when its balance is accessable
 /// This is to allow vesting from an initial genesis allocation
 </span><span class="attribute">#[derive(Debug, Clone, SmartDefault, AutoFrom)]
@@ -138,6 +206,18 @@
     </span>Untimed,
     <span class="doccomment">/// Account does have timing limitations as specified
     </span>Timed(TimedData),
+}
+
+<span class="kw">impl </span>FromGraphQLJson <span class="kw">for </span>Timing {
+    <span class="kw">fn </span>from_graphql_json(json: <span class="kw-2">&amp;</span>serde_json::Value) -&gt; anyhow::Result&lt;<span class="self">Self</span>&gt;
+    <span class="kw">where
+        </span><span class="self">Self</span>: Sized,
+    {
+        <span class="prelude-val">Ok</span>(<span class="kw">match </span>TimedData::from_graphql_json(json) {
+            <span class="prelude-val">Ok</span>(data) =&gt; <span class="self">Self</span>::Timed(data),
+            <span class="kw">_ </span>=&gt; <span class="self">Self</span>::Untimed,
+        })
+    }
 }
 
 <span class="kw">impl </span>ToChunkedROInput <span class="kw">for </span>Timing {
@@ -153,4 +233,4 @@
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="mina_rs_base" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0-nightly (432abd86f 2022-09-20)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="mina_rs_base" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0-nightly (9062b780b 2022-09-21)" ></div></body></html>

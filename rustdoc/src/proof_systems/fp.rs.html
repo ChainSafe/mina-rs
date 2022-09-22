@@ -51,6 +51,14 @@
 <span id="51">51</span>
 <span id="52">52</span>
 <span id="53">53</span>
+<span id="54">54</span>
+<span id="55">55</span>
+<span id="56">56</span>
+<span id="57">57</span>
+<span id="58">58</span>
+<span id="59">59</span>
+<span id="60">60</span>
+<span id="61">61</span>
 </pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
@@ -91,6 +99,14 @@
     }
 }
 
+<span class="kw">pub fn </span>fp_from_radix_10(s: <span class="kw-2">&amp;</span>str) -&gt; anyhow::Result&lt;Fp&gt; {
+    <span class="kw">use </span>std::str::FromStr;
+
+    <span class="kw">let </span>big = num::BigUint::from_str(s)<span class="question-mark">?</span>;
+    <span class="kw">let </span>big256: BigInteger256 = big.try_into().unwrap();
+    <span class="prelude-val">Ok</span>(big256.into())
+}
+
 <span class="attribute">#[cfg(test)]
 </span><span class="kw">mod </span>tests {
     <span class="kw">use super</span>::<span class="kw-2">*</span>;
@@ -105,4 +121,4 @@
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="proof_systems" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0-nightly (432abd86f 2022-09-20)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="proof_systems" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0-nightly (9062b780b 2022-09-21)" ></div></body></html>

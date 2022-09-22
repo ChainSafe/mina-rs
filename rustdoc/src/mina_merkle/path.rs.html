@@ -339,12 +339,6 @@
 <span id="339">339</span>
 <span id="340">340</span>
 <span id="341">341</span>
-<span id="342">342</span>
-<span id="343">343</span>
-<span id="344">344</span>
-<span id="345">345</span>
-<span id="346">346</span>
-<span id="347">347</span>
 </pre><pre class="rust"><code><span class="comment">// Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
@@ -437,8 +431,10 @@
 <span class="attribute">#[cfg(test)]
 </span><span class="kw">mod </span>tests {
     <span class="kw">use super</span>::<span class="kw-2">*</span>;
-    <span class="kw">use </span>ark_ff::BigInteger256;
-    <span class="kw">use </span>proof_systems::mina_hasher::{Hashable, ROInput};
+    <span class="kw">use </span>proof_systems::{
+        fp_from_radix_10,
+        mina_hasher::{Hashable, ROInput},
+    };
 
     <span class="attribute">#[derive(Debug, Clone)]
     </span><span class="kw">struct </span>TestLeafNode(Fp);
@@ -683,14 +679,6 @@
         </span>)<span class="question-mark">?</span>));
         <span class="prelude-val">Ok</span>(())
     }
-
-    <span class="kw">fn </span>fp_from_radix_10(s: <span class="kw-2">&amp;</span>str) -&gt; anyhow::Result&lt;Fp&gt; {
-        <span class="kw">use </span>std::str::FromStr;
-
-        <span class="kw">let </span>big = num::BigUint::from_str(s)<span class="question-mark">?</span>;
-        <span class="kw">let </span>big256: BigInteger256 = big.try_into().unwrap();
-        <span class="prelude-val">Ok</span>(big256.into())
-    }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_merkle" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0-nightly (432abd86f 2022-09-20)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="mina_merkle" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.0-nightly (9062b780b 2022-09-21)" ></div></body></html>
