@@ -97,20 +97,15 @@ impl NonConsensusNetworkingOps for NonConsensusGraphQLBerkeleyBackend {
 }
 
 #[cfg(test)]
-mod tests {
+pub mod tests {
     #[cfg(feature = "browser")]
     wasm_bindgen_test::wasm_bindgen_test_configure!(run_in_browser);
 
     /// This test assumes a local mina node is running
     #[cfg(not(feature = "browser"))]
-    #[wasm_bindgen_test::wasm_bindgen_test]
-    async fn test_fetch_best_chain_json() {
+    // #[wasm_bindgen_test::wasm_bindgen_test]
+    pub async fn test_fetch_best_chain_json() {
         use super::*;
-
-        // NOTE: Disabled for CI
-        if is_ci() {
-            return;
-        }
 
         let json = fetch_best_chain_json(
             "http://localhost:3085/graphql",
@@ -127,15 +122,10 @@ mod tests {
 
     /// This test assumes a local mina node is running
     #[cfg(not(feature = "browser"))]
-    #[wasm_bindgen_test::wasm_bindgen_test]
-    async fn e2e_test_transition_frontier_berkeley() {
+    // #[wasm_bindgen_test::wasm_bindgen_test]
+    pub async fn e2e_test_transition_frontier_berkeley() {
         use super::*;
         use mina_rs_base::types::*;
-
-        // NOTE: Disabled for CI
-        if is_ci() {
-            return;
-        }
 
         type NaiveTransitionFrontierBerkeleyNet =
             NaiveTransitionFrontier<ProtocolState, MerkleProofBerkeleyNet>;
@@ -170,12 +160,5 @@ mod tests {
         }
         // `processor.run()` needs to be executed to start the event loop
         // to actually update the transition frontier
-    }
-
-    fn is_ci() -> bool {
-        match std::env::var("CI") {
-            Ok(ci) => !ci.is_empty(),
-            _ => false,
-        }
     }
 }
