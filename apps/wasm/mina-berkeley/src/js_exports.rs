@@ -13,18 +13,20 @@ pub async fn run_processor() {
 }
 
 #[wasm_bindgen]
-pub async fn set_api_list(api_urls: JsValue) -> Result<(), JsError> {
+pub async fn set_api_list(api_urls: Array) -> Result<(), JsError> {
     let mut backend = frontier::PROCESSOR_BERKELEY.nonconsensus_ops_mut().await;
-    let api_list: Vec<String> = serde_wasm_bindgen::from_value(api_urls)?;
-    backend.set_api_list(api_list.into_iter());
+    let api_vec = api_urls.to_vec();
+    let api_list = api_vec.iter().map(|url| url.as_string().unwrap());
+    backend.set_api_list(api_list);
     Ok(())
 }
 
 #[wasm_bindgen]
-pub async fn set_tracking_accounts(accounts: JsValue) -> Result<(), JsError> {
+pub async fn set_tracking_accounts(accounts: Array) -> Result<(), JsError> {
     let mut backend = frontier::PROCESSOR_BERKELEY.nonconsensus_ops_mut().await;
-    let account_list: Vec<String> = serde_wasm_bindgen::from_value(accounts)?;
-    backend.set_tracking_accounts(account_list.into_iter());
+    let acc_vec = accounts.to_vec();
+    let account_list = acc_vec.iter().map(|acc| acc.as_string().unwrap());
+    backend.set_tracking_accounts(account_list);
     Ok(())
 }
 
