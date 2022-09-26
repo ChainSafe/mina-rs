@@ -1,6 +1,7 @@
 // Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
+use crate::payment::Payment;
 use crate::proof::DefaultMerkleProof;
 use crate::protocol_state::ProtocolState;
 use crate::{logger::JsExportableLogger, *};
@@ -69,4 +70,66 @@ pub fn init_logger() -> Result<(), JsError> {
     static JS_LOGGER: JsExportableLogger = JsExportableLogger::new(log::Level::Debug);
     log::set_max_level(JS_LOGGER.max_level().to_level_filter());
     log::set_logger(&JS_LOGGER).map_err(err_to_js_error)
+}
+
+#[wasm_bindgen(js_name = lockAccount)]
+pub async fn lock_account(endpoint: String, pub_key: String) -> Result<String, JsError> {
+    let client = reqwest::Client::new();
+    let query: String = format!(
+        "mutation MyMutation {{  
+            lockAccount(input: {{publicKey: \"{}\"}}) {{    account {{      locked    }}  }}
+        }}",
+        pub_key
+    );
+    let res = client
+        .post(endpoint)
+        .json(&serde_json::json!({ "query": query }))
+        .send()
+        .await
+        .unwrap();
+    let resp_text = res.text().await.unwrap();
+    let resp: serde_json::Value = serde_json::from_str(&resp_text).unwrap();
+    Ok(resp.to_string())
+}
+
+#[wasm_bindgen(js_name = unlockAccount)]
+pub async fn unlock_account(
+    endpoint: String,
+    pub_key: String,
+    password: String,
+) -> Result<String, JsError> {
+    let client = reqwest::Client::new();
+    let query: String = format!(
+        "mutation MyMutation {{  
+            unlockAccount(input: {{publicKey: \"{}\", password: \"{}\"}}) {{    account {{      locked    }}  }}
+        }}", pub_key, password
+    );
+    let res = client
+        .post(endpoint)
+        .json(&serde_json::json!({ "query": query }))
+        .send()
+        .await
+        .unwrap();
+    let resp_text = res.text().await.unwrap();
+    let resp: serde_json::Value = serde_json::from_str(&resp_text).unwrap();
+    Ok(resp.to_string())
+}
+
+#[wasm_bindgen(js_name = sendPayment)]
+pub async fn send_payment(endpoint: String, payment: Payment) -> Result<String, JsError> {
+    let client = reqwest::Client::new();
+    let query: String = format!(
+        "mutation MyMutation {{  
+            sendPayment(input: {{fee: \"{}\", amount: \"{}\", to: \"{}\", from: \"{}\"}}) {{    payment {{      id    }}  }}
+        }}", payment.fee_u64()?, payment.amount_u64()?, payment.to(), payment.from()
+    );
+    let res = client
+        .post(endpoint)
+        .json(&serde_json::json!({ "query": query }))
+        .send()
+        .await
+        .unwrap();
+    let resp_text = res.text().await.unwrap();
+    let resp: serde_json::Value = serde_json::from_str(&resp_text).unwrap();
+    Ok(resp.to_string())
 }

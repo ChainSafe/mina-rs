@@ -26,7 +26,6 @@ serde = {version = "1", features = ["derive"]}
 serde_json = {version = "1"}
 wasm-bindgen = "0.2"
 wasm-bindgen-futures = "0.4"
-serde-wasm-bindgen = "0.4"
 
 [lib]
 crate-type = ["cdylib", "lib"]
