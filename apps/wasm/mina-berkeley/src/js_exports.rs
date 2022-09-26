@@ -1,8 +1,10 @@
 // Copyright 2020 ChainSafe Systems
 // SPDX-License-Identifier: Apache-2.0
 
+use crate::proof::DefaultMerkleProof;
 use crate::protocol_state::ProtocolState;
 use crate::{logger::JsExportableLogger, *};
+use js_sys::Array;
 use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen]
@@ -47,6 +49,17 @@ pub async fn get_best_chain_state() -> Option<ProtocolState> {
         let ps: ProtocolState = protocol_state.clone().into();
         ps
     })
+}
+
+#[wasm_bindgen]
+pub async fn get_sparse_merkle_ledger() -> Array {
+    let frontier = frontier::PROCESSOR_BERKELEY.transition_frontier().await;
+    let sparse_merkle_ledger = frontier.get_sparse_merkle_ledger();
+    let data = sparse_merkle_ledger.iter().map(|ledger| {
+        let js: DefaultMerkleProof = ledger.into();
+        js
+    });
+    data.into_iter().map(JsValue::from).collect()
 }
 
 #[wasm_bindgen]
