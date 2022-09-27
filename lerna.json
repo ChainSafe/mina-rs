@@ -1,6 +1,7 @@
 {
   "packages": [
     "apps/wasm/mvp",
+    "apps/wasm/mina-berkeley",
     "network"
   ],
   "version": "4.0.0",
