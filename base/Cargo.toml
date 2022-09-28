@@ -7,34 +7,34 @@ edition = "2021"
 license = "Apache-2.0"
 
 [dependencies]
-bin-prot = {path = "../protocol/bin-prot"}
-mina-crypto = {path = "../crypto"}
-mina-serialization-types = {path = "../protocol/serialization-types"}
-mina-serialization-types-macros = {path = "../protocol/serialization-types-macros"}
-proof-systems = {path = "../proof-systems-shim"}
-versioned = {path = "../protocol/versioned"}
+bin-prot = { workspace = true }
+mina-crypto = { workspace = true }
+mina-serialization-types = { workspace = true }
+mina-serialization-types-macros = { workspace = true }
+proof-systems = { workspace=true }
+versioned = { workspace=true }
 
-anyhow = "1"
+anyhow = { workspace = true }
 ark-ec = "0.3.0"
-ark-ff = "0.3.0"
-base64 = "0.13"
-blake2 = "0.10"
-derive_more = "0.99"
-hex = "0.4"
-num = "0.4"
-once_cell = "1"
-serde = {version = "1", features = ["derive"]}
-serde_json = "1"
-smart-default = "0.6.0"
-strum = {version = "0.24", features = ["derive"]}
-thiserror = "1"
-time = "0.3"
+ark-ff = { workspace = true }
+base64 = { workspace = true }
+blake2 = { workspace = true }
+derive_more = { workspace = true }
+hex = { workspace = true }
+num = { workspace = true }
+once_cell = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+smart-default = { workspace = true }
+strum = { workspace = true }
+thiserror = { workspace = true }
+time = { workspace = true }
 
 # This dependency is not used by the crate, but is a subdependency of commitment_dlog
 # This features must be enable to build with WASM support
 # It has no effect for normal builds
 [target.'cfg(target_arch = "wasm32")'.dependencies]
-getrandom = {version = "0.2", features = ["js"]}
+getrandom = { version = "0.2", features = ["js"] }
 
 [dev-dependencies]
-test-fixtures = {path = "../protocol/test-fixtures"}
+test-fixtures = { path = "../protocol/test-fixtures" }

@@ -7,7 +7,7 @@ edition = "2021"
 license = "Apache-2.0"
 
 [dependencies]
-bin-prot = {path = "../bin-prot"}
+bin-prot = { workspace = true }
 
-serde = {version = "1", features = ["derive"]}
-structopt = "0.3.21"
+serde = { workspace = true }
+structopt = {workspace=true}

@@ -7,23 +7,23 @@ edition = "2021"
 license = "Apache-2.0"
 
 [dependencies]
-bin-prot = {path = "../bin-prot"}
-mina-serialization-types-macros = {path = "../serialization-types-macros"}
-proof-systems = {path = "../../proof-systems-shim"}
-versioned = {path = "../versioned"}
+bin-prot = { workspace = true }
+mina-serialization-types-macros = { workspace = true }
+proof-systems = { workspace = true }
+versioned = { workspace=true }
 
-base64 = "0.13"
-bs58 = {version = "0.4", features = ["check"]}
-derive_more = "0.99"
-hex = "0.4"
-num = "0.4"
-serde = {version = "1", features = ["derive"]}
-serde_json = "1"
-smart-default = "0.6.0"
-thiserror = "1"
+base64 = { workspace = true }
+bs58 = { workspace = true }
+derive_more = { workspace = true }
+hex = { workspace = true }
+num = { workspace = true }
+serde = { version = "1", features = ["derive"] }
+serde_json = { workspace = true }
+smart-default = { workspace = true }
+thiserror = { workspace = true }
 
 [dev-dependencies]
-test-fixtures = {path = "../test-fixtures"}
+test-fixtures = { path = "../test-fixtures" }
 
 anyhow = "1"
 pretty_assertions = "1"

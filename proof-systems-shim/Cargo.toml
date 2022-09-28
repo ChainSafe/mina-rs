@@ -7,17 +7,17 @@ edition = "2021"
 license = "Apache-2.0"
 
 [dependencies]
-mina-curves = {git = "https://github.com/o1-labs/proof-systems", rev = "86f75976859fe9131c6e1db81511ce4d3127d8fa"}
-mina-hasher = {git = "https://github.com/o1-labs/proof-systems", rev = "86f75976859fe9131c6e1db81511ce4d3127d8fa"}
-mina-signer = {git = "https://github.com/o1-labs/proof-systems", rev = "86f75976859fe9131c6e1db81511ce4d3127d8fa"}
-o1-utils = {git = "https://github.com/o1-labs/proof-systems", rev = "86f75976859fe9131c6e1db81511ce4d3127d8fa"}
+mina-curves = { workspace=true }
+mina-hasher = { workspace=true }
+mina-signer = { workspace=true }
+o1-utils = { workspace=true }
 
-anyhow = "1"
-ark-ff = "0.3"
-bitvec = "1"
-derive_more = "0.99"
-num = "0.4"
-serde = {version = "1", features = ["derive"]}
+anyhow = {workspace=true}
+ark-ff =  {workspace=true}
+bitvec = {workspace=true}
+derive_more = {workspace=true}
+num = {workspace=true}
+serde = { workspace = true }
 
 [dev-dependencies]
 serde_json = "1"

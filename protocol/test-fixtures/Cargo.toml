@@ -9,16 +9,16 @@ publish = false
 
 [dependencies]
 # layout support should only be used in tests
-bin-prot = {path = "../bin-prot", features = ["loose_deserialization"]}
-mina-serialization-types = {path = "../serialization-types"}
+bin-prot = { path = "../bin-prot", features = ["loose_deserialization"] }
+mina-serialization-types = { workspace = true }
 
 
-anyhow = "1"
-hex = "0.4"
-lazy_static = "1"
-serde = {version = "1", features = ["derive"]}
-serde_json = {version = "1", features = ["unbounded_depth"]}
-serde_stacker = "0.1"
+anyhow = { workspace = true }
+hex = { workspace = true }
+lazy_static = { workspace = true }
+serde = { version = "1", features = ["derive"] }
+serde_json = { workspace = true }
+serde_stacker = { workspace = true }
 
 [lib]
 # Data files might grow very large, 
