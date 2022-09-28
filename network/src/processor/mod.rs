@@ -12,7 +12,7 @@
 //! the networking layer to unittest the [TransitionFrontier]
 //!
 
-mod naive_transition_frontier;
+pub mod naive_transition_frontier;
 pub use naive_transition_frontier::*;
 
 mod processor_impl;

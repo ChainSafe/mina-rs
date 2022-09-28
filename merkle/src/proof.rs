@@ -49,12 +49,18 @@ where
     Hasher: MerkleHasher<Item = Item, Hash = Hash>,
     Merger: MerkleMerger<Hash = Hash>,
 {
-    index: usize,
-    item: Item,
-    peer_indices: Vec<usize>,
-    peer_hashes: Vec<Option<Hash>>,
-    _hasher: PhantomData<Hasher>,
-    _merger: PhantomData<Merger>,
+    ///
+    pub index: usize,
+    ///
+    pub item: Item,
+    ///
+    pub peer_indices: Vec<usize>,
+    ///
+    pub peer_hashes: Vec<Option<Hash>>,
+    ///
+    pub _hasher: PhantomData<Hasher>,
+    ///
+    pub _merger: PhantomData<Merger>,
 }
 
 impl<Item, Hash, Hasher, Merger> DefaultMerkleProof<Item, Hash, Hasher, Merger>
