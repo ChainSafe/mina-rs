@@ -9,7 +9,7 @@ env:
   # https://doc.rust-lang.org/cargo/reference/profiles.html#incremental
   CARGO_INCREMENTAL: 1
   CI: 1
-  RUST_VERSION: 1.63.0
+  RUST_VERSION: 1.64.0
   # Investigate why it does not build with this flag
   # RUSTFLAGS: -Ctarget-cpu=native
 
