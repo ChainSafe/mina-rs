@@ -7,11 +7,11 @@ edition = "2021"
 license = "Apache-2.0"
 
 [dependencies]
-bin-prot = { workspace = true }
-mina-rs-base = { workspace = true }
+bin-prot = { path = "../../protocol/bin-prot" }
+mina-rs-base = {path = "../../base"}
 
-anyhow = { workspace = true }
-clap = { workspace = true }
+anyhow = "1"
+clap = "3"
 dhat = "0.3"
 serde = { version = "1", features = ["derive"] }
 

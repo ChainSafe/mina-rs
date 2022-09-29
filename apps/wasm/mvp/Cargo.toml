@@ -12,25 +12,25 @@ publish = false
 default = []
 
 [dependencies]
-mina-consensus = { workspace = true }
-mina-network = { workspace=true }
-mina-rs-base = { workspace = true }
-mina-serialization-types = { workspace = true }
+mina-consensus = { path = "../../../consensus" }
+mina-network = { path = "../../../network" }
+mina-rs-base = { path = "../../../base" }
+mina-serialization-types = { path = "../../../protocol/serialization-types" }
 
-anyhow = { workspace = true }
-async-trait = { workspace = true }
-base64 = { workspace = true }
-hex = { workspace = true }
-js-sys = { workspace = true }
-lazy_static = { workspace = true }
+anyhow = "1"
+async-trait = "0.1"
+base64 = "0.13"
+hex = "0.4"
+js-sys = "0.3"
+lazy_static = "1"
 libp2p = { version = "0.44", features = ["wasm-bindgen", "wasm-ext-websocket"] }
-log = { workspace = true }
-protobuf = { workspace = true }
-reqwest = { workspace = true }
+log = "0.4"
+protobuf = { features = ["with-bytes"], version = "3" }
+reqwest = { features = ["json"], version = "0.11.0" }
 serde = { version = "1", features = ["derive"] }
 serde_json = { version = "1" }
-wasm-bindgen = { workspace = true }
-wasm-bindgen-futures = { workspace = true }
+wasm-bindgen = "0.2"
+wasm-bindgen-futures = "0.4"
 
 [dev-dependencies]
 

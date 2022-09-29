@@ -11,11 +11,11 @@ bin-prot = { path = "../../protocol/bin-prot", features = [
     "loose_deserialization",
 ] }
 
-anyhow = { workspace = true }
-env_logger = { workspace = true }
-hex = { workspace = true }
-log = { workspace = true }
+anyhow = "1"
+env_logger = "0.9.0"
+hex = "0.4"
+log = "0.4"
 serde = { version = "1", features = ["derive"] }
 serde_json = { version = "1", features = ["unbounded_depth"] }
-serde_stacker = { workspace = true }
-structopt = { workspace = true }
+serde_stacker = "0.1"
+structopt = "0.3.21"

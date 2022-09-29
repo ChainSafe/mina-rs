@@ -7,7 +7,7 @@ license = "Apache-2.0"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-mina-rs-base = { workspace = true }
+mina-rs-base = { path = "../../../base" }
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 reqwest = { version = "0.11.0", features = ["json"] }
@@ -17,7 +17,7 @@ tokio = { version = "1.18", features = [
     "rt-multi-thread",
     "sync",
 ] }
-log = { workspace = true }
-env_logger = {workspace=true}
-futures = { workspace = true }
-clap = {workspace=true}
+log = "0.4"
+env_logger = "0.9.0"
+futures = "0.3.21"
+clap = { features = ["derive"], version = "3.0" }
