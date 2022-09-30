@@ -14,26 +14,26 @@ default = []
 browser = []
 
 [dev-dependencies]
-bin-prot = {path = "../bin-prot"}
-mina-consensus = {path = "../../consensus"}
-mina-crypto = {path = "../../crypto"}
-mina-rs-base = {path = "../../base"}
-mina-serialization-types = {path = "../serialization-types"}
-proof-systems = {path = "../../proof-systems-shim"}
-test-fixtures = {path = "../test-fixtures"}
+bin-prot = { workspace = true }
+mina-consensus = { workspace = true }
+mina-crypto = { workspace = true }
+mina-rs-base = { workspace = true }
+mina-serialization-types = { workspace = true }
+proof-systems = { workspace = true }
+test-fixtures = { path = "../test-fixtures" }
 
 anyhow = "1"
-ark-ff = "0.3"
-base64 = "0.13"
-bs58 = {version = "0.4", features = ["check"]}
-criterion = {version = "0.3", features = ["html_reports"]}
-hex = "0.4"
-num = "0.4"
+ark-ff = { workspace = true }
+base64 = { workspace = true }
+bs58 = { workspace = true }
+criterion = { version = "0.3", features = ["html_reports"] }
+hex = { workspace = true }
+num = { workspace = true }
 pretty_assertions = "1"
 rand = "0.8"
-serde = {version = "1", features = ["derive"]}
+serde = { workspace = true }
 serde_json = "1"
-time = {version = "0.3", features = ["macros"]}
+time = { workspace = true }
 wasm-bindgen-test = "0.3"
 
 [profile.bench]

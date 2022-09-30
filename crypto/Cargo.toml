@@ -7,22 +7,22 @@ edition = "2021"
 license = "Apache-2.0"
 
 [dependencies]
-bin-prot = {path = "../protocol/bin-prot"}
-mina-serialization-types = {path = "../protocol/serialization-types"}
-proof-systems = {path = "../proof-systems-shim"}
-versioned = {path = "../protocol/versioned"}
+bin-prot = { workspace = true }
+mina-serialization-types = { workspace = true }
+proof-systems = { workspace=true }
+versioned = { workspace=true }
 
-anyhow = "1"
-ark-ff = "0.3"
-base64 = "0.13"
+anyhow = { workspace = true }
+ark-ff = { workspace = true }
+base64 = { workspace = true }
 blake2 = "0.10"
-bs58 = {version = "0.4", features = ["check"]}
-derive_more = "0.99"
-hex = "0.4"
-num = "0.4"
-serde = {version = "1", features = ["derive"]}
+bs58 = { workspace = true }
+derive_more = { workspace = true }
+hex = { workspace = true }
+num = { workspace = true }
+serde = { version = "1", features = ["derive"] }
 serde_json = "1"
-sha2 = "0.10"
-thiserror = "1"
+sha2 = { workspace = true }
+thiserror = { workspace = true }
 
 [dev-dependencies]

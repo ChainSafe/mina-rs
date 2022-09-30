@@ -13,36 +13,36 @@ default = []
 browser = []
 
 [dependencies]
-mina-consensus = {path = "../consensus"}
-mina-merkle = {path = "../merkle"}
-mina-rs-base = {path = "../base"}
-proof-systems = {path = "../proof-systems-shim"}
+mina-consensus = { workspace = true }
+mina-merkle = { workspace=true }
+mina-rs-base = { workspace = true }
+proof-systems = { workspace=true }
 
-anyhow = "1"
-async-trait = "0.1"
-cfg-if = "1"
+anyhow = { workspace = true }
+async-trait = { workspace = true }
+cfg-if = { workspace = true }
 hashbrown = "0.12"
-lazy_static = "1"
-libp2p = {version = "0.44", features = ["dns-tokio", "tcp-tokio"]}
-log = "0.4"
-multihash = "0.16"
-serde = {version = "1", features = ["derive"]}
+lazy_static = { workspace = true }
+libp2p = { workspace=true }
+log = { workspace = true }
+multihash = { workspace = true }
+serde = { workspace = true }
 serde_json = "1"
-tokio = {version = "1.18", features = ["macros", "sync"]}
+tokio = { workspace=true }
 
 # To list all wasm targets, use command 'rustc --print target-list | grep wasm'
 [target.'cfg(target_arch = "wasm32")'.dependencies]
-mina-serialization-types = {path = "../protocol/serialization-types"}
+mina-serialization-types = { workspace = true }
 
-getrandom = {version = "0.2", features = ["js"]}
-js-sys = "0.3"
-libp2p = {version = "0.44", features = ["wasm-bindgen", "wasm-ext-websocket"]}
-wasm-bindgen = "0.2"
-wasm-bindgen-futures = "0.4"
+getrandom = { version = "0.2", features = ["js"] }
+js-sys = { workspace = true }
+libp2p = { version = "0.44", features = ["wasm-bindgen", "wasm-ext-websocket"] }
+wasm-bindgen = { workspace = true }
+wasm-bindgen-futures = { workspace = true }
 
 [dev-dependencies]
 anyhow = "1"
-tokio = {version = "1.18", features = ["macros", "rt", "sync"]}
+tokio = { version = "1.18", features = ["macros", "rt", "sync"] }
 
 [target.'cfg(target_arch = "wasm32")'.dev-dependencies]
 wasm-bindgen-test = "0.3"

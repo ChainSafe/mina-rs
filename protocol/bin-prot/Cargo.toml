@@ -9,13 +9,11 @@ license = "Apache-2.0"
 [features]
 default = []
 
-loose_deserialization = [
-  "serde_json",
-]
+loose_deserialization = ["serde_json"]
 
 [dependencies]
 byteorder = "1.4"
 num = "0.4"
-serde = {version = "1", features = ["derive"]}
-serde_json = {version = "1", optional = true}
+serde_json = { workspace = true, optional = true}
+serde = { workspace = true }
 thiserror = "1"

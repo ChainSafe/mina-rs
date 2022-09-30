@@ -12,10 +12,10 @@ publish = false
 default = []
 
 [dependencies]
-mina-consensus = {path = "../../../consensus"}
-mina-network = {path = "../../../network"}
-mina-rs-base = {path = "../../../base"}
-mina-serialization-types = {path = "../../../protocol/serialization-types"}
+mina-consensus = { path = "../../../consensus" }
+mina-network = { path = "../../../network" }
+mina-rs-base = { path = "../../../base" }
+mina-serialization-types = { path = "../../../protocol/serialization-types" }
 
 anyhow = "1"
 async-trait = "0.1"
@@ -23,12 +23,12 @@ base64 = "0.13"
 hex = "0.4"
 js-sys = "0.3"
 lazy_static = "1"
-libp2p = {version = "0.44", features = ["wasm-bindgen", "wasm-ext-websocket"]}
+libp2p = { version = "0.44", features = ["wasm-bindgen", "wasm-ext-websocket"] }
 log = "0.4"
-protobuf = {version = "3", features = ["with-bytes"]}
-reqwest = {version = "0.11.0", features = ["json"]}
-serde = {version = "1", features = ["derive"]}
-serde_json = {version = "1"}
+protobuf = { features = ["with-bytes"], version = "3" }
+reqwest = { features = ["json"], version = "0.11.0" }
+serde = { version = "1", features = ["derive"] }
+serde_json = { version = "1" }
 wasm-bindgen = "0.2"
 wasm-bindgen-futures = "0.4"
 
